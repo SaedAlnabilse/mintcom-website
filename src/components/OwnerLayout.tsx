@@ -1,3 +1,4 @@
+import { MobileAppModal } from './MobileAppModal';
 import { useState, useEffect, useRef, useLayoutEffect, useMemo } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,8 +22,6 @@ import {
     KeyRound,
     Menu,
     X,
-    Apple,
-    Play,
     ArrowLeft
 } from 'lucide-react';
 
@@ -48,7 +47,8 @@ export function OwnerLayout() {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [mobileAppModalOpen, setMobileAppModalOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const mainContentRef = useRef<HTMLDivElement>(null);
@@ -304,102 +304,10 @@ export function OwnerLayout() {
                                 iconSize={20}
                             />
 
-                            <div className="relative group">
-                                <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left">
+                            <button onClick={() => setMobileAppModalOpen(true)} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left">
                                     <Smartphone size={16} className="text-gray-400" />
                                     <span>{t('owner.menu.getMobileApp')}</span>
                                 </button>
-                                {/* QR Code Popup */}
-                                <div className="absolute left-full rtl:left-auto rtl:right-full bottom-0 ml-3 rtl:ml-0 rtl:mr-3 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-2 rtl:-translate-x-2 group-hover:translate-x-0 w-[200px]">
-                                    {/* QR Code Container */}
-                                    <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
-                                        {/* Fake QR Code Pattern */}
-                                        <div className="w-full aspect-square bg-white relative overflow-hidden rounded-lg">
-                                            <svg viewBox="0 0 100 100" className="w-full h-full">
-                                                <rect width="100" height="100" fill="white" />
-                                                <rect x="5" y="5" width="25" height="25" fill="black" />
-                                                <rect x="8" y="8" width="19" height="19" fill="white" />
-                                                <rect x="11" y="11" width="13" height="13" fill="black" />
-                                                <rect x="70" y="5" width="25" height="25" fill="black" />
-                                                <rect x="73" y="8" width="19" height="19" fill="white" />
-                                                <rect x="76" y="11" width="13" height="13" fill="black" />
-                                                <rect x="5" y="70" width="25" height="25" fill="black" />
-                                                <rect x="8" y="73" width="19" height="19" fill="white" />
-                                                <rect x="11" y="76" width="13" height="13" fill="black" />
-                                                <rect x="35" y="5" width="5" height="5" fill="black" />
-                                                <rect x="45" y="5" width="5" height="5" fill="black" />
-                                                <rect x="55" y="5" width="5" height="5" fill="black" />
-                                                <rect x="35" y="15" width="5" height="5" fill="black" />
-                                                <rect x="50" y="15" width="5" height="5" fill="black" />
-                                                <rect x="60" y="15" width="5" height="5" fill="black" />
-                                                <rect x="40" y="25" width="5" height="5" fill="black" />
-                                                <rect x="55" y="25" width="5" height="5" fill="black" />
-                                                <rect x="5" y="35" width="5" height="5" fill="black" />
-                                                <rect x="15" y="35" width="5" height="5" fill="black" />
-                                                <rect x="25" y="35" width="5" height="5" fill="black" />
-                                                <rect x="5" y="45" width="5" height="5" fill="black" />
-                                                <rect x="20" y="45" width="5" height="5" fill="black" />
-                                                <rect x="5" y="55" width="5" height="5" fill="black" />
-                                                <rect x="15" y="55" width="5" height="5" fill="black" />
-                                                <rect x="25" y="55" width="5" height="5" fill="black" />
-                                                <rect x="35" y="35" width="30" height="30" fill="black" />
-                                                <rect x="40" y="40" width="20" height="20" fill="white" />
-                                                <rect x="45" y="45" width="10" height="10" fill="black" />
-                                                <rect x="70" y="35" width="5" height="5" fill="black" />
-                                                <rect x="80" y="35" width="5" height="5" fill="black" />
-                                                <rect x="90" y="35" width="5" height="5" fill="black" />
-                                                <rect x="75" y="45" width="5" height="5" fill="black" />
-                                                <rect x="85" y="45" width="5" height="5" fill="black" />
-                                                <rect x="70" y="55" width="5" height="5" fill="black" />
-                                                <rect x="80" y="55" width="5" height="5" fill="black" />
-                                                <rect x="35" y="70" width="5" height="5" fill="black" />
-                                                <rect x="45" y="70" width="5" height="5" fill="black" />
-                                                <rect x="55" y="70" width="5" height="5" fill="black" />
-                                                <rect x="70" y="70" width="5" height="5" fill="black" />
-                                                <rect x="80" y="70" width="5" height="5" fill="black" />
-                                                <rect x="90" y="70" width="5" height="5" fill="black" />
-                                                <rect x="40" y="80" width="5" height="5" fill="black" />
-                                                <rect x="50" y="80" width="5" height="5" fill="black" />
-                                                <rect x="75" y="80" width="5" height="5" fill="black" />
-                                                <rect x="85" y="80" width="5" height="5" fill="black" />
-                                                <rect x="35" y="90" width="5" height="5" fill="black" />
-                                                <rect x="55" y="90" width="5" height="5" fill="black" />
-                                                <rect x="70" y="90" width="5" height="5" fill="black" />
-                                                <rect x="90" y="90" width="5" height="5" fill="black" />
-                                            </svg>
-                                            {/* Center logo placeholder */}
-                                            <div className="absolute inset-0 flex items-center justify-center">
-                                                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                                    <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* Text & Badges */}
-                                    <div className="text-center mt-2">
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-3">
-                                            {t('owner.menu.scanToDownload')}<br />
-                                            <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
-                                        </p>
-                                        <div className="flex flex-col gap-2">
-                                            <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
-                                                <Apple size={20} />
-                                                <div className="flex flex-col items-start text-left rtl:text-right">
-                                                    <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide">Download on the</span>
-                                                    <span className="text-sm leading-[1] font-bold mt-0.5">App Store</span>
-                                                </div>
-                                            </button>
-                                            <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
-                                                <Play size={18} className="text-emerald-400 dark:text-emerald-500" />
-                                                <div className="flex flex-col items-start text-left rtl:text-right">
-                                                    <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide uppercase">Get it on</span>
-                                                    <span className="text-sm leading-[1] font-bold mt-0.5">Google Play</span>
-                                                </div>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                             <button
                                 onClick={handleLogout}
@@ -411,109 +319,29 @@ export function OwnerLayout() {
                         </div>
                     ) : (
                         <div className="flex flex-col items-center gap-2">
-                            <LanguageSwitcher
-                                compact
-                                showGlobeIcon={false}
-                                dropdownDirection="right"
-                                buttonClassName="w-12 h-12 rounded-xl !px-0 !py-0 flex items-center justify-center gap-0 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
-                            />
-
-                            {/* Mobile App Icon for Closed Sidebar */}
                             <div className="relative group">
-                                <button
-                                    className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all"
-                                >
-                                    <Smartphone size={24} />
-                                </button>
-                                {/* Tooltip/Popup for Closed Sidebar */}
-                                <div className="absolute left-full rtl:left-auto rtl:right-full bottom-0 ml-4 rtl:ml-0 rtl:mr-4 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[80] translate-x-2 rtl:-translate-x-2 group-hover:translate-x-0 w-[200px]">
-                                    {/* QR Code Container */}
-                                    <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
-                                        <div className="w-full aspect-square bg-white relative overflow-hidden rounded-lg">
-                                            <svg viewBox="0 0 100 100" className="w-full h-full">
-                                                <rect width="100" height="100" fill="white" />
-                                                <rect x="5" y="5" width="25" height="25" fill="black" />
-                                                <rect x="8" y="8" width="19" height="19" fill="white" />
-                                                <rect x="11" y="11" width="13" height="13" fill="black" />
-                                                <rect x="70" y="5" width="25" height="25" fill="black" />
-                                                <rect x="73" y="8" width="19" height="19" fill="white" />
-                                                <rect x="76" y="11" width="13" height="13" fill="black" />
-                                                <rect x="5" y="70" width="25" height="25" fill="black" />
-                                                <rect x="8" y="73" width="19" height="19" fill="white" />
-                                                <rect x="11" y="76" width="13" height="13" fill="black" />
-                                                <rect x="35" y="5" width="5" height="5" fill="black" />
-                                                <rect x="45" y="5" width="5" height="5" fill="black" />
-                                                <rect x="55" y="5" width="5" height="5" fill="black" />
-                                                <rect x="35" y="15" width="5" height="5" fill="black" />
-                                                <rect x="50" y="15" width="5" height="5" fill="black" />
-                                                <rect x="60" y="15" width="5" height="5" fill="black" />
-                                                <rect x="40" y="25" width="5" height="5" fill="black" />
-                                                <rect x="55" y="25" width="5" height="5" fill="black" />
-                                                <rect x="5" y="35" width="5" height="5" fill="black" />
-                                                <rect x="15" y="35" width="5" height="5" fill="black" />
-                                                <rect x="25" y="35" width="5" height="5" fill="black" />
-                                                <rect x="5" y="45" width="5" height="5" fill="black" />
-                                                <rect x="20" y="45" width="5" height="5" fill="black" />
-                                                <rect x="5" y="55" width="5" height="5" fill="black" />
-                                                <rect x="15" y="55" width="5" height="5" fill="black" />
-                                                <rect x="25" y="55" width="5" height="5" fill="black" />
-                                                <rect x="35" y="35" width="30" height="30" fill="black" />
-                                                <rect x="40" y="40" width="20" height="20" fill="white" />
-                                                <rect x="45" y="45" width="10" height="10" fill="black" />
-                                                <rect x="70" y="35" width="5" height="5" fill="black" />
-                                                <rect x="80" y="35" width="5" height="5" fill="black" />
-                                                <rect x="90" y="35" width="5" height="5" fill="black" />
-                                                <rect x="75" y="45" width="5" height="5" fill="black" />
-                                                <rect x="85" y="45" width="5" height="5" fill="black" />
-                                                <rect x="70" y="55" width="5" height="5" fill="black" />
-                                                <rect x="80" y="55" width="5" height="5" fill="black" />
-                                                <rect x="35" y="70" width="5" height="5" fill="black" />
-                                                <rect x="45" y="70" width="5" height="5" fill="black" />
-                                                <rect x="55" y="70" width="5" height="5" fill="black" />
-                                                <rect x="70" y="70" width="5" height="5" fill="black" />
-                                                <rect x="80" y="70" width="5" height="5" fill="black" />
-                                                <rect x="90" y="70" width="5" height="5" fill="black" />
-                                                <rect x="40" y="80" width="5" height="5" fill="black" />
-                                                <rect x="50" y="80" width="5" height="5" fill="black" />
-                                                <rect x="75" y="80" width="5" height="5" fill="black" />
-                                                <rect x="85" y="80" width="5" height="5" fill="black" />
-                                                <rect x="35" y="90" width="5" height="5" fill="black" />
-                                                <rect x="55" y="90" width="5" height="5" fill="black" />
-                                                <rect x="70" y="90" width="5" height="5" fill="black" />
-                                                <rect x="90" y="90" width="5" height="5" fill="black" />
-                                            </svg>
-                                            <div className="absolute inset-0 flex items-center justify-center">
-                                                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                                    <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* Text & Badges */}
-                                    <div className="text-center mt-2">
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-3">
-                                            {t('dashboard.menu.scanToDownload')}<br />
-                                            <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
-                                        </p>
-                                        <div className="flex flex-col gap-2">
-                                            <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
-                                                <Apple size={20} />
-                                                <div className="flex flex-col items-start text-left rtl:text-right">
-                                                    <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide">Download on the</span>
-                                                    <span className="text-sm leading-[1] font-bold mt-0.5">App Store</span>
-                                                </div>
-                                            </button>
-                                            <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
-                                                <Play size={18} className="text-emerald-400 dark:text-emerald-500" />
-                                                <div className="flex flex-col items-start text-left rtl:text-right">
-                                                    <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide uppercase">Get it on</span>
-                                                    <span className="text-sm leading-[1] font-bold mt-0.5">Google Play</span>
-                                                </div>
-                                            </button>
-                                        </div>
-                                    </div>
+                                <LanguageSwitcher
+                                    compact
+                                    showGlobeIcon={false}
+                                    dropdownDirection="right"
+                                    buttonClassName="w-12 h-12 rounded-xl !px-0 !py-0 flex items-center justify-center gap-0 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
+                                />
+                                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0 group-focus-within:translate-x-0">
+                                    {t('common.aria.changeLanguage')}
                                 </div>
                             </div>
+
+                            {/* Mobile App Icon for Closed Sidebar */}
+                            <button
+                                onClick={() => setMobileAppModalOpen(true)}
+                                className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all relative group"
+                            >
+                                <Smartphone size={24} />
+                                {/* Tooltip */}
+                                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                                    {t('owner.menu.getMobileApp')}
+                                </div>
+                            </button>
                             <div className="relative group">
                                 <ThemeToggle
                                     dropdownDirection="right"
@@ -656,7 +484,7 @@ export function OwnerLayout() {
                                     <LogOut size={18} />
                                 </button>
                             </div>
-                        </div>
+    </div>
                     </motion.aside>
                 )}
             </AnimatePresence>
@@ -671,6 +499,8 @@ export function OwnerLayout() {
                 cancelText={t('common.cancel')}
                 type="danger"
             />
+            
+            <MobileAppModal isOpen={mobileAppModalOpen} onClose={() => setMobileAppModalOpen(false)} />
         </div >
     );
 }
