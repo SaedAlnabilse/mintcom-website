@@ -532,15 +532,15 @@ export const SupportCategoryPage = () => {
           </div>
 
           {/* Help CTA */}
-          <div className="mt-12 p-6 bg-gradient-to-r from-gray-900 to-gray-800 dark:from-white/10 dark:to-white/5 rounded-2xl">
+          <div className="mt-12 p-6 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="text-white">
-                <h3 className="text-xl font-bold mb-1">{t('support.cta.stillNeedHelp')}</h3>
-                <p className="text-gray-400">{t('support.cta.stillNeedHelpDesc')}</p>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{t('support.cta.stillNeedHelp')}</h3>
+                <p className="text-gray-500 dark:text-gray-400">{t('support.cta.stillNeedHelpDesc')}</p>
               </div>
               <Link
                 to="/support/tickets/new"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all whitespace-nowrap"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:shadow-lg hover:shadow-paymint-green/20 transition-all whitespace-nowrap"
               >
                 {t('support.quickLinks.submitTicket')}
               </Link>

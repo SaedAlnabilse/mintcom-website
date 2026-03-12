@@ -136,7 +136,7 @@ export const SupportPage = () => {
             animate={{ opacity: 1, y: 0 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-paymint-green/10 border border-paymint-green/20 rounded-full text-paymint-green text-sm font-bold mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-paymint-green/10 border border-paymint-green/20 rounded-[12px] text-paymint-green text-sm font-bold mb-6">
               <HelpCircle size={16} />
               {t('support.hero.badge')}
             </div>

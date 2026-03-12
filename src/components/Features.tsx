@@ -134,7 +134,7 @@ export const Features = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-paymint-green/10 border border-paymint-green/20 mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-[12px] bg-paymint-green/10 border border-paymint-green/20 mb-6">
             <div className="w-1.5 h-1.5 rounded-full bg-paymint-green" />
             <span className="text-paymint-green text-xs font-bold uppercase tracking-wider">{t('landing.features.badge')}</span>
           </div>

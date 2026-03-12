@@ -75,7 +75,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 rtl:gap-3 px-4 py-2 rounded-full bg-paymint-green/10 text-paymint-green font-medium text-sm mb-8 border border-paymint-green/20"
+              className="inline-flex items-center gap-2 rtl:gap-3 px-4 py-2 rounded-[12px] bg-paymint-green/10 text-paymint-green font-medium text-sm mb-8 border border-paymint-green/20"
             >
               <Zap size={14} fill="currentColor" />
               <span>{t('landing.hero.badge')}</span>
