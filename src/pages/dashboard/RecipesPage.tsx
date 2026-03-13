@@ -404,7 +404,7 @@ export function RecipesPage() {
         {isLoading ? (
           <div className="py-32 flex flex-col items-center">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black tracking-widest text-gray-400">Loading...</p>
+            <p className="text-xs font-black tracking-widest text-gray-400">{t('common.loading')}</p>
           </div>
         ) : paginatedItems.length === 0 ? (
           <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
@@ -492,11 +492,11 @@ export function RecipesPage() {
         {showSubRecipeModal && (
           <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
-              <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+              <div className="p-5 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? t('manufacturing.formula.edit') : t('manufacturing.formula.new')}</h2>
                 <button onClick={() => setShowSubRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
               </div>
-              <div className="p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
+              <div className="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
                 <div>
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
                     {t('manufacturing.formula.name')} <span className="text-paymint-red mx-1">*</span>
@@ -544,7 +544,7 @@ export function RecipesPage() {
                       <label className="text-xs font-black text-gray-400 tracking-[0.2em]">{t('manufacturing.ingredients')}</label>
                       <QuickInfo text={t('manufacturing.formula.noIngredients')} />
                     </div>
-                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('dashboard.stats.orders')}</span>
+                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
                   </div>
 
                   <div className="space-y-3 min-h-[40px]">
@@ -600,10 +600,8 @@ export function RecipesPage() {
                                   value={currentUnit}
                                   onChange={(e) => {
                                     const newUnit = e.target.value;
-                                    const newBaseVal = convertToBase(displayValue, baseUnit, newUnit);
                                     const updated = [...subRecipeForm.ingredients];
                                     updated[index].selectedUnit = newUnit;
-                                    updated[index].quantity = newBaseVal;
                                     setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
                                   }}
                                 >
@@ -658,7 +656,7 @@ export function RecipesPage() {
                   </div>
                 </div>
               </div>
-              <div className="p-8 border-t border-gray-200 dark:border-white/5">
+              <div className="p-5 sm:p-6 border-t border-gray-200 dark:border-white/5">
                 <button onClick={handleSaveSubRecipe} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
                   {t('manufacturing.formula.saveFormula')}
                 </button>
@@ -671,12 +669,12 @@ export function RecipesPage() {
       <AnimatePresence>
         {showFinalRecipeModal && (
           <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-visible shadow-2xl">
-              <div className="p-8 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+              <div className="p-5 sm:p-6 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? t('manufacturing.formula.editMap') : t('manufacturing.formula.map')}</h2>
                 <button onClick={() => setShowFinalRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
               </div>
-              <div className="p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
+              <div className="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
                 <div>
                   <div className="flex items-center mb-1">
                     <label className="block text-xs font-black text-gray-400 tracking-[0.2em]">{t('manufacturing.formula.targetItem')} <span className="text-paymint-red">*</span></label>
@@ -699,7 +697,7 @@ export function RecipesPage() {
                       <label className="text-xs font-black text-gray-400 tracking-[0.2em]">{t('manufacturing.ingredients')}</label>
                       <QuickInfo text={t('manufacturing.formula.noIngredients')} />
                     </div>
-                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('dashboard.stats.orders')}</span>
+                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
                   </div>
 
                   <div className="space-y-3 min-h-[40px]">
@@ -813,10 +811,8 @@ export function RecipesPage() {
                                             <button
                                               key={u}
                                               onClick={() => {
-                                                const newBaseVal = convertToBase(displayValue, baseUnit, u);
                                                 const updated = [...finalRecipeForm.ingredients];
                                                 updated[index].selectedUnit = u;
-                                                updated[index].quantity = newBaseVal;
                                                 setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                                                 setActiveDropdown(null);
                                               }}
@@ -903,7 +899,7 @@ export function RecipesPage() {
                   </div>
                 </div>
               </div>
-              <div className="p-8 border-t border-gray-200 dark:border-white/5">
+              <div className="p-5 sm:p-6 border-t border-gray-200 dark:border-white/5">
                 <button onClick={handleSaveFinalRecipe} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
                   {t('manufacturing.formula.registerRecipe')}
                 </button>
@@ -935,7 +931,18 @@ export function RecipesPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xs font-black text-gray-500 tracking-widest">{t('manufacturing.materialCost')}</span>
-                    <span className="text-sm font-black text-gray-900 dark:text-white">{t('common.top')}</span>
+                    <span className="text-sm font-black text-gray-900 dark:text-white">
+                      {(() => {
+                        let totalCost = 0;
+                        manufactureRecipe.ingredients?.forEach((ing: any) => {
+                          const mat = rawMaterials.find(m => m.id === ing.rawMaterialId);
+                          if (mat && (mat as any).costPerUnit) {
+                            totalCost += (ing.quantity || 0) * ((mat as any).costPerUnit || 0);
+                          }
+                        });
+                        return (totalCost * numBatches).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                      })()}
+                    </span>
                   </div>
                 </div>
                 <button onClick={handleManufacture} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">

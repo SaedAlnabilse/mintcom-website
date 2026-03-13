@@ -1511,7 +1511,10 @@
       "lowStockThreshold": "Low Stock Alert",
       "name": "Name",
       "namePlaceholder": "e.g. Flour Type 00",
-      "unit": "Unit"
+      "unit": "Unit",
+      "unitInfo": "Choose how you measure this ingredient",
+      "inStockInfo": "How much you have in your inventory",
+      "lowStockThresholdInfo": "When do you like to be alerted"
     },
     "lowStock": "Low Stock",
     "manage": "Manage stock and costs",
@@ -2180,7 +2183,8 @@
     "search": "Search recipes...",
     "subtitle": "Manage recipes and prep",
     "title": "Recipes",
-    "totalOutput": "Total Output"
+    "totalOutput": "Total Output",
+    "items": "items"
   },
   "nav": {
     "community": "Community",
@@ -3842,6 +3846,7 @@
       "globalRoles": "Global Roles",
       "leaveBlank": "Leave blank to keep current",
       "location": "Location",
+      "locationDisclaimer": "To add more locations or manage cross-location access for an employee, please do so through the Owner Portal.",
       "locationLabel": "Location Access",
       "locationsCount": "{{count}} location",
       "locationsCount_few": "{{count}} locations",

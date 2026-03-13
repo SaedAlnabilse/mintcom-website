@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, Eye, EyeOff, ChevronDown, Check } from 'lucide-react';
+import { X, Trash2, Eye, EyeOff, ChevronDown, Check, MapPin } from 'lucide-react';
 import api from '../../config/api';
 import {
   POS_PERMISSIONS as CANONICAL_POS_PERMISSIONS,
@@ -775,7 +775,7 @@ export function EmployeeFormModal({
           ? selectedCustomRoleId
           : undefined,
       allowedDiscounts: allDiscountsSelected ? [] : allowedDiscounts,
-      establishmentIds: establishments ? selectedEstablishmentIds : undefined,
+      ...(establishments && { establishmentIds: selectedEstablishmentIds }),
       // Platform access control
       posAccess,
       backofficeAccess,
@@ -1029,6 +1029,14 @@ export function EmployeeFormModal({
                       <ChevronDown size={16} className={`text-gray-400 transition-transform ${activeDropdown === 'ROLE' ? 'rotate-180' : ''}`} />
                     </button>
 
+                    {/* Dashboard Mode: Show current establishment name under role selection */}
+                    {!establishments && currentEstablishment?.name && (
+                      <div className="flex items-center gap-1.5 mt-1.5 px-1 opacity-80">
+                        <MapPin size={10} className="text-paymint-green" />
+                        <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-tight">{currentEstablishment.name}</span>
+                      </div>
+                    )}
+
                     <AnimatePresence>
                       {activeDropdown === 'ROLE' && (
                         <motion.div
@@ -1078,7 +1086,7 @@ export function EmployeeFormModal({
                                   onClick={(e) => toggleSection('global', e)}
                                   className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                                 >
-                                  <span className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest uppercase">{t('staff.form.globalRoles')}</span>
+                                  <span className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest uppercase">{t('staff.form.globalRoles')}</span>
                                   <ChevronDown size={14} className={`text-gray-400 transition-transform duration-200 ${expandedRoleSections.has('global') ? 'rotate-180' : ''}`} />
                                 </button>
                                 <AnimatePresence>
@@ -1131,7 +1139,7 @@ export function EmployeeFormModal({
                                     onClick={(e) => toggleSection(estName, e)}
                                     className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                                   >
-                                    <span className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest uppercase truncate max-w-[200px]">{estName}</span>
+                                    <span className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest uppercase truncate max-w-[200px]">{estName}</span>
                                     <ChevronDown size={14} className={`text-gray-400 transition-transform duration-200 flex-shrink-0 ${expandedRoleSections.has(estName) ? 'rotate-180' : ''}`} />
                                   </button>
                                   <AnimatePresence>
@@ -1181,6 +1189,18 @@ export function EmployeeFormModal({
                 )}
                 {errors.role && (
                   <p className="text-paymint-red text-xs font-bold mt-2">{errors.role}</p>
+                )}
+
+                {/* UX Improvement: Location Disclaimer */}
+                {!establishments && (
+                  <div className="mt-4 p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center shrink-0">
+                      <MapPin size={16} />
+                    </div>
+                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+                      {t('staff.form.locationDisclaimer')}
+                    </p>
+                  </div>
                 )}
               </div>
 

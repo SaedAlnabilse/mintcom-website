@@ -1501,7 +1501,10 @@
       "lowStockThreshold": "تنبيه انخفاض المخزون",
       "name": "الاسم",
       "namePlaceholder": "مثال: طحين نوع 00",
-      "unit": "الوحدة"
+      "unit": "الوحدة",
+      "unitInfo": "اختر كيف تقيس هذا المكون",
+      "inStockInfo": "الكمية المتوفرة لديك في المخزون",
+      "lowStockThresholdInfo": "متى تود أن يتم تنبيهك"
     },
     "lowStock": "مخزون منخفض",
     "manage": "إدارة المخزون والتكاليف",
@@ -2184,7 +2187,8 @@
     "search": "البحث عن الوصفات...",
     "subtitle": "إدارة الوصفات والتحضير",
     "title": "الوصفات",
-    "totalOutput": "إجمالي الإنتاج"
+    "totalOutput": "إجمالي الإنتاج",
+    "items": "عناصر"
   },
   "nav": {
     "community": "المجتمع",
@@ -3843,6 +3847,7 @@
       "globalRoles": "أدوار عامة",
       "leaveBlank": "اتركه فارغاً للاحتفاظ بالحالية",
       "location": "الموقع",
+      "locationDisclaimer": "لإضافة المزيد من المواقع أو إدارة الوصول عبر المواقع للموظف، يرجى القيام بذلك من خلال بوابة المالك.",
       "locationLabel": "الوصول للموقع",
       "locationsCount": "{{count}} موقع",
       "locationsCount_few": "{{count}} مواقع",

@@ -553,7 +553,7 @@ export function BrandDashboardPage() {
                             <div
                                 key={loc.id}
                                 className="flex items-center gap-6 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
-                                onClick={() => navigate(`/brand/${brandId}/locations`)}
+                                onClick={() => window.open(`/dashboard/${loc.id}`, '_blank')}
                             >
                                 {/* Rank */}
                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black ${i === 0 ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400' :

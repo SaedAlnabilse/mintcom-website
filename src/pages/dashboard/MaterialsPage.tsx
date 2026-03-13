@@ -263,15 +263,15 @@ export function MaterialsPage() {
         {isLoading ? (
           <div className="py-32 flex flex-col items-center">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black tracking-widest text-gray-400">Loading...</p>
+            <p className="text-xs font-black tracking-widest text-gray-400">{t('common.loading')}</p>
           </div>
         ) : paginatedItems.length === 0 ? (
           <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
               <Package size={32} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No ingredients</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs">Add ingredients to track stock.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('inventory.noIngredients', { defaultValue: 'No ingredients' })}</h3>
+            <p className="text-sm font-bold text-gray-500 max-w-xs">{t('inventory.noIngredientsDesc', { defaultValue: 'Add ingredients to track stock.' })}</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -355,7 +355,7 @@ export function MaterialsPage() {
                             <td className="px-6 py-4">
                               <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
                                 {isLow ? <AlertTriangle size={10} /> : <TrendingUp size={10} />}
-                                {isLow ? 'Low Stock' : 'Optimal'}
+                                {isLow ? t('inventory.lowStock') : t('inventory.optimal')}
                               </div>
                             </td>
                             <td className="px-6 py-4 text-right">
@@ -439,9 +439,9 @@ export function MaterialsPage() {
                   <X size={20} />
                 </button>
               </div>
-              <form onSubmit={handleMaterialSubmit} className="p-8 space-y-6">
+              <form onSubmit={handleMaterialSubmit} className="p-4 sm:p-8 space-y-6 overflow-y-auto flex-1">
                 <div>
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
+                  <label className="block text-xs font-black text-gray-400 tracking-widest mb-3 px-1 flex items-center">
                     {t('inventory.form.name')} <span className="text-paymint-red mx-1">*</span>
                     <QuickInfo text={t('inventory.form.namePlaceholder')} />
                   </label>
@@ -452,29 +452,28 @@ export function MaterialsPage() {
                       setMaterialForm({ ...materialForm, name: e.target.value });
                       if (errors.name) setErrors({ ...errors, name: '' });
                     }}
-                    className={`w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                    className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all`}
                     placeholder={t('inventory.form.namePlaceholder')}
                   />
                   {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
+                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-3 px-1 flex items-center">
+                      {t('inventory.form.unit')} <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text={t('inventory.form.unitInfo', { defaultValue: 'Choose how you measure this ingredient' })} />
+                    </label>
                     <CustomSelect
-                      label={t('inventory.form.unit')}
                       value={materialForm.unit}
                       onChange={(val) => setMaterialForm({ ...materialForm, unit: String(val) })}
                       options={units.map(u => ({ label: t(`inventory.units.${u.toLowerCase()}`, { defaultValue: u }), value: u }))}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
+                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-3 px-1 flex items-center">
                       {t('inventory.unitCost')}
-                      <QuickInfo text={t('inventory.unitCost')} />
                     </label>
                     <div className="relative group">
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2 px-2 py-0.5 bg-gray-200 dark:bg-white/10 rounded-md">
-                        <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
-                      </div>
                       <input
                         type="text"
                         inputMode="numeric"
@@ -485,17 +484,20 @@ export function MaterialsPage() {
                           const numericValue = parseInt(val || '0', 10) / 100;
                           setMaterialForm({ ...materialForm, costPerUnit: numericValue });
                         }}
-                        className="w-full pl-14 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all"
+                        className="w-full pl-[5rem] pr-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all"
                       />
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-100 dark:bg-white/10 rounded-[12px] shadow-sm border border-gray-200/50 dark:border-white/5 z-10 pointer-events-none text-center min-w-[40px] flex items-center justify-center">
+                        <span className="text-gray-500 dark:text-gray-400 text-xs font-black tracking-wider uppercase">{currencySymbol}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
+                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-3 px-1 flex items-center">
                       {t('inventory.form.inStock')}
-                      <QuickInfo text={t('inventory.form.inStock')} />
+                      <QuickInfo text={t('inventory.form.inStockInfo', { defaultValue: 'How much you have in your inventory' })} />
                     </label>
                     <input
                       type="number"
@@ -503,13 +505,13 @@ export function MaterialsPage() {
                       value={materialForm.quantity === 0 ? '' : materialForm.quantity}
                       placeholder="0"
                       onChange={(e) => setMaterialForm({ ...materialForm, quantity: Number(e.target.value) })}
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all"
+                      className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
+                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-3 px-1 flex items-center">
                       {t('inventory.form.lowStockThreshold')}
-                      <QuickInfo text={t('inventory.form.lowStockThreshold')} />
+                      <QuickInfo text={t('inventory.form.lowStockThresholdInfo', { defaultValue: 'When do you like to be alerted' })} />
                     </label>
                     <input
                       type="number"
@@ -517,7 +519,7 @@ export function MaterialsPage() {
                       value={materialForm.lowStockThreshold === 0 ? '' : materialForm.lowStockThreshold}
                       placeholder="0"
                       onChange={(e) => setMaterialForm({ ...materialForm, lowStockThreshold: Number(e.target.value) })}
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all"
+                      className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all"
                     />
                   </div>
                 </div>

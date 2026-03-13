@@ -117,8 +117,6 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                 .filter((l: CashLog) => l.type === 'PAY_OUT')
                 .reduce((sum: number, l: CashLog) => sum + Math.abs(Number(l.amount)), 0);
 
-            console.log('Cash Logs:', entries); // Debug logs
-            console.log('Calculated Totals:', { payIn, payOut });
 
             setTotals({ payIn, payOut });
         } catch (error) {
