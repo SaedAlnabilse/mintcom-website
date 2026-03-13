@@ -383,7 +383,7 @@ export function CsvImportModal({
                                 <FileSpreadsheet size={20} className="text-paymint-green" />
                             </div>
                             <div>
-                                <h2 className="text-lg sm:text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{title}</h2>
+                                <h2 className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h2>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{description}</p>
                             </div>
                         </div>

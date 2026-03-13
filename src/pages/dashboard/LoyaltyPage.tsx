@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useBlocker } from 'react-router-dom';
 import { useCurrency } from '../../context/CurrencyContext';
 import { motion } from 'framer-motion';
 import { Award, Plus, Edit2, Trash2, Percent, Gift } from 'lucide-react';
@@ -64,6 +65,7 @@ export function LoyaltyPage() {
         onClose?: () => void;
         type?: 'danger' | 'success' | 'warning' | 'info';
         confirmText?: string;
+        cancelText?: string;
         showCancel?: boolean;
     }>({
         isOpen: false,
@@ -220,7 +222,7 @@ export function LoyaltyPage() {
                     setConfirmConfig({
                         isOpen: true,
                         title: t('rewards.messages.rewardDeleted'),
-                        message: t('rewards.messages.rewardDeleted'),
+                        message: t('loyalty.messages.rewardDeletedMessage', 'Loyalty pattern deleted successfully'),
                         type: 'success',
                         confirmText: t('common.done'),
                         showCancel: false,
@@ -268,7 +270,7 @@ export function LoyaltyPage() {
             setConfirmConfig({
                 isOpen: true,
                 title: editingReward ? t('rewards.messages.rewardUpdated') : t('rewards.messages.rewardAdded'),
-                message: editingReward ? t('rewards.messages.rewardUpdated') : t('rewards.messages.rewardAdded'),
+                message: editingReward ? t('loyalty.messages.rewardUpdatedMessage', 'Loyalty pattern updated successfully') : t('loyalty.messages.rewardAddedMessage', 'Loyalty pattern added successfully'),
                 type: 'success',
                 confirmText: t('common.done'),
                 showCancel: false,
@@ -283,6 +285,46 @@ export function LoyaltyPage() {
     const paginatedRewards = (Array.isArray(rewards) ? rewards : []).slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     const hasChanges = JSON.stringify(loyaltyConfig) !== JSON.stringify(initialLoyaltyConfig);
+
+    const blocker = useBlocker(
+        ({ currentLocation, nextLocation }) =>
+            hasChanges && currentLocation.pathname !== nextLocation.pathname
+    );
+
+    useEffect(() => {
+        if (blocker.state === 'blocked') {
+            setConfirmConfig({
+                isOpen: true,
+                title: t('loyalty.messages.unsavedChangesTitle', 'Unsaved Changes'),
+                message: t('loyalty.messages.unsavedChangesMessage', 'You have unsaved changes to your earning rules. Are you sure you want to leave without saving?'),
+                type: 'warning',
+                onConfirm: () => {
+                    blocker.proceed();
+                },
+                onClose: () => {
+                    blocker.reset();
+                    setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+                },
+                showCancel: true,
+                confirmText: t('common.continue', 'Leave'),
+                cancelText: t('common.cancel', 'Cancel')
+            });
+        } else if (blocker.state === 'unblocked') {
+            setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+        }
+    }, [blocker.state]);
+
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (hasChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [hasChanges]);
 
     const saveConfig = async () => {
         if (!loyaltyConfig || loyaltyConfig.pointsPerCurrency < 0 || loyaltyConfig.currencyPerPoint <= 0) {
@@ -328,7 +370,7 @@ export function LoyaltyPage() {
                             <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
                         </div>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('rewards.title')}</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('rewards.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('rewards.subtitle')}</span>
                         {currentEstablishment?.name && (
@@ -517,6 +559,7 @@ export function LoyaltyPage() {
                 type={confirmConfig.type || 'info'}
                 confirmText={confirmConfig.confirmText}
                 cancelText={confirmConfig.showCancel === false ? undefined : t('common.cancel')}
+                showCancel={confirmConfig.showCancel}
             />
         </div>
     );

@@ -124,7 +124,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
               <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
                 <Award size={22} strokeWidth={2.5} />
               </div>
-              <h2 className="text-xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                 {initialData ? t('rewards.editReward') : t('rewards.newReward')}
               </h2>
             </div>

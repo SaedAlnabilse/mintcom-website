@@ -56,7 +56,7 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-2xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white mb-2"
+          className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-2"
         >
           {showSuccess ? t('auth.login.welcomeBack') : t('auth.login.signingIn')}
         </motion.h2>

@@ -501,7 +501,7 @@ export const DashboardPage = () => {
                   </div>
                 )}
               </div>
-              <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
               <div className="flex items-center gap-2 sm:gap-3 mt-2 text-gray-500 dark:text-gray-400 text-sm sm:text-base flex-wrap">
                 <Calendar size={14} className="sm:w-4 sm:h-4" />
                 <span>{formatDate()}</span>

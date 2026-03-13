@@ -159,7 +159,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                         <div className="p-4 sm:p-8 overflow-y-auto custom-scrollbar pb-safe">
                             <div className="flex items-center justify-between mb-8">
                                 <div>
-                                    <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.modal.title')}</h2>
+                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.modal.title')}</h2>
                                     <p className="text-sm font-bold text-gray-500 mt-1">{t('paymentMethods.modal.subtitle')}</p>
                                 </div>
                                 <button

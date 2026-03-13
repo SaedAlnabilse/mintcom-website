@@ -306,7 +306,7 @@ export function OwnerEmployeesPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.staff.subtitle')}
                     </p>
@@ -460,7 +460,7 @@ export function OwnerEmployeesPage() {
                                             <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-outfit font-bold tracking-tight text-gray-900 dark:text-white leading-tight group-hover:text-indigo-500 transition-colors">
+                                            <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-tight group-hover:text-indigo-500 transition-colors">
                                                 {emp.firstName} {emp.lastName}
                                             </h3>
                                             <p className="text-xs text-gray-500 mt-1">
@@ -584,7 +584,7 @@ export function OwnerEmployeesPage() {
                                         {emp.firstName.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{emp.firstName} {emp.lastName}</h3>
+                                        <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{emp.firstName} {emp.lastName}</h3>
                                         <p className="dashboard-card-meta">{emp.username}</p>
                                     </div>
                                 </div>
@@ -657,7 +657,7 @@ export function OwnerEmployeesPage() {
                             <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
                                 <AlertTriangle size={32} />
                             </div>
-                            <h3 className="text-2xl font-outfit font-black text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.staff.removeStaffTitle')}</h3>
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.staff.removeStaffTitle')}</h3>
                             <p className="text-gray-500 text-sm leading-relaxed">
                                 {t('owner.staff.removeConfirm', { name: `${employeeToDelete.firstName} ${employeeToDelete.lastName}` })}
                             </p>

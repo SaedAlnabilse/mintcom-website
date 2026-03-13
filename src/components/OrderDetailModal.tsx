@@ -177,7 +177,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                                 <span className="text-xs font-black text-paymint-green tracking-widest">{t('orders.details.processed')}</span>
                             </div>
-                            <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('orders.table.order')} #{order.orderNumber}</h2>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('orders.table.order')} #{order.orderNumber}</h2>
                         </div>
                         <button
                             onClick={onClose}

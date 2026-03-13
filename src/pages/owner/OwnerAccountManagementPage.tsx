@@ -442,7 +442,7 @@ export function OwnerAccountManagementPage() {
                         <KeyRound className="w-7 h-7 text-black" />
                     </div>
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                             {t('owner.account.title')}
                         </h1>
                         <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
@@ -535,7 +535,7 @@ export function OwnerAccountManagementPage() {
                                     <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
                                         <User className="w-5 h-5 text-paymint-green" />
                                     </div>
-                                    <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">Owner Account</h2>
+                                    <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Owner Account</h2>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {isEditing ? (
@@ -688,7 +688,7 @@ export function OwnerAccountManagementPage() {
                                     <Store className="w-5 h-5 text-blue-500" />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">
+                                    <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                                         {t('owner.account.locationLogins', { count: locationLoginEstablishments.length })}
                                     </h2>
                                     <p className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('owner.account.locationLoginsSubtitle')}</p>
@@ -718,7 +718,7 @@ export function OwnerAccountManagementPage() {
                                                             <Icon className="w-5 h-5 text-blue-500" />
                                                         </div>
                                                         <div className="min-w-0">
-                                                            <h3 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white truncate pr-1" title={est.name}>
+                                                            <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white truncate pr-1" title={est.name}>
                                                                 {est.name}
                                                             </h3>
                                                             <div className="flex items-center flex-wrap gap-x-2 gap-y-1 mt-1.5">
@@ -804,7 +804,7 @@ export function OwnerAccountManagementPage() {
                                     <Building2 className="w-5 h-5 text-purple-500" />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">
+                                    <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                                         {t('owner.account.brandLogins', { count: brands.length })}
                                     </h2>
                                     <p className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('owner.account.brandLoginsSubtitle')}</p>
@@ -840,7 +840,7 @@ export function OwnerAccountManagementPage() {
                                                             <Building2 className="w-6 h-6 text-purple-500" />
                                                         </div>
                                                         <div>
-                                                            <h3 className="text-lg font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{brand.name}</h3>
+                                                            <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">{brand.name}</h3>
                                                             <div className="flex items-center flex-wrap gap-x-3 gap-y-1 mt-1.5 text-xs text-gray-500 dark:text-gray-400">
                                                                 <span className="font-medium bg-gray-100 dark:bg-white/[0.05] px-2 py-0.5 rounded-md border border-gray-200 dark:border-white/[0.05]">
                                                                     {t('owner.account.locationsCount', { count })}
@@ -910,7 +910,7 @@ export function OwnerAccountManagementPage() {
                                     <BookOpen className="w-5 h-5 text-blue-500" />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.title')}</h2>
+                                    <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.title')}</h2>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.subtitle')}</p>
                                 </div>
                             </div>
@@ -926,7 +926,7 @@ export function OwnerAccountManagementPage() {
                                         <BookOpen size={20} className="text-blue-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.userManual.title')}</h4>
+                                        <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.userManual.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.userManual.desc')}</p>
                                     </div>
                                     <Download size={16} className="text-gray-400 group-hover/item:text-blue-500 transition-colors" />
@@ -942,7 +942,7 @@ export function OwnerAccountManagementPage() {
                                         <Settings size={20} className="text-amber-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.setupManual.title')}</h4>
+                                        <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.setupManual.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.setupManual.desc')}</p>
                                     </div>
                                     <Download size={16} className="text-gray-400 group-hover/item:text-amber-500 transition-colors" />
@@ -959,7 +959,7 @@ export function OwnerAccountManagementPage() {
                                         <PlayCircle size={20} className="text-red-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.videoTutorial.title')}</h4>
+                                        <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.videoTutorial.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.videoTutorial.desc')}</p>
                                     </div>
                                     <ExternalLink size={16} className="text-gray-400 group-hover/item:text-red-500 transition-colors" />
@@ -976,7 +976,7 @@ export function OwnerAccountManagementPage() {
                                         <BookOpen size={20} className="text-purple-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.qa.title')}</h4>
+                                        <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.qa.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.qa.desc')}</p>
                                     </div>
                                     <ExternalLink size={16} className="text-gray-400 group-hover/item:text-purple-500 transition-colors" />
@@ -993,7 +993,7 @@ export function OwnerAccountManagementPage() {
                                         <Shield size={20} className="text-emerald-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.privacyPolicy.title')}</h4>
+                                        <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.privacyPolicy.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.privacyPolicy.desc')}</p>
                                     </div>
                                     <ExternalLink size={16} className="text-gray-400 group-hover/item:text-emerald-500 transition-colors" />
@@ -1010,7 +1010,7 @@ export function OwnerAccountManagementPage() {
                                         <Scale size={20} className="text-blue-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.termsOfUse.title')}</h4>
+                                        <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.termsOfUse.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.termsOfUse.desc')}</p>
                                     </div>
                                     <ExternalLink size={16} className="text-gray-400 group-hover/item:text-blue-500 transition-colors" />
@@ -1027,7 +1027,7 @@ export function OwnerAccountManagementPage() {
                                         <Info size={20} className="text-paymint-green group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.aboutUs.title')}</h4>
+                                        <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.aboutUs.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.aboutUs.desc')}</p>
                                     </div>
                                     <ExternalLink size={16} className="text-gray-400 group-hover/item:text-paymint-green transition-colors" />
@@ -1052,7 +1052,7 @@ export function OwnerAccountManagementPage() {
                                 <div className="w-10 h-10 rounded-xl bg-paymint-green/20 flex items-center justify-center">
                                     <Info className="w-5 h-5 text-paymint-green" />
                                 </div>
-                                <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.securityTips.title')}</h2>
+                                <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.securityTips.title')}</h2>
                             </div>
 
                             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
@@ -1089,7 +1089,7 @@ export function OwnerAccountManagementPage() {
                                         <AlertCircle className="w-5 h-5 text-red-500" />
                                     )}
                                 </div>
-                                <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">
+                                <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                                     {accountDetails?.deletionRequestedAt ? t('owner.account.restoreAccount') : t('owner.account.dangerZone')}
                                 </h2>
                             </div>
@@ -1142,7 +1142,7 @@ export function OwnerAccountManagementPage() {
                     <div className="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-white/[0.05] flex items-center justify-center mx-auto mb-4">
                         <Store className="w-10 h-10 text-gray-400" />
                     </div>
-                    <h3 className="text-lg font-outfit font-bold tracking-tight text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white mb-2">
                         {t('owner.account.noLocationsOrBrands')}
                     </h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md mx-auto">
@@ -1176,7 +1176,7 @@ export function OwnerAccountManagementPage() {
                                 <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
                                     <AlertTriangle className="w-5 h-5 text-red-500" />
                                 </div>
-                                <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">
+                                <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                                     {t('owner.account.deleteAccountModal.title')}
                                 </h3>
                             </div>
@@ -1324,7 +1324,7 @@ export function OwnerAccountManagementPage() {
                                     <AlertCircle className="w-6 h-6 text-amber-500" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
+                                    <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
                                         {t('owner.account.activeEstBlockModal.title')}
                                     </h3>
                                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">

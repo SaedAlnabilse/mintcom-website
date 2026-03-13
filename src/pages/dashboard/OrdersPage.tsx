@@ -960,7 +960,7 @@ export function OrdersPage() {
               <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('orders.title')}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('orders.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('orders.subtitle')}</span>
             {currentEstablishment?.name && (
@@ -1218,7 +1218,7 @@ export function OrdersPage() {
       {heldOrders.length > 0 && statusFilter !== 'HELD' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg sm:text-xl font-outfit font-bold text-gray-900 dark:text-white flex items-center gap-2 tracking-tight">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 tracking-tight">
               <Clock size={16} className="text-orange-500" />
               {t('orders.status.onHold')} ({heldOrders.length})
             </h2>

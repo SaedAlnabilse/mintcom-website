@@ -315,7 +315,7 @@ export function PaymentMethodsPage() {
               <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.title')}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('paymentMethods.subtitle')}</span>
             {currentEstablishment?.name && (
@@ -334,7 +334,7 @@ export function PaymentMethodsPage() {
             <CreditCard size={24} />
           </div>
           <div className="flex flex-col gap-1">
-            <h2 className="text-xl sm:text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.cardBrands')}</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.cardBrands')}</h2>
             <p className="text-sm font-bold text-gray-500 dark:text-gray-400">{t('paymentMethods.cardBrandsSubtitle')}</p>
           </div>
         </div>
@@ -398,7 +398,7 @@ export function PaymentMethodsPage() {
             <Wallet size={24} />
           </div>
           <div className="flex flex-col gap-1">
-            <h2 className="text-xl sm:text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {t('paymentMethods.paymentTypes')}
             </h2>
             <p className="text-sm font-bold text-gray-500 dark:text-gray-400">{t('paymentMethods.paymentTypesSubtitle')}</p>
@@ -473,7 +473,7 @@ export function PaymentMethodsPage() {
           <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                   {editingMethod ? t('paymentMethods.editPayment') : t('paymentMethods.addPayment')}
                 </h2>
                 <button
@@ -541,7 +541,7 @@ export function PaymentMethodsPage() {
           <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                   {editingCard ? t('paymentMethods.editBrand') : t('paymentMethods.addBrand')}
                 </h2>
                 <button onClick={() => setShowCardModal(false)} className="p-2 text-gray-400 hover:text-white transition-colors">

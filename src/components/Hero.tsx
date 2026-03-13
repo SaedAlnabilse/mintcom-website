@@ -126,40 +126,17 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               {/* Decorative Background Glow */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-paymint-green/20 via-transparent to-paymint-green/5 rounded-full blur-3xl -z-20" />
 
-              {/* Main POS Terminal / Desktop (Back/Center) */}
-              <motion.div 
-                className="absolute z-10 w-[85%] max-w-[600px] top-[5%] left-[50%] -translate-x-1/2 drop-shadow-2xl"
+              {/* Generated Tablet AI Image */}
+              <motion.div
+                className="relative z-10 w-[95%] sm:w-[85%] max-w-[600px] drop-shadow-2xl overflow-hidden rounded-3xl border-4 border-gray-100 dark:border-gray-800"
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               >
-                {/* Terminal Stand */}
-                <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-40 h-20 bg-gradient-to-b from-gray-300 to-gray-400 dark:from-gray-800 dark:to-gray-900 rounded-b-3xl -z-10 shadow-xl border-x border-b border-gray-200 dark:border-gray-700">
-                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-56 h-4 bg-black/20 dark:bg-black/50 rounded-full blur-md translate-y-3" />
-                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-2 bg-gray-400 dark:bg-gray-700 rounded-full" />
-                </div>
-                {/* Terminal Screen */}
-                <div className="w-full bg-white dark:bg-gray-900 rounded-2xl p-2 sm:p-3 border-[3px] border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden relative">
-                   <div className="w-full aspect-[16/10] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden relative border border-gray-200 dark:border-gray-800">
-                      <img src="/sales-dashboard.png" alt="PayMint Dashboard" className="w-full h-full object-cover object-left-top opacity-95" />
-                      {/* Glass Reflection */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
-                   </div>
-                </div>
-              </motion.div>
-
-              {/* Customer Facing Display (Tablet - Front Left) */}
-              <motion.div 
-                className="absolute z-20 w-[50%] max-w-[320px] bottom-[10%] left-[2%] drop-shadow-2xl"
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              >
-                <div className="w-full bg-gray-800 dark:bg-black rounded-3xl p-2 sm:p-2.5 border-4 border-gray-700 dark:border-gray-800 shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden transform -rotate-3 transition-transform hover:rotate-0 duration-500">
-                   <div className="w-full aspect-[4/3] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden relative">
-                      <img src="/admin-dashboard.png" alt="Customer Display" className="w-full h-full object-cover object-right-bottom scale-125 origin-bottom-right opacity-95" />
-                      <div className="absolute inset-0 bg-black/5 pointer-events-none" />
-                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-black/50 border border-white/10" />
-                   </div>
-                </div>
+                <img 
+                  src="/hero-tablet-green.png" 
+                  alt="PayMint System Tablet" 
+                  className="w-full h-auto object-cover"
+                />
               </motion.div>
 
             </div>

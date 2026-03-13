@@ -146,7 +146,7 @@ export function OwnerEstablishmentsPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.locations.title')}</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.locations.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.locations.subtitle')}
                     </p>
@@ -329,7 +329,7 @@ export function OwnerEstablishmentsPage() {
                                             <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
                                                 <Icon size={28} />
                                             </div>
-                                            <div>                                                <h3 className="text-lg font-outfit font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
+                                            <div>                                                <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
                                                 {est.name}
                                             </h3>
                                                 <div className="flex items-center gap-2 mt-1">
@@ -441,7 +441,7 @@ export function OwnerEstablishmentsPage() {
                                                 <Icon size={20} />
                                             </div>
                                             <div>
-                                                <h3 className="font-outfit font-bold tracking-tight text-gray-900 dark:text-white text-sm">{est.name}</h3>
+                                                <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{est.name}</h3>
                                                 <div className="flex items-center gap-2 mt-1">
                                                     <span className="text-xs text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}</span>
                                                     {est.id === highlightId && (
@@ -522,7 +522,7 @@ export function OwnerEstablishmentsPage() {
                                             <Icon size={20} />
                                         </div>
                                         <div>
-                                            <h3 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
+                                            <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
                                                 {est.name}
                                             </h3>
                                             {est.id === highlightId && (

@@ -307,7 +307,7 @@ export function BrandLocationsPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-50">
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('brand.menu.locations')}</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('brand.menu.locations')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('brand.dashboard.manageLocationsDesc')}</span>
                         {brandName && (

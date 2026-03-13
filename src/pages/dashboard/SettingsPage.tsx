@@ -231,25 +231,27 @@ export function SettingsPage() {
   );
 
   useEffect(() => {
-      if (blocker.state === 'blocked') {
-      setConfirmConfig({
-        isOpen: true,
-        title: t('common.notice'),
-        message: t('common.validationError'),
-        type: 'warning',
-        onConfirm: () => {
-          blocker.proceed();
-        },
-        onClose: () => {
-          blocker.reset();
-          setConfirmConfig(prev => ({ ...prev, isOpen: false }));
-        }
-      });
-    } else if (blocker.state === 'unblocked') {
-      setConfirmConfig(prev => ({ ...prev, isOpen: false }));
-    }
+    if (blocker.state === 'blocked') {
+    setConfirmConfig({
+      isOpen: true,
+      title: t('settings.messages.unsavedChangesTitle', 'Unsaved Changes'),
+      message: t('settings.messages.unsavedChangesMessage', 'You have unsaved changes to your settings. Are you sure you want to leave without saving?'),
+      type: 'warning',
+      onConfirm: () => {
+        blocker.proceed();
+      },
+      onClose: () => {
+        blocker.reset();
+        setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+      },
+      showCancel: true,
+      confirmText: t('common.continue', 'Leave'),
+      cancelText: t('common.cancel', 'Cancel')
+    });
+  } else if (blocker.state === 'unblocked') {
+    setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+  }
   }, [blocker.state]);
-
 
 
 
@@ -601,8 +603,8 @@ export function SettingsPage() {
     if (hasUnsavedChanges) {
       setConfirmConfig({
         isOpen: true,
-        title: t('common.notice'),
-        message: t('common.validationError'),
+        title: t('settings.messages.unsavedChangesTitle', 'Unsaved Changes'),
+        message: t('settings.messages.unsavedChangesMessage', 'You have unsaved changes to your settings. Are you sure you want to leave without saving?'),
         type: 'warning',
         onConfirm: () => {
           // Reset form data to initial state
@@ -664,7 +666,7 @@ export function SettingsPage() {
               <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.title')}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('settings.subtitle')}</span>
                         {currentEstablishment?.name && (
@@ -712,7 +714,7 @@ export function SettingsPage() {
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.1] w-full relative isolate shadow-2xl backdrop-blur-xl ring-1 ring-black/20">
+      <div className="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-black/40 rounded-xl border border-gray-200 dark:border-white/[0.1] w-full relative isolate shadow-2xl backdrop-blur-xl ring-1 ring-black/20">
         {tabs.map((tab: any) => (
           <button
             key={tab.id}

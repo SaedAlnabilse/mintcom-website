@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.cdnfonts.com/css/magilio');
 
 @tailwind base;
@@ -27,26 +27,26 @@
   }
 
   /* RTL Support */
-  html[dir="rtl"] {
+  [dir="rtl"] {
     font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
   }
 
-  html[dir="rtl"] * {
+  [dir="rtl"] * {
     letter-spacing: normal !important;
     font-feature-settings: "kern" 1, "liga" 1 !important;
   }
 
-  html[dir="rtl"] body {
+  [dir="rtl"] body {
     text-align: right;
   }
 
   /* Flip flex directions for RTL */
-  html[dir="rtl"] .flex-row {
+  [dir="rtl"] .flex-row {
     flex-direction: row-reverse;
   }
 
   /* RTL specific adjustments */
-  html[dir="rtl"] .rtl\:rotate-180 {
+  [dir="rtl"] .rtl\:rotate-180 {
     transform: rotate(180deg);
   }
 
@@ -57,15 +57,17 @@
   }
 
   /* Enforce a single font family across dashboard surfaces and popups */
-  body.dashboard-font-unified {
-    font-family: 'Outfit', 'Inter', 'Barlow', system-ui, sans-serif;
+  .dashboard-font-unified {
+    font-family: 'Inter', 'Noto Sans Arabic', sans-serif;
   }
 
-  html[dir="rtl"] body.dashboard-font-unified {
-    font-family: 'Noto Sans Arabic', 'Outfit', 'Inter', sans-serif;
+  [dir="rtl"] .dashboard-font-unified,
+  .dashboard-font-unified[dir="rtl"],
+  .dashboard-font-unified [dir="rtl"] {
+    font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
   }
 
-  body.dashboard-font-unified :where(*, *::before, *::after) {
+  .dashboard-font-unified :where(*, *::before, *::after) {
     font-family: inherit !important;
   }
 
@@ -678,4 +680,9 @@ body.app-loading #global-blocking-overlay {
 
 .animate-bounce-subtle {
   animation: bounce-subtle 3s ease-in-out infinite;
+}
+
+/* Fix Tailwind tracking utilities breaking Arabic ligatures globally */
+html[lang="ar"] [class*="tracking-"] {
+  letter-spacing: normal !important;
 }

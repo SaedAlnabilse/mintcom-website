@@ -154,7 +154,7 @@ export function OwnerOverviewPage() {
                             {t('owner.overview.liveSystem')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.overview.title')}</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.overview.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.overview.subtitle', { count: establishments.length, brands: stats.totalBrands })}
                     </p>
@@ -327,7 +327,7 @@ export function OwnerOverviewPage() {
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.overview.salesTrends')}</h3>
+                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.overview.salesTrends')}</h3>
                             <p className="card-subtitle">{t('owner.overview.period')}: {selectedFilterLabel}</p>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5">
@@ -399,7 +399,7 @@ export function OwnerOverviewPage() {
                                 <div className="w-20 h-20 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-4">
                                     <Activity size={32} className="text-gray-400 dark:text-gray-500" />
                                 </div>
-                                <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white mb-2">
+                                <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">
                                     {t('owner.overview.noRevenueData')}
                                 </h3>
                                 <p className="text-sm font-bold text-gray-500 text-center">
@@ -423,7 +423,7 @@ export function OwnerOverviewPage() {
                             <div className="w-12 h-12 rounded-xl bg-paymint-green flex items-center justify-center text-black mb-4">
                                 <Zap size={24} />
                             </div>
-                            <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white mb-2">{t('owner.overview.growBusiness')}</h3>
+                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">{t('owner.overview.growBusiness')}</h3>
                             <p className="text-sm font-bold text-gray-500 mb-6">{t('owner.overview.growBusinessDesc')}</p>
                             <div className="space-y-3">
                                 <button
@@ -445,7 +445,7 @@ export function OwnerOverviewPage() {
                     <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gray-100 dark:bg-white/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                         <div className="relative z-10">
-                            <h4 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white mb-4">{t('owner.overview.quickManagement')}</h4>
+                            <h4 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">{t('owner.overview.quickManagement')}</h4>
                             <div className="space-y-3">
                                 <button
                                     onClick={() => navigate('/owner/employees')}

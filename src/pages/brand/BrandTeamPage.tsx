@@ -323,11 +323,11 @@ export default function BrandTeamPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('owner.staff.subtitle')}</span>
                         {brandName && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                                 {brandName}
                             </span>
                         )}
@@ -372,7 +372,7 @@ export default function BrandTeamPage() {
 
             {/* Filters Bar */}
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                     {/* Search */}
                     <div className="relative flex-1">
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -457,7 +457,7 @@ export default function BrandTeamPage() {
                         {hasFilters && (
                             <button
                                 onClick={clearFilters}
-                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red label-strong hover:bg-paymint-red/20 transition-all"
+                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-bold tracking-wide hover:bg-paymint-red/20 transition-all"
                             >
                                 <X size={14} />
                                 {t('attributes.filters.reset')}
@@ -471,21 +471,21 @@ export default function BrandTeamPage() {
                         {filteredEmployees.length === 0 ? (
                         <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                         <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                        <p className="dashboard-card-value">{searchQuery.trim() ? t('common.noResults') : t('owner.staff.noStaffFound')}</p>
+                        <p className="text-lg font-medium text-gray-900 dark:text-white">{searchQuery.trim() ? t('common.noResults') : t('owner.staff.noStaffFound')}</p>
                         {searchQuery.trim() && (
-                        <p className="text-sm font-bold text-gray-500 mt-1">
+                        <p className="text-sm text-gray-500 mt-1">
                             {t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })}
                         </p>
                         )}
                         {!hasActiveFilters && (
-                        <p className="text-sm font-bold text-gray-500 mt-1">
+                        <p className="text-sm text-gray-500 mt-1">
                             {t('owner.staff.addStaffDesc')}
                         </p>
                         )}
                         {hasFilters && (
                         <button
                             onClick={clearFilters}
-                            className="mt-4 px-6 py-2.5 rounded-xl text-sm font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors"
+                            className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-emerald-400 transition-all"
                         >
                             {t('attributes.filters.reset')}
                         </button>
@@ -559,7 +559,7 @@ export default function BrandTeamPage() {
 
                             {/* Status Badge */}
                             <div className="mb-4">
-                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black tracking-wider border ${emp.isActive
+                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${emp.isActive
                                     ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
                                     : 'bg-gray-100 text-gray-500 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
                                     }`}>
@@ -688,7 +688,7 @@ export default function BrandTeamPage() {
                     </div>
 
                     {/* Desktop Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-label uppercase">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-meta tracking-wide">
                         <div className="col-span-4">{t('common.name')}</div>
                         <div className="col-span-2">{t('common.status.label')}</div>
                         <div className="col-span-2">{t('common.role')}</div>
@@ -701,7 +701,8 @@ export default function BrandTeamPage() {
                         {paginatedEmployees.map((emp) => (
                             <div
                                 key={emp.id}
-                                className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                                className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                                onClick={() => handleEditEmployee(emp)}
                             >
 
                                 {/* Member Info */}
@@ -753,14 +754,14 @@ export default function BrandTeamPage() {
                                 {/* Actions */}
                                 <div className="col-span-2 flex items-center justify-center gap-2">
                                     <button
-                                        onClick={() => handleEditEmployee(emp)}
+                                        onClick={(e) => { e.stopPropagation(); handleEditEmployee(emp); }}
                                         className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"
                                     >
                                         <Edit2 size={14} />
                                         {t('common.edit')}
                                     </button>
                                     <button
-                                        onClick={() => openDeleteModal(emp)}
+                                        onClick={(e) => { e.stopPropagation(); openDeleteModal(emp); }}
                                         className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 transition-colors"
                                     >
                                         <Trash2 size={16} />

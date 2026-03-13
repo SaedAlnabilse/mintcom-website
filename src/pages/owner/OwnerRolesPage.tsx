@@ -220,7 +220,7 @@ export function OwnerRolesPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.roles.title')}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.roles.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">{t('owner.roles.subtitle')}</p>
         </div>
 
@@ -276,7 +276,7 @@ export function OwnerRolesPage() {
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <Globe size={40} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-outfit font-bold text-gray-900 dark:text-white mb-2 tracking-tight">{t('owner.roles.noRoles')}</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">{t('owner.roles.noRoles')}</h3>
             <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">{t('owner.roles.noRolesDesc')}</p>
           </div>
         ) : viewMode === 'grid' ? (
@@ -296,7 +296,7 @@ export function OwnerRolesPage() {
                         <Shield size={24} />
                       </div>
                       <div>
-                        <h3 className="font-outfit font-bold tracking-tight text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
+                        <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
                         <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                           <UserCheck size={10} />
                           {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
@@ -370,7 +370,7 @@ export function OwnerRolesPage() {
                           <Shield size={20} />
                         </div>
                         <div>
-                          <h3 className="font-outfit font-bold tracking-tight text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
+                          <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
                           <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                             <UserCheck size={10} />
                             {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}

@@ -1384,6 +1384,8 @@
       "created": "Discount created successfully",
       "deleteConfirm": "Are you sure you want to delete \"{{name}}\"?",
       "deleted": "Discount deleted successfully",
+      "emptySubtitle": "Create your first discount to start offering special deals to your customers.",
+      "emptyTitle": "No discounts created yet",
       "loadFailed": "Failed to load discounts",
       "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
       "noResults": "No results found",

@@ -234,7 +234,7 @@ export function DiscountsPage() {
               <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('discounts.title')}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('discounts.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('discounts.subtitle')}</span>
                         {currentEstablishment?.name && (
@@ -323,7 +323,20 @@ export function DiscountsPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-center mb-6">
             <Tag className="w-10 h-10 text-gray-300 dark:text-gray-600" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('common.none')}</h3>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('discounts.messages.emptyTitle', 'No discounts created yet')}</h3>
+          <p className="text-sm font-bold text-gray-500 max-w-sm mb-6">
+            {t('discounts.messages.emptySubtitle', 'Create your first discount to start offering special deals to your customers.')}
+          </p>
+          <button
+            onClick={() => {
+              setEditingDiscount(null);
+              setShowModal(true);
+            }}
+            className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold text-sm hover:bg-emerald-400 hover:scale-105 active:scale-95 transition-all shadow-sm"
+          >
+            <Plus size={18} />
+            {t('discounts.newDiscount')}
+          </button>
         </div>
       ) : filteredDiscounts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">

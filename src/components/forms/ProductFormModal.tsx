@@ -502,7 +502,7 @@ export function ProductFormModal({
         <div
           key="product-form-modal-overlay"
           dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-          className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-outfit"
+          className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
         >
           <motion.div
             initial={{ opacity: 0, y: 100 }}
@@ -525,7 +525,7 @@ export function ProductFormModal({
                   <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                   <span className="text-xs font-black text-paymint-green tracking-widest">{t('common.active')}</span>
                 </div>
-                <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
                   {initialData?.id ? t('products.editProduct') : t('products.newProduct')}
                 </h2>
               </div>

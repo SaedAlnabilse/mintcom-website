@@ -348,7 +348,7 @@ export function BrandDashboardPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-50">
                 <div>
                     <div className="flex items-center gap-4">
-                        <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{brandName}</h1>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{brandName}</h1>
                     </div>
                     <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400 text-sm sm:text-base mt-2">
                         <div className="flex items-center gap-1.5">
@@ -629,7 +629,7 @@ export function BrandDashboardPage() {
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
+                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
                             <p className="card-subtitle">{t('brand.dashboard.consolidatedPerformance')}</p>
                         </div>
                         <div className="flex items-center gap-4">
@@ -750,7 +750,7 @@ export function BrandDashboardPage() {
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.salesByCategory')}</h3>
+                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.salesByCategory')}</h3>
                             <p className="card-subtitle">{t('brand.dashboard.revenueDistribution')}</p>
                         </div>
                     </div>
@@ -841,7 +841,7 @@ export function BrandDashboardPage() {
                         <div className={`w-12 h-12 rounded-xl ${action.bg} ${action.color} flex items-center justify-center mb-4`}>
                             <action.icon size={24} />
                         </div>
-                        <h4 className="text-lg font-outfit font-bold tracking-tight text-gray-900 dark:text-white mb-1">
+                        <h4 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white mb-1">
                             {action.title}
                         </h4>
                         <p className="text-sm font-bold text-gray-500">{action.description}</p>

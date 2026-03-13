@@ -58,12 +58,14 @@ export const PricingDownload = () => {
             t('landing.pricing.features.advancedReporting'),
             t('landing.pricing.features.production')
         ],
-        cta: isAuthenticated ? t('nav.dashboard', 'Go to Dashboard') : t('landing.pricing.startFreeTrial'),
+        cta: t('landing.pricing.getStarted', 'Get Started'),
     };
+
+    const [showAlreadySignedIn, setShowAlreadySignedIn] = useState(false);
 
     const handleCtaClick = () => {
         if (isAuthenticated) {
-            navigate('/owner');
+            setShowAlreadySignedIn(true);
         } else {
             window.open('/signup', '_blank');
         }
@@ -278,6 +280,53 @@ export const PricingDownload = () => {
                                     className="w-full bg-paymint-green text-black py-5 rounded-2xl font-black text-lg transition-transform active:scale-95 shadow-xl shadow-paymint-green/20"
                                 >
                                     {plan.cta}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Already Signed In Modal */}
+            <AnimatePresence>
+                {showAlreadySignedIn && (
+                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setShowAlreadySignedIn(false)}
+                            className="absolute inset-0 bg-black/20 dark:bg-black/60 backdrop-blur-md transition-colors"
+                        />
+                        
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="bg-white dark:bg-[#1a1a1a] w-full max-w-sm rounded-2xl shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5 p-8 text-center"
+                        >
+                            <div className="w-16 h-16 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <Check size={32} className="text-paymint-green" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                {t('landing.pricing.alreadySignedIn', 'You are already signed in')}
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-400 mb-8">
+                                {t('landing.pricing.alreadySignedInDesc', 'You can continue to your Dashboard to manage your business.')}
+                            </p>
+                            
+                            <div className="space-y-3">
+                                <button
+                                    onClick={() => navigate('/owner')}
+                                    className="w-full bg-paymint-green text-black py-3.5 rounded-xl font-bold transition-all hover:bg-paymint-green/90 shadow-lg shadow-paymint-green/20"
+                                >
+                                    {t('landing.pricing.goToDashboard', 'Go to Dashboard')}
+                                </button>
+                                <button
+                                    onClick={() => setShowAlreadySignedIn(false)}
+                                    className="w-full bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white py-3.5 rounded-xl font-bold transition-all hover:bg-gray-200 dark:hover:bg-white/10"
+                                >
+                                    {t('common.cancel', 'Cancel')}
                                 </button>
                             </div>
                         </motion.div>
