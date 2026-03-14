@@ -119,22 +119,22 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             initial={{ opacity: 0, x: 50, rotateY: -10 }}
             animate={{ opacity: 1, x: 0, rotateY: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="flex-1 w-full max-w-[600px] lg:max-w-[700px] xl:max-w-[800px] relative mt-12 lg:mt-0 perspective-1000 lg:-translate-x-12 xl:-translate-x-16"
+            className="flex-1 w-full max-w-[700px] lg:max-w-[800px] xl:max-w-[900px] relative mt-16 lg:mt-0 perspective-1000 lg:-translate-x-20 xl:-translate-x-28"
           >
             <div className="relative w-full aspect-square sm:aspect-[4/3] flex items-center justify-center">
               
               {/* Decorative Background Glow */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-paymint-green/20 via-transparent to-paymint-green/5 rounded-full blur-3xl -z-20" />
 
-              {/* Generated Tablet AI Image */}
+              {/* Generated iPad Dashboard Image */}
               <motion.div
-                className="relative z-10 w-[95%] sm:w-[85%] max-w-[600px] drop-shadow-2xl overflow-hidden rounded-3xl border-4 border-gray-100 dark:border-gray-800"
+                className="relative z-10 w-[130%] sm:w-[125%] max-w-[950px] drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] scale-110 origin-center lg:origin-left"
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               >
                 <img 
-                  src="/hero-tablet-green.png" 
-                  alt="PayMint System Tablet" 
+                  src="/ipad-dashboard-new.png" 
+                  alt="PayMint Dashboard on iPad" 
                   className="w-full h-auto object-cover"
                 />
               </motion.div>
