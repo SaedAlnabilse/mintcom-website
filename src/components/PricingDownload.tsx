@@ -125,14 +125,33 @@ export const PricingDownload = () => {
                     </motion.div>
                 </div>
 
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-16">
 
-                    {/* Premium Pricing Card */}
+                    {/* Left: Product Showcase Image */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
+                        initial={{ opacity: 0, x: -40 }}
+                        whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
+                        className="w-full lg:w-1/2 flex items-center justify-center"
+                    >
+                        <div className="relative w-full max-w-[600px]">
+                            <motion.img
+                                src="/pricing-showcase.png"
+                                alt="Paymint Dashboard & Mobile App"
+                                className="w-full h-auto rounded-2xl drop-shadow-[0_20px_60px_rgba(0,186,124,0.15)]"
+                                animate={{ y: [0, -10, 0] }}
+                                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                            />
+                        </div>
+                    </motion.div>
+
+                    {/* Right: Premium Pricing Card */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 40 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
                         className="w-full lg:w-[480px] flex-shrink-0"
                     >
                         <div className="relative group h-full">
