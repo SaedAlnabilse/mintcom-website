@@ -116,9 +116,11 @@ export const PricingDownload = () => {
                                             {/* Static Background (Instantly switches) */}
                                             <div
                                                 style={{ 
-                                                    transform: isYearly ? (t('common.locale') === 'ar' ? 'translateX(-100%)' : 'translateX(100%)') : 'translateX(0%)' 
+                                                    transform: t('common.locale') === 'ar' 
+                                                        ? (isYearly ? 'translateX(0%)' : 'translateX(100%)')
+                                                        : (isYearly ? 'translateX(100%)' : 'translateX(0%)')
                                                 }}
-                                                className="absolute inset-y-1.5 left-1.5 w-[calc(50%-6px)] bg-paymint-green rounded-xl shadow-lg"
+                                                className="absolute inset-y-1.5 left-1.5 w-[calc(50%-6px)] bg-paymint-green rounded-xl shadow-lg transition-transform duration-300"
                                             />
                                         </div>
 
