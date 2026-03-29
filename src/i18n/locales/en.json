@@ -1746,6 +1746,7 @@
       "watchVideo": "See how it works"
     },
     "pricing": {
+      "additionalDiscount": "Additional locations receive a <1>DISCOUNT</1> for ",
       "additionalLocations": "Additional Locations",
       "billedAnnually": "Billed annually.",
       "includedDesc": "All features included in a single plan.",

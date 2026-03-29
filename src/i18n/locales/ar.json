@@ -1742,6 +1742,7 @@
         "fullAccess": "نفس مستوى الوصول الكامل لموقعك الأساسي",
         "separate": "موظفين ومخزون منفصل لكل فرع"
       },
+      "additionalDiscount": "المواقع الإضافية تحصل على <1>خصم</1> لتصبح بـ ",
       "additionalLocations": "مواقع إضافية",
       "additionalLocationsDesc": "كل موقع إضافي بعد موقعك الأول",
       "addLocation": "إضافة موقع",

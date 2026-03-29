@@ -15,7 +15,7 @@ const WorkflowFeatureCard = ({ feature, index, t }: { feature: any, index: numbe
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.5 }}
       whileHover={{ scale: 1.02 }}
-      className="group flex flex-col h-full p-5 rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:border-paymint-green/30 hover:shadow-lg hover:shadow-paymint-green/5 transition-all duration-300"
+      className="group flex flex-col h-full p-5 rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 hover:border-paymint-green/30 hover:shadow-lg hover:shadow-paymint-green/5 transition-all duration-300"
     >
       <div className="flex items-start gap-4 mb-3">
         <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center group-hover:bg-paymint-green group-hover:scale-110 transition-all duration-300">

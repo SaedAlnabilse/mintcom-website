@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Check, ArrowRight, MapPin } from 'lucide-react';
+import { Check, ArrowRight, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
@@ -147,11 +147,18 @@ export const PricingDownload = () => {
                                         </button>
 
                                         {/* Additional Locations Hint */}
-                                        <div className="pt-8 border-t border-gray-100 dark:border-white/5 flex items-center justify-center lg:justify-start gap-3 text-gray-500 dark:text-gray-400 text-sm font-semibold tracking-wide">
-                                            <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center">
-                                                <MapPin size={16} className="text-paymint-green" />
+                                        <div className="mt-8 p-4 rounded-2xl bg-paymint-green/10 border border-paymint-green/20 flex items-center justify-center lg:justify-start gap-3 group/discount transition-all duration-300 hover:bg-paymint-green/15">
+                                            <div className="w-8 h-8 rounded-full bg-paymint-green/20 flex items-center justify-center flex-shrink-0 group-hover/discount:scale-110 transition-transform">
+                                                <Tag size={16} className="text-paymint-green" />
                                             </div>
-                                            <span>{t('landing.pricing.additionalLocations', 'Additional Locations')}: <span className="text-gray-900 dark:text-white font-bold">${currentAdditionalPrice}{currentPeriod}</span></span>
+                                            <span className="text-gray-700 dark:text-gray-300 text-sm font-semibold tracking-wide">
+                                                <Trans 
+                                                    i18nKey="landing.pricing.additionalDiscount"
+                                                    defaults="Additional locations receive a <1>DISCOUNT</1> for "
+                                                    components={{ 1: <span className="font-black text-gray-900 dark:text-white mx-1 uppercase" /> }}
+                                                />
+                                                <span className="text-gray-900 dark:text-white font-black">${currentAdditionalPrice}{currentPeriod}</span>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>

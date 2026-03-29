@@ -153,11 +153,7 @@ export const AdminControl = () => {
 
                 {/* Recent Alerts List (Takes up remaining space) */}
                 <div className="flex flex-col gap-2.5 mt-2 flex-1">
-                  <motion.div
-                    initial={{ x: -20, opacity: 0 }}
-                    whileInView={{ x: 0, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4, duration: 0.5 }}
+                  <div
                     className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-pointer"
                   >
                     <div className="w-8 h-8 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
@@ -167,12 +163,8 @@ export const AdminControl = () => {
                       <div className="text-white/90 text-[10px] font-semibold mb-0.5">{t('landing.admin.stockAlerts')}</div>
                       <div className="text-gray-400 text-[9px]">Coffee Beans <span className="text-red-400 ml-1 font-medium">-5 kg</span></div>
                     </div>
-                  </motion.div>
-                  <motion.div
-                    initial={{ x: -20, opacity: 0 }}
-                    whileInView={{ x: 0, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5, duration: 0.5 }}
+                  </div>
+                  <div
                     className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-pointer"
                   >
                     <div className="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
@@ -182,7 +174,7 @@ export const AdminControl = () => {
                       <div className="text-white/90 text-[10px] font-semibold mb-0.5">{t('landing.admin.shiftAlerts')}</div>
                       <div className="text-gray-400 text-[9px]">Sarah left at 4:00 PM</div>
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
               </div>
 
@@ -229,24 +221,21 @@ export const AdminControl = () => {
               {t('landing.admin.description')}
             </p>
 
-            <ul className="space-y-4">
+            <ul className="space-y-4 font-medium">
               {[
-                t('landing.admin.shiftAlerts'),
-                t('landing.admin.stockAlerts'),
-                t('landing.admin.liveReports')
+                { label: t('landing.admin.shiftAlerts'), color: 'bg-paymint-green' },
+                { label: t('landing.admin.stockAlerts'), color: 'bg-paymint-green' },
+                { label: t('landing.admin.liveReports'), color: 'bg-paymint-green' }
               ].map((item, i) => (
-                <motion.li
+                <li
                   key={i}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 + (i * 0.1) }}
-                  className="flex items-center gap-3 text-gray-700 dark:text-gray-300"
+                  className="flex items-center gap-4 text-gray-700 dark:text-gray-300 group"
                 >
-                  <div className="w-6 h-6 rounded-full bg-paymint-green/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-paymint-green" />
+                  <div className="w-8 h-8 rounded-full bg-paymint-green/10 border border-paymint-green/20 flex items-center justify-center transition-all duration-300 group-hover:bg-paymint-green/20">
+                    <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(34,197,94,0.4)]" />
                   </div>
-                  {item}
-                </motion.li>
+                  <span className="text-lg tracking-tight">{item.label}</span>
+                </li>
               ))}
             </ul>
           </motion.div>
