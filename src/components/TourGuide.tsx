@@ -139,10 +139,12 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                     return Math.min(Math.max(20, targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2)), window.innerHeight - tooltipHeight - 20);
                   }
                   
-                  const showAtTop = currentStep.position === 'top' || 
-                                   (currentStep.position !== 'left' && 
-                                    currentStep.position !== 'right' && 
-                                    !(targetRect.bottom + tooltipHeight + 20 < window.innerHeight));
+                  const pos = currentStep.position as string;
+                  const targetBottom = targetRect.bottom + tooltipHeight + 20;
+                  const showAtTop = pos === 'top' || 
+                                   (pos !== 'left' && 
+                                    pos !== 'right' && 
+                                    !(targetBottom < window.innerHeight));
                   
                   if (showAtTop) {
                     return Math.max(20, targetRect.top - tooltipHeight - 12);
