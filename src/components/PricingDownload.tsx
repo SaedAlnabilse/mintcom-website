@@ -157,7 +157,7 @@ export const PricingDownload = () => {
                                                 <Trans 
                                                     i18nKey="landing.pricing.additionalDiscount"
                                                     defaults="Additional locations receive a <1>DISCOUNT</1> for "
-                                                    components={{ 1: <span className="font-black text-gray-900 dark:text-white mx-1 uppercase" /> }}
+                                                    components={{ 1: <span className="font-black text-gray-900 dark:text-white uppercase" /> }}
                                                 />
                                                 <span className="text-gray-900 dark:text-white font-black">${currentAdditionalPrice}{currentPeriod}</span>
                                             </span>

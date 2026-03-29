@@ -156,7 +156,7 @@ export const Pricing = () => {
                         <Trans 
                           i18nKey="landing.pricing.additionalDiscount"
                           defaults="Additional locations receive a <1>DISCOUNT</1> for "
-                          components={{ 1: <span className="font-black text-[#d4ff33] mx-1 uppercase" /> }}
+                          components={{ 1: <span className="font-black text-[#d4ff33] uppercase" /> }}
                         />
                         <span className="text-[#d4ff33] font-black">${currentAdditionalPrice}/{isYearly ? 'YEAR' : 'MONTH'}</span>
                       </span>

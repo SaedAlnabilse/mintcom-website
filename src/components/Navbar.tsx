@@ -116,7 +116,7 @@ export const Navbar = () => {
                 </Link>
                 <Link
                   to="/signup"
-                  className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg shadow-gray-900/20 dark:shadow-white/10"
+                  className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 shadow-lg shadow-gray-900/20 dark:shadow-white/10"
                 >
                   {t('nav.getStarted')}
                 </Link>
