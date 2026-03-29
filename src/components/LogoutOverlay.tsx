@@ -29,7 +29,7 @@ export function LogoutOverlay() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-2"
+          className="text-2xl font-sans font-bold tracking-tight text-gray-900 dark:text-white mb-2"
         >
           {t('auth.logout.loggingOut')}
         </motion.h2>
@@ -38,7 +38,7 @@ export function LogoutOverlay() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-gray-500 dark:text-gray-400"
+          className="text-gray-500 dark:text-gray-400 font-medium"
         >
           {t('auth.logout.seeYou')}
         </motion.p>

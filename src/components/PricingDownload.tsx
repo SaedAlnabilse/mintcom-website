@@ -1,69 +1,38 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Check, ArrowRight, Sparkles } from 'lucide-react';
+import { Check, ArrowRight, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-
-const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
-    return (
-        <span className={className}>
-            {text.split(' ').map((word, i) => {
-                const isPaymint = word.toLowerCase().includes('paymint');
-                return (
-                    <span
-                        key={i}
-                        className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
-                    >
-                        {word}{' '}
-                    </span>
-                );
-            })}
-        </span>
-    );
-};
 
 export const PricingDownload = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
-    const [showDetails, setShowDetails] = useState(false);
     const [isYearly, setIsYearly] = useState(false);
 
     // Pricing constants
     const MONTHLY_PRICE = 20;
     const YEARLY_PRICE = 210;
+    const MONTHLY_ADDITIONAL = 17;
+    const YEARLY_ADDITIONAL = 180;
 
     const currentPrice = isYearly ? YEARLY_PRICE : MONTHLY_PRICE;
     const currentPeriod = isYearly ? t('landing.pricing.perYear') : t('landing.pricing.perMonth');
-    const yearlySavings = (MONTHLY_PRICE * 12) - YEARLY_PRICE; // $30
+    const currentAdditionalPrice = isYearly ? YEARLY_ADDITIONAL : MONTHLY_ADDITIONAL;
 
-    const plan = {
-        name: t('landing.pricing.monthlyPlan'),
-        price: (20).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD', minimumFractionDigits: 0 }),
-        period: t('landing.pricing.perMonth'),
-        description: t('landing.pricing.planDescription'),
-        features: [
-            t('landing.pricing.features.pos'),
-            t('landing.pricing.features.dashboard'),
-            t('landing.pricing.features.unlimitedStaff'),
-            t('landing.pricing.features.adminApp'),
-            t('landing.pricing.features.support'),
-            t('landing.pricing.features.reports')
-        ],
-        detailedFeatures: [
-            t('landing.pricing.features.pointOfSale'),
-            t('landing.pricing.features.inventory'),
-            t('landing.pricing.features.staffManagement'),
-            t('landing.pricing.features.advancedReporting'),
-            t('landing.pricing.features.production')
-        ],
-        cta: t('landing.pricing.getStarted', 'Get Started'),
-    };
+    const features = [
+        t('landing.pricing.features.pos'),
+        t('landing.pricing.features.dashboard'),
+        t('landing.pricing.features.unlimitedStaff'),
+        t('landing.pricing.features.adminApp'),
+        t('landing.pricing.features.support'),
+        t('landing.pricing.features.reports')
+    ];
 
     const [showAlreadySignedIn, setShowAlreadySignedIn] = useState(false);
 
-    const handleCtaClick = () => {
+    const handleCtaAction = () => {
         if (isAuthenticated) {
             setShowAlreadySignedIn(true);
         } else {
@@ -72,278 +41,197 @@ export const PricingDownload = () => {
     };
 
     return (
-        <section id="pricing" className="py-16 lg:py-20 bg-gray-50 dark:bg-[#080808] relative overflow-hidden transition-colors duration-500">
-            {/* Dynamic Background Elements */}
-            <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
-            <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[120px] -z-10" />
+        <section id="pricing" className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] relative overflow-hidden">
+            {/* Background Decor */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-7xl pointer-events-none">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-paymint-green/5 rounded-full blur-[120px]" />
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-paymint-green/5 rounded-full blur-[120px]" />
+            </div>
 
-            <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
-                {/* Header Section */}
-                <div className="text-center mb-16 lg:mb-20">
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
-                        <SplitText text={t('landing.pricing.title')} />
+            <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl relative z-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="text-center mb-10 lg:mb-12"
+                >
+                    <h2 className="text-5xl lg:text-7xl font-bold font-magilio text-gray-900 dark:text-white mb-6 leading-tight tracking-tight">
+                        {t('landing.pricing.title')}
                     </h2>
-                    <p className="text-2xl lg:text-3xl text-gray-500 dark:text-gray-400 max-w-3xl mx-auto font-black leading-tight mb-10">
+                    <p className="text-xl lg:text-2xl text-paymint-green font-black max-w-2xl mx-auto">
                         {t('common.locale') === 'ar' ? (
                             <>لحظة <span className="text-paymint-green">"aha"</span> الخاصة بك على بعد دقائق فقط.</>
                         ) : (
                             <>Your <span className="text-paymint-green">"aha"</span> moment is just minutes away.</>
                         )}
                     </p>
+                </motion.div>
 
-                    {/* Billing Toggle */}
+                <div className="flex flex-col items-center justify-center max-w-6xl mx-auto">
+                    {/* Pricing Card */}
                     <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        className="inline-flex items-center gap-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-1.5 shadow-sm"
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className="w-full"
                     >
-                        <button
-                            onClick={() => setIsYearly(false)}
-                            className={`px-6 py-3 rounded-xl text-sm font-black tracking-wider transition-all duration-300 ${!isYearly
-                                ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
-                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                                }`}
-                        >
-                            {t('landing.pricing.monthly')}
-                        </button>
-                        <button
-                            onClick={() => setIsYearly(true)}
-                            className={`px-6 py-3 rounded-xl text-sm font-black tracking-wider transition-all duration-300 relative ${isYearly
-                                ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
-                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                                }`}
-                        >
-                            {t('landing.pricing.yearly')}
-                            <span className={`absolute -top-2 -right-2 px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider ${isYearly
-                                ? 'bg-black text-paymint-green'
-                                : 'bg-paymint-green text-black'
-                                } shadow-lg`}>
-                                {t('landing.pricing.save')}
-                            </span>
-                        </button>
-                    </motion.div>
-                </div>
-
-                <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-16">
-
-                    {/* Left: Product Showcase Image */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -40 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        className="w-full lg:w-1/2 flex items-center justify-center"
-                    >
-                        <div className="relative w-full max-w-[600px]">
-                            <motion.img
-                                src="/pricing-showcase.png"
-                                alt="Paymint Dashboard & Mobile App"
-                                className="w-full h-auto rounded-2xl drop-shadow-[0_20px_60px_rgba(0,186,124,0.15)]"
-                                animate={{ y: [0, -10, 0] }}
-                                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                            />
-                        </div>
-                    </motion.div>
-
-                    {/* Right: Premium Pricing Card */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 40 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className="w-full lg:w-[480px] flex-shrink-0"
-                    >
-                        <div className="relative group h-full">
-                            {/* Card Content */}
-
-                            <div className="relative h-full bg-white dark:bg-[#0c0c0c] border border-gray-100 dark:border-white/10 rounded-xl p-8 lg:p-12 shadow-xl shadow-gray-200/40 dark:shadow-none transition-all duration-500 group-hover:translate-y-[-8px] flex flex-col">
-
-                                {/* Plan Identity */}
-                                <div className="flex justify-between items-start mb-8">
-                                    <div>
-                                        <div className="text-paymint-green text-xs font-black uppercase tracking-widest mb-1 italic">{t('landing.pricing.fullAccess')}</div>
-                                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                        <div className="bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-white/5 rounded-[3rem] p-10 lg:p-16 shadow-2xl shadow-paymint-green/5 dark:shadow-none relative overflow-hidden group">
+                            <div className="flex flex-col lg:flex-row items-center lg:items-stretch gap-12 lg:gap-20">
+                                
+                                {/* Left Side: Pricing & CTA */}
+                                <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left">
+                                    <div className="w-full">
+                                        <span className="text-paymint-green font-black tracking-[0.2em] text-xs uppercase mb-4 block">
+                                            {t('landing.pricing.fullAccess')}
+                                        </span>
+                                        <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-10 transition-colors duration-300">
                                             {isYearly ? t('landing.pricing.yearlyPlan') : t('landing.pricing.monthlyPlan')}
                                         </h3>
-                                    </div>
-                                </div>
 
-                                {/* Price Large Display */}
-                                <div className="mb-8">
-                                    <AnimatePresence mode="wait">
-                                        <motion.div
-                                            key={isYearly ? 'yearly' : 'monthly'}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
-                                            transition={{ duration: 0.3 }}
-                                            className="flex items-baseline gap-2"
-                                        >
-                                            <span className="text-7xl lg:text-8xl font-black text-paymint-green tracking-tighter transition-all">
-                                                ${currentPrice}
-                                            </span>
-                                            <span className="text-gray-400 dark:text-gray-500 font-black text-xl lg:text-2xl uppercase tracking-tighter">
-                                                {currentPeriod}
-                                            </span>
-                                        </motion.div>
-                                    </AnimatePresence>
+                                        {/* Billing Toggle */}
+                                        <div className="bg-gray-100 dark:bg-black/40 p-1.5 rounded-2xl flex items-center mb-12 w-full relative border border-gray-100 dark:border-white/5">
+                                            <button
+                                                onClick={() => setIsYearly(false)}
+                                                className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 ${
+                                                    !isYearly ? 'text-black' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                                }`}
+                                            >
+                                                {t('landing.pricing.monthly')}
+                                            </button>
+                                            <button
+                                                onClick={() => setIsYearly(true)}
+                                                className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 flex items-center justify-center gap-2 ${
+                                                    isYearly ? 'text-black' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                                }`}
+                                            >
+                                                {t('landing.pricing.yearly')}
+                                                <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black tracking-wider transition-all duration-300 ${
+                                                    isYearly ? 'bg-black text-paymint-green' : 'bg-paymint-green text-black'
+                                                }`}>
+                                                    {t('landing.pricing.save')}
+                                                </span>
+                                            </button>
 
-                                    {isYearly && (
-                                        <motion.div
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            exit={{ opacity: 0, height: 0 }}
-                                            className="mt-3 flex items-center gap-3"
-                                        >
-                                            <span className="text-sm font-bold text-gray-400 line-through">${MONTHLY_PRICE * 12}/yr</span>
-                                            <span className="px-3 py-1 rounded-full bg-paymint-green/10 text-paymint-green text-xs font-black tracking-wider border border-paymint-green/20 flex items-center gap-1.5">
-                                                <Sparkles size={12} />
-                                                {t('landing.pricing.saveAmount', { amount: yearlySavings })}
-                                            </span>
-                                        </motion.div>
-                                    )}
-
-                                    <p className="text-gray-500 dark:text-gray-400 mt-3 text-sm font-bold leading-relaxed italic">
-                                        {isYearly ? t('landing.pricing.billedAnnually') : t('landing.pricing.noCommitment')}
-                                    </p>
-                                </div>
-
-                                {/* Feature List */}
-                                <div className="space-y-5 mb-10 flex-1">
-                                    {[
-                                        { label: t('landing.pricing.features.pos') },
-                                        { label: t('landing.pricing.features.dashboard') },
-                                        { label: t('landing.pricing.features.unlimitedStaff') },
-                                        { label: t('landing.pricing.features.adminApp') },
-                                        { label: t('landing.pricing.features.support') },
-                                        { label: t('landing.pricing.features.reports') }
-                                    ].map((f, i) => (
-                                        <div
-                                            key={i}
-                                            className="flex items-center gap-4"
-                                        >
-                                            <div className="w-6 h-6 rounded-lg bg-paymint-green/10 flex items-center justify-center flex-shrink-0 group-hover:bg-paymint-green transition-colors duration-500">
-                                                <Check size={14} className="text-paymint-green group-hover:text-black stroke-[4px] transition-colors duration-500" />
-                                            </div>
-                                            <div className="text-sm font-black text-gray-900 dark:text-gray-100">{f.label}</div>
+                                            {/* Static Background (Instantly switches) */}
+                                            <div
+                                                style={{ 
+                                                    transform: isYearly ? (t('common.locale') === 'ar' ? 'translateX(-100%)' : 'translateX(100%)') : 'translateX(0%)' 
+                                                }}
+                                                className="absolute inset-y-1.5 left-1.5 w-[calc(50%-6px)] bg-paymint-green rounded-xl shadow-lg"
+                                            />
                                         </div>
-                                    ))}
-                                </div>
 
-                                {/* CTA Button */}
-                                <div className="space-y-4">
-                                    <button
-                                        onClick={handleCtaClick}
-                                        className="w-full py-6 bg-paymint-green text-black rounded-[1.5rem] font-black text-xl shadow-[0_20px_40px_-12px_rgba(0,186,124,0.3)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 group/btn relative overflow-hidden"
-                                    >
-                                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500" />
-                                        <span className="relative z-10">{plan.cta}</span>
-                                        <ArrowRight size={22} className="relative z-10 transition-transform group-hover/btn:translate-x-2" />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-
-                </div>
-            </div>
-
-            {/* Plan Details Modal */}
-            <AnimatePresence>
-                {showDetails && (
-                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setShowDetails(false)}
-                            className="absolute inset-0 bg-black/40 dark:bg-black/80 backdrop-blur-xl"
-                        />
-
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="bg-white dark:bg-[#1a1a1a] w-full max-w-lg rounded-xl shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5"
-                        >
-                            <div className="p-10">
-                                <div className="text-center mb-10">
-                                    <div className="inline-block bg-paymint-green/20 text-paymint-green px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase mb-4">
-                                        Detailed View
+                                        <div className="mb-12 relative">
+                                            <div className="flex items-baseline justify-center lg:justify-start gap-2 mb-2">
+                                                <span className="text-7xl lg:text-8xl font-bold text-gray-900 dark:text-white tracking-tighter transition-all duration-300">
+                                                    ${currentPrice}
+                                                </span>
+                                                <span className="text-gray-400 font-medium text-2xl uppercase tracking-widest">
+                                                    {currentPeriod}
+                                                </span>
+                                            </div>
+                                            <p className="text-gray-500 dark:text-gray-400 italic text-sm">
+                                                {isYearly ? t('landing.pricing.billedAnnually') : t('landing.pricing.noCommitment')}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 tracking-tighter">{plan.name}</h2>
-                                    <div className="flex items-baseline justify-center gap-1">
-                                        <span className="text-5xl font-black text-paymint-green">{plan.price}</span>
-                                        <span className="text-gray-500 font-bold">{plan.period}</span>
+
+                                    <div className="w-full mt-auto space-y-8">
+                                        <button
+                                            onClick={handleCtaAction}
+                                            className="w-full bg-paymint-green text-black py-6 rounded-2xl font-black text-xl transition-all hover:bg-paymint-green/90 hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-paymint-green/20 flex items-center justify-center gap-4 group/btn"
+                                        >
+                                            {t('landing.pricing.getStarted', 'Get Started')}
+                                            <ArrowRight size={24} className={`transition-transform duration-300 group-hover/btn:translate-x-1.5 ${t('common.locale') === 'ar' && 'rotate-180 group-hover/btn:-translate-x-1.5'}`} />
+                                        </button>
+
+                                        {/* Additional Locations Hint */}
+                                        <div className="pt-8 border-t border-gray-100 dark:border-white/5 flex items-center justify-center lg:justify-start gap-3 text-gray-500 dark:text-gray-400 text-sm font-semibold tracking-wide">
+                                            <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center">
+                                                <MapPin size={16} className="text-paymint-green" />
+                                            </div>
+                                            <span>{t('landing.pricing.additionalLocations', 'Additional Locations')}: <span className="text-gray-900 dark:text-white font-bold">${currentAdditionalPrice}{currentPeriod}</span></span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-8 mb-10 border border-gray-100 dark:border-white/5">
-                                    <h4 className="font-bold text-gray-900 dark:text-white mb-6 text-xs uppercase tracking-[0.2em]">{t('pricing.whatsIncluded')}</h4>
-                                    <ul className="grid grid-cols-1 gap-4">
-                                        {[...plan.features, ...plan.detailedFeatures].map((feature, i) => (
-                                            <li key={i} className="flex items-start gap-4 text-gray-700 dark:text-gray-300">
-                                                <Check size={18} className="text-paymint-green mt-0.5 flex-shrink-0 stroke-[3px]" />
-                                                <span className="text-sm font-bold">{feature}</span>
+                                {/* Vertical Divider */}
+                                <div className="hidden lg:block w-px bg-gray-100 dark:bg-white/10 self-stretch" />
+                                <div className="block lg:hidden h-px bg-gray-100 dark:bg-white/10 w-full" />
+
+                                {/* Right Side: Features */}
+                                <div className="flex-1 w-full">
+                                    <div className="mb-10">
+                                        <h4 className="text-gray-900 dark:text-white font-bold text-2xl mb-2">
+                                            {t('landing.pricing.includedTitle', 'Everything you need')}
+                                        </h4>
+                                        <p className="text-gray-500 dark:text-gray-400 font-medium">
+                                            {t('landing.pricing.includedDesc', 'All features included in a single plan.')}
+                                        </p>
+                                    </div>
+                                    
+                                    <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-y-6 gap-x-8">
+                                        {features.map((feature, i) => (
+                                            <li key={i} className="flex items-center gap-5 text-gray-700 dark:text-gray-300 font-semibold text-lg hover:text-gray-900 dark:hover:text-white transition-colors group/item">
+                                                <div className="w-6 h-6 rounded-lg bg-paymint-green/10 flex items-center justify-center flex-shrink-0 group-hover/item:bg-paymint-green/20 transition-colors">
+                                                    <Check size={16} className="text-paymint-green stroke-[4px]" />
+                                                </div>
+                                                {feature}
                                             </li>
                                         ))}
                                     </ul>
-                                </div>
 
-                                <button
-                                    onClick={() => {
-                                        handleCtaClick();
-                                        setShowDetails(false);
-                                    }}
-                                    className="w-full bg-paymint-green text-black py-5 rounded-2xl font-black text-lg transition-transform active:scale-95 shadow-xl shadow-paymint-green/20"
-                                >
-                                    {plan.cta}
-                                </button>
+                                    <div className="mt-12 p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                                        <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                                            {t('landing.pricing.setupFee', 'No setup fees or hidden charges. Cancel anytime.')}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+                        </div>
+                    </motion.div>
+                </div>
+            </div>
 
             {/* Already Signed In Modal */}
             <AnimatePresence>
                 {showAlreadySignedIn && (
-                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setShowAlreadySignedIn(false)}
-                            className="absolute inset-0 bg-black/20 dark:bg-black/60 backdrop-blur-md transition-colors"
+                            className="absolute inset-0 bg-black/60 backdrop-blur-md transition-colors"
                         />
-                        
+
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="bg-white dark:bg-[#1a1a1a] w-full max-w-sm rounded-2xl shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5 p-8 text-center"
+                            className="bg-white dark:bg-[#1a1a1a] w-full max-w-sm rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5 p-12 text-center"
                         >
-                            <div className="w-16 h-16 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Check size={32} className="text-paymint-green" />
+                            <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
+                                <Check size={40} className="text-paymint-green stroke-[3px]" />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                                 {t('landing.pricing.alreadySignedIn', 'You are already signed in')}
                             </h3>
-                            <p className="text-gray-600 dark:text-gray-400 mb-8">
+                            <p className="text-gray-600 dark:text-gray-400 mb-10 leading-relaxed font-medium">
                                 {t('landing.pricing.alreadySignedInDesc', 'You can continue to your Dashboard to manage your business.')}
                             </p>
-                            
-                            <div className="space-y-3">
+
+                            <div className="space-y-4">
                                 <button
                                     onClick={() => navigate('/owner')}
-                                    className="w-full bg-paymint-green text-black py-3.5 rounded-xl font-bold transition-all hover:bg-paymint-green/90 shadow-lg shadow-paymint-green/20"
+                                    className="w-full bg-paymint-green text-black py-4 rounded-xl font-black text-lg transition-all hover:bg-paymint-green/90 shadow-lg shadow-paymint-green/20"
                                 >
                                     {t('landing.pricing.goToDashboard', 'Go to Dashboard')}
                                 </button>
                                 <button
                                     onClick={() => setShowAlreadySignedIn(false)}
-                                    className="w-full bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white py-3.5 rounded-xl font-bold transition-all hover:bg-gray-200 dark:hover:bg-white/10"
+                                    className="w-full bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white py-4 rounded-xl font-bold transition-all hover:bg-gray-200 dark:hover:bg-white/10"
                                 >
                                     {t('common.cancel', 'Cancel')}
                                 </button>

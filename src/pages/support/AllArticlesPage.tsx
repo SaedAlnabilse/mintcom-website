@@ -90,7 +90,7 @@ export const AllArticlesPage = () => {
               </Link>
               <h1 className="text-3xl font-black tracking-tight">{t('support.articles.allTitle')}</h1>
             </div>
-            <p className="text-gray-500 dark:text-gray-400 font-medium ml-11">
+            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors ml-11">
               {t('support.articles.allSubtitle', { count: allArticles.length })}
             </p>
           </div>
@@ -99,7 +99,7 @@ export const AllArticlesPage = () => {
             {/* Sidebar */}
             <div className="lg:w-64 flex-shrink-0">
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-4 sticky top-28">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">{t('support.categories.sidebarTitle')}</h3>
+                <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-4 px-2 uppercase">{t('support.categories.sidebarTitle')}</h3>
                 <div className="space-y-1">
                   {categories.map((category) => (
                     <button
@@ -108,7 +108,7 @@ export const AllArticlesPage = () => {
                       className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-bold transition-all ${
                         selectedCategory === category.id
                           ? 'bg-paymint-green text-black'
-                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
+                          : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
                       }`}
                     >
                       <category.icon size={16} />
@@ -131,7 +131,7 @@ export const AllArticlesPage = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={t('common.searchArticles')}
-                      className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                      className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                     />
                     {searchQuery && (
                       <button
@@ -147,7 +147,7 @@ export const AllArticlesPage = () => {
 
                   <button
                     onClick={() => setSortBy(sortBy === 'views' ? 'recent' : 'views')}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
                   >
                     <Filter size={16} />
                     {t('support.articles.sortBy')}: {sortBy === 'views' ? t('support.articles.sortPopular') : t('support.articles.sortRecent')}
@@ -156,7 +156,7 @@ export const AllArticlesPage = () => {
               </div>
 
               {/* Results count */}
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-4">
                 {t('support.articles.showing', { count: filteredArticles.length })}
               </p>
 
@@ -181,11 +181,11 @@ export const AllArticlesPage = () => {
                           <h4 className="font-bold group-hover:text-paymint-green transition-colors">
                             {article.title}
                           </h4>
-                          <span className="text-xs font-medium text-gray-400">{article.category}</span>
+                          <span className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{article.category}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <div className="hidden md:flex items-center gap-4 text-xs text-gray-400">
+                        <div className="hidden md:flex items-center gap-4 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                           <span className="flex items-center gap-1">
                             <Clock size={12} /> {article.readTime}
                           </span>
@@ -206,7 +206,7 @@ export const AllArticlesPage = () => {
                     <BookOpen size={32} className="text-gray-400" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">{searchQuery.trim() ? t('common.noResults') : t('support.articles.notFound')}</h3>
-                  <p className="text-gray-500 dark:text-gray-400 mb-6">
+                  <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-6">
                     {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('support.articles.notFoundDesc')}
                   </p>
                   <button

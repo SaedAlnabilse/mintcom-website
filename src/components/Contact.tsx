@@ -92,10 +92,6 @@ export const Contact = () => {
                   ))}
                 </div>
               </div>
-
-              {/* Decorative Blur */}
-              <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-paymint-green/20 rounded-full blur-[80px]" />
-              <div className="absolute bottom-[-5%] left-[-5%] w-48 h-48 bg-paymint-green/20 rounded-full blur-[60px]" />
             </div>
 
             {/* Contact Form */}

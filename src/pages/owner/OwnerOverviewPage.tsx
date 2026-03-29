@@ -208,24 +208,26 @@ export function OwnerOverviewPage() {
 
                                         {/* Time Input Group */}
                                         <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
-                                            <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? '!bg-emerald-50 dark:!bg-[#064E3B] border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : '!bg-gray-50 dark:!bg-[#1E293B] border-transparent'}`}>
-                                                <div className="flex items-center gap-1.5 mb-0.5">
-                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>{t('owner.overview.activeHours')}</span>
-                                                </div>
+                                            <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
+                                                ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
+                                                : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-paymint-green/50'
+                                                }`}>
                                                 <div className="flex items-center gap-2 justify-between relative">
                                                     <CustomTimePicker
                                                         value={startTime}
-                                                        onChange={(val) => { setStartTime(val); setSelectedDateRange('custom'); }}
+                                                        onChange={(val) => { setStartTime(val); }}
                                                         className="w-[85px] sm:w-[95px]"
                                                         showIcon={true}
+                                                        isActive={isTimeFiltered}
                                                     />
                                                     <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
                                                     <CustomTimePicker
                                                         value={endTime}
-                                                        onChange={(val) => { setEndTime(val); setSelectedDateRange('custom'); }}
+                                                        onChange={(val) => { setEndTime(val); }}
                                                         className="w-[85px] sm:w-[95px]"
                                                         showIcon={true}
                                                         align="right"
+                                                        isActive={isTimeFiltered}
                                                     />
                                                 </div>
                                             </div>

@@ -71,6 +71,21 @@
     font-family: inherit !important;
   }
 
+  /* Keep dashboard/owner/brand typography aligned to the owner subtitle style */
+  .dashboard-font-unified :where(h1, h2, h3, h4, h5, h6) {
+    font-family: inherit !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  .dashboard-font-unified :where(p, span, label, button, th, td, small, strong, a) {
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .dashboard-font-unified :where([class*="tracking-widest"], [class*="tracking-wider"]) {
+    letter-spacing: 0.01em !important;
+  }
+
   ::selection {
     background-color: #7CC39F;
     color: #000000;
@@ -122,7 +137,12 @@
 
   /* Links */
   a {
-    @apply text-paymint-green hover:text-mint-dark transition-colors;
+    @apply transition-colors;
+  }
+
+  /* Keep plain text links styled without affecting class-based buttons/nav links */
+  a:not([class]) {
+    @apply text-paymint-green;
   }
 
   /* Chrome, Safari, Edge, Opera */
@@ -168,7 +188,9 @@
   /* Standardized Label Strong - Replaces "text-xs font-black tracking-widest" */
   .label-strong {
     font-size: var(--label-font-size);
-    @apply font-outfit text-gray-400 font-black tracking-widest uppercase;
+    @apply font-sans text-sm text-gray-400 dark:text-gray-500 font-bold tracking-normal;
+    letter-spacing: normal !important;
+    text-transform: none !important;
   }
   /* Standardized Subtitle */
   .text-subtitle {
@@ -184,7 +206,9 @@
   }
   /* Card Labels - Used for stat card labels */
   .card-label {
-    @apply text-label-xs uppercase tracking-widest text-text-muted dark:text-paymint-gray;
+    @apply text-xs text-gray-500 dark:text-gray-400 font-medium tracking-normal;
+    letter-spacing: normal !important;
+    text-transform: none !important;
   }
 
   /* Card Values - Used for stat card values */
@@ -214,10 +238,13 @@
   }
 
   /* Fallback for legacy over-spaced labels still used in older dashboard/owner/brand cards */
-  body.dashboard-font-unified [class*="text-xs"][class*="text-gray-400"][class*="tracking-widest"][class*="font-black"],
-  body.dashboard-font-unified [class*="text-xs"][class*="text-gray-400"][class*="tracking-widest"][class*="font-bold"] {
-    letter-spacing: 0.02em;
-    font-weight: 600;
+  body.dashboard-font-unified :where(
+    [class*="text-xs"][class*="tracking-widest"],
+    [class*="text-xs"][class*="tracking-wider"],
+    [class*="text-[10px]"][class*="tracking-widest"],
+    [class*="text-[10px]"][class*="tracking-wider"]
+  ) {
+    letter-spacing: 0.01em !important;
   }
 
   /* Primary card (green bg) - white text */
@@ -249,7 +276,9 @@
 
   /* Table headers */
   .table-header {
-    @apply text-label-xs uppercase tracking-widest text-text-muted dark:text-paymint-gray font-bold;
+    @apply text-sm text-gray-500 dark:text-gray-400 font-medium tracking-normal;
+    letter-spacing: normal !important;
+    text-transform: none !important;
   }
 
   /* Table cells */
@@ -272,7 +301,9 @@
 
   /* Status badges */
   .badge-text {
-    @apply text-label-xs uppercase tracking-widest font-bold;
+    @apply text-xs font-medium tracking-normal;
+    letter-spacing: normal !important;
+    text-transform: none !important;
   }
 
   /* Empty state text */
@@ -290,7 +321,7 @@
   }
   /* Modal titles */
   .modal-title {
-    @apply font-outfit text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white;
+    @apply font-sans text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white;
   }
 
   .modal-subtitle {
@@ -303,6 +334,49 @@
 
   .popup-surface :where(input, textarea, select, option) {
     font-family: inherit;
+  }
+
+  /* Match popup field typography to New Employee modal */
+  .popup-surface :where(label) {
+    font-family: inherit;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Ensure popup field titles using legacy label-strong match New Employee modal style */
+  .popup-surface .label-strong {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgb(75 85 99);
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .dark .popup-surface .label-strong {
+    color: rgb(209 213 219);
+  }
+
+  .popup-surface :where(input, textarea, select) {
+    @apply text-sm font-bold text-gray-900 dark:text-white;
+  }
+
+  .popup-surface :where(input, textarea)::placeholder {
+    @apply text-gray-400 dark:text-gray-600;
+    font-weight: 700;
+    letter-spacing: normal;
+  }
+
+  /* Normalize legacy modal label tracking/casing without blocking local color/weight edits */
+  .popup-surface :where(
+    label[class*="text-xs"],
+    label[class*="tracking-widest"],
+    label[class*="tracking-wider"],
+    label[class*="font-black"]
+  ) {
+    letter-spacing: normal !important;
+    text-transform: none !important;
   }
 
   .popup-surface .overflow-y-auto.pb-safe {
@@ -347,7 +421,20 @@
   .popup-surface h2,
   .popup-surface h3,
   .popup-surface h4 {
-    @apply font-outfit tracking-tight text-gray-900 dark:text-white;
+    @apply font-sans font-semibold tracking-tight text-gray-900 dark:text-white;
+  }
+
+  .dashboard-font-unified :where(th, [role='columnheader']) {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    font-weight: 500 !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    color: rgb(107 114 128);
+  }
+
+  .dark .dashboard-font-unified :where(th, [role='columnheader']) {
+    color: rgb(156 163 175);
   }
 
   .popup-surface h1 + p[class*="text-gray-"],
@@ -558,6 +645,14 @@
   /* Mobile-optimized input */
   .mobile-input {
     @apply w-full h-12 px-4 text-base rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 transition-all;
+  }
+
+  /* Do not dim interactive controls on hover */
+  @media (hover: hover) and (pointer: fine) {
+    :is(a, button, [role='button'], summary, [type='button'], [type='submit'], [type='reset']):hover {
+      opacity: 1 !important;
+      filter: none !important;
+    }
   }
 }
 

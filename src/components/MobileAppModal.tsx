@@ -1,9 +1,11 @@
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Apple, Play } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useScrollLock } from '../hooks/useScrollLock';
 import PaymintLeafIcon from '../assets/small-logo.svg';
+import AppStoreBadge from '../assets/App_Store_(iOS)-Badge-Logo.wine.svg';
+import GooglePlayBadge from '../assets/Google_Play-Badge-Logo.wine.svg';
 
 interface MobileAppModalProps {
   isOpen: boolean;
@@ -36,7 +38,7 @@ export function MobileAppModal({ isOpen, onClose }: MobileAppModalProps) {
             className="relative w-full max-w-sm bg-white dark:bg-[#1a1a1a] rounded-3xl shadow-2xl overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 pb-2">
+            <div className="flex items-center justify-between p-6 pb-0">
               <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
                 {t('dashboard.menu.getMobileApp')}
               </h2>
@@ -49,9 +51,9 @@ export function MobileAppModal({ isOpen, onClose }: MobileAppModalProps) {
             </div>
 
             {/* Content */}
-            <div className="p-6 pt-4">
+            <div className="p-6 pt-2 pb-6">
               {/* QR Code Container */}
-              <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-6 mb-6 flex items-center justify-center shadow-inner border border-gray-100 dark:border-white/5">
+              <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-6 mb-4 flex items-center justify-center shadow-inner border border-gray-100 dark:border-white/5">
                 <div className="w-48 aspect-square bg-white relative overflow-hidden rounded-xl p-2 shadow-sm">
                   <svg viewBox="0 0 100 100" className="w-full h-full">
                     {/* QR code pattern - simplified fake version */}
@@ -125,25 +127,25 @@ export function MobileAppModal({ isOpen, onClose }: MobileAppModalProps) {
               </div>
 
               {/* Text & Badges */}
-              <div className="text-center mt-2">
-                <p className="text-base font-bold text-gray-900 dark:text-white leading-tight mb-5">
+              <div className="text-center">
+                <p className="text-base font-bold text-gray-900 dark:text-white leading-tight mb-4">
                   {t('dashboard.menu.scanToDownload')} <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
                 </p>
-                <div className="grid grid-cols-2 gap-3">
-                  <button className="flex items-center justify-center gap-2.5 w-full py-2.5 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
-                    <Apple size={22} />
-                    <div className="flex flex-col items-start text-left rtl:text-right">
-                      <span className="text-[9px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide">Download on the</span>
-                      <span className="text-[13px] leading-[1] font-bold mt-0.5">App Store</span>
-                    </div>
-                  </button>
-                  <button className="flex items-center justify-center gap-2.5 w-full py-2.5 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
-                    <Play size={20} className="text-emerald-400 dark:text-emerald-500" />
-                    <div className="flex flex-col items-start text-left rtl:text-right">
-                      <span className="text-[9px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide uppercase">Get it on</span>
-                      <span className="text-[13px] leading-[1] font-bold mt-0.5">Google Play</span>
-                    </div>
-                  </button>
+                <div className="flex flex-row items-center justify-center gap-3">
+                  <a
+                    href="#"
+                    className="block transition-transform hover:scale-[1.03] active:scale-[0.98] focus:outline-none"
+                    aria-label="Download on the App Store"
+                  >
+                    <img src={AppStoreBadge} alt="App Store" className="block h-[44px] w-[140px] object-contain" />
+                  </a>
+                  <a
+                    href="#"
+                    className="block transition-transform hover:scale-[1.03] active:scale-[0.98] focus:outline-none"
+                    aria-label="Get it on Google Play"
+                  >
+                    <img src={GooglePlayBadge} alt="Google Play" className="block h-[44px] w-[140px] object-contain" />
+                  </a>
                 </div>
               </div>
             </div>

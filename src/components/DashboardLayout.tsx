@@ -510,7 +510,8 @@ export function DashboardLayout() {
             if (isMenuGroup(item)) {
               const isExpanded = expandedGroup === item.label;
               const isActive = isGroupActive(item.items);
-              const Icon = item.icon;
+              const Icon = item.icon;
+
 
               return (
                 <div key={index} className="mb-1">
@@ -671,9 +672,9 @@ export function DashboardLayout() {
         {sidebarOpen && (
           <div className="px-3 mt-auto mb-2 shrink-0">
             <button onClick={() => setMobileAppModalOpen(true)} className="w-full flex items-center gap-3 px-3 py-2.5 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
-                <Smartphone size={16} className="text-gray-400" />
-                <span className="text-sm font-bold">{t('dashboard.menu.getMobileApp')}</span>
-              </button>
+              <Smartphone size={16} className="text-gray-400" />
+              <span className="text-sm font-bold">{t('dashboard.menu.getMobileApp')}</span>
+            </button>
           </div>
         )}
 
@@ -737,10 +738,10 @@ export function DashboardLayout() {
                       initial={{ opacity: 0, scale: 0.95, x: 20 }}
                       animate={{ opacity: 1, scale: 1, x: 0 }}
                       exit={{ opacity: 0, scale: 0.95, x: 20 }}
-                      className="absolute left-full rtl:left-auto rtl:right-full bottom-10 ml-4 rtl:ml-0 rtl:mr-4 w-64 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[70] p-2"
+                      className="absolute left-full rtl:left-auto rtl:right-full bottom-10 ml-4 rtl:ml-0 rtl:mr-4 w-64 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-[12px] shadow-2xl z-[70] p-2"
                     >
                       {/* Header */}
-                      <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-xl">
+                      <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-[12px]">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
                           {account?.firstName?.charAt(0).toUpperCase()}
                         </div>
@@ -755,29 +756,29 @@ export function DashboardLayout() {
                       {/* Menu Items */}
                       <div className="space-y-1">
                         <button
-                            onClick={() => {
-                              setSettingsMenuOpen(false);
-                              setMobileAppModalOpen(true);
-                            }}
-                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
-                          >
-                            <Smartphone size={18} />
-                            <span>{t('dashboard.menu.getMobileApp')}</span>
-                          </button>
+                          onClick={() => {
+                            setSettingsMenuOpen(false);
+                            setMobileAppModalOpen(true);
+                          }}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
+                        >
+                          <Smartphone size={18} />
+                          <span>{t('dashboard.menu.getMobileApp')}</span>
+                        </button>
 
                         <div className="relative">
                           <LanguageSwitcher
                             label={t('common.aria.changeLanguage')}
                             dropdownDirection="right"
                             className="w-full"
-                            buttonClassName="w-full justify-start gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left !bg-transparent dark:!bg-transparent !border-transparent"
+                            buttonClassName="w-full justify-start gap-3 px-3 !py-2.5 rounded-[12px] text-sm font-medium text-gray-600 dark:text-gray-400 hover:!bg-gray-50 dark:hover:!bg-white/5 hover:!text-gray-900 dark:hover:!text-white transition-all text-left !bg-transparent dark:!bg-transparent !border-transparent"
                           />
                         </div>
 
                         {/* Theme Item - We wrap accessibility of ThemeToggle or recreate it visually */}
                         <div className="relative">
                           <ThemeToggle
-                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
                             showLabel={true}
                             dropdownDirection="right"
                             iconSize={18}
@@ -786,7 +787,7 @@ export function DashboardLayout() {
 
                         <button
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all text-left"
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
                         >
                           <LogOut size={18} />
                           <span>{t('dashboard.menu.logout')}</span>
@@ -950,10 +951,10 @@ export function DashboardLayout() {
         cancelText={t('common.cancel')}
         type="danger"
       />
-    
-      
-    
-            <MobileAppModal isOpen={mobileAppModalOpen} onClose={() => setMobileAppModalOpen(false)} />
-        </div>
+
+
+
+      <MobileAppModal isOpen={mobileAppModalOpen} onClose={() => setMobileAppModalOpen(false)} />
+    </div>
   );
 }

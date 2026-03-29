@@ -1746,6 +1746,9 @@
       "additionalLocationsDesc": "كل موقع إضافي بعد موقعك الأول",
       "addLocation": "إضافة موقع",
       "billedAnnually": "يتم الفوترة سنوياً",
+      "includedDesc": "جميع المميزات مشمولة في خطة واحدة.",
+      "includedTitle": "كل ما تحتاجه",
+      "setupFee": "لا توجد رسوم إعداد أو تكاليف مخفية. يمكنك الإلغاء في أي وقت.",
       "features": {
         "adminApp": "الوصول إلى تطبيق الإدارة عبر الهاتف",
         "advancedReporting": "تقارير وتحليلات متقدمة",
@@ -1760,6 +1763,7 @@
         "unlimitedStaff": "حسابات موظفين غير محدودة"
       },
       "fullAccess": "وصول كامل",
+      "getStarted": "ابدأ الآن",
       "insteadOf": "بدلاً من",
       "monthly": "شهرياً",
       "monthlyPlan": "الخطة الشهرية",
@@ -4222,7 +4226,7 @@
       "notFound": "المقال غير موجود",
       "notFoundDesc": "المقال الذي تبحث عنه غير موجود.",
       "notFoundDescDetail": "ربما تم نقله أو حذفه.",
-      "popular": "شائع",
+      "popular": "المقالات الشائعة",
       "read": "اقرأ المقال",
       "related": "مقالات ذات صلة",
       "searchResultCount": "{{count}} نتيجة",

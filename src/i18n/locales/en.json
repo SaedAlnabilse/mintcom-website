@@ -1746,7 +1746,11 @@
       "watchVideo": "See how it works"
     },
     "pricing": {
+      "additionalLocations": "Additional Locations",
       "billedAnnually": "Billed annually.",
+      "includedDesc": "All features included in a single plan.",
+      "includedTitle": "Everything you need",
+      "setupFee": "No setup fees or hidden charges. Cancel anytime.",
       "features": {
         "adminApp": "Access to the Admin Mobile App",
         "advancedReporting": "Advanced Reporting",
@@ -1761,6 +1765,7 @@
         "unlimitedStaff": "Unlimited staff accounts"
       },
       "fullAccess": "FULL ACCESS",
+      "getStarted": "Get Started",
       "monthly": "MONTHLY",
       "monthlyPlan": "Monthly Plan",
       "noCommitment": "No commitment.",
@@ -2201,7 +2206,7 @@
   },
   "onboarding": {
     "back": "Back",
-    "completeLaunch": "COMPLETE & LAUNCH",
+    "completeLaunch": "Complete & Launch",
     "errors": {
       "failedToComplete": "Failed to complete setup. Please try again."
     },
@@ -2209,12 +2214,12 @@
     "messages": {
       "complete": "Setup completed successfully!"
     },
-    "nextStep": "NEXT STEP",
+    "nextStep": "Next Step",
     "of": "of",
     "select": "Select",
     "step": "Step",
     "step1": {
-      "address": "ADDRESS",
+      "address": "Address",
       "addressPlaceholder": "City, Area, Building",
       "addressTip": "Location address.",
       "businessType": "Business Type",
@@ -2226,7 +2231,7 @@
         "retail": "Retail"
       },
       "businessTypeTip": "Select your business type.",
-      "copySettings": "COPY SETTINGS",
+      "copySettings": "Copy Settings",
       "copySettingsTip": "Copy menu from another location.",
       "currencies": {
         "AED": "AED - UAE Dirham",
@@ -2242,7 +2247,7 @@
         "TRY": "TRY - Turkish Lira",
         "USD": "USD - US Dollar"
       },
-      "currency": "CURRENCY",
+      "currency": "Currency",
       "currencyTip": "Primary currency for sales.",
       "discounts": "Discounts",
       "discountsDesc": "Promo codes and discount rules",
@@ -2297,7 +2302,7 @@
         "idRegex": "Location ID can only contain letters, numbers, underscores, and hyphens",
         "passwordMin": "Location Password must be at least 6 characters"
       },
-      "locationId": "LOCATION ID",
+      "locationId": "Location ID",
       "locationIdDesc": "Unique ID for this location.",
       "locationIdPlaceholder": "e.g. mycompany-downtown",
       "locationIdTip": "Unique ID for POS login.",
@@ -2318,9 +2323,9 @@
         "usernameMin": "Username must be at least 3 characters",
         "usernameRegex": "Username can only contain letters, numbers, underscores, and hyphens"
       },
-      "firstName": "FIRST NAME",
+      "firstName": "First Name",
       "firstNamePlaceholder": "John",
-      "lastName": "LAST NAME",
+      "lastName": "Last Name",
       "lastNamePlaceholder": "Doe",
       "password": "Personal Password",
       "passwordPlaceholder": "••••••••",
@@ -4221,7 +4226,7 @@
       "notFound": "Article Not Found",
       "notFoundDesc": "The article you're looking for doesn't exist or has been moved.",
       "notFoundDescDetail": "Try searching for what you need or browse our help categories.",
-      "popular": "Popular",
+      "popular": "Popular Articles",
       "read": "Read",
       "related": "Related Articles",
       "searchResultCount": "{{count}} results found",

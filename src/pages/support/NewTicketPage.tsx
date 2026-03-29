@@ -204,7 +204,7 @@ export const NewTicketPage = () => {
             <div className="max-w-3xl mx-auto">
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-10 text-center">
                 <Loader2 size={28} className="animate-spin mx-auto mb-3 text-paymint-green" />
-                <p className="text-gray-500 dark:text-gray-400 font-medium">Loading account...</p>
+                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">Loading account...</p>
               </div>
             </div>
           </div>
@@ -236,7 +236,7 @@ export const NewTicketPage = () => {
                 </Link>
                 <h1 className="text-3xl font-black tracking-tight">{t('support.newTicket.title')}</h1>
               </div>
-              <p className="text-gray-500 dark:text-gray-400 font-medium ml-11">
+              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors ml-11">
                 {t('support.newTicket.subtitle')}
               </p>
             </div>
@@ -244,7 +244,7 @@ export const NewTicketPage = () => {
             <form onSubmit={handleSubmit}>
               {/* Category Selection */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
-                <label className="block text-sm font-bold mb-4">
+                <label className="block text-sm font-bold text-gray-900 dark:text-white mb-4">
                   {t('support.newTicket.categoryLabel')} <span className="text-red-500">*</span>
                 </label>
 
@@ -269,15 +269,15 @@ export const NewTicketPage = () => {
                         <category.icon size={20} />
                       </div>
                       <div>
-                        <p className="font-bold">{category.label}</p>
-                        <p className="text-xs text-gray-500">{category.description}</p>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white">{category.label}</p>
+                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{category.description}</p>
                       </div>
                     </button>
                   ))}
                 </div>
 
                 {errors.category && (
-                  <p className="mt-3 text-sm text-red-500 flex items-center gap-1">
+                  <p className="mt-3 text-sm font-bold text-red-500 flex items-center gap-1">
                     <AlertCircle size={14} />
                     {errors.category}
                   </p>
@@ -286,7 +286,7 @@ export const NewTicketPage = () => {
 
               {/* Priority Selection */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
-                <label className="block text-sm font-bold mb-4">
+                <label className="block text-sm font-bold text-gray-900 dark:text-white mb-4">
                   {t('support.newTicket.priorityLabel')}
                 </label>
 
@@ -301,8 +301,8 @@ export const NewTicketPage = () => {
                         : `${priority.color} border-transparent`
                         }`}
                     >
-                      <p className="font-bold mb-1">{priority.label}</p>
-                      <p className="text-xs text-gray-500 hidden md:block">{priority.description}</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">{priority.label}</p>
+                      <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors hidden md:block">{priority.description}</p>
                     </button>
                   ))}
                 </div>
@@ -310,7 +310,7 @@ export const NewTicketPage = () => {
 
               {/* Subject */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
-                <label className="block text-sm font-bold mb-3">
+                <label className="block text-sm font-bold text-gray-900 dark:text-white mb-3">
                   {t('support.newTicket.subjectLabel')} <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -321,26 +321,26 @@ export const NewTicketPage = () => {
                     setErrors({ ...errors, subject: '' });
                   }}
                   placeholder={t('support.newTicket.subjectPlaceholder')}
-                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all ${errors.subject ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
+                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green/50 ${errors.subject ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                     }`}
                   maxLength={100}
                 />
                 <div className="flex justify-between mt-2">
                   {errors.subject ? (
-                    <p className="text-sm text-red-500 flex items-center gap-1">
+                    <p className="text-sm font-bold text-red-500 flex items-center gap-1">
                       <AlertCircle size={14} />
                       {errors.subject}
                     </p>
                   ) : (
                     <span />
                   )}
-                  <span className="text-xs text-gray-400">{formData.subject.length}/100</span>
+                  <span className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{formData.subject.length}/100</span>
                 </div>
               </div>
 
               {/* Description */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
-                <label className="block text-sm font-bold mb-3">
+                <label className="block text-sm font-bold text-gray-900 dark:text-white mb-3">
                   {t('support.newTicket.descriptionLabel')} <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -351,11 +351,11 @@ export const NewTicketPage = () => {
                   }}
                   placeholder={t('support.newTicket.descriptionPlaceholder')}
                   rows={6}
-                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none ${errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
+                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green/50 resize-none ${errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                     }`}
                 />
                 {errors.description && (
-                  <p className="mt-2 text-sm text-red-500 flex items-center gap-1">
+                  <p className="mt-2 text-sm font-bold text-red-500 flex items-center gap-1">
                     <AlertCircle size={14} />
                     {errors.description}
                   </p>
@@ -364,7 +364,7 @@ export const NewTicketPage = () => {
                 {/* Attachments */}
                 <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/10">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm font-bold text-gray-500">{t('support.tickets.attachments')}</p>
+                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{t('support.tickets.attachments')}</p>
                     <label className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-bold cursor-pointer hover:bg-gray-200 dark:hover:bg-white/20 transition-colors">
                       <Upload size={16} />
                       {t('support.newTicket.addFiles')}
@@ -383,10 +383,10 @@ export const NewTicketPage = () => {
                       {attachments.map((attachment, index) => (
                         <div
                           key={index}
-                          className="inline-flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg text-sm"
+                          className="inline-flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors"
                         >
                           <Paperclip size={14} className="text-gray-400" />
-                          <span className="font-medium">{attachment.name}</span>
+                          <span>{attachment.name}</span>
                           <span className="text-gray-400">({attachment.size})</span>
                           <button
                             type="button"
@@ -400,7 +400,7 @@ export const NewTicketPage = () => {
                     </div>
                   )}
 
-                  <p className="text-xs text-gray-400 mt-2">
+                  <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mt-2">
                     {t('support.newTicket.attachmentLimit')}
                   </p>
                 </div>
@@ -408,7 +408,7 @@ export const NewTicketPage = () => {
 
               {/* Submit Button */}
               <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                   {t('support.newTicket.privacyAgreement')}{' '}
                   <a href="/legal/privacy" className="text-paymint-green hover:underline">{t('common.privacyPolicy')}</a>
                 </p>

@@ -24,7 +24,7 @@ import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../config/api';
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Types Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── Types ──────────────────────────────────────────────────────────────────────────────────────────────────────
 export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 
@@ -50,7 +50,7 @@ export interface Ticket {
   unreadReplies: number;
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Storage helpers (fallback) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── Storage helpers (fallback) ─────────────────────────────────────────────────────────────────────────────────────
 const TICKETS_STORAGE_KEY = 'paymint_support_tickets';
 
 export function loadTickets(): Ticket[] {
@@ -86,7 +86,7 @@ export function addTicket(ticket: Ticket) {
   saveTickets(all);
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Format helpers Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── Format helpers ────────────────────────────────────────────────────────────────────────────────────────────────
 function formatDate(iso: string): string {
   try {
     const d = new Date(iso);
@@ -118,7 +118,7 @@ function timeAgo(iso: string): string {
   }
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Component Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── Component ──────────────────────────────────────────────────────────────────────────────────────────────────────
 export const TicketsPage = () => {
   const { t } = useTranslation();
   const { isAuthenticated, isLoading } = useAuth();
@@ -195,7 +195,7 @@ export const TicketsPage = () => {
     result.sort((a, b) => {
       if (sortBy === 'newest') return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
       if (sortBy === 'oldest') return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
-      // priority Ã¢â‚¬â€œ higher weight first
+      // priority – higher weight first
       return priorityConfig[b.priority].weight - priorityConfig[a.priority].weight;
     });
 
@@ -216,7 +216,7 @@ export const TicketsPage = () => {
 
   const activeFilters = (statusFilter !== 'all' ? 1 : 0) + (priorityFilter !== 'all' ? 1 : 0);
 
-  // Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Auth guard Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+  // ─── Auth guard ──────────────────────────────────────────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
@@ -225,7 +225,7 @@ export const TicketsPage = () => {
           <div className="container mx-auto px-8 md:px-16 lg:px-24">
             <div className="max-w-4xl mx-auto bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-12 text-center">
               <Loader2 size={32} className="animate-spin mx-auto mb-4 text-paymint-green" />
-              <p className="text-gray-500 dark:text-gray-400 font-medium">Loading...</p>
+              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">Loading...</p>
             </div>
           </div>
         </main>
@@ -238,14 +238,14 @@ export const TicketsPage = () => {
     return <Navigate to="/login" replace state={{ from: '/support/tickets' }} />;
   }
 
-  // Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Render Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+  // ─── Render ──────────────────────────────────────────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
       <Navbar />
 
       <main className="pt-28 pb-20">
         <div className="container mx-auto px-6 md:px-12 lg:px-20 max-w-6xl">
-          {/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Header Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */}
+          {/* ──── Header ──── */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -257,7 +257,7 @@ export const TicketsPage = () => {
                 </Link>
                 <h1 className="text-3xl font-black tracking-tight">{t('support.tickets.myTickets')}</h1>
               </div>
-              <p className="text-gray-500 dark:text-gray-400 font-medium ml-11">
+              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors ml-11">
                 {t('support.tickets.subtitle')}
               </p>
             </div>
@@ -271,7 +271,7 @@ export const TicketsPage = () => {
             </Link>
           </div>
 
-          {/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Stats Cards Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */}
+          {/* ──── Stats Cards ──── */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
               { key: 'open' as const, icon: Inbox, value: stats.open, label: t('support.tickets.stats.open'), iconColor: 'text-blue-500', bgColor: 'bg-blue-50 dark:bg-blue-500/10' },
@@ -291,14 +291,14 @@ export const TicketsPage = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-black leading-none">{stat.value}</p>
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-0.5">{stat.label}</p>
+                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mt-0.5">{stat.label}</p>
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
 
-          {/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Search + Filters bar Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */}
+          {/* ──── Search + Filters bar ──── */}
           <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-4 mb-6">
             <div className="flex flex-col md:flex-row gap-3">
               {/* Search */}
@@ -309,7 +309,7 @@ export const TicketsPage = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t('support.tickets.searchPlaceholder')}
-                  className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                  className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                 />
                 {searchQuery && (
                   <button
@@ -327,7 +327,7 @@ export const TicketsPage = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-bold text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none"
+                className="px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-paymint-green/50 appearance-none"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -337,9 +337,9 @@ export const TicketsPage = () => {
               {/* Filter toggle */}
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`relative inline-flex items-center gap-2 px-5 py-3 rounded-xl font-bold transition-all ${showFilters || activeFilters > 0
+                className={`relative inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all ${showFilters || activeFilters > 0
                   ? 'bg-gray-900 dark:bg-white text-white dark:text-black'
-                  : 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20'
+                  : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20'
                   }`}
               >
                 <Filter size={18} />
@@ -364,7 +364,7 @@ export const TicketsPage = () => {
                   <div className="pt-4 mt-4 border-t border-gray-100 dark:border-white/10 space-y-4">
                     {/* Status filter */}
                     <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
+                      <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-3 uppercase">
                         {t('support.tickets.statusLabel')}
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -374,7 +374,7 @@ export const TicketsPage = () => {
                             onClick={() => setStatusFilter(status)}
                             className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${statusFilter === status
                               ? 'bg-gray-900 dark:bg-white text-white dark:text-black'
-                              : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20'
+                              : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20'
                               }`}
                           >
                             {status === 'all' ? t('common.all') : statusConfig[status].label}
@@ -385,7 +385,7 @@ export const TicketsPage = () => {
 
                     {/* Priority filter */}
                     <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
+                      <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-3 uppercase">
                         {t('support.tickets.priorityLabel')}
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -395,7 +395,7 @@ export const TicketsPage = () => {
                             onClick={() => setPriorityFilter(pri)}
                             className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${priorityFilter === pri
                               ? 'bg-gray-900 dark:bg-white text-white dark:text-black'
-                              : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20'
+                              : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20'
                               }`}
                           >
                             {pri === 'all' ? t('common.all') : priorityConfig[pri].label}
@@ -423,12 +423,12 @@ export const TicketsPage = () => {
             </AnimatePresence>
           </div>
 
-          {/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Tickets List Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */}
+          {/* ──── Tickets List ──── */}
           <div className="space-y-3">
             {loadingTickets ? (
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-16 text-center">
                 <Loader2 size={32} className="animate-spin mx-auto mb-4 text-paymint-green" />
-                <p className="text-gray-500 dark:text-gray-400 font-medium">Loading tickets...</p>
+                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">Loading tickets...</p>
               </div>
             ) : filteredTickets.length === 0 ? (
               <motion.div
@@ -440,7 +440,7 @@ export const TicketsPage = () => {
                   <Inbox size={36} className="text-gray-400" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">{searchQuery.trim() ? t('common.noResults') : t('support.tickets.notFound')}</h3>
-                <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
+                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-8 max-w-sm mx-auto">
                   {searchQuery.trim()
                     ? t('common.noMatchingResults', {
                         entity: 'tickets',
@@ -458,7 +458,7 @@ export const TicketsPage = () => {
                       setStatusFilter('all');
                       setPriorityFilter('all');
                     }}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-white/10 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
                   >
                     <RefreshCw size={18} />
                     Clear filters
@@ -477,7 +477,7 @@ export const TicketsPage = () => {
               <>
                 {/* Results count */}
                 <div className="flex items-center justify-between px-1 mb-1">
-                  <p className="text-sm font-medium text-gray-400">
+                  <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                     {filteredTickets.length} {filteredTickets.length === 1 ? 'ticket' : 'tickets'}
                     {searchQuery && ` matching "${searchQuery}"`}
                   </p>
@@ -525,9 +525,9 @@ export const TicketsPage = () => {
                             </h3>
 
                             {/* Last message preview */}
-                            <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+                            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors line-clamp-1">
                               {lastMsg
-                                ? `${lastMsg.sender === 'support' ? 'Ã¢â€ Â© Support' : 'You'}: ${lastMsg.content}`
+                                ? `${lastMsg.sender === 'support' ? '© Support' : 'You'}: ${lastMsg.content}`
                                 : ticket.description}
                             </p>
                           </div>
@@ -535,20 +535,20 @@ export const TicketsPage = () => {
                           {/* Right side: meta */}
                           <div className="flex items-center gap-4 md:gap-6 flex-shrink-0">
                             <div className="text-right hidden md:block">
-                              <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-1 justify-end">
+                              <div className="flex items-center gap-1.5 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-1 justify-end">
                                 <Tag size={12} />
                                 <span className="capitalize">{ticket.category}</span>
                               </div>
-                              <div className="flex items-center gap-1.5 text-xs text-gray-400 justify-end">
+                              <div className="flex items-center gap-1.5 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors justify-end">
                                 <Calendar size={12} />
                                 {timeAgo(ticket.updatedAt)}
                               </div>
                             </div>
 
                             {/* Mobile meta */}
-                            <div className="flex items-center gap-3 md:hidden text-xs text-gray-400">
+                            <div className="flex items-center gap-3 md:hidden text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                               <span className="capitalize">{ticket.category}</span>
-                              <span>Ã‚Â·</span>
+                              <span>·</span>
                               <span>{timeAgo(ticket.updatedAt)}</span>
                             </div>
 
@@ -572,4 +572,3 @@ export const TicketsPage = () => {
     </div>
   );
 };
-

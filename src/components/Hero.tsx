@@ -126,17 +126,20 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               {/* Decorative Background Glow */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-paymint-green/20 via-transparent to-paymint-green/5 rounded-full blur-3xl -z-20" />
 
-              {/* Generated iPad Dashboard Image */}
+              {/* Generated PayMint POS System Image - mix-blend-multiply removes white bg in all modes */}
               <motion.div
-                className="relative z-10 w-[130%] sm:w-[125%] max-w-[950px] drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] scale-110 origin-center lg:origin-left"
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                className="relative w-[140%] sm:w-[135%] max-w-[1100px] scale-110 origin-center lg:origin-left"
+                style={{ isolation: 'auto' }}
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
               >
-                <img 
-                  src="/ipad-dashboard-new.png" 
-                  alt="PayMint Dashboard on iPad" 
-                  className="w-full h-auto object-cover"
-                />
+                <div className="bg-transparent rounded-2xl overflow-hidden">
+                  <img 
+                    src="/paymint-pos-hero.png" 
+                    alt="PayMint All-in-One POS System" 
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
               </motion.div>
 
             </div>

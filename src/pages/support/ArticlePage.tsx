@@ -316,7 +316,7 @@ export const ArticlePage = () => {
         <main className="pt-28 pb-20">
           <div className="container mx-auto px-8 md:px-16 lg:px-24 text-center">
             <h1 className="text-3xl font-black mb-4">{t('support.articles.notFound')}</h1>
-            <p className="text-gray-500 mb-8">{t('support.articles.notFoundDescDetail')}</p>
+            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-8">{t('support.articles.notFoundDescDetail')}</p>
             <Link to="/support" className="text-paymint-green font-bold hover:underline">
               ← {t('support.articles.backToHelp')}
             </Link>
@@ -339,16 +339,16 @@ export const ArticlePage = () => {
         <div className="container mx-auto px-8 md:px-16 lg:px-24">
           <div className="max-w-4xl mx-auto">
             {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+            <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-6">
               <Link to="/support" className="hover:text-paymint-green transition-colors">
                 {t('support.hero.badge')}
               </Link>
-              <ChevronRight size={14} />
+              <ChevronRight size={14} className="text-gray-400" />
               <Link to={`/support/category/${article.categoryId}`} className="hover:text-paymint-green transition-colors">
                 {article.category}
               </Link>
-              <ChevronRight size={14} />
-              <span className="text-gray-400 truncate">{article.title}</span>
+              <ChevronRight size={14} className="text-gray-400" />
+              <span className="text-gray-400 dark:text-gray-500 truncate">{article.title}</span>
             </div>
 
             {/* Header */}
@@ -369,7 +369,7 @@ export const ArticlePage = () => {
                 {article.title}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+              <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                 <span className="flex items-center gap-1">
                   <Clock size={14} />
                   {article.readTime} {t('support.articles.read')}
@@ -409,7 +409,7 @@ export const ArticlePage = () => {
                   }
                   if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
                     return (
-                      <p key={index} className="font-bold my-4">
+                      <p key={index} className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors my-4">
                         {paragraph.replace(/\*\*/g, '')}
                       </p>
                     );
@@ -417,12 +417,12 @@ export const ArticlePage = () => {
                   if (paragraph.startsWith('- ')) {
                     return (
                       <ul key={index} className="list-disc list-inside my-2 ml-4">
-                        <li>{paragraph.replace('- ', '')}</li>
+                        <li className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{paragraph.replace('- ', '')}</li>
                       </ul>
                     );
                   }
                   return (
-                    <p key={index} className="my-4 text-gray-700 dark:text-gray-300 leading-relaxed">
+                    <p key={index} className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors my-4 leading-relaxed">
                       {paragraph}
                     </p>
                   );
@@ -513,7 +513,7 @@ export const ArticlePage = () => {
                         <h4 className="font-bold mb-2 group-hover:text-paymint-green transition-colors line-clamp-2">
                           {related.title}
                         </h4>
-                        <div className="flex items-center gap-2 text-xs text-gray-400">
+                        <div className="flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                           <Clock size={12} />
                           {related.readTime}
                         </div>

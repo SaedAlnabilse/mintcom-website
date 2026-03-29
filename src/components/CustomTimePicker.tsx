@@ -9,9 +9,10 @@ interface CustomTimePickerProps {
     className?: string;
     showIcon?: boolean;
     align?: 'left' | 'right';
+    isActive?: boolean;
 }
 
-export function CustomTimePicker({ value, onChange, className = '', showIcon = false, align = 'left' }: CustomTimePickerProps) {
+export function CustomTimePicker({ value, onChange, className = '', showIcon = false, align = 'left', isActive = false }: CustomTimePickerProps) {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -55,10 +56,10 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                 onClick={() => setIsOpen(!isOpen)}
                 className={`
           flex items-center gap-2 w-full bg-transparent p-0 text-sm font-bold border-none focus:ring-0 cursor-pointer transition-colors
-          ${isOpen ? 'text-[#7CC39F]' : 'text-gray-600 dark:text-white/60'}
+          ${(isOpen || isActive) ? 'text-[#7CC39F]' : 'text-gray-600 dark:text-white/60'}
         `}
             >
-                {showIcon && <Clock size={14} className={isOpen ? 'text-[#7CC39F]' : 'text-gray-400'} />}
+                {showIcon && <Clock size={14} className={(isOpen || isActive) ? 'text-[#7CC39F]' : 'text-gray-400'} />}
                 <span>
                     {hour.toLocaleString(t('common.locale'), { minimumIntegerDigits: 2 })}:{minute.toLocaleString(t('common.locale'), { minimumIntegerDigits: 2 })} <span className="text-xs ml-0.5">{period === 'AM' ? t('common.time.am') : t('common.time.pm')}</span>
                 </span>

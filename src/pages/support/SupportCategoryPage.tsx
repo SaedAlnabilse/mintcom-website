@@ -392,7 +392,7 @@ export const SupportCategoryPage = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-black tracking-tight">{category.title}</h1>
-                <p className="text-gray-500 dark:text-gray-400">{category.description}</p>
+                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{category.description}</p>
               </div>
             </div>
           </div>
@@ -405,7 +405,7 @@ export const SupportCategoryPage = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('support.categories.searchInCategory', { category: category.title })}
-              className="w-full pl-12 pr-11 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+              className="w-full pl-12 pr-11 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
             />
             {searchQuery && (
               <button
@@ -446,10 +446,10 @@ export const SupportCategoryPage = () => {
                           <h3 className="font-bold text-lg mb-2 group-hover:text-paymint-green transition-colors">
                             {article.title}
                           </h3>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-3">
                             {article.excerpt}
                           </p>
-                          <div className="flex items-center gap-4 text-xs text-gray-400">
+                          <div className="flex items-center gap-4 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                             <span className="flex items-center gap-1">
                               <Clock size={12} /> {article.readTime}
                             </span>
@@ -491,13 +491,13 @@ export const SupportCategoryPage = () => {
                         <h4 className="font-bold group-hover:text-paymint-green transition-colors">
                           {article.title}
                         </h4>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors line-clamp-1">
                           {article.excerpt}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <div className="hidden md:flex items-center gap-4 text-xs text-gray-400">
+                      <div className="hidden md:flex items-center gap-4 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                         <span className="flex items-center gap-1">
                           <Clock size={12} /> {article.readTime}
                         </span>
@@ -518,7 +518,7 @@ export const SupportCategoryPage = () => {
                   <HelpCircle size={32} className="text-gray-400" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">{searchQuery.trim() ? t('common.noResults') : t('support.articles.notFound')}</h3>
-                <p className="text-gray-500 dark:text-gray-400 mb-6">
+                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-6">
                   {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('support.articles.notFoundDesc')}
                 </p>
                 <button
@@ -536,7 +536,7 @@ export const SupportCategoryPage = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{t('support.cta.stillNeedHelp')}</h3>
-                <p className="text-gray-500 dark:text-gray-400">{t('support.cta.stillNeedHelpDesc')}</p>
+                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{t('support.cta.stillNeedHelpDesc')}</p>
               </div>
               <Link
                 to="/support/tickets/new"

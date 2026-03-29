@@ -73,7 +73,7 @@ export const LanguageSwitcher = ({
       >
         {showGlobeIcon && <Globe size={iconSize} className="text-gray-500 dark:text-gray-400" />}
         {label ? (
-          <span className="text-sm font-bold">{label}</span>
+          <span>{label}</span>
         ) : compact ? (
           <span className="text-xs font-black tracking-wider leading-none">{currentLanguage.shortName}</span>
         ) : (

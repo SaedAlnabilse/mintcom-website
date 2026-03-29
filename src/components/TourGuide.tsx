@@ -23,9 +23,17 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
   const isRTL = t('common.locale') === 'ar';
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+  const [tooltipHeight, setTooltipHeight] = useState(200);
 
   const currentStep = steps[currentStepIndex];
   const isLastStep = currentStepIndex === steps.length - 1;
+
+  // Ref to measure tooltip height
+  const tooltipRef = useCallback((node: HTMLDivElement | null) => {
+    if (node !== null) {
+      setTooltipHeight(node.getBoundingClientRect().height);
+    }
+  }, [currentStepIndex]);
 
   // Function to update the target element's position
   const updateTargetPosition = useCallback(() => {
@@ -37,9 +45,6 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       const rect = element.getBoundingClientRect();
       setTargetRect(rect);
-    } else {
-      // If element not found, move to next step or nullify
-      // console.warn(`Tour target #${currentStep?.targetId} not found`);
     }
   }, [isOpen, currentStep?.targetId]);
 
@@ -47,9 +52,8 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
   useLayoutEffect(() => {
     requestAnimationFrame(() => updateTargetPosition());
     window.addEventListener('resize', updateTargetPosition);
-    window.addEventListener('scroll', updateTargetPosition, true); // true for capture phase to catch all scrolls
+    window.addEventListener('scroll', updateTargetPosition, true);
 
-    // Small timeout to allow for any layout shifts/animations to finish
     const timer = setTimeout(updateTargetPosition, 100);
 
     return () => {
@@ -122,6 +126,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
           {/* Interactive Tooltip Card */}
           {targetRect && (
             <motion.div
+              ref={tooltipRef}
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               key={currentStepIndex}
@@ -131,15 +136,19 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                 // Enhanced positioning logic
                 top: (() => {
                   if (currentStep.position === 'left' || currentStep.position === 'right') {
-                    return Math.min(Math.max(20, targetRect.top + (targetRect.height / 2) - 100), window.innerHeight - 250);
+                    return Math.min(Math.max(20, targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2)), window.innerHeight - tooltipHeight - 20);
                   }
-                  if (currentStep.position === 'top') {
-                    return targetRect.top - 280;
+                  
+                  const showAtTop = currentStep.position === 'top' || 
+                                   (currentStep.position !== 'left' && 
+                                    currentStep.position !== 'right' && 
+                                    !(targetRect.bottom + tooltipHeight + 20 < window.innerHeight));
+                  
+                  if (showAtTop) {
+                    return Math.max(20, targetRect.top - tooltipHeight - 12);
                   }
-                  // Default or 'bottom'
-                  return targetRect.bottom + 20 < window.innerHeight - 200
-                    ? targetRect.bottom + 20
-                    : targetRect.top - 280;
+                  
+                  return targetRect.bottom + 12;
                 })(),
                 left: (() => {
                   if (currentStep.position === 'left') {
@@ -156,7 +165,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2 text-paymint-green">
                   <HelpCircle size={18} />
-                  <span className="text-xs font-black tracking-widest">{t('common.guide')}</span>
+                  <span className="text-xs font-sans font-bold">{t('common.guide')}</span>
                 </div>
                 <button
                   onClick={onClose}
@@ -166,11 +175,11 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                 </button>
               </div>
 
-              <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2 leading-tight">
+              <h3 className="text-lg font-sans font-bold text-gray-900 dark:text-white mb-2 leading-tight">
                 {currentStep.title}
               </h3>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 font-medium leading-relaxed">
                 {currentStep.description}
               </p>
 

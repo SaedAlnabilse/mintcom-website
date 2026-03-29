@@ -95,54 +95,54 @@ export default defineConfig({
     port: 5174,
     proxy: {
       '/api': {
-        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
       },
       '/reports': {
-        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => `/api${path}`,
       },
       '/app-settings': {
-        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => `/api${path}`,
       },
       '/files': {
-        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
       },
       '/customers': {
-        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => `/api${path}`,
       },
       '/employees': {
-        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => `/api${path}`,
       },
       '/uploads': {
-        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
       },
       // WebSocket proxy for real-time sync
       '/socket.io': {
-        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
         ws: true, // Enable WebSocket proxying
         rewrite: (path) => path, // Keep the path as-is
       },
       '/realtime': {
-        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
         ws: true, // Enable WebSocket proxying

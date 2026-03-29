@@ -493,6 +493,7 @@ export function ProductFormModal({
   const displayTaxRatePercent = effectiveTaxRate * 100;
   const netPrice = totalRetailPrice / (1 + effectiveTaxRate);
   const taxAmount = totalRetailPrice - netPrice;
+  const popupLabelBaseClass = 'text-sm font-semibold text-gray-600 dark:text-gray-300 tracking-normal';
 
   if (!isOpen) return null;
 
@@ -520,10 +521,10 @@ export function ProductFormModal({
             <div className="flex items-center justify-between px-6 sm:px-8 pt-6 sm:pt-8 pb-0 sm:pb-0 relative isolate">
               <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="label-strong">{t('products.title')}</span>
+                <div className="flex items-center gap-1 mb-1">
+                  <span className={popupLabelBaseClass}>{t('products.title')}</span>
                   <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                  <span className="text-xs font-black text-paymint-green tracking-widest">{t('common.active')}</span>
+                  <span className={`${popupLabelBaseClass} text-paymint-green dark:text-paymint-green`}>{t('common.active')}</span>
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
                   {initialData?.id ? t('products.editProduct') : t('products.newProduct')}
@@ -550,7 +551,7 @@ export function ProductFormModal({
 
                 {/* Name */}
                 <div className="space-y-2">
-                  <label className="label-strong block flex items-center gap-1">
+                  <label className={`${popupLabelBaseClass} block flex items-center gap-1`}>
                     {t('products.form.nameLabel')} <span className="text-paymint-red">*</span>
                     <QuickInfo text="Names are used to generate images" />
                   </label>
@@ -651,7 +652,7 @@ export function ProductFormModal({
                     {/* Cost Price */}
                     {canViewCosts && (
                       <div className="space-y-2">
-                        <label className="label-strong block flex items-center gap-1">
+                        <label className={`${popupLabelBaseClass} block flex items-center gap-1`}>
                           {t('products.form.costLabel')}
                           <QuickInfo text="How much YOU spend on the product." />
                         </label>
@@ -672,7 +673,7 @@ export function ProductFormModal({
 
                     {/* Retail Price (Total) */}
                     <div className="space-y-2">
-                      <label className="label-strong block flex items-center gap-1">
+                      <label className={`${popupLabelBaseClass} block flex items-center gap-1`}>
                         {t('products.form.priceLabel')} <span className="text-paymint-red">*</span>
                         <QuickInfo text="Shown for customers." />
                       </label>
@@ -757,7 +758,7 @@ export function ProductFormModal({
                 {/* Description */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between px-1">
-                    <label className="label-strong block flex items-center gap-1">
+                    <label className={`${popupLabelBaseClass} block flex items-center gap-1`}>
                       {t('products.form.descriptionLabel')}
                       <QuickInfo text="Describe your product for customers and employees." />
                     </label>
@@ -776,7 +777,7 @@ export function ProductFormModal({
 
                 {/* Category */}
                 <div className="relative space-y-2" ref={categoryRef}>
-                  <label className="label-strong block flex items-center gap-1">
+                  <label className={`${popupLabelBaseClass} block flex items-center gap-1`}>
                     {t('products.form.categoryLabel')} <span className="text-paymint-red">*</span>
                   </label>
                   <button
@@ -891,7 +892,7 @@ export function ProductFormModal({
 
                 {/* Add-ons (Attributes) */}
                 <div className="relative space-y-2" ref={addonsRef}>
-                  <label className="label-strong block flex items-center gap-1">
+                  <label className={`${popupLabelBaseClass} block flex items-center gap-1`}>
                     {t('products.form.addonsLabel')}
                     <QuickInfo text="Modifier families applied to this product." />
                   </label>
@@ -1086,7 +1087,7 @@ export function ProductFormModal({
                       </div>
 
                       <div className="space-y-2">
-                        <label className="label-strong flex items-center justify-center gap-1">
+                        <label className={`${popupLabelBaseClass} flex items-center justify-center gap-1`}>
                           <span className="text-paymint-green text-sm">&bull;</span> {t('products.form.inventory.quantity')}
                           <QuickInfo text={t('products.form.inventory.quantityTip')} />
                         </label>
@@ -1104,7 +1105,7 @@ export function ProductFormModal({
 
                       <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className="label-strong flex items-center justify-center gap-1">
+                          <label className={`${popupLabelBaseClass} flex items-center justify-center gap-1`}>
                             <span className="text-yellow-500 text-sm">&bull;</span> {t('products.form.inventory.low')}
                           </label>
                           <input
@@ -1116,7 +1117,7 @@ export function ProductFormModal({
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="label-strong flex items-center justify-center gap-1">
+                          <label className={`${popupLabelBaseClass} flex items-center justify-center gap-1`}>
                             <span className="text-paymint-red text-sm">&bull;</span> {t('products.form.inventory.veryLow')}
                           </label>
                           <input

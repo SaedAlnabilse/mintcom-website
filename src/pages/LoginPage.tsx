@@ -149,8 +149,8 @@ export function LoginPage() {
                 className="h-10 w-auto object-contain hidden dark:block"
               />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">{t('auth.login.title')}</h2>
-            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.login.subtitle')}</p>
+            <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white mb-2 tracking-tight">{t('auth.login.title')}</h2>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{t('auth.login.subtitle')}</p>
           </div>
 
           {/* Google Sign-In Button */}
@@ -165,7 +165,7 @@ export function LoginPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+              <label className="block text-xs font-bold text-gray-400 mb-2">
                 {t('auth.login.emailLabel')}
               </label>
               <div className="relative">
@@ -178,17 +178,17 @@ export function LoginPage() {
                   aria-describedby={errors.email ? 'email-error' : undefined}
                   autoComplete="email"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-xl py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
+                    } rounded-xl py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder={t('auth.login.emailPlaceholder')}
                 />
               </div>
               {errors.email?.message && (
-                <p id="email-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.email.message}</p>
+                <p id="email-error" role="alert" className="text-accent dark:text-accent text-xs font-bold mt-1">{errors.email.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+              <label className="block text-xs font-bold text-gray-400 mb-2">
                 {t('auth.login.passwordLabel')}
               </label>
               <div className="relative">
@@ -201,7 +201,7 @@ export function LoginPage() {
                   aria-describedby={errors.password ? 'password-error' : undefined}
                   autoComplete="current-password"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-xl py-3 pl-10 pr-12 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
+                    } rounded-xl py-3 pl-10 pr-12 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder={t('auth.login.passwordPlaceholder')}
                 />
                 <button
@@ -214,7 +214,7 @@ export function LoginPage() {
                 </button>
               </div>
               {errors.password && (
-                <p id="password-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.password.message}</p>
+                <p id="password-error" role="alert" className="text-accent dark:text-accent text-xs font-bold mt-1">{errors.password.message}</p>
               )}
             </div>
 
@@ -223,11 +223,11 @@ export function LoginPage() {
                 <input
                   type="checkbox"
                   aria-label={t('auth.login.ariaKeepLoggedIn')}
-                  className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-PayMint-green focus:ring-PayMint-green bg-gray-50 dark:bg-gray-700"
+                  className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green bg-gray-50 dark:bg-gray-700"
                 />
                 <span className="ml-2 text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.login.keepLoggedIn')}</span>
               </label>
-              <Link to="/forgot-password" className="text-sm font-bold text-PayMint-green hover:underline">
+              <Link to="/forgot-password" university-link className="text-sm font-bold text-paymint-green hover:underline">
                 {t('auth.login.forgotPassword')}
               </Link>
             </div>
@@ -235,7 +235,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-paymint-green text-black text-sm font-bold tracking-tight hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-wait py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
+              className="w-full bg-paymint-green text-black text-sm font-bold hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-wait py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
             >
               {isSubmitting ? t('auth.login.loggingIn') : t('auth.login.loginButton')}
             </button>
@@ -244,7 +244,7 @@ export function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
               {t('auth.login.noAccount')}{' '}
-              <Link to="/signup" className="text-sm font-bold text-PayMint-green hover:underline">
+              <Link to="/signup" className="text-sm font-bold text-paymint-green hover:underline">
                 {t('auth.login.signUp')}
               </Link>
             </p>

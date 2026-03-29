@@ -51,6 +51,9 @@ import { QuickInfo } from '../components/QuickInfo';
 // PayMint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
+import AppStoreBadge from '../assets/App_Store_(iOS)-Badge-Logo.wine.svg';
+import GooglePlayBadge from '../assets/Google_Play-Badge-Logo.wine.svg';
+
 
 export function OnboardingPage() {
   const { t } = useTranslation();
@@ -442,17 +445,17 @@ export function OnboardingPage() {
 
           {step <= totalSteps && (
             <div className="flex items-center gap-4">
-              {isRTL && <span className="text-xs font-black text-gray-400 tracking-widest">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
+              {isRTL && <span className="text-xs font-bold text-gray-400">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
               <div className="flex gap-1.5">
                 {[1, 2, 3, 4].map((s) => (
                   <div
                     key={s}
-                    className={`h-1.5 rounded-full transition-all duration-500 ${step >= s ? 'w-8 bg-PayMint-green' : 'w-4 bg-gray-200 dark:bg-white/10'
+                    className={`h-1.5 rounded-full transition-all duration-500 ${step >= s ? 'w-8 bg-paymint-green' : 'w-4 bg-gray-200 dark:bg-white/10'
                       }`}
                   />
                 ))}
               </div>
-              {!isRTL && <span className="text-xs font-black text-gray-400 tracking-widest">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
+              {!isRTL && <span className="text-xs font-bold text-gray-400">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
             </div>
           )}
         </div>
@@ -472,31 +475,31 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step1.title')}</h2>
-                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step1.subtitle')}</p>
+                  <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step1.title')}</h2>
+                  <p className="text-sm font-sans font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step1.subtitle')}</p>
                 </div>
 
                 <form onSubmit={form1.handleSubmit(onStep1Submit)} className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                        {t('onboarding.step1.locationName')} <span className="text-PayMint-red mx-1">*</span>
+                      <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                        {t('onboarding.step1.locationName')} <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text={t('onboarding.step1.locationNameTip')} />
                       </label>
                       <div className="relative group">
-                        <Store className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-PayMint-green transition-colors" size={20} />
+                        <Store className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                         <input
                           type="text"
                           {...form1.register('name')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-PayMint-red ring-2 ring-PayMint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder={t('onboarding.step1.locationNamePlaceholder')}
                         />
                       </div>
-                      {form1.formState.errors.name && <p className="text-PayMint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.name.message as string}</p>}
+                      {form1.formState.errors.name && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.name.message as string}</p>}
                     </div>
 
                     <div className="space-y-3">
-                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
+                      <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
                         {t('onboarding.step1.businessType')}
                         <QuickInfo text={t('onboarding.step1.businessTypeTip')} />
                       </label>
@@ -506,11 +509,11 @@ export function OnboardingPage() {
                             key={type.id}
                             type="button"
                             onClick={() => form1.setValue('type', type.id)}
-                            className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${form1.watch('type') === type.id ? 'border-PayMint-green bg-PayMint-green/5 text-PayMint-green' : 'border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-transparent text-gray-400'
+                            className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${form1.watch('type') === type.id ? 'border-paymint-green bg-paymint-green/5 text-paymint-green' : 'border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-transparent text-gray-400'
                               }`}
                           >
                             <type.icon size={24} />
-                            <span className="text-xs font-black tracking-widest">{type.label}</span>
+                            <span className="text-xs font-sans font-bold">{type.label}</span>
                           </button>
                         ))}
                       </div>
@@ -518,15 +521,15 @@ export function OnboardingPage() {
 
                     {/* Base Currency Row */}
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                        {t('onboarding.step1.currency')} <span className="text-PayMint-red mx-1">*</span>
+                      <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                        {t('onboarding.step1.currency')} <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text={t('onboarding.step1.currencyTip')} />
                       </label>
                       <div className="relative">
                         <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                         <select
                           {...form1.register('currency')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-PayMint-red ring-2 ring-PayMint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all appearance-none`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
                         >
                           <option value="JOD">JOD - {t('common.currencies.jod', { defaultValue: 'Jordanian Dinar' })}</option>
                           <option value="USD">USD - {t('common.currencies.usd', { defaultValue: 'US Dollar' })}</option>
@@ -542,12 +545,12 @@ export function OnboardingPage() {
                           <option value="TRY">TRY - {t('common.currencies.try', { defaultValue: 'Turkish Lira' })}</option>
                         </select>
                       </div>
-                      {form1.formState.errors.currency && <p className="text-PayMint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
+                      {form1.formState.errors.currency && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                        {t('onboarding.step1.address')} <span className="text-PayMint-red mx-1">*</span>
+                      <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                        {t('onboarding.step1.address')} <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text={t('onboarding.step1.addressTip')} />
                       </label>
                       <div className="relative">
@@ -555,23 +558,23 @@ export function OnboardingPage() {
                         <input
                           type="text"
                           {...form1.register('address')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-PayMint-red ring-2 ring-PayMint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder={t('onboarding.step1.addressPlaceholder')}
                         />
                       </div>
-                      {form1.formState.errors.address && <p className="text-PayMint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.address.message as string}</p>}
+                      {form1.formState.errors.address && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.address.message as string}</p>}
                     </div>
 
                     {/* Import Settings Section - Only show if user has existing establishments */}
                     {establishments.length > 0 && (
                       <div className="pt-4 border-t border-gray-100 dark:border-white/5">
                         <div className="flex items-center gap-2 mb-4">
-                          <Copy className="text-PayMint-green" size={20} />
-                          <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('onboarding.step1.quickSetup')}</h3>
+                          <Copy className="text-paymint-green" size={20} />
+                          <h3 className="text-base font-sans font-bold text-gray-900 dark:text-white">{t('onboarding.step1.quickSetup')}</h3>
                         </div>
 
                         <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5 border border-gray-100 dark:border-white/5">
-                          <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center">
+                          <label className="text-xs font-sans font-bold text-gray-400 mb-2 flex items-center">
                             {t('onboarding.step1.copySettings')}
                             <QuickInfo text={t('onboarding.step1.copySettingsTip')} />
                           </label>
@@ -579,7 +582,7 @@ export function OnboardingPage() {
                             <select
                               value={duplicateFromId}
                               onChange={(e) => setDuplicateFromId(e.target.value)}
-                              className="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 appearance-none"
+                              className="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 text-gray-900 dark:text-white font-sans font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 appearance-none"
                             >
                               <option value="">{t('onboarding.step1.startFresh')}</option>
                               {establishments.map((est) => (
@@ -600,11 +603,11 @@ export function OnboardingPage() {
                                 exit={{ opacity: 0, height: 0 }}
                                 className="space-y-3 overflow-hidden"
                               >
-                                <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('onboarding.step1.selectData')}</p>
+                                <p className="text-xs font-sans font-bold text-gray-400 mb-2">{t('onboarding.step1.selectData')}</p>
 
                                 {/* Inventory Checkbox */}
-                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateInventory ? 'border-PayMint-green bg-PayMint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
-                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateInventory ? 'bg-PayMint-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateInventory ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
+                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateInventory ? 'bg-paymint-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
                                     {duplicateInventory && <Check size={14} strokeWidth={4} />}
                                   </div>
                                   <input
@@ -614,17 +617,17 @@ export function OnboardingPage() {
                                     onChange={(e) => setDuplicateInventory(e.target.checked)}
                                   />
                                   <div className="flex-1 flex items-center gap-2">
-                                    <Box size={16} className={duplicateInventory ? 'text-PayMint-green' : 'text-gray-400'} />
+                                    <Box size={16} className={duplicateInventory ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
-                                      <p className="text-sm font-bold text-gray-900 dark:text-white">{t('onboarding.step1.menu')}</p>
-                                      <p className="text-xs font-bold text-gray-500">{t('onboarding.step1.menuDesc')}</p>
+                                      <p className="text-sm font-sans font-bold text-gray-900 dark:text-white">{t('onboarding.step1.menu')}</p>
+                                      <p className="text-xs font-sans font-bold text-gray-500">{t('onboarding.step1.menuDesc')}</p>
                                     </div>
                                   </div>
                                 </label>
 
                                 {/* Discounts Checkbox */}
-                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateDiscounts ? 'border-PayMint-green bg-PayMint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
-                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateDiscounts ? 'bg-PayMint-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateDiscounts ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
+                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateDiscounts ? 'bg-paymint-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
                                     {duplicateDiscounts && <Check size={14} strokeWidth={4} />}
                                   </div>
                                   <input
@@ -634,17 +637,17 @@ export function OnboardingPage() {
                                     onChange={(e) => setDuplicateDiscounts(e.target.checked)}
                                   />
                                   <div className="flex-1 flex items-center gap-2">
-                                    <Tags size={16} className={duplicateDiscounts ? 'text-PayMint-green' : 'text-gray-400'} />
+                                    <Tags size={16} className={duplicateDiscounts ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
-                                      <p className="text-sm font-bold text-gray-900 dark:text-white">{t('onboarding.step1.discounts')}</p>
-                                      <p className="text-xs font-bold text-gray-500">{t('onboarding.step1.discountsDesc')}</p>
+                                      <p className="text-sm font-sans font-bold text-gray-900 dark:text-white">{t('onboarding.step1.discounts')}</p>
+                                      <p className="text-xs font-sans font-bold text-gray-500">{t('onboarding.step1.discountsDesc')}</p>
                                     </div>
                                   </div>
                                 </label>
 
                                 {/* Payment Methods Checkbox */}
-                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicatePaymentMethods ? 'border-PayMint-green bg-PayMint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
-                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicatePaymentMethods ? 'bg-PayMint-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicatePaymentMethods ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
+                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicatePaymentMethods ? 'bg-paymint-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
                                     {duplicatePaymentMethods && <Check size={14} strokeWidth={4} />}
                                   </div>
                                   <input
@@ -654,10 +657,10 @@ export function OnboardingPage() {
                                     onChange={(e) => setDuplicatePaymentMethods(e.target.checked)}
                                   />
                                   <div className="flex-1 flex items-center gap-2">
-                                    <CreditCard size={16} className={duplicatePaymentMethods ? 'text-PayMint-green' : 'text-gray-400'} />
+                                    <CreditCard size={16} className={duplicatePaymentMethods ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
-                                      <p className="text-sm font-bold text-gray-900 dark:text-white">{t('onboarding.step1.paymentMethods')}</p>
-                                      <p className="text-xs font-bold text-gray-500">{t('onboarding.step1.paymentMethodsDesc')}</p>
+                                      <p className="text-sm font-sans font-bold text-gray-900 dark:text-white">{t('onboarding.step1.paymentMethods')}</p>
+                                      <p className="text-xs font-sans font-bold text-gray-500">{t('onboarding.step1.paymentMethodsDesc')}</p>
                                     </div>
                                   </div>
                                 </label>
@@ -673,7 +676,7 @@ export function OnboardingPage() {
                   <div className="pt-4">
                     <button
                       type="submit"
-                      className="w-full py-5 bg-PayMint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-PayMint-green/90 transition-all shadow-xl shadow-PayMint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full py-5 bg-paymint-green text-black text-xs font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
                       {isRTL && <ArrowRight size={24} />}
                       {t('onboarding.nextStep')}
@@ -696,36 +699,36 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-8">
-                  <button onClick={() => goToStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
+                  <button onClick={() => goToStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-sans font-bold">
                     {!isRTL && <ArrowLeft size={14} />}
                     {t('onboarding.back')}
                     {isRTL && <ArrowLeft size={14} />}
                   </button>
                   <div className="flex items-center gap-3 mb-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isTrialFlow ? 'bg-yellow-400/10' : 'bg-PayMint-green/10'}`}>
-                      <ShieldCheck className={isTrialFlow ? 'text-yellow-500' : 'text-PayMint-green'} size={24} />
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isTrialFlow ? 'bg-yellow-400/10' : 'bg-paymint-green/10'}`}>
+                      <ShieldCheck className={isTrialFlow ? 'text-yellow-500' : 'text-paymint-green'} size={24} />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                      <h2 className="text-xl font-sans font-bold text-gray-900 dark:text-white">
                         {isTrialFlow ? t('onboarding.step2.trialTitle') : t('onboarding.step2.activateTitle')}
                       </h2>
                       {isTrialFlow ? (
-                        <span className="bg-yellow-400 text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">{t('onboarding.step2.freeDays')}</span>
+                        <span className="bg-yellow-400 text-black text-xs font-sans font-bold px-2 py-0.5 rounded">{t('onboarding.step2.freeDays')}</span>
                       ) : (
-                        <span className="bg-PayMint-green text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">
+                        <span className="bg-paymint-green text-black text-xs font-sans font-bold px-2 py-0.5 rounded">
                           {billingCycle === 'yearly' ? `$${currentYearlyPrice}/${t('common.yearly').toUpperCase()}` : `$${currentMonthlyPrice}/${t('common.monthly').toUpperCase()}`}
                         </span>
                       )}
                     </div>
                   </div>
-                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
+                  <p className="text-sm font-sans font-bold text-gray-600 dark:text-gray-300">
                     {isTrialFlow
                       ? t('onboarding.step2.trialDesc')
                       : t('onboarding.step2.activateDesc', { amount: `$${displayPrice.toFixed(2)}` })
                     }
                   </p>
                   {isAdditionalLocation && !isTrialFlow && (
-                    <div className="mt-3 px-3 py-2 bg-blue-500/10 text-blue-500 text-xs font-bold rounded-xl border border-blue-500/20">
+                    <div className="mt-3 px-3 py-2 bg-blue-500/10 text-blue-500 text-xs font-sans font-bold rounded-xl border border-blue-500/20">
                       💰 Discounted rate for additional locations
                     </div>
                   )}
@@ -739,25 +742,25 @@ export function OnboardingPage() {
                         <button
                           type="button"
                           onClick={() => setBillingCycle('monthly')}
-                          className={`px-5 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all duration-300 ${billingCycle === 'monthly'
-                            ? 'bg-PayMint-green text-black shadow-lg shadow-PayMint-green/20'
+                          className={`px-5 py-2.5 rounded-xl text-xs font-sans font-bold transition-all duration-300 ${billingCycle === 'monthly'
+                            ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
                             : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                             }`}
                         >
-                          {t('common.monthly').toUpperCase()}
+                          {t('common.monthly')}
                         </button>
                         <button
                           type="button"
                           onClick={() => setBillingCycle('yearly')}
-                          className={`px-5 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all duration-300 relative ${billingCycle === 'yearly'
-                            ? 'bg-PayMint-green text-black shadow-lg shadow-PayMint-green/20'
+                          className={`px-5 py-2.5 rounded-xl text-xs font-sans font-bold transition-all duration-300 relative ${billingCycle === 'yearly'
+                            ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
                             : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                             }`}
                         >
-                          {t('common.yearly').toUpperCase()}
-                          <span className={`absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full text-[8px] font-black tracking-wider ${billingCycle === 'yearly' ? 'bg-black text-PayMint-green' : 'bg-PayMint-green text-black'
+                          {t('common.yearly')}
+                          <span className={`absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full text-[8px] font-sans font-bold ${billingCycle === 'yearly' ? 'bg-black text-paymint-green' : 'bg-paymint-green text-black'
                             } shadow`}>
-                            SAVE
+                            Save
                           </span>
                         </button>
                       </div>
@@ -766,15 +769,15 @@ export function OnboardingPage() {
 
                   <div className="p-4 bg-gray-50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-300 dark:border-white/10">
                     <div className="flex justify-between items-center mb-4">
-                      <span className="text-xs font-black text-gray-400 tracking-widest">{t('onboarding.step2.totalDue')}</span>
-                      <span className="text-xl font-bold text-gray-900 dark:text-white">
+                      <span className="text-xs font-bold text-gray-400">{t('onboarding.step2.totalDue')}</span>
+                      <span className="text-xl font-sans font-bold text-gray-900 dark:text-white">
                         {isTrialFlow
                           ? (0).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD' })
                           : `$${displayPrice.toFixed(2)}`
                         }
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-xs font-bold text-gray-500">
+                    <div className="flex justify-between items-center text-xs font-sans font-bold text-gray-500">
                       <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : (billingCycle === 'yearly' ? t('common.yearly') : t('common.monthly'))}</span>
                       <span>
                         ${currentMonthlyPrice.toFixed(2)}/{t('common.monthly')}
@@ -783,8 +786,8 @@ export function OnboardingPage() {
                     </div>
                     {billingCycle === 'yearly' && !isTrialFlow && (
                       <div className="mt-3 flex items-center justify-center gap-2">
-                        <Sparkles size={12} className="text-PayMint-green" />
-                        <span className="text-xs font-black text-PayMint-green tracking-wider">
+                        <Sparkles size={12} className="text-paymint-green" />
+                        <span className="text-xs font-bold text-paymint-green tracking-wider">
                           SAVE ${yearlySavings}/YEAR
                         </span>
                         <span className="text-xs text-gray-400 line-through">${(currentMonthlyPrice * 12)}/{t('common.yearly')}</span>
@@ -798,19 +801,19 @@ export function OnboardingPage() {
                       <div
                         onClick={() => setUseSavedCard(true)}
                         className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${useSavedCard
-                          ? 'border-PayMint-green bg-PayMint-green/5'
+                          ? 'border-paymint-green bg-paymint-green/5'
                           : 'border-gray-200 dark:border-white/10 hover:border-gray-300'
                           }`}
                       >
                         <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${useSavedCard ? 'bg-PayMint-green' : 'bg-gray-100 dark:bg-white/5'}`}>
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${useSavedCard ? 'bg-paymint-green' : 'bg-gray-100 dark:bg-white/5'}`}>
                             <CreditCard size={24} className={useSavedCard ? 'text-black' : 'text-gray-400'} />
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm font-bold text-gray-900 dark:text-white">{t('onboarding.step2.useSaved')}</p>
-                            <p className="text-xs font-bold text-gray-500">•••• •••• •••• {savedCardLast4}</p>
+                            <p className="text-sm font-sans font-bold text-gray-900 dark:text-white">{t('onboarding.step2.useSaved')}</p>
+                            <p className="text-xs font-sans font-bold text-gray-500">•••• •••• •••• {savedCardLast4}</p>
                           </div>
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${useSavedCard ? 'border-PayMint-green bg-PayMint-green' : 'border-gray-300'
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${useSavedCard ? 'border-paymint-green bg-paymint-green' : 'border-gray-300'
                             }`}>
                             {useSavedCard && <div className="w-2 h-2 rounded-full bg-white" />}
                           </div>
@@ -820,19 +823,19 @@ export function OnboardingPage() {
                       <div
                         onClick={() => setUseSavedCard(false)}
                         className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${!useSavedCard
-                          ? 'border-PayMint-green bg-PayMint-green/5'
+                          ? 'border-paymint-green bg-paymint-green/5'
                           : 'border-gray-200 dark:border-white/10 hover:border-gray-300'
                           }`}
                       >
                         <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${!useSavedCard ? 'bg-PayMint-green' : 'bg-gray-100 dark:bg-white/5'}`}>
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${!useSavedCard ? 'bg-paymint-green' : 'bg-gray-100 dark:bg-white/5'}`}>
                             <Plus size={24} className={!useSavedCard ? 'text-black' : 'text-gray-400'} />
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm font-bold text-gray-900 dark:text-white">{t('onboarding.step2.addNew')}</p>
-                            <p className="text-xs font-bold text-gray-500">{t('onboarding.step2.differentMethod')}</p>
+                            <p className="text-sm font-sans font-bold text-gray-900 dark:text-white">{t('onboarding.step2.addNew')}</p>
+                            <p className="text-xs font-sans font-bold text-gray-500">{t('onboarding.step2.differentMethod')}</p>
                           </div>
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${!useSavedCard ? 'border-PayMint-green bg-PayMint-green' : 'border-gray-300'
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${!useSavedCard ? 'border-paymint-green bg-paymint-green' : 'border-gray-300'
                             }`}>
                             {!useSavedCard && <div className="w-2 h-2 rounded-full bg-white" />}
                           </div>
@@ -845,7 +848,7 @@ export function OnboardingPage() {
                   {(!hasSavedCard || !useSavedCard) && (
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-400 tracking-widest ml-1">{t('onboarding.step2.cardNumber')}</label>
+                        <label className="text-xs font-bold text-gray-400 ml-1">{t('onboarding.step2.cardNumber')}</label>
                         <div className="relative group">
                           <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                           <input
@@ -857,15 +860,15 @@ export function OnboardingPage() {
                             }}
                             maxLength={19}
                             placeholder="0000 0000 0000 0000"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardNumber ? 'border-PayMint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardNumber ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
                           />
                         </div>
-                        {form2.formState.errors.cardNumber && <p className="text-PayMint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form2.formState.errors.cardNumber.message as string}</p>}
+                        {form2.formState.errors.cardNumber && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form2.formState.errors.cardNumber.message as string}</p>}
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-xs font-black text-gray-400 tracking-widest ml-1">{t('onboarding.step2.expiry')}</label>
+                          <label className="text-xs font-bold text-gray-400 ml-1">{t('onboarding.step2.expiry')}</label>
                           <input
                             type="text"
                             {...form2.register('expiryDate')}
@@ -875,11 +878,11 @@ export function OnboardingPage() {
                             }}
                             maxLength={5}
                             placeholder="Mm/Yy"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.expiryDate ? 'border-PayMint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 text-center`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.expiryDate ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-black text-gray-400 tracking-widest ml-1">{t('onboarding.step2.cvc')}</label>
+                          <label className="text-xs font-bold text-gray-400 ml-1">{t('onboarding.step2.cvc')}</label>
                           <input
                             type="text"
                             {...form2.register('cvc')}
@@ -889,18 +892,18 @@ export function OnboardingPage() {
                             }}
                             maxLength={4}
                             placeholder="123"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cvc ? 'border-PayMint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 text-center`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cvc ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
                           />
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-400 tracking-widest ml-1">{t('onboarding.step2.cardName')}</label>
+                        <label className="text-xs font-bold text-gray-400 ml-1">{t('onboarding.step2.cardName')}</label>
                         <input
                           type="text"
                           {...form2.register('cardName')}
                           placeholder="John Doe"
-                          className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardName ? 'border-PayMint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50`}
+                          className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardName ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
                         />
                       </div>
                     </div>
@@ -910,7 +913,7 @@ export function OnboardingPage() {
                     <button
                       type={hasSavedCard && useSavedCard ? 'button' : 'submit'}
                       onClick={hasSavedCard && useSavedCard ? () => onStep2Submit({}) : undefined}
-                      className="w-full py-5 bg-PayMint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-PayMint-green/90 transition-all shadow-xl shadow-PayMint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full py-5 bg-paymint-green text-black text-xs font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
                       {isRTL && <ArrowRight size={24} />}
                       {isTrialFlow
@@ -936,47 +939,47 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <button onClick={() => goToStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
+                  <button onClick={() => goToStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-sans font-bold">
                     {!isRTL && <ArrowLeft size={14} />}
                     {t('onboarding.back')}
                     {isRTL && <ArrowLeft size={14} />}
                   </button>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step3.title')}</h2>
-                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step3.subtitle')}</p>
-                  <div className="mt-4 p-3 bg-PayMint-green/10 text-PayMint-green text-sm rounded-xl font-bold border border-PayMint-green/20">
+                  <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step3.title')}</h2>
+                  <p className="text-sm font-sans font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step3.subtitle')}</p>
+                  <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-sm rounded-xl font-sans font-bold border border-paymint-green/20">
                     <p>✨ <strong>{t('onboarding.step3.uniqueAccess')}</strong> {t('onboarding.step3.uniqueAccessDesc')}</p>
                   </div>
                 </div>
 
                 <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                      {t('onboarding.step3.locationId')} <span className="text-PayMint-red mx-1">*</span>
+                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                      {t('onboarding.step3.locationId')} <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text={t('onboarding.step3.locationIdTip')} />
                     </label>
                     <div className="relative group">
-                      <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-PayMint-green transition-colors" size={20} />
+                      <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
                         type="text"
                         {...form3.register('establishmentLoginId')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentLoginId ? 'border-PayMint-red ring-2 ring-PayMint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentLoginId ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder={t('onboarding.step3.locationIdPlaceholder')}
                       />
                     </div>
-                    {form3.formState.errors.establishmentLoginId && <p className="text-PayMint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.establishmentLoginId.message as string}</p>}
-                    <p className="text-xs font-bold text-gray-500 ml-1">{t('onboarding.step3.locationIdDesc')}</p>
+                    {form3.formState.errors.establishmentLoginId && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.establishmentLoginId.message as string}</p>}
+                    <p className="text-xs font-sans font-bold text-gray-500 ml-1">{t('onboarding.step3.locationIdDesc')}</p>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                      {t('onboarding.step3.password')} <span className="text-PayMint-red mx-1">*</span>
+                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                      {t('onboarding.step3.password')} <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text={t('onboarding.step3.passwordTip')} />
                     </label>
                     <div className="relative group">
-                      <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-PayMint-green transition-colors" size={20} />
+                      <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
                         type={showEstablishmentPassword ? "text" : "password"}
                         {...form3.register('establishmentPassword')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentPassword ? 'border-PayMint-red ring-2 ring-PayMint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder={t('onboarding.step3.passwordPlaceholder')}
                       />
                       <button
@@ -987,13 +990,13 @@ export function OnboardingPage() {
                         {showEstablishmentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
-                    {form3.formState.errors.establishmentPassword && <p className="text-PayMint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.establishmentPassword.message as string}</p>}
+                    {form3.formState.errors.establishmentPassword && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.establishmentPassword.message as string}</p>}
                   </div>
 
                   <div className="pt-4">
                     <button
                       type="submit"
-                      className="w-full py-5 bg-PayMint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-PayMint-green/90 transition-all shadow-xl shadow-PayMint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full py-5 bg-paymint-green text-black text-xs font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
                       {isRTL && <ArrowRight size={24} />}
                       {t('onboarding.nextStep')}
@@ -1016,14 +1019,14 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <button onClick={() => goToStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
+                  <button onClick={() => goToStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-sans font-bold">
                     {!isRTL && <ArrowLeft size={14} />}
                     {t('onboarding.back')}
                     {isRTL && <ArrowLeft size={14} />}
                   </button>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step4.title')}</h2>
-                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step4.subtitle')}</p>
-                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 text-xs rounded-xl font-bold border border-blue-100 dark:border-blue-900/30">
+                  <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step4.title')}</h2>
+                  <p className="text-sm font-sans font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step4.subtitle')}</p>
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 text-xs rounded-xl font-sans font-bold border border-blue-100 dark:border-blue-900/30">
                     <p>{t('onboarding.step4.step2Note')}</p>
                   </div>
                 </div>
@@ -1031,65 +1034,65 @@ export function OnboardingPage() {
                 <form onSubmit={form4.handleSubmit(onStep4Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1">
-                        {t('onboarding.step4.firstName')} <span className="text-PayMint-red">*</span>
+                      <label className="text-xs font-bold text-gray-400 ml-1">
+                        {t('onboarding.step4.firstName')} <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-PayMint-green transition-colors" size={20} />
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                         <input
                           type="text"
                           {...form4.register('firstName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.firstName ? 'border-PayMint-red ring-2 ring-PayMint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.firstName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder={t('onboarding.step4.firstNamePlaceholder')}
                         />
                       </div>
-                      {form4.formState.errors.firstName && <p className="text-PayMint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.firstName.message as string}</p>}
+                      {form4.formState.errors.firstName && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.firstName.message as string}</p>}
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1">
-                        {t('onboarding.step4.lastName')} <span className="text-PayMint-red">*</span>
+                      <label className="text-xs font-bold text-gray-400 ml-1">
+                        {t('onboarding.step4.lastName')} <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-PayMint-green transition-colors" size={20} />
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                         <input
                           type="text"
                           {...form4.register('lastName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.lastName ? 'border-PayMint-red ring-2 ring-PayMint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.lastName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder={t('onboarding.step4.lastNamePlaceholder')}
                         />
                       </div>
-                      {form4.formState.errors.lastName && <p className="text-PayMint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.lastName.message as string}</p>}
+                      {form4.formState.errors.lastName && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.lastName.message as string}</p>}
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                      {t('onboarding.step4.username')} <span className="text-PayMint-red mx-1">*</span>
+                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                      {t('onboarding.step4.username')} <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text={t('onboarding.step4.usernameTip')} />
                     </label>
                     <div className="relative group">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-PayMint-green transition-colors" size={20} />
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
                         type="text"
                         {...form4.register('username')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.username ? 'border-PayMint-red ring-2 ring-PayMint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder={t('onboarding.step4.usernamePlaceholder')}
                       />
                     </div>
-                    {form4.formState.errors.username && <p className="text-PayMint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.username.message as string}</p>}
+                    {form4.formState.errors.username && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.username.message as string}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                      {t('onboarding.step4.password')} <span className="text-PayMint-red mx-1">*</span>
+                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                      {t('onboarding.step4.password')} <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text={t('onboarding.step4.passwordTip')} />
                     </label>
                     <div className="relative group">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-PayMint-green transition-colors" size={20} />
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
                         type={showAdminPassword ? "text" : "password"}
                         {...form4.register('password')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.password ? 'border-PayMint-red ring-2 ring-PayMint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder={t('onboarding.step4.passwordPlaceholder')}
                       />
                       <button
@@ -1100,14 +1103,14 @@ export function OnboardingPage() {
                         {showAdminPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
-                    {form4.formState.errors.password && <p className="text-PayMint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.password.message as string}</p>}
+                    {form4.formState.errors.password && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.password.message as string}</p>}
                   </div>
 
                   <div className="pt-4">
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full py-5 bg-PayMint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-PayMint-green/90 transition-all shadow-xl shadow-PayMint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
+                      className="w-full py-5 bg-paymint-green text-black text-xs font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
                     >
                       {isLoading ? <Loader2 className="animate-spin" size={24} /> : null}
                       {t('onboarding.completeLaunch')}
@@ -1128,7 +1131,7 @@ export function OnboardingPage() {
             >
               {/* Top Hero Bar */}
               <div className="relative mb-6">
-                <div className="absolute -inset-1 bg-gradient-to-r from-PayMint-green/30 via-PayMint-green/10 to-transparent rounded-[2rem] blur-xl opacity-60" />
+                <div className="absolute -inset-1 bg-gradient-to-r from-paymint-green/30 via-paymint-green/10 to-transparent rounded-[2rem] blur-xl opacity-60" />
                 <div className="relative bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-3xl p-6 lg:p-8 overflow-hidden">
                   <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
                     {/* Welcome Message (Right in RTL, Left in LTR) */}
@@ -1138,7 +1141,7 @@ export function OnboardingPage() {
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
                           transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                          className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-PayMint-green to-emerald-400 rounded-3xl flex items-center justify-center shadow-2xl shadow-PayMint-green/40"
+                          className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-paymint-green to-emerald-400 rounded-3xl flex items-center justify-center shadow-2xl shadow-paymint-green/40"
                         >
                           <Sparkles size={32} className="text-black" />
                         </motion.div>
@@ -1147,7 +1150,7 @@ export function OnboardingPage() {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white"
+                            className="text-2xl lg:text-3xl font-sans font-bold text-gray-900 dark:text-white"
                           >
                             {t('onboarding.step5.welcomeTitle')}
                           </motion.h2>
@@ -1157,7 +1160,7 @@ export function OnboardingPage() {
                             transition={{ delay: 0.4 }}
                             className="text-gray-500 dark:text-gray-400 mt-1"
                           >
-                            <span className="text-PayMint-green font-bold">{formData.name}</span> {t('onboarding.step5.isReadyToGo')}
+                            <span className="text-paymint-green font-sans font-bold">{formData.name}</span> {t('onboarding.step5.isReadyToGo')}
                           </motion.p>
                         </div>
                       </div>
@@ -1173,7 +1176,7 @@ export function OnboardingPage() {
                         <motion.div
                           animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0, 0.4] }}
                           transition={{ duration: 2, repeat: Infinity }}
-                          className="absolute inset-0 bg-PayMint-green rounded-2xl"
+                          className="absolute inset-0 bg-paymint-green rounded-2xl"
                         />
 
                         <motion.button
@@ -1186,7 +1189,7 @@ export function OnboardingPage() {
                             }
                             window.open(`/owner/establishments?highlight=${formData.establishmentId}`, '_blank');
                           }}
-                          className="relative flex items-center gap-3 bg-PayMint-green text-black px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-PayMint-green/30"
+                          className="relative flex items-center gap-3 bg-paymint-green text-black px-8 py-4 rounded-2xl font-sans font-bold text-lg shadow-xl shadow-paymint-green/30"
                         >
                           <Building2 size={24} />
                           {t('onboarding.step5.openOwnerPortal')}
@@ -1208,7 +1211,7 @@ export function OnboardingPage() {
                         <motion.div
                           animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0, 0.4] }}
                           transition={{ duration: 2, repeat: Infinity }}
-                          className="absolute inset-0 bg-PayMint-green rounded-2xl"
+                          className="absolute inset-0 bg-paymint-green rounded-2xl"
                         />
 
                         <motion.button
@@ -1221,7 +1224,7 @@ export function OnboardingPage() {
                             }
                             window.open(`/owner/establishments?highlight=${formData.establishmentId}`, '_blank');
                           }}
-                          className="relative flex items-center gap-3 bg-PayMint-green text-black px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-PayMint-green/30"
+                          className="relative flex items-center gap-3 bg-paymint-green text-black px-8 py-4 rounded-2xl font-sans font-bold text-lg shadow-xl shadow-paymint-green/30"
                         >
                           <Building2 size={24} />
                           {t('onboarding.step5.openOwnerPortal')}
@@ -1234,7 +1237,7 @@ export function OnboardingPage() {
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
                           transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                          className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-PayMint-green to-emerald-400 rounded-3xl flex items-center justify-center shadow-2xl shadow-PayMint-green/40"
+                          className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-paymint-green to-emerald-400 rounded-3xl flex items-center justify-center shadow-2xl shadow-paymint-green/40"
                         >
                           <Sparkles size={32} className="text-black" />
                         </motion.div>
@@ -1243,7 +1246,7 @@ export function OnboardingPage() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white"
+                            className="text-2xl lg:text-3xl font-sans font-bold text-gray-900 dark:text-white"
                           >
                             {t('onboarding.step5.welcomeTitle')}
                           </motion.h2>
@@ -1253,7 +1256,7 @@ export function OnboardingPage() {
                             transition={{ delay: 0.4 }}
                             className="text-gray-500 dark:text-gray-400 mt-1"
                           >
-                            <span className="text-PayMint-green font-bold">{formData.name}</span> {t('onboarding.step5.isReadyToGo')}
+                            <span className="text-paymint-green font-sans font-bold">{formData.name}</span> {t('onboarding.step5.isReadyToGo')}
                           </motion.p>
                         </div>
                       </div>
@@ -1275,36 +1278,35 @@ export function OnboardingPage() {
                     transition={{ delay: 0.6 }}
                     className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5"
                   >
-                    <div className="flex items-start gap-4 mb-4">
+                    <div className="flex items-start gap-4 mb-2">
                       <div className="w-14 h-14 bg-orange-500/10 dark:bg-orange-500/20 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm transition-colors">
                         <Tablet size={28} className="text-orange-600 dark:text-orange-400" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.posApp')}</h3>
+                        <h3 className="text-lg font-sans font-bold text-gray-900 dark:text-white">{t('onboarding.step5.posApp')}</h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400">{t('onboarding.step5.posAppDesc')}</p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2 pt-2">
                       <a
-                        href={import.meta.env.VITE_ANDROID_DOWNLOAD_URL || '/downloads/PayMint-android.apk'}
+                        href={import.meta.env.VITE_ANDROID_DOWNLOAD_URL || '/downloads/PayMint-universal.apk'}
                         download
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-900 dark:text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-gray-200 dark:border-white/10"
+                        aria-label="Get it on Google Play"
+                        className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
                       >
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z" />
-                        </svg>
-                        {t('onboarding.step5.playStore')}
+                        <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[54px] w-full object-fill rounded-[11px]" />
                       </a>
-                      <div
-                        className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-500 py-3 px-4 rounded-xl text-xs font-bold cursor-not-allowed border border-gray-200 dark:border-white/10"
+                      <a
+                        href={import.meta.env.VITE_IOS_DOWNLOAD_URL || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Download on the App Store"
+                        className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
                       >
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                        </svg>
-                        App Store — Coming Soon
-                      </div>
+                        <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[54px] w-full object-fill rounded-[11px]" />
+                      </a>
                     </div>
                   </motion.div>
 
@@ -1315,37 +1317,33 @@ export function OnboardingPage() {
                     transition={{ delay: 0.7 }}
                     className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5"
                   >
-                    <div className="flex items-start gap-4 mb-4">
+                    <div className="flex items-start gap-4 mb-2">
                       <div className="w-14 h-14 bg-purple-500/10 dark:bg-purple-500/20 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm transition-colors">
                         <Smartphone size={28} className="text-purple-600 dark:text-purple-400" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.ownerApp')}</h3>
+                        <h3 className="text-lg font-sans font-bold text-gray-900 dark:text-white">{t('onboarding.step5.ownerApp')}</h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400">{t('onboarding.step5.ownerAppDesc')}</p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2 pt-2">
                       <a
                         href="https://play.google.com/store/apps/details?id=com.PayMint.owner"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-900 dark:text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-gray-200 dark:border-white/10"
+                        aria-label="Get it on Google Play"
+                        className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
                       >
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z" />
-                        </svg>
-                        {t('onboarding.step5.playStore')}
+                        <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[54px] w-full object-fill rounded-[11px]" />
                       </a>
                       <a
                         href="https://apps.apple.com/app/PayMint-owner/id0000000001"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-900 dark:text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-gray-200 dark:border-white/10"
+                        aria-label="Download on the App Store"
+                        className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
                       >
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                        </svg>
-                        {t('onboarding.step5.appStore')}
+                        <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[54px] w-full object-fill rounded-[11px]" />
                       </a>
                     </div>
                   </motion.div>
@@ -1361,11 +1359,11 @@ export function OnboardingPage() {
                   >
                     {/* Header */}
                     <div className="flex items-center gap-3 pb-3 border-b border-gray-100 dark:border-white/5 mb-3">
-                      <div className="w-10 h-10 bg-PayMint-green/20 rounded-xl flex items-center justify-center">
-                        <Building2 size={20} className="text-PayMint-green" />
+                      <div className="w-10 h-10 bg-paymint-green/20 rounded-xl flex items-center justify-center">
+                        <Building2 size={20} className="text-paymint-green" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.locationReady')}</h3>
+                        <h3 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.locationReady')}</h3>
                         <p className="text-xs text-gray-500">{t('onboarding.step5.setupComplete')}</p>
                       </div>
                     </div>
@@ -1375,7 +1373,7 @@ export function OnboardingPage() {
                       <Hash size={16} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">{t('onboarding.step5.locationId')}</p>
-                        <p className="font-mono text-gray-900 dark:text-white font-bold text-sm truncate">{formData.establishmentLoginId}</p>
+                        <p className="font-mono text-gray-900 dark:text-white font-sans font-bold text-sm truncate">{formData.establishmentLoginId}</p>
                       </div>
                     </div>
 
@@ -1384,14 +1382,14 @@ export function OnboardingPage() {
                       <Lock size={16} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">{t('onboarding.step5.password')}</p>
-                        <p className="text-gray-900 dark:text-white font-bold text-sm truncate font-mono tracking-wider">
+                        <p className="text-gray-900 dark:text-white font-sans font-bold text-sm truncate font-mono tracking-wider">
                           {showEstablishmentPassword ? formData.establishmentPassword : '••••••••'}
                         </p>
                       </div>
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
-                          className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-400 dark:text-gray-500 hover:text-PayMint-green transition-colors"
+                          className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-400 dark:text-gray-500 hover:text-paymint-green transition-colors"
                           title={showEstablishmentPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
                         >
                           {showEstablishmentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -1401,7 +1399,7 @@ export function OnboardingPage() {
                             navigator.clipboard.writeText(formData.establishmentPassword);
                             toast.success(t('common.copied'));
                           }}
-                          className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-400 dark:text-gray-500 hover:text-PayMint-green transition-colors"
+                          className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-400 dark:text-gray-500 hover:text-paymint-green transition-colors"
                           title={t('common.copy')}
                         >
                           <Copy size={16} />
@@ -1424,7 +1422,7 @@ export function OnboardingPage() {
                       <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center">
                         <BookOpen size={20} className="text-emerald-500" />
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.resourcesAndHelp')}</h3>
+                      <h3 className="text-lg font-sans font-bold text-gray-900 dark:text-white">{t('onboarding.step5.resourcesAndHelp')}</h3>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -1432,12 +1430,12 @@ export function OnboardingPage() {
                       <a
                         href="/docs/PayMint-user-manual.md"
                         download="Paymint_User_Manual.md"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-PayMint-green/50 hover:bg-PayMint-green/5 transition-all"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
                       >
                         <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <BookOpen size={20} className="text-blue-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.userManual')}</h4>
+                        <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.userManual')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.completeGuide')}</p>
                       </a>
 
@@ -1446,12 +1444,12 @@ export function OnboardingPage() {
                         href="/docs/PayMint-setup-manual.pdf"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-PayMint-green/50 hover:bg-PayMint-green/5 transition-all"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
                       >
                         <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Settings size={20} className="text-amber-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.setupManual')}</h4>
+                        <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.setupManual')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.hardwareSetup')}</p>
                       </a>
 
@@ -1460,12 +1458,12 @@ export function OnboardingPage() {
                         href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-PayMint-green/50 hover:bg-PayMint-green/5 transition-all"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
                       >
                         <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <PlayCircle size={20} className="text-red-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.videoGuide')}</h4>
+                        <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.videoGuide')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.quickStart')}</p>
                       </a>
 
@@ -1474,12 +1472,12 @@ export function OnboardingPage() {
                         href="/qa"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-PayMint-green/50 hover:bg-PayMint-green/5 transition-all"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
                       >
                         <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <HelpCircle size={20} className="text-purple-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.qaCenter')}</h4>
+                        <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.qaCenter')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.faqs')}</p>
                       </a>
 
@@ -1488,12 +1486,12 @@ export function OnboardingPage() {
                         href="/legal/privacy"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-PayMint-green/50 hover:bg-PayMint-green/5 transition-all"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
                       >
                         <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Shield size={20} className="text-emerald-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.privacy')}</h4>
+                        <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.privacy')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.dataProtection')}</p>
                       </a>
 
@@ -1502,12 +1500,12 @@ export function OnboardingPage() {
                         href="/legal/terms"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-PayMint-green/50 hover:bg-PayMint-green/5 transition-all"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
                       >
                         <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Scale size={20} className="text-blue-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.terms')}</h4>
+                        <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.terms')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.agreement')}</p>
                       </a>
 
@@ -1516,12 +1514,12 @@ export function OnboardingPage() {
                         href="/about"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-PayMint-green/50 hover:bg-PayMint-green/5 transition-all col-span-2 sm:col-span-1"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all col-span-2 sm:col-span-1"
                       >
-                        <div className="w-10 h-10 bg-PayMint-green/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                          <Info size={20} className="text-PayMint-green" />
+                        <div className="w-10 h-10 bg-paymint-green/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <Info size={20} className="text-paymint-green" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.aboutUs')}</h4>
+                        <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.aboutUs')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.ourStory')}</p>
                       </a>
                     </div>
@@ -1537,7 +1535,7 @@ export function OnboardingPage() {
                 className="mt-6 text-center"
               >
                 <p className="text-sm text-gray-500">
-                  {t('onboarding.step5.needHelp')} <a href="mailto:support@PayMint.com" className="text-PayMint-green font-bold hover:underline">support@PayMint.com</a>
+                  {t('onboarding.step5.needHelp')} <a href="mailto:support@PayMint.com" className="text-paymint-green font-sans font-bold hover:underline">support@PayMint.com</a>
                 </p>
               </motion.div>
 

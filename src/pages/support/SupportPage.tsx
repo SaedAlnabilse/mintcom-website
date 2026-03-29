@@ -145,7 +145,7 @@ export const SupportPage = () => {
               {t('support.hero.titlePart1')} <span className="text-paymint-green">{t('support.hero.titleHighlight')}</span> {t('support.hero.titlePart2')}
             </h1>
 
-            <p className="text-lg text-gray-500 dark:text-gray-400 font-medium mb-10 max-w-xl mx-auto">
+            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-10 max-w-xl mx-auto">
               {t('support.hero.subtitle')}
             </p>
 
@@ -197,7 +197,7 @@ export const SupportPage = () => {
                               <h4 className="font-bold text-gray-900 dark:text-white truncate group-hover:text-paymint-green transition-colors">
                                 {article.title}
                               </h4>
-                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mt-0.5">
                                 {article.category}
                               </p>
                             </div>
@@ -208,7 +208,7 @@ export const SupportPage = () => {
                     ) : (
                       <div className="px-6 py-10 text-center">
                         <Search className="mx-auto text-gray-300 dark:text-gray-600 mb-3" size={32} />
-                        <p className="text-gray-500 dark:text-gray-400 font-medium">
+                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                           {t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })}
                         </p>
                       </div>
@@ -243,7 +243,7 @@ export const SupportPage = () => {
         <div className="container mx-auto px-8 md:px-16 lg:px-24">
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-3">{t('support.categories.title')}</h2>
-            <p className="text-gray-500 dark:text-gray-400 font-medium">{t('support.categories.subtitle')}</p>
+            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{t('support.categories.subtitle')}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -264,11 +264,11 @@ export const SupportPage = () => {
                   <h3 className="text-lg font-bold mb-2 group-hover:text-paymint-green transition-colors">
                     {category.title}
                   </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-4">
                     {category.description}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-gray-400">{t('support.articles.count', { count: category.articles })}</span>
+                    <span className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{t('support.articles.count', { count: category.articles })}</span>
                     <ChevronRight size={16} className="text-gray-400 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
                   </div>
                 </Link>
@@ -294,10 +294,10 @@ export const SupportPage = () => {
                 <h2 className="text-3xl md:text-4xl font-black mb-4">
                   {t('support.manual.title')}
                 </h2>
-                <p className="text-lg text-gray-600 dark:text-gray-400 font-medium mb-8 max-w-2xl">
+                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-8 max-w-2xl">
                   {t('support.manual.description')}
                 </p>
-                <div className="flex flex-wrap justify-center lg:justify-start gap-4 text-sm text-gray-500 font-bold">
+                <div className="flex flex-wrap justify-center lg:justify-start gap-4 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                   <span className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-white/5 rounded-lg border border-gray-100 dark:border-white/10">
                     PDF
                   </span>
@@ -359,11 +359,11 @@ export const SupportPage = () => {
                         <h4 className="font-bold group-hover:text-paymint-green transition-colors">
                           {article.title}
                         </h4>
-                        <span className="text-xs font-medium text-gray-400">{article.category}</span>
+                        <span className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{article.category}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <div className="hidden md:flex items-center gap-3 text-xs text-gray-400">
+                      <div className="hidden md:flex items-center gap-3 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                         <span className="flex items-center gap-1">
                           <Clock size={12} /> {article.readTime}
                         </span>

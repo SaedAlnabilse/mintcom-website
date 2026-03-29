@@ -479,17 +479,13 @@ export function ReportsPage() {
                     navigate(`/dashboard/${locationSlug}/reports/${type.id}`);
                   }
                 }}
-                className={`relative flex-none lg:flex-1 flex flex-col xl:flex-row items-center justify-center gap-1.5 xl:gap-2 px-3 py-2.5 xl:py-3 rounded-xl transition-all duration-300 isolate min-w-[60px] lg:min-w-0 ${isSelected
+                className={`relative flex-none lg:flex-1 flex flex-col xl:flex-row items-center justify-center gap-1.5 xl:gap-2 px-3 py-2.5 xl:py-3 rounded-xl transition-none isolate min-w-[60px] lg:min-w-0 ${isSelected
                   ? 'text-black shadow-lg shadow-paymint-green/20'
                   : 'bg-white dark:bg-[#0B1120] text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 border border-gray-200 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/20'
                   }`}
               >
                 {isSelected && (
-                  <motion.div
-                    layoutId="active-report-tab"
-                    className="absolute inset-0 bg-[#7CC39F] rounded-xl"
-                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                  />
+                  <div className="absolute inset-0 bg-[#7CC39F] rounded-xl" />
                 )}
                 <div className="flex items-center justify-center relative z-10">
                   <type.icon size={14} className={isSelected ? 'text-black' : 'text-gray-400'} />
@@ -550,7 +546,7 @@ export function ReportsPage() {
                 onChange={(val) => setQuickDate(val || 'today')}
                 options={localizedDateOptions}
                 showAllOption={false}
-                placeholder={t('owner.overview.period')}
+                placeholder={t('owner.overview.selectPeriod')}
                 className="w-full h-full"
                 buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
                   ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
@@ -581,16 +577,17 @@ export function ReportsPage() {
               const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
               return (
                 <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
-                  <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>{t('owner.overview.activeHours')}</span>
-                    </div>
+                  <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
+                    ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
+                    : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-paymint-green/50'
+                    }`}>
                     <div className="flex items-center gap-2 justify-between relative">
                       <CustomTimePicker
                         value={startTime}
                         onChange={(val) => { setStartTime(val); setSelectedShiftId(null); }}
                         className="w-[85px] sm:w-[95px]"
                         showIcon={true}
+                        isActive={isTimeFiltered}
                       />
                       <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
                       <CustomTimePicker
@@ -598,6 +595,7 @@ export function ReportsPage() {
                         onChange={(val) => { setEndTime(val); setSelectedShiftId(null); }}
                         className="w-[85px] sm:w-[95px]"
                         showIcon={true}
+                        isActive={isTimeFiltered}
                       />
                     </div>
                   </div>

@@ -97,16 +97,18 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
     <>
       <footer className={`bg-gray-50 dark:bg-[#050505] border-t border-gray-200 dark:border-white/10 ${minimal ? 'pt-10 pb-6' : 'pt-16 lg:pt-20 pb-10'} transition-colors duration-300`} dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
         <div className="container mx-auto px-8 md:px-16 lg:px-24">
-          <div className={minimal ? "flex flex-col sm:flex-row justify-between items-center gap-8 mb-8" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20"}>
+          <div className={minimal ? "flex flex-col sm:flex-row justify-between items-center gap-8 mb-8" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20 items-start"}>
             {/* Brand */}
-            <div className={minimal ? "space-y-4" : "space-y-8"} dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-              <Logo size="lg" />
+            <div className={minimal ? "space-y-4" : "space-y-8 flex flex-col"} dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+              <div className="-mt-1.5 h-10 flex items-center">
+                <Logo size="lg" />
+              </div>
               {!minimal && (
-                <>
-                  <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed max-w-xs">
+                <div className="pt-1.5">
+                  <p className="text-sm font-bold text-gray-500 dark:text-gray-400 max-w-xs leading-6">
                     {t('brand.description')}
                   </p>
-                  <div className="flex gap-4">
+                  <div className="flex gap-4 mt-8">
                     {[
                       { Icon: Instagram, href: 'https://www.instagram.com' },
                       { Icon: Youtube, href: 'https://www.youtube.com' }
@@ -122,14 +124,14 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
                       </a>
                     ))}
                   </div>
-                </>
+                </div>
               )}
             </div>
 
             {/* Product */}
             {!minimal && (
               <div>
-                <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">{t('footer.product')}</h4>
+                <div className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-8 transition-colors">{t('footer.product')}</div>
                 <ul className="space-y-4">
                   {productLinks.map((link) => (
                     <li key={link.name}>
@@ -168,7 +170,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
             {/* Company */}
             {!minimal && (
               <div>
-                <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">{t('footer.company')}</h4>
+                <div className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-8 transition-colors">{t('footer.company')}</div>
                 <ul className="space-y-4">
                   {companyLinks.map((link) => (
                     <li key={link.name}>
@@ -207,7 +209,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
             {/* Resources */}
             {!minimal && (
               <div>
-                <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">{t('footer.resources')}</h4>
+                <div className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-8 transition-colors">{t('footer.resources')}</div>
                 <ul className="space-y-4">
                   {resourceLinks.map((link) => (
                     <li key={link.name}>
@@ -236,15 +238,15 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
 
             {/* Contact */}
             <div className={minimal ? "flex items-center" : ""}>
-              {!minimal && <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">{t('footer.getInTouch')}</h4>}
+              {!minimal && <div className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-8 transition-colors">{t('footer.getInTouch')}</div>}
               <ul className={minimal ? "flex flex-col sm:flex-row items-center gap-6" : "space-y-6"}>
-                <li className={`flex items-center gap-3 text-gray-600 dark:text-gray-400 font-medium ${minimal ? 'text-sm' : ''}`}>
+                <li className="flex items-center gap-3 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                   <div className={`${minimal ? 'w-8 h-8' : 'w-8 h-8'} rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center shrink-0 aspect-square`}>
                     <Mail size={14} className="text-paymint-green" />
                   </div>
                   <span dir="ltr">hello@paymint.com</span>
                 </li>
-                <li className={`flex items-center gap-3 text-gray-600 dark:text-gray-400 font-medium ${minimal ? 'text-sm' : ''}`}>
+                <li className="flex items-center gap-3 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                   <div className={`${minimal ? 'w-8 h-8' : 'w-8 h-8'} rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center shrink-0 aspect-square`}>
                     <Phone size={14} className="text-paymint-green" />
                   </div>
@@ -255,16 +257,16 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
           </div>
 
           <div className={`border-t border-gray-200 dark:border-white/5 ${minimal ? 'pt-6' : 'pt-10'} flex flex-col md:flex-row justify-between items-center gap-6`}>
-            <p className="text-gray-500 dark:text-gray-500 text-sm font-bold">
+            <p className="text-gray-500 dark:text-gray-400 text-sm font-bold">
               {t('brand.copyright')}
             </p>
             <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-8 gap-y-4">
-              <Link to="/about" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest">{t('footer.aboutUs')}</Link>
-              <a href="/legal/privacy" target="_blank" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest">{t('footer.privacyPolicy')}</a>
-              <a href="/legal/terms" target="_blank" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest">{t('footer.termsOfService')}</a>
+              <Link to="/about" className="text-gray-500 dark:text-gray-400 text-sm font-bold hover:text-paymint-green transition-colors">{t('footer.aboutUs')}</Link>
+              <a href="/legal/privacy" target="_blank" className="text-gray-500 dark:text-gray-400 text-sm font-bold hover:text-paymint-green transition-colors">{t('footer.privacyPolicy')}</a>
+              <a href="/legal/terms" target="_blank" className="text-gray-500 dark:text-gray-400 text-sm font-bold hover:text-paymint-green transition-colors">{t('footer.termsOfService')}</a>
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('open-feedback'))}
-                className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest"
+                className="text-gray-500 dark:text-gray-400 text-sm font-bold hover:text-paymint-green transition-colors"
               >
                 Feedback
               </button>
