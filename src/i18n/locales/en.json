@@ -567,7 +567,8 @@
     "launcher": {
       "ask": "Ask",
       "help": "Help",
-      "tasks": "Tasks"
+      "tasks": "Tasks",
+      "help_message": "How can I help you?"
     },
     "navigation": {
       "takeMe": "Take me there"

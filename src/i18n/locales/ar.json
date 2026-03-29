@@ -565,7 +565,8 @@
     "launcher": {
       "ask": "اسأل",
       "help": "مساعدة",
-      "tasks": "المهام"
+      "tasks": "المهام",
+      "help_message": "كيف يمكنني مساعدتك؟"
     },
     "navigation": {
       "takeMe": "خذني إلى هناك"
