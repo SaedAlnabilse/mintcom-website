@@ -7,6 +7,7 @@ import { Logo } from './Logo';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useAuth } from '../context/AuthContext';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 export const Navbar = () => {
   const { t } = useTranslation();
@@ -14,6 +15,8 @@ export const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useScrollLock(isMobileMenuOpen);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -39,13 +42,16 @@ export const Navbar = () => {
   return (
     <nav
       dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-      className={`fixed w-full z-50 transition-all duration-500 ease-in-out ${isScrolled
-        ? 'bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl py-4 border-b border-gray-200 dark:border-white/5 shadow-sm'
-        : 'bg-transparent py-6'
-        }`}
+      className={`fixed w-full z-50 transition-[background-color,padding,border-color,box-shadow] duration-300 ease-in-out ${
+        isMobileMenuOpen
+          ? 'bg-white dark:bg-[#050505] py-4'
+          : (isScrolled
+            ? 'bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl py-4 border-b border-gray-200 dark:border-white/5 shadow-sm'
+            : 'bg-transparent py-6')
+      }`}
     >
-      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl flex justify-between items-center">
-        <Link to="/" className="flex items-center group">
+      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl flex justify-between items-center relative z-[60]">
+        <Link to="/" className="flex items-center group" onClick={() => setIsMobileMenuOpen(false)}>
           <Logo size="lg" className="transition-transform duration-500" />
         </Link>
 
@@ -128,6 +134,7 @@ export const Navbar = () => {
         </div>
 
         <div className="lg:hidden flex items-center gap-2 sm:gap-4">
+          <LanguageSwitcher />
           <ThemeToggle />
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -144,15 +151,16 @@ export const Navbar = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
             id="mobile-menu"
             role="navigation"
             aria-label={t('common.aria.mobileNav')}
-            className="fixed inset-0 z-[40] bg-white dark:bg-[#050505] pt-32 px-6 sm:px-10 lg:hidden flex flex-col items-center overflow-y-auto"
+            className="fixed inset-0 z-50 bg-white dark:bg-[#050505] pt-32 px-6 sm:px-10 lg:hidden flex flex-col items-center overflow-y-auto will-change-[opacity]"
           >
-            <div className="w-full max-w-sm space-y-10">
+            <div className="w-full max-w-sm space-y-10 pb-20">
               {!isAuthenticated && (
                 <>
                   <div className="flex flex-col items-center gap-8">

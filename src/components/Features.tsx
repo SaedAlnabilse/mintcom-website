@@ -134,9 +134,18 @@ export const Features = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-[12px] bg-paymint-green/10 border border-paymint-green/20 mb-6">
-            <div className="w-1.5 h-1.5 rounded-full bg-paymint-green" />
-            <span className="text-paymint-green text-xs font-bold uppercase tracking-wider">{t('landing.features.badge')}</span>
+          <div className="group relative inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[12px] bg-paymint-green/5 dark:bg-paymint-green/10 text-paymint-green font-bold text-xs mb-8 border border-paymint-green/20 backdrop-blur-md shadow-[0_0_15px_rgba(124,195,159,0.05)] hover:border-paymint-green/40 transition-all duration-300 mx-auto">
+            <div className="relative flex items-center justify-center w-2 h-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-paymint-green relative z-10" />
+              <motion.div
+                animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 2, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute inset-0 bg-paymint-green/40 rounded-full"
+              />
+            </div>
+            <span className="tracking-widest uppercase text-[10px] md:text-[11px] leading-none">
+              {t('landing.features.badge')}
+            </span>
           </div>
 
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">

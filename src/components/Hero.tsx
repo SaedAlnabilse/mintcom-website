@@ -75,10 +75,19 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 rtl:gap-3 px-4 py-2 rounded-[12px] bg-paymint-green/10 text-paymint-green font-medium text-sm mb-8 border border-paymint-green/20"
+              className="group relative inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[12px] bg-paymint-green/5 dark:bg-paymint-green/10 text-paymint-green font-bold text-xs mb-8 border border-paymint-green/20 backdrop-blur-md shadow-[0_0_15px_rgba(124,195,159,0.05)] hover:border-paymint-green/40 transition-all duration-300"
             >
-              <Zap size={14} fill="currentColor" />
-              <span>{t('landing.hero.badge')}</span>
+              <div className="relative flex items-center justify-center w-5 h-5 rounded-full bg-paymint-green/20 text-paymint-green overflow-hidden">
+                <Zap size={11} fill="currentColor" className="relative z-10" />
+                <motion.div
+                  animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute inset-0 bg-paymint-green/30"
+                />
+              </div>
+              <span className="tracking-widest uppercase text-[10px] md:text-[11px] leading-none">
+                {t('landing.hero.badge')}
+              </span>
             </motion.div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold font-magilio mb-8 leading-[1.1] rtl:leading-[1.2] tracking-tight">

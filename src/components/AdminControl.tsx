@@ -31,7 +31,7 @@ export const AdminControl = () => {
       <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
 
       <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+        <div className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16">
 
           {/* Left Side: Animated Mobile App Mockup */}
           <motion.div
@@ -193,12 +193,25 @@ export const AdminControl = () => {
             transition={{ duration: 0.8 }}
             className="w-full lg:w-1/2"
           >
-            <div className="flex items-center gap-3 mb-6">
-              <span className="p-2 bg-paymint-green/10 rounded-lg">
-                <Laptop size={20} className="text-paymint-green" />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="group relative inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[12px] bg-paymint-green/5 dark:bg-paymint-green/10 text-paymint-green font-bold text-xs mb-8 border border-paymint-green/20 backdrop-blur-md shadow-[0_0_15px_rgba(124,195,159,0.05)] hover:border-paymint-green/40 transition-all duration-300"
+            >
+              <div className="relative flex items-center justify-center w-5 h-5 rounded-[6px] bg-paymint-green/20 text-paymint-green overflow-hidden">
+                <Laptop size={11} className="relative z-10" />
+                <motion.div
+                  animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute inset-0 bg-paymint-green/30"
+                />
+              </div>
+              <span className="tracking-widest uppercase text-[10px] md:text-[11px] leading-none">
+                {t('landing.admin.badge')}
               </span>
-              <span className="text-paymint-green font-bold tracking-wide text-sm">{t('landing.admin.badge')}</span>
-            </div>
+            </motion.div>
 
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
               <SplitText text={t('landing.admin.title1')} /> <br />
