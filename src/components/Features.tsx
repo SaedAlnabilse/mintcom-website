@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { ShieldCheck, Zap, Settings, Store, Play } from 'lucide-react';
+import { ShieldCheck, Zap, Settings, Store, Play, Sparkles } from 'lucide-react';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -134,19 +134,25 @@ export const Features = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <div className="group relative inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[12px] bg-paymint-green/5 dark:bg-paymint-green/10 text-paymint-green font-bold text-xs mb-8 border border-paymint-green/20 backdrop-blur-md shadow-[0_0_15px_rgba(124,195,159,0.05)] hover:border-paymint-green/40 transition-all duration-300 mx-auto">
-            <div className="relative flex items-center justify-center w-2 h-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-paymint-green relative z-10" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="group relative inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[12px] bg-paymint-green/5 dark:bg-paymint-green/10 text-paymint-green font-bold text-xs mb-8 border border-paymint-green/20 backdrop-blur-md shadow-[0_0_15px_rgba(124,195,159,0.05)] hover:border-paymint-green/40 transition-all duration-300 mx-auto"
+          >
+            <div className="relative flex items-center justify-center w-5 h-5 rounded-[6px] bg-paymint-green/20 text-paymint-green overflow-hidden">
+              <Sparkles size={11} className="relative z-10" />
               <motion.div
-                animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 2, 1] }}
+                animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute inset-0 bg-paymint-green/40 rounded-full"
+                className="absolute inset-0 bg-paymint-green/30"
               />
             </div>
             <span className="tracking-widest uppercase text-[10px] md:text-[11px] leading-none">
               {t('landing.features.badge')}
             </span>
-          </div>
+          </motion.div>
 
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
             <SplitText text={t('landing.features.title') + ' ' + t('landing.features.titleHighlight')} />

@@ -77,7 +77,7 @@ export const Pricing = () => {
           >
             <div className="bg-[#1a1a1a] border border-white/5 rounded-[3rem] p-10 lg:p-16 shadow-2xl relative overflow-hidden group">
               <div className="flex flex-col lg:flex-row items-center lg:items-stretch gap-12 lg:gap-20">
-                
+
                 {/* Left Side: Pricing & CTA */}
                 <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left">
                   <div className="w-full">
@@ -92,30 +92,27 @@ export const Pricing = () => {
                     <div className="bg-black/40 p-1.5 rounded-2xl flex items-center mb-12 w-full relative border border-white/5">
                       <button
                         onClick={() => setIsYearly(false)}
-                        className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 ${
-                          !isYearly ? 'text-black' : 'text-gray-500 hover:text-gray-300'
-                        }`}
+                        className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 ${!isYearly ? 'text-black' : 'text-gray-500 hover:text-gray-300'
+                          }`}
                       >
                         {t('landing.pricing.monthly')}
                       </button>
                       <button
                         onClick={() => setIsYearly(true)}
-                        className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 flex items-center justify-center gap-2 ${
-                          isYearly ? 'text-black' : 'text-gray-500 hover:text-gray-300'
-                        }`}
+                        className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 flex items-center justify-center gap-2 ${isYearly ? 'text-black' : 'text-gray-500 hover:text-gray-300'
+                          }`}
                       >
                         {t('landing.pricing.yearly')}
-                        <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black tracking-wider transition-all duration-300 ${
-                          isYearly ? 'bg-black text-[#d4ff33]' : 'bg-[#d4ff33] text-black'
-                        }`}>
+                        <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black tracking-wider transition-all duration-300 ${isYearly ? 'bg-black text-[#d4ff33]' : 'bg-[#d4ff33] text-black'
+                          }`}>
                           {t('landing.pricing.save')}
                         </span>
                       </button>
 
                       {/* Static Background (Instantly switches) */}
                       <div
-                        style={{ 
-                          transform: t('common.locale') === 'ar' 
+                        style={{
+                          transform: t('common.locale') === 'ar'
                             ? (isYearly ? 'translateX(0%)' : 'translateX(100%)')
                             : (isYearly ? 'translateX(100%)' : 'translateX(0%)')
                         }}
@@ -153,7 +150,7 @@ export const Pricing = () => {
                         <Tag size={16} className="text-[#d4ff33]" />
                       </div>
                       <span className="text-gray-400 text-sm font-semibold tracking-wide">
-                        <Trans 
+                        <Trans
                           i18nKey="landing.pricing.additionalDiscount"
                           defaults="Additional locations receive a <1>DISCOUNT</1> for "
                           components={{ 1: <span className="font-black text-[#d4ff33] uppercase" /> }}
@@ -178,7 +175,7 @@ export const Pricing = () => {
                       {t('landing.pricing.includedDesc', 'All features included in a single plan.')}
                     </p>
                   </div>
-                  
+
                   <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-y-6 gap-x-8">
                     {features.map((feature, i) => (
                       <li key={i} className="flex items-center gap-5 text-gray-300 font-semibold text-lg hover:text-white transition-colors group/item">
