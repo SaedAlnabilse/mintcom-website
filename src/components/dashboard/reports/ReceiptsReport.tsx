@@ -28,7 +28,6 @@ interface ReceiptsReportProps {
 }
 
 
-
 export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsReportProps) {
     const { t } = useTranslation();
     const { account } = useAuth();

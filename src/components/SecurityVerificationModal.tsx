@@ -33,7 +33,7 @@ interface SecurityVerificationModalProps {
     onSuccess: () => void;
     targetId: string;
     targetName: string;
-    mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'delete-employee' | 'dissolve-establishment' | 'reactivate';
+    mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'delete-employee' | 'dissolve-establishment' | 'reactivate' | 'delete-customer';
 }
 
 export function SecurityVerificationModal({
@@ -57,6 +57,17 @@ export function SecurityVerificationModal({
 
     const getModeConfig = () => {
         switch (mode) {
+            case 'delete-customer':
+                return {
+                    title: t('security.modes.deleteCustomer.title'),
+                    warning: t('security.modes.deleteCustomer.warning', { name: targetName }),
+                    buttonText: t('security.modes.deleteCustomer.button'),
+                    icon: ShieldAlert,
+                    color: 'text-red-500',
+                    bg: 'bg-red-500/10',
+                    endpoint: `/api/customers/${targetId}`,
+                    method: 'delete'
+                };
             case 'cancel':
                 return {
                     title: t('security.modes.cancel.title'),
@@ -226,9 +237,9 @@ export function SecurityVerificationModal({
                                 </div>
                             </div>
 
-                            <div className="flex gap-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-500">
+                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-500">
                                 <AlertTriangle size={20} className="shrink-0" />
-                                <p className="text-sm font-bold text-gray-500">
+                                <p className="text-sm font-bold text-gray-500 leading-6">
                                     {config.warning}
                                 </p>
                             </div>
@@ -288,6 +299,21 @@ export function SecurityVerificationModal({
                                         </button>
                                     </div>
                                     {errors.password && <p className="ml-1 text-xs font-black text-paymint-red tracking-wide">{errors.password}</p>}
+                                </div>
+
+                                {/* Master Key Info Box */}
+                                <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 flex items-start gap-3">
+                                    <div className="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                                        <span className="text-[10px] font-black">i</span>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-xs font-black text-blue-700 dark:text-blue-400 tracking-wider">
+                                            {t('security.masterKeyInfo.title', 'WHAT IS A MASTER ACCESS KEY?')}
+                                        </p>
+                                        <p className="text-[11px] leading-relaxed font-bold text-blue-600/80 dark:text-blue-400/70 uppercase">
+                                            {t('security.masterKeyInfo.description', 'THIS IS YOUR PRIMARY ACCOUNT PASSWORD. YOU CAN RESET IT FROM YOUR PROFILE SETTINGS IF YOU HAVE FORGOTTEN IT.')}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 

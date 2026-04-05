@@ -172,10 +172,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                             {/* 1. Summary Cards Row */}
                             <div className="grid grid-cols-2 gap-4">
                                 {/* PAY-IN Card */}
-                                <div className="relative overflow-hidden rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 p-5 group">
-                                    <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-opacity">
-                                        <ArrowUpRight size={60} className="text-paymint-green" />
-                                    </div>
+                                <div className="relative overflow-hidden rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 p-5">
                                     <div className="relative z-10 flex flex-col">
                                         <div className="flex items-center gap-2 mb-3">
                                             <div className="w-8 h-8 rounded-lg bg-white dark:bg-white/5 flex items-center justify-center shadow-sm">
@@ -190,10 +187,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                 </div>
 
                                 {/* PAY-OUT Card */}
-                                <div className="relative overflow-hidden rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 p-5 group">
-                                    <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-opacity">
-                                        <ArrowDownLeft size={60} className="text-red-500" />
-                                    </div>
+                                <div className="relative overflow-hidden rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 p-5">
                                     <div className="relative z-10 flex flex-col">
                                         <div className="flex items-center gap-2 mb-3">
                                             <div className="w-8 h-8 rounded-lg bg-white dark:bg-white/5 flex items-center justify-center shadow-sm">
@@ -227,36 +221,34 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                         {logs.map((log) => (
                                             <div
                                                 key={log.id}
-                                                className="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10 transition-colors group"
+                                                className="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-white/5"
                                             >
                                                 <div className="flex items-center gap-4">
                                                     {/* Icon Box */}
-                                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border transition-colors ${log.type === 'PAY_IN'
-                                                        ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20 group-hover:bg-paymint-green group-hover:text-white'
-                                                        : 'bg-red-500/10 text-red-500 border-red-500/20 group-hover:bg-red-500 group-hover:text-white'
+                                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${log.type === 'PAY_IN'
+                                                        ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                                                        : 'bg-red-500/10 text-red-500 border-red-500/20'
                                                         }`}>
                                                         {log.type === 'PAY_IN' ? <ArrowUpRight size={20} className={t('common.locale') === 'ar' ? '-rotate-90' : ''} /> : <ArrowDownLeft size={20} className={t('common.locale') === 'ar' ? '-rotate-90' : ''} />}
                                                     </div>
 
                                                     {/* Details */}
-                                                    <div>
-                                                        <div className="flex items-center gap-2 mb-0.5">
-                                                            <h4 className="text-sm font-bold text-gray-900 dark:text-white">
-                                                                {log.reason}
-                                                            </h4>
-                                                            <span className="text-xs font-medium text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded border border-gray-200 dark:border-white/10">
-                                                                {format(new Date(log.createdAt), 'MMM dd, HH:mm', { locale: getDateLocale(t('common.locale')) })}
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="flex items-center gap-1">
-                                                                <User size={10} className="text-gray-400" />
-                                                                <span className="text-xs text-gray-500">{log.userName}</span>
+                                                    <div className="flex flex-col gap-1.5">
+                                                        <span className="text-[10px] font-bold text-gray-400 bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded-md border border-gray-200 dark:border-white/10 w-fit">
+                                                            {format(new Date(log.createdAt), 'MMM dd, HH:mm', { locale: getDateLocale(t('common.locale')) })}
+                                                        </span>
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex items-center gap-1.5">
+                                                                <User size={12} className="text-gray-400" />
+                                                                <span className="text-xs font-bold text-gray-500">{log.userName}</span>
                                                             </div>
-                                                            {log.note && (
+                                                            {(log.reason || log.note) && (
                                                                 <>
-                                                                    <div className="w-0.5 h-0.5 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                                    <span className="text-xs text-gray-500 truncate max-w-[150px]">{log.note}</span>
+                                                                    <span className="text-gray-300 dark:text-white/10 font-bold">•</span>
+                                                                    <span className="text-xs font-bold text-gray-400 truncate max-w-[150px] sm:max-w-[250px]">
+                                                                        {log.reason || log.note}
+                                                                        {log.reason && log.note && log.reason !== log.note ? ` (${log.note})` : ''}
+                                                                    </span>
                                                                 </>
                                                             )}
                                                         </div>
@@ -264,7 +256,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                                 </div>
 
                                                 {/* Amount */}
-                                                <div className={`text-right font-bold tabular-nums ${log.type === 'PAY_IN' ? 'text-paymint-green' : 'text-red-500'
+                                                <div className={`text-xl font-bold tabular-nums shrink-0 ${log.type === 'PAY_IN' ? 'text-paymint-green' : 'text-red-500'
                                                     }`} dir="ltr">
                                                     {log.type === 'PAY_IN' ? '+' : '-'}{formatCurrency(Math.abs(log.amount))}
                                                 </div>

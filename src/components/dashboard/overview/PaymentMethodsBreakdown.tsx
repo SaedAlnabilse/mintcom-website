@@ -12,7 +12,7 @@ interface PaymentMethodsBreakdownProps {
 
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899'];
 
-export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdown({ paymentMethodBreakdown, viewMode }: PaymentMethodsBreakdownProps) {
+export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdown({ paymentMethodBreakdown }: PaymentMethodsBreakdownProps) {
   const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
@@ -30,12 +30,12 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
             </div>
             <div className="pt-0.5">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('dashboard.paymentMethods.title')}</h3>
-              <p className="card-subtitle">{viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h')} {t('dashboard.paymentMethods.distribution')}</p>
+              <p className="card-subtitle">{t('dashboard.paymentMethods.distributionOverview', { defaultValue: 'Shift Distribution Overview' })}</p>
             </div>
           </div>
           <button
             onClick={() => navigate(`/dashboard/${locationSlug}/reports/payments`)}
-            className="text-xs font-bold text-paymint-green hover:underline tracking-wide"
+            className="text-xs font-bold text-paymint-green hover:underline tracking-wide mt-1.5"
           >
             {t('common.viewAll')}
           </button>

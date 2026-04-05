@@ -41,7 +41,8 @@ import {
   HelpCircle,
   Shield,
   Scale,
-  Info
+  Info,
+  Globe
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
@@ -65,28 +66,21 @@ export function OnboardingPage() {
   const step1Schema = z.object({
     name: z.string().min(1, t('onboarding.step1.errors.nameRequired')),
     type: z.string().min(1, t('onboarding.step1.errors.typeRequired')),
+    country: z.string().min(1, t('onboarding.step1.errors.countryRequired', { defaultValue: 'Country is required' })),
     address: z.string().min(1, t('onboarding.step1.errors.addressRequired')),
     currency: z.string().min(1, t('onboarding.step1.errors.currencyRequired')),
   });
 
-  // Step 2: Payment Method (Mock)
+  // Step 2: Location Login
   const step2Schema = z.object({
-    cardNumber: z.string().min(16, t('onboarding.step2.errors.cardNumberMin')).max(19),
-    expiryDate: z.string().min(5, t('onboarding.step2.errors.expiryRequired')),
-    cvc: z.string().min(3, t('onboarding.step2.errors.cvcRequired')),
-    cardName: z.string().min(1, t('onboarding.step2.errors.cardNameRequired')),
-  });
-
-  // Step 3: Location Login
-  const step3Schema = z.object({
     establishmentLoginId: z.string()
       .min(4, t('onboarding.step3.errors.idMin'))
       .regex(/^[a-zA-Z0-9_-]+$/, t('onboarding.step3.errors.idRegex')),
     establishmentPassword: z.string().min(6, t('onboarding.step3.errors.passwordMin')),
   });
 
-  // Step 4: Admin Access
-  const step4Schema = z.object({
+  // Step 3: Admin Access
+  const step3Schema = z.object({
     username: z.string()
       .min(3, t('onboarding.step4.errors.usernameMin'))
       .regex(/^[a-zA-Z0-9_-]+$/, t('onboarding.step4.errors.usernameRegex')),
@@ -95,9 +89,18 @@ export function OnboardingPage() {
     lastName: z.string().min(2, t('onboarding.step4.errors.lastNameMin')),
   });
 
+  // Step 4: Payment Method (Mock)
+  const step4Schema = z.object({
+    cardNumber: z.string().min(16, t('onboarding.step2.errors.cardNumberMin')).max(19),
+    expiryDate: z.string().min(5, t('onboarding.step2.errors.expiryRequired')),
+    cvc: z.string().min(3, t('onboarding.step2.errors.cvcRequired')),
+    cardName: z.string().min(1, t('onboarding.step2.errors.cardNameRequired')),
+  });
+
   const { refreshEstablishments, account, needsOnboarding, setCurrentEstablishment, establishments, updateAccount } = useAuth();
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+
   const [formData, setFormData] = useState<any>({});
   const [useSavedCard, setUseSavedCard] = useState(true); // Default to using saved card if available
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
@@ -199,7 +202,7 @@ export function OnboardingPage() {
   // Forms
   const form1 = useForm({
     resolver: zodResolver(step1Schema),
-    defaultValues: { currency: 'JOD', type: 'restaurant' }
+    defaultValues: { currency: 'JOD', type: 'restaurant', country: 'JO' }
   });
 
   const form2 = useForm({
@@ -213,6 +216,13 @@ export function OnboardingPage() {
   const form4 = useForm({
     resolver: zodResolver(step4Schema)
   });
+
+  // Set default currency for additional locations
+  useEffect(() => {
+    if (establishments.length > 0) {
+      form1.setValue('currency', establishments[0].currency);
+    }
+  }, [establishments, form1]);
 
   // Format card number with spaces (0000 0000 0000 0000)
   const formatCardNumber = (value: string) => {
@@ -241,10 +251,16 @@ export function OnboardingPage() {
   };
 
   const onStep1Submit = (data: any) => {
+    // If currency is disabled, it might be missing from data
+    const finalData = {
+      ...data,
+      currency: establishments.length > 0 ? establishments[0].currency : data.currency
+    };
+
     // Save duplication preferences
     setFormData((prev: any) => ({
       ...prev,
-      ...data,
+      ...finalData,
       duplicateFromId,
       duplicateInventory: duplicateFromId ? duplicateInventory : false,
       duplicateDiscounts: duplicateFromId ? duplicateDiscounts : false,
@@ -255,19 +271,53 @@ export function OnboardingPage() {
   };
 
   const onStep2Submit = async (data: any) => {
+    setIsLoading(true);
+    const rawLoginId = (data.establishmentLoginId || '').trim();
+
+    try {
+        const response = await api.get('/api/brands/availability/establishment-login-id', {
+            params: { establishmentLoginId: rawLoginId },
+        });
+
+        if (!response.data?.available) {
+            form2.setError('establishmentLoginId', { 
+                type: 'server', 
+                message: response.data?.message || t('owner.brands.validation.loginIdTakenHint', { defaultValue: 'It must be unique across all locations and brands.' }) 
+            });
+            setIsLoading(false);
+            return;
+        }
+    } catch (err: any) {
+        form2.setError('establishmentLoginId', {
+            type: 'server',
+            message: err.response?.data?.message || t('owner.brands.validation.loginIdCheckFailed', { defaultValue: 'Could not verify this Login ID right now. Please try again.' })
+        });
+        setIsLoading(false);
+        return;
+    }
+
+    setIsLoading(false);
+    setFormData((prev: any) => ({ ...prev, ...data }));
+    goToStep(3);
+  };
+
+  const onStep3Submit = (data: any) => {
+    setFormData((prev: any) => ({ ...prev, ...data }));
+    goToStep(4);
+  };
+
+
+  const onStep4Submit = async (data: any) => {
+    setIsLoading(true);
+
     // Handle payment method
+    let paymentMethodToken = '';
+    let savedCardId = '';
+
     if (hasSavedCard && useSavedCard) {
-      // Use existing saved card - no need to update
-      setFormData((prev: any) => ({
-        ...prev,
-        paymentMethodToken: 'use_saved_card',
-        useSavedCard: true,
-        savedCardId: account?.defaultCardId,
-        billingCycle,
-        monthlyPrice: currentMonthlyPrice,
-        yearlyPrice: currentYearlyPrice
-      }));
-    } else {
+      paymentMethodToken = 'use_saved_card';
+      savedCardId = account?.defaultCardId || '';
+    } else if (!isTrialFlow) {
       // New card - save the card to the account
       const cardNumber = data.cardNumber?.replace(/\s/g, '') || '';
       const last4Digits = cardNumber.slice(-4);
@@ -293,49 +343,26 @@ export function OnboardingPage() {
           setAsDefault: true
         });
 
-        const newCardId = response.data.card?.id;
+        savedCardId = response.data.card?.id;
         const newDefaultPaymentMethod = response.data.card?.last4 || last4Digits;
 
         // Update local account state
-        if (newCardId) {
+        if (savedCardId) {
           updateAccount({
-            defaultCardId: newCardId,
+            defaultCardId: savedCardId,
             defaultPaymentMethod: newDefaultPaymentMethod // For legacy/UI compatibility
           });
         }
 
-        // Save for next step
-        setFormData((prev: any) => ({
-          ...prev,
-          paymentMethodToken: 'tok_mock_' + Date.now(),
-          useSavedCard: false,
-          savedCardId: newCardId,
-          billingCycle,
-          monthlyPrice: currentMonthlyPrice,
-          yearlyPrice: currentYearlyPrice
-        }));
-
+        paymentMethodToken = 'tok_mock_' + Date.now();
       } catch (err: any) {
         console.error('Failed to save payment method:', err);
         toast.error('Failed to save card. Please try again.');
+        setIsLoading(false);
         return; // Stop execution if card save fails
       }
     }
 
-    // Always show Step 3 - each establishment gets its own unique Owner Pos Id
-    goToStep(3);
-  };
-
-  const onStep3Submit = (data: any) => {
-    // Store Owner Pos credentials locally for this establishment
-    // Each establishment gets its own unique Owner Pos Id
-    setFormData((prev: any) => ({ ...prev, ...data }));
-    goToStep(4);
-  };
-
-
-  const onStep4Submit = async (data: any) => {
-    setIsLoading(true);
     try {
       // 1. Create Establishment with user-provided Establishment Login ID
       const establishmentPayload = {
@@ -343,13 +370,14 @@ export function OnboardingPage() {
         type: formData.type,
         address: formData.address,
         currency: formData.currency,
+        country: formData.country,
         establishmentLoginId: formData.establishmentLoginId, // User-provided unique ID for this establishment
         establishmentPassword: formData.establishmentPassword, // User-provided password
-        paymentMethodToken: formData.paymentMethodToken,
-        savedCardId: formData.savedCardId,
-        billingCycle: formData.billingCycle || 'monthly',
-        monthlyPrice: formData.monthlyPrice,
-        yearlyPrice: formData.yearlyPrice,
+        paymentMethodToken: paymentMethodToken,
+        savedCardId: savedCardId,
+        billingCycle: billingCycle || 'monthly',
+        monthlyPrice: currentMonthlyPrice,
+        yearlyPrice: currentYearlyPrice,
         // Duplication params
         duplicateFromId: formData.duplicateFromId,
         duplicateInventory: formData.duplicateInventory,
@@ -363,7 +391,10 @@ export function OnboardingPage() {
       }
 
       const estRes = await api.post('/api/establishments', establishmentPayload, {
-        headers: requestHeaders
+        headers: {
+          ...requestHeaders,
+          'X-Skip-Establishment-Header': 'true'
+        }
       });
       const estId = estRes.data.establishment?.id || estRes.data.id;
 
@@ -371,20 +402,26 @@ export function OnboardingPage() {
         throw new Error('Failed to get establishment Id');
       }
 
-      // Set currentEstablishment in sessionStorage immediately so the axios interceptor
-      // includes the X-Establishment-Id header in the subsequent /api/employees call.
-      // This fixes the "X-Establishment-Id header is required" error.
-      sessionStorage.setItem('currentEstablishment', JSON.stringify({ id: estId, ...establishmentPayload }));
+      // Persist the new establishment immediately so the next scoped request uses the new location.
+      setCurrentEstablishment({
+        ...(estRes.data.establishment || {}),
+        id: estId,
+        name: formData.name,
+        type: formData.type,
+        address: formData.address,
+        currency: formData.currency,
+        establishmentLoginId: formData.establishmentLoginId,
+      } as any);
 
       // Save the establishment ID for navigation
       setFormData((prev: any) => ({ ...prev, establishmentId: estId }));
 
       // 2. Create Admin Employee
       await api.post('/api/employees', {
-        username: data.username,
-        password: data.password,
-        firstName: data.firstName,
-        lastName: data.lastName,
+        username: formData.username,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         email: account?.email, // Link to main account email
         establishmentId: estId,
         role: 'ADMIN',
@@ -415,15 +452,6 @@ export function OnboardingPage() {
   ];
 
   const totalSteps = 4;
-
-  // Clear currentEstablishment on mount to prevent 'X-Establishment-Id' errors during onboarding
-  useEffect(() => {
-    const isNewOnboarding = step === 1;
-    if (isNewOnboarding) {
-      console.log('[Onboarding] Clearing currentEstablishment to prevent header errors');
-      sessionStorage.removeItem('currentEstablishment');
-    }
-  }, [step]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -475,33 +503,38 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step1.title')}</h2>
+                  <div className="flex justify-between items-start mb-2">
+                    <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight">{t('onboarding.step1.title')}</h2>
+                    {isAdditionalLocation && (
+                      <button type="button" onClick={() => navigate('/owner')} className="text-gray-400 hover:text-paymint-green transition-colors flex items-center text-xs font-sans font-bold px-3 py-1.5 bg-gray-100 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10">
+                        {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
+                      </button>
+                    )}
+                  </div>
                   <p className="text-sm font-sans font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step1.subtitle')}</p>
                 </div>
 
                 <form onSubmit={form1.handleSubmit(onStep1Submit)} className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                      <label className="text-xs font-bold text-gray-400 mx-1 flex items-center">
                         {t('onboarding.step1.locationName')} <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text={t('onboarding.step1.locationNameTip')} />
                       </label>
                       <div className="relative group">
-                        <Store className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                        <Store className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors`} size={20} />
                         <input
                           type="text"
                           {...form1.register('name')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder={t('onboarding.step1.locationNamePlaceholder')}
                         />
                       </div>
-                      {form1.formState.errors.name && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.name.message as string}</p>}
+                      {form1.formState.errors.name && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 mx-1">{form1.formState.errors.name.message as string}</p>}
                     </div>
 
                     <div className="space-y-3">
-                      <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                      <label className="text-xs font-bold text-gray-400 mx-1 flex items-center">
                         {t('onboarding.step1.businessType')}
-                        <QuickInfo text={t('onboarding.step1.businessTypeTip')} />
                       </label>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {businessTypes.map((type) => (
@@ -521,15 +554,15 @@ export function OnboardingPage() {
 
                     {/* Base Currency Row */}
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                      <label className="text-xs font-bold text-gray-400 mx-1 flex items-center">
                         {t('onboarding.step1.currency')} <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text={t('onboarding.step1.currencyTip')} />
                       </label>
                       <div className="relative">
-                        <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <DollarSign className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 ${establishments.length > 0 ? 'text-gray-500' : 'text-gray-400'}`} size={20} />
                         <select
                           {...form1.register('currency')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
+                          disabled={establishments.length > 0}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none ${establishments.length > 0 ? 'opacity-60 cursor-not-allowed bg-gray-100 dark:bg-white/5' : ''}`}
                         >
                           <option value="JOD">JOD - {t('common.currencies.jod', { defaultValue: 'Jordanian Dinar' })}</option>
                           <option value="USD">USD - {t('common.currencies.usd', { defaultValue: 'US Dollar' })}</option>
@@ -544,25 +577,64 @@ export function OnboardingPage() {
                           <option value="EUR">EUR - {t('common.currencies.eur', { defaultValue: 'Euro' })}</option>
                           <option value="TRY">TRY - {t('common.currencies.try', { defaultValue: 'Turkish Lira' })}</option>
                         </select>
+                        <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
+                        {establishments.length > 0 && (
+                          <div className={`absolute ${isRTL ? 'left-10' : 'right-10'} top-1/2 -translate-y-1/2`}>
+                            <Lock size={16} className="text-gray-400" />
+                          </div>
+                        )}
                       </div>
-                      {form1.formState.errors.currency && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
+                      {establishments.length > 0 && (
+                        <p className="text-[10px] font-sans font-bold text-amber-500 mt-1.5 mx-1 flex items-center gap-1.5 bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">
+                          <Info size={12} className="flex-shrink-0" />
+                          {t('onboarding.step1.currencyLockedNote', { defaultValue: 'Currency is consistent across the entire account. To use a different currency, please create a separate account.' })}
+                        </p>
+                      )}
+                      {form1.formState.errors.currency && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 mx-1">{form1.formState.errors.currency.message as string}</p>}
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
-                        {t('onboarding.step1.address')} <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text={t('onboarding.step1.addressTip')} />
+                      <label className="text-xs font-bold text-gray-400 mx-1 flex items-center">
+                        {t('onboarding.step1.country', { defaultValue: 'Country' })} <span className="text-paymint-red mx-1">*</span>
                       </label>
                       <div className="relative">
-                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <Globe className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
+                        <select
+                          {...form1.register('country')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.country ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
+                        >
+                          <option value="JO">{t('common.countries.jo', { defaultValue: 'Jordan' })}</option>
+                          <option value="US">{t('common.countries.us', { defaultValue: 'United States' })}</option>
+                          <option value="AE">{t('common.countries.ae', { defaultValue: 'United Arab Emirates' })}</option>
+                          <option value="SA">{t('common.countries.sa', { defaultValue: 'Saudi Arabia' })}</option>
+                          <option value="KW">{t('common.countries.kw', { defaultValue: 'Kuwait' })}</option>
+                          <option value="QA">{t('common.countries.qa', { defaultValue: 'Qatar' })}</option>
+                          <option value="BH">{t('common.countries.bh', { defaultValue: 'Bahrain' })}</option>
+                          <option value="OM">{t('common.countries.om', { defaultValue: 'Oman' })}</option>
+                          <option value="EG">{t('common.countries.eg', { defaultValue: 'Egypt' })}</option>
+                          <option value="GB">{t('common.countries.gb', { defaultValue: 'United Kingdom' })}</option>
+                          <option value="DE">{t('common.countries.de', { defaultValue: 'Germany' })}</option>
+                          <option value="TR">{t('common.countries.tr', { defaultValue: 'Turkey' })}</option>
+                        </select>
+                        <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
+                      </div>
+                      {form1.formState.errors.country && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 mx-1">{form1.formState.errors.country.message as string}</p>}
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-gray-400 mx-1 flex items-center">
+                        {t('onboarding.step1.address')} <span className="text-paymint-red mx-1">*</span>
+                      </label>
+                      <div className="relative">
+                        <MapPin className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
                         <input
                           type="text"
                           {...form1.register('address')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder={t('onboarding.step1.addressPlaceholder')}
                         />
                       </div>
-                      {form1.formState.errors.address && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.address.message as string}</p>}
+                      {form1.formState.errors.address && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 mx-1">{form1.formState.errors.address.message as string}</p>}
                     </div>
 
                     {/* Import Settings Section - Only show if user has existing establishments */}
@@ -676,7 +748,7 @@ export function OnboardingPage() {
                   <div className="pt-4">
                     <button
                       type="submit"
-                      className="w-full py-5 bg-paymint-green text-black text-xs font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full py-5 bg-paymint-green text-black text-base font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
                       {isRTL && <ArrowRight size={24} />}
                       {t('onboarding.nextStep')}
@@ -688,7 +760,7 @@ export function OnboardingPage() {
             </motion.div>
           )}
 
-          {/* STEP 2: Trial & Payment */}
+          {/* STEP 2: Location Login Details */}
           {step === 2 && (
             <motion.div
               key="step2"
@@ -698,12 +770,226 @@ export function OnboardingPage() {
               className="max-w-md w-full"
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
+                <div className="mb-10">
+                  <div className="flex justify-between items-center mb-6">
+                    <button onClick={() => goToStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-xs font-sans font-bold">
+                      {!isRTL && <ArrowLeft size={14} />}
+                      {t('onboarding.back')}
+                      {isRTL && <ArrowLeft size={14} />}
+                    </button>
+                    {isAdditionalLocation && (
+                      <button type="button" onClick={() => navigate('/owner')} className="text-gray-400 hover:text-paymint-green transition-colors flex items-center text-xs font-sans font-bold px-3 py-1.5 bg-gray-100 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10">
+                        {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
+                      </button>
+                    )}
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step3.title')}</h2>
+                  <p className="text-sm font-sans font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step3.subtitle')}</p>
+                  <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-sm rounded-xl font-sans font-bold border border-paymint-green/20">
+                    <p>✨ <strong>{t('onboarding.step3.uniqueAccess')}</strong> {t('onboarding.step3.uniqueAccessDesc')}</p>
+                  </div>
+                </div>
+
+                <form onSubmit={form2.handleSubmit(onStep2Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                      {t('onboarding.step3.locationId')} <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text={t('onboarding.step3.locationIdTip')} />
+                    </label>
+                    <div className="relative group">
+                      <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                      <input
+                        type="text"
+                        {...form2.register('establishmentLoginId')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentLoginId ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        placeholder={t('onboarding.step3.locationIdPlaceholder')}
+                      />
+                    </div>
+                    {form2.formState.errors.establishmentLoginId && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form2.formState.errors.establishmentLoginId.message as string}</p>}
+                    <p className="text-xs font-sans font-bold text-gray-500 ml-1">{t('onboarding.step3.locationIdDesc')}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                      {t('onboarding.step3.password')} <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text={t('onboarding.step3.passwordTip')} />
+                    </label>
+                    <div className="relative group">
+                      <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                      <input
+                        type={showEstablishmentPassword ? "text" : "password"}
+                        {...form2.register('establishmentPassword')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        placeholder={t('onboarding.step3.passwordPlaceholder')}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                      >
+                        {showEstablishmentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
+                    {form2.formState.errors.establishmentPassword && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form2.formState.errors.establishmentPassword.message as string}</p>}
+                  </div>
+
+                  <div className="pt-4">
+                    <button
+                      type="submit"
+                      className="w-full py-5 bg-paymint-green text-black text-base font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                    >
+                      {isRTL && <ArrowRight size={24} />}
+                      {t('onboarding.nextStep')}
+                      {!isRTL && <ArrowRight size={24} />}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 3: Admin Access */}
+          {step === 3 && (
+            <motion.div
+              key="step3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="max-w-md w-full"
+            >
+              <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
+                <div className="mb-10">
+                  <div className="flex justify-between items-center mb-6">
+                    <button onClick={() => goToStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-xs font-sans font-bold">
+                      {!isRTL && <ArrowLeft size={14} />}
+                      {t('onboarding.back')}
+                      {isRTL && <ArrowLeft size={14} />}
+                    </button>
+                    {isAdditionalLocation && (
+                      <button type="button" onClick={() => navigate('/owner')} className="text-gray-400 hover:text-paymint-green transition-colors flex items-center text-xs font-sans font-bold px-3 py-1.5 bg-gray-100 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10">
+                        {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
+                      </button>
+                    )}
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step4.title')}</h2>
+                  <p className="text-sm font-sans font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step4.subtitle')}</p>
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 text-xs rounded-xl font-sans font-bold border border-blue-100 dark:border-blue-900/30">
+                    <p>{t('onboarding.step4.step2Note')}</p>
+                  </div>
+                </div>
+
+                <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-gray-400 ml-1">
+                        {t('onboarding.step4.firstName')} <span className="text-paymint-red">*</span>
+                      </label>
+                      <div className="relative group">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                        <input
+                          type="text"
+                          {...form3.register('firstName')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.firstName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          placeholder={t('onboarding.step4.firstNamePlaceholder')}
+                        />
+                      </div>
+                      {form3.formState.errors.firstName && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.firstName.message as string}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-gray-400 ml-1">
+                        {t('onboarding.step4.lastName')} <span className="text-paymint-red">*</span>
+                      </label>
+                      <div className="relative group">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                        <input
+                          type="text"
+                          {...form3.register('lastName')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.lastName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          placeholder={t('onboarding.step4.lastNamePlaceholder')}
+                        />
+                      </div>
+                      {form3.formState.errors.lastName && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.lastName.message as string}</p>}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                      {t('onboarding.step4.username')} <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text={t('onboarding.step4.usernameTip')} />
+                    </label>
+                    <div className="relative group">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                      <input
+                        type="text"
+                        {...form3.register('username')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        placeholder={t('onboarding.step4.usernamePlaceholder')}
+                      />
+                    </div>
+                    {form3.formState.errors.username && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.username.message as string}</p>}
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
+                      {t('onboarding.step4.password')} <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text={t('onboarding.step4.passwordTip')} />
+                    </label>
+                    <div className="relative group">
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                      <input
+                        type={showAdminPassword ? "text" : "password"}
+                        {...form3.register('password')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        placeholder={t('onboarding.step4.passwordPlaceholder')}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowAdminPassword(!showAdminPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                      >
+                        {showAdminPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
+                    {form3.formState.errors.password && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.password.message as string}</p>}
+                  </div>
+
+                  <div className="pt-4">
+                    <button
+                      type="submit"
+                      className="w-full py-5 bg-paymint-green text-black text-base font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
+                    >
+                      {isRTL && <ArrowRight size={24} />}
+                      {t('onboarding.nextStep')}
+                      {!isRTL && <ArrowRight size={24} />}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 4: Trial & Payment */}
+          {step === 4 && (
+            <motion.div
+              key="step4"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="max-w-md w-full"
+            >
+              <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-8">
-                  <button onClick={() => goToStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-sans font-bold">
-                    {!isRTL && <ArrowLeft size={14} />}
-                    {t('onboarding.back')}
-                    {isRTL && <ArrowLeft size={14} />}
-                  </button>
+                  <div className="flex justify-between items-center mb-6">
+                    <button onClick={() => goToStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-xs font-sans font-bold">
+                      {!isRTL && <ArrowLeft size={14} />}
+                      {t('onboarding.back')}
+                      {isRTL && <ArrowLeft size={14} />}
+                    </button>
+                    {isAdditionalLocation && (
+                      <button type="button" onClick={() => navigate('/owner')} className="text-gray-400 hover:text-paymint-green transition-colors flex items-center text-xs font-sans font-bold px-3 py-1.5 bg-gray-100 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10">
+                        {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
+                      </button>
+                    )}
+                  </div>
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isTrialFlow ? 'bg-yellow-400/10' : 'bg-paymint-green/10'}`}>
                       <ShieldCheck className={isTrialFlow ? 'text-yellow-500' : 'text-paymint-green'} size={24} />
@@ -734,7 +1020,7 @@ export function OnboardingPage() {
                   )}
                 </div>
 
-                <form onSubmit={form2.handleSubmit(onStep2Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+                <form onSubmit={form4.handleSubmit(onStep4Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   {/* Billing Cycle Toggle */}
                   {!isTrialFlow && (
                     <div className="flex items-center justify-center">
@@ -780,8 +1066,9 @@ export function OnboardingPage() {
                     <div className="flex justify-between items-center text-xs font-sans font-bold text-gray-500">
                       <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : (billingCycle === 'yearly' ? t('common.yearly') : t('common.monthly'))}</span>
                       <span>
-                        ${currentMonthlyPrice.toFixed(2)}/{t('common.monthly')}
-                        {billingCycle === 'yearly' && ' (billed yearly)'}
+                        {billingCycle === 'yearly' 
+                          ? `$${currentYearlyPrice}/${t('common.yearly')}` 
+                          : `$${currentMonthlyPrice.toFixed(2)}/${t('common.monthly')}`}
                       </span>
                     </div>
                     {billingCycle === 'yearly' && !isTrialFlow && (
@@ -853,17 +1140,17 @@ export function OnboardingPage() {
                           <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                           <input
                             type="text"
-                            {...form2.register('cardNumber')}
+                            {...form4.register('cardNumber')}
                             onChange={(e) => {
                               const formatted = formatCardNumber(e.target.value);
-                              form2.setValue('cardNumber', formatted);
+                              form4.setValue('cardNumber', formatted);
                             }}
                             maxLength={19}
                             placeholder="0000 0000 0000 0000"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardNumber ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.cardNumber ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
                           />
                         </div>
-                        {form2.formState.errors.cardNumber && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form2.formState.errors.cardNumber.message as string}</p>}
+                        {form4.formState.errors.cardNumber && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.cardNumber.message as string}</p>}
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
@@ -871,28 +1158,28 @@ export function OnboardingPage() {
                           <label className="text-xs font-bold text-gray-400 ml-1">{t('onboarding.step2.expiry')}</label>
                           <input
                             type="text"
-                            {...form2.register('expiryDate')}
+                            {...form4.register('expiryDate')}
                             onChange={(e) => {
                               const formatted = formatExpiryDate(e.target.value);
-                              form2.setValue('expiryDate', formatted);
+                              form4.setValue('expiryDate', formatted);
                             }}
                             maxLength={5}
                             placeholder="Mm/Yy"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.expiryDate ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.expiryDate ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
                           />
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-gray-400 ml-1">{t('onboarding.step2.cvc')}</label>
                           <input
                             type="text"
-                            {...form2.register('cvc')}
+                            {...form4.register('cvc')}
                             onChange={(e) => {
                               const formatted = formatCVC(e.target.value);
-                              form2.setValue('cvc', formatted);
+                              form4.setValue('cvc', formatted);
                             }}
                             maxLength={4}
                             placeholder="123"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cvc ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.cvc ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
                           />
                         </div>
                       </div>
@@ -901,9 +1188,9 @@ export function OnboardingPage() {
                         <label className="text-xs font-bold text-gray-400 ml-1">{t('onboarding.step2.cardName')}</label>
                         <input
                           type="text"
-                          {...form2.register('cardName')}
+                          {...form4.register('cardName')}
                           placeholder="John Doe"
-                          className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardName ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
+                          className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.cardName ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
                         />
                       </div>
                     </div>
@@ -912,205 +1199,9 @@ export function OnboardingPage() {
                   <div className="pt-2">
                     <button
                       type={hasSavedCard && useSavedCard ? 'button' : 'submit'}
-                      onClick={hasSavedCard && useSavedCard ? () => onStep2Submit({}) : undefined}
-                      className="w-full py-5 bg-paymint-green text-black text-xs font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
-                    >
-                      {isRTL && <ArrowRight size={24} />}
-                      {isTrialFlow
-                        ? t('onboarding.step2.startTrialButton')
-                        : `${t('onboarding.step2.activateButton')} $${displayPrice}`
-                      }
-                      {!isRTL && <ArrowRight size={24} />}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </motion.div>
-          )}
-
-          {/* STEP 3: Location Login Details */}
-          {step === 3 && (
-            <motion.div
-              key="step3"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="max-w-md w-full"
-            >
-              <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
-                <div className="mb-10">
-                  <button onClick={() => goToStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-sans font-bold">
-                    {!isRTL && <ArrowLeft size={14} />}
-                    {t('onboarding.back')}
-                    {isRTL && <ArrowLeft size={14} />}
-                  </button>
-                  <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step3.title')}</h2>
-                  <p className="text-sm font-sans font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step3.subtitle')}</p>
-                  <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-sm rounded-xl font-sans font-bold border border-paymint-green/20">
-                    <p>✨ <strong>{t('onboarding.step3.uniqueAccess')}</strong> {t('onboarding.step3.uniqueAccessDesc')}</p>
-                  </div>
-                </div>
-
-                <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
-                      {t('onboarding.step3.locationId')} <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text={t('onboarding.step3.locationIdTip')} />
-                    </label>
-                    <div className="relative group">
-                      <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
-                      <input
-                        type="text"
-                        {...form3.register('establishmentLoginId')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentLoginId ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder={t('onboarding.step3.locationIdPlaceholder')}
-                      />
-                    </div>
-                    {form3.formState.errors.establishmentLoginId && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.establishmentLoginId.message as string}</p>}
-                    <p className="text-xs font-sans font-bold text-gray-500 ml-1">{t('onboarding.step3.locationIdDesc')}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
-                      {t('onboarding.step3.password')} <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text={t('onboarding.step3.passwordTip')} />
-                    </label>
-                    <div className="relative group">
-                      <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
-                      <input
-                        type={showEstablishmentPassword ? "text" : "password"}
-                        {...form3.register('establishmentPassword')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder={t('onboarding.step3.passwordPlaceholder')}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
-                      >
-                        {showEstablishmentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                      </button>
-                    </div>
-                    {form3.formState.errors.establishmentPassword && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.establishmentPassword.message as string}</p>}
-                  </div>
-
-                  <div className="pt-4">
-                    <button
-                      type="submit"
-                      className="w-full py-5 bg-paymint-green text-black text-xs font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
-                    >
-                      {isRTL && <ArrowRight size={24} />}
-                      {t('onboarding.nextStep')}
-                      {!isRTL && <ArrowRight size={24} />}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </motion.div>
-          )}
-
-          {/* STEP 4: Admin Access */}
-          {step === 4 && (
-            <motion.div
-              key="step4"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="max-w-md w-full"
-            >
-              <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
-                <div className="mb-10">
-                  <button onClick={() => goToStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-sans font-bold">
-                    {!isRTL && <ArrowLeft size={14} />}
-                    {t('onboarding.back')}
-                    {isRTL && <ArrowLeft size={14} />}
-                  </button>
-                  <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step4.title')}</h2>
-                  <p className="text-sm font-sans font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step4.subtitle')}</p>
-                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 text-xs rounded-xl font-sans font-bold border border-blue-100 dark:border-blue-900/30">
-                    <p>{t('onboarding.step4.step2Note')}</p>
-                  </div>
-                </div>
-
-                <form onSubmit={form4.handleSubmit(onStep4Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-400 ml-1">
-                        {t('onboarding.step4.firstName')} <span className="text-paymint-red">*</span>
-                      </label>
-                      <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
-                        <input
-                          type="text"
-                          {...form4.register('firstName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.firstName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                          placeholder={t('onboarding.step4.firstNamePlaceholder')}
-                        />
-                      </div>
-                      {form4.formState.errors.firstName && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.firstName.message as string}</p>}
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-400 ml-1">
-                        {t('onboarding.step4.lastName')} <span className="text-paymint-red">*</span>
-                      </label>
-                      <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
-                        <input
-                          type="text"
-                          {...form4.register('lastName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.lastName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                          placeholder={t('onboarding.step4.lastNamePlaceholder')}
-                        />
-                      </div>
-                      {form4.formState.errors.lastName && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.lastName.message as string}</p>}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
-                      {t('onboarding.step4.username')} <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text={t('onboarding.step4.usernameTip')} />
-                    </label>
-                    <div className="relative group">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
-                      <input
-                        type="text"
-                        {...form4.register('username')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder={t('onboarding.step4.usernamePlaceholder')}
-                      />
-                    </div>
-                    {form4.formState.errors.username && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.username.message as string}</p>}
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-400 ml-1 flex items-center">
-                      {t('onboarding.step4.password')} <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text={t('onboarding.step4.passwordTip')} />
-                    </label>
-                    <div className="relative group">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
-                      <input
-                        type={showAdminPassword ? "text" : "password"}
-                        {...form4.register('password')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder={t('onboarding.step4.passwordPlaceholder')}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowAdminPassword(!showAdminPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
-                      >
-                        {showAdminPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                      </button>
-                    </div>
-                    {form4.formState.errors.password && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.password.message as string}</p>}
-                  </div>
-
-                  <div className="pt-4">
-                    <button
-                      type="submit"
+                      onClick={hasSavedCard && useSavedCard ? () => onStep4Submit({}) : undefined}
                       disabled={isLoading}
-                      className="w-full py-5 bg-paymint-green text-black text-xs font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
+                      className="w-full py-5 bg-paymint-green text-black text-base font-sans font-bold rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
                       {isLoading ? <Loader2 className="animate-spin" size={24} /> : null}
                       {t('onboarding.completeLaunch')}

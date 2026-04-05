@@ -493,8 +493,11 @@ export function OwnerEstablishmentsPage() {
                     </div>
 
                     {/* Desktop Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 label-strong uppercase">
-                        <div className="col-span-3">{t('owner.locations.title')}</div>
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 label-strong uppercase items-center">
+                        <div className="col-span-3 flex items-center gap-4">
+                            <div className="w-10" />
+                            <span>{t('owner.locations.title')}</span>
+                        </div>
                         <div className="col-span-2">{t('owner.locations.type')}</div>
                         <div className="col-span-2">{t('owner.locations.status')}</div>
                         <div className="col-span-1">{t('owner.locations.currency')}</div>
@@ -510,7 +513,7 @@ export function OwnerEstablishmentsPage() {
                                 <div
                                     key={est.id}
                                     id={`establishment-${est.id}`}
-                                    className={`grid grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group ${est.id === highlightId
+                                    className={`grid grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group items-center ${est.id === highlightId
                                         ? 'bg-paymint-green/5 ring-1 ring-paymint-green inset-0 z-10'
                                         : ''
                                         }`}

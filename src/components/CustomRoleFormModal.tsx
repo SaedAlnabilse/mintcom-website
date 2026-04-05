@@ -512,7 +512,8 @@ export function CustomRoleFormModal({
                 </div>
               )}
               {/* Name Input */}
-              <div className="relative">
+              <div className="relative space-y-2">
+                <label className="label-strong block">{t('roles.form.roleNameLabel')}</label>
                 <input
                   type="text"
                   value={name}

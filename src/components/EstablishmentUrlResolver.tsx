@@ -41,6 +41,21 @@ export function EstablishmentUrlResolver({ children }: { children: React.ReactNo
         );
 
         if (isCurrentMatch) {
+            const persistedEstablishment = sessionStorage.getItem('currentEstablishment');
+            let persistedEstablishmentId: string | null = null;
+
+            if (persistedEstablishment) {
+                try {
+                    persistedEstablishmentId = JSON.parse(persistedEstablishment)?.id ?? null;
+                } catch {
+                    persistedEstablishmentId = null;
+                }
+            }
+
+            if (!persistedEstablishmentId || persistedEstablishmentId !== currentEstablishment.id) {
+                setCurrentEstablishment(currentEstablishment);
+            }
+
             // Force redirect to slug if we are on ID
             if (currentEstablishment && 
                 currentEstablishment.establishmentLoginId && 

@@ -373,16 +373,14 @@ export function AddonsPage() {
             value: stats.totalGroups,
             icon: Layers,
             color: 'text-blue-500',
-            bg: 'bg-blue-500/10',
-            action: () => handleQuickFilter('ALL')
+            bg: 'bg-blue-500/10'
           },
           {
             label: t('attributes.stats.options'),
             value: stats.totalOptions,
             icon: Package,
             color: 'text-paymint-green',
-            bg: 'bg-paymint-green/10',
-            action: () => handleQuickFilter('ALL', true)
+            bg: 'bg-paymint-green/10'
           },
           {
             label: t('attributes.stats.sales'),
@@ -390,18 +388,16 @@ export function AddonsPage() {
             sub: t('attributes.stats.withPrice'),
             icon: DollarSign,
             color: 'text-orange-500',
-            bg: 'bg-orange-500/10',
-            action: () => handleQuickFilter('PAID')
+            bg: 'bg-orange-500/10'
           },
         ].map((stat, i) => (
-          <button
+          <div
             key={i}
-            onClick={stat.action}
-            className="group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm transition-all duration-300 overflow-hidden text-left hover:border-paymint-green/30"
+            className="group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden text-left"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10 flex items-center gap-4">
-              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} transition-transform duration-300 group-hover:scale-110`}>
+              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
                 <stat.icon size={20} />
               </div>
               <div>
@@ -410,7 +406,7 @@ export function AddonsPage() {
                 {stat.sub && <p className="text-xs font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>}
               </div>
             </div>
-          </button>
+          </div>
         ))}
       </div>
 
@@ -532,13 +528,12 @@ export function AddonsPage() {
             <div
               key={attr.id}
               id={`group-${attr.id}`}
-              className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden hover:shadow-xl transition-all duration-300"
+              className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden hover:shadow-sm transition-all duration-300"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div
-                className="flex items-center justify-between p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group"
-                onClick={() => setExpandedId(expandedId === attr.id ? null : attr.id)}
+                className="flex items-center justify-between p-6 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group"
               >
                 <div className="flex items-center gap-5">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black border ${attr.isRequired ? 'bg-paymint-green text-black border-paymint-green' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10'
@@ -573,7 +568,12 @@ export function AddonsPage() {
                       <Trash2 size={16} />
                     </button>
                   </div>
-                  <ChevronDown className={`w-5 h-5 text-gray-300 transition-transform duration-500 ${expandedId === attr.id ? 'rotate-180' : ''}`} />
+                  <button 
+                    onClick={() => setExpandedId(expandedId === attr.id ? null : attr.id)}
+                    className={`p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-all ${expandedId === attr.id ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-300'}`}
+                  >
+                    <ChevronDown className={`w-5 h-5 transition-transform duration-500 ${expandedId === attr.id ? 'rotate-180' : ''}`} />
+                  </button>
                 </div>
               </div>
 
@@ -582,15 +582,14 @@ export function AddonsPage() {
                     className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-8"
                   >
                     <div className="flex items-center justify-between mb-6">
-                      <span className="text-xs font-black text-gray-400 tracking-[0.2em]">{t('attributes.list.options')}</span>
+                      <span className="text-xs font-black text-gray-400 tracking-[0.2em] font-sans">{t('attributes.list.options')}</span>
                       <button
                         onClick={() => openSubAttributeModal(attr.id)}
-                        className="px-4 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-xs font-bold tracking-widest rounded-xl hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all flex items-center gap-2"
+                        className="px-4 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-sm font-bold tracking-tight rounded-xl hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all flex items-center gap-2"
                       >
                         <Plus size={14} /> {t('attributes.list.addOption')}
                       </button>
                     </div>
-
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                       {attr.subAttributes
                         ?.filter(sub => {

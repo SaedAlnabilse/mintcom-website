@@ -81,8 +81,8 @@ export function SelectEstablishmentPage() {
               <Crown size={18} className="text-white" />
             </div>
             <div className="hidden sm:block text-left">
-              <p className="text-xs font-black text-gray-400">{t('onboarding.step5.ownerPortal')}</p>
-              <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[120px]">{account?.firstName} {account?.lastName}</p>
+              <p className="text-xs font-sans font-bold text-gray-400">{t('onboarding.step5.ownerPortal')}</p>
+              <p className="text-sm font-sans font-bold text-gray-900 dark:text-white truncate max-w-[120px]">{account?.firstName} {account?.lastName}</p>
             </div>
             <ArrowLeft size={16} className={`text-amber-500 group-hover:${t('common.locale') === 'ar' ? 'translate-x-1' : '-translate-x-1'} transition-transform hidden sm:block`} />
           </button>
@@ -103,7 +103,7 @@ export function SelectEstablishmentPage() {
         </div>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 text-gray-400 hover:text-PayMint-red transition-all font-black text-xs px-4 py-2 rounded-xl hover:bg-PayMint-red/5"
+          className="flex items-center gap-2 text-gray-400 hover:text-PayMint-red transition-all font-sans font-bold text-xs px-4 py-2 rounded-xl hover:bg-PayMint-red/5"
         >
           <LogOut size={16} />
           {t('common.logout')}
@@ -116,10 +116,12 @@ export function SelectEstablishmentPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
-              {t('onboarding.select')} <span className="text-PayMint-green underline decoration-PayMint-green/30">{t('onboarding.location')}</span>
+            <h1 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+              {t('onboarding.selectLocation', { defaultValue: 'Select Location' })}
             </h1>
-            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">{t('establishments.subtitle')}</p>
+            <p className="text-sm sm:text-base font-sans font-bold text-gray-500 dark:text-gray-400 mt-2">
+              {t('establishments.chooseLocationWorkflow', { defaultValue: 'Choose a location to continue your workflow' })}
+            </p>
           </motion.div>
         </div>
 
@@ -139,18 +141,18 @@ export function SelectEstablishmentPage() {
                 <Store size={32} className="text-gray-400 group-hover:text-PayMint-green transition-colors" />
               </div>
 
-              <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2 px-2 leading-tight text-center tracking-normal" dir="auto">{est.name}</h3>
+              <h3 className="text-base font-sans font-bold text-gray-900 dark:text-white mb-2 px-2 leading-tight text-center tracking-normal" dir="auto">{est.name}</h3>
 
               <div className="flex items-center gap-2.5 mb-8">
-                <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-black text-gray-500">
+                <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-sans font-bold text-gray-500">
                   {est.currency?.toUpperCase()}
                 </span>
-                <span className="px-2.5 py-1 rounded-lg bg-PayMint-green/10 text-[10px] font-black text-PayMint-green border border-PayMint-green/20">
+                <span className="px-2.5 py-1 rounded-lg bg-PayMint-green/10 text-[10px] font-sans font-bold text-PayMint-green border border-PayMint-green/20">
                   {t(`common.status.${est.subscriptionStatus.toLowerCase()}`, { defaultValue: est.subscriptionStatus }).toUpperCase()}
                 </span>
               </div>
 
-              <div className={`flex items-center gap-2 text-xs font-black transition-all ${hoveredId === est.id ? 'text-PayMint-green' : 'text-gray-400'}`}>
+              <div className={`flex items-center gap-2 text-xs font-sans font-bold transition-all ${hoveredId === est.id ? 'text-PayMint-green' : 'text-gray-400'}`}>
                 {t('dashboard.menu.overview').toUpperCase()}
                 <ChevronRight size={14} className={t('common.locale') === 'ar' ? 'rotate-180' : ''} />
               </div>
@@ -169,8 +171,8 @@ export function SelectEstablishmentPage() {
               <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-PayMint-green/10 group-hover:border-PayMint-green transition-all">
                 <Plus size={28} className="text-gray-400 group-hover:text-PayMint-green transition-colors" />
               </div>
-              <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
-              <p className="text-xs font-black text-gray-500">{t('onboarding.step1.businessTypes.other')}</p>
+              <h3 className="text-base font-sans font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
+              <p className="text-xs font-sans font-bold text-gray-500">{t('onboarding.step1.businessTypes.other')}</p>
             </motion.div>
           )}
         </div>
@@ -178,7 +180,7 @@ export function SelectEstablishmentPage() {
 
       {/* Footer Info */}
       <div className="p-12 text-center relative z-10">
-        <div className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 text-gray-400 text-xs font-black shadow-sm">
+        <div className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 text-gray-400 text-xs font-sans font-bold shadow-sm">
           <CheckCircle2 size={14} className="text-PayMint-green" />
           PayMint v2.0
         </div>
@@ -202,8 +204,8 @@ export function SelectEstablishmentPage() {
                 <Loader2 size={40} className="text-PayMint-green animate-spin" />
                 <div className="absolute inset-0 bg-PayMint-green/20 rounded-[2.5rem] animate-ping" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('common.loading')}</h2>
-              <p className="text-xs font-black text-PayMint-green tracking-normal mt-2" dir="auto">{selectedName}</p>
+              <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight">{t('common.loading')}</h2>
+              <p className="text-xs font-sans font-bold text-PayMint-green tracking-normal mt-2" dir="auto">{selectedName}</p>
 
               <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                 <motion.div

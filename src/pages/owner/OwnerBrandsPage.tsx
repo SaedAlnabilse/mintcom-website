@@ -14,15 +14,12 @@ import {
     Shield,
     Check,
     Plus,
-    Grid3X3,
-    List,
     Calendar,
     ExternalLink,
     MoreVertical,
     Eye,
     EyeOff,
     Trash2,
-    ArrowUpDown,
   X
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -69,7 +66,6 @@ interface EstablishmentEmployees {
     employees: EmployeeForMerging[];
 }
 
-type ViewMode = 'grid' | 'list';
 type SortOption = 'name' | 'date' | 'locations';
 
 type BrandFormData = {
@@ -90,9 +86,8 @@ export function OwnerBrandsPage() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [selectedEstablishments, setSelectedEstablishments] = useState<string[]>([]);
     const [isCreating, setIsCreating] = useState(false);
-    const [viewMode, setViewMode] = useState<ViewMode>('list');
     const [sortBy, setSortBy] = useState<SortOption>('name');
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [sortOrder] = useState<'asc' | 'desc'>('asc');
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
@@ -119,14 +114,7 @@ export function OwnerBrandsPage() {
         mode: 'dissolve-brand'
     });
 
-    const handleSort = (key: SortOption) => {
-        if (sortBy === key) {
-            setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
-        } else {
-            setSortBy(key);
-            setSortOrder('asc');
-        }
-    };
+
 
     const createBrandSchemaObj = useMemo(() => z.object({
         name: z.string().min(2, t('owner.brands.validation.nameMin')),
@@ -588,22 +576,6 @@ export function OwnerBrandsPage() {
                                 ]}
                             />
                         </div>
-
-                        {/* View Mode Toggle */}
-                        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[52px]">
-                            <button
-                                onClick={() => setViewMode('grid')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                            >
-                                <Grid3X3 size={18} />
-                            </button>
-                            <button
-                                onClick={() => setViewMode('list')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                            >
-                                <List size={18} />
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -628,8 +600,8 @@ export function OwnerBrandsPage() {
                         </button>
                     )}
                 </div>
-            ) : viewMode === 'grid' ? (
-                /* Grid View */
+            ) : (
+                /* Grid View (Box View) */
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     {paginatedBrands.map((brand) => (
                         <div
@@ -682,7 +654,8 @@ export function OwnerBrandsPage() {
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        window.open(`/brand/${brand.establishmentLoginId}`, '_blank');
+                                                        const slug = brand.establishmentLoginId || brand.id;
+                                                        window.open(`/brand/${slug}`, '_blank');
                                                     }}
                                                     className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                 >
@@ -761,7 +734,10 @@ export function OwnerBrandsPage() {
                                 {/* Action */}
                                 <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
                                     <button
-                                        onClick={() => window.open(`/brand/${brand.establishmentLoginId}`, '_blank')}
+                                        onClick={() => {
+                                          const slug = brand.establishmentLoginId || brand.id;
+                                          window.open(`/brand/${slug}`, '_blank');
+                                        }}
                                         className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 label-strong uppercase hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-purple-500 shadow-sm"
                                     >
                                         <span>{t('owner.brands.openDashboard')}</span>
@@ -771,194 +747,6 @@ export function OwnerBrandsPage() {
                             </div>
                         </div>
                     ))}
-                </div>
-            ) : (
-                /* List View */
-                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                    {/* Mobile Card View */}
-                    <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-                        {paginatedBrands.map((brand) => (
-                            <div
-                                key={brand.id}
-                                className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa' ? 'bg-paymint-green/[0.03]' : ''}`}
-                                onClick={() => window.open(`/brand/${brand.id}`, '_blank')}
-                            >
-                                <div className="flex items-start justify-between mb-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center text-black shadow-lg shadow-paymint-green/10">
-                                            <Building2 size={24} />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">
-                                                {brand.name}
-                                            </h3>
-                                            <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest mt-1 inline-block">
-                                                {t('common.status.active')}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="relative">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setActiveMenu(activeMenu === brand.id ? null : brand.id);
-                                            }}
-                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
-                                        >
-                                            <MoreVertical size={16} />
-                                        </button>
-                                        {activeMenu === brand.id && (
-                                            <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden">
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        window.open(`/brand/${brand.id}`, '_blank');
-                                                    }}
-                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                >
-                                                    <Eye size={14} />
-                                                    {t('common.view')}
-                                                </button>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setSecurityModal({
-                                                            isOpen: true,
-                                                            targetId: brand.id,
-                                                            targetName: brand.name,
-                                                            mode: 'dissolve-brand'
-                                                        });
-                                                    }}
-                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors border-t border-gray-100 dark:border-white/5"
-                                                >
-                                                    <Trash2 size={14} />
-                                                    {t('common.delete')}
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4 text-xs">
-                                    <div>
-                                        <span className="text-gray-500 block mb-0.5">{t('owner.brands.loginId')}</span>
-                                        <span className="font-mono font-bold text-gray-900 dark:text-white">{brand.establishmentLoginId}</span>
-                                    </div>
-                                    <div>
-                                        <span className="text-gray-500 block mb-0.5">{t('owner.brands.locations')}</span>
-                                        <span className="font-bold text-gray-900 dark:text-white">{t('owner.brands.locationsCount', { count: brand.establishmentCount })}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-label">
-                        <div
-                            className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
-                            onClick={() => handleSort('name')}
-                        >
-                            {t('owner.brands.brand')}
-                            {sortBy === 'name' && <ArrowUpDown size={12} className={sortOrder === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                        </div>
-                        <div className="col-span-2">{t('owner.brands.loginId')}</div>
-                        <div
-                            className="col-span-2 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
-                            onClick={() => handleSort('locations')}
-                        >
-                            {t('owner.brands.locations')}
-                            {sortBy === 'locations' && <ArrowUpDown size={12} className={sortOrder === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                        </div>
-                        <div
-                            className="col-span-2 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
-                            onClick={() => handleSort('date')}
-                        >
-                            {t('owner.brands.created')}
-                            {sortBy === 'date' && <ArrowUpDown size={12} className={sortOrder === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                        </div>
-                        <div className="col-span-2 text-right">{t('common.actions')}</div>
-                    </div>
-
-                    {/* Table Body */}
-                    <div className="divide-y divide-gray-100 dark:divide-white/5">
-                        {paginatedBrands.map((brand) => (
-                            <div
-                                key={brand.id}
-                                className={`grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 transition-colors cursor-pointer group ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
-                                    ? 'bg-paymint-green/[0.03] hover:bg-paymint-green/[0.05]'
-                                    : 'hover:bg-gray-50 dark:hover:bg-white/[0.02]'
-                                    }`}
-                                onClick={() => window.open(`/brand/${brand.establishmentLoginId}`, '_blank')}
-                            >
-                                {/* Brand Info */}
-                                <div className="col-span-4 flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center text-black shadow-lg shadow-paymint-green/10">
-                                        <Building2 size={24} />
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-0.5">
-                                            <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
-                                                {brand.name}
-                                            </h3>
-
-                                        </div>
-                                        <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green label-strong">
-                                            {t('common.status.active')}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {/* Pos Id */}
-                                <div className="col-span-2 flex items-center">
-                                    <span className="font-mono text-sm font-bold text-gray-900 dark:text-white">
-                                        {brand.establishmentLoginId}
-                                    </span>
-                                </div>
-
-                                {/* Locations */}
-                                <div className="col-span-2 flex items-center">
-                                    <span className="font-bold text-gray-900 dark:text-white">
-                                        {t('owner.brands.locationsCount', { count: brand.establishmentCount })}
-                                    </span>
-                                </div>
-
-                                {/* Created */}
-                                <div className="col-span-2 flex items-center">
-                                    <span className="text-sm text-gray-500">
-                                        {formatDate(brand.createdAt)}
-                                    </span>
-                                </div>
-
-                                {/* Actions */}
-                                <div className="col-span-2 flex items-center justify-end gap-2">
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            window.open(`/brand/${brand.establishmentLoginId}`, '_blank');
-                                        }}
-                                        className="px-4 py-2 rounded-lg bg-paymint-green text-black label-strong uppercase hover:bg-emerald-400 transition-all flex items-center gap-2"
-                                    >
-                                        <Eye size={14} />
-                                        {t('common.view')}
-                                    </button>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setSecurityModal({
-                                                isOpen: true,
-                                                targetId: brand.id,
-                                                targetName: brand.name,
-                                                mode: 'dissolve-brand'
-                                            });
-                                        }}
-                                        className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 transition-colors"
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
                 </div>
             )}
 

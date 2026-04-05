@@ -1,11 +1,13 @@
-import { Search, ArrowUpDown, X } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Search, ArrowUpDown, X, LayoutGrid, ShoppingBag, ArrowUpRight, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../../../context/CurrencyContext';
-import type { ItemReportData } from '../../../../types';
+import type { ItemReportData, ItemReportBreakdown } from '../../../../types';
 import { Pagination } from '../../../ui';
 import { useState, useMemo } from 'react';
 import React from 'react';
+import api from '../../../../config/api';
+import { createPortal } from 'react-dom';
 
 interface ItemsViewProps {
   itemReportData: ItemReportData;
@@ -14,6 +16,9 @@ interface ItemsViewProps {
   itemSearchQuery: string;
   setItemSearchQuery: (query: string) => void;
   isFetching: boolean;
+  startDate?: string;
+  endDate?: string;
+  selectedEmployeeId?: string | null;
 }
 
 export const ItemsView = React.memo(function ItemsView({
@@ -22,13 +27,23 @@ export const ItemsView = React.memo(function ItemsView({
   setItemReportTab,
   itemSearchQuery,
   setItemSearchQuery,
-  isFetching
+  isFetching,
+  startDate,
+  endDate,
+  selectedEmployeeId
 }: ItemsViewProps) {
   const { t } = useTranslation();
   const { formatAmount } = useCurrency();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+
+  // Breakdown Modal State
+  const [isBreakdownModalOpen, setIsBreakdownModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<{ id: string, name: string } | null>(null);
+  const [categoryBreakdown, setCategoryBreakdown] = useState<ItemReportBreakdown[]>([]);
+  const [isFetchingBreakdown, setIsFetchingBreakdown] = useState(false);
+  const [breakdownSearchQuery, setBreakdownSearchQuery] = useState('');
 
   const formatCurrency = (value: number) => formatAmount(value);
 
@@ -83,6 +98,37 @@ export const ItemsView = React.memo(function ItemsView({
     }
     return items;
   }, [itemReportData, sortConfig, itemSearchQuery]);
+
+  const fetchCategoryBreakdown = async (categoryId: string, categoryName: string) => {
+    setSelectedCategory({ id: categoryId, name: categoryName });
+    setIsBreakdownModalOpen(true);
+    setIsFetchingBreakdown(true);
+    setBreakdownSearchQuery('');
+
+    try {
+      const res = await api.get('/reports/item-report', {
+        params: {
+          startDate,
+          endDate,
+          employeeId: selectedEmployeeId || '',
+          categoryId: categoryId
+        }
+      });
+      setCategoryBreakdown(res.data?.breakdown || []);
+    } catch (error) {
+      console.error('Failed to fetch category breakdown:', error);
+    } finally {
+      setIsFetchingBreakdown(false);
+    }
+  };
+
+  const filteredBreakdown = useMemo(() => {
+    if (!breakdownSearchQuery.trim()) return categoryBreakdown;
+    const query = breakdownSearchQuery.toLowerCase();
+    return categoryBreakdown.filter(item =>
+      (item.itemName || item.name || '').toLowerCase().includes(query)
+    );
+  }, [categoryBreakdown, breakdownSearchQuery]);
 
   return (
     <div className="space-y-6">
@@ -203,14 +249,24 @@ export const ItemsView = React.memo(function ItemsView({
                       initial={{ opacity: 0 }}
                       animate={{ opacity: isFetching ? 0.5 : 1 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                      onClick={() => {
+                        if (itemReportTab === 'categories' && item.id) {
+                          fetchCategoryBreakdown(item.id, item.name);
+                        }
+                      }}
+                      className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${itemReportTab === 'categories' ? 'cursor-pointer' : ''}`}
                     >
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center font-black text-xs text-gray-500 border border-gray-200 dark:border-white/5 shadow-sm">
                             {((currentPage - 1) * itemsPerPage + idx + 1).toLocaleString(t('common.locale'))}
                           </div>
-                          <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name || t('common.unknown')}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name || t('common.unknown')}</span>
+                            {itemReportTab === 'categories' && (
+                              <ChevronRight size={14} className="text-gray-300 dark:text-white/10 opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
+                            )}
+                          </div>
                         </div>
                       </td>
                       <td className="px-8 py-5 text-end font-bold text-gray-700 dark:text-gray-300">
@@ -236,6 +292,127 @@ export const ItemsView = React.memo(function ItemsView({
           onPageChange={(p) => setCurrentPage(p)}
         />
       </div>
+
+      {/* Category Breakdown Modal */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isBreakdownModalOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsBreakdownModalOpen(false)}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative w-full max-w-2xl bg-white dark:bg-[#0B1120] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
+              >
+                {/* Header */}
+                <div className="px-8 py-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                      <LayoutGrid size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                        {selectedCategory?.name}
+                      </h3>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">
+                        {t('orders.reports.items.categoryBreakdown', 'Category Breakdown')}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setIsBreakdownModalOpen(false)}
+                    className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                {/* Search in Breakdown */}
+                <div className="p-8 pb-4">
+                  <div className="relative">
+                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder={t('orders.reports.items.searchInBreakdown', 'Search items in category...')}
+                      value={breakdownSearchQuery}
+                      onChange={(e) => setBreakdownSearchQuery(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none transition-all focus:ring-2 focus:ring-paymint-green/20"
+                    />
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-8 pt-0 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scroll-bar-white/10">
+                  {isFetchingBreakdown ? (
+                    <div className="py-20 flex flex-col items-center justify-center">
+                      <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+                      <p className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('common.loading')}</p>
+                    </div>
+                  ) : filteredBreakdown.length > 0 ? (
+                    <div className="space-y-3">
+                      {filteredBreakdown.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 group hover:border-paymint-green/30 transition-all"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 border border-gray-100 dark:border-white/10 shadow-sm group-hover:text-paymint-green transition-colors">
+                              <ShoppingBag size={18} />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name}</span>
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{item.quantity} {t('orders.reports.items.unitsSold')}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-paymint-green text-base">
+                              {formatCurrency((item.totalSales || item.revenue) || 0)}
+                            </p>
+                            <div className="flex items-center justify-end gap-1 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <span className="text-[10px] font-black text-paymint-green uppercase tracking-widest">{t('common.viewDetails', 'Details')}</span>
+                              <ArrowUpRight size={10} className="text-paymint-green" />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="py-20 text-center">
+                      <p className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('orders.reports.items.noData')}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-8 py-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('common.total', 'Total')}:</span>
+                    <span className="text-sm font-bold text-gray-900 dark:text-white">
+                      {filteredBreakdown.length} {t('common.items', 'Items')}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('dashboard.stats.revenue')}:</span>
+                    <span className="text-sm font-bold text-paymint-green">
+                      {formatCurrency(filteredBreakdown.reduce((acc, curr) => acc + ((curr.totalSales || curr.revenue) || 0), 0))}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 });

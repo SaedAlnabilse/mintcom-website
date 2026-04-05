@@ -45,7 +45,7 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({
           </div>
           {canViewReports && (
             <button
-              onClick={() => navigate(`/dashboard/${locationSlug}/reports`)}
+              onClick={() => navigate(`/dashboard/${locationSlug}/reports/items`)}
               className="text-xs font-bold text-paymint-green hover:underline tracking-wide"
             >
               {t('orders.reports.sales.viewAll')}
@@ -55,7 +55,7 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({
         <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           {/* Top Items Column */}
           <div className="space-y-3">
-            <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">{t('dashboard.stats.top3Items')}</h4>
+            <h4 className="text-base font-bold text-gray-900 dark:text-white mb-3 text-center">{t('dashboard.stats.top3Items')}</h4>
             {topProducts.length > 0 ? topProducts.slice(0, 3).map((item, index) => (
               <motion.div
                 key={`${item.name}-${index}`}
@@ -87,7 +87,7 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({
 
           {/* Top Categories Column */}
           <div className="space-y-3">
-            <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">{t('dashboard.stats.top3Categories')}</h4>
+            <h4 className="text-base font-bold text-gray-900 dark:text-white mb-3 text-center">{t('dashboard.stats.top3Categories')}</h4>
             {categoryBreakdown && categoryBreakdown.length > 0 ? categoryBreakdown.slice(0, 3).map((cat, index) => (
               <motion.div
                 key={`${cat.name}-${index}`}

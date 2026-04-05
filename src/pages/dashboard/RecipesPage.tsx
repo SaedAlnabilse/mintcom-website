@@ -62,6 +62,8 @@ interface RawMaterial {
   name: string;
   unit: string;
   quantity: number;
+  costPerUnit: number;
+  lowStockThreshold?: number;
 }
 
 interface SubRecipeIngredient {
@@ -106,7 +108,7 @@ export function RecipesPage() {
   usePermissionGuard(['manage_inventory']);
   const { locationSlug } = useParams();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'final' | 'sub'>('final');
+  const [activeTab, setActiveTab] = useState<'materials' | 'sub' | 'final'>('materials');
   const [subRecipes, setSubRecipes] = useState<SubRecipe[]>([]);
   const [finalRecipes, setFinalRecipes] = useState<FinalRecipe[]>([]);
   const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
@@ -115,6 +117,12 @@ export function RecipesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const itemsPerPage = 9;
+
+  const [showMaterialModal, setShowMaterialModal] = useState(false);
+  const [editingMaterial, setEditingMaterial] = useState<RawMaterial | null>(null);
+  const [materialForm, setMaterialForm] = useState({
+    name: '', unit: 'Kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0
+  });
 
   const [showSubRecipeModal, setShowSubRecipeModal] = useState(false);
   const [showFinalRecipeModal, setShowFinalRecipeModal] = useState(false);
@@ -178,17 +186,47 @@ export function RecipesPage() {
     }
   };
 
+  const filteredMaterials = useMemo(() => (Array.isArray(rawMaterials) ? rawMaterials : []).filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase())), [rawMaterials, searchQuery]);
   const filteredSub = useMemo(() => (Array.isArray(subRecipes) ? subRecipes : []).filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase())), [subRecipes, searchQuery]);
   const filteredFinal = useMemo(() => (Array.isArray(finalRecipes) ? finalRecipes : []).filter(r => r.item?.name?.toLowerCase().includes(searchQuery.toLowerCase())), [finalRecipes, searchQuery]);
 
-  const totalPages = Math.ceil(((activeTab === 'final' ? filteredFinal : filteredSub) || []).length / itemsPerPage);
+  const totalPages = Math.ceil(((activeTab === 'materials' ? filteredMaterials : activeTab === 'final' ? filteredFinal : filteredSub) || []).length / itemsPerPage);
   const paginatedItems = useMemo(() => {
     const start = (page - 1) * itemsPerPage;
-    const items = activeTab === 'final' ? filteredFinal : filteredSub;
+    const items = activeTab === 'materials' ? filteredMaterials : activeTab === 'final' ? filteredFinal : filteredSub;
     return (Array.isArray(items) ? items : []).slice(start, start + itemsPerPage);
-  }, [activeTab, filteredFinal, filteredSub, page]);
+  }, [activeTab, filteredMaterials, filteredFinal, filteredSub, page]);
 
   const products = (Array.isArray(menuItems) ? menuItems : []).filter(p => !(Array.isArray(finalRecipes) ? finalRecipes : []).some(r => r.itemId === p.id) || (editingRecipe as Record<string, any>)?.itemId === p.id);
+
+  const handleMaterialSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
+    if (!materialForm.name.trim()) { setErrors({ name: t('common.required') }); return; }
+    setIsSubmitting(true);
+    try {
+      if (editingMaterial) {
+        await api.put(`/api/manufacturing/raw-materials/${editingMaterial.id}`, materialForm);
+        toast.success(t('inventory.messages.updated', {defaultValue: 'Updated successfully'}));
+      } else {
+        await api.post('/api/manufacturing/raw-materials', materialForm);
+        toast.success(t('inventory.messages.created', {defaultValue: 'Created successfully'}));
+      }
+      setShowMaterialModal(false);
+      fetchData();
+    } catch {
+      toast.error(t('inventory.messages.saveError', {defaultValue: 'Failed to save'}));
+    } finally { setIsSubmitting(false); }
+  };
+
+  const handleDeleteMaterial = async (id: string, name: string) => {
+    setConfirmConfig({
+      isOpen: true, title: t('inventory.messages.removeTitle', {defaultValue: 'Remove Ingredient'}), message: t('inventory.messages.deleteConfirm', { name, defaultValue: `Delete ${name}?` }), type: 'danger',
+      onConfirm: async () => {
+        try { await api.delete(`/api/manufacturing/raw-materials/${id}`); toast.success(t('inventory.messages.removed', {defaultValue: 'Removed successfully'})); fetchData(); } catch { toast.error(t('inventory.messages.deleteFailed', {defaultValue: 'Failed to delete'})); }
+      }
+    });
+  };
 
   const openEditSubRecipe = (recipe: SubRecipe) => {
     setEditingRecipe(recipe);
@@ -350,7 +388,11 @@ export function RecipesPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
-              if (activeTab === 'final') {
+              if (activeTab === 'materials') {
+                setEditingMaterial(null);
+                setMaterialForm({ name: '', unit: 'Kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
+                setShowMaterialModal(true);
+              } else if (activeTab === 'final') {
                 if (menuItems.length === 0 && !isLoading) {
                   setConfirmConfig({
                     isOpen: true,
@@ -375,7 +417,7 @@ export function RecipesPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
           >
             <Plus size={18} />
-            <span>{activeTab === 'final' ? t('manufacturing.linkProduct') : t('manufacturing.newPrep')}</span>
+            <span>{activeTab === 'materials' ? t('inventory.addIngredient', {defaultValue: 'Add Ingredient'}) : activeTab === 'final' ? t('manufacturing.linkProduct') : t('manufacturing.newPrep')}</span>
           </button>
         </div>
       </div>
@@ -393,9 +435,10 @@ export function RecipesPage() {
             className="w-full"
           />
         </div>
-        <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl">
-          <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.products')}</button>
-          <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.prep')}</button>
+        <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl overflow-x-auto hide-scrollbar">
+          <button onClick={() => { setActiveTab('materials'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all whitespace-nowrap ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('inventory.materials', {defaultValue: 'Ingredients'})}</button>
+          <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all whitespace-nowrap ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.prep', {defaultValue: 'Prep'})}</button>
+          <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all whitespace-nowrap ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.products', {defaultValue: 'Products'})}</button>
         </div>
       </div>
 
@@ -416,6 +459,79 @@ export function RecipesPage() {
           </div>
         ) : (
           <div className="space-y-8">
+            {activeTab === 'materials' ? (
+              <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                  {paginatedItems.map((item) => {
+                    const m = item as RawMaterial;
+                    const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
+                    return (
+                      <div key={m.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border flex-shrink-0 ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
+                              {m.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-gray-900 dark:text-white text-sm truncate">{m.name}</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-1 flex-shrink-0">
+                            <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors"><Edit2 size={14} /></button>
+                            <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors"><Trash2 size={14} /></button>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-2">
+                            <p className="text-xs font-bold text-gray-400 mb-0.5">{t('inventory.quantity', {defaultValue: 'Quantity'})}</p>
+                            <p className="font-bold text-gray-900 dark:text-white">{(Number(m.quantity || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-gray-500">{m.unit}</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 dark:bg-white/[0.02]">
+                      <tr className="border-b border-gray-200 dark:border-white/5">
+                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('inventory.form.name', {defaultValue: 'NAME'})}</th>
+                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('inventory.quantity', {defaultValue: 'QUANTITY'})}</th>
+                        <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.table.actions', {defaultValue: 'ACTIONS'})}</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                      {paginatedItems.map((item) => {
+                        const m = item as RawMaterial;
+                        const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
+                        return (
+                          <tr key={m.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs border ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
+                                  {m.name.charAt(0).toUpperCase()}
+                                </div>
+                                <span className="font-bold text-gray-900 dark:text-white text-sm">{m.name}</span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="font-bold text-gray-900 dark:text-white">{(Number(m.quantity || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                              <span className="ml-1 text-xs font-medium text-gray-500">{m.unit}</span>
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <div className="flex items-center justify-end gap-2 transition-opacity">
+                                <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors"><Edit2 size={14} /></button>
+                                <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors"><Trash2 size={14} /></button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {paginatedItems.map((recipe) => (
                 <motion.div
@@ -436,7 +552,7 @@ export function RecipesPage() {
                                                                             <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
                                                                               {activeTab === 'final' ? (recipe as FinalRecipe).item?.name : (recipe as SubRecipe).name}
                                                                             </h3>
-                                                                            <p className="text-xs font-black text-gray-400 tracking-widest">{(recipe.ingredients || []).length} {t('manufacturing.ingredients')}</p>
+                                                                            <p className="text-xs font-black text-gray-400 tracking-widest">{((recipe as any).ingredients || []).length} {t('manufacturing.ingredients')}</p>
                                                                           </div>
                                                                         </div>
                                                                         <div className="flex gap-1 transition-all">
@@ -445,7 +561,7 @@ export function RecipesPage() {
                                                                         </div>
                                                                       </div>
                                               <div className="space-y-3 mb-6 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5">
-                                                {(Array.isArray(recipe.ingredients) ? recipe.ingredients : []).slice(0, 3).map((ing: Record<string, any>, i: number) => {
+                                                {(Array.isArray((recipe as any).ingredients) ? (recipe as any).ingredients : []).slice(0, 3).map((ing: Record<string, any>, i: number) => {
                                                   const baseUnit = ing.rawMaterial?.unit || ing.subRecipe?.yieldUnit || 'Units';
 
                                                   let currentUnit = ing.selectedUnit || baseUnit;
@@ -467,7 +583,7 @@ export function RecipesPage() {
                                                     </div>
                                                   );
                                                 })}
-                                                {(recipe.ingredients || []).length > 3 && <p className="text-xs font-black text-paymint-green text-center mt-2 tracking-widest">+ {(recipe.ingredients || []).length - 3} {t('manufacturing.additionalElements')}</p>}
+                                                {((recipe as any).ingredients || []).length > 3 && <p className="text-xs font-black text-paymint-green text-center mt-2 tracking-widest">+ {((recipe as any).ingredients || []).length - 3} {t('manufacturing.additionalElements')}</p>}
                                               </div>
 
                     {activeTab === 'sub' && (
@@ -479,11 +595,54 @@ export function RecipesPage() {
                 </motion.div>
               ))}
             </div>
+            )}
             <Pagination
               currentPage={page}
               totalPages={totalPages}
               onPageChange={setPage}
             />
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showMaterialModal && (
+          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
+            <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ type: "spring", duration: 0.4, bounce: 0.2 }} className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl max-h-[92vh] sm:max-h-[85vh] flex flex-col">
+              <div className="sm:hidden flex justify-center pt-3 pb-1"><div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" /></div>
+              <div className="p-4 sm:p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingMaterial ? t('inventory.editIngredient', {defaultValue: 'Edit Ingredient'}) : t('inventory.addIngredient', {defaultValue: 'Add Ingredient'})}</h2>
+                <button onClick={() => setShowMaterialModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={20} /></button>
+              </div>
+              <form onSubmit={handleMaterialSubmit} className="p-4 sm:p-8 space-y-6 overflow-y-auto flex-1">
+                <div>
+                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-paymint-red mx-1">*</span></label>
+                  <input type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
+                  {errors.name && <p className="mt-2 text-xs font-bold text-paymint-red px-1">{errors.name}</p>}
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                      {t('inventory.form.unit', {defaultValue: 'Unit'})}
+                      <QuickInfo text={t('inventory.tips.unit', {defaultValue: 'The primary unit used to measure this ingredient (e.g., Kg, Liters).'})} />
+                    </label>
+                    <CustomSelect value={materialForm.unit} onChange={(val) => setMaterialForm({ ...materialForm, unit: val as string })} options={units.map(u => ({ value: u, label: u }))} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                      {t('inventory.form.totalQuantity', {defaultValue: 'Total Quantity'})}
+                      <QuickInfo text={t('inventory.tips.quantity', {defaultValue: 'Current stock available for this ingredient.'})} />
+                    </label>
+                    <input type="text" inputMode="decimal" value={materialForm.quantity === 0 ? '' : materialForm.quantity} onChange={(e) => { const v = e.target.value.replace(/[^\d.]/g, ''); setMaterialForm({ ...materialForm, quantity: v ? Number(v) : 0 }); }} className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all" placeholder="0.00" />
+                  </div>
+                </div>
+              </form>
+              <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02]">
+                <button onClick={handleMaterialSubmit} disabled={isSubmitting} className="w-full px-5 py-3.5 bg-paymint-green hover:bg-emerald-400 text-black font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
+                  {isSubmitting ? <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : t('common.save', {defaultValue: 'Save'})}
+                </button>
+              </div>
+            </motion.div>
           </div>
         )}
       </AnimatePresence>
@@ -498,9 +657,8 @@ export function RecipesPage() {
               </div>
               <div className="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
                 <div>
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
+                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                     {t('manufacturing.formula.name')} <span className="text-paymint-red mx-1">*</span>
-                    <QuickInfo text={t('manufacturing.formula.namePlaceholder')} />
                   </label>
                   <input
                     type="text"
@@ -509,16 +667,16 @@ export function RecipesPage() {
                       setSubRecipeForm({ ...subRecipeForm, name: e.target.value });
                       if (errors.name) setErrors({ ...errors, name: '' });
                     }}
-                    className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                    className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all`}
                     placeholder={t('manufacturing.formula.namePlaceholder')}
                   />
                   {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col">
-                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
+                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                       {t('manufacturing.formula.yield')}
-                      <QuickInfo text={t('manufacturing.totalOutput')} />
+                      <QuickInfo text={t('manufacturing.tips.yield', {defaultValue: 'How much of the Prep this recipe makes (e.g., 5 Liters of sauce).'})} />
                     </label>
                     <input
                       type="number"
@@ -528,7 +686,7 @@ export function RecipesPage() {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
+                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                       {t('manufacturing.formula.unit')}
                     </label>
                                             <CustomSelect
@@ -540,10 +698,7 @@ export function RecipesPage() {
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center">
-                      <label className="text-xs font-black text-gray-400 tracking-[0.2em]">{t('manufacturing.ingredients')}</label>
-                      <QuickInfo text={t('manufacturing.formula.noIngredients')} />
-                    </div>
+                    <label className="text-sm font-bold text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
                     <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
                   </div>
 
@@ -641,7 +796,12 @@ export function RecipesPage() {
                             message: t('manufacturing.messages.noMaterialsDesc'),
                             type: 'warning',
                             onConfirm: () => {
-                              navigate(`/dashboard/${locationSlug}/materials`, { state: { openCreateModal: true } });
+                              setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+                              setShowSubRecipeModal(false);
+                              setActiveTab('materials');
+                              setEditingMaterial(null);
+                              setMaterialForm({ name: '', unit: 'Kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
+                              setShowMaterialModal(true);
                             }
                           });
                           return;
@@ -671,15 +831,15 @@ export function RecipesPage() {
           <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
               <div className="p-5 sm:p-6 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? t('manufacturing.formula.editMap') : t('manufacturing.formula.map')}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? t('manufacturing.editLink', {defaultValue: 'Edit Link'}) : t('manufacturing.linkProduct', {defaultValue: 'Link Product'})}</h2>
                 <button onClick={() => setShowFinalRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
               </div>
               <div className="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
                 <div>
-                  <div className="flex items-center mb-1">
-                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em]">{t('manufacturing.formula.targetItem')} <span className="text-paymint-red">*</span></label>
-                    <QuickInfo text={t('manufacturing.formula.targetItem')} />
-                  </div>
+                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                    {t('manufacturing.formula.targetItem', {defaultValue: 'Target Menu Item'})} <span className="text-paymint-red mx-1">*</span>
+                    <QuickInfo text={t('manufacturing.tips.targetItem', {defaultValue: 'The product on your menu that users order (e.g., Pepperoni Pizza).'})} />
+                  </label>
                   <CustomSelect
                     value={finalRecipeForm.itemId}
                     onChange={(val) => {
@@ -693,10 +853,7 @@ export function RecipesPage() {
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center">
-                      <label className="text-xs font-black text-gray-400 tracking-[0.2em]">{t('manufacturing.ingredients')}</label>
-                      <QuickInfo text={t('manufacturing.formula.noIngredients')} />
-                    </div>
+                    <label className="text-sm font-bold text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
                     <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
                   </div>
 
@@ -860,7 +1017,12 @@ export function RecipesPage() {
                             message: t('manufacturing.messages.noMaterialsDesc'),
                             type: 'warning',
                             onConfirm: () => {
-                              navigate(`/dashboard/${locationSlug}/materials`, { state: { openCreateModal: true } });
+                              setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+                              setShowFinalRecipeModal(false);
+                              setActiveTab('materials');
+                              setEditingMaterial(null);
+                              setMaterialForm({ name: '', unit: 'Kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
+                              setShowMaterialModal(true);
                             }
                           });
                           return;

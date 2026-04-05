@@ -190,8 +190,8 @@ export function DiscountsPage() {
   const handleDelete = async (discountId: string, name: string) => {
     setConfirmConfig({
       isOpen: true,
-      title: t('common.delete'),
-      message: `${t('common.confirm')} "${name}"?`,
+      title: t('discounts.confirm.deleteTitle'),
+      message: t('discounts.confirm.deleteMessage', { name }),
       type: 'danger',
       onConfirm: async () => {
         try {

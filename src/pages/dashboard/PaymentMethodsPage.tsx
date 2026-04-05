@@ -84,10 +84,12 @@ export function PaymentMethodsPage() {
     onConfirm: () => { },
   });
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<PaymentMethodFormData>({ // added watch
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<PaymentMethodFormData>({ // added watch
     resolver: zodResolver(paymentMethodSchema),
     defaultValues: { isActive: true },
   });
+
+  const watchName = watch('name');
 
   const getImageUrl = (imagePath?: string) => {
     if (!imagePath) return null;
@@ -328,141 +330,171 @@ export function PaymentMethodsPage() {
       </div>
 
       {/* Card Types Section */}
-      <section className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
-        <div className="flex items-start gap-4 mb-10">
-          <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green flex-shrink-0">
-            <CreditCard size={24} />
+      <section className="bg-white dark:bg-[#0B1120] rounded-[32px] border border-gray-200 dark:border-white/[0.03] p-8 sm:p-10 shadow-sm overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+        
+        <div className="flex items-start gap-5 mb-12 relative z-10">
+          <div className="w-14 h-14 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shrink-0 border border-paymint-green/20">
+            <CreditCard size={28} />
           </div>
-          <div className="flex flex-col gap-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.cardBrands')}</h2>
-            <p className="text-sm font-bold text-gray-500 dark:text-gray-400">{t('paymentMethods.cardBrandsSubtitle')}</p>
+          <div className="flex flex-col gap-1.5">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.cardBrands')}</h2>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400 max-w-2xl">{t('paymentMethods.cardBrandsSubtitle')}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
           {cardTypes.length === 0 ? (
-            <div className="col-span-full py-12 text-center">
-              <p className="text-gray-400 font-black tracking-widest text-xs">{t('paymentMethods.noCardBrands')}</p>
+            <div className="col-span-full py-20 text-center bg-gray-50/50 dark:bg-white/[0.01] rounded-[24px] border border-dashed border-gray-200 dark:border-white/5">
+              <p className="text-gray-400 font-black tracking-[0.2em] text-xs uppercase">{t('paymentMethods.noCardBrands')}</p>
             </div>
           ) : (
             Array.isArray(cardTypes) && cardTypes.map((card) => (
               <motion.div
                 layout
                 key={card.id}
-                className="group relative bg-gray-50 dark:bg-white/[0.02] p-6 rounded-2xl border border-gray-100 dark:border-white/5 transition-all duration-300 hover:border-paymint-green/30 flex flex-col items-center justify-center min-h-[200px]"
+                className="group relative bg-white dark:bg-white/[0.02] rounded-[24px] border border-gray-100 dark:border-white/5 transition-all duration-500 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 flex flex-col overflow-hidden"
               >
-                <div className="absolute top-3 right-3 flex gap-1 z-10">
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setEditingCard(card); setNewCardName(card.name); setCardImagePreview(card.imageUrl || card.logo || null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
-                    className="p-2 rounded-lg bg-white dark:bg-black/50 text-gray-400 hover:text-paymint-green shadow-sm border border-gray-100 dark:border-white/5 backdrop-blur-sm"
-                    title={t('common.edit')}
-                  >
-                    <Edit2 size={14} />
-                  </button>
-                  <button onClick={(e) => { e.stopPropagation(); handleDeleteCardType(card.id, card.name); }} className="p-2 rounded-lg bg-white dark:bg-black/50 text-gray-400 hover:text-paymint-red shadow-sm border border-gray-100 dark:border-white/5 backdrop-blur-sm" title={t('common.delete')}>
-                    <Trash2 size={14} />
-                  </button>
+                {/* Image/Icon Container */}
+                <div className="aspect-[4/3] flex items-center justify-center p-8 bg-gray-50/50 dark:bg-black/20 relative group-hover:bg-white dark:group-hover:bg-black/40 transition-colors duration-500">
+                  <div className="w-20 h-20 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+                    {getImageUrl(card.imageUrl || card.logo) ? (
+                      <img src={getImageUrl(card.imageUrl || card.logo)!} alt={card.name} className="w-full h-full object-contain drop-shadow-sm" />
+                    ) : (
+                      <CreditCard size={40} className="text-gray-300 dark:text-gray-600" />
+                    )}
+                  </div>
                 </div>
 
-                <div className="w-24 h-24 rounded-2xl bg-white dark:bg-black/40 flex items-center justify-center border border-gray-100 dark:border-white/5 overflow-hidden p-4 mb-4 shadow-sm">
-                  {getImageUrl(card.imageUrl || card.logo) ? (
-                    <img src={getImageUrl(card.imageUrl || card.logo)!} alt={card.name} className="w-full h-full object-contain" />
-                  ) : (
-                    <CreditCard size={32} className="text-gray-400" />
-                  )}
+                {/* Info & Actions */}
+                <div className="p-5 flex flex-col gap-4 border-t border-gray-100 dark:border-white/5">
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white truncate px-1">{card.name}</h3>
+                  
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => { setEditingCard(card); setNewCardName(card.name); setCardImagePreview(card.imageUrl || card.logo || null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-500 hover:text-paymint-green hover:bg-paymint-green/10 border border-gray-100 dark:border-white/5 transition-all font-bold text-xs"
+                    >
+                      <Edit2 size={14} /> {t('common.edit')}
+                    </button>
+                    <button
+                      onClick={() => handleDeleteCardType(card.id, card.name)}
+                      className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 border border-gray-100 dark:border-white/5 transition-all"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
-
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate w-full text-center">{card.name}</h3>
               </motion.div>
             ))
           )}
 
           {/* Add New Network Card */}
-          <motion.div
+          <motion.button
             layout
             onClick={() => { setEditingCard(null); setNewCardName(''); setCardImagePreview(null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
-            className="group relative bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-2xl p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center min-h-[200px]"
+            className="group relative aspect-square sm:aspect-auto sm:min-h-[220px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-[24px] p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-4"
           >
-            <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
+            <div className="w-14 h-14 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
               <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('paymentMethods.addBrand')}</h3>
-          </motion.div>
+            <span className="text-sm font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{t('paymentMethods.addBrand')}</span>
+          </motion.button>
         </div>
       </section>
 
       {/* Main Section */}
-      <section className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
-        <div className="flex items-start gap-4 mb-10">
-          <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green flex-shrink-0">
-            <Wallet size={24} />
+      <section className="bg-white dark:bg-[#0B1120] rounded-[32px] border border-gray-200 dark:border-white/[0.03] p-8 sm:p-10 shadow-sm overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+        
+        <div className="flex items-start gap-5 mb-12 relative z-10">
+          <div className="w-14 h-14 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shrink-0 border border-paymint-green/20">
+            <Wallet size={28} />
           </div>
-          <div className="flex flex-col gap-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {t('paymentMethods.paymentTypes')}
-            </h2>
-            <p className="text-sm font-bold text-gray-500 dark:text-gray-400">{t('paymentMethods.paymentTypesSubtitle')}</p>
+          <div className="flex flex-col gap-1.5">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.paymentTypes')}</h2>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400 max-w-2xl">{t('paymentMethods.paymentTypesSubtitle')}</p>
           </div>
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-48 rounded-2xl bg-gray-100 dark:bg-white/5 animate-pulse" />
+              <div key={i} className="aspect-[4/5] rounded-[24px] bg-gray-100 dark:bg-white/5 animate-pulse" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
             {Array.isArray(paymentMethods) && paymentMethods.map((method) => (
               <motion.div
                 layout
                 key={method.id}
-                className={`group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center min-h-[200px] ${method.isActive
-                  ? 'border-paymint-green/20 hover:border-paymint-green/50'
-                  : 'border-gray-100 dark:border-white/5 opacity-60'
+                className={`group relative bg-white dark:bg-white/[0.02] rounded-[24px] border transition-all duration-500 flex flex-col overflow-hidden ${method.isActive
+                  ? 'border-gray-100 dark:border-white/5 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1'
+                  : 'border-gray-100 dark:border-white/5 opacity-50 grayscale'
                   }`}
               >
-                <div className="absolute top-3 right-3 flex gap-1 z-10">
-                  {!method.isDefault && (
-                    <>
-                      <button onClick={(e) => { e.stopPropagation(); setEditingMethod(method); reset({ name: method.name, isActive: method.isActive }); setImagePreview(method.imageUrl || null); setShowModal(true); }} className="p-2 rounded-lg bg-gray-50 dark:bg-black/50 text-gray-400 hover:text-paymint-green border border-gray-100 dark:border-white/5 shadow-sm backdrop-blur-sm" title={t('common.edit')}>
-                        <Edit2 size={14} />
-                      </button>
-                      <button onClick={(e) => { e.stopPropagation(); handleDelete(method.id, method.name); }} className="p-2 rounded-lg bg-gray-50 dark:bg-black/50 text-gray-400 hover:text-paymint-red border border-gray-100 dark:border-white/5 shadow-sm backdrop-blur-sm" title={t('common.delete')}>
-                        <Trash2 size={14} />
-                      </button>
-                    </>
+                {/* Icon Container */}
+                <div className="aspect-[4/3] flex items-center justify-center p-8 bg-gray-50/50 dark:bg-black/20 relative group-hover:bg-white dark:group-hover:bg-black/40 transition-colors duration-500">
+                  <div className="w-20 h-20 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+                    {getImageUrl(method.imageUrl || method.logo) ? (
+                      <img src={getImageUrl(method.imageUrl || method.logo)!} alt={method.name} className="w-full h-full object-contain drop-shadow-sm" />
+                    ) : (
+                      <div className="text-gray-400 dark:text-gray-500">
+                        {getMethodIcon(method.name, 48)}
+                      </div>
+                    )}
+                  </div>
+                  {method.isDefault && (
+                    <div className="absolute top-4 left-4">
+                      <div className="px-2.5 py-1 rounded-lg bg-blue-500 text-white text-[10px] font-black tracking-widest uppercase flex items-center gap-1.5 shadow-lg shadow-blue-500/20">
+                        <Star size={10} fill="currentColor" /> {t('paymentMethods.system')}
+                      </div>
+                    </div>
                   )}
                 </div>
 
-                <div className="w-24 h-24 rounded-2xl bg-white dark:bg-black/40 flex items-center justify-center border border-gray-100 dark:border-white/5 overflow-hidden p-4 mb-4 shadow-sm">
-                  {getImageUrl(method.imageUrl || method.logo) ? (
-                    <img src={getImageUrl(method.imageUrl || method.logo)!} alt={method.name} className="w-full h-full object-contain" />
-                  ) : (
-                    getMethodIcon(method.name, 32)
-                  )}
+                {/* Info & Actions */}
+                <div className="p-5 flex flex-col gap-4 border-t border-gray-100 dark:border-white/5">
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white truncate px-1">{method.name}</h3>
+                  
+                  <div className="flex items-center gap-2">
+                    {!method.isDefault ? (
+                      <>
+                        <button
+                          onClick={() => { setEditingMethod(method); reset({ name: method.name, isActive: method.isActive }); setImagePreview(method.imageUrl || null); setShowModal(true); }}
+                          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-500 hover:text-paymint-green hover:bg-paymint-green/10 border border-gray-100 dark:border-white/5 transition-all font-bold text-xs"
+                        >
+                          <Edit2 size={14} /> {t('common.edit')}
+                        </button>
+                        <button
+                          onClick={() => handleDelete(method.id, method.name)}
+                          className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 border border-gray-100 dark:border-white/5 transition-all"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </>
+                    ) : (
+                      <div className="flex-1 py-2.5 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5">
+                        {t('common.systemDefault', 'System Default')}
+                      </div>
+                    )}
+                  </div>
                 </div>
-
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate w-full text-center">{method.name}</h3>
-                {method.isDefault && (
-                  <span className="mt-3 text-[10px] font-black text-blue-500 tracking-widest flex items-center gap-1 bg-blue-500/10 px-3 py-1 rounded-full uppercase border border-blue-500/20">
-                    <Star size={10} fill="currentColor" /> {t('paymentMethods.system')}
-                  </span>
-                )}
               </motion.div>
             ))}
 
             {/* Add New Method Card */}
-            <motion.div
+            <motion.button
               layout
               onClick={() => { setEditingMethod(null); reset({ name: '', isActive: true }); setImagePreview(null); setShowModal(true); }}
-              className="group relative bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-2xl p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center min-h-[200px]"
+              className="group relative aspect-square sm:aspect-auto sm:min-h-[220px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-[24px] p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-4"
             >
-              <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
+              <div className="w-14 h-14 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
                 <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
               </div>
-              <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('paymentMethods.addPayment')}</h3>
-            </motion.div>
+              <span className="text-sm font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{t('paymentMethods.addPayment')}</span>
+            </motion.button>
           </div>
         )}
       </section>
@@ -470,25 +502,46 @@ export function PaymentMethodsPage() {
       {/* Payment Method Modal */}
       <AnimatePresence>
         {showModal && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
-              <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                  {editingMethod ? t('paymentMethods.editPayment') : t('paymentMethods.addPayment')}
-                </h2>
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowModal(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-white dark:bg-[#0B1120] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
+            >
+              {/* Mobile Drag Handle */}
+              <div className="h-1.5 w-12 bg-gray-200 dark:bg-white/10 rounded-full mx-auto mt-3 mb-1 sm:hidden" />
+
+              <div className="px-8 py-6 border-b border-gray-50 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                    <Wallet size={24} />
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                    {editingMethod ? t('paymentMethods.editPayment') : t('paymentMethods.addPayment')}
+                  </h2>
+                </div>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="p-2 text-gray-400 hover:text-white transition-colors"
+                  className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90"
                 >
-                  <X size={24} />
+                  <X size={20} />
                 </button>
               </div>
+
               <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group">
+                  <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all hover:border-paymint-green/50">
                     {imagePreview ? (
                       <>
-                        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                        <img src={imagePreview} alt="Preview" className="w-full h-full object-contain p-4" />
                         <button
                           type="button"
                           onClick={(e) => { e.stopPropagation(); handleRemoveImage(); }}
@@ -498,36 +551,41 @@ export function PaymentMethodsPage() {
                         </button>
                       </>
                     ) : (
-                      <>
+                      <div className="flex flex-col items-center gap-2">
                         <Upload size={32} className="text-gray-300" />
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('common.upload')}</span>
                         <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleImageChange} />
-                      </>
+                      </div>
                     )}
                   </div>
+                </div>
 
-                  <div className="flex items-center">
-                    <p className="text-xs font-black text-gray-400 tracking-widest">{t('paymentMethods.form.iconLabel')}</p>
-                    <QuickInfo text={t('paymentMethods.form.iconTip')} />
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase mb-3 px-1 flex items-center gap-2">
+                      {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
+                      <QuickInfo text={t('paymentMethods.form.nameTip')} />
+                    </label>
+                    <input
+                      type="text"
+                      {...register('name')}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                      placeholder={t('paymentMethods.form.namePlaceholder')}
+                    />
+                    {errors.name && <p className="text-paymint-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{errors.name.message}</p>}
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
-                    {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red mx-1">*</span>
-                    <QuickInfo text={t('paymentMethods.form.nameTip')} />
-                  </label>
-                  <input
-                    type="text"
-                    {...register('name')}
-                    className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder={t('paymentMethods.form.namePlaceholder')}
-                  />
-                  {errors.name && <p className="text-paymint-red text-xs font-black mt-2 px-1">{errors.name.message}</p>}
-                </div>
-
-
-                <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
-                  {editingMethod ? t('common.save') : t('common.add')}
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !watchName?.trim()}
+                  className={`w-full py-4 bg-paymint-green text-black font-bold rounded-xl hover:scale-[1.02] shadow-lg transition-all flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:grayscale disabled:scale-100 ${watchName?.trim() ? 'shadow-paymint-green/40' : 'shadow-black/5'}`}
+                >
+                  {isSubmitting ? (
+                    <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    editingMethod ? t('common.save') : t('common.add')
+                  )}
                 </button>
               </form>
             </motion.div>
@@ -538,19 +596,43 @@ export function PaymentMethodsPage() {
       {/* Card Type Modal */}
       <AnimatePresence>
         {showCardModal && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
-              <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                  {editingCard ? t('paymentMethods.editBrand') : t('paymentMethods.addBrand')}
-                </h2>
-                <button onClick={() => setShowCardModal(false)} className="p-2 text-gray-400 hover:text-white transition-colors">
-                  <X size={24} />
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowCardModal(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-white dark:bg-[#0B1120] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
+            >
+              {/* Mobile Drag Handle */}
+              <div className="h-1.5 w-12 bg-gray-200 dark:bg-white/10 rounded-full mx-auto mt-3 mb-1 sm:hidden" />
+
+              <div className="px-8 py-6 border-b border-gray-50 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                    <CreditCard size={24} />
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                    {editingCard ? t('paymentMethods.editBrand') : t('paymentMethods.addBrand')}
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setShowCardModal(false)}
+                  className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90"
+                >
+                  <X size={20} />
                 </button>
               </div>
+
               <div className="p-8 space-y-8">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group">
+                  <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all hover:border-paymint-green/50">
                     {cardImagePreview ? (
                       <>
                         <img src={cardImagePreview} alt="Preview" className="w-full h-full object-contain p-4" />
@@ -563,43 +645,45 @@ export function PaymentMethodsPage() {
                         </button>
                       </>
                     ) : (
-                      <>
+                      <div className="flex flex-col items-center gap-2">
                         <Upload size={32} className="text-gray-300" />
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('common.upload')}</span>
                         <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleCardImageChange} />
-                      </>
+                      </div>
                     )}
-                  </div>
-
-                  <div className="flex items-center">
-                    <p className="text-xs font-black text-gray-400 tracking-widest">{t('paymentMethods.form.logoLabel')}</p>
-                    <QuickInfo text={t('paymentMethods.form.logoTip')} />
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
-                    {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red mx-1">*</span>
-                    <QuickInfo text={t('paymentMethods.form.brandTip')} />
-                  </label>
-                  <input
-                    type="text"
-                    value={newCardName}
-                    onChange={(e) => {
-                      setNewCardName(e.target.value);
-                      if (cardErrors.cardName) setCardErrors({ ...cardErrors, cardName: '' });
-                    }}
-                    className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${cardErrors.cardName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder={t('paymentMethods.form.brandPlaceholder')}
-                  />
-                  {cardErrors.cardName && <p className="text-paymint-red text-xs font-black mt-2 px-1">{cardErrors.cardName}</p>}
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                      {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
+                      <QuickInfo text={t('paymentMethods.form.brandTip')} />
+                    </label>
+                    <input
+                      type="text"
+                      value={newCardName}
+                      onChange={(e) => {
+                        setNewCardName(e.target.value);
+                        if (cardErrors.cardName) setCardErrors({ ...cardErrors, cardName: '' });
+                      }}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${cardErrors.cardName ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                      placeholder={t('paymentMethods.form.brandPlaceholder')}
+                    />
+                    {cardErrors.cardName && <p className="text-paymint-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{cardErrors.cardName}</p>}
+                  </div>
                 </div>
 
                 <button
                   onClick={handleAddCardType}
                   disabled={isSubmitting || !newCardName.trim()}
-                  className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] transition-all tracking-widest text-xs flex items-center justify-center gap-2"
+                  className={`w-full py-4 bg-paymint-green text-black font-bold rounded-xl hover:scale-[1.02] transition-all shadow-lg flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:grayscale disabled:scale-100 ${newCardName.trim() ? 'shadow-paymint-green/40' : 'shadow-black/5'}`}
                 >
-                  {editingCard ? t('common.save') : t('common.add')}
+                  {isSubmitting ? (
+                    <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    editingCard ? t('common.save') : t('common.add')
+                  )}
                 </button>
               </div>
             </motion.div>

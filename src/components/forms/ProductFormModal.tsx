@@ -116,6 +116,7 @@ export function ProductFormModal({
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [isCategorySubmitting, setIsCategorySubmitting] = useState(false);
   const [categoryError, setCategoryError] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const isInitialLoad = useRef(true);
 
   useScrollLock(isOpen);
@@ -523,8 +524,6 @@ export function ProductFormModal({
               <div>
                 <div className="flex items-center gap-1 mb-1">
                   <span className={popupLabelBaseClass}>{t('products.title')}</span>
-                  <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                  <span className={`${popupLabelBaseClass} text-paymint-green dark:text-paymint-green`}>{t('common.active')}</span>
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
                   {initialData?.id ? t('products.editProduct') : t('products.newProduct')}
@@ -1141,10 +1140,10 @@ export function ProductFormModal({
               {initialData?.id && onDelete && (
                 <button
                   type="button"
-                  onClick={() => onDelete(initialData.id!)}
-                  className="flex-1 h-14 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-widest rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="flex-1 h-12 sm:h-14 border border-paymint-red/20 text-paymint-red font-bold text-sm rounded-xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 shadow-sm"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={18} />
                   <span>{t('common.delete')}</span>
                 </button>
               )}
@@ -1153,7 +1152,7 @@ export function ProductFormModal({
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting || isGeneratingImage}
-                className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
+                className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-barlow font-bold text-sm rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
               >
                 {t('common.cancel')}
               </button>
@@ -1162,7 +1161,7 @@ export function ProductFormModal({
                 type="submit"
                 form="product-form"
                 disabled={isSubmitting || isGeneratingImage || Object.keys(errors).length > 0}
-                className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-barlow font-bold text-sm rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
               >
                 {isSubmitting ? (
                   <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
@@ -1188,6 +1187,22 @@ export function ProductFormModal({
           cancelText={t('common.cancel')}
           type="warning"
         />
+
+        {initialData?.id && onDelete && (
+          <ConfirmModal
+            key="product-delete-confirmation"
+            isOpen={showDeleteConfirm}
+            onClose={() => setShowDeleteConfirm(false)}
+            onConfirm={() => {
+              onDelete(initialData.id!);
+              onClose();
+            }}
+            title={t('products.messages.deleteTitle')}
+            message={t('products.messages.deleteMessage', { name: initialData.name })}
+            confirmText={t('common.delete')}
+            type="danger"
+          />
+        )}
       </AnimatePresence >
 
       <CategoryFormModal

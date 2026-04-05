@@ -1,5 +1,5 @@
 import { useAuth } from '../../context/AuthContext';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
@@ -27,6 +27,7 @@ import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { exportToCSV } from '../../utils/export';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { PortalDropdown } from '../../components/PortalDropdown';
 
 interface Staff {
   id: string;
@@ -99,6 +100,7 @@ export function StaffPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Staff | 'status'; direction: 'asc' | 'desc' } | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
 
   // Close dropdown when clicking outside or scrolling
   useEffect(() => {
@@ -450,7 +452,7 @@ export function StaffPage() {
               <Users size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
             <h3 className="dashboard-card-value mb-2">{searchQuery.trim() ? t('common.noResults') : t('staff.messages.noStaff')}</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('staff.messages.noStaffDesc')}</p>
+            <p className="text-sm font-medium text-gray-500 max-w-xs mx-auto">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('staff.messages.noStaffDesc')}</p>
           </div>
         ) : (
           <>
@@ -657,6 +659,7 @@ export function StaffPage() {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
+                                triggerRef.current = e.currentTarget;
                                 setActiveDropdown(activeDropdown === member.id ? null : member.id);
                               }}
                               aria-label={t('common.actions')}
@@ -666,24 +669,28 @@ export function StaffPage() {
                               <MoreVertical size={18} />
                             </button>
 
-                            {activeDropdown === member.id && (
-                              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden py-1.5">
-                                <button
-                                  onClick={() => { setActiveDropdown(null); toast.success(t('staff.messages.resetSuccess')); }}
-                                  className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
-                                >
-                                  <Key size={14} className="text-paymint-green" />
-                                  <span>{t('staff.actions.resetPassword')}</span>
-                                </button>
-                                <button
-                                  onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
-                                  className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
-                                >
-                                  <Trash2 size={14} />
-                                  <span>{t('common.delete')}</span>
-                                </button>
-                              </div>
-                            )}
+                            <PortalDropdown
+                              isOpen={activeDropdown === member.id}
+                              onClose={() => setActiveDropdown(null)}
+                              triggerRef={triggerRef}
+                              align={t('common.locale') === 'ar' ? 'left' : 'right'}
+                              className="py-1.5"
+                            >
+                              <button
+                                onClick={() => { setActiveDropdown(null); toast.success(t('staff.messages.resetSuccess')); }}
+                                className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+                              >
+                                <Key size={14} className="text-paymint-green" />
+                                <span>{t('staff.actions.resetPassword')}</span>
+                              </button>
+                              <button
+                                onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
+                                className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+                              >
+                                <Trash2 size={14} />
+                                <span>{t('common.delete')}</span>
+                              </button>
+                            </PortalDropdown>
                           </div>
                         </div>
                       </td>
@@ -728,7 +735,7 @@ export function StaffPage() {
         isOpen={securityModal.isOpen}
         onClose={() => setSecurityModal(prev => ({ ...prev, isOpen: false }))}
         onSuccess={() => {
-          toast.success(t('owner.staff.staffRemoved'));
+          setSecurityModal(prev => ({ ...prev, isOpen: false }));
           fetchStaff();
         }}
         targetId={securityModal.memberId}

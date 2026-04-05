@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Pagination } from '../../../ui';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface StaffViewProps {
   shifts: Shift[];
@@ -19,6 +20,9 @@ const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899'
 
 export const StaffView = React.memo(function StaffView({ shifts, selectedEmployeeId, employees, employeeShifts }: StaffViewProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { locationSlug, slug } = useParams();
+  const activeSlug = locationSlug || slug;
   const { formatAmount, currencySymbol } = useCurrency();
   const [staffPage, setStaffPage] = useState(1);
   const itemsPerPage = 10;
@@ -176,8 +180,11 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
           </div>
 
           {/* Variances */}
-          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
-            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalVariances')}</p>
+          <div 
+            onClick={() => navigate(`/dashboard/${activeSlug}/reports/shifts`)}
+            className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm cursor-pointer group"
+          >
+            <p className="h-8 text-[11px] font-black text-gray-400 group-hover:text-paymint-green transition-colors tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalVariances')}</p>
             <div className="flex flex-wrap items-center gap-1.5 mb-4 leading-none">
               <span className="text-xl font-black text-emerald-500 tracking-tight leading-none">+{positiveVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               <span className="text-gray-300 dark:text-white/20 font-light text-xl leading-none">/</span>

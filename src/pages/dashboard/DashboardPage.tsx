@@ -566,7 +566,7 @@ export const DashboardPage = () => {
 
                 {canOpenReportsPage && (
                   <button
-                    onClick={() => navigate(`/dashboard/${locationSlug}/reports`)}
+                    onClick={() => navigate(`/dashboard/${locationSlug}/reports/sales`)}
                     className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
                   >
                     <FileBarChart size={18} className="text-paymint-green" />

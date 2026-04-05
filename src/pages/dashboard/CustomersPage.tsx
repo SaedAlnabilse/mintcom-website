@@ -1,5 +1,5 @@
 import { useAuth } from '../../context/AuthContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   Plus,
+  Minus,
   User,
   Phone,
   Mail,
@@ -25,6 +26,8 @@ import {
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
+import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
+import { PortalDropdown } from '../../components/PortalDropdown';
 import { exportToCSV } from '../../utils/export';
 import { SearchInput, Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
@@ -61,6 +64,65 @@ interface Customer {
   notes?: string;
 }
 
+interface TableActionMenuProps {
+  customer: Customer;
+  onViewProfile: (customer: Customer) => void;
+  onDelete: (customer: Customer) => void;
+}
+
+function TableActionMenu({ customer, onViewProfile, onDelete }: TableActionMenuProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <button
+        ref={triggerRef}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="More actions"
+        className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all ${
+          isOpen 
+            ? 'bg-paymint-green text-black border-paymint-green' 
+            : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
+        }`}
+      >
+        <MoreVertical size={18} />
+      </button>
+
+      <PortalDropdown
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        triggerRef={triggerRef}
+        align="right"
+      >
+        <div className="py-1">
+          <button
+            onClick={() => {
+              onViewProfile(customer);
+              setIsOpen(false);
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+          >
+            <Eye size={14} className="text-paymint-green" />
+            {t('customers.messages.viewProfile')}
+          </button>
+          <button
+            onClick={() => {
+              onDelete(customer);
+              setIsOpen(false);
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+          >
+            <Trash2 size={14} />
+            {t('customers.messages.deleteCustomer')}
+          </button>
+        </div>
+      </PortalDropdown>
+    </>
+  );
+}
+
 export function CustomersPage() {
   const { t } = useTranslation();
     const { currentEstablishment } = useAuth();
@@ -82,7 +144,7 @@ export function CustomersPage() {
   const [pointsError, setPointsError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [showSecurityModal, setShowSecurityModal] = useState(false);
 
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -144,21 +206,21 @@ export function CustomersPage() {
   };
 
   const handleDeleteCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer);
     setConfirmConfig({
       isOpen: true,
-      title: t('paymentMethods.confirm.removeTitle'),
-      message: t('customers.messages.removed') + ` ${customer.name}?`,
+      title: t('customers.messages.deleteCustomer'),
+      message: t('customers.messages.deleteConfirm'),
       type: 'danger',
-      onConfirm: async () => {
-        try {
-          await api.delete(`/customers/${customer.id}`);
-          toast.success(t('customers.messages.removed'));
-          fetchCustomers();
-        } catch (err) {
-          toast.error((err as ApiError).response?.data?.message || t('common.error'));
-        }
+      onConfirm: () => {
+        setShowSecurityModal(true);
       }
     });
+  };
+
+  const onSecurityVerify = async () => {
+    setShowSecurityModal(false);
+    fetchCustomers();
   };
 
   const handlePointsUpdate = async () => {
@@ -289,7 +351,7 @@ export function CustomersPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-paymint-green/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
           <div className="flex items-center gap-3 sm:gap-4 relative z-10">
@@ -307,7 +369,7 @@ export function CustomersPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
           <div className="flex items-center gap-3 sm:gap-4 relative z-10">
@@ -327,7 +389,7 @@ export function CustomersPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
           <div className="flex items-center gap-3 sm:gap-4 relative z-10">
@@ -345,7 +407,7 @@ export function CustomersPage() {
       </div>
 
       {/* Control Bar */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-3 sm:p-4 shadow-sm">
+      <div className="bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 p-3 sm:p-4 shadow-sm">
         <div className="relative flex-1 w-full">
           <SearchInput
             value={searchQuery}
@@ -359,7 +421,7 @@ export function CustomersPage() {
 
 
       {/* Main List */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
+      <div className="bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
@@ -367,13 +429,13 @@ export function CustomersPage() {
           </div>
         ) : customers.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32 text-center bg-gray-50/30 dark:bg-black/10">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <User size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
-            <h3 className="dashboard-card-value mb-2">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
               {searchQuery.trim() ? t('common.noResults') : t('customers.messages.noCustomers')}
             </h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-8">
+            <p className="text-sm text-gray-500 max-w-xs mx-auto mb-8">
               {searchQuery.trim()
                 ? t('common.noMatchingResults', {
                     entity: 'customers',
@@ -537,45 +599,15 @@ export function CustomersPage() {
                           >
                             <Edit2 size={18} />
                           </button>
-                          <div className="relative" data-action-menu>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setActiveMenu(activeMenu === customer.id ? null : customer.id);
-                              }}
-                              aria-label="More actions"
-                              aria-expanded={activeMenu === customer.id}
-                              className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg border transition-all ${activeMenu === customer.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
-                            >
-                              <MoreVertical size={18} />
-                            </button>
-
-                            {activeMenu === customer.id && (
-                              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1a1a1a] rounded-xl shadow-xl border border-gray-200 dark:border-white/10 z-50 overflow-hidden">
-                                <button
-                                  onClick={() => {
-                                    setSelectedCustomer(customer);
-                                    setShowDetailModal(true);
-                                    setActiveMenu(null);
-                                  }}
-                                  className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
-                                >
-                                  <Eye size={14} className="text-paymint-green" />
-                                  {t('customers.messages.viewProfile')}
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    handleDeleteCustomer(customer);
-                                    setActiveMenu(null);
-                                  }}
-                                  className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
-                                >
-                                  <Trash2 size={14} />
-                                  {t('customers.messages.deleteCustomer')}
-                                </button>
-                              </div>
-                            )}
-                          </div>
+                          
+                          <TableActionMenu 
+                            customer={customer} 
+                            onViewProfile={(c) => {
+                              setSelectedCustomer(c);
+                              setShowDetailModal(true);
+                            }}
+                            onDelete={(c) => handleDeleteCustomer(c)}
+                          />
                         </div>
                       </td>
                     </motion.tr>
@@ -597,7 +629,7 @@ export function CustomersPage() {
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
-              className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl relative"
+              className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl relative"
             >
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="dashboard-card-value">
@@ -622,7 +654,7 @@ export function CustomersPage() {
                       type="text"
                       {...register('name')}
                       placeholder={t('customers.form.namePlaceholder')}
-                      className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                      className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
                   </div>
                   {errors.name && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.name.message}</p>}
@@ -631,35 +663,35 @@ export function CustomersPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-3">
                     <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">
-                      {t('customers.form.phone')}
+                      {t('customers.form.phone')} (optional)
                     </label>
                     <input
                       type="tel"
                       {...register('phone')}
                       placeholder={t('customers.form.phonePlaceholder')}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
                     {errors.phone && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.phone.message}</p>}
                   </div>
                   <div className="space-y-3">
-                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">{t('customers.form.email')}</label>
+                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">{t('customers.form.email')} (optional)</label>
                     <input
                       type="email"
                       {...register('email')}
                       placeholder={t('customers.form.emailPlaceholder')}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
                     {errors.email && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.email.message}</p>}
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">{t('customers.form.address')}</label>
+                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">{t('customers.form.address')} (optional)</label>
                   <input
                     type="text"
                     {...register('address')}
                     placeholder={t('customers.form.addressPlaceholder')}
-                    className="w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
+                    className="w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
                   />
                 </div>
 
@@ -667,14 +699,14 @@ export function CustomersPage() {
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-xs rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm"
+                    className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-xs rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm"
                   >
                     {t('common.cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-[2] py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 tracking-[0.2em] text-xs shadow-lg shadow-paymint-green/20"
+                    className="flex-[2] py-4 bg-paymint-green text-black font-black rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 tracking-[0.2em] text-xs shadow-lg shadow-paymint-green/20"
                   >
                     {editingCustomer ? t('customers.form.updateCustomer') : t('customers.form.saveCustomer')}
                   </button>
@@ -690,31 +722,32 @@ export function CustomersPage() {
         {showPointsModal && selectedCustomer && (
           <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowPointsModal(false)}>
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden relative shadow-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden relative shadow-2xl"
               onClick={e => e.stopPropagation()}
             >
-              <button
-                onClick={() => {
-                  setShowPointsModal(false);
-                  setPointsError(null);
-                }}
-                className="absolute top-6 right-6 p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-              >
-                <X size={20} />
-              </button>
-
-              <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                <div className="w-20 h-20 bg-paymint-green/10 text-paymint-green rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-                  <Award size={40} />
-                </div>
-                <h2 className="dashboard-card-value">{t('customers.details.adjustLoyalty')}</h2>
-                <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">{t('customers.details.partner')}: {selectedCustomer.name}</p>
+              <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">{t('customers.details.adjustLoyalty')}</h2>
+                <button
+                  onClick={() => {
+                    setShowPointsModal(false);
+                    setPointsError(null);
+                  }}
+                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                >
+                  <X size={20} />
+                </button>
               </div>
-              <div className="p-8 space-y-8">
-                <div className="flex gap-2 p-1 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
+
+              <div className="p-6 space-y-6">
+                <div>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('customers.details.customer')}</p>
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">{selectedCustomer.name}</p>
+                </div>
+
+                <div className="flex gap-2 p-1 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5">
                   {['add', 'deduct'].map((action) => (
                     <button
                       key={action}
@@ -722,54 +755,56 @@ export function CustomersPage() {
                         setPointsAction(action as 'add' | 'deduct');
                         setPointsError(null);
                       }}
-                      className={`flex-1 py-3 rounded-xl text-xs font-black tracking-[0.2em] transition-all ${pointsAction === action
-                        ? (action === 'deduct' ? 'bg-paymint-red text-white shadow-lg shadow-paymint-red/20' : 'bg-gray-900 dark:bg-white text-white dark:text-black shadow-lg')
-                        : 'text-gray-400'
-                        }`}
+                      className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                        pointsAction === action
+                          ? action === 'add'
+                            ? 'bg-paymint-green text-black shadow-sm'
+                            : 'bg-paymint-red text-white shadow-sm'
+                          : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                      }`}
                     >
+                      {action === 'add' ? <Plus size={14} /> : <Minus size={14} />}
                       {t(`customers.details.${action}`)}
                     </button>
                   ))}
                 </div>
-                <div>
-                  <input
-                    type="number"
-                    value={pointsAmount === 0 ? '' : pointsAmount}
-                    onChange={(e) => {
-                      setPointsAmount(Math.max(0, parseInt(e.target.value) || 0));
-                      setPointsError(null);
-                    }}
-                    className={`w-full bg-transparent text-center text-6xl font-black focus:outline-none ${pointsAction === 'deduct' ? 'text-paymint-red placeholder:text-paymint-red/20' : 'text-paymint-green placeholder:text-paymint-green/20'}`}
-                    placeholder="0"
-                  />
-                  <div className="min-h-[48px] flex items-center justify-center">
-                    <AnimatePresence mode="wait">
-                      {pointsError ? (
-                        <motion.p
-                          key="error"
-                          initial={{ opacity: 0, y: 5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -5 }}
-                          className="w-full text-center text-xs font-black text-paymint-red tracking-widest bg-paymint-red/10 py-2 px-3 rounded-lg border border-paymint-red/20"
-                        >
-                          {pointsError}
-                        </motion.p>
-                      ) : (
-                        <motion.p
-                          key="label"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="text-center dashboard-card-label"
-                        >
-                          {t('customers.details.pointsAllocation')}
-                        </motion.p>
-                      )}
-                    </AnimatePresence>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('customers.details.points')}</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      value={pointsAmount === 0 ? '' : pointsAmount}
+                      onChange={(e) => {
+                        setPointsAmount(Math.max(0, parseInt(e.target.value) || 0));
+                        setPointsError(null);
+                      }}
+                      className={`w-full px-4 py-3 bg-gray-50 dark:bg-black/20 border ${pointsError ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-lg font-bold focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all outline-none`}
+                      placeholder="0"
+                    />
                   </div>
+                  {pointsError && (
+                    <p className="text-[10px] font-bold text-paymint-red uppercase tracking-wider">
+                      {pointsError}
+                    </p>
+                  )}
                 </div>
-                <button onClick={handlePointsUpdate} disabled={isSubmitting || pointsAmount <= 0} className={`w-full py-4 font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all shadow-lg ${pointsAction === 'deduct' ? 'bg-paymint-red text-white shadow-paymint-red/20' : 'bg-paymint-green text-black shadow-paymint-green/20'}`}>
-                  {t('customers.details.confirmAdjustment')}
-                </button>
+
+                <div className="flex gap-3 pt-2">
+                   <button
+                    onClick={() => setShowPointsModal(false)}
+                    className="flex-1 py-3 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-bold text-xs rounded-xl hover:text-gray-900 dark:hover:text-white transition-all"
+                  >
+                    {t('common.cancel')}
+                  </button>
+                  <button 
+                    onClick={handlePointsUpdate} 
+                    disabled={isSubmitting || pointsAmount <= 0} 
+                    className="flex-[2] py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all disabled:opacity-50 text-xs"
+                  >
+                    {t('customers.details.confirmAdjustment')}
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -778,13 +813,12 @@ export function CustomersPage() {
 
       {/* Customer Detail View */}
       <AnimatePresence>
-        {showDetailModal && selectedCustomer && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
-            <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
-              <div className="p-10 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-transparent">
-                <div className="flex justify-between items-start mb-10">
+       {showDetailModal && selectedCustomer && (
+         <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
+           <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-xl border border-gray-200 dark:border-white/5 w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide shadow-2xl" onClick={e => e.stopPropagation()}>
+             <div className="p-10 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-transparent">                <div className="flex justify-between items-start mb-10">
                   <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-[2rem] bg-paymint-green/10 text-paymint-green flex items-center justify-center text-3xl font-black">
+                    <div className="w-20 h-20 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center text-3xl font-black">
                       {selectedCustomer.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -795,7 +829,7 @@ export function CustomersPage() {
                       </div>
                     </div>
                   </div>
-                  <button onClick={() => setShowDetailModal(false)} className="p-3 bg-white dark:bg-white/5 rounded-2xl text-gray-400 hover:text-black dark:hover:text-white transition-colors shadow-sm">
+                  <button onClick={() => setShowDetailModal(false)} className="p-3 bg-white dark:bg-white/5 rounded-xl text-gray-400 hover:text-black dark:hover:text-white transition-colors shadow-sm">
                     <X size={24} />
                   </button>
                 </div>
@@ -806,7 +840,7 @@ export function CustomersPage() {
                     { label: t('customers.details.visits'), value: `${selectedCustomer.totalVisits.toLocaleString(t('common.locale'))} ${t('customers.details.orders')}`, icon: Calendar },
                     { label: t('customers.details.points'), value: `${selectedCustomer.points.toLocaleString(t('common.locale'))} ${t('rewards.points')}`, icon: Award },
                   ].map((stat, i) => (
-                    <div key={i} className="p-5 bg-white dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div key={i} className="p-5 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                       <p className="dashboard-card-label mb-3">{stat.label}</p>
                       <p className="dashboard-card-value">{stat.value}</p>
                     </div>
@@ -815,44 +849,61 @@ export function CustomersPage() {
               </div>
 
               <div className="p-10 space-y-10">
-                <div className="grid grid-cols-2 gap-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                   <div className="space-y-6">
-                    <h3 className="text-xs font-black text-gray-400 tracking-[0.2em] flex items-center gap-2">
+                    <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
                       <Mail size={12} className="text-paymint-green" /> {t('customers.details.contactInfo')}
                     </h3>
                     <div className="space-y-4">
-                      <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300">
-                        <Phone size={14} className="opacity-30" /> {selectedCustomer.phone}
+                      <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
+                        <Phone size={14} className="text-paymint-green flex-shrink-0" />
+                        <span className="truncate">{selectedCustomer.phone || t('common.notAvailable')}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300">
-                        <Mail size={14} className="opacity-30" /> {selectedCustomer.email || t('owner.staff.noEmail')}
+                      <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
+                        <Mail size={14} className="text-paymint-green flex-shrink-0" />
+                        <span className="truncate">{selectedCustomer.email || t('owner.staff.noEmail')}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300">
-                        <MapPin size={14} className="opacity-30" /> {selectedCustomer.address || t('activity.internal')}
+                      <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
+                        <MapPin size={14} className="text-paymint-green flex-shrink-0" />
+                        <span className="break-words">{selectedCustomer.address || t('common.notAvailable')}</span>
                       </div>
                     </div>
                   </div>
+                  
                   <div className="space-y-6">
-                    <h3 className="text-xs font-black text-gray-400 tracking-[0.2em] flex items-center gap-2">
+                    <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
                       <History size={12} className="text-paymint-green" /> {t('customers.details.insights')}
                     </h3>
-                    <div className="p-6 bg-paymint-green/5 border border-paymint-green/10 rounded-2xl">
-                      <p className="text-xs font-black text-paymint-green tracking-widest mb-2">{t('customers.details.notes')}</p>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
-                        {selectedCustomer.notes || t('customers.details.noNotes')}
-                      </p>
+                    <div className="grid grid-cols-1 gap-4">
+                       <div className="p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t('customers.details.visits')}</p>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white">{selectedCustomer.totalVisits} {t('customers.details.orders')}</p>
+                      </div>
+                      <div className="p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t('customers.details.spent')}</p>
+                        <p className="text-sm font-bold text-paymint-green">{selectedCustomer.totalSpent.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
 
+                {selectedCustomer.notes && (
+                  <div className="p-6 bg-paymint-green/5 border border-paymint-green/10 rounded-xl">
+                    <p className="text-xs font-black text-paymint-green tracking-widest mb-2">{t('customers.details.notes')}</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
+                      {selectedCustomer.notes}
+                    </p>
+                  </div>
+                )}
+
                 <div className="flex gap-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                  <button onClick={() => { setShowDetailModal(false); handleDeleteCustomer(selectedCustomer); }} className="px-6 py-4 bg-paymint-red/10 text-paymint-red font-black rounded-2xl text-xs tracking-widest transition-all hover:bg-paymint-red hover:text-white active:scale-95 shadow-sm">
+                  <button onClick={() => { setShowDetailModal(false); handleDeleteCustomer(selectedCustomer); }} className="px-6 py-4 bg-paymint-red/10 text-paymint-red font-black rounded-xl text-xs tracking-widest transition-all hover:bg-paymint-red hover:text-white active:scale-95 shadow-sm">
                     <Trash2 size={18} />
                   </button>
-                  <button onClick={() => { setShowDetailModal(false); openEditModal(selectedCustomer); }} className="flex-1 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg active:scale-95">
+                  <button onClick={() => { setShowDetailModal(false); openEditModal(selectedCustomer); }} className="flex-1 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg active:scale-95">
                     {t('common.edit')}
                   </button>
-                  <button onClick={() => { setShowDetailModal(false); setShowPointsModal(true); setPointsAmount(0); }} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg shadow-paymint-green/20 active:scale-95">
+                  <button onClick={() => { setShowDetailModal(false); setShowPointsModal(true); setPointsAmount(0); }} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg shadow-paymint-green/20 active:scale-95">
                     {t('customers.details.points')}
                   </button>
                 </div>
@@ -869,6 +920,15 @@ export function CustomersPage() {
         title={confirmConfig.title}
         message={confirmConfig.message}
         type={confirmConfig.type}
+      />
+
+      <SecurityVerificationModal
+        isOpen={showSecurityModal}
+        onClose={() => setShowSecurityModal(false)}
+        onSuccess={onSecurityVerify}
+        targetId={selectedCustomer?.id || ''}
+        targetName={selectedCustomer?.name || ''}
+        mode="delete-customer"
       />
     </div>
   );

@@ -136,8 +136,10 @@ export function ReportsPage() {
           setReportType(type as ReportType);
         }
       }
+    } else if (reportIndex !== -1) {
+      navigate(`/dashboard/${locationSlug}/reports/sales`, { replace: true });
     }
-  }, [location]);
+  }, [location, locationSlug, navigate]);
 
   // Handle PayInOut redirect state
   useEffect(() => {
@@ -269,10 +271,10 @@ export function ReportsPage() {
             totalDiscounts: discountRes.data?.totalDiscountGiven || 0,
             totalDiscountCount: (Array.isArray(discountReports) ? discountReports : []).reduce((acc: number, curr: any) => acc + (curr.count || 0), 0),
             discountBreakdown: (Array.isArray(discountReports) ? discountReports : []).map((r: any) => ({
-              name: r.name || 'Unknown',
-              count: r.count || 0,
-              value: r.totalAmount || 0
-            }))
+                name: r.name || 'Unknown',
+                count: r.count || 0,
+                value: r.totalAmount || 0
+              }))
           } as any);
           break;
         }
@@ -663,6 +665,9 @@ export function ReportsPage() {
                 itemSearchQuery={itemSearchQuery}
                 setItemSearchQuery={setItemSearchQuery}
                 isFetching={isFetching}
+                startDate={effectiveDateRange.start}
+                endDate={effectiveDateRange.end}
+                selectedEmployeeId={selectedEmployeeId}
               />
             )}
 

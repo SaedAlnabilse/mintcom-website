@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, HelpCircle, X, Sparkles, ClipboardCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 interface DualLauncherProps {
   onOpenChat: () => void;
@@ -17,17 +18,51 @@ interface DualLauncherProps {
 export function DualLauncher({ onOpenChat, onOpenFAQ, onOpenTasks, isChatOpen, isFAQOpen, isTasksOpen = false, onCloseAll }: DualLauncherProps) {
   const { t } = useTranslation();
   const location = useLocation();
+  const params = useParams();
+  const { account } = useAuth();
+  
   const isDashboardRoute = /^\/dashboard\/[^/]+/.test(location.pathname);
+  const isBrandRoute = /^\/brand\/[^/]+/.test(location.pathname);
+  const isOwnerRoute = /^\/owner/.test(location.pathname);
   const isRTL = t('common.locale') === 'ar';
   const isAnyOpen = isChatOpen || isFAQOpen || isTasksOpen;
+
+  // Determine the unique key for this "website" context
+  let contextId = 'public';
+  if (isDashboardRoute) {
+    contextId = `dashboard-${params.locationSlug}`;
+  } else if (isBrandRoute) {
+    contextId = `brand-${params.brandId}`;
+  } else if (isOwnerRoute) {
+    contextId = 'owner-portal';
+  }
+
+  // Final key includes user ID for per-user settings
+  const storageKey = `paymint.chatbot.tooltip_dismissed.${account?.id || 'anon'}.${contextId}`;
+
   const [isExpanded, setIsExpanded] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(true);
+  const [showTooltip, setShowTooltip] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem(storageKey) !== 'true';
+  });
+
+  // Sync tooltip visibility when storageKey changes (e.g. switching establishments)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isDismissed = localStorage.getItem(storageKey) === 'true';
+      setShowTooltip(!isDismissed);
+    }
+  }, [storageKey]);
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Close tooltip when clicking launcher or dismissing
   const dismissTooltip = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     setShowTooltip(false);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(storageKey, 'true');
+    }
   };
 
   // Close when clicking outside

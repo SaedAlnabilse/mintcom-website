@@ -714,34 +714,29 @@ export function SettingsPage() {
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-black/40 rounded-xl border border-gray-200 dark:border-white/[0.1] w-full relative isolate shadow-2xl backdrop-blur-xl ring-1 ring-black/20">
-        {tabs.map((tab: any) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => handleTabChange(tab.id as SettingsTab)}
-            className={`relative flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black tracking-wide transition-all duration-300 ${activeTab === tab.id
-              ? tab.isDanger
-                ? 'text-paymint-red'
-                : 'text-black'
-              : tab.isDanger
-                ? 'text-paymint-red hover:bg-paymint-red/10'
-                : 'text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
-              }`}
-          >
-            {activeTab === tab.id && (
-              <motion.div
-                layoutId="active-settings-tab"
-                className={`absolute inset-0 rounded-xl -z-10 shadow-[0_8px_20px_-4px_rgba(124,195,159,0.3)] ${tab.isDanger ? 'bg-paymint-red/10 border border-paymint-red/20' : 'bg-paymint-green'
-                  }`}
-                transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-              />
-            )}
-            <tab.icon size={16} />
-            <span className="hidden md:inline">{tab.label}</span>
-            <span className="md:hidden">{tab.label.split(' ')[0]}</span>
-          </button>
-        ))}
+      <div className="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-black/40 rounded-xl border border-gray-200 dark:border-white/[0.1] w-full relative isolate shadow-sm backdrop-blur-xl ring-1 ring-black/20">
+        {tabs.map((tab: any) => {
+          const isSelected = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => handleTabChange(tab.id as SettingsTab)}
+              className={`relative flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black tracking-wide transition-all duration-300 ${isSelected
+                ? tab.isDanger
+                  ? 'bg-paymint-red/10 text-paymint-red shadow-lg shadow-paymint-red/20 border border-paymint-red/20'
+                  : 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                : tab.isDanger
+                  ? 'text-paymint-red hover:bg-paymint-red/10'
+                  : 'text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
+                }`}
+            >
+              <tab.icon size={16} />
+              <span className="hidden md:inline">{tab.label}</span>
+              <span className="md:hidden">{tab.label.split(' ')[0]}</span>
+            </button>
+          );
+        })}
       </div>
 
       <form onSubmit={handleSubmit(onSubmit, (errs) => {
@@ -789,7 +784,7 @@ export function SettingsPage() {
           }
           
           return (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8 rounded-2xl">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-6 rounded-2xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.tabs.profile')}</h3>
               
@@ -824,13 +819,16 @@ export function SettingsPage() {
             </div>
 
             <div>
-              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.logo')}</label>
+              <div className="flex flex-col gap-1 mb-2">
+                <label className="text-xs font-black text-gray-400 tracking-widest block">{t('settings.profile.logo')}</label>
+                <p className="text-[10px] text-gray-400 font-bold">{t('settings.profile.logoGuidelines')}</p>
+              </div>
               <div className="flex items-center gap-8">
                 <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
                   {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <label className="px-5 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.03] rounded-xl text-gray-900 dark:text-white font-bold text-sm shadow-sm transition-all">
+                  <label className="px-5 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.03] rounded-xl text-gray-900 dark:text-white font-bold text-sm shadow-sm transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-black/40 hover:scale-[1.02] active:scale-[0.98] hover:border-paymint-green/30">
                     {t('settings.profile.changeLogo')}
                     <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
                   </label>
@@ -838,7 +836,7 @@ export function SettingsPage() {
                     <button
                       type="button"
                       onClick={handleRemoveLogo}
-                      className="px-5 py-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl text-red-600 dark:text-red-400 font-bold text-sm shadow-sm transition-all hover:bg-red-100 dark:hover:bg-red-500/20"
+                      className="px-5 py-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl text-red-600 dark:text-red-400 font-bold text-sm shadow-sm transition-all hover:bg-red-100 dark:hover:bg-red-500/20 hover:scale-[1.02] active:scale-[0.98]"
                     >
                       {t('settings.profile.deleteLogo')}
                     </button>
@@ -868,60 +866,6 @@ export function SettingsPage() {
                 <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
             </div>
-
-            {/* Table Shortcuts / Held Orders */}
-            <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] space-y-4 mt-8">
-              <div>
-                <p className="text-xs font-black text-purple-500 tracking-[0.2em] mb-1">{t('settings.sales.holdOrderTableCountLabel')}</p>
-                <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('settings.sales.holdOrderTableCountTitle')}</h4>
-              </div>
-              <div className="relative group transition-all">
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  inputMode="numeric"
-                  onInput={(e: React.FormEvent<HTMLInputElement>) => {
-                    const target = e.target as HTMLInputElement;
-                    const onlyDigits = target.value.replace(/[^\d]/g, '');
-                    target.value = onlyDigits;
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E') {
-                      e.preventDefault();
-                    }
-                  }}
-                  {...register('holdOrderTableCount', {
-                    valueAsNumber: true,
-                    min: { value: 0, message: t('settings.sales.holdOrderTableCountErrorRange') },
-                    max: { value: 300, message: t('settings.sales.holdOrderTableCountErrorRange') },
-                    setValueAs: (value) => {
-                      const parsed = Number(value);
-                      if (!Number.isFinite(parsed)) return 10;
-                      return Math.min(300, Math.max(0, Math.floor(parsed)));
-                    },
-                  })}
-                  className={`w-full h-14 bg-white dark:bg-white/[0.03] border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-5 font-bold text-2xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.holdOrderTableCount ? 'focus:ring-red-500/20' : 'focus:ring-paymint-green/20'} transition-all shadow-sm`}
-                  placeholder={t('settings.sales.holdOrderTableCountPlaceholder')}
-                />
-              </div>
-              {errors.holdOrderTableCount && (
-                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
-                    <AlertTriangle size={18} className="text-red-500" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-black text-red-500 tracking-widest leading-none mb-1">{t('settings.sales.invalidInput')}</p>
-                    <p className="text-xs font-bold text-red-500/80 tracking-tight">{errors.holdOrderTableCount.message as string || t('settings.sales.holdOrderTableCountErrorRange')}</p>
-                  </div>
-                </motion.div>
-              )}
-              <p className="text-xs font-black text-gray-400 leading-relaxed tracking-tight flex items-start gap-2">
-                <span className="text-purple-500">•</span>
-                {t('settings.sales.holdOrderTableCountDesc')}
-              </p>
-            </div>
-
           </motion.div>
           );
         })()}
@@ -929,17 +873,17 @@ export function SettingsPage() {
         {activeTab === 'sales' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
             <div className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-sm">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-sm">
                   <DollarSign size={20} />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.sales.title')}</h3>
-                  <p className="text-xs text-gray-400 font-black tracking-widest px-1">{t('settings.sales.subtitle')}</p>
+                  <p className="text-sm text-gray-500 font-medium">{t('settings.sales.subtitle')}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
                   <div className="flex items-center justify-between mb-6">
                     <div>
@@ -1006,7 +950,7 @@ export function SettingsPage() {
                   </p>
                 </div>
 
-                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
+                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all group/card relative overflow-hidden">
                   <div className="mb-6">
                     <p className="text-xs font-black text-blue-500 tracking-[0.2em] mb-1">{t('settings.sales.currencyLabel')}</p>
                     <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('settings.sales.currency')}</h4>
@@ -1015,6 +959,7 @@ export function SettingsPage() {
                     <input type="hidden" {...register('currency')} />
                     <CustomSelect
                       value={watch('currency')}
+                      disabled={true}
                       onChange={(val) => { setValue('currency', String(val), { shouldDirty: true }); }}
                       options={[
                         { label: t('onboarding.step1.currencies.JOD'), value: 'JOD' },
@@ -1032,12 +977,76 @@ export function SettingsPage() {
                       ]}
                     />
                   </div>
-                  <p className="text-xs font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
-                    <span className="text-blue-500">•</span>
-                    {t('settings.sales.currencyDesc')}
-                  </p>
+                  <div className="mt-6 space-y-3">
+                    <p className="text-xs font-black text-gray-400 leading-relaxed tracking-tight flex items-start gap-2">
+                      <span className="text-blue-500">•</span>
+                      {t('settings.sales.currencyDesc')}
+                    </p>
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+                      <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 leading-tight mb-2">
+                        {t('settings.sales.currencyOwnerOnly')}
+                      </p>
+                      <a
+                        href="/owner"
+                        className="text-[10px] font-black text-white bg-blue-500 px-3 py-1.5 rounded-lg inline-block hover:bg-blue-600 transition-colors shadow-sm"
+                      >
+                        {t('nav.owner')}
+                      </a>
+                    </div>
+                  </div>
                 </div>
 
+                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-indigo-500/20 group/card">
+                  <div className="mb-6">
+                    <p className="text-xs font-black text-indigo-500 tracking-[0.2em] mb-1">{t('settings.sales.holdOrderTableCountLabel')}</p>
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('settings.sales.holdOrderTableCountTitle')}</h4>
+                  </div>
+                  <div className="relative group transition-all">
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      inputMode="numeric"
+                      onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                        const target = e.target as HTMLInputElement;
+                        const onlyDigits = target.value.replace(/[^\d]/g, '');
+                        target.value = onlyDigits;
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E') {
+                          e.preventDefault();
+                        }
+                      }}
+                      {...register('holdOrderTableCount', {
+                        valueAsNumber: true,
+                        min: { value: 0, message: t('settings.sales.holdOrderTableCountErrorRange') },
+                        max: { value: 300, message: t('settings.sales.holdOrderTableCountErrorRange') },
+                        setValueAs: (value) => {
+                          const parsed = Number(value);
+                          if (!Number.isFinite(parsed)) return 10;
+                          return Math.min(300, Math.max(0, Math.floor(parsed)));
+                        },
+                      })}
+                      className={`w-full h-14 bg-white dark:bg-white/[0.03] border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-5 font-bold text-2xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.holdOrderTableCount ? 'focus:ring-red-500/20' : 'focus:ring-indigo-500/20'} transition-all group-hover:border-indigo-500/50 shadow-sm`}
+                      placeholder={t('settings.sales.holdOrderTableCountPlaceholder')}
+                    />
+                  </div>
+                  {errors.holdOrderTableCount && (
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+                        <AlertTriangle size={18} className="text-red-500" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-black text-red-500 tracking-widest leading-none mb-1">{t('settings.sales.invalidInput')}</p>
+                        <p className="text-xs font-bold text-red-500/80 tracking-tight">{errors.holdOrderTableCount.message as string || t('settings.sales.holdOrderTableCountErrorRange')}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                  <p className="text-xs font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
+                    <span className="text-indigo-500">•</span>
+                    {t('settings.sales.holdOrderTableCountDesc')}
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -1110,6 +1119,7 @@ export function SettingsPage() {
                       <div>
                         <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showLogo')}</span>
                         <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.showLogoDesc')}</span>
+                        <p className="text-[10px] text-gray-400 font-bold mt-1.5">{t('settings.profile.logoGuidelines')}</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showLogoOnReceipt')} className="sr-only peer" />
@@ -1121,7 +1131,7 @@ export function SettingsPage() {
                         <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
                           {receiptLogoPreview ? <img src={receiptLogoPreview} alt="Receipt Logo" className="w-full h-full object-cover" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
                         </div>
-                        <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer text-xs font-black tracking-widest transition-all">
+                        <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer text-xs font-black tracking-widest transition-all hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
                           {t('settings.receipts.uploadLogo')}
                           <input type="file" accept="image/*" onChange={handleReceiptLogoChange} className="hidden" disabled={!watch('showLogoOnReceipt')} />
                         </label>

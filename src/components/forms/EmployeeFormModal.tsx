@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Eye, EyeOff, ChevronDown, Check, MapPin } from 'lucide-react';
 import api from '../../config/api';
@@ -820,7 +820,7 @@ export function EmployeeFormModal({
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                 {initialData ? t('staff.editEmployee') : t('staff.newEmployee')}
               </h2>
-              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">{t('staff.title')}</p>
+              
             </div>
             <button
               onClick={onClose}
@@ -1198,9 +1198,19 @@ export function EmployeeFormModal({
                       <MapPin size={16} />
                     </div>
                     <p className="text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
-                      {t('staff.form.locationDisclaimer')}
-                    </p>
-                  </div>
+                      <Trans
+                        i18nKey="staff.form.locationDisclaimer"
+                        components={[
+                          <a
+                            key="owner-portal-link"
+                            href="/owner/employees"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-paymint-green hover:underline cursor-pointer"
+                          />
+                        ]}
+                      />
+                    </p>                  </div>
                 )}
               </div>
 
@@ -1268,7 +1278,7 @@ export function EmployeeFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-12 sm:h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-black text-xs tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+              className="flex-1 h-12 sm:h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-barlow font-black text-xs tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
               {t('common.cancel')}
             </button>
@@ -1276,7 +1286,7 @@ export function EmployeeFormModal({
               type="submit"
               form="employee-form"
               disabled={isSubmitting}
-              className="flex-1 h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center"
+              className="flex-1 h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center"
             >
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />

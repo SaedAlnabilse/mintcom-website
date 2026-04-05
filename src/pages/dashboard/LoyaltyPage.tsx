@@ -399,7 +399,7 @@ export function LoyaltyPage() {
                             </div>
                             <div>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('rewards.configuration')}</h3>
-                                <p className="text-xs font-black text-gray-400 tracking-widest">{t('rewards.configurationSubtitle')}</p>
+                                <p className="text-sm font-medium text-gray-500">{t('rewards.configurationSubtitle')}</p>
                             </div>
                         </div>
                         {/* Toggle removed */}
@@ -409,14 +409,14 @@ export function LoyaltyPage() {
                         <div className="space-y-5 pt-4">
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                                <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">{t('rewards.earningRules')}</h4>
+                                <h4 className="text-sm font-bold text-gray-900 dark:text-white px-1">{t('rewards.earningRules')}</h4>
                             </div>
                             <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
                                 <div className="flex flex-col lg:flex-row items-center gap-8">
                                     {/* Spend Input Section */}
                                     <div className="flex-1 w-full lg:w-auto space-y-4">
                                         <div className="flex items-center gap-3">
-                                            <span className="text-xs font-black text-gray-400 tracking-[0.2em]">{t('rewards.forEvery')}</span>
+                                            <span className="text-sm font-bold text-gray-900 dark:text-white px-1">{t('rewards.forEvery')}</span>
                                         </div>
                                         <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
@@ -434,13 +434,13 @@ export function LoyaltyPage() {
 
                                     {/* Connector */}
                                     <div className="flex flex-col items-center justify-center py-4 lg:py-0 self-end lg:pb-5">
-                                        <div className="text-xs font-black text-gray-400 tracking-widest">{t('rewards.equals')}</div>
+                                        <div className="text-sm font-bold text-gray-400">{t('rewards.equals')}</div>
                                     </div>
 
                                     {/* Points Input Section */}
                                     <div className="flex-1 w-full lg:w-auto space-y-4">
                                         <div className="flex items-center gap-3">
-                                            <span className="text-xs font-black text-gray-400 tracking-[0.2em] opacity-0 lg:block hidden">Spacer</span>
+                                            <span className="text-sm font-bold text-gray-900 dark:text-white px-1 opacity-0 lg:block hidden">Spacer</span>
                                         </div>
                                         <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
@@ -473,7 +473,7 @@ export function LoyaltyPage() {
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                                    <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">{t('dashboard.menu.loyalty')}</h4>
+                                    <h4 className="text-sm font-bold text-gray-900 dark:text-white px-1">{t('dashboard.menu.loyalty')}</h4>
                                 </div>
                                 <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-xs font-black tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
                                     <Plus size={14} /> {t('rewards.addPattern')}
@@ -484,8 +484,8 @@ export function LoyaltyPage() {
                                     <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-paymint-green shadow-sm">
                                         <Award size={24} />
                                     </div>
-                                    <p className="text-xs font-black text-gray-400 tracking-widest">{t('rewards.catalogEmpty')}</p>
-                                    <p className="text-xs font-black text-gray-400 mt-1 tracking-widest">{t('rewards.createTiers')}</p>
+                                    <p className="text-sm font-bold text-gray-500">{t('rewards.catalogEmpty')}</p>
+                                    <p className="text-xs font-medium text-gray-400 mt-1">{t('rewards.createTiers')}</p>
                                 </div>
                             ) : (
                                 <div className="space-y-4">

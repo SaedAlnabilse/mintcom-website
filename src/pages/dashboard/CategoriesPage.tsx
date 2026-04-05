@@ -418,13 +418,15 @@ export function CategoriesPage() {
                 <stat.icon size={20} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="dashboard-card-label mb-0.5">{stat.label}</p>
-                <p className="dashboard-card-value truncate">
-                  {typeof stat.value === 'number' ? stat.value.toLocaleString(t('common.locale')) : stat.value}
-                </p>
-                {stat.sub && (
-                  <p className="text-xs font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>
-                )}
+                <p className="dashboard-card-label mb-2">{stat.label}</p>
+                <div className="flex flex-col gap-1">
+                  <p className="dashboard-card-value truncate">
+                    {typeof stat.value === 'number' ? stat.value.toLocaleString(t('common.locale')) : stat.value}
+                  </p>
+                  {stat.sub && (
+                    <p className="text-xs font-bold text-paymint-green tracking-wide">{stat.sub}</p>
+                  )}
+                </div>
               </div>
             </div>
           </motion.div>
@@ -698,21 +700,26 @@ export function CategoriesPage() {
                           </div>
                           <div className="min-w-0">
                             <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
-                            <p className="text-xs font-black text-paymint-green mt-0.5">
+                            <p className="text-sm font-bold text-paymint-green mt-0.5">
                               {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                             </p>
                           </div>
                         </div>
                       ))}
                       {/* Add Product Card */}
-                      <div className="flex items-center">
-                        <button
-                          onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                          className="w-20 h-20 rounded-xl flex items-center justify-center bg-white dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/10 text-gray-400 hover:text-paymint-green hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all group shadow-sm"
-                          title={t('common.add')}
-                        >
-                          <Plus size={20} className="group-hover:scale-110 transition-transform" />
-                        </button>
+                      <div
+                        onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                        className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-dashed border-gray-300 dark:border-white/20 rounded-xl group hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4 shadow-sm"
+                      >
+                        <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center shrink-0">
+                           <Plus size={20} className="text-gray-400 group-hover:text-paymint-green group-hover:scale-110 transition-all" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-sm text-gray-600 dark:text-gray-300 group-hover:text-paymint-green transition-colors truncate">{t('common.add')}</p>
+                          <p className="text-xs font-medium text-gray-400 dark:text-white/40 mt-0.5">
+                            New Product
+                          </p>
+                        </div>
                       </div>
                     </div>
                   )}

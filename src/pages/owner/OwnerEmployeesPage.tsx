@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Search,
@@ -25,6 +25,7 @@ import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Pagination } from '../../components/ui';
 import { CustomSelect } from '../../components/CustomSelect';
+import { PortalDropdown } from '../../components/PortalDropdown';
 
 interface EmployeeAssignment {
     establishmentId: string;
@@ -72,6 +73,7 @@ export function OwnerEmployeesPage() {
     const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>(null);
+    const triggerRef = useRef<HTMLButtonElement | null>(null);
 
     // Delete confirmation modal state
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -439,7 +441,7 @@ export function OwnerEmployeesPage() {
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <p className="dashboard-card-value">{searchQuery.trim() ? t('common.noResults') : t('owner.staff.noStaffFound')}</p>
-                    <p className="text-sm font-bold text-gray-500 mt-1">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('owner.staff.noStaffDesc')}</p>
+                    <p className="text-sm font-medium text-gray-500 mt-1">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('owner.staff.noStaffDesc')}</p>
                 </div>
             ) : viewMode === 'grid' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -473,6 +475,7 @@ export function OwnerEmployeesPage() {
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
+                                                triggerRef.current = e.currentTarget;
                                                 setActiveMenu(activeMenu === emp.id ? null : emp.id);
                                             }}
                                             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
@@ -480,33 +483,34 @@ export function OwnerEmployeesPage() {
                                             <MoreVertical size={18} />
                                         </button>
 
-                                        {activeMenu === emp.id && (
-                                            <div
-                                                className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                        <PortalDropdown
+                                            isOpen={activeMenu === emp.id}
+                                            onClose={() => setActiveMenu(null)}
+                                            triggerRef={triggerRef}
+                                            align={t('common.locale') === 'ar' ? 'left' : 'right'}
+                                        >
+                                            <button
+                                                onClick={() => {
+                                                    setEditingEmployee(emp);
+                                                    setIsFormModalOpen(true);
+                                                    setActiveMenu(null);
+                                                }}
+                                                className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                             >
-                                                <button
-                                                    onClick={() => {
-                                                        setEditingEmployee(emp);
-                                                        setIsFormModalOpen(true);
-                                                        setActiveMenu(null);
-                                                    }}
-                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                >
-                                                    <Edit2 size={16} />
-                                                    {t('owner.staff.editDetails')}
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        handleDeleteEmployee(emp.id);
-                                                        setActiveMenu(null);
-                                                    }}
-                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                                >
-                                                    <Trash2 size={16} />
-                                                    {t('owner.staff.remove')}
-                                                </button>
-                                            </div>
-                                        )}
+                                                <Edit2 size={16} />
+                                                {t('owner.staff.editDetails')}
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    handleDeleteEmployee(emp.id);
+                                                    setActiveMenu(null);
+                                                }}
+                                                className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors border-t border-gray-100 dark:border-white/5"
+                                            >
+                                                <Trash2 size={16} />
+                                                {t('owner.staff.remove')}
+                                            </button>
+                                        </PortalDropdown>
                                     </div>
                                 </div>
 

@@ -34,6 +34,7 @@ import type { DatePeriod } from '../../utils/datePeriods';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
 import { SingleSelect } from '../../components/SingleSelect';
 import { checkPermission, usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { PortalDropdown } from '../../components/PortalDropdown';
 
 interface ApiError {
   response?: {
@@ -192,8 +193,11 @@ export function OrdersPage() {
   const [isRefundSubmitting, setIsRefundSubmitting] = useState(false);
 
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+  const ordersListRef = useRef<HTMLDivElement | null>(null);
+  const isInitialMount = useRef(true);
   const heldOrdersScrollRef = useRef<HTMLDivElement | null>(null);
   const lastHeldArrowClickRef = useRef(0);
+  const actionMenuTriggerRef = useRef<HTMLButtonElement | null>(null);
   const fetchRequestIdRef = useRef(0);
   const realtimeRefreshTimeoutRef = useRef<number | null>(null);
   const [canScrollHeldLeft, setCanScrollHeldLeft] = useState(false);
@@ -660,9 +664,9 @@ export function OrdersPage() {
       } else {
         // Show Regular Orders (possibly mixed with held if page 1)
         const responseData = mainRes?.data || {};
-        let fetchedOrders = Array.isArray(responseData.orders) ? responseData.orders : (Array.isArray(responseData) ? responseData : []);
-        let totalOrders = responseData.totalOrders || responseData.total || fetchedOrders.length;
-        let serverTotalPages = responseData.totalPages || Math.ceil(totalOrders / 10) || 1;
+        const fetchedOrders = Array.isArray(responseData.orders) ? responseData.orders : (Array.isArray(responseData) ? responseData : []);
+        const totalOrders = responseData.totalOrders || responseData.total || fetchedOrders.length;
+        const serverTotalPages = responseData.totalPages || Math.ceil(totalOrders / 10) || 1;
 
         // Held orders are always shown in their own dedicated section above,
         // so we no longer mix them into the main orders table.
@@ -711,6 +715,18 @@ export function OrdersPage() {
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
+
+  // Auto-scroll to list when filters change
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    if (ordersListRef.current) {
+      ordersListRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [statusFilter, paymentFilter]);
 
   useEffect(() => {
     if (activeActionMenu) {
@@ -1347,7 +1363,10 @@ export function OrdersPage() {
       )}
 
       {/* Orders List Container */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]">
+      <div 
+        ref={ordersListRef}
+        className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]"
+      >
 
         {/* Loading State */}
         {isLoading && orders.length === 0 && (
@@ -1553,6 +1572,7 @@ export function OrdersPage() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
+                              actionMenuTriggerRef.current = e.currentTarget;
                               setActiveActionMenu(activeActionMenu === order.id ? null : order.id);
                             }}
                             aria-label="Order actions"
@@ -1565,49 +1585,51 @@ export function OrdersPage() {
                             <MoreVertical size={18} />
                           </button>
 
-                          {activeActionMenu === order.id && (
-                            <div
-                              className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                            >
-                              <div className="p-1">
+                          <PortalDropdown
+                            isOpen={activeActionMenu === order.id}
+                            onClose={() => setActiveActionMenu(null)}
+                            triggerRef={actionMenuTriggerRef}
+                            align={t('common.locale') === 'ar' ? 'left' : 'right'}
+                            className="py-1"
+                          >
+                            <div className="p-1">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedOrder(order);
+                                  setActiveActionMenu(null);
+                                }}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                              >
+                                <Eye size={14} />
+                                {t('orders.actions.viewDetails')}
+                              </button>
+
+                              {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    setSelectedOrder(order);
+                                    if (!canCancelReceipts) return;
+                                    handleRefund(order);
                                     setActiveActionMenu(null);
                                   }}
-                                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                  disabled={!canCancelReceipts}
+                                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
+                                    ? 'text-paymint-red hover:bg-paymint-red/10'
+                                    : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
+                                    }`}
                                 >
-                                  <Eye size={14} />
-                                  {t('orders.actions.viewDetails')}
+                                  <Undo2 size={14} />
+                                  {t('orders.actions.refundOrder')}
                                 </button>
-
-                                {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      if (!canCancelReceipts) return;
-                                      handleRefund(order);
-                                      setActiveActionMenu(null);
-                                    }}
-                                    disabled={!canCancelReceipts}
-                                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
-                                      ? 'text-paymint-red hover:bg-paymint-red/10'
-                                      : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
-                                      }`}
-                                  >
-                                    <Undo2 size={14} />
-                                    {t('orders.actions.refundOrder')}
-                                  </button>
-                                )}
-                                {!canCancelReceipts && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
-                                  <p className="px-3 py-1 text-[11px] font-semibold text-red-600">
-                                    {t('orders.messages.noRefundPermission')}
-                                  </p>
-                                )}
-                              </div>
+                              )}
+                              {!canCancelReceipts && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                                <p className="px-3 py-1 text-[11px] font-semibold text-red-600">
+                                  {t('orders.messages.noRefundPermission')}
+                                </p>
+                              )}
                             </div>
-                          )}
+                          </PortalDropdown>
                         </div>
                         <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-all">
                           <ChevronRight size={14} />

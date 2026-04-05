@@ -9,6 +9,9 @@ interface PortalDropdownProps {
     children: ReactNode;
     className?: string;
     maxHeight?: string;
+    width?: string;
+    align?: 'left' | 'right';
+    offset?: number;
 }
 
 export function PortalDropdown({
@@ -17,7 +20,10 @@ export function PortalDropdown({
     triggerRef,
     children,
     className = '',
-    maxHeight = 'max-h-60'
+    maxHeight = 'max-h-60',
+    width = 'w-48',
+    align = 'left',
+    offset = 8
 }: PortalDropdownProps) {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [style, setStyle] = useState<React.CSSProperties>({
@@ -35,17 +41,29 @@ export function PortalDropdown({
 
         const shouldGoUp = spaceBelow < dropdownHeight && rect.top > spaceBelow;
 
-        setStyle({
+        const newStyle: React.CSSProperties = {
             position: 'fixed',
-            left: rect.left,
-            width: rect.width,
-            top: shouldGoUp ? 'auto' : rect.bottom + 8,
-            bottom: shouldGoUp ? window.innerHeight - rect.top + 8 : 'auto',
             zIndex: 9999,
             opacity: 1,
             pointerEvents: 'auto'
-        });
-    }, [triggerRef]);
+        };
+
+        if (align === 'left') {
+            newStyle.left = rect.left;
+        } else {
+            newStyle.right = window.innerWidth - rect.right;
+        }
+
+        if (shouldGoUp) {
+            newStyle.bottom = window.innerHeight - rect.top + offset;
+            newStyle.top = 'auto';
+        } else {
+            newStyle.top = rect.bottom + offset;
+            newStyle.bottom = 'auto';
+        }
+
+        setStyle(newStyle);
+    }, [triggerRef, align, offset]);
 
     useLayoutEffect(() => {
         if (isOpen) {
@@ -66,29 +84,33 @@ export function PortalDropdown({
         };
 
         if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
+            document.addEventListener('mousedown', handleClickOutside, true);
             window.addEventListener('scroll', updatePosition, true);
             window.addEventListener('resize', updatePosition);
         }
 
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('mousedown', handleClickOutside, true);
             window.removeEventListener('scroll', updatePosition, true);
             window.removeEventListener('resize', updatePosition);
         };
     }, [isOpen, onClose, updatePosition, triggerRef]);
+
+    // Helper to determine animation direction
+    const spaceBelowTrigger = triggerRef.current ? window.innerHeight - triggerRef.current.getBoundingClientRect().bottom : 0;
+    const shouldGoUp = spaceBelowTrigger < 240 && triggerRef.current ? triggerRef.current.getBoundingClientRect().top > spaceBelowTrigger : false;
 
     const dropdownContent = (
         <AnimatePresence>
             {isOpen && (
                 <motion.div
                     ref={dropdownRef}
-                    initial={{ opacity: 0, y: -4 }}
+                    initial={{ opacity: 0, y: shouldGoUp ? 4 : -4 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
+                    exit={{ opacity: 0, y: shouldGoUp ? 4 : -4 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     style={style}
-                    className={`bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl overflow-hidden ${maxHeight} ${className}`}
+                    className={`bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl overflow-hidden ${width} ${maxHeight} ${className}`}
                 >
                     {children}
                 </motion.div>

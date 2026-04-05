@@ -1,5 +1,9 @@
 import axios from 'axios';
 
+const ESTABLISHMENT_HEADER = 'X-Establishment-Id';
+const SKIP_ESTABLISHMENT_HEADER = 'X-Skip-Establishment-Header';
+const MISSING_ESTABLISHMENT_HEADER_MESSAGE = 'X-Establishment-Id header is required for this endpoint';
+
 // Api Base Url - In development, use empty string to leverage Vite proxy
 // In production, use the full Url
 export const API_BASE_URL = import.meta.env.PROD
@@ -42,6 +46,46 @@ export const stopGlobalLoading = () => {
   updateLoadingState();
 };
 
+const getApiErrorMessage = (error: any): string => {
+  const responseData = error?.response?.data;
+
+  if (typeof responseData === 'string') {
+    return responseData;
+  }
+
+  if (typeof responseData?.message === 'string') {
+    return responseData.message;
+  }
+
+  if (typeof responseData?.error === 'string') {
+    return responseData.error;
+  }
+
+  return '';
+};
+
+const normalizeEstablishmentHeaderError = (error: any) => {
+  const message = getApiErrorMessage(error).trim();
+
+  if (!message.includes(MISSING_ESTABLISHMENT_HEADER_MESSAGE)) {
+    return;
+  }
+
+  if (error?.response?.data && typeof error.response.data === 'object') {
+    if ('message' in error.response.data) {
+      error.response.data.message = '';
+    }
+
+    if ('error' in error.response.data) {
+      error.response.data.error = '';
+    }
+  }
+
+  error.message = '';
+  error.isMissingEstablishmentHeader = true;
+  console.warn('[API] Suppressed raw establishment header validation error');
+};
+
 // Request interceptor to add establishment ID and ensure /api prefix
 api.interceptors.request.use(
   (config) => {
@@ -53,16 +97,21 @@ api.interceptors.request.use(
       config.url = `/api${config.url}`;
     }
 
+    const skipEstablishmentHeader = config.headers.get(SKIP_ESTABLISHMENT_HEADER) === 'true';
+    config.headers.delete(SKIP_ESTABLISHMENT_HEADER);
+
     // Add current establishment ID for account owner requests
     // This is CRITICAL for multi-establishment isolation
     // Use sessionStorage to support multiple tabs with different establishments
+    const explicitEstablishmentHeader = config.headers.get(ESTABLISHMENT_HEADER);
     const currentEstablishment = sessionStorage.getItem('currentEstablishment');
-    if (currentEstablishment) {
+
+    if (!skipEstablishmentHeader && !explicitEstablishmentHeader && currentEstablishment) {
       try {
         const est = JSON.parse(currentEstablishment);
         if (est?.id) {
           // Use .set() method for proper header setting in axios v1.x+
-          config.headers.set('X-Establishment-Id', est.id);
+          config.headers.set(ESTABLISHMENT_HEADER, est.id);
         }
       } catch (e) {
         console.warn('[API] Failed to parse currentEstablishment from sessionStorage:', e);
@@ -92,6 +141,8 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    normalizeEstablishmentHeaderError(error);
+
     // Check if the error is 401 and NOT from the login or logout endpoint
     const isLoginRequest = error.config?.url?.includes('/api/accounts/login');
     const isLogoutRequest = error.config?.url?.includes('/api/accounts/logout');

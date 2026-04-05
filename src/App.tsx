@@ -97,8 +97,7 @@ const SettingsPage = lazy(() => import('./pages/dashboard/SettingsPage').then(m 
 const LoyaltyPage = lazy(() => import('./pages/dashboard/LoyaltyPage').then(m => ({ default: m.LoyaltyPage })));
 const ActivityLogsPage = lazy(() => import('./pages/dashboard/ActivityLogsPage').then(m => ({ default: m.ActivityLogsPage })));
 const AddonsPage = lazy(() => import('./pages/dashboard/AddonsPage').then(m => ({ default: m.AddonsPage })));
-const MaterialsPage = lazy(() => import('./pages/dashboard/MaterialsPage').then(m => ({ default: m.MaterialsPage })));
-const RecipesPage = lazy(() => import('./pages/dashboard/RecipesPage').then(m => ({ default: m.RecipesPage })));
+const InventoryPage = lazy(() => import('./pages/dashboard/RecipesPage').then(m => ({ default: m.RecipesPage })));
 const EstablishmentsPage = lazy(() => import('./pages/dashboard/EstablishmentsPage').then(m => ({ default: m.EstablishmentsPage })));
 const BillingPage = lazy(() => import('./pages/dashboard/BillingPage').then(m => ({ default: m.BillingPage })));
 const AdminUsersPage = lazy(() => import('./pages/dashboard/AdminUsersPage').then(m => ({ default: m.AdminUsersPage })));
@@ -587,18 +586,10 @@ const router = createBrowserRouter([
                 ),
               },
               {
-                path: "materials",
+                path: "inventory",
                 element: (
                   <PageSuspense>
-                    <MaterialsPage />
-                  </PageSuspense>
-                ),
-              },
-              {
-                path: "recipes",
-                element: (
-                  <PageSuspense>
-                    <RecipesPage />
+                    <InventoryPage />
                   </PageSuspense>
                 ),
               },

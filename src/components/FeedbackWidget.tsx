@@ -17,12 +17,38 @@ export const FeedbackWidget = () => {
     const [comment, setComment] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState(false);
 
     // Only show on dashboard, owner, or brand routes
     const isAppRoute = location.pathname.startsWith('/dashboard') || 
                        location.pathname.startsWith('/owner') || 
                        location.pathname.startsWith('/brand');
+
+    useEffect(() => {
+        if (!account) {
+            setIsVisible(false);
+            return;
+        }
+
+        const checkVisibility = () => {
+            const storageKey = `feedback_last_submitted_${account.email}`;
+            const lastFeedbackDate = localStorage.getItem(storageKey);
+            
+            if (lastFeedbackDate) {
+                const lastDate = new Date(lastFeedbackDate);
+                const now = new Date();
+                const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
+                
+                if (now.getTime() - lastDate.getTime() < oneWeekInMs) {
+                    setIsVisible(false);
+                    return;
+                }
+            }
+            setIsVisible(true);
+        };
+
+        checkVisibility();
+    }, [account]);
 
     useEffect(() => {
         const handleOpen = () => setIsOpen(true);
@@ -47,6 +73,12 @@ export const FeedbackWidget = () => {
             });
 
             setIsSubmitted(true);
+            
+            // Save submission date to localStorage
+            if (account?.email) {
+                localStorage.setItem(`feedback_last_submitted_${account.email}`, new Date().toISOString());
+            }
+
             toast.success(t('feedback.thanks'));
 
             // Reset and close after a delay
@@ -81,7 +113,7 @@ export const FeedbackWidget = () => {
                         className={`fixed ${isRTL ? 'left-0 border-y border-r rounded-r-2xl' : 'right-0 border-y border-l rounded-l-2xl'} top-[40%] -translate-y-1/2 z-[9999] !bg-white dark:!bg-[#0F172A] !bg-opacity-100 !opacity-100 border-gray-200 dark:border-white/10 py-4 px-2 shadow-2xl hover:bg-gray-50 dark:hover:!bg-[#334155] transition-all flex flex-col items-center gap-3 group ring-1 ring-black/5`}
                     >
                         <MessageSquare size={18} className="text-paymint-green group-hover:scale-110 transition-transform" />
-                        <span className="text-[10px] font-black text-gray-800 dark:text-gray-100 tracking-widest uppercase [writing-mode:vertical-rl] rotate-180">{t('feedback.tab')}</span>
+                        <span className="text-[10px] font-bold text-gray-800 dark:text-gray-100 tracking-widest uppercase [writing-mode:vertical-rl] rotate-180">{t('feedback.tab')}</span>
                     </motion.button>
                 )}
             </AnimatePresence>
@@ -90,11 +122,7 @@ export const FeedbackWidget = () => {
             <AnimatePresence>
                 {isOpen && (
                     <>
-                        {/* Backdrop (Invisible/Transparent to allow clicking behind? Or standard dim?) 
-                            The user said "interact with everything", so we should make the backdrop pointer-events-none 
-                            or remove it entirely so they can see the screen. 
-                            Let's use a clear backdrop that closes on click but lets you see.
-                        */}
+                        {/* Backdrop */}
                         <div className="fixed inset-0 z-[9999]" onClick={() => setIsOpen(false)} />
 
                         <motion.div
@@ -104,12 +132,12 @@ export const FeedbackWidget = () => {
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                             dir={isRTL ? 'rtl' : 'ltr'}
                             className={`fixed ${isRTL ? 'left-0 border-r shadow-[10px_0_30px_rgba(0,0,0,0.1)]' : 'right-0 border-l shadow-[-10px_0_30px_rgba(0,0,0,0.1)]'} top-0 h-full w-[350px] bg-white dark:bg-[#0F172A] border-gray-200 dark:border-white/10 z-[10000] flex flex-col`}
-                            onClick={(e) => e.stopPropagation()} // Prevent click from closing when clicking inside drawer
+                            onClick={(e) => e.stopPropagation()}
                         >
                             {/* Drawer Header */}
                             <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
                                 <div>
-                                    <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">{t('feedback.title')}</h3>
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{t('feedback.title')}</h3>
                                     <p className="text-xs font-bold text-gray-500 mt-1">{t('feedback.subtitle')}</p>
                                 </div>
                                 <button
@@ -127,8 +155,8 @@ export const FeedbackWidget = () => {
                                             <CheckCircle2 size={32} strokeWidth={2.5} />
                                         </div>
                                         <div>
-                                            <h4 className="text-lg font-black text-gray-900 dark:text-white">{t('feedback.sent')}</h4>
-                                            <p className="text-xs font-medium text-gray-500 mt-2 leading-relaxed max-w-[200px] mx-auto">
+                                            <h4 className="text-lg font-bold text-gray-900 dark:text-white">{t('feedback.sent')}</h4>
+                                            <p className="text-xs font-bold text-gray-500 mt-2 leading-relaxed max-w-[200px] mx-auto">
                                                 {t('feedback.thanks')}
                                             </p>
                                         </div>
@@ -136,7 +164,7 @@ export const FeedbackWidget = () => {
                                 ) : (
                                     <form onSubmit={handleSubmit} className="space-y-6">
                                         <div>
-                                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">{t('feedback.rateExperience')}</label>
+                                            <label className="block text-xs font-sans font-bold text-gray-500 mb-3">{t('feedback.rateExperience')}</label>
                                             <div className="flex justify-between gap-2">
                                                 {[1, 2, 3, 4, 5].map((s) => (
                                                     <button
@@ -155,13 +183,13 @@ export const FeedbackWidget = () => {
                                         </div>
 
                                         <div>
-                                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">{t('feedback.comments')}</label>
+                                            <label className="block text-xs font-sans font-bold text-gray-500 mb-3">{t('feedback.comments')}</label>
                                             <textarea
                                                 required
                                                 value={comment}
                                                 onChange={(e) => setComment(e.target.value)}
                                                 rows={6}
-                                                className="w-full px-4 py-4 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none placeholder-gray-400"
+                                                className="w-full px-4 py-4 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none placeholder:text-gray-400 placeholder:font-sans placeholder:font-bold"
                                                 placeholder={t('feedback.placeholder')}
                                             />
                                         </div>
@@ -169,7 +197,7 @@ export const FeedbackWidget = () => {
                                         <button
                                             type="submit"
                                             disabled={!rating || !comment || isSubmitting}
-                                            className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black rounded-2xl font-black text-xs tracking-[0.15em] uppercase shadow-lg hover:opacity-90 disabled:opacity-50 disabled:shadow-none transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+                                            className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black rounded-2xl font-sans font-bold text-sm shadow-lg hover:opacity-90 disabled:opacity-50 disabled:shadow-none transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
                                         >
                                             {isSubmitting ? (
                                                 <div className="flex items-center gap-2">
@@ -190,6 +218,7 @@ export const FeedbackWidget = () => {
                     </>
                 )}
             </AnimatePresence>
+
         </>
     );
 };

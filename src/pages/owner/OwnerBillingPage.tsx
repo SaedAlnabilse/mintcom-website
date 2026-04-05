@@ -519,8 +519,11 @@ export function OwnerBillingPage() {
 
                     <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
                         {/* Table Header */}
-                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-wide">
-                            <div className="col-span-3">{toHeaderCase(t('owner.billing.service'))}</div>
+                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-wide items-center">
+                            <div className="col-span-3 flex items-center gap-4">
+                                <div className="w-10" />
+                                <span>{toHeaderCase(t('owner.billing.service'))}</span>
+                            </div>
                             <div className="col-span-2">{toHeaderCase(t('owner.billing.status'))}</div>
                             <div className="col-span-2">{toHeaderCase(t('owner.billing.cost'))}</div>
                             <div className="col-span-2">

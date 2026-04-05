@@ -36,10 +36,26 @@ export function LoadingFallback({
     >
       {/* Spinner */}
       <div className="relative">
-        {/* Outer ring (static) */}
-        <div className="w-14 h-14 border-4 border-paymint-green/20 rounded-full" />
-        {/* Inner ring (spinning) */}
-        <div className="w-14 h-14 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
+        {/* Outer pulsing ring */}
+        <motion.div 
+          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="w-16 h-16 border-2 border-paymint-green/30 rounded-full absolute -inset-1" 
+        />
+        
+        {/* Main rotating gradient ring */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+          className="w-14 h-14 rounded-full border-4 border-transparent border-t-paymint-green border-r-paymint-green/40 shadow-[0_0_15px_rgba(124,195,159,0.3)]"
+        />
+
+        {/* Inner static/slow-pulse core */}
+        <motion.div 
+          animate={{ scale: [0.9, 1, 0.9] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="w-6 h-6 bg-paymint-green rounded-full absolute inset-0 m-auto shadow-[0_0_10px_rgba(124,195,159,0.5)]"
+        />
       </div>
 
       {/* Loading text */}

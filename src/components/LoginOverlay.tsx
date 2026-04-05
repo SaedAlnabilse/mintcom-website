@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Check, Loader2 } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,22 +32,39 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
             transition={{ duration: 2, repeat: Infinity }}
           />
           
-          <div className="w-24 h-24 bg-paymint-green/10 rounded-full flex items-center justify-center relative z-10 transition-colors duration-500">
+          <div className="w-24 h-24 bg-paymint-green/5 rounded-full flex items-center justify-center relative z-10">
             {showSuccess ? (
               <motion.div
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: "spring", stiffness: 200, damping: 10 }}
+                className="w-16 h-16 bg-paymint-green/10 rounded-full flex items-center justify-center"
               >
-                <Check className="w-10 h-10 text-paymint-green" strokeWidth={3} />
+                <Check className="w-8 h-8 text-paymint-green" strokeWidth={3} />
               </motion.div>
             ) : (
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              >
-                <Loader2 className="w-10 h-10 text-paymint-green" />
-              </motion.div>
+              <div className="relative">
+                {/* Outer pulsing ring */}
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-20 h-20 border-2 border-paymint-green/30 rounded-full absolute -inset-2" 
+                />
+                
+                {/* Main rotating gradient ring */}
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                  className="w-16 h-16 rounded-full border-4 border-transparent border-t-paymint-green border-r-paymint-green/40 shadow-[0_0_20px_rgba(124,195,159,0.2)]"
+                />
+
+                {/* Inner slow-pulse core */}
+                <motion.div 
+                  animate={{ scale: [0.8, 1, 0.8], opacity: [0.5, 0.8, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-6 h-6 bg-paymint-green rounded-full absolute inset-0 m-auto shadow-[0_0_15px_rgba(124,195,159,0.4)]"
+                />
+              </div>
             )}
           </div>
         </motion.div>
