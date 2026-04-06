@@ -2444,6 +2444,7 @@
     },
     "kpi": {
       "onHold": "قيد الانتظار",
+      "totalAmount": "إجمالي المبلغ",
       "totalOrders": "إجمالي الطلبات",
       "totalSales": "إجمالي المبيعات"
     },
@@ -2466,7 +2467,7 @@
     },
     "payment": {
       "all": "كل المدفوعات",
-      "allCards": "كل البطاقات",
+      "allCards": "بطاقات",
       "allOther": "أخرى",
       "cardWithBrand": "بطاقة ({{brand}})",
       "cash": "نقد",
@@ -2538,7 +2539,7 @@
       },
       "payments": {
         "details": "التفاصيل",
-        "detailsDesc": "انقر على بطاقة أو أخرى لرؤية التفاصيل",
+        "detailsDesc": "انقر على البطاقة، النقد أو غيرها لرؤية التفاصيل",
         "distribution": "التوزيع",
         "method": "الطريقة",
         "methods": "طرق",

@@ -381,7 +381,6 @@ export function StaffPage() {
         </div>
       </div>
 
-      {/* Stats Cards - horizontal scroll on mobile */}
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
           { label: t('owner.employees.totalUsers'), info: t('owner.staff.usersInfo'), value: staff.length, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
@@ -391,7 +390,7 @@ export function StaffPage() {
         ].map((stat, i) => (
           <div
             key={i}
-            className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+            className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10">
@@ -401,9 +400,9 @@ export function StaffPage() {
                 </div>
               </div>
               <div>
-                <p className="dashboard-card-label mb-1">{stat.label}</p>
-                <p className="dashboard-card-value leading-none mb-1 sm:mb-2">{stat.value.toLocaleString(t('common.locale'))}</p>
-                <p className="hidden sm:block dashboard-card-meta">{stat.info}</p>
+                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none mb-1">{stat.value.toLocaleString(t('common.locale'))}</p>
+                <p className="hidden sm:block text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize truncate">{stat.info}</p>
               </div>
             </div>
           </div>

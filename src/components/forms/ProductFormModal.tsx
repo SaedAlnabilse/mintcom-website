@@ -271,6 +271,7 @@ export function ProductFormModal({
 
     if (isOpen) {
       isInitialLoad.current = true;
+      setErrors({});
       fetchAddonsAndSettings();
 
 
@@ -367,13 +368,6 @@ export function ProductFormModal({
 
   const errorBannerRef = useRef<HTMLDivElement>(null);
 
-  // Clear errors when any field changes
-  useEffect(() => {
-    if (Object.keys(errors).length > 0) {
-      setErrors({});
-    }
-  }, [name, price, categoryId, stock, lowStockYellow, lowStockRed, trackStock, description, costPrice, errors]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
@@ -403,10 +397,16 @@ export function ProductFormModal({
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      // Scroll to error
+      // Navigate specifically to the first input field that has an error
       setTimeout(() => {
-        errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
+        const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red');
+        if (firstErrorField) {
+          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          // Fallback to top if no specific field found
+          scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 50);
       return;
     }
 
@@ -494,7 +494,7 @@ export function ProductFormModal({
   const displayTaxRatePercent = effectiveTaxRate * 100;
   const netPrice = totalRetailPrice / (1 + effectiveTaxRate);
   const taxAmount = totalRetailPrice - netPrice;
-  const popupLabelBaseClass = 'text-sm font-semibold text-gray-600 dark:text-gray-300 tracking-normal';
+  const popupLabelBaseClass = 'text-sm font-bold text-gray-900 dark:text-white tracking-tight';
 
   if (!isOpen) return null;
 
@@ -519,12 +519,9 @@ export function ProductFormModal({
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-6 sm:px-8 pt-6 sm:pt-8 pb-0 sm:pb-0 relative isolate">
+            <div className="flex items-center justify-between px-6 sm:px-8 py-6 sm:py-8 relative isolate border-b border-gray-100 dark:border-white/5">
               <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
               <div>
-                <div className="flex items-center gap-1 mb-1">
-                  <span className={popupLabelBaseClass}>{t('products.title')}</span>
-                </div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
                   {initialData?.id ? t('products.editProduct') : t('products.newProduct')}
                 </h2>
@@ -538,7 +535,7 @@ export function ProductFormModal({
               </button>
             </div>
 
-            <div className="overflow-y-auto px-4 sm:px-8 pt-6 sm:pt-6 custom-scrollbar flex-1 pb-safe" ref={scrollRef}>
+            <div className="overflow-y-auto px-4 sm:px-8 pt-8 sm:pt-10 custom-scrollbar flex-1 pb-safe" ref={scrollRef}>
               <form id="product-form" onSubmit={handleSubmit} className="space-y-6 pb-6 sm:pb-8">
                 {/* Error Banner */}
                 {Object.keys(errors).length > 0 && (
@@ -557,7 +554,14 @@ export function ProductFormModal({
                   <input
                     type="text"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      if (errors.name) {
+                        const newErrors = { ...errors };
+                        delete newErrors.name;
+                        setErrors(newErrors);
+                      }
+                    }}
                     placeholder={t('products.form.namePlaceholder')}
                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                   />
@@ -683,7 +687,14 @@ export function ProductFormModal({
                         <input
                           type="text"
                           value={price}
-                          onChange={handlePriceChange}
+                          onChange={(e) => {
+                            handlePriceChange(e);
+                            if (errors.price) {
+                              const newErrors = { ...errors };
+                              delete newErrors.price;
+                              setErrors(newErrors);
+                            }
+                          }}
                           placeholder={t('common.zero')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.price ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pl-16 pr-4 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50`}
                         />
@@ -860,6 +871,11 @@ export function ProductFormModal({
                               onClick={() => {
                                 setCategoryId(cat.id);
                                 setShowCategoryDropdown(false);
+                                if (errors.category) {
+                                  const newErrors = { ...errors };
+                                  delete newErrors.category;
+                                  setErrors(newErrors);
+                                }
                               }}
                               className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5 last:border-none"
                             >
@@ -1088,12 +1104,27 @@ export function ProductFormModal({
                       <div className="space-y-2">
                         <label className={`${popupLabelBaseClass} flex items-center justify-center gap-1`}>
                           <span className="text-paymint-green text-sm">&bull;</span> {t('products.form.inventory.quantity')}
-                          <QuickInfo text={t('products.form.inventory.quantityTip')} />
                         </label>
                         <input
                           type="number"
+                          min="0"
                           value={stock}
-                          onChange={(e) => setStock(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === '-' || e.key === 'e') {
+                              e.preventDefault();
+                            }
+                          }}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === '' || Number(val) >= 0) {
+                              setStock(val);
+                              if (errors.stock) {
+                                const newErrors = { ...errors };
+                                delete newErrors.stock;
+                                setErrors(newErrors);
+                              }
+                            }
+                          }}
                           placeholder={(0).toLocaleString(t('common.locale'))}
                           className={`w-full bg-white dark:bg-black/20 border ${errors.stock ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                         />
@@ -1109,8 +1140,24 @@ export function ProductFormModal({
                           </label>
                           <input
                             type="number"
+                            min="0"
                             value={lowStockYellow}
-                            onChange={(e) => setLowStockYellow(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === '-' || e.key === 'e') {
+                                e.preventDefault();
+                              }
+                            }}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              if (val === '' || Number(val) >= 0) {
+                                setLowStockYellow(val);
+                                if (errors.lowStockYellow) {
+                                  const newErrors = { ...errors };
+                                  delete newErrors.lowStockYellow;
+                                  setErrors(newErrors);
+                                }
+                              }
+                            }}
                             placeholder={(5).toLocaleString(t('common.locale'))}
                             className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockYellow ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                           />
@@ -1121,8 +1168,24 @@ export function ProductFormModal({
                           </label>
                           <input
                             type="number"
+                            min="0"
                             value={lowStockRed}
-                            onChange={(e) => setLowStockRed(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === '-' || e.key === 'e') {
+                                e.preventDefault();
+                              }
+                            }}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              if (val === '' || Number(val) >= 0) {
+                                setLowStockRed(val);
+                                if (errors.lowStockRed) {
+                                  const newErrors = { ...errors };
+                                  delete newErrors.lowStockRed;
+                                  setErrors(newErrors);
+                                }
+                              }
+                            }}
                             placeholder={(2).toLocaleString(t('common.locale'))}
                             className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockRed ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                           />
@@ -1160,7 +1223,7 @@ export function ProductFormModal({
               <button
                 type="submit"
                 form="product-form"
-                disabled={isSubmitting || isGeneratingImage || Object.keys(errors).length > 0}
+                disabled={isSubmitting || isGeneratingImage}
                 className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-barlow font-bold text-sm rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
               >
                 {isSubmitting ? (

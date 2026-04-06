@@ -126,7 +126,7 @@ export const Contact = () => {
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">{t('landing.contact.fullName')}</label>
+                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.fullName')}</label>
                         <input
                           required
                           type="text"
@@ -138,7 +138,7 @@ export const Contact = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">{t('landing.contact.businessName')}</label>
+                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.businessName')}</label>
                         <input
                           required
                           type="text"
@@ -152,7 +152,7 @@ export const Contact = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">{t('landing.contact.emailAddress')}</label>
+                      <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.emailAddress')}</label>
                       <input
                         required
                         type="email"
@@ -165,7 +165,7 @@ export const Contact = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">{t('landing.contact.yourMessage')}</label>
+                      <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.yourMessage')}</label>
                       <textarea
                         required
                         name="message"

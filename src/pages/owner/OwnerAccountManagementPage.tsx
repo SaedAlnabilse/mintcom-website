@@ -461,18 +461,18 @@ export function OwnerAccountManagementPage() {
                 className="grid grid-cols-2 md:grid-cols-3 gap-4"
             >
                 {/* Locations Card */}
-                <div className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm transition-all duration-300 overflow-hidden">
+                <div className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 sm:p-5 transition-all duration-300 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                     <div className="relative z-10">
-                        <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                            <Store className="w-6 h-6 text-blue-500" />
+                        <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                            <Store className="w-5 h-5 text-blue-500" />
                         </div>
                         <div>
-                            <p className="dashboard-card-label mb-1">
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">
                                 {t('owner.account.stats.locations')}
                             </p>
-                            <p className="dashboard-card-value text-3xl">
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {establishments?.length || 0}
                             </p>
                         </div>
@@ -480,18 +480,18 @@ export function OwnerAccountManagementPage() {
                 </div>
 
                 {/* Brands Card */}
-                <div className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm transition-all duration-300 overflow-hidden">
+                <div className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 sm:p-5 transition-all duration-300 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                     <div className="relative z-10">
-                        <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                            <Building2 className="w-6 h-6 text-purple-500" />
+                        <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                            <Building2 className="w-5 h-5 text-purple-500" />
                         </div>
                         <div>
-                            <p className="dashboard-card-label mb-1">
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">
                                 {t('owner.account.stats.brands')}
                             </p>
-                            <p className="dashboard-card-value text-3xl">
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {brands.length}
                             </p>
                         </div>
@@ -499,18 +499,18 @@ export function OwnerAccountManagementPage() {
                 </div>
 
                 {/* Admin Users Card */}
-                <div className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm transition-all duration-300 overflow-hidden">
+                <div className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 sm:p-5 transition-all duration-300 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                     <div className="relative z-10">
-                        <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                            <Users className="w-6 h-6 text-amber-500" />
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                            <Users className="w-5 h-5 text-amber-500" />
                         </div>
                         <div>
-                            <p className="dashboard-card-label mb-1">
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">
                                 {t('owner.account.stats.admins')}
                             </p>
-                            <p className="dashboard-card-value text-3xl">
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {adminUsers.length}
                             </p>
                         </div>

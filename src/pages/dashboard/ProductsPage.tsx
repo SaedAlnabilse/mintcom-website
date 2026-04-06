@@ -783,94 +783,85 @@ export function ProductsPage() {
                 </div>
             </div>
 
-            {/* Stats Cards - Horizontal scroll on mobile */}
             <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 md:grid-cols-4 scrollbar-none snap-x snap-mandatory">
                 {/* Total Products */}
                 <button
                     onClick={() => setStockFilter('all')}
-                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'all'
-                        ? 'border-blue-500/50 ring-2 ring-blue-500/10 bg-blue-50/10'
-                        : 'border-gray-100 dark:border-white/5 hover:border-blue-300'
+                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'all'
+                        ? 'border-blue-500/50 ring-1 ring-blue-500/30 bg-blue-500/[0.02]'
+                        : 'border-gray-200 dark:border-white/[0.03] hover:border-blue-300'
                         }`}
                 >
-                    <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-2">
                         <div className="p-2 sm:p-2.5 rounded-xl bg-blue-500/10 text-blue-500">
                             <Package size={18} className="sm:w-5 sm:h-5" />
                         </div>
-                        <div className="flex items-center gap-1">
-                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.total')}</span>
-                            <QuickInfo text={t('products.stats.totalDesc')} />
-                        </div>
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate">{t('products.stats.total')}</p>
                     </div>
-                    <p className={`text-2xl sm:text-3xl font-black ${stockFilter === 'all' ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`}>
+                    <p className={`text-2xl font-bold tracking-tight ${stockFilter === 'all' ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`}>
                         {stats.total.toLocaleString(t('common.locale'))}
                     </p>
+                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-3 truncate">{t('products.stats.totalDesc')}</p>
                 </button>
 
                 {/* Low Stock (Yellow) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'yellow' ? 'all' : 'yellow')}
-                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'yellow'
-                        ? 'border-[#ffc107]/50 ring-2 ring-[#ffc107]/10 bg-[#ffc107]/5'
-                        : 'border-gray-100 dark:border-white/5 hover:border-[#ffc107]/30'
+                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'yellow'
+                        ? 'border-[#ffc107]/50 ring-1 ring-[#ffc107]/30 bg-[#ffc107]/5'
+                        : 'border-gray-200 dark:border-white/[0.03] hover:border-[#ffc107]/30'
                         }`}
                 >
-                    <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-2">
                         <div className="p-2 sm:p-2.5 rounded-xl bg-[#ffc107]/10 text-[#ffc107]">
                             <AlertCircle size={18} className="sm:w-5 sm:h-5" />
                         </div>
-                        <div className="flex items-center gap-1">
-                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.low')}</span>
-                            <QuickInfo text={t('products.stats.lowDesc')} />
-                        </div>
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate">{t('products.stats.low')}</p>
                     </div>
-                    <p className="text-2xl sm:text-3xl font-black text-[#ffc107]">
+                    <p className="text-2xl font-bold text-[#ffc107] tracking-tight">
                         {stats.yellowThreshold.toLocaleString(t('common.locale'))}
                     </p>
+                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-3 truncate">{t('products.stats.lowDesc')}</p>
                 </button>
 
                 {/* Critical (Red) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'red' ? 'all' : 'red')}
-                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'red'
-                        ? 'border-[#D55263]/50 ring-2 ring-[#D55263]/10 bg-[#D55263]/5'
-                        : 'border-gray-100 dark:border-white/5 hover:border-[#D55263]/30'
+                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'red'
+                        ? 'border-[#D55263]/50 ring-1 ring-[#D55263]/30 bg-[#D55263]/5'
+                        : 'border-gray-200 dark:border-white/[0.03] hover:border-[#D55263]/30'
                         }`}
                 >
-                    <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-2">
                         <div className="p-2 sm:p-2.5 rounded-xl bg-[#D55263]/10 text-[#D55263]">
                             <AlertCircle size={18} className="sm:w-5 sm:h-5" />
                         </div>
-                        <div className="flex items-center gap-1">
-                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.critical')}</span>
-                            <QuickInfo text={t('products.stats.criticalDesc')} />
-                        </div>
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate">{t('products.stats.critical')}</p>
                     </div>
-                    <p className="text-2xl sm:text-3xl font-black text-[#D55263]">
+                    <p className="text-2xl font-bold text-[#D55263] tracking-tight">
                         {stats.redThreshold.toLocaleString(t('common.locale'))}
                     </p>
+                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-3 truncate">{t('products.stats.criticalDesc')}</p>
                 </button>
 
                 {/* Out of Stock (Gray) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'out' ? 'all' : 'out')}
-                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'out'
-                        ? 'border-slate-500/50 ring-2 ring-slate-500/10 bg-slate-50/10'
-                        : 'border-gray-100 dark:border-white/5 hover:border-slate-400'
+                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'out'
+                        ? 'border-slate-500/50 ring-1 ring-slate-500/30 bg-slate-500/[0.02]'
+                        : 'border-gray-200 dark:border-white/[0.03] hover:border-slate-400'
                         }`}
                 >
-                    <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-2">
                         <div className="p-2 sm:p-2.5 rounded-xl bg-slate-500/10 text-slate-500">
                             <Package size={18} className="sm:w-5 sm:h-5" />
                         </div>
-                        <div className="flex items-center gap-1">
-                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.outOfStock')}</span>
-                            <QuickInfo text={t('products.stats.outOfStockDesc')} />
-                        </div>
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate">{t('products.stats.outOfStock')}</p>
                     </div>
-                    <p className="text-2xl sm:text-3xl font-black text-slate-500">
+                    <p className="text-2xl font-bold text-slate-500 tracking-tight">
                         {stats.outOfStock.toLocaleString(t('common.locale'))}
                     </p>
+                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-3 truncate">{t('products.stats.outOfStockDesc')}</p>
                 </button>
             </div>
 

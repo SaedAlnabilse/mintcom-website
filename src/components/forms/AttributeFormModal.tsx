@@ -52,6 +52,7 @@ export function AttributeFormModal({
         }
     }, [isOpen, initialData]);
 
+    const scrollRef = useRef<HTMLDivElement>(null);
     const errorBannerRef = useRef<HTMLDivElement>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -64,10 +65,15 @@ export function AttributeFormModal({
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
-            // Scroll to error
+            // Scroll to the first field that has an error
             setTimeout(() => {
-                errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
+                const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red');
+                if (firstErrorField) {
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }, 50);
             return;
         }
 
@@ -95,14 +101,9 @@ export function AttributeFormModal({
                     </div>
 
                     {/* Header */}
-                    <div className="flex items-center justify-between p-4 sm:p-8 pb-4 relative isolate">
+                    <div className="flex items-center justify-between p-6 sm:p-8 relative isolate border-b border-gray-100 dark:border-white/5">
                         <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                         <div>
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="label-strong">{t('attributes.title')}</span>
-                                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                <span className="text-xs font-black text-paymint-green tracking-widest">{t('common.active')}</span>
-                            </div>
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {initialData ? t('attributes.editAttribute') : t('attributes.newAttribute')}
                             </h2>
@@ -115,7 +116,7 @@ export function AttributeFormModal({
                         </button>
                     </div>
 
-                    <div className="overflow-y-auto p-4 sm:p-8 pt-2 custom-scrollbar flex-1 pb-safe">
+                    <div className="overflow-y-auto p-6 sm:p-8 pt-8 sm:pt-10 custom-scrollbar flex-1 pb-safe">
                         <form id="attribute-form" onSubmit={handleSubmit} className="space-y-8">
                             {/* Error Banner */}
                             {Object.keys(errors).length > 0 && (

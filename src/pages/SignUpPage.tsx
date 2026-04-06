@@ -237,7 +237,7 @@ export function SignUpPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="firstName" className="block text-xs font-bold text-gray-400 mb-2">
+                  <label htmlFor="firstName" className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
                     {t('auth.signup.firstNameLabel')}<span className="text-accent ml-1">*</span>
                   </label>
                   <div className="relative">
@@ -259,7 +259,7 @@ export function SignUpPage() {
                   )}
                 </div>
                 <div>
-                  <label htmlFor="lastName" className="block text-xs font-bold text-gray-400 mb-2">
+                  <label htmlFor="lastName" className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
                     {t('auth.signup.lastNameLabel')}<span className="text-accent ml-1">*</span>
                   </label>
                   <input
@@ -280,7 +280,7 @@ export function SignUpPage() {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-xs font-bold text-gray-400 mb-2">
+                <label htmlFor="email" className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
                   {t('auth.signup.emailLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
@@ -303,7 +303,7 @@ export function SignUpPage() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-xs font-bold text-gray-400 mb-2">
+                <label htmlFor="password" className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
                   {t('auth.signup.passwordLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
@@ -334,7 +334,7 @@ export function SignUpPage() {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-xs font-bold text-gray-400 mb-2">
+                <label htmlFor="confirmPassword" className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
                   {t('auth.signup.confirmPasswordLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">

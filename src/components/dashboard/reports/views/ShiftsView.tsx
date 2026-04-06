@@ -3,9 +3,10 @@ import { useCurrency } from '../../../../context/CurrencyContext';
 import type { Shift } from '../../../../types';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getDateLocale } from '../../../../utils/dateLocale';
+import { Pagination } from '../../../ui';
 
 interface ShiftsViewProps {
   shifts: Shift[];
@@ -14,10 +15,31 @@ interface ShiftsViewProps {
 export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewProps) {
   const { t } = useTranslation();
   const { formatAmount, currencySymbol } = useCurrency();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const formatCurrency = (value: number) => formatAmount(value);
 
-  // If no shifts, return empty state early (though original code handles it inside map with a fallback row if length > 0 check fails, but simpler here)
+  // Sort shifts: Active (OPEN) first, then by startTime newest to oldest
+  const sortedShifts = React.useMemo(() => {
+    return [...shifts].sort((a: any, b: any) => {
+      // 1. Active (OPEN) shifts first
+      if (a.status === 'OPEN' && b.status !== 'OPEN') return -1;
+      if (a.status !== 'OPEN' && b.status === 'OPEN') return 1;
+
+      // 2. Newest to oldest (based on startTime)
+      const timeA = new Date(a.startTime).getTime();
+      const timeB = new Date(b.startTime).getTime();
+      return timeB - timeA;
+    });
+  }, [shifts]);
+
+  const paginatedShifts = React.useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return sortedShifts.slice(startIndex, startIndex + itemsPerPage);
+  }, [sortedShifts, currentPage]);
+
+  // If no shifts, return empty state early
   if (shifts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
@@ -33,35 +55,38 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
   }
 
   const totalVariance = shifts.reduce((acc: number, shift: any) => acc + (shift.discrepancy || 0), 0);
-  const activeShifts = shifts.filter((s: any) => s.status === 'OPEN').length;
+  const activeShiftsCount = shifts.filter((s: any) => s.status === 'OPEN').length;
 
   return (
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-      {/* Audit Oversight Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
-          <div className="flex items-center gap-3 mb-4 text-orange-500">
-            <Activity size={20} />
-            <h4 className="text-xs font-black tracking-widest text-gray-400">{t('orders.reports.shifts.cashVariance')}</h4>
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center">
+              <Activity size={20} />
+            </div>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide capitalize">{t('orders.reports.shifts.cashVariance')}</p>
           </div>
-          <p className={`text-3xl font-black ${totalVariance < -0.01 ? 'text-red-500' : 'text-paymint-green'}`}>
+          <p className={`text-2xl font-bold ${totalVariance < -0.01 ? 'text-red-500' : 'text-paymint-green'} tracking-tight`}>
             {totalVariance > 0 ? '+' : ''}{totalVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            <span className="text-sm mx-1 text-gray-400 font-black">{currencySymbol}</span>
+            <span className="text-sm mx-1 text-gray-400 font-black"> {currencySymbol}</span>
           </p>
-          <p className="text-xs font-bold text-gray-500 mt-2">{t('orders.reports.shifts.totalOverShort')}</p>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{t('orders.reports.shifts.totalOverShort')}</p>
         </div>
-        <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
-          <div className="flex items-center gap-3 mb-4 text-paymint-green">
-            <Clock size={20} />
-            <h4 className="text-xs font-black tracking-widest text-gray-400">{t('dashboard.menu.shiftsReports')}</h4>
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
+              <Clock size={20} />
+            </div>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide capitalize">{t('dashboard.menu.shiftsReports')}</p>
           </div>
-          <p className="text-3xl font-black text-gray-900 dark:text-white">{shifts.length.toLocaleString(t('common.locale'))}</p>
-          <p className="text-xs font-bold text-gray-500 mt-2">{t('orders.reports.shifts.activeShifts', { count: activeShifts })}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{shifts.length.toLocaleString(t('common.locale'))}</p>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{t('orders.reports.shifts.activeShifts', { count: activeShiftsCount })}</p>
         </div>
       </div>
 
       {/* Shifts Table */}
-      <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm flex flex-col">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
@@ -76,12 +101,9 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-              {shifts.map((shift: any, idx: number) => (
+              {paginatedShifts.map((shift: any, idx: number) => (
                 <motion.tr
                   key={shift.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: idx * 0.05 }}
                   className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                 >
                   <td className="px-5 py-5">
@@ -152,6 +174,16 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
             </tbody>
           </table>
         </div>
+
+        {sortedShifts.length > itemsPerPage && (
+          <div className="p-4 border-t border-gray-200 dark:border-white/5">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil(sortedShifts.length / itemsPerPage)}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

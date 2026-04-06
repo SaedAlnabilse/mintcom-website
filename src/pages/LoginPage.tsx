@@ -165,7 +165,7 @@ export function LoginPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <label className="block text-xs font-bold text-gray-400 mb-2">
+              <label className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
                 {t('auth.login.emailLabel')}
               </label>
               <div className="relative">
@@ -188,7 +188,7 @@ export function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-400 mb-2">
+              <label className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
                 {t('auth.login.passwordLabel')}
               </label>
               <div className="relative">

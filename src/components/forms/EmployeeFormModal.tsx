@@ -681,6 +681,7 @@ export function EmployeeFormModal({
     return !permissionsMatch || !backofficePermissionsMatch || !discountsMatch || !roleMatch || !accessMatch;
   };
 
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -735,10 +736,15 @@ export function EmployeeFormModal({
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      // Scroll to error
+      // Scroll to the first field that has an error
       setTimeout(() => {
-        errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
+        const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red, .ring-paymint-red\\/20');
+        if (firstErrorField) {
+          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 50);
       return;
     }
 
@@ -842,7 +848,7 @@ export function EmployeeFormModal({
 
               {/* Name */}
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1 tracking-normal">
+                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.nameLabel')} <span className="text-paymint-red">*</span>
                 </label>
                 <input
@@ -857,7 +863,7 @@ export function EmployeeFormModal({
 
               {/* Username */}
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1 tracking-normal">
+                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.usernameLabel')} <span className="text-paymint-red">*</span>
                 </label>
                 <input
@@ -872,7 +878,7 @@ export function EmployeeFormModal({
 
               {/* Email */}
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1 tracking-normal">
+                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.emailLabel')} {role === 'ADMIN' ? <span className="text-paymint-red">*</span> : t('staff.form.emailOptional')}
                 </label>
                 <input
@@ -887,7 +893,7 @@ export function EmployeeFormModal({
 
               {/* Phone */}
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1 tracking-normal">
+                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.phoneLabel')} {t('staff.form.phoneOptional')}
                 </label>
                 <input
@@ -902,7 +908,7 @@ export function EmployeeFormModal({
               {/* Establishment Selection (Only if establishments prop is provided) */}
               {establishments && (
                 <div className="relative space-y-2">
-                  <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1 tracking-normal">
+                  <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                     {t('staff.form.accessLabel')} <span className="text-paymint-red">*</span>
                   </label>
                   <button
@@ -1216,7 +1222,7 @@ export function EmployeeFormModal({
 
               {/* Password wrapper start (to match existing indentation/structure) */}
               <div className="pt-4 border-t border-gray-100 dark:border-white/5 space-y-2">
-                <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1 tracking-normal">
+                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {initialData ? t('staff.form.newPasswordOptional') : t('staff.form.passwordLabel')} {(!initialData) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">
@@ -1239,7 +1245,7 @@ export function EmployeeFormModal({
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1 tracking-normal">
+                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.confirmPasswordLabel')} {(!initialData || password) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">

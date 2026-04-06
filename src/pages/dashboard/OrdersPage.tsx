@@ -1147,11 +1147,10 @@ export function OrdersPage() {
         </div>
       )}
 
-      {/* Kpi Strip - horizontal scroll on mobile */}
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
           {
-            label: t('orders.kpi.totalSales'),
+            label: t('orders.kpi.totalAmount'),
             value: formatAmount(
               statusFilter === 'HELD'
                 ? heldOrders.reduce((acc, o) => acc + (o.total || 0), 0)
@@ -1195,11 +1194,11 @@ export function OrdersPage() {
           <div
             key={i}
             onClick={stat.onClick}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink 
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink 
               ${stat.onClick ? 'cursor-pointer' : 'cursor-default'} 
               ${stat.active
                 ? 'border-paymint-green ring-1 ring-paymint-green/30 bg-paymint-green/[0.02]'
-                : 'border-gray-200 dark:border-white/5 hover:border-paymint-green/30'}`}
+                : 'border-gray-200 dark:border-white/[0.03] hover:border-paymint-green/30'}`}
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg} ${stat.active ? 'opacity-20' : 'group-hover:opacity-10'}`} />
             <div className="relative z-10 flex items-center gap-3 sm:gap-4">
@@ -1207,10 +1206,10 @@ export function OrdersPage() {
                 <stat.icon size={18} className="sm:w-5 sm:h-5" />
               </div>
               <div>
-                <p className="dashboard-card-label mb-0.5">{stat.label}</p>
-                <p className="dashboard-card-value text-lg sm:text-2xl">{stat.value}</p>
+                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{stat.value}</p>
                 {stat.sub && (
-                  <p className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 mt-0.5">{stat.sub}</p>
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize truncate">{stat.sub}</p>
                 )}
               </div>
             </div>

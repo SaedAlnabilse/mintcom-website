@@ -438,7 +438,7 @@ export function EstablishmentDeletionWizard({
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center">
+                                    <label className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2 flex items-center">
                                         {t('security.deletion.confirm.locationId')}
                                         <QuickInfo text={t('onboarding.tour.locationStatsDesc')} />
                                     </label>
@@ -453,7 +453,7 @@ export function EstablishmentDeletionWizard({
 
                                 {/* Establishment Password */}
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
                                             <Lock size={14} className="text-paymint-red" />
                                             {t('security.deletion.confirm.locationPassword')}
@@ -480,7 +480,7 @@ export function EstablishmentDeletionWizard({
 
                                 {/* Account Email */}
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
                                             <Mail size={14} className="text-paymint-red" />
                                             {t('security.deletion.confirm.yourEmail')}
@@ -498,7 +498,7 @@ export function EstablishmentDeletionWizard({
 
                                 {/* Password Input */}
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
                                             <Lock size={14} className="text-paymint-red" />
                                             {t('security.deletion.confirm.yourPassword')}

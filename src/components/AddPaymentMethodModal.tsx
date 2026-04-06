@@ -29,6 +29,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
     const [name, setName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const scrollRef = useRef<HTMLDivElement>(null);
     const errorBannerRef = useRef<HTMLDivElement>(null);
 
     useScrollLock(isOpen);
@@ -39,7 +40,11 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
         const formatted = value.replace(/(\d{4})/g, '$1 ').trim();
         if (formatted.length <= 19) {
             setCardNumber(formatted);
-            if (errors.cardNumber) setErrors({ ...errors, cardNumber: '' });
+            if (errors.cardNumber) {
+                const newErrors = { ...errors };
+                delete newErrors.cardNumber;
+                setErrors(newErrors);
+            }
         }
     };
 
@@ -47,12 +52,16 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
     const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.replace(/\D/g, '');
         if (value.length <= 4) {
+            let formatted = value;
             if (value.length >= 2) {
-                setExpiry(`${value.slice(0, 2)}/${value.slice(2)}`);
-            } else {
-                setExpiry(value);
+                formatted = `${value.slice(0, 2)}/${value.slice(2)}`;
             }
-            if (errors.expiry) setErrors({ ...errors, expiry: '' });
+            setExpiry(formatted);
+            if (errors.expiry) {
+                const newErrors = { ...errors };
+                delete newErrors.expiry;
+                setErrors(newErrors);
+            }
         }
     };
 
@@ -83,10 +92,15 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
-            // Scroll to error
+            // Scroll to the first field that has an error
             setTimeout(() => {
-                errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
+                const firstErrorField = scrollRef.current?.querySelector('.border-red-500');
+                if (firstErrorField) {
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }, 50);
             return;
         }
 
@@ -118,8 +132,8 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
             const msg = (err as ApiError).response?.data?.message || t('paymentMethods.messages.failedToAdd');
             setErrors({ general: msg });
             setTimeout(() => {
-                errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
+                scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 50);
         } finally {
             setIsSubmitting(false);
         }
@@ -180,7 +194,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
                                 {/* Card Number */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">{t('paymentMethods.modal.cardNumber')}</label>
+                                    <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.cardNumber')}</label>
                                     <div className="relative group">
                                         <input
                                             type="text"
@@ -204,7 +218,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                 {/* Expiry & Cvc */}
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">{t('paymentMethods.modal.expiry')}</label>
+                                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.expiry')}</label>
                                         <input
                                             type="text"
                                             value={expiry}
@@ -216,7 +230,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                         {errors.expiry && <p className="text-xs font-bold text-red-500 pl-1">{errors.expiry}</p>}
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">{t('paymentMethods.modal.cvc')}</label>
+                                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.cvc')}</label>
                                         <div className="relative group">
                                             <input
                                                 type="password"
@@ -234,7 +248,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
                                 {/* Cardholder Name */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">{t('paymentMethods.modal.cardholder')}</label>
+                                    <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.cardholder')}</label>
                                     <input
                                         type="text"
                                         value={name}

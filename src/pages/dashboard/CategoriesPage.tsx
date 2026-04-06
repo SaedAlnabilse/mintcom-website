@@ -397,7 +397,6 @@ export function CategoriesPage() {
         </div>
       </div>
 
-      {/* Stats Section - Horizontal scroll on mobile */}
       <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 scrollbar-none snap-x snap-mandatory">
         {[
           { label: t('categories.stats.totalCategories'), value: stats.total, icon: Layers, color: 'text-blue-500', bg: 'bg-blue-500/10' },
@@ -410,7 +409,7 @@ export function CategoriesPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="flex-shrink-0 w-[160px] sm:w-auto snap-start group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
+            className="flex-shrink-0 w-[160px] sm:w-auto snap-start group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10 flex items-center gap-4">
@@ -418,13 +417,13 @@ export function CategoriesPage() {
                 <stat.icon size={20} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="dashboard-card-label mb-2">{stat.label}</p>
-                <div className="flex flex-col gap-1">
-                  <p className="dashboard-card-value truncate">
+                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                <div className="flex flex-col">
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight truncate">
                     {typeof stat.value === 'number' ? stat.value.toLocaleString(t('common.locale')) : stat.value}
                   </p>
                   {stat.sub && (
-                    <p className="text-xs font-bold text-paymint-green tracking-wide">{stat.sub}</p>
+                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-2 truncate">{stat.sub}</p>
                   )}
                 </div>
               </div>
@@ -644,8 +643,8 @@ export function CategoriesPage() {
                       <ViewingIcon size={24} />
                     </div>
                     <div>
-                      <h2 className="dashboard-card-value">{viewingCategory.name}</h2>
-                      <p className="text-xs font-black text-paymint-green tracking-widest">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
+                      <h2 className="dashboard-card-value leading-none">{viewingCategory.name}</h2>
+                      <p className="text-[11px] font-medium text-paymint-green mt-1.5">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -791,8 +790,8 @@ export function CategoriesPage() {
                       })()}
                     </div>
                     <div>
-                      <h2 className="dashboard-card-value tracking-tight">{deleteBlockedCategory.name}</h2>
-                      <p className="text-xs font-black text-red-500 tracking-widest">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
+                      <h2 className="dashboard-card-value tracking-tight leading-none">{deleteBlockedCategory.name}</h2>
+                      <p className="text-[11px] font-medium text-red-500 mt-1.5">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
                     </div>
                   </div>
                   <button

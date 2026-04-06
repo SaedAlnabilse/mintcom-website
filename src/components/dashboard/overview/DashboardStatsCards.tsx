@@ -218,7 +218,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
                 )}
               </div>
 
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 flex items-center gap-1">
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 flex items-center gap-1 capitalize">
                 {stat.label}
               </p>
 
@@ -230,7 +230,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
                     {stat.value}
                     {stat.label.includes(t('dashboard.stats.totalOrders')) || stat.label.includes(t('dashboard.stats.onHold')) ? '' : <span className="text-sm mx-1 text-gray-400 font-black"> {currencySymbol}</span>}
                   </p>
-                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">
                     {stat.sub}
                   </p>
                 </>

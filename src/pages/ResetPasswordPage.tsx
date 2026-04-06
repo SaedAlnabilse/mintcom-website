@@ -127,7 +127,7 @@ export function ResetPasswordPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-xs font-black text-gray-400 tracking-widest ml-1">{t('auth.resetPassword.passwordLabel')}</label>
+            <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('auth.resetPassword.passwordLabel')}</label>
             <div className="relative group">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
               <input
@@ -148,7 +148,7 @@ export function ResetPasswordPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-black text-gray-400 tracking-widest ml-1">{t('auth.resetPassword.confirmPasswordLabel')}</label>
+            <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('auth.resetPassword.confirmPasswordLabel')}</label>
             <div className="relative group">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
               <input

@@ -346,12 +346,11 @@ export function CustomersPage() {
         </div>
       </div>
 
-      {/* Stats Overview - horizontal scroll on mobile */}
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+          className="group relative p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden transition-all duration-300 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-paymint-green/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
           <div className="flex items-center gap-3 sm:gap-4 relative z-10">
@@ -359,8 +358,8 @@ export function CustomersPage() {
               <User size={20} className="sm:w-6 sm:h-6" />
             </div>
             <div>
-              <p className="dashboard-card-label">{t('customers.stats.total')}</p>
-              <p className="dashboard-card-value text-xl sm:text-2xl mt-0.5">{(Array.isArray(customers) ? customers : []).length.toLocaleString(t('common.locale'))}</p>
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('customers.stats.total')}</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{(Array.isArray(customers) ? customers : []).length.toLocaleString(t('common.locale'))}</p>
             </div>
           </div>
         </motion.div>
@@ -369,7 +368,7 @@ export function CustomersPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+          className="group relative p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden transition-all duration-300 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
           <div className="flex items-center gap-3 sm:gap-4 relative z-10">
@@ -377,8 +376,8 @@ export function CustomersPage() {
               <Award size={20} className="sm:w-6 sm:h-6" />
             </div>
             <div>
-              <p className="dashboard-card-label">{t('customers.stats.points')}</p>
-              <p className="dashboard-card-value text-xl sm:text-2xl mt-0.5">
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('customers.stats.points')}</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">
                 {(Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (curr.points || 0), 0).toLocaleString(t('common.locale'))}
               </p>
             </div>
@@ -389,7 +388,7 @@ export function CustomersPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+          className="group relative p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden transition-all duration-300 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
           <div className="flex items-center gap-3 sm:gap-4 relative z-10">
@@ -397,8 +396,8 @@ export function CustomersPage() {
               <ShoppingBag size={20} className="sm:w-6 sm:h-6" />
             </div>
             <div>
-              <p className="dashboard-card-label">{t('customers.stats.spent')}</p>
-              <p className="dashboard-card-value text-xl sm:text-2xl mt-0.5">
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('customers.stats.spent')}</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">
                 {formatCurrency((Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (Number(curr.totalSpent) || 0), 0))}
               </p>
             </div>
@@ -774,9 +773,20 @@ export function CustomersPage() {
                   <div className="relative">
                     <input
                       type="number"
+                      min="0"
+                      onKeyDown={(e) => {
+                        if (e.key === '-' || e.key === 'e') {
+                          e.preventDefault();
+                        }
+                      }}
                       value={pointsAmount === 0 ? '' : pointsAmount}
                       onChange={(e) => {
-                        setPointsAmount(Math.max(0, parseInt(e.target.value) || 0));
+                        const val = parseInt(e.target.value);
+                        if (!isNaN(val) && val >= 0) {
+                          setPointsAmount(val);
+                        } else if (e.target.value === '') {
+                          setPointsAmount(0);
+                        }
                         setPointsError(null);
                       }}
                       className={`w-full px-4 py-3 bg-gray-50 dark:bg-black/20 border ${pointsError ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-lg font-bold focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all outline-none`}

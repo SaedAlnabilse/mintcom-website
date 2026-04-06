@@ -145,52 +145,52 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
 
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {/* Total Hours */}
-          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
-            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalHours')}</p>
-            <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">{totalHours.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerText}</p>
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalHours')}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{totalHours.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
           </div>
 
           {/* Total Orders */}
-          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
-            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalOrders')}</p>
-            <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">{totalOrders.toLocaleString(t('common.locale'))}</p>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerText}</p>
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalOrders')}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{totalOrders.toLocaleString(t('common.locale'))}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
           </div>
 
           {/* Total Sales */}
-          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
-            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalSales')}</p>
-            <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">{formatCurrency(totalSales)}</p>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerText}</p>
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalSales')}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{formatCurrency(totalSales)}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
           </div>
 
           {/* Total Discounts */}
-          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
-            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalDiscounts')}</p>
-            <p className="text-2xl font-black text-orange-500 tracking-tight leading-none mb-4">{formatCurrency(totalDiscounts)}</p>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerIssuedText}</p>
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalDiscounts')}</p>
+            <p className="text-2xl font-bold text-orange-500 tracking-tight mb-1">{formatCurrency(totalDiscounts)}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerIssuedText}</p>
           </div>
 
           {/* Total Refunds */}
-          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
-            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalRefunds')}</p>
-            <p className="text-2xl font-black text-red-500 tracking-tight leading-none mb-4">{formatCurrency(totalRefunds)}</p>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerText}</p>
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalRefunds')}</p>
+            <p className="text-2xl font-bold text-red-500 tracking-tight mb-1">{formatCurrency(totalRefunds)}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
           </div>
 
           {/* Variances */}
           <div 
             onClick={() => navigate(`/dashboard/${activeSlug}/reports/shifts`)}
-            className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm cursor-pointer group"
+            className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden cursor-pointer group"
           >
-            <p className="h-8 text-[11px] font-black text-gray-400 group-hover:text-paymint-green transition-colors tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalVariances')}</p>
-            <div className="flex flex-wrap items-center gap-1.5 mb-4 leading-none">
-              <span className="text-xl font-black text-emerald-500 tracking-tight leading-none">+{positiveVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              <span className="text-gray-300 dark:text-white/20 font-light text-xl leading-none">/</span>
-              <span className="text-xl font-black text-red-500 tracking-tight leading-none">-{negativeVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 group-hover:text-paymint-green transition-colors tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalVariances')}</p>
+            <div className="flex flex-wrap items-center gap-1.5 mb-1 leading-none">
+              <span className="text-xl font-bold text-emerald-500 tracking-tight">+{positiveVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span className="text-gray-300 dark:text-white/20 font-light text-xl">/</span>
+              <span className="text-xl font-bold text-red-500 tracking-tight">-{negativeVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerText}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
           </div>
         </div>
       </div>
@@ -203,8 +203,8 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
             {/* 1. Revenue Share Chart (The "Slice" View) */}
             <div className="bg-white dark:bg-[#0B1120] p-5 rounded-[24px] border border-gray-100 dark:border-white/[0.05] shadow-sm flex flex-col">
               <div className="mb-3">
-                <h3 className="text-lg font-black text-gray-900 dark:text-white">{t('orders.reports.staff.salesShare')}</h3>
-                <p className="text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.byStaff')}</p>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.staff.salesShare')}</h3>
+                <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')}</p>
               </div>
               <div className="flex-1 min-h-[160px] relative" dir="ltr">
                 <ResponsiveContainer width="100%" height="100%">
@@ -311,8 +311,8 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
         <div className="bg-white dark:bg-[#0B1120] rounded-[24px] border border-gray-100 dark:border-white/[0.05] overflow-hidden shadow-sm">
           <div className="p-6 border-b border-gray-100 dark:border-white/[0.05] flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-black text-gray-900 dark:text-white">{t('orders.reports.staff.title')}</h3>
-              <p className="text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.subtitle')}</p>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.staff.title')}</h3>
+              <p className="text-xs text-gray-500">{t('orders.reports.staff.subtitle')}</p>
             </div>
           </div>
           <div className="overflow-x-auto">

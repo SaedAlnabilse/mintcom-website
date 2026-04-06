@@ -53,6 +53,7 @@ export function DiscountFormModal({
     }
   }, [isOpen, initialData, t]);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
   const errorBannerRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,10 +73,15 @@ export function DiscountFormModal({
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      // Scroll to error
+      // Scroll to the first field that has an error
       setTimeout(() => {
-        errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
+        const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red');
+        if (firstErrorField) {
+          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 50);
       return;
     }
 
@@ -150,17 +156,29 @@ export function DiscountFormModal({
                 <div className="relative group">
                   <input
                     type="number"
+                    min="0"
+                    max="100"
+                    onKeyDown={(e) => {
+                      if (e.key === '-' || e.key === 'e') {
+                        e.preventDefault();
+                      }
+                    }}
                     value={percentage}
                     onChange={(e) => {
                       const val = e.target.value;
-                      if (parseFloat(val) > 100) return;
-                      setPercentage(val);
-                      if (errors.percentage) setErrors({ ...errors, percentage: '' });
+                      if (val === '') {
+                        setPercentage('');
+                        if (errors.percentage) setErrors({ ...errors, percentage: '' });
+                        return;
+                      }
+                      const num = parseFloat(val);
+                      if (num >= 0 && num <= 100) {
+                        setPercentage(val);
+                        if (errors.percentage) setErrors({ ...errors, percentage: '' });
+                      }
                     }}
                     placeholder={t('common.zeroDecimal')}
                     step="0.01"
-                    min="0"
-                    max="100"
                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.percentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">

@@ -194,14 +194,14 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="p-4 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm flex items-center gap-4"
+                        className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300"
                     >
                         <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
                             <stat.icon size={20} />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
-                            <p className="text-xl font-black text-gray-900 dark:text-white">
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {typeof stat.value === 'number' ? stat.value.toLocaleString(t('common.locale')) : stat.value}
                             </p>
                         </div>

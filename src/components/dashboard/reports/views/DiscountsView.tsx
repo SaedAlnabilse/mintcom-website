@@ -55,24 +55,24 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Discount Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex items-center gap-4">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300">
           <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
             <Percent size={24} />
           </div>
           <div>
-            <p className="text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.discounts.totalDiscounted')}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide capitalize">{t('orders.reports.discounts.totalDiscounted')}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {formatCurrency(salesData.totalDiscounts || 0)}
             </p>
           </div>
         </div>
-        <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex items-center gap-4">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300">
           <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
             <Tag size={24} />
           </div>
           <div>
-            <p className="text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.discounts.timesApplied')}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide capitalize">{t('orders.reports.discounts.timesApplied')}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {(salesData.totalDiscountCount || 0).toLocaleString(t('common.locale'))}
             </p>
           </div>
@@ -133,7 +133,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
                   ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="py-20 text-center text-gray-400 font-black text-xs tracking-[0.2em]">
+                  <td colSpan={3} className="py-20 text-center text-gray-400 font-medium text-sm">
                     {t('orders.reports.discounts.noData')}
                   </td>
                 </tr>

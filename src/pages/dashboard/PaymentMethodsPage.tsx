@@ -564,7 +564,6 @@ export function PaymentMethodsPage() {
                   <div>
                     <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase mb-3 px-1 flex items-center gap-2">
                       {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
-                      <QuickInfo text={t('paymentMethods.form.nameTip')} />
                     </label>
                     <input
                       type="text"
@@ -658,7 +657,6 @@ export function PaymentMethodsPage() {
                   <div>
                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                       {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
-                      <QuickInfo text={t('paymentMethods.form.brandTip')} />
                     </label>
                     <input
                       type="text"

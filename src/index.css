@@ -348,14 +348,14 @@
   /* Ensure popup field titles using legacy label-strong match New Employee modal style */
   .popup-surface .label-strong {
     font-size: 0.875rem;
-    font-weight: 600;
-    color: rgb(75 85 99);
-    letter-spacing: normal;
+    font-weight: 700;
+    color: rgb(17 24 39);
+    letter-spacing: -0.01em;
     text-transform: none;
   }
 
   .dark .popup-surface .label-strong {
-    color: rgb(209 213 219);
+    color: white;
   }
 
   .popup-surface :where(input, textarea, select) {

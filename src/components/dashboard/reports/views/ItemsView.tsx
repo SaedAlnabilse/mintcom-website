@@ -250,11 +250,15 @@ export const ItemsView = React.memo(function ItemsView({
                       animate={{ opacity: isFetching ? 0.5 : 1 }}
                       transition={{ delay: idx * 0.05 }}
                       onClick={() => {
-                        if (itemReportTab === 'categories' && item.id) {
-                          fetchCategoryBreakdown(item.id, item.name);
+                        if (itemReportTab === 'categories') {
+                          const categoryId = item.id || item.categoryId;
+                          const categoryName = item.itemName || item.name || t('common.unknown');
+                          if (categoryId) {
+                            fetchCategoryBreakdown(categoryId, categoryName);
+                          }
                         }
                       }}
-                      className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${itemReportTab === 'categories' ? 'cursor-pointer' : ''}`}
+                      className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${itemReportTab === 'categories' ? 'cursor-pointer select-none active:scale-[0.995]' : ''}`}
                     >
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-4">
@@ -264,7 +268,7 @@ export const ItemsView = React.memo(function ItemsView({
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name || t('common.unknown')}</span>
                             {itemReportTab === 'categories' && (
-                              <ChevronRight size={14} className="text-gray-300 dark:text-white/10 opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
+                              <ChevronRight size={14} className="text-gray-300 dark:text-white/10 opacity-40 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
                             )}
                           </div>
                         </div>
@@ -377,10 +381,6 @@ export const ItemsView = React.memo(function ItemsView({
                             <p className="font-bold text-paymint-green text-base">
                               {formatCurrency((item.totalSales || item.revenue) || 0)}
                             </p>
-                            <div className="flex items-center justify-end gap-1 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <span className="text-[10px] font-black text-paymint-green uppercase tracking-widest">{t('common.viewDetails', 'Details')}</span>
-                              <ArrowUpRight size={10} className="text-paymint-green" />
-                            </div>
                           </div>
                         </div>
                       ))}

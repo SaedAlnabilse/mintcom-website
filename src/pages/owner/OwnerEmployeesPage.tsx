@@ -337,19 +337,19 @@ export function OwnerEmployeesPage() {
                 ].map((stat, i) => (
                     <div
                         key={i}
-                        className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
+                        className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden"
                     >
                         <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
                         <div className="relative z-10">
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
-                                    <stat.icon size={20} />
+                            <div className="flex items-center gap-3 mb-2 sm:mb-3">
+                                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
+                                    <stat.icon size={16} className="sm:w-5 sm:h-5" />
                                 </div>
                             </div>
                             <div>
-                                <p className="dashboard-card-label mb-1">{stat.label}</p>
-                                <p className="dashboard-card-value mb-2">{stat.value}</p>
-                                <p className="dashboard-card-meta">{stat.info}</p>
+                                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none mb-1">{stat.value.toLocaleString(t('common.locale'))}</p>
+                                <p className="hidden sm:block text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize truncate">{stat.info}</p>
                             </div>
                         </div>
                     </div>

@@ -262,6 +262,7 @@ export function CustomRoleFormModal({
       }));
   }, [canAssignAdvancedPermission]);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [name, setName] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -448,6 +449,15 @@ export function CustomRoleFormModal({
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      // Scroll to the first field that has an error
+      setTimeout(() => {
+        const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red, .ring-paymint-red\\/20');
+        if (firstErrorField) {
+          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 50);
       return;
     }
 

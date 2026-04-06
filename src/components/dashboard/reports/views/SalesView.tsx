@@ -135,30 +135,32 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
             onClick={stat.onClick}
-            className={`group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col transition-all duration-300 overflow-hidden ${stat.onClick ? 'cursor-pointer' : ''}`}
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden ${stat.onClick ? 'cursor-pointer' : ''}`}
           >
             <div className={`absolute top-0 end-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-2">
                 <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
                   <stat.icon size={20} />
                 </div>
                 {stat.onClick && (
-                  <ExternalLink size={14} className="text-gray-300 dark:text-gray-600 group-hover:text-paymint-green transition-colors" />
+                  <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
+                    <ExternalLink size={14} />
+                  </div>
                 )}
               </div>
-              <p className="text-xs font-bold text-gray-400 tracking-wide mb-1 flex items-center gap-1">
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 flex items-center gap-1 capitalize">
                 {stat.label}
               </p>
               {stat.customContent ? (
                 stat.customContent
               ) : (
                 <>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                     {stat.value}
-                    {stat.suffix && <span className="text-base ml-1 text-gray-300 dark:text-gray-500">{stat.suffix}</span>}
+                    {stat.suffix && <span className="text-sm ml-1 text-gray-400 font-black">{stat.suffix}</span>}
                   </p>
-                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">
                     {stat.sub}
                   </p>
                 </>

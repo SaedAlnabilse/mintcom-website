@@ -680,8 +680,21 @@ export function RecipesPage() {
                     </label>
                     <input
                       type="number"
+                      min="0"
                       value={subRecipeForm.yield}
-                      onChange={(e) => setSubRecipeForm({ ...subRecipeForm, yield: parseFloat(e.target.value) || 0 })}
+                      onKeyDown={(e) => {
+                        if (e.key === '-' || e.key === 'e') {
+                          e.preventDefault();
+                        }
+                      }}
+                      onChange={(e) => {
+                        const val = parseFloat(e.target.value);
+                        if (!isNaN(val) && val >= 0) {
+                          setSubRecipeForm({ ...subRecipeForm, yield: val });
+                        } else if (e.target.value === '') {
+                          setSubRecipeForm({ ...subRecipeForm, yield: 0 });
+                        }
+                      }}
                       className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-sm text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-paymint-green/20 transition-all outline-none shadow-sm hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]"
                     />
                   </div>
@@ -738,13 +751,25 @@ export function RecipesPage() {
                             <div className="flex bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-300 dark:border-white/10 overflow-hidden w-40">
                               <input
                                 type="number"
+                                min="0"
+                                onKeyDown={(e) => {
+                                  if (e.key === '-' || e.key === 'e') {
+                                    e.preventDefault();
+                                  }
+                                }}
                                 value={displayValue === 0 ? '' : displayValue}
                                 onChange={(e) => {
-                                  const val = parseFloat(e.target.value) || 0;
-                                  const baseVal = convertToBase(val, baseUnit, currentUnit);
-                                  const updated = [...subRecipeForm.ingredients];
-                                  updated[index].quantity = baseVal;
-                                  setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
+                                  const val = parseFloat(e.target.value);
+                                  if (!isNaN(val) && val >= 0) {
+                                    const baseVal = convertToBase(val, baseUnit, currentUnit);
+                                    const updated = [...subRecipeForm.ingredients];
+                                    updated[index].quantity = baseVal;
+                                    setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
+                                  } else if (e.target.value === '') {
+                                    const updated = [...subRecipeForm.ingredients];
+                                    updated[index].quantity = 0;
+                                    setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
+                                  }
                                 }}
                                 className="w-16 flex-1 px-3 py-3.5 bg-transparent text-right font-black text-paymint-green focus:outline-none text-sm"
                                 placeholder="0"
@@ -929,13 +954,25 @@ export function RecipesPage() {
                               <div className="flex bg-white dark:bg-[#1a1a1a] rounded-2xl border border-gray-300 dark:border-white/10 w-48 transition-all hover:border-gray-400 dark:hover:border-white/20 focus-within:border-paymint-green/50 focus-within:ring-2 focus-within:ring-paymint-green/20 relative group/input">
                                 <input
                                   type="number"
+                                  min="0"
+                                  onKeyDown={(e) => {
+                                    if (e.key === '-' || e.key === 'e') {
+                                      e.preventDefault();
+                                    }
+                                  }}
                                   value={displayValue === 0 ? '' : displayValue}
                                   onChange={(e) => {
-                                    const val = parseFloat(e.target.value) || 0;
-                                    const baseVal = convertToBase(val, baseUnit, currentUnit);
-                                    const updated = [...finalRecipeForm.ingredients];
-                                    updated[index].quantity = baseVal;
-                                    setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
+                                    const val = parseFloat(e.target.value);
+                                    if (!isNaN(val) && val >= 0) {
+                                      const baseVal = convertToBase(val, baseUnit, currentUnit);
+                                      const updated = [...finalRecipeForm.ingredients];
+                                      updated[index].quantity = baseVal;
+                                      setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
+                                    } else if (e.target.value === '') {
+                                      const updated = [...finalRecipeForm.ingredients];
+                                      updated[index].quantity = 0;
+                                      setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
+                                    }
                                   }}
                                   className="flex-1 w-full pl-5 pr-3 py-4 bg-transparent text-right font-black text-gray-900 dark:text-white focus:outline-none placeholder-gray-500/30 touch-manipulation settings-no-spin rounded-l-2xl"
                                   placeholder="0"
@@ -1081,7 +1118,26 @@ export function RecipesPage() {
               </div>
               <div className="p-8 space-y-8">
                 <div>
-                  <input type="number" min="1" value={numBatches} onChange={(e) => setNumBatches(parseInt(e.target.value) || 1)} className="w-full bg-transparent text-center text-6xl font-black text-paymint-green focus:outline-none placeholder-gray-300" autoFocus />
+                  <input
+                    type="number"
+                    min="1"
+                    onKeyDown={(e) => {
+                      if (e.key === '-' || e.key === 'e') {
+                        e.preventDefault();
+                      }
+                    }}
+                    value={numBatches}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      if (!isNaN(val) && val >= 1) {
+                        setNumBatches(val);
+                      } else if (e.target.value === '') {
+                        setNumBatches(1);
+                      }
+                    }}
+                    className="w-full bg-transparent text-center text-6xl font-black text-paymint-green focus:outline-none placeholder-gray-300"
+                    autoFocus
+                  />
                   <div className="flex items-center justify-center mt-4 gap-1">
                     <p className="text-xs font-black text-gray-400 tracking-widest">{t('manufacturing.numBatches')}</p>
                   </div>

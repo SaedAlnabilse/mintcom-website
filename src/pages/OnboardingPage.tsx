@@ -880,7 +880,7 @@ export function OnboardingPage() {
                 <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-400 ml-1">
+                      <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">
                         {t('onboarding.step4.firstName')} <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
@@ -895,7 +895,7 @@ export function OnboardingPage() {
                       {form3.formState.errors.firstName && <p className="text-paymint-red text-xs font-sans font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.firstName.message as string}</p>}
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-400 ml-1">
+                      <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">
                         {t('onboarding.step4.lastName')} <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
@@ -1135,7 +1135,7 @@ export function OnboardingPage() {
                   {(!hasSavedCard || !useSavedCard) && (
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-400 ml-1">{t('onboarding.step2.cardNumber')}</label>
+                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('onboarding.step2.cardNumber')}</label>
                         <div className="relative group">
                           <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                           <input
@@ -1155,7 +1155,7 @@ export function OnboardingPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-xs font-bold text-gray-400 ml-1">{t('onboarding.step2.expiry')}</label>
+                          <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('onboarding.step2.expiry')}</label>
                           <input
                             type="text"
                             {...form4.register('expiryDate')}
@@ -1169,7 +1169,7 @@ export function OnboardingPage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-bold text-gray-400 ml-1">{t('onboarding.step2.cvc')}</label>
+                          <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('onboarding.step2.cvc')}</label>
                           <input
                             type="text"
                             {...form4.register('cvc')}
@@ -1185,7 +1185,7 @@ export function OnboardingPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-400 ml-1">{t('onboarding.step2.cardName')}</label>
+                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('onboarding.step2.cardName')}</label>
                         <input
                           type="text"
                           {...form4.register('cardName')}

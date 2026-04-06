@@ -119,7 +119,7 @@ export function SelectEstablishmentPage() {
             <h1 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
               {t('onboarding.selectLocation', { defaultValue: 'Select Location' })}
             </h1>
-            <p className="text-sm sm:text-base font-sans font-bold text-gray-500 dark:text-gray-400 mt-2">
+            <p className="text-sm sm:text-base font-sans text-gray-500 dark:text-gray-400 mt-2">
               {t('establishments.chooseLocationWorkflow', { defaultValue: 'Choose a location to continue your workflow' })}
             </p>
           </motion.div>

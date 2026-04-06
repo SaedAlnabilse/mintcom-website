@@ -288,23 +288,23 @@ export function DiscountsPage() {
 
       {/* Summary Stats */}
       {!isLoading && filteredDiscounts.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="group relative bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-4 sm:p-5 flex items-center justify-between transition-all duration-300 overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
-              <p className="dashboard-card-label">{t('common.all')}</p>
-              <p className="dashboard-card-value text-3xl mt-1">{stats.total.toLocaleString(t('common.locale'))}</p>
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('common.all')}</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mt-1">{stats.total.toLocaleString(t('common.locale'))}</p>
             </div>
             <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center relative z-10 transition-transform">
               <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
 
-          <div className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all overflow-hidden">
+          <div className="group relative bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-4 sm:p-5 flex items-center justify-between transition-all duration-300 overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
-              <p className="dashboard-card-label">{t('discounts.form.managerOnly')}</p>
-              <p className="dashboard-card-value text-3xl text-amber-600 dark:text-yellow-400 mt-1">{stats.adminOnly.toLocaleString(t('common.locale'))}</p>
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('discounts.form.managerOnly')}</p>
+              <p className="text-2xl font-bold text-amber-600 dark:text-yellow-400 tracking-tight mt-1">{stats.adminOnly.toLocaleString(t('common.locale'))}</p>
             </div>
             <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center relative z-10 transition-transform">
               <ShieldAlert className="w-6 h-6 text-amber-600 dark:text-yellow-400" />

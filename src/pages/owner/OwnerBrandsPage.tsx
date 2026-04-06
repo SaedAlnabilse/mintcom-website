@@ -518,16 +518,16 @@ export function OwnerBrandsPage() {
                 ].map((stat, i) => (
                     <div
                         key={i}
-                        className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
+                        className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden"
                     >
                         <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
                         <div className="relative z-10 flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
-                                <stat.icon size={24} />
+                            <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
+                                <stat.icon size={20} />
                             </div>
                             <div>
-                                <p className="dashboard-card-label">{stat.label}</p>
-                                <p className="dashboard-card-value">{stat.value}</p>
+                                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{stat.value}</p>
                             </div>
                         </div>
                     </div>

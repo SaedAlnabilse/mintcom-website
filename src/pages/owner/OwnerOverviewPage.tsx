@@ -291,28 +291,28 @@ export function OwnerOverviewPage() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
+                        className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden"
                     >
                         <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
                         <div className="relative z-10">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
-                                    <stat.icon size={24} />
+                            <div className="flex items-center justify-between mb-2">
+                                <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
+                                    <stat.icon size={20} />
                                 </div>
                                 {stat.change !== undefined && !stat.hideChange && (
-                                    <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
+                                    <div className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold ${stat.change >= 0
                                         ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
                                         : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
                                         }`}>
-                                        {stat.change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                                        {stat.change >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                                         {stat.change >= 0 ? '+' : ''}{stat.change}%
                                     </div>
                                 )}
                             </div>
-                            <p className="dashboard-card-label mb-1">{stat.label}</p>
-                            <p className="dashboard-card-value">{stat.value}</p>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight truncate">{stat.value}</p>
                             {stat.sub && (
-                                <p className="dashboard-card-meta mt-1">{stat.sub}</p>
+                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize truncate">{stat.sub}</p>
                             )}
                         </div>
                     </motion.div>

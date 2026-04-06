@@ -60,6 +60,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
   }, [initialData, isOpen, t]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const scrollRef = useRef<HTMLDivElement>(null);
   const errorBannerRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -82,10 +83,15 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      // Scroll to error
+      // Scroll to the first field that has an error
       setTimeout(() => {
-        errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
+        const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red, .ring-paymint-red\\/20');
+        if (firstErrorField) {
+          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 50);
       return;
     }
 
@@ -180,10 +186,19 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
               <div className="relative group">
                 <input
                   type="number"
+                  min="0"
+                  onKeyDown={(e) => {
+                    if (e.key === '-' || e.key === 'e') {
+                      e.preventDefault();
+                    }
+                  }}
                   value={pointsRequired}
                   onChange={(e) => {
-                    setPointsRequired(e.target.value);
-                    if (errors.pointsRequired) setErrors({ ...errors, pointsRequired: '' });
+                    const val = e.target.value;
+                    if (val === '' || parseInt(val) >= 0) {
+                      setPointsRequired(val);
+                      if (errors.pointsRequired) setErrors({ ...errors, pointsRequired: '' });
+                    }
                   }}
                   className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
                   placeholder={t('rewards.form.pointsCostPlaceholder')}
@@ -203,10 +218,26 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                   <div className="relative group">
                     <input
                       type="number"
+                      min="0"
+                      max="100"
+                      onKeyDown={(e) => {
+                        if (e.key === '-' || e.key === 'e') {
+                          e.preventDefault();
+                        }
+                      }}
                       value={discountPercentage}
                       onChange={(e) => {
-                        setDiscountPercentage(e.target.value);
-                        if (errors.discountPercentage) setErrors({ ...errors, discountPercentage: '' });
+                        const val = e.target.value;
+                        if (val === '') {
+                          setDiscountPercentage('');
+                          if (errors.discountPercentage) setErrors({ ...errors, discountPercentage: '' });
+                          return;
+                        }
+                        const num = parseFloat(val);
+                        if (num >= 0 && num <= 100) {
+                          setDiscountPercentage(val);
+                          if (errors.discountPercentage) setErrors({ ...errors, discountPercentage: '' });
+                        }
                       }}
                       className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
                       placeholder={t('common.zero')}

@@ -176,6 +176,8 @@ export interface Shift {
 }
 
 export interface ItemReportBreakdown {
+  id?: string;
+  categoryId?: string;
   itemName?: string;
   name?: string;
   quantity: number;
