@@ -101,7 +101,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-              {paginatedShifts.map((shift: any, idx: number) => (
+              {paginatedShifts.map((shift: any) => (
                 <motion.tr
                   key={shift.id}
                   className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"

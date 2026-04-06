@@ -33,7 +33,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
     if (node !== null) {
       setTooltipHeight(node.getBoundingClientRect().height);
     }
-  }, [currentStepIndex]);
+  }, []);
 
   // Function to update the target element's position
   const updateTargetPosition = useCallback(() => {

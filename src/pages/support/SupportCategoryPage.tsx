@@ -361,7 +361,7 @@ export const SupportCategoryPage = () => {
             <h1 className="text-3xl font-black mb-4">{t('support.categories.notFound')}</h1>
             <p className="text-gray-500 mb-8">{t('support.categories.notFoundDesc')}</p>
             <Link to="/support" className="text-paymint-green font-bold hover:underline">
-              Ã¢â€ Â {t('support.articles.backToHelp')}
+              ← {t('support.articles.backToHelp')}
             </Link>
           </div>
         </main>

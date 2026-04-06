@@ -21,7 +21,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api, { API_BASE_URL } from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
-import { QuickInfo } from '../../components/QuickInfo';
 import { useAuth } from '../../context/AuthContext';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 

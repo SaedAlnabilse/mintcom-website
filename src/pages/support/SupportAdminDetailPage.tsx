@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -102,7 +102,7 @@ export const SupportAdminDetailPage = () => {
     const isSupportTeam = account?.email && SUPPORT_EMAILS.includes(account.email);
 
     // Fetch ticket data
-    const fetchTicket = async () => {
+    const fetchTicket = useCallback(async () => {
         if (!ticketId) return;
         try {
             const res = await api.get(`/api/support/admin/tickets/${ticketId}`);
@@ -112,13 +112,13 @@ export const SupportAdminDetailPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [ticketId]);
 
     useEffect(() => {
         if (isAuthenticated && isSupportTeam) {
             fetchTicket();
         }
-    }, [isAuthenticated, isSupportTeam, ticketId]);
+    }, [isAuthenticated, isSupportTeam, fetchTicket]);
 
     // Auto-scroll to bottom
     useEffect(() => {

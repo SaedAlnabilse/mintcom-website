@@ -31,6 +31,7 @@ export function PortalDropdown({
         pointerEvents: 'none',
         position: 'fixed'
     });
+    const [shouldGoUp, setShouldGoUp] = useState(false);
 
     const updatePosition = useCallback(() => {
         if (!triggerRef.current) return;
@@ -39,7 +40,8 @@ export function PortalDropdown({
         const spaceBelow = window.innerHeight - rect.bottom;
         const dropdownHeight = 240; // Approximate max height
 
-        const shouldGoUp = spaceBelow < dropdownHeight && rect.top > spaceBelow;
+        const up = spaceBelow < dropdownHeight && rect.top > spaceBelow;
+        setShouldGoUp(up);
 
         const newStyle: React.CSSProperties = {
             position: 'fixed',
@@ -54,7 +56,7 @@ export function PortalDropdown({
             newStyle.right = window.innerWidth - rect.right;
         }
 
-        if (shouldGoUp) {
+        if (up) {
             newStyle.bottom = window.innerHeight - rect.top + offset;
             newStyle.top = 'auto';
         } else {
@@ -95,10 +97,6 @@ export function PortalDropdown({
             window.removeEventListener('resize', updatePosition);
         };
     }, [isOpen, onClose, updatePosition, triggerRef]);
-
-    // Helper to determine animation direction
-    const spaceBelowTrigger = triggerRef.current ? window.innerHeight - triggerRef.current.getBoundingClientRect().bottom : 0;
-    const shouldGoUp = spaceBelowTrigger < 240 && triggerRef.current ? triggerRef.current.getBoundingClientRect().top > spaceBelowTrigger : false;
 
     const dropdownContent = (
         <AnimatePresence>

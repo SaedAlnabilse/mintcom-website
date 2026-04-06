@@ -159,7 +159,7 @@ export function BrandLocationsPage() {
             hasLoadedOnceRef.current = false;
             fetchLocations();
         }
-    }, [brandId]);
+    }, [brandId, fetchLocations]);
 
     useEffect(() => {
         if (brandId && hasLoadedOnceRef.current) {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -24,288 +24,295 @@ export const ArticlePage = () => {
   const [helpful, setHelpful] = useState<'yes' | 'no' | null>(null);
 
   // All articles data
-  const allArticles: Record<string, {
-    id: string;
-    title: string;
-    category: string;
-    categoryId: string;
-    readTime: string;
-    views: string;
-    lastUpdated: string;
-    content: string[];
-    relatedArticles: string[];
-  }> = {
-    'gs-1': {
-      id: 'gs-1',
-      title: t('support.popularArticles.account'),
-      category: t('support.categories.gettingStarted'),
-      categoryId: 'getting-started',
-      readTime: '5 min',
-      views: '8.2k',
-      lastUpdated: 'January 15, 2025',
-      content: [
-        `## ${t('support.articles.gs1.h1')}`,
-        t('support.articles.gs1.p1'),
-        `### ${t('support.articles.gs1.h2')}`,
-        t('support.articles.gs1.p2'),
-        `### ${t('support.articles.gs1.h3')}`,
-        t('support.articles.gs1.p3'),
-        `### ${t('support.articles.gs1.h4')}`,
-        t('support.articles.gs1.p4'),
-        `- **${t('support.articles.gs1.li1_label')}**: ${t('support.articles.gs1.li1_desc')}`,
-        `- **${t('support.articles.gs1.li2_label')}**: ${t('support.articles.gs1.li2_desc')}`,
-        `- **${t('support.articles.gs1.li3_label')}**: ${t('support.articles.gs1.li3_desc')}`,
-        `- **${t('support.articles.gs1.li4_label')}**: ${t('support.articles.gs1.li4_desc')}`,
-        `### ${t('support.articles.gs1.h5')}`,
-        t('support.articles.gs1.p5'),
-        `### ${t('support.articles.gs1.h6')}`,
-        t('support.articles.gs1.p6'),
-        `### ${t('support.articles.gs1.h7')}`,
-        t('support.articles.gs1.p7')
-      ],
-      relatedArticles: ['gs-2', 'gs-3', 'gs-4']
-    },
-    'gs-2': {
-      id: 'gs-2',
-      title: t('support.popularArticles.establishment'),
-      category: t('support.categories.gettingStarted'),
-      categoryId: 'getting-started',
-      readTime: '8 min',
-      views: '6.5k',
-      lastUpdated: 'January 20, 2025',
-      content: [
-        `## ${t('support.articles.gs2.h1')}`,
-        t('support.articles.gs2.p1'),
-        `### ${t('support.articles.gs2.h2')}`,
-        t('support.articles.gs2.p2'),
-        `- **${t('support.articles.gs2.li1_label')}**: ${t('support.articles.gs2.li1_desc')}`,
-        `- **${t('support.articles.gs2.li2_label')}**: ${t('support.articles.gs2.li2_desc')}`,
-        `- **${t('support.articles.gs2.li3_label')}**: ${t('support.articles.gs2.li3_desc')}`,
-        `- **${t('support.articles.gs2.li4_label')}**: ${t('support.articles.gs2.li4_desc')}`,
-        `### ${t('support.articles.gs2.h3')}`,
-        t('support.articles.gs2.p3'),
-        `- ${t('support.articles.gs2.li5')}`,
-        `- ${t('support.articles.gs2.li6')}`,
-        `- ${t('support.articles.gs2.li7')}`,
-        `### ${t('support.articles.gs2.h4')}`,
-        t('support.articles.gs2.p4'),
-        `- **${t('support.articles.gs2.li8_label')}**: ${t('support.articles.gs2.li8_desc')}`,
-        `- **${t('support.articles.gs2.li9_label')}**: ${t('support.articles.gs2.li9_desc')}`,
-        `- **${t('support.articles.gs2.li10_label')}**: ${t('support.articles.gs2.li10_desc')}`,
-        `### ${t('support.articles.gs2.h5')}`,
-        t('support.articles.gs2.p5'),
-        `- ${t('support.articles.gs2.li11')}`,
-        `- ${t('support.articles.gs2.li12')}`,
-        `- ${t('support.articles.gs2.li13')}`,
-        `- ${t('support.articles.gs2.li14')}`,
-        `### ${t('support.articles.gs2.h6')}`,
-        t('support.articles.gs2.p6'),
-        `- ${t('support.articles.gs2.li15')}`,
-        `- ${t('support.articles.gs2.li16')}`,
-        `- ${t('support.articles.gs2.li17')}`,
-        `- ${t('support.articles.gs2.li18')}`
-      ],
-      relatedArticles: ['gs-1', 'gs-5', 'ft-8']
-    },
-    'tc-1': {
-      id: 'tc-1',
-      title: t('support.popularArticles.printer'),
-      category: t('support.categories.technical'),
-      categoryId: 'technical',
-      readTime: '8 min',
-      views: '5.6k',
-      lastUpdated: 'February 1, 2025',
-      content: [
-        `## ${t('support.articles.tc1.h1')}`,
-        t('support.articles.tc1.p1'),
-        `### ${t('support.articles.tc1.h2')}`,
-        t('support.articles.tc1.p2'),
-        `- ${t('support.articles.tc1.li1')}`,
-        `- ${t('support.articles.tc1.li2')}`,
-        `- ${t('support.articles.tc1.li3')}`,
-        `- ${t('support.articles.tc1.li4')}`,
-        `### ${t('support.articles.tc1.h3')}`,
-        t('support.articles.tc1.p3'),
-        `- ${t('support.articles.tc1.li5')}`,
-        `- ${t('support.articles.tc1.li6')}`,
-        `- ${t('support.articles.tc1.li7')}`,
-        `### ${t('support.articles.tc1.h4')}`,
-        `**${t('support.articles.tc1.step1_label')}**`,
-        t('support.articles.tc1.step1_desc'),
-        `**${t('support.articles.tc1.step2_label')}**`,
-        t('support.articles.tc1.step2_desc'),
-        `**${t('support.articles.tc1.step3_label')}**`,
-        t('support.articles.tc1.step3_desc'),
-        `**${t('support.articles.tc1.step4_label')}**`,
-        t('support.articles.tc1.step4_desc'),
-        `**${t('support.articles.tc1.step5_label')}**`,
-        t('support.articles.tc1.step5_desc'),
-        `### ${t('support.articles.tc1.h5')}`,
-        `**${t('support.articles.tc1.q1')}**`,
-        `- ${t('support.articles.tc1.a1_1')}`,
-        `- ${t('support.articles.tc1.a1_2')}`,
-        `- ${t('support.articles.tc1.a1_3')}`,
-        `**${t('support.articles.tc1.q2')}**`,
-        `- ${t('support.articles.tc1.a2_1')}`,
-        `- ${t('support.articles.tc1.a2_2')}`,
-        `**${t('support.articles.tc1.q3')}**`,
-        `- ${t('support.articles.tc1.a3_1')}`,
-        `- ${t('support.articles.tc1.a3_2')}`,
-        `- ${t('support.articles.tc1.a3_3')}`
-      ],
-      relatedArticles: ['tc-5', 'tc-6', 'gs-5']
-    },
-    'ft-1': {
-      id: 'ft-1',
-      title: t('support.popularArticles.reports'),
-      category: t('support.categories.features'),
-      categoryId: 'features',
-      readTime: '12 min',
-      views: '6.2k',
-      lastUpdated: 'January 28, 2025',
-      content: [
-        `## ${t('support.articles.ft1.h1')}`,
-        t('support.articles.ft1.p1'),
-        `### ${t('support.articles.ft1.h2')}`,
-        t('support.articles.ft1.p2'),
-        `### ${t('support.articles.ft1.h3')}`,
-        t('support.articles.ft1.p3'),
-        `- **${t('support.articles.ft1.li1_label')}**: ${t('support.articles.ft1.li1_desc')}`,
-        `- **${t('support.articles.ft1.li2_label')}**: ${t('support.articles.ft1.li2_desc')}`,
-        `- **${t('support.articles.ft1.li3_label')}**: ${t('support.articles.ft1.li3_desc')}`,
-        `- **${t('support.articles.ft1.li4_label')}**: ${t('support.articles.ft1.li4_desc')}`,
-        `### ${t('support.articles.ft1.h4')}`,
-        t('support.articles.ft1.p4'),
-        `- ${t('support.articles.ft1.li5')}`,
-        `- ${t('support.articles.ft1.li6')}`,
-        `- ${t('support.articles.ft1.li7')}`,
-        `- ${t('support.articles.ft1.li8')}`,
-        `### ${t('support.articles.ft1.h5')}`,
-        `**${t('support.articles.ft1.type1_label')}**`,
-        t('support.articles.ft1.type1_desc'),
-        `**${t('support.articles.ft1.type2_label')}**`,
-        t('support.articles.ft1.type2_desc'),
-        `**${t('support.articles.ft1.type3_label')}**`,
-        t('support.articles.ft1.type3_desc'),
-        `**${t('support.articles.ft1.type4_label')}**`,
-        t('support.articles.ft1.type4_desc'),
-        `**${t('support.articles.ft1.type5_label')}**`,
-        t('support.articles.ft1.type5_desc'),
-        `**${t('support.articles.ft1.type6_label')}**`,
-        t('support.articles.ft1.type6_desc'),
-        `### ${t('support.articles.ft1.h6')}`,
-        t('support.articles.ft1.p5'),
-        `- ${t('support.articles.ft1.li9')}`,
-        `- ${t('support.articles.ft1.li10')}`,
-        `- ${t('support.articles.ft1.li11')}`,
-        t('support.articles.ft1.p6'),
-        `### ${t('support.articles.ft1.h7')}`,
-        `- ${t('support.articles.ft1.li12')}`,
-        `- ${t('support.articles.ft1.li13')}`,
-        `- ${t('support.articles.ft1.li14')}`,
-        `- ${t('support.articles.ft1.li15')}`
-      ],
-      relatedArticles: ['ft-10', 'ft-4', 'ft-5']
-    },
-    'bl-2': {
-      id: 'bl-2',
-      title: t('support.popularArticles.payment'),
-      category: t('support.categories.billing'),
-      categoryId: 'billing',
-      readTime: '3 min',
-      views: '3.8k',
-      lastUpdated: 'February 5, 2025',
-      content: [
-        `## ${t('support.articles.bl2.h1')}`,
-        t('support.articles.bl2.p1'),
-        `### ${t('support.articles.bl2.h2')}`,
-        `1. ${t('support.articles.bl2.li1')}`,
-        `2. ${t('support.articles.bl2.li2')}`,
-        `3. ${t('support.articles.bl2.li3')}`,
-        `### ${t('support.articles.bl2.h3')}`,
-        `1. ${t('support.articles.bl2.li4')}`,
-        `2. ${t('support.articles.bl2.li5')}`,
-        `- ${t('support.articles.bl2.li6')}`,
-        `- ${t('support.articles.bl2.li7')}`,
-        `- ${t('support.articles.bl2.li8')}`,
-        `- ${t('support.articles.bl2.li9')}`,
-        `3. ${t('support.articles.bl2.li10')}`,
-        `### ${t('support.articles.bl2.h4')}`,
-        t('support.articles.bl2.p2'),
-        `1. ${t('support.articles.bl2.li11')}`,
-        `2. ${t('support.articles.bl2.li12')}`,
-        `3. ${t('support.articles.bl2.li13')}`,
-        `### ${t('support.articles.bl2.h5')}`,
-        `1. ${t('support.articles.bl2.li14')}`,
-        `2. ${t('support.articles.bl2.li15')}`,
-        `3. ${t('support.articles.bl2.li16')}`,
-        `**${t('support.articles.bl2.note_label')}**: ${t('support.articles.bl2.note_desc')}`,
-        `### ${t('support.articles.bl2.h6')}`,
-        t('support.articles.bl2.p3'),
-        `1. ${t('support.articles.bl2.li17')}`,
-        `2. ${t('support.articles.bl2.li18')}`,
-        `3. ${t('support.articles.bl2.li19')}`,
-        `4. ${t('support.articles.bl2.li20')}`,
-        `5. ${t('support.articles.bl2.li21')}`
-      ],
-      relatedArticles: ['bl-1', 'bl-3', 'bl-7']
-    }
-  };
-
-  // Add more basic article stubs for all the article IDs we reference
-  const articleStubs = [
-    'gs-3', 'gs-4', 'gs-5', 'gs-6', 'gs-7', 'gs-8',
-    'bl-1', 'bl-3', 'bl-4', 'bl-5', 'bl-6', 'bl-7', 'bl-8',
-    'tc-2', 'tc-3', 'tc-4', 'tc-5', 'tc-6', 'tc-7', 'tc-8', 'tc-9', 'tc-10',
-    'ft-2', 'ft-3', 'ft-4', 'ft-5', 'ft-6', 'ft-7', 'ft-8', 'ft-9', 'ft-10'
-  ];
-
-  // Generate stub articles for any not fully defined
-  articleStubs.forEach(id => {
-    if (!allArticles[id]) {
-      const prefix = id.split('-')[0];
-      const categoryMap: Record<string, { name: string; id: string }> = {
-        'gs': { name: t('support.categories.gettingStarted'), id: 'getting-started' },
-        'bl': { name: t('support.categories.billing'), id: 'billing' },
-        'tc': { name: t('support.categories.technical'), id: 'technical' },
-        'ft': { name: t('support.categories.features'), id: 'features' }
-      };
-      const cat = categoryMap[prefix];
-      const articleKey = id.replace('-', '');
-      const translatedTitle = t(`support.articles.${articleKey}`, { defaultValue: '' });
-      const translatedExcerpt = t(`support.articles.${articleKey}_excerpt`, { defaultValue: '' });
-      
-      const realTitle = translatedTitle || `${t('support.articles.stubTitle')} ${id}`;
-      
-      allArticles[id] = {
-        id,
-        title: realTitle,
-        category: cat.name,
-        categoryId: cat.id,
-        readTime: '4 min',
-        views: `${(Math.random() * 5 + 1).toFixed(1)}k`,
-        lastUpdated: 'February 2025',
+  const allArticles = useMemo(() => {
+    const articles: Record<string, {
+      id: string;
+      title: string;
+      category: string;
+      categoryId: string;
+      readTime: string;
+      views: string;
+      lastUpdated: string;
+      content: string[];
+      relatedArticles: string[];
+    }> = {
+      'gs-1': {
+        id: 'gs-1',
+        title: t('support.popularArticles.account'),
+        category: t('support.categories.gettingStarted'),
+        categoryId: 'getting-started',
+        readTime: '5 min',
+        views: '8.2k',
+        lastUpdated: 'January 15, 2025',
         content: [
-          `## ${t('support.genericArticle.overview')}`,
-          translatedExcerpt || t('support.genericArticle.p1'),
-          t('support.genericArticle.p2'),
-          `### ${t('support.genericArticle.stepsTitle')}`,
-          t('support.genericArticle.stepsDesc'),
-          `- **${t('support.genericArticle.step1Label')}**: ${t('support.genericArticle.step1Desc')}`,
-          `- **${t('support.genericArticle.step2Label')}**: ${t('support.genericArticle.step2Desc')}`,
-          `- **${t('support.genericArticle.step3Label')}**: ${t('support.genericArticle.step3Desc')}`,
-          `### ${t('support.genericArticle.bestPracticesTitle')}`,
-          t('support.genericArticle.bestPracticesDesc'),
-          `### ${t('support.genericArticle.faqTitle')}`,
-          `**${t('support.genericArticle.q1')}**`,
-          t('support.genericArticle.a1'),
-          `**${t('support.genericArticle.q2')}**`,
-          t('support.genericArticle.a2')
+          `## ${t('support.articles.gs1.h1')}`,
+          t('support.articles.gs1.p1'),
+          `### ${t('support.articles.gs1.h2')}`,
+          t('support.articles.gs1.p2'),
+          `### ${t('support.articles.gs1.h3')}`,
+          t('support.articles.gs1.p3'),
+          `### ${t('support.articles.gs1.h4')}`,
+          t('support.articles.gs1.p4'),
+          `- **${t('support.articles.gs1.li1_label')}**: ${t('support.articles.gs1.li1_desc')}`,
+          `- **${t('support.articles.gs1.li2_label')}**: ${t('support.articles.gs1.li2_desc')}`,
+          `- **${t('support.articles.gs1.li3_label')}**: ${t('support.articles.gs1.li3_desc')}`,
+          `- **${t('support.articles.gs1.li4_label')}**: ${t('support.articles.gs1.li4_desc')}`,
+          `### ${t('support.articles.gs1.h5')}`,
+          t('support.articles.gs1.p5'),
+          `### ${t('support.articles.gs1.h6')}`,
+          t('support.articles.gs1.p6'),
+          `### ${t('support.articles.gs1.h7')}`,
+          t('support.articles.gs1.p7')
         ],
-        relatedArticles: []
-      };
-    }
-  });
+        relatedArticles: ['gs-2', 'gs-3', 'gs-4']
+      },
+      'gs-2': {
+        id: 'gs-2',
+        title: t('support.popularArticles.establishment'),
+        category: t('support.categories.gettingStarted'),
+        categoryId: 'getting-started',
+        readTime: '8 min',
+        views: '6.5k',
+        lastUpdated: 'January 20, 2025',
+        content: [
+          `## ${t('support.articles.gs2.h1')}`,
+          t('support.articles.gs2.p1'),
+          `### ${t('support.articles.gs2.h2')}`,
+          t('support.articles.gs2.p2'),
+          `- **${t('support.articles.gs2.li1_label')}**: ${t('support.articles.gs2.li1_desc')}`,
+          `- **${t('support.articles.gs2.li2_label')}**: ${t('support.articles.gs2.li2_desc')}`,
+          `- **${t('support.articles.gs2.li3_label')}**: ${t('support.articles.gs2.li3_desc')}`,
+          `- **${t('support.articles.gs2.li4_label')}**: ${t('support.articles.gs2.li4_desc')}`,
+          `### ${t('support.articles.gs2.h3')}`,
+          t('support.articles.gs2.p3'),
+          `- ${t('support.articles.gs2.li5')}`,
+          `- ${t('support.articles.gs2.li6')}`,
+          `- ${t('support.articles.gs2.li7')}`,
+          `### ${t('support.articles.gs2.h4')}`,
+          t('support.articles.gs2.p4'),
+          `- **${t('support.articles.gs2.li8_label')}**: ${t('support.articles.gs2.li8_desc')}`,
+          `- **${t('support.articles.gs2.li9_label')}**: ${t('support.articles.gs2.li9_desc')}`,
+          `- **${t('support.articles.gs2.li10_label')}**: ${t('support.articles.gs2.li10_desc')}`,
+          `### ${t('support.articles.gs2.h5')}`,
+          t('support.articles.gs2.p5'),
+          `- ${t('support.articles.gs2.li11')}`,
+          `- ${t('support.articles.gs2.li12')}`,
+          `- ${t('support.articles.gs2.li13')}`,
+          `- ${t('support.articles.gs2.li14')}`,
+          `### ${t('support.articles.gs2.h6')}`,
+          t('support.articles.gs2.p6'),
+          `- ${t('support.articles.gs2.li15')}`,
+          `- ${t('support.articles.gs2.li16')}`,
+          `- ${t('support.articles.gs2.li17')}`,
+          `- ${t('support.articles.gs2.li18')}`
+        ],
+        relatedArticles: ['gs-1', 'gs-5', 'ft-8']
+      },
+      'tc-1': {
+        id: 'tc-1',
+        title: t('support.popularArticles.printer'),
+        category: t('support.categories.technical'),
+        categoryId: 'technical',
+        readTime: '8 min',
+        views: '5.6k',
+        lastUpdated: 'February 1, 2025',
+        content: [
+          `## ${t('support.articles.tc1.h1')}`,
+          t('support.articles.tc1.p1'),
+          `### ${t('support.articles.tc1.h2')}`,
+          t('support.articles.tc1.p2'),
+          `- ${t('support.articles.tc1.li1')}`,
+          `- ${t('support.articles.tc1.li2')}`,
+          `- ${t('support.articles.tc1.li3')}`,
+          `- ${t('support.articles.tc1.li4')}`,
+          `### ${t('support.articles.tc1.h3')}`,
+          t('support.articles.tc1.p3'),
+          `- ${t('support.articles.tc1.li5')}`,
+          `- ${t('support.articles.tc1.li6')}`,
+          `- ${t('support.articles.tc1.li7')}`,
+          `### ${t('support.articles.tc1.h4')}`,
+          `**${t('support.articles.tc1.step1_label')}**`,
+          t('support.articles.tc1.step1_desc'),
+          `**${t('support.articles.tc1.step2_label')}**`,
+          t('support.articles.tc1.step2_desc'),
+          `**${t('support.articles.tc1.step3_label')}**`,
+          t('support.articles.tc1.step3_desc'),
+          `**${t('support.articles.tc1.step4_label')}**`,
+          t('support.articles.tc1.step4_desc'),
+          `**${t('support.articles.tc1.step5_label')}**`,
+          t('support.articles.tc1.step5_desc'),
+          `### ${t('support.articles.tc1.h5')}`,
+          `**${t('support.articles.tc1.q1')}**`,
+          `- ${t('support.articles.tc1.a1_1')}`,
+          `- ${t('support.articles.tc1.a1_2')}`,
+          `- ${t('support.articles.tc1.a1_3')}`,
+          `**${t('support.articles.tc1.q2')}**`,
+          `- ${t('support.articles.tc1.a2_1')}`,
+          `- ${t('support.articles.tc1.a2_2')}`,
+          `**${t('support.articles.tc1.q3')}**`,
+          `- ${t('support.articles.tc1.a3_1')}`,
+          `- ${t('support.articles.tc1.a3_2')}`,
+          `- ${t('support.articles.tc1.a3_3')}`
+        ],
+        relatedArticles: ['tc-5', 'tc-6', 'gs-5']
+      },
+      'ft-1': {
+        id: 'ft-1',
+        title: t('support.popularArticles.reports'),
+        category: t('support.categories.features'),
+        categoryId: 'features',
+        readTime: '12 min',
+        views: '6.2k',
+        lastUpdated: 'January 28, 2025',
+        content: [
+          `## ${t('support.articles.ft1.h1')}`,
+          t('support.articles.ft1.p1'),
+          `### ${t('support.articles.ft1.h2')}`,
+          t('support.articles.ft1.p2'),
+          `### ${t('support.articles.ft1.h3')}`,
+          t('support.articles.ft1.p3'),
+          `- **${t('support.articles.ft1.li1_label')}**: ${t('support.articles.ft1.li1_desc')}`,
+          `- **${t('support.articles.ft1.li2_label')}**: ${t('support.articles.ft1.li2_desc')}`,
+          `- **${t('support.articles.ft1.li3_label')}**: ${t('support.articles.ft1.li3_desc')}`,
+          `- **${t('support.articles.ft1.li4_label')}**: ${t('support.articles.ft1.li4_desc')}`,
+          `### ${t('support.articles.ft1.h4')}`,
+          t('support.articles.ft1.p4'),
+          `- ${t('support.articles.ft1.li5')}`,
+          `- ${t('support.articles.ft1.li6')}`,
+          `- ${t('support.articles.ft1.li7')}`,
+          `- ${t('support.articles.ft1.li8')}`,
+          `### ${t('support.articles.ft1.h5')}`,
+          `**${t('support.articles.ft1.type1_label')}**`,
+          t('support.articles.ft1.type1_desc'),
+          `**${t('support.articles.ft1.type2_label')}**`,
+          t('support.articles.ft1.type2_desc'),
+          `**${t('support.articles.ft1.type3_label')}**`,
+          t('support.articles.ft1.type3_desc'),
+          `**${t('support.articles.ft1.type4_label')}**`,
+          t('support.articles.ft1.type4_desc'),
+          `**${t('support.articles.ft1.type5_label')}**`,
+          t('support.articles.ft1.type5_desc'),
+          `**${t('support.articles.ft1.type6_label')}**`,
+          t('support.articles.ft1.type6_desc'),
+          `### ${t('support.articles.ft1.h6')}`,
+          t('support.articles.ft1.p5'),
+          `- ${t('support.articles.ft1.li9')}`,
+          `- ${t('support.articles.ft1.li10')}`,
+          `- ${t('support.articles.ft1.li11')}`,
+          t('support.articles.ft1.p6'),
+          `### ${t('support.articles.ft1.h7')}`,
+          `- ${t('support.articles.ft1.li12')}`,
+          `- ${t('support.articles.ft1.li13')}`,
+          `- ${t('support.articles.ft1.li14')}`,
+          `- ${t('support.articles.ft1.li15')}`
+        ],
+        relatedArticles: ['ft-10', 'ft-4', 'ft-5']
+      },
+      'bl-2': {
+        id: 'bl-2',
+        title: t('support.popularArticles.payment'),
+        category: t('support.categories.billing'),
+        categoryId: 'billing',
+        readTime: '3 min',
+        views: '3.8k',
+        lastUpdated: 'February 5, 2025',
+        content: [
+          `## ${t('support.articles.bl2.h1')}`,
+          t('support.articles.bl2.p1'),
+          `### ${t('support.articles.bl2.h2')}`,
+          `1. ${t('support.articles.bl2.li1')}`,
+          `2. ${t('support.articles.bl2.li2')}`,
+          `3. ${t('support.articles.bl2.li3')}`,
+          `### ${t('support.articles.bl2.h3')}`,
+          `1. ${t('support.articles.bl2.li4')}`,
+          `2. ${t('support.articles.bl2.li5')}`,
+          `- ${t('support.articles.bl2.li6')}`,
+          `- ${t('support.articles.bl2.li7')}`,
+          `- ${t('support.articles.bl2.li8')}`,
+          `- ${t('support.articles.bl2.li9')}`,
+          `3. ${t('support.articles.bl2.li10')}`,
+          `### ${t('support.articles.bl2.h4')}`,
+          t('support.articles.bl2.p2'),
+          `1. ${t('support.articles.bl2.li11')}`,
+          `2. ${t('support.articles.bl2.li12')}`,
+          `3. ${t('support.articles.bl2.li13')}`,
+          `### ${t('support.articles.bl2.h5')}`,
+          `1. ${t('support.articles.bl2.li14')}`,
+          `2. ${t('support.articles.bl2.li15')}`,
+          `3. ${t('support.articles.bl2.li16')}`,
+          `**${t('support.articles.bl2.note_label')}**: ${t('support.articles.bl2.note_desc')}`,
+          `### ${t('support.articles.bl2.h6')}`,
+          t('support.articles.bl2.p3'),
+          `1. ${t('support.articles.bl2.li17')}`,
+          `2. ${t('support.articles.bl2.li18')}`,
+          `3. ${t('support.articles.bl2.li19')}`,
+          `4. ${t('support.articles.bl2.li20')}`,
+          `5. ${t('support.articles.bl2.li21')}`
+        ],
+        relatedArticles: ['bl-1', 'bl-3', 'bl-7']
+      }
+    };
+
+    // Add more basic article stubs for all the article IDs we reference
+    const articleStubs = [
+      'gs-3', 'gs-4', 'gs-5', 'gs-6', 'gs-7', 'gs-8',
+      'bl-1', 'bl-3', 'bl-4', 'bl-5', 'bl-6', 'bl-7', 'bl-8',
+      'tc-2', 'tc-3', 'tc-4', 'tc-5', 'tc-6', 'tc-7', 'tc-8', 'tc-9', 'tc-10',
+      'ft-2', 'ft-3', 'ft-4', 'ft-5', 'ft-6', 'ft-7', 'ft-8', 'ft-9', 'ft-10'
+    ];
+
+    // Generate stub articles for any not fully defined
+    articleStubs.forEach(id => {
+      if (!articles[id]) {
+        const prefix = id.split('-')[0];
+        const categoryMap: Record<string, { name: string; id: string }> = {
+          'gs': { name: t('support.categories.gettingStarted'), id: 'getting-started' },
+          'bl': { name: t('support.categories.billing'), id: 'billing' },
+          'tc': { name: t('support.categories.technical'), id: 'technical' },
+          'ft': { name: t('support.categories.features'), id: 'features' }
+        };
+        const cat = categoryMap[prefix];
+        const articleKey = id.replace('-', '');
+        const translatedTitle = t(`support.articles.${articleKey}`, { defaultValue: '' });
+        const translatedExcerpt = t(`support.articles.${articleKey}_excerpt`, { defaultValue: '' });
+        
+        const realTitle = translatedTitle || `${t('support.articles.stubTitle')} ${id}`;
+        
+        const viewsSeed = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const stableViews = ((viewsSeed % 50) / 10 + 1).toFixed(1);
+        
+        articles[id] = {
+          id,
+          title: realTitle,
+          category: cat.name,
+          categoryId: cat.id,
+          readTime: '4 min',
+          views: `${stableViews}k`,
+          lastUpdated: 'February 2025',
+          content: [
+            `## ${t('support.genericArticle.overview')}`,
+            translatedExcerpt || t('support.genericArticle.p1'),
+            t('support.genericArticle.p2'),
+            `### ${t('support.genericArticle.stepsTitle')}`,
+            t('support.genericArticle.stepsDesc'),
+            `- **${t('support.genericArticle.step1Label')}**: ${t('support.genericArticle.step1Desc')}`,
+            `- **${t('support.genericArticle.step2Label')}**: ${t('support.genericArticle.step2Desc')}`,
+            `- **${t('support.genericArticle.step3Label')}**: ${t('support.genericArticle.step3Desc')}`,
+            `### ${t('support.genericArticle.bestPracticesTitle')}`,
+            t('support.genericArticle.bestPracticesDesc'),
+            `### ${t('support.genericArticle.faqTitle')}`,
+            `**${t('support.genericArticle.q1')}**`,
+            t('support.genericArticle.a1'),
+            `**${t('support.genericArticle.q2')}**`,
+            t('support.genericArticle.a2')
+          ],
+          relatedArticles: []
+        };
+      }
+    });
+
+    return articles;
+  }, [t]);
 
   const article = articleId ? allArticles[articleId] : null;
 

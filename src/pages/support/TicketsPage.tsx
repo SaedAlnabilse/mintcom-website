@@ -163,23 +163,23 @@ export const TicketsPage = () => {
     }
   }, [isAuthenticated]);
 
-  const statusConfig: Record<TicketStatus, { label: string; color: string; bg: string; icon: React.ElementType; dotColor: string }> = {
+  const statusConfig: Record<TicketStatus, { label: string; color: string; bg: string; icon: React.ElementType; dotColor: string }> = useMemo(() => ({
     open: { label: t('support.tickets.status.open'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: Inbox, dotColor: 'bg-blue-500' },
     in_progress: { label: t('support.tickets.status.inProgress'), color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/15', icon: Loader2, dotColor: 'bg-amber-500' },
     resolved: { label: t('support.tickets.status.resolved'), color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-500/15', icon: CheckCircle2, dotColor: 'bg-emerald-500' },
     closed: { label: t('support.tickets.status.closed'), color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-500/15', icon: XCircle, dotColor: 'bg-gray-400' }
-  };
+  }), [t]);
 
-  const priorityConfig: Record<TicketPriority, { label: string; color: string; bg: string; weight: number }> = {
+  const priorityConfig: Record<TicketPriority, { label: string; color: string; bg: string; weight: number }> = useMemo(() => ({
     low: { label: t('support.tickets.priority.low'), color: 'text-gray-600 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-500/15', weight: 1 },
     medium: { label: t('support.tickets.priority.medium'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', weight: 2 },
     high: { label: t('support.tickets.priority.high'), color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-500/15', weight: 3 },
     urgent: { label: t('support.tickets.priority.urgent'), color: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-500/15', weight: 4 }
-  };
+  }), [t]);
 
   // Filtered + sorted tickets
   const filteredTickets = useMemo(() => {
-    let result = tickets.filter((ticket) => {
+    const result = tickets.filter((ticket) => {
       const q = searchQuery.toLowerCase();
       const matchesSearch =
         !q ||
@@ -200,7 +200,7 @@ export const TicketsPage = () => {
     });
 
     return result;
-  }, [tickets, searchQuery, statusFilter, priorityFilter, sortBy]);
+  }, [tickets, searchQuery, statusFilter, priorityFilter, sortBy, priorityConfig]);
 
   // Stats
   const stats = useMemo(

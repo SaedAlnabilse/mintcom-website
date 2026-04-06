@@ -1,4 +1,4 @@
-import { Search, ArrowUpDown, X, LayoutGrid, ShoppingBag, ArrowUpRight, ChevronRight } from 'lucide-react';
+import { Search, ArrowUpDown, X, LayoutGrid, ShoppingBag, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../../../context/CurrencyContext';
