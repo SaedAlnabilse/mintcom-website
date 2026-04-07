@@ -80,7 +80,7 @@ export function OwnerMergePage() {
 
                     <button
                         onClick={() => step === 'configure' ? setStep('select') : navigate('/owner/brands')}
-                        className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white font-black text-xs tracking-widest hover:bg-gray-100 dark:hover:bg-white/5 transition-all self-start xl:self-center shadow-lg"
+                        className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gray-50 dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white font-black text-xs tracking-widest hover:bg-gray-100 dark:hover:bg-white/5 transition-all self-start xl:self-center shadow-lg"
                     >
                         <ArrowLeft size={18} />
                         {t('common.cancel')}
@@ -174,7 +174,7 @@ export function OwnerMergePage() {
                             </div>
 
                             <div className="lg:col-span-1 space-y-6">
-                                <div className="p-8 rounded-[3rem] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 sticky top-8">
+                                <div className="p-8 rounded-[3rem] bg-gray-50 dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 sticky top-8">
                                     <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-6">{t('owner.merge.whyMerge')}</h3>
 
                                     <div className="space-y-6">
@@ -239,7 +239,7 @@ export function OwnerMergePage() {
                                         value={brandName}
                                         onChange={(e) => setBrandName(e.target.value)}
                                         placeholder={t('owner.merge.brandNamePlaceholder')}
-                                        className="w-full pl-16 pr-8 py-6 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-3xl font-black text-lg text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/30 transition-all tracking-tight"
+                                        className="w-full pl-16 pr-8 py-6 bg-gray-50 dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-3xl font-black text-lg text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/30 transition-all tracking-tight"
                                     />
                                 </div>
                             </div>

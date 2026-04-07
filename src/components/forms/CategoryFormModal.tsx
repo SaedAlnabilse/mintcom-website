@@ -123,15 +123,15 @@ export function CategoryFormModal({
           className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/5 shadow-2xl"
         >
           {/* Mobile drag handle */}
-          <div className="sm:hidden flex justify-center pt-3 pb-1">
+          <div className="sm:hidden flex justify-center pt-2 pb-1">
             <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
           </div>
 
           {/* Header */}
-          <div className="flex items-center justify-between p-6 sm:p-8 relative isolate border-b border-gray-200 dark:border-white/10">
+          <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10">
             <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
               <div>
-                <h2 className="text-2xl font-medium text-gray-900 dark:text-white tracking-tight">
+                <h2 className="text-xl font-medium text-gray-900 dark:text-white tracking-tight">
                   {initialData ? t('categories.editCategory') : t('categories.newCategory')}
                 </h2>
               </div>

@@ -162,7 +162,7 @@ export function OwnerOverviewPage() {
 
                 <div className="flex items-center gap-3">
                     {/* Unified Filter Control Deck */}
-                    <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
+                    <div className="bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0">
 
                             {/* Sector 1: Quick Period Dropdown */}
@@ -240,7 +240,7 @@ export function OwnerOverviewPage() {
                 </div>
             </div>
 
-            {/* Kpi Grid */}
+            {/* KPI Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 {[
                     {
@@ -249,7 +249,7 @@ export function OwnerOverviewPage() {
                         change: stats.revenueChange,
                         icon: DollarSign,
                         color: 'text-paymint-green',
-                        bg: 'bg-paymint-green/',
+                        bg: 'bg-paymint-green/10',
                         hideChange: true
                     },
                     {
@@ -291,29 +291,20 @@ export function OwnerOverviewPage() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden"
+                        className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
                     >
                         <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-                        <div className="relative z-10">
-                            <div className="flex items-center justify-between mb-2">
-                                <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
-                                    <stat.icon size={20} />
-                                </div>
-                                {stat.change !== undefined && !stat.hideChange && (
-                                    <div className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold ${stat.change >= 0
-                                        ? 'bg-paymint-green/10 text-paymint-green dark:bg-paymint-green/ dark:text-paymint-green'
-                                        : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
-                                        }`}>
-                                        {stat.change >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                                        {stat.change >= 0 ? '+' : ''}{stat.change}%
-                                    </div>
+                        <div className="relative z-10 flex items-center gap-4">
+                            <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
+                                <stat.icon size={24} />
+                            </div>
+                            <div>
+                                <p className="dashboard-card-label">{stat.label}</p>
+                                <p className="dashboard-card-value text-xl">{stat.value}</p>
+                                {stat.sub && (
+                                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{stat.sub}</p>
                                 )}
                             </div>
-                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight truncate">{stat.value}</p>
-                            {stat.sub && (
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize truncate">{stat.sub}</p>
-                            )}
                         </div>
                     </motion.div>
                 ))}
@@ -367,13 +358,13 @@ export function OwnerOverviewPage() {
                                     <Tooltip
                                         cursor={chartData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                                         contentStyle={{
-                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                            borderColor: '#E5E7EB',
+                                            backgroundColor: '#1E293B',
+                                            borderColor: 'rgba(255,255,255,0.05)',
                                             borderRadius: '12px',
                                             fontSize: '12px',
                                             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                                         }}
-                                        itemStyle={{ color: '#111827' }}
+                                        itemStyle={{ color: '#fff' }}
                                         formatter={(value) => [formatCurrency(value as number), t('owner.overview.revenue')]}
                                     />
                                     {chartData.length === 1 ? (
@@ -466,7 +457,7 @@ export function OwnerOverviewPage() {
                                     className="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all group/btn"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-paymint-green/ text-paymint-green flex items-center justify-center">
+                                        <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center">
                                             <Store size={16} />
                                         </div>
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.overview.manageLocations')}</span>
@@ -481,4 +472,3 @@ export function OwnerOverviewPage() {
         </div>
     );
 }
-

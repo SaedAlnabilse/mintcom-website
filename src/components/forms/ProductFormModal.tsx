@@ -514,15 +514,15 @@ export function ProductFormModal({
             className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-xl rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 shadow-2xl relative"
           >
             {/* Mobile drag handle */}
-            <div className="sm:hidden flex justify-center pt-3 pb-1">
+            <div className="sm:hidden flex justify-center pt-2 pb-1">
               <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-6 sm:px-8 py-6 sm:py-8 relative isolate border-b border-gray-200 dark:border-white/10">
+            <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10">
               <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
                   {initialData?.id ? t('products.editProduct') : t('products.newProduct')}
                 </h2>
               </div>
@@ -659,17 +659,21 @@ export function ProductFormModal({
                           {t('products.form.costLabel')}
                           <QuickInfo text="How much YOU spend on the product." />
                         </label>
-                        <div className="relative group">
-                          <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg shadow-sm">
-                            <span className="text-gray-400 text-xs font-black">{currencySymbol}</span>
+                        <div>
+                          <div className="relative group">
+                            <div className="absolute left-4 inset-y-0 flex items-center pointer-events-none z-10">
+                              <div className="px-2 py-1 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg shadow-sm">
+                                <span className="text-gray-400 text-xs font-black">{currencySymbol}</span>
+                              </div>
+                            </div>
+                            <input
+                              type="text"
+                              value={costPrice}
+                              onChange={handleCostPriceChange}
+                              placeholder={t('common.zero')}
+                              className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50"
+                            />
                           </div>
-                          <input
-                            type="text"
-                            value={costPrice}
-                            onChange={handleCostPriceChange}
-                            placeholder={t('common.zero')}
-                            className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50"
-                          />
                           <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
                         </div>
                       </div>
@@ -681,24 +685,28 @@ export function ProductFormModal({
                         {t('products.form.priceLabel')} <span className="text-paymint-red">*</span>
                         <QuickInfo text="Shown for customers." />
                       </label>
-                      <div className="relative group">
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
-                          <span className="text-paymint-green text-xs font-black">{currencySymbol}</span>
+                      <div>
+                        <div className="relative group">
+                          <div className="absolute left-4 inset-y-0 flex items-center pointer-events-none z-10">
+                            <div className="px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
+                              <span className="text-paymint-green text-xs font-black">{currencySymbol}</span>
+                            </div>
+                          </div>
+                          <input
+                            type="text"
+                            value={price}
+                            onChange={(e) => {
+                              handlePriceChange(e);
+                              if (errors.price) {
+                                const newErrors = { ...errors };
+                                delete newErrors.price;
+                                setErrors(newErrors);
+                              }
+                            }}
+                            placeholder={t('common.zero')}
+                            className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.price ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pl-16 pr-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50`}
+                          />
                         </div>
-                        <input
-                          type="text"
-                          value={price}
-                          onChange={(e) => {
-                            handlePriceChange(e);
-                            if (errors.price) {
-                              const newErrors = { ...errors };
-                              delete newErrors.price;
-                              setErrors(newErrors);
-                            }
-                          }}
-                          placeholder={t('common.zero')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.price ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pl-16 pr-4 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50`}
-                        />
                         <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
                       </div>
                     </div>

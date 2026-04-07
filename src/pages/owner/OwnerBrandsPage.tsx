@@ -518,7 +518,7 @@ export function OwnerBrandsPage() {
                 ].map((stat, i) => (
                     <div
                         key={i}
-                        className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden"
+                        className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden"
                     >
                         <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
                         <div className="relative z-10 flex items-center gap-4">
@@ -791,7 +791,7 @@ export function OwnerBrandsPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-2xl bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-white/10"
+                            className="relative w-full max-w-2xl bg-white dark:bg-[#1E293B] rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-white/10"
                         >
                             {/* Modal Content */}
                             <div className="flex flex-col h-[85vh] sm:h-auto max-h-[90vh]">
@@ -952,7 +952,7 @@ export function OwnerBrandsPage() {
                                                 <div className="space-y-8">
                                                     {employeesForMerging.map((group) => (
                                                         <div key={group.establishmentId} className="space-y-4">
-                                                            <div className="flex items-center justify-between sticky top-0 bg-white dark:bg-[#0F172A] z-10 py-2">
+                                                            <div className="flex items-center justify-between sticky top-0 bg-white dark:bg-[#1E293B] z-10 py-2">
                                                                 <h4 className="dashboard-card-label flex items-center gap-2">
                                                                     <Store size={14} />
                                                                     {group.establishmentName}

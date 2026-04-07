@@ -129,7 +129,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
           className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:w-[90vw] sm:max-w-lg shadow-2xl relative overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh]"
         >
           {/* Mobile drag handle */}
-          <div className="sm:hidden flex justify-center pt-3 pb-1">
+          <div className="sm:hidden flex justify-center pt-2 pb-1">
             <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
           </div>
 
@@ -208,7 +208,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                       if (errors.pointsRequired) setErrors({ ...errors, pointsRequired: '' });
                     }
                   }}
-                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
+                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all group-hover:border-paymint-green/50 shadow-sm`}
                   placeholder={t('rewards.form.pointsCostPlaceholder')}
                 />
                 <div className="absolute right-5 top-1/2 -translate-y-1/2 text-paymint-green">
@@ -235,7 +235,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                           if (errors.discountPercentage) setErrors({ ...errors, discountPercentage: '' });
                         }
                       }}
-                      className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
+                      className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all group-hover:border-paymint-green/50 shadow-sm`}
                       placeholder={t('common.zero')}
                     />
                     <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg group-focus-within:text-paymint-green transition-colors">{t('common.percent')}</div>

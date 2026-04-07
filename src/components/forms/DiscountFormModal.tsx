@@ -112,13 +112,13 @@ export function DiscountFormModal({
           className="bg-white dark:bg-[#1e1e1e] w-full sm:w-[90vw] sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/10 shadow-2xl"
         >
           {/* Mobile drag handle */}
-          <div className="sm:hidden flex justify-center pt-3 pb-1">
+          <div className="sm:hidden flex justify-center pt-2 pb-1">
             <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
           </div>
 
           {/* Header */}
-          <div className="flex items-center justify-between p-4 sm:p-6 pb-2">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+          <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
               {initialData ? t('discounts.editDiscount') : t('discounts.newDiscount')}
             </h2>
             <button
@@ -174,7 +174,7 @@ export function DiscountFormModal({
                       }
                     }}
                     placeholder={t('common.zeroDecimal')}
-                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.percentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.percentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
                     <span className="text-paymint-green text-xs font-black">{t('common.percent')}</span>

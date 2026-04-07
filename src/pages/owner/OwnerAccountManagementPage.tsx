@@ -495,7 +495,7 @@ export function OwnerAccountManagementPage() {
                 className="grid grid-cols-2 md:grid-cols-3 gap-4"
             >
                 {/* Locations Card */}
-                <div className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 sm:p-5 transition-all duration-300 overflow-hidden">
+                <div className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 sm:p-5 transition-all duration-300 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                     <div className="relative z-10">
@@ -514,7 +514,7 @@ export function OwnerAccountManagementPage() {
                 </div>
 
                 {/* Brands Card */}
-                <div className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 sm:p-5 transition-all duration-300 overflow-hidden">
+                <div className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 sm:p-5 transition-all duration-300 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                     <div className="relative z-10">
@@ -533,7 +533,7 @@ export function OwnerAccountManagementPage() {
                 </div>
 
                 {/* Admin Users Card */}
-                <div className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 sm:p-5 transition-all duration-300 overflow-hidden">
+                <div className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 sm:p-5 transition-all duration-300 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                     <div className="relative z-10">

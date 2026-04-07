@@ -816,17 +816,16 @@ export function EmployeeFormModal({
           className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-xl rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/10 shadow-2xl"
         >
           {/* Mobile drag handle */}
-          <div className="sm:hidden flex justify-center pt-3 pb-1">
+          <div className="sm:hidden flex justify-center pt-2 pb-1">
             <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
           </div>
 
           {/* Header */}
-          <div className="flex items-center justify-between p-4 sm:p-8 pb-4 border-b border-gray-200 dark:border-white/10">
+          <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 border-b border-gray-200 dark:border-white/10">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                 {initialData ? t('staff.editEmployee') : t('staff.newEmployee')}
               </h2>
-              
             </div>
             <button
               onClick={onClose}
