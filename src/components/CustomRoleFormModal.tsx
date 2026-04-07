@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronDown, Check, Smartphone, Monitor } from 'lucide-react';
+import { X, ChevronDown, Check } from 'lucide-react';
 import api from '../config/api';
 import { QuickInfo } from './QuickInfo';
 import {

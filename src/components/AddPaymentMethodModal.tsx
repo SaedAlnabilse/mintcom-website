@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CreditCard, Lock, ShieldCheck } from 'lucide-react';
+import { X, CreditCard, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import api from '../config/api';
 import toast from 'react-hot-toast';

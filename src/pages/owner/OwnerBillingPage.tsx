@@ -584,7 +584,6 @@ export function OwnerBillingPage() {
                                                 const fullIndex = billingData?.establishments.findIndex(e => e.id === est.id) ?? 0;
                                                 const price = getEstablishmentPrice(est, fullIndex);
                                                 const isYearly = est.billingCycle === 'yearly';
-                                                const isAdditional = fullIndex > 0;
                                                 return (
                                                     <div className="flex flex-col">
                                                         <div className="flex items-baseline gap-1">
