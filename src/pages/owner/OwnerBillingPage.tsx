@@ -340,7 +340,7 @@ export function OwnerBillingPage() {
                     <div className="text-right hidden sm:block">
                         <p className="dashboard-card-label mb-1">{t('owner.billing.monthlyCost')}</p>
                         <div className="flex items-baseline justify-end gap-1">
-                            <span className="dashboard-card-value">${totalMonthlyCost.toFixed(2)}</span>
+                            <span className="dashboard-card-value text-xl">${totalMonthlyCost.toFixed(2)}</span>
                             <span className="text-xs font-bold text-gray-400">{t('common.monthly')}</span>
                         </div>
                     </div>
@@ -350,7 +350,7 @@ export function OwnerBillingPage() {
                             <div className="text-right hidden sm:block">
                                 <p className="dashboard-card-label mb-1">{t('owner.billing.yearlyCost')}</p>
                                 <div className="flex items-baseline justify-end gap-1">
-                                    <span className="dashboard-card-value text-paymint-green">${totalYearlyCost.toFixed(2)}</span>
+                                    <span className="dashboard-card-value text-xl text-paymint-green">${totalYearlyCost.toFixed(2)}</span>
                                     <span className="text-xs font-bold text-gray-400">{t('common.yearly')}</span>
                                 </div>
                             </div>
@@ -396,7 +396,7 @@ export function OwnerBillingPage() {
                             </div>
                             <div>
                                 <p className="dashboard-card-label mb-0.5">{stat.label}</p>
-                                <p className="dashboard-card-value">{stat.value}</p>
+                                <p className="dashboard-card-value text-xl">{stat.value}</p>
                             </div>
                         </div>
                     </motion.div>

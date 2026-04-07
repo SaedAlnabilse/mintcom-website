@@ -77,11 +77,11 @@ export function Pagination({
     return (
         <div className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm ${className}`}>
             <div className="flex items-center gap-3">
-                <p className="text-base font-bold text-gray-400 tracking-widest flex items-center">
-                    <span className="lowercase font-normal text-sm tracking-normal mr-2">{t('common.page')}</span>
-                    <span className="text-gray-900 dark:text-white font-black">{currentPage.toLocaleString(t('common.locale'))}</span>
-                    <span className="lowercase font-normal text-sm tracking-normal mx-2">{t('common.of')}</span>
-                    <span className="text-gray-900 dark:text-white font-black">{totalPages.toLocaleString(t('common.locale'))}</span>
+                <p className="text-base font-bold text-gray-400 flex items-center">
+                    <span className="lowercase font-normal text-sm mr-1">{t('common.page')}</span>
+                    <span className="text-gray-900 dark:text-white font-bold">{currentPage.toLocaleString(t('common.locale'))}</span>
+                    <span className="lowercase font-normal text-sm mx-1">{t('common.of')}</span>
+                    <span className="text-gray-900 dark:text-white font-bold">{totalPages.toLocaleString(t('common.locale'))}</span>
                 </p>
                 {totalItems !== undefined && (
                     <p className="text-xs font-medium text-gray-400">

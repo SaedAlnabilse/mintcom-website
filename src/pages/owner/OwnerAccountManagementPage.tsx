@@ -507,7 +507,7 @@ export function OwnerAccountManagementPage() {
                             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">
                                 {t('owner.account.stats.locations')}
                             </p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                            <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {establishments?.length || 0}
                             </p>
                         </div>
@@ -526,7 +526,7 @@ export function OwnerAccountManagementPage() {
                             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">
                                 {t('owner.account.stats.brands')}
                             </p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                            <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {brands.length}
                             </p>
                         </div>
@@ -545,7 +545,7 @@ export function OwnerAccountManagementPage() {
                             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">
                                 {t('owner.account.stats.admins')}
                             </p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                            <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {adminUsers.length}
                             </p>
                         </div>

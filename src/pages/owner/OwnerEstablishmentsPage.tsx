@@ -182,7 +182,7 @@ export function OwnerEstablishmentsPage() {
                         </div>
                         <div>
                             <p className="dashboard-card-label">{t('owner.locations.total')}</p>
-                            <p className="dashboard-card-value">{establishments.length}</p>
+                            <p className="dashboard-card-value text-xl">{establishments.length}</p>
                         </div>
                     </div>
                 </div>
@@ -197,7 +197,7 @@ export function OwnerEstablishmentsPage() {
                         </div>
                         <div>
                             <p className="dashboard-card-label">{t('owner.locations.active')}</p>
-                            <p className="dashboard-card-value">
+                            <p className="dashboard-card-value text-xl">
                                 {establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
                             </p>
                         </div>
@@ -214,7 +214,7 @@ export function OwnerEstablishmentsPage() {
                         </div>
                         <div>
                             <p className="dashboard-card-label">{t('owner.locations.trial')}</p>
-                            <p className="dashboard-card-value">
+                            <p className="dashboard-card-value text-xl">
                                 {establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
                             </p>
                         </div>
