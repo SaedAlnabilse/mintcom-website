@@ -4,8 +4,6 @@ import {
   Download,
   CheckCircle2,
   AlertCircle,
-  XCircle,
-  Calendar,
   Zap,
   ShieldAlert,
   Sparkles,
@@ -111,47 +109,6 @@ export function BillingPage() {
     }
   };
 
-  const getStatusBadge = () => {
-    const status = billingInfo?.subscriptionStatus;
-    if (billingInfo?.cancelAtPeriodEnd) {
-      return (
-        <span className="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-500 text-xs font-black tracking-widest border border-amber-500/20 flex items-center gap-2">
-          <Calendar size={12} />
-          {t('owner.billing.cancelsSoon')}
-        </span>
-      );
-    }
-
-    switch (status?.toUpperCase()) {
-      case 'ACTIVE':
-        return (
-          <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20 flex items-center gap-2">
-            <CheckCircle2 size={12} />
-            {t('owner.billing.active')}
-          </span>
-        );
-      case 'TRIAL':
-        return (
-          <span className="px-3 py-1 rounded-lg bg-paymint-green/ text-paymint-green text-xs font-black tracking-widest border border-paymint-green/ flex items-center gap-2">
-            <Zap size={12} />
-            {t('owner.locations.trial')}
-          </span>
-        );
-      case 'CANCELED':
-        return (
-          <span className="px-3 py-1 rounded-lg bg-red-500/10 text-red-500 text-xs font-black tracking-widest border border-red-500/20 flex items-center gap-2">
-            <XCircle size={12} />
-            {t('owner.billing.canceled')}
-          </span>
-        );
-      default:
-        return (
-          <span className="px-3 py-1 rounded-lg bg-gray-500/10 text-gray-500 text-xs font-black tracking-widest border border-gray-500/20">
-            {status ? status.charAt(0).toUpperCase() + status.slice(1).toLowerCase() : t('common.notAvailable')}
-          </span>
-        );
-    }
-  };
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-20">
