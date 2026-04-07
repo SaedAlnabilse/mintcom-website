@@ -128,13 +128,13 @@ export function CategoryFormModal({
           </div>
 
           {/* Header */}
-          <div className="flex items-center justify-between p-6 sm:p-8 relative isolate border-b border-gray-100 dark:border-white/5">
+          <div className="flex items-center justify-between p-6 sm:p-8 relative isolate border-b border-gray-200 dark:border-white/10">
             <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                {initialData ? t('categories.editCategory') : t('categories.newCategory')}
-              </h2>
-            </div>
+              <div>
+                <h2 className="text-2xl font-medium text-gray-900 dark:text-white tracking-tight">
+                  {initialData ? t('categories.editCategory') : t('categories.newCategory')}
+                </h2>
+              </div>
             <button
               onClick={onClose}
               className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
@@ -166,9 +166,9 @@ export function CategoryFormModal({
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                   placeholder={t('categories.form.namePlaceholder')}
-                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name || (externalError && externalError.toLowerCase().includes('already exists')) ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name || (externalError && externalError.toLowerCase().includes('already exists')) ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                 />
-                {errors.name && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
+                {errors.name && <p className="mt-1.5 px-1 text-xs font-medium text-paymint-red">{errors.name}</p>}
               </div>
 
               {/* Icon Grid */}

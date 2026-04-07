@@ -135,7 +135,7 @@ export function DashboardLayout() {
           { path: 'categories', label: t('dashboard.menu.categories'), icon: LayoutDashboard },
           { path: 'products', label: t('dashboard.menu.products'), icon: Package },
           { path: 'addons', label: t('dashboard.menu.addons'), icon: Package },
-          { path: 'inventory', label: t('inventory.stockManagement', {defaultValue: 'Inventory'}), icon: Package },
+          { path: 'inventory', label: t('dashboard.menu.inventory'), icon: Package },
         ],
       },
       { path: 'payment-methods', label: t('dashboard.menu.paymentMethods'), icon: CreditCard },

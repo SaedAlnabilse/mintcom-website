@@ -106,7 +106,7 @@ export function CookieConsent() {
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: 'spring', damping: 20, stiffness: 100 }}
             dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-            className="fixed bottom-0 left-0 right-0 z-[100] p-4 md:p-6"
+            className="fixed bottom-0 left-0 right-0 z-[2000] p-4 md:p-6"
           >
             <div className="max-w-7xl mx-auto bg-white dark:bg-[#0F172A] rounded-2xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] border border-gray-200 dark:border-white/10 p-6 md:flex md:items-center md:justify-between gap-8 ring-1 ring-black/5">
               <div className="flex-1 space-y-2">
@@ -154,7 +154,7 @@ export function CookieConsent() {
       {/* 2. Detailed Preferences Modal */}
       <AnimatePresence>
         {showPreferences && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[2100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}

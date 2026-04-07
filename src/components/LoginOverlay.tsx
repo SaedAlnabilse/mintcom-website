@@ -48,21 +48,34 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
                 <motion.div 
                   animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-20 h-20 border-2 border-paymint-green/30 rounded-full absolute -inset-2" 
+                  className="w-12 h-12 border-2 border-paymint-green/30 rounded-full absolute -inset-2" 
                 />
                 
-                {/* Main rotating gradient ring */}
+                {/* Main rotating ring - High Resolution SVG */}
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                  className="w-16 h-16 rounded-full border-4 border-transparent border-t-paymint-green border-r-paymint-green/40 shadow-[0_0_20px_rgba(124,195,159,0.2)]"
-                />
+                  transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                  className="w-8 h-8 flex items-center justify-center"
+                >
+                  <svg className="w-full h-full" viewBox="0 0 100 100">
+                    {/* Background Track */}
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" className="text-paymint-green/20" />
+                    {/* High Precision Arc */}
+                    <path
+                      d="M50 10 A 40 40 0 0 1 90 50"
+                      fill="none"
+                      stroke="#7CC39F"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </motion.div>
 
                 {/* Inner slow-pulse core */}
                 <motion.div 
                   animate={{ scale: [0.8, 1, 0.8], opacity: [0.5, 0.8, 0.5] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-6 h-6 bg-paymint-green rounded-full absolute inset-0 m-auto shadow-[0_0_15px_rgba(124,195,159,0.4)]"
+                  className="w-3 h-3 bg-paymint-green rounded-full absolute inset-0 m-auto"
                 />
               </div>
             )}

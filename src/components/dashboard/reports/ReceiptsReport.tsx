@@ -354,13 +354,12 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                         </div>
                     </div>
                 )}
+                <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={(p) => setPage(p)}
+                />
             </div>
-
-            <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                onPageChange={(p) => setPage(p)}
-            />
 
             {selectedOrder && (
                 <OrderDetailModal

@@ -473,15 +473,15 @@ export function BrandLocationsPage() {
                         )}
 
                         {/* Sort */}
-                        <div className="w-40">
+                        <div className="w-52">
                             <CustomSelect
                                 value={sortBy}
                                 onChange={(val) => setSortBy(val as SortOption)}
                                 options={[
                                     { label: t('common.sortByName'), value: 'name' },
-                                    { label: t('owner.overview.totalRevenue'), value: 'revenue' },
-                                    { label: t('brand.dashboard.orders'), value: 'orders' },
-                                    { label: t('brand.dashboard.staff'), value: 'employees' },
+                                    { label: t('common.sortByRevenue'), value: 'revenue' },
+                                    { label: t('common.sortByOrders'), value: 'orders' },
+                                    { label: t('common.sortByStaff'), value: 'employees' },
                                 ]}
                             />
                         </div>
@@ -678,25 +678,25 @@ export function BrandLocationsPage() {
                             return (
                                 <div
                                     key={loc.id}
-                                    className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                                    className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group items-center"
                                     onClick={() => handleLocationClick(loc)}
                                 >
                                     {/* Location Info */}
                                     <div className="col-span-3 flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
-                                            <Icon size={24} />
+                                        <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
+                                            <Icon size={20} />
                                         </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
+                                        <div className="min-w-0">
+                                            <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate" title={loc.name}>
                                                 {loc.name}
                                             </h3>
-                                            <p className="text-xs text-gray-500 mt-0.5">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : t('onboarding.step1.businessTypes.restaurant')} - {loc.currency ? loc.currency.toUpperCase() : 'USD'}</p>
+                                            <p className="text-xs text-gray-500 mt-0.5 truncate">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : t('onboarding.step1.businessTypes.restaurant')} - {loc.currency ? loc.currency.toUpperCase() : 'USD'}</p>
                                         </div>
                                     </div>
 
                                     {/* Status */}
                                     <div className="col-span-2 flex items-center">
-                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(loc.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                             {loc.subscriptionStatus === 'ACTIVE' ? t('common.active') :
                                              loc.subscriptionStatus === 'INACTIVE' ? t('paymentMethods.messages.notActive') :
@@ -707,25 +707,25 @@ export function BrandLocationsPage() {
 
                                     {/* Revenue */}
                                     <div className="col-span-2 flex items-center justify-end">
-                                        <span className="font-bold text-gray-900 dark:text-white">
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
                                             {formatCurrency(loc.totalRevenue || 0)}
                                         </span>
                                     </div>
 
                                     {/* Orders */}
                                     <div className="col-span-1 flex items-center justify-end">
-                                        <span className="font-bold text-gray-900 dark:text-white">{loc.orderCount}</span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.orderCount}</span>
                                     </div>
 
                                     {/* Staff */}
                                     <div className="col-span-1 flex items-center justify-end">
-                                        <span className="font-bold text-gray-900 dark:text-white">{loc.employeeCount}</span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.employeeCount}</span>
                                     </div>
 
 
                                     {/* Products */}
                                     <div className="col-span-1 flex items-center justify-end">
-                                        <span className="font-bold text-gray-900 dark:text-white">{loc.itemCount}</span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.itemCount}</span>
                                     </div>
                                     {/* Actions */}
                                     <div className="col-span-2 flex items-center justify-end relative">
@@ -775,14 +775,13 @@ export function BrandLocationsPage() {
                             );
                         })}
                     </div>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                    />
                 </div>
             )}
-
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-            />
 
             <SecurityVerificationModal
                 isOpen={securityModal.isOpen}

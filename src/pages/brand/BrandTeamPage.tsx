@@ -425,7 +425,7 @@ export default function BrandTeamPage() {
                         )}
 
                         {/* Sort */}
-                        <div className="w-40">
+                        <div className="w-52">
                             <CustomSelect
                                 value={sortBy}
                                 onChange={(val) => setSortBy(val as SortOption)}
@@ -770,15 +770,16 @@ export default function BrandTeamPage() {
                             </div>
                         ))}
                     </div>
+
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                    />
                 </div>
             )}
 
             {/* Employee Form Modal */}
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-            />
 
             <EmployeeFormModal
                 isOpen={isFormModalOpen}

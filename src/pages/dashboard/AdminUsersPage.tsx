@@ -410,7 +410,6 @@ export function AdminUsersPage() {
                             currentPage={currentPage}
                             totalPages={totalPages}
                             onPageChange={(page) => setCurrentPage(page)}
-                            className="p-4"
                         />
                     </>
                 )}

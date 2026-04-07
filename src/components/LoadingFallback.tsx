@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Spinner } from './ui/Spinner';
 import { startGlobalLoading, stopGlobalLoading } from '../config/api';
 
 interface LoadingFallbackProps {
@@ -34,29 +35,7 @@ export function LoadingFallback({
       transition={{ duration: 0.2 }}
       className="flex flex-col items-center justify-center space-y-6"
     >
-      {/* Spinner */}
-      <div className="relative">
-        {/* Outer pulsing ring */}
-        <motion.div 
-          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-16 h-16 border-2 border-paymint-green/30 rounded-full absolute -inset-1" 
-        />
-        
-        {/* Main rotating gradient ring */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-          className="w-14 h-14 rounded-full border-4 border-transparent border-t-paymint-green border-r-paymint-green/40 shadow-[0_0_15px_rgba(124,195,159,0.3)]"
-        />
-
-        {/* Inner static/slow-pulse core */}
-        <motion.div 
-          animate={{ scale: [0.9, 1, 0.9] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-6 h-6 bg-paymint-green rounded-full absolute inset-0 m-auto shadow-[0_0_10px_rgba(124,195,159,0.5)]"
-        />
-      </div>
+      <Spinner size={32} />
 
       {/* Loading text */}
       <p className="text-sm font-bold text-gray-500 tracking-widest">

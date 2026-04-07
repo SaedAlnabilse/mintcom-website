@@ -101,10 +101,10 @@ export function AttributeFormModal({
                     </div>
 
                     {/* Header */}
-                    <div className="flex items-center justify-between p-6 sm:p-8 relative isolate border-b border-gray-100 dark:border-white/5">
+                    <div className="flex items-center justify-between p-6 sm:p-8 relative isolate border-b border-gray-200 dark:border-white/10">
                         <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                            <h2 className="text-2xl font-medium text-gray-900 dark:text-white tracking-tight">
                                 {initialData ? t('attributes.editAttribute') : t('attributes.newAttribute')}
                             </h2>
                         </div>
@@ -137,9 +137,9 @@ export function AttributeFormModal({
                                     value={name}
                                     onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                                     placeholder={t('attributes.form.namePlaceholder')}
-                                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                                 />
-                                {errors.name && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
+                                {errors.name && <p className="mt-1.5 px-1 text-xs font-medium text-paymint-red">{errors.name}</p>}
                             </div>
 
                             {/* Input Type Selection */}
@@ -162,7 +162,7 @@ export function AttributeFormModal({
                                         </div>
                                         <div>
                                             <p className={`text-sm font-bold ${inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
-                                            <p className="text-xs font-bold text-gray-500 mt-1">{t('attributes.form.singleDesc')}</p>
+                                            <p className="text-xs font-medium text-gray-500 mt-1">{t('attributes.form.singleDesc')}</p>
                                         </div>
                                         {inputType === 'SINGLE_SELECT' && (
                                             <div className="absolute top-4 right-4 text-paymint-green">
@@ -184,7 +184,7 @@ export function AttributeFormModal({
                                         </div>
                                         <div>
                                             <p className={`text-sm font-bold ${inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
-                                            <p className="text-xs font-bold text-gray-500 mt-1">{t('attributes.form.multipleDesc')}</p>
+                                            <p className="text-xs font-medium text-gray-500 mt-1">{t('attributes.form.multipleDesc')}</p>
                                         </div>
                                         {inputType === 'MULTI_SELECT' && (
                                             <div className="absolute top-4 right-4 text-paymint-green">
@@ -198,7 +198,7 @@ export function AttributeFormModal({
                             {/* Required Toggle */}
                             <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
                                 <div>
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white">{t('attributes.form.requiredLabel')}</p>
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{t('attributes.form.requiredLabel')}</p>
                                     <p className="text-xs font-bold text-gray-500 mt-0.5">{t('attributes.form.requiredDesc')}</p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">

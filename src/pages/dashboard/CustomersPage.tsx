@@ -125,8 +125,7 @@ function TableActionMenu({ customer, onViewProfile, onDelete }: TableActionMenuP
 
 export function CustomersPage() {
   const { t } = useTranslation();
-    const { currentEstablishment } = useAuth();
-  // Permission guard - redirects if user lacks permission
+  const { currentEstablishment } = useAuth();
   usePermissionGuard();
 
   const { formatAmount, currencySymbol } = useCurrency();
@@ -263,16 +262,14 @@ export function CustomersPage() {
   const handleExport = async () => {
     try {
       toast.loading('Exporting...', { id: 'export' });
-      // Fetch all customers (no limit) for export
       const response = await api.get('/customers', {
         params: {
-          limit: 1000, // Large enough limit to get all
+          limit: 1000,
           search: searchQuery,
         },
       });
 
       const allCustomers = response.data.customers || [];
-
       const exportData = allCustomers.map((c: Customer) => ({
         name: c.name,
         phone: c.phone,
@@ -298,11 +295,6 @@ export function CustomersPage() {
     }
   };
 
-
-  const formatCurrency = (value: number) => {
-    return formatAmount(value);
-  };
-
   return (
     <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
@@ -319,13 +311,13 @@ export function CustomersPage() {
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('customers.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('customers.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
+            <span>{t('customers.subtitle')}</span>
+            {currentEstablishment?.name && (
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                {currentEstablishment.name}
+              </span>
+            )}
+          </p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -347,62 +339,30 @@ export function CustomersPage() {
       </div>
 
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="group relative p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden transition-all duration-300 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
-        >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-paymint-green/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-          <div className="flex items-center gap-3 sm:gap-4 relative z-10">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
-              <User size={20} className="sm:w-6 sm:h-6" />
+        {[
+          { label: t('customers.stats.total'), value: customers.length, icon: User, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+          { label: t('customers.stats.points'), value: customers.reduce((acc, curr) => acc + (curr.points || 0), 0), icon: Award, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: t('customers.stats.spent'), value: formatAmount(customers.reduce((acc, curr) => acc + (Number(curr.totalSpent) || 0), 0)), icon: ShoppingBag, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+        ].map((stat, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            className="group relative p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden transition-all duration-300 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+          >
+            <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} rounded-full blur-2xl -translate-y-1/2 translate-x-1/2`} />
+            <div className="flex items-center gap-3 sm:gap-4 relative z-10">
+              <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center`}>
+                <stat.icon size={20} className="sm:w-6 sm:h-6" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{stat.value.toLocaleString(t('common.locale'))}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('customers.stats.total')}</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{(Array.isArray(customers) ? customers : []).length.toLocaleString(t('common.locale'))}</p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="group relative p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden transition-all duration-300 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
-        >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-          <div className="flex items-center gap-3 sm:gap-4 relative z-10">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
-              <Award size={20} className="sm:w-6 sm:h-6" />
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('customers.stats.points')}</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">
-                {(Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (curr.points || 0), 0).toLocaleString(t('common.locale'))}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="group relative p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden transition-all duration-300 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
-        >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-          <div className="flex items-center gap-3 sm:gap-4 relative z-10">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
-              <ShoppingBag size={20} className="sm:w-6 sm:h-6" />
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('customers.stats.spent')}</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">
-                {formatCurrency((Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (Number(curr.totalSpent) || 0), 0))}
-              </p>
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        ))}
       </div>
 
       {/* Control Bar */}
@@ -417,7 +377,6 @@ export function CustomersPage() {
           />
         </div>
       </div>
-
 
       {/* Main List */}
       <div className="bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
@@ -466,7 +425,6 @@ export function CustomersPage() {
                   onClick={() => { setSelectedCustomer(customer); setShowDetailModal(true); }}
                   className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04]"
                 >
-                  {/* Card Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm">
@@ -483,7 +441,6 @@ export function CustomersPage() {
                     </div>
                   </div>
 
-                  {/* Card Details */}
                   <div className="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-gray-100 dark:border-white/5">
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.form.phoneLabel')}</p>
@@ -498,7 +455,6 @@ export function CustomersPage() {
                     </div>
                   </div>
 
-                  {/* Card Actions */}
                   <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-white/5" onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={() => { setSelectedCustomer(customer); setPointsAmount(0); setShowPointsModal(true); }}
@@ -585,7 +541,6 @@ export function CustomersPage() {
                         <div className="flex items-center justify-center gap-1 sm:gap-2">
                           <button
                             onClick={() => { setSelectedCustomer(customer); setPointsAmount(0); setShowPointsModal(true); }}
-                            aria-label="Adjust loyalty points"
                             className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-all"
                             title="Adjust Points"
                           >
@@ -593,7 +548,6 @@ export function CustomersPage() {
                           </button>
                           <button
                             onClick={() => openEditModal(customer)}
-                            aria-label="Edit customer"
                             className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-all"
                           >
                             <Edit2 size={18} />
@@ -614,13 +568,12 @@ export function CustomersPage() {
                 </tbody>
               </table>
             </div>
+            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
           </>
         )}
       </div>
 
-      <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-6" />
-
-      {/* Customer Form Modal */}
+      {/* Modals */}
       <AnimatePresence>
         {showModal && (
           <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
@@ -636,7 +589,6 @@ export function CustomersPage() {
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
-                  aria-label={t('common.close')}
                   className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
                 >
                   <X size={20} />
@@ -716,7 +668,6 @@ export function CustomersPage() {
         )}
       </AnimatePresence>
 
-      {/* Points Adjustment Modal */}
       <AnimatePresence>
         {showPointsModal && selectedCustomer && (
           <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowPointsModal(false)}>
@@ -801,7 +752,7 @@ export function CustomersPage() {
                 </div>
 
                 <div className="flex gap-3 pt-2">
-                   <button
+                  <button
                     onClick={() => setShowPointsModal(false)}
                     className="flex-1 py-3 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-bold text-xs rounded-xl hover:text-gray-900 dark:hover:text-white transition-all"
                   >
@@ -821,12 +772,12 @@ export function CustomersPage() {
         )}
       </AnimatePresence>
 
-      {/* Customer Detail View */}
       <AnimatePresence>
-       {showDetailModal && selectedCustomer && (
-         <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
-           <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-xl border border-gray-200 dark:border-white/5 w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide shadow-2xl" onClick={e => e.stopPropagation()}>
-             <div className="p-10 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-transparent">                <div className="flex justify-between items-start mb-10">
+        {showDetailModal && selectedCustomer && (
+          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
+            <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-xl border border-gray-200 dark:border-white/5 w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide shadow-2xl" onClick={e => e.stopPropagation()}>
+              <div className="p-10 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-transparent">
+                <div className="flex justify-between items-start mb-10">
                   <div className="flex items-center gap-6">
                     <div className="w-20 h-20 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center text-3xl font-black">
                       {selectedCustomer.name.charAt(0).toUpperCase()}
@@ -846,7 +797,7 @@ export function CustomersPage() {
 
                 <div className="grid grid-cols-3 gap-6">
                   {[
-                    { label: t('customers.details.spent'), value: selectedCustomer.totalSpent.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + currencySymbol, icon: ShoppingBag },
+                    { label: t('customers.details.spent'), value: formatAmount(selectedCustomer.totalSpent), icon: ShoppingBag },
                     { label: t('customers.details.visits'), value: `${selectedCustomer.totalVisits.toLocaleString(t('common.locale'))} ${t('customers.details.orders')}`, icon: Calendar },
                     { label: t('customers.details.points'), value: `${selectedCustomer.points.toLocaleString(t('common.locale'))} ${t('rewards.points')}`, icon: Award },
                   ].map((stat, i) => (
@@ -891,7 +842,7 @@ export function CustomersPage() {
                       </div>
                       <div className="p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t('customers.details.spent')}</p>
-                        <p className="text-sm font-bold text-paymint-green">{selectedCustomer.totalSpent.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}</p>
+                        <p className="text-sm font-bold text-paymint-green">{formatAmount(selectedCustomer.totalSpent)}</p>
                       </div>
                     </div>
                   </div>
@@ -943,7 +894,3 @@ export function CustomersPage() {
     </div>
   );
 }
-
-
-
-

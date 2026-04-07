@@ -550,14 +550,14 @@ export function ActivityLogsPage() {
                     </tr>
                   ))
                 )}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
+
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
         </div>
 
-        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-6 mx-8 mb-6" />
-      </div>
-
-      {/* Detail Modal */}
+            {/* Detail Modal */}
         {selectedLog && (
           <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <div

@@ -17,7 +17,8 @@ import {
     ArrowUpDown,
     AlertCircle,
     Search,
-    X
+    X,
+    ExternalLink
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -615,14 +616,14 @@ export function ProductsPage() {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
                             </div>
-                            <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
+                            <span className="text-xs font-bold text-paymint-green tracking-wide uppercase italic">{t('dashboard.shiftStatus.live')}</span>
                         </div>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('products.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('products.subtitle')}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                            <span className="px-2.5 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[11px] font-bold tracking-tight border border-paymint-green/20">
                                 {currentEstablishment.name}
                             </span>
                         )}
@@ -786,81 +787,109 @@ export function ProductsPage() {
                 {/* Total Products */}
                 <button
                     onClick={() => setStockFilter('all')}
-                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'all'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'all'
                         ? 'border-blue-500/50 ring-1 ring-blue-500/30 bg-blue-500/[0.02]'
                         : 'border-gray-200 dark:border-white/[0.03] hover:border-blue-300'
                         }`}
                 >
-                    <div className="flex items-center gap-2 sm:gap-3 mb-2">
-                        <div className="p-2 sm:p-2.5 rounded-xl bg-blue-500/10 text-blue-500">
-                            <Package size={18} className="sm:w-5 sm:h-5" />
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="p-2 sm:p-2.5 rounded-xl bg-blue-500/10 text-blue-500 transition-transform duration-300">
+                                <Package size={18} className="sm:w-5 sm:h-5" />
+                            </div>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate capitalize">{t('products.stats.total')}</p>
                         </div>
-                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate">{t('products.stats.total')}</p>
+                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-blue-500 transition-colors">
+                            <ExternalLink size={14} />
+                        </div>
                     </div>
                     <p className={`text-2xl font-bold tracking-tight ${stockFilter === 'all' ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`}>
                         {stats.total.toLocaleString(t('common.locale'))}
                     </p>
-                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-3 truncate">{t('products.stats.totalDesc')}</p>
+                    <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
+                        {t('products.stats.totalDesc')}
+                    </p>
                 </button>
 
                 {/* Low Stock (Yellow) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'yellow' ? 'all' : 'yellow')}
-                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'yellow'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'yellow'
                         ? 'border-[#ffc107]/50 ring-1 ring-[#ffc107]/30 bg-[#ffc107]/5'
                         : 'border-gray-200 dark:border-white/[0.03] hover:border-[#ffc107]/30'
                         }`}
                 >
-                    <div className="flex items-center gap-2 sm:gap-3 mb-2">
-                        <div className="p-2 sm:p-2.5 rounded-xl bg-[#ffc107]/10 text-[#ffc107]">
-                            <AlertCircle size={18} className="sm:w-5 sm:h-5" />
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="p-2 sm:p-2.5 rounded-xl bg-[#ffc107]/10 text-[#ffc107] transition-transform duration-300">
+                                <AlertCircle size={18} className="sm:w-5 sm:h-5" />
+                            </div>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate capitalize">{t('products.stats.low')}</p>
                         </div>
-                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate">{t('products.stats.low')}</p>
+                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-[#ffc107] transition-colors">
+                            <ExternalLink size={14} />
+                        </div>
                     </div>
                     <p className="text-2xl font-bold text-[#ffc107] tracking-tight">
                         {stats.yellowThreshold.toLocaleString(t('common.locale'))}
                     </p>
-                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-3 truncate">{t('products.stats.lowDesc')}</p>
+                    <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
+                        {t('products.stats.lowDesc')}
+                    </p>
                 </button>
 
                 {/* Critical (Red) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'red' ? 'all' : 'red')}
-                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'red'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'red'
                         ? 'border-[#D55263]/50 ring-1 ring-[#D55263]/30 bg-[#D55263]/5'
                         : 'border-gray-200 dark:border-white/[0.03] hover:border-[#D55263]/30'
                         }`}
                 >
-                    <div className="flex items-center gap-2 sm:gap-3 mb-2">
-                        <div className="p-2 sm:p-2.5 rounded-xl bg-[#D55263]/10 text-[#D55263]">
-                            <AlertCircle size={18} className="sm:w-5 sm:h-5" />
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="p-2 sm:p-2.5 rounded-xl bg-[#D55263]/10 text-[#D55263] transition-transform duration-300">
+                                <AlertCircle size={18} className="sm:w-5 sm:h-5" />
+                            </div>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate capitalize">{t('products.stats.critical')}</p>
                         </div>
-                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate">{t('products.stats.critical')}</p>
+                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-[#D55263] transition-colors">
+                            <ExternalLink size={14} />
+                        </div>
                     </div>
                     <p className="text-2xl font-bold text-[#D55263] tracking-tight">
                         {stats.redThreshold.toLocaleString(t('common.locale'))}
                     </p>
-                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-3 truncate">{t('products.stats.criticalDesc')}</p>
+                    <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
+                        {t('products.stats.criticalDesc')}
+                    </p>
                 </button>
 
                 {/* Out of Stock (Gray) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'out' ? 'all' : 'out')}
-                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'out'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'out'
                         ? 'border-slate-500/50 ring-1 ring-slate-500/30 bg-slate-500/[0.02]'
                         : 'border-gray-200 dark:border-white/[0.03] hover:border-slate-400'
                         }`}
                 >
-                    <div className="flex items-center gap-2 sm:gap-3 mb-2">
-                        <div className="p-2 sm:p-2.5 rounded-xl bg-slate-500/10 text-slate-500">
-                            <Package size={18} className="sm:w-5 sm:h-5" />
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="p-2 sm:p-2.5 rounded-xl bg-slate-500/10 text-slate-500 transition-transform duration-300">
+                                <Package size={18} className="sm:w-5 sm:h-5" />
+                            </div>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate capitalize">{t('products.stats.outOfStock')}</p>
                         </div>
-                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate">{t('products.stats.outOfStock')}</p>
+                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-slate-500 transition-colors">
+                            <ExternalLink size={14} />
+                        </div>
                     </div>
                     <p className="text-2xl font-bold text-slate-500 tracking-tight">
                         {stats.outOfStock.toLocaleString(t('common.locale'))}
                     </p>
-                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-3 truncate">{t('products.stats.outOfStockDesc')}</p>
+                    <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
+                        {t('products.stats.outOfStockDesc')}
+                    </p>
                 </button>
             </div>
 
@@ -909,20 +938,20 @@ export function ProductsPage() {
                                     <div className="p-3 flex-1 flex flex-col">
                                         <div className="flex items-start justify-between mb-2 gap-2">
                                             <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2">{p.name}</h3>
-                                            <span className="text-xs font-black tracking-widest text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md whitespace-nowrap shrink-0">
+                                            <span className="text-[10px] font-bold text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg whitespace-nowrap shrink-0">
                                                 {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
                                             </span>
                                         </div>
                                         {p.description && <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1">{p.description}</p>}
                                         <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto">
                                             <div>
-                                                <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{t('products.table.price')}</p>
-                                                <p className="text-sm font-black text-paymint-green">
+                                                <p className="text-[10px] font-bold text-gray-400 mb-0.5">{t('products.table.price')}</p>
+                                                <p className="text-sm font-bold text-paymint-green">
                                                     {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                                                 </p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{t('products.table.stock')}</p>
+                                                <p className="text-[10px] font-bold text-gray-400 mb-0.5">{t('products.table.stock')}</p>
                                                 {p.trackStock ? (
                                                     <div className={`text-xs font-bold flex items-center justify-end gap-1 ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow)}`}>
                                                         {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 5) && <AlertCircle size={10} />}
@@ -940,110 +969,110 @@ export function ProductsPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
-                                        <tr>
-                                            <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest w-16">{t('products.table.image')}</th>
-                                            <th
-                                                className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
-                                                onClick={() => handleSort('name')}
-                                            >
-                                                <div className="flex items-center gap-1">
-                                                    {t('products.table.name')}
-                                                    {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                                                </div>
-                                            </th>
-                                            <th
-                                                className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
-                                                onClick={() => handleSort('category')}
-                                            >
-                                                <div className="flex items-center gap-1">
-                                                    {t('products.table.category')}
-                                                    {sortConfig?.key === 'category' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                                                </div>
-                                            </th>
-                                            <th
-                                                className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
-                                                onClick={() => handleSort('availableStock')}
-                                            >
-                                                <div className="flex items-center gap-1">
-                                                    {t('products.table.stock')}
-                                                    {sortConfig?.key === 'availableStock' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                                                </div>
-                                            </th>
-                                            <th
-                                                className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
-                                                onClick={() => handleSort('price')}
-                                            >
-                                                <div className="flex items-center justify-end gap-1">
-                                                    {t('products.table.price')}
-                                                    {sortConfig?.key === 'price' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                                                </div>
-                                            </th>
-                                            <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest w-24">{t('owner.locations.actions')}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                                        {paginatedProducts.map((p, idx) => (
-                                            <tr key={p.id || `table-row-${idx}`} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => handleEdit(p)}>
-                                                <td className="px-6 py-4">
-                                                    <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden">
-                                                        {p.image ? (
-                                                            <img src={getProductImageUrl(p.image)!} alt="" className="w-full h-full object-cover" />
-                                                        ) : (
-                                                            <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover" />
-                                                        )}
+                        <>
+                            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
+                                            <tr>
+                                                <th className="px-6 py-4 text-left text-[11px] font-bold text-gray-400 w-16">{t('products.table.image')}</th>
+                                                <th
+                                                    className="px-6 py-4 text-left text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                    onClick={() => handleSort('name')}
+                                                >
+                                                    <div className="flex items-center gap-1">
+                                                        {t('products.table.name')}
+                                                        {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                                                     </div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <p className="text-sm font-bold text-gray-900 dark:text-white">{p.name}</p>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <span className="inline-flex px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500">
-                                                        {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    {p.trackStock ? (
-                                                        <span className={`text-xs font-bold ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow, true)}`}>
-                                                            {t('products.table.units', { count: p.availableStock || 0 })}
-                                                        </span>
-                                                    ) : (
-                                                        <div className="inline-flex items-center px-2 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/5">
-                                                            <InfinityIcon size={16} className="text-gray-400" strokeWidth={2.5} />
-                                                        </div>
-                                                    )}
-                                                </td>
-                                                <td className="px-6 py-4 text-right">
-                                                    <span className="font-bold text-gray-900 dark:text-white">
-                                                        {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 text-center">
-                                                    <div className="flex items-center justify-center gap-1 sm:gap-2">
-                                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
-                                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
+                                                </th>
+                                                <th
+                                                    className="px-6 py-4 text-left text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                    onClick={() => handleSort('category')}
+                                                >
+                                                    <div className="flex items-center gap-1">
+                                                        {t('products.table.category')}
+                                                        {sortConfig?.key === 'category' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                                                     </div>
-                                                </td>
+                                                </th>
+                                                <th
+                                                    className="px-6 py-4 text-left text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                    onClick={() => handleSort('availableStock')}
+                                                >
+                                                    <div className="flex items-center gap-1">
+                                                        {t('products.table.stock')}
+                                                        {sortConfig?.key === 'availableStock' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                                    </div>
+                                                </th>
+                                                <th
+                                                    className="px-6 py-4 text-right text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                    onClick={() => handleSort('price')}
+                                                >
+                                                    <div className="flex items-center justify-end gap-1">
+                                                        {t('products.table.price')}
+                                                        {sortConfig?.key === 'price' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                                    </div>
+                                                </th>
+                                                <th className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 w-24">{t('owner.locations.actions')}</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                                            {paginatedProducts.map((p, idx) => (
+                                                <tr key={p.id || `table-row-${idx}`} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => handleEdit(p)}>
+                                                    <td className="px-6 py-4">
+                                                        <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden">
+                                                            {p.image ? (
+                                                                <img src={getProductImageUrl(p.image)!} alt="" className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover" />
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <p className="text-sm font-bold text-gray-900 dark:text-white">{p.name}</p>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span className="inline-flex px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500">
+                                                            {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        {p.trackStock ? (
+                                                            <span className={`text-xs font-bold ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow, true)}`}>
+                                                                {t('products.table.units', { count: p.availableStock || 0 })}
+                                                            </span>
+                                                        ) : (
+                                                            <div className="inline-flex items-center px-2 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/5">
+                                                                <InfinityIcon size={16} className="text-gray-400" strokeWidth={2.5} />
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right">
+                                                        <span className="font-bold text-gray-900 dark:text-white">
+                                                            {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-center">
+                                                        <div className="flex items-center justify-center gap-1 sm:gap-2">
+                                                            <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
+                                                            <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
+                            />
+                        </>
                     )}
                 </>
             )
             }
-
-            {/* Pagination Controls */}
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-            />
 
             {/* Modals */}
             <ProductFormModal

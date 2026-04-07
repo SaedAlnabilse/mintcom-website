@@ -4,11 +4,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, Loader2, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { GoogleAuthButton, AuthDivider, GOOGLE_CLIENT_ID, type GoogleAuthButtonHandle } from '../components/GoogleAuthButton';
 import { useTranslation } from 'react-i18next';
+import { Spinner } from '../components/ui/Spinner';
 
 // PayMint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
@@ -71,7 +72,15 @@ export function SignUpPage() {
     }
   });
 
+  const password = watch('password');
   const agreed = !!watch('agreeToTerms');
+
+  const criteria = [
+    { label: t('auth.validation.passwordMin'), met: password.length >= 8 },
+    { label: t('auth.validation.passwordUppercase'), met: /[A-Z]/.test(password) },
+    { label: t('auth.validation.passwordLowercase'), met: /[a-z]/.test(password) },
+    { label: t('auth.validation.passwordNumber'), met: /[0-9]/.test(password) },
+  ];
 
   const handleGoogleAuthClick = (e: React.MouseEvent) => {
     if (!agreed) {
@@ -193,7 +202,9 @@ export function SignUpPage() {
               exit={{ scale: 0.8, opacity: 0 }}
               className="bg-white dark:bg-gray-800 rounded-xl p-8 flex flex-col items-center gap-4 shadow-2xl"
             >
-              <Loader2 className="w-16 h-16 text-paymint-green animate-spin" />
+              {/* High Resolution SVG Spinner */}
+              {/* High Resolution SVG Spinner – matched to cursor style */}
+              <Spinner size={32} />
               <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.signup.creatingYourAccount')}</p>
               <p className="text-xs font-bold text-gray-500">{t('auth.signup.pleaseWait')}</p>
             </motion.div>
@@ -364,6 +375,21 @@ export function SignUpPage() {
                 )}
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-gray-50 dark:bg-white/[0.02] rounded-[12px] border border-gray-200 dark:border-white/[0.05]">
+                {criteria.map((item, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    {item.met ? (
+                      <CheckCircle2 size={14} className="text-paymint-green flex-shrink-0" />
+                    ) : (
+                      <div className="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-white/10 flex-shrink-0" />
+                    )}
+                    <span className={`text-[10px] font-bold ${item.met ? 'text-paymint-green' : 'text-gray-400'}`}>
+                      {item.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
               <div className="space-y-3">
                 <div className="flex items-center gap-3 py-1">
                   <input
@@ -397,7 +423,7 @@ export function SignUpPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-paymint-green text-black text-sm font-bold hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-wait py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
+                className="w-full bg-paymint-green text-black text-sm font-bold hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
               >
                 {isSubmitting ? t('auth.signup.creatingAccount') : t('auth.signup.signUpButton')}
               </button>
@@ -436,7 +462,7 @@ export function SignUpPage() {
             </div>
 
             <div className="mt-8 pt-6 border-t border-gray-100 dark:border-white/5">
-              <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 text-center leading-relaxed uppercase tracking-wider">
+              <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 text-center leading-relaxed">
                 {t('auth.signup.disclaimerPrefix')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.termsOfService')}</Link> {t('common.and')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.privacyPolicy')}</Link>.
               </p>
             </div>

@@ -51,7 +51,7 @@ interface Product {
 
 export function CategoriesPage() {
   const { t } = useTranslation();
-    const { currentEstablishment } = useAuth();
+  const { currentEstablishment } = useAuth();
   usePermissionGuard(['manage_inventory']);
   const { currencySymbol } = useCurrency();
   const { locationSlug } = useParams();
@@ -107,7 +107,6 @@ export function CategoriesPage() {
         api.get('/api/items')
       ]);
       setCategories(catsRes.data || []);
-      // Items API returns { items, total, limit, offset }
       setProducts(prodsRes.data?.items || []);
     } catch {
       toast.error(t('categories.messages.loadFailed'));
@@ -121,7 +120,7 @@ export function CategoriesPage() {
     setFormError(null);
     setShowModal(true);
   };
-  // CSV Import Configuration
+
   const categoryCsvColumns: CsvColumn[] = [
     { key: 'name', label: 'Name', required: true, type: 'string' },
   ];
@@ -134,7 +133,6 @@ export function CategoriesPage() {
     { name: 'Sandwiches' },
   ];
 
-  // Auto-detect icon based on category name keywords
   const detectIconFromName = (name: string): string => {
     const lower = name.toLowerCase();
     const keywords: [string[], string][] = [
@@ -163,7 +161,7 @@ export function CategoriesPage() {
         return icon;
       }
     }
-    return 'tag'; // Default fallback
+    return 'tag';
   };
 
   const handleCsvImport = useCallback(async (rows: Record<string, string>[]): Promise<ImportResult> => {
@@ -171,7 +169,6 @@ export function CategoriesPage() {
     let failed = 0;
     const errors: string[] = [];
 
-    // Fetch existing categories to get duplicate check + max sort order
     let existingNames: Set<string>;
     let nextSortOrder: number;
     try {
@@ -196,14 +193,12 @@ export function CategoriesPage() {
         continue;
       }
 
-      // Check for duplicate
       if (existingNames.has(name.toLowerCase())) {
         errors.push(`Row ${i + 1}: Category "${name}" already exists, skipped`);
         failed++;
         continue;
       }
 
-      // Auto-detect icon from the category name
       const icon = detectIconFromName(name);
 
       try {
@@ -223,7 +218,7 @@ export function CategoriesPage() {
     }
 
     if (success > 0) {
-      fetchData(true); // Refresh silently so the CSV modal stays open
+      fetchData(true);
     }
 
     return { success, failed, errors };
@@ -238,6 +233,7 @@ export function CategoriesPage() {
         cat.description?.toLowerCase().includes(normalizedSearchQuery);
     });
   }, [categories, normalizedSearchQuery]);
+
   const totalPages = Math.ceil((Array.isArray(filteredCategories) ? filteredCategories : []).length / ITEMS_PER_PAGE);
 
   const paginatedCategories = useMemo(() => {
@@ -271,14 +267,10 @@ export function CategoriesPage() {
       setShowModal(false);
       fetchData();
     } catch (error: any) {
-      console.error('Save category error:', error.response?.data || error.message);
       let message = error.response?.data?.message || t('categories.messages.saveFailed');
-
-      // Map database unique constraint errors to user-friendly messages
       if (message.includes('Unique constraint failed') && message.includes('name')) {
         message = t('categories.messages.exists');
       }
-
       setFormError(message);
     } finally {
       setIsSubmitting(false);
@@ -286,7 +278,6 @@ export function CategoriesPage() {
   };
 
   const handleDelete = async (categoryId: string) => {
-    // Fetch fresh data to ensure accurate item count
     try {
       const [catsRes, prodsRes] = await Promise.all([
         api.get('/api/categories'),
@@ -300,7 +291,6 @@ export function CategoriesPage() {
       const categoryItems = freshProducts.filter((p: Product) => p.categoryId === categoryId);
 
       if (categoryItems.length > 0) {
-        // Update local state with fresh data
         setCategories(freshCategories);
         setProducts(freshProducts);
         setDeleteBlockedCategory(category || null);
@@ -318,10 +308,7 @@ export function CategoriesPage() {
             toast.success(t('categories.messages.deleted'));
             fetchData();
           } catch (error: any) {
-            console.error('Delete category error:', error.response?.data || error.message);
             const errorMessage = error.response?.data?.message || t('categories.messages.deleteFailed');
-
-            // Show more helpful message for items with order history
             if (errorMessage.includes('historical records') || errorMessage.includes('used in orders')) {
               toast.error(t('categories.delete.blocked'), { duration: 6000 });
             } else {
@@ -336,7 +323,8 @@ export function CategoriesPage() {
   };
 
   const stats = useMemo(() => {
-    const topCategory = [...categories].sort((a, b) => (b._count?.items || 0) - (a._count?.items || 0))[0];
+    const sortedCats = [...categories].sort((a, b) => (b._count?.items || 0) - (a._count?.items || 0));
+    const topCategory = sortedCats[0];
     return {
       total: categories.length,
       products: products.length,
@@ -368,20 +356,19 @@ export function CategoriesPage() {
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('categories.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('categories.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
+            <span>{t('categories.subtitle')}</span>
+            {currentEstablishment?.name && (
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                {currentEstablishment.name}
+              </span>
+            )}
+          </p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={() => setShowCsvImport(true)}
             className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
-            title="Import from CSV"
           >
             <Upload size={18} className="group-hover:text-paymint-green transition-colors" />
             <span className="font-bold text-xs sm:text-sm hidden sm:inline">Import CSV</span>
@@ -403,7 +390,6 @@ export function CategoriesPage() {
           { label: t('categories.stats.totalItems'), value: stats.products, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
           { label: t('categories.stats.topCategory'), value: stats.top?.name || t('common.notAvailable'), sub: `${stats.top?._count?.items || 0} ${t('dashboard.menu.products')}`, icon: TrendingUp, color: 'text-purple-500', bg: 'bg-purple-500/10' },
         ].map((stat, i) => (
-
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 10 }}
@@ -442,7 +428,6 @@ export function CategoriesPage() {
           />
         </div>
 
-        {/* View Mode Toggle */}
         <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/5 shrink-0">
           <button
             onClick={() => setViewMode('grid')}
@@ -479,62 +464,63 @@ export function CategoriesPage() {
       ) : (
         <div className="space-y-8">
           {viewMode === 'grid' ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
-              {paginatedCategories.map((category, idx) => {
-                const IconComponent = ICON_MAP[category.icon || 'tag'] || Tag;
-                return (
-                  <motion.div
-                    key={category.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.05 }}
-                    onClick={() => setViewingCategory(category)}
-                    className="group relative bg-white dark:bg-[#1E293B] p-4 sm:p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all cursor-pointer overflow-hidden duration-300"
-                  >
-                    <div
-                      className="absolute top-0 left-0 w-1 h-full bg-paymint-green opacity-0 group-hover:opacity-100 transition-all duration-300"
-                    />
-                    <div className="absolute -right-6 -top-6 w-24 h-24 bg-paymint-green/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+                {paginatedCategories.map((category, idx) => {
+                  const IconComponent = ICON_MAP[category.icon || 'tag'] || Tag;
+                  return (
+                    <motion.div
+                      key={category.id}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: idx * 0.05 }}
+                      onClick={() => setViewingCategory(category)}
+                      className="group relative bg-white dark:bg-[#1E293B] p-4 sm:p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all cursor-pointer overflow-hidden duration-300"
+                    >
+                      <div className="absolute top-0 left-0 w-1 h-full bg-paymint-green opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                      <div className="absolute -right-6 -top-6 w-24 h-24 bg-paymint-green/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                    <div className="flex justify-between items-start mb-6 relative z-10">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-paymint-green group-hover:text-black transition-all duration-300 shadow-sm"
-                      >
-                        <IconComponent size={24} />
+                      <div className="flex justify-between items-start mb-6 relative z-10">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-paymint-green group-hover:text-black transition-all duration-300 shadow-sm">
+                          <IconComponent size={24} />
+                        </div>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={(e) => openEditModal(e, category)}
+                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-green transition-colors"
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
+                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-red transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex gap-1">
-                        <button
-                          onClick={(e) => openEditModal(e, category)}
-                          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-green transition-colors"
-                          title={t('common.edit')}
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
-                          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-red transition-colors"
-                          title={t('common.delete')}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
 
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors leading-tight truncate relative z-10">
-                      {category.name}
-                    </h3>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors leading-tight truncate relative z-10">
+                        {category.name}
+                      </h3>
 
-                    <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
-                      <div className="flex items-center gap-2">
-                        <Package size={14} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
-                        <span className="dashboard-card-meta group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">{t('categories.itemsCount', { count: category._count?.items || 0 })}</span>
+                      <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
+                        <div className="flex items-center gap-2">
+                          <Package size={14} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+                          <span className="dashboard-card-meta group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">{t('categories.itemsCount', { count: category._count?.items || 0 })}</span>
+                        </div>
+                        <ChevronRight size={16} className="text-gray-300 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
                       </div>
-                      <ChevronRight size={16} className="text-gray-300 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
+            </>
           ) : (
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
@@ -575,14 +561,12 @@ export function CategoriesPage() {
                               <button
                                 onClick={(e) => openEditModal(e, category)}
                                 className="p-2 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"
-                                title={t('common.edit')}
                               >
                                 <Edit2 size={16} />
                               </button>
                               <button
                                 onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
                                 className="p-2 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"
-                                title={t('common.delete')}
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -594,18 +578,16 @@ export function CategoriesPage() {
                   </tbody>
                 </table>
               </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
             </div>
           )}
-
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
         </div>
       )}
 
-      {/* Detail Modal */}
       {createPortal(
         <AnimatePresence>
           {viewingCategory && (
@@ -630,16 +612,13 @@ export function CategoriesPage() {
                 } rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] border border-gray-200 dark:border-white/10 shadow-2xl`}
                 onClick={e => e.stopPropagation()}
               >
-                {/* Mobile drag handle */}
                 <div className="sm:hidden flex justify-center pt-3 pb-1">
                   <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
                 </div>
 
                 <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center bg-paymint-green/10 text-paymint-green"
-                    >
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-paymint-green/10 text-paymint-green">
                       <ViewingIcon size={24} />
                     </div>
                     <div>
@@ -651,7 +630,6 @@ export function CategoriesPage() {
                     <button
                       onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
                       className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-paymint-green transition-colors"
-                      title={t('common.add')}
                     >
                       <Plus size={20} />
                     </button>
@@ -705,7 +683,6 @@ export function CategoriesPage() {
                           </div>
                         </div>
                       ))}
-                      {/* Add Product Card */}
                       <div
                         onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
                         className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-dashed border-gray-300 dark:border-white/20 rounded-xl group hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4 shadow-sm"
@@ -761,7 +738,6 @@ export function CategoriesPage() {
         maxRows={200}
       />
 
-      {/* Delete Blocked Modal */}
       {createPortal(
         <AnimatePresence>
           {deleteBlockedCategory && (
@@ -781,9 +757,7 @@ export function CategoriesPage() {
               >
                 <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center bg-red-500/10 text-red-500"
-                    >
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-red-500/10 text-red-500">
                       {(() => {
                         const Icon = ICON_MAP[deleteBlockedCategory.icon || 'tag'] || Tag;
                         return <Icon size={24} />;
@@ -843,5 +817,3 @@ export function CategoriesPage() {
     </div>
   );
 }
-
-

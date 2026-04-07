@@ -79,7 +79,7 @@ export const AppStrings = {
     ADMIN: "Admin",
     POS: "POS App",
     KITCHEN: "Kitchen Display",
-    INVENTORY: "Inventory",
+    INVENTORY: "Recipe operations",
     DISCOUNTS: "Discounts",
     LOYALTY: "Loyalty",
     GIFT_CARDS: "Gift Cards",

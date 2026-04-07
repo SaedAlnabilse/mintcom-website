@@ -532,14 +532,14 @@ export function BrandDashboardPage() {
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
                     <div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('brand.dashboard.locationPerformance')}</h3>
-                        <p className="card-subtitle">{t('brand.dashboard.rankedByRevenue')}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{t('brand.dashboard.rankedByRevenue')}</p>
                     </div>
                     <button
                         onClick={() => navigate(`/brand/${brandId}/locations`)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
+                        className="text-xs font-bold text-paymint-green hover:underline tracking-wide mt-1.5 flex items-center gap-1"
                     >
                         {t('brand.dashboard.viewAll')}
-                        <ChevronRight size={16} />
+                        <ChevronRight size={14} />
                     </button>
                 </div>
 
@@ -630,18 +630,18 @@ export function BrandDashboardPage() {
                     className={`xl:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
                 >
                     <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
-                            <p className="card-subtitle">{t('brand.dashboard.consolidatedPerformance')}</p>
-                        </div>
+                    <div>
+                        <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{t('brand.dashboard.consolidatedPerformance')}</p>
+                    </div>
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-paymint-green" />
-                                <span className="text-xs font-black tracking-wider text-gray-500">{t('brand.dashboard.revenue')}</span>
+                                <span className="text-xs font-medium tracking-wider text-gray-500">{t('brand.dashboard.revenue')}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-blue-500" />
-                                <span className="text-xs font-black tracking-wider text-gray-500">{t('brand.dashboard.orders')}</span>
+                                <span className="text-xs font-medium tracking-wider text-gray-500">{t('brand.dashboard.orders')}</span>
                             </div>
                         </div>
                     </div>
@@ -736,7 +736,7 @@ export function BrandDashboardPage() {
                                 </div>
                                 <div className="text-center">
                                     <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('owner.overview.noRevenueData')}</p>
-                                    <p className="card-subtitle">{t('owner.overview.noSalesRecorded')}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('owner.overview.noSalesRecorded')}</p>
                                 </div>
                             </div>
                         )}
@@ -753,7 +753,7 @@ export function BrandDashboardPage() {
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.salesByCategory')}</h3>
-                            <p className="card-subtitle">{t('brand.dashboard.revenueDistribution')}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{t('brand.dashboard.revenueDistribution')}</p>
                         </div>
                     </div>
 
@@ -792,7 +792,7 @@ export function BrandDashboardPage() {
                                 </div>
                                 <div className="text-center">
                                     <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('owner.overview.noRevenueData')}</p>
-                                    <p className="card-subtitle">{t('owner.overview.noSalesRecorded')}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('owner.overview.noSalesRecorded')}</p>
                                 </div>
                             </div>
                         )}

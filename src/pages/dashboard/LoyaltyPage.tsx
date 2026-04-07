@@ -528,13 +528,11 @@ export function LoyaltyPage() {
                                             </motion.div>
                                         ))}
                                     </div>
-                                    <div className="pt-6">
-                                        <Pagination
-                                            currentPage={currentPage}
-                                            totalPages={totalPages}
-                                            onPageChange={(page) => setCurrentPage(page)}
-                                        />
-                                    </div>
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        totalPages={totalPages}
+                                        onPageChange={(page) => setCurrentPage(page)}
+                                    />
                                 </div>
                             )}
                         </div>

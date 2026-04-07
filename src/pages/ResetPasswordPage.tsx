@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Lock, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Lock, CheckCircle, XCircle, Loader2, CheckCircle2 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -34,9 +34,22 @@ export function ResetPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<ResetPasswordFormData>({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    }
   });
+
+  const password = watch('password');
+
+  const criteria = [
+    { label: t('validation.passwordMin'), met: password.length >= 8 },
+    { label: t('validation.passwordUppercase'), met: /[A-Z]/.test(password) },
+    { label: t('validation.passwordLowercase'), met: /[a-z]/.test(password) },
+    { label: t('validation.passwordNumber'), met: /[0-9]/.test(password) },
+  ];
 
   const onSubmit = async (data: ResetPasswordFormData) => {
     if (!token) {
@@ -168,11 +181,26 @@ export function ResetPasswordPage() {
             {errors.confirmPassword && <p className="text-accent text-xs font-bold text-gray-500 mt-1 ml-1">{errors.confirmPassword.message}</p>}
           </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-gray-50 dark:bg-white/[0.02] rounded-[12px] border border-gray-200 dark:border-white/[0.05]">
+            {criteria.map((item, index) => (
+              <div key={index} className="flex items-center gap-2">
+                {item.met ? (
+                  <CheckCircle2 size={14} className="text-paymint-green flex-shrink-0" />
+                ) : (
+                  <div className="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-white/10 flex-shrink-0" />
+                )}
+                <span className={`text-[10px] font-bold ${item.met ? 'text-paymint-green' : 'text-gray-400'}`}>
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+
           <div className="pt-4">
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
+              className="w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 disabled:cursor-paymint-wait flex items-center justify-center gap-3 active:scale-95"
             >
               {isLoading ? <Loader2 className="animate-spin" size={20} /> : null}
               {t('auth.resetPassword.reset').toUpperCase()}

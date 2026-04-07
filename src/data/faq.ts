@@ -21,15 +21,15 @@ export const FAQ_DATA: FAQItem[] = [
     category: 'products',
     question: 'How do I add a new product?',
     questionAr: 'كيف أضيف منتج جديد؟',
-    answer: 'Go to Dashboard > Products and click "Add Product". Fill in the name, price, category, and optionally add an image. Enable "Track Stock" for inventory management.',
-    answerAr: 'اذهب إلى لوحة التحكم > المنتجات واضغط "إضافة منتج". أكمل الاسم والسعر والتصنيف وأضف صورة اختيارياً. فعّل "تتبع المخزون" لإدارة المخزون.'
+    answer: 'Go to Dashboard > Products and click "Add Product". Fill in the name, price, category, and optionally add an image. Enable "Track Stock" for recipe operations.',
+    answerAr: 'اذهب إلى لوحة التحكم > المنتجات واضغط "إضافة منتج". أكمل الاسم والسعر والتصنيف وأضف صورة اختيارياً. فعّل "تتبع عمليات الوصفات" لإدارة عمليات الوصفات.'
   },
   {
     category: 'products',
-    question: 'Can I track inventory?',
-    questionAr: 'هل يمكنني تتبع المخزون؟',
+    question: 'Can I track recipe operations?',
+    questionAr: 'هل يمكنني تتبع عمليات الوصفات؟',
     answer: 'Yes! When editing a product, enable "Track Stock" and set your initial quantity. You can also set low-stock thresholds to get alerts when running low.',
-    answerAr: 'نعم! عند تعديل المنتج، فعّل "تتبع المخزون" وحدد الكمية الأولية. يمكنك أيضاً تحديد حد المخزون المنخفض للحصول على تنبيهات عند النقص.'
+    answerAr: 'نعم! عند تعديل المنتج، فعّل "تتبع عمليات الوصفات" وحدد الكمية الأولية. يمكنك أيضاً تحديد حد عمليات الوصفات المنخفض للحصول على تنبيهات عند النقص.'
   },
   {
     category: 'products',

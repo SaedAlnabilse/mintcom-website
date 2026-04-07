@@ -103,7 +103,7 @@ export function SelectEstablishmentPage() {
         </div>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 text-gray-400 hover:text-PayMint-red transition-all font-sans font-bold text-xs px-4 py-2 rounded-xl hover:bg-PayMint-red/5"
+          className="flex items-center gap-2 bg-[#D55263] text-white shadow-lg shadow-red-500/20 active:scale-95 transition-all duration-300 font-sans font-bold text-xs px-6 py-2.5 rounded-xl border border-transparent hover:bg-[#C44253] hover:scale-105"
         >
           <LogOut size={16} />
           {t('common.logout')}
@@ -152,8 +152,8 @@ export function SelectEstablishmentPage() {
                 </span>
               </div>
 
-              <div className={`flex items-center gap-2 text-xs font-sans font-bold transition-all ${hoveredId === est.id ? 'text-PayMint-green' : 'text-gray-400'}`}>
-                {t('dashboard.menu.overview').toUpperCase()}
+              <div className={`flex items-center gap-2 text-[13.5px] font-sans font-bold transition-all ${hoveredId === est.id ? 'text-PayMint-green' : 'text-gray-400'}`}>
+                {t('dashboard.menu.overview').charAt(0).toUpperCase() + t('dashboard.menu.overview').slice(1).toLowerCase()}
                 <ChevronRight size={14} className={t('common.locale') === 'ar' ? 'rotate-180' : ''} />
               </div>
             </motion.div>
@@ -172,7 +172,6 @@ export function SelectEstablishmentPage() {
                 <Plus size={28} className="text-gray-400 group-hover:text-PayMint-green transition-colors" />
               </div>
               <h3 className="text-base font-sans font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
-              <p className="text-xs font-sans font-bold text-gray-500">{t('onboarding.step1.businessTypes.other')}</p>
             </motion.div>
           )}
         </div>

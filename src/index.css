@@ -17,6 +17,8 @@
 
 :root {
   --label-font-size: 13px;
+  --paymint-green: #7CC39F;
+  --accent: #D55263;
 }
 
 @layer base {
@@ -188,7 +190,7 @@
   /* Standardized Label Strong - Replaces "text-xs font-black tracking-widest" */
   .label-strong {
     font-size: var(--label-font-size);
-    @apply font-sans text-sm text-gray-400 dark:text-gray-500 font-bold tracking-normal;
+    @apply font-sans text-sm text-gray-400 dark:text-gray-500 font-medium tracking-normal;
     letter-spacing: normal !important;
     text-transform: none !important;
   }
@@ -348,23 +350,23 @@
   /* Ensure popup field titles using legacy label-strong match New Employee modal style */
   .popup-surface .label-strong {
     font-size: 0.875rem;
-    font-weight: 700;
-    color: rgb(17 24 39);
+    font-weight: 500;
+    color: rgb(107 114 128); /* Gray-500 instead of black */
     letter-spacing: -0.01em;
     text-transform: none;
   }
 
   .dark .popup-surface .label-strong {
-    color: white;
+    color: rgb(156 163 175); /* Gray-400 */
   }
 
   .popup-surface :where(input, textarea, select) {
-    @apply text-sm font-bold text-gray-900 dark:text-white;
+    @apply text-sm font-medium text-gray-900 dark:text-white;
   }
 
   .popup-surface :where(input, textarea)::placeholder {
     @apply text-gray-400 dark:text-gray-600;
-    font-weight: 700;
+    font-weight: 500;
     letter-spacing: normal;
   }
 
@@ -693,11 +695,12 @@
 
 .dark .category-pill-select button {
   background-color: rgba(255, 255, 255, 0.05) !important;
-  border-color: rgba(255, 255, 255, 0.05) !important;
-}
+  --paymint-green: #7CC39F;
+  --accent: #D55263;
+  }
 
-/* Global Loading Overlay */
-#global-blocking-overlay {
+  /* Global Loading Overlay */
+  #global-blocking-overlay {
   display: none;
   position: fixed;
   top: 0;
@@ -709,21 +712,28 @@
   cursor: url('./assets/green-loading-cursor.svg') 16 16, wait;
   pointer-events: auto;
   /* Catch all clicks */
-}
+  }
 
-body.app-loading {
+  body.app-loading {
   overflow: hidden;
   /* Prevent scrolling while loading */
-}
+  }
 
-body.app-loading #global-blocking-overlay {
+  body.app-loading #global-blocking-overlay {
   display: block;
-}
+  }
 
-.cursor-paymint-wait {
+  .cursor-paymint-wait {
   cursor: url('./assets/green-loading-cursor.svg') 16 16, wait;
+  }
+@keyframes paymint-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
-
 /* Smart Chatbot Animations */
 @keyframes chat-pulse {
 

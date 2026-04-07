@@ -42,9 +42,6 @@ const convertToDisplay = (baseQty: number, baseUnit: string, targetUnit: string)
   const baseInfo = UNIT_CONVERSIONS[baseUnit];
   const targetInfo = UNIT_CONVERSIONS[targetUnit];
   if (!baseInfo || !targetInfo || baseInfo.type !== targetInfo.type) return baseQty;
-  // Convert both to common base (g or ml) then to target
-  // Qty (BaseUnit) * Factor(Base) = CommonBase
-  // CommonBase / Factor(Target) = Qty(Target)
   return (baseQty * baseInfo.factor) / targetInfo.factor;
 };
 
@@ -52,8 +49,6 @@ const convertToBase = (displayQty: number, baseUnit: string, displayUnit: string
   const baseInfo = UNIT_CONVERSIONS[baseUnit];
   const displayInfo = UNIT_CONVERSIONS[displayUnit];
   if (!baseInfo || !displayInfo || baseInfo.type !== displayInfo.type) return displayQty;
-  // Qty(Display) * Factor(Display) = CommonBase
-  // CommonBase / Factor(Base) = Qty(Base)
   return (displayQty * displayInfo.factor) / baseInfo.factor;
 };
 
@@ -104,7 +99,7 @@ interface MenuItem {
 
 export function RecipesPage() {
   const { t } = useTranslation();
-    const { currentEstablishment } = useAuth();
+  const { currentEstablishment } = useAuth();
   usePermissionGuard(['manage_inventory']);
   const { locationSlug } = useParams();
   const navigate = useNavigate();
@@ -376,13 +371,13 @@ export function RecipesPage() {
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('manufacturing.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('manufacturing.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
+            <span>{t('manufacturing.subtitle')}</span>
+            {currentEstablishment?.name && (
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                {currentEstablishment.name}
+              </span>
+            )}
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -422,9 +417,6 @@ export function RecipesPage() {
         </div>
       </div>
 
-
-
-
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center">
         <div className="flex-1 w-full">
           <SearchInput
@@ -441,7 +433,6 @@ export function RecipesPage() {
           <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all whitespace-nowrap ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.products', {defaultValue: 'Products'})}</button>
         </div>
       </div>
-
 
       <AnimatePresence mode="wait">
         {isLoading ? (
@@ -530,77 +521,80 @@ export function RecipesPage() {
                     </tbody>
                   </table>
                 </div>
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                />
               </div>
             ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {paginatedItems.map((recipe) => (
-                <motion.div
-                  layout
-                  key={recipe.id}
-                  className="group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                  <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {paginatedItems.map((recipe) => (
+                    <motion.div
+                      layout
+                      key={recipe.id}
+                      className="group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                    >
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                      <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                  <div className="relative z-10">
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
-                          {activeTab === 'final' ? <Pizza size={20} /> : <Package size={20} />}
+                      <div className="relative z-10">
+                        <div className="flex justify-between items-start mb-6">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
+                              {activeTab === 'final' ? <Pizza size={20} /> : <Package size={20} />}
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
+                                {activeTab === 'final' ? (recipe as FinalRecipe).item?.name : (recipe as SubRecipe).name}
+                              </h3>
+                              <p className="text-xs font-black text-gray-400 tracking-widest">{((recipe as any).ingredients || []).length} {t('manufacturing.ingredients')}</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-1 transition-all">
+                            <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors" title={t('common.edit')}><Edit2 size={16} /></button>
+                            <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors" title={t('common.delete')}><Trash2 size={16} /></button>
+                          </div>
                         </div>
-                                                                          <div>
-                                                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
-                                                                              {activeTab === 'final' ? (recipe as FinalRecipe).item?.name : (recipe as SubRecipe).name}
-                                                                            </h3>
-                                                                            <p className="text-xs font-black text-gray-400 tracking-widest">{((recipe as any).ingredients || []).length} {t('manufacturing.ingredients')}</p>
-                                                                          </div>
-                                                                        </div>
-                                                                        <div className="flex gap-1 transition-all">
-                                                                          <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors" title={t('common.edit')}><Edit2 size={16} /></button>
-                                                                          <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors" title={t('common.delete')}><Trash2 size={16} /></button>
-                                                                        </div>
-                                                                      </div>
-                                              <div className="space-y-3 mb-6 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5">
-                                                {(Array.isArray((recipe as any).ingredients) ? (recipe as any).ingredients : []).slice(0, 3).map((ing: Record<string, any>, i: number) => {
-                                                  const baseUnit = ing.rawMaterial?.unit || ing.subRecipe?.yieldUnit || 'Units';
+                        <div className="space-y-3 mb-6 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                          {(Array.isArray((recipe as any).ingredients) ? (recipe as any).ingredients : []).slice(0, 3).map((ing: Record<string, any>, i: number) => {
+                            const baseUnit = ing.rawMaterial?.unit || ing.subRecipe?.yieldUnit || 'Units';
+                            let currentUnit = ing.selectedUnit || baseUnit;
+                            if (!ing.selectedUnit) {
+                              if (baseUnit === 'L' && ing.quantity < 1) currentUnit = 'Ml';
+                              else if (baseUnit === 'Kg' && ing.quantity < 1) currentUnit = 'G';
+                              else if (baseUnit === 'G' && ing.quantity < 1) currentUnit = 'Mg';
+                            }
+                            const displayQty = convertToDisplay(ing.quantity, baseUnit, currentUnit);
+                            return (
+                              <div key={i} className="flex items-center justify-between">
+                                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 truncate max-w-[120px]">{ing.rawMaterial?.name || ing.subRecipe?.name}</span>
+                                <span className="text-xs font-bold text-gray-900 dark:text-white">
+                                  {displayQty.toLocaleString(t('common.locale'), { maximumFractionDigits: 4 })} <span className="text-xs opacity-50">{currentUnit}</span>
+                                </span>
+                              </div>
+                            );
+                          })}
+                          {((recipe as any).ingredients || []).length > 3 && <p className="text-xs font-black text-paymint-green text-center mt-2 tracking-widest">+ {((recipe as any).ingredients || []).length - 3} {t('manufacturing.additionalElements')}</p>}
+                        </div>
 
-                                                  let currentUnit = ing.selectedUnit || baseUnit;
-                                                  // Smart scaling if no explicit unit is saved and value is fractional
-                                                  if (!ing.selectedUnit) {
-                                                    if (baseUnit === 'L' && ing.quantity < 1) currentUnit = 'Ml';
-                                                    else if (baseUnit === 'Kg' && ing.quantity < 1) currentUnit = 'G';
-                                                    else if (baseUnit === 'G' && ing.quantity < 1) currentUnit = 'Mg';
-                                                  }
-
-                                                  const displayQty = convertToDisplay(ing.quantity, baseUnit, currentUnit);
-
-                                                  return (
-                                                    <div key={i} className="flex items-center justify-between">
-                                                      <span className="text-xs font-bold text-gray-500 dark:text-gray-400 truncate max-w-[120px]">{ing.rawMaterial?.name || ing.subRecipe?.name}</span>
-                                                      <span className="text-xs font-bold text-gray-900 dark:text-white">
-                                                        {displayQty.toLocaleString(t('common.locale'), { maximumFractionDigits: 4 })} <span className="text-xs opacity-50">{currentUnit}</span>
-                                                      </span>
-                                                    </div>
-                                                  );
-                                                })}
-                                                {((recipe as any).ingredients || []).length > 3 && <p className="text-xs font-black text-paymint-green text-center mt-2 tracking-widest">+ {((recipe as any).ingredients || []).length - 3} {t('manufacturing.additionalElements')}</p>}
-                                              </div>
-
-                    {activeTab === 'sub' && (
-                      <button onClick={() => openManufactureModal(recipe as SubRecipe)} className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
-                        {t('manufacturing.produceBatch')}
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                        {activeTab === 'sub' && (
+                          <button onClick={() => openManufactureModal(recipe as SubRecipe)} className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
+                            {t('manufacturing.produceBatch')}
+                          </button>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                />
+              </>
             )}
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={setPage}
-            />
           </div>
         )}
       </AnimatePresence>
@@ -702,12 +696,13 @@ export function RecipesPage() {
                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                       {t('manufacturing.formula.unit')}
                     </label>
-                                            <CustomSelect
-                                              value={subRecipeForm.yieldUnit}
-                                              onChange={(val) => setSubRecipeForm({ ...subRecipeForm, yieldUnit: String(val) })}
-                                              options={units.map(u => ({ label: t(`inventory.units.${u.toLowerCase()}`, { defaultValue: u }), value: u }))}
-                                              className="w-full"
-                                            />                  </div>
+                    <CustomSelect
+                      value={subRecipeForm.yieldUnit}
+                      onChange={(val) => setSubRecipeForm({ ...subRecipeForm, yieldUnit: String(val) })}
+                      options={units.map(u => ({ label: t(`inventory.units.${u.toLowerCase()}`, { defaultValue: u }), value: u }))}
+                      className="w-full"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
@@ -739,8 +734,8 @@ export function RecipesPage() {
                                 const m = rawMaterials.find(rm => rm.id === stringVal);
                                 const updated = [...subRecipeForm.ingredients];
                                 updated[index].rawMaterialId = stringVal;
-                                updated[index].selectedUnit = m?.unit; // Reset unit on material change
-                                updated[index].quantity = 0; // Reset quantity on material change
+                                updated[index].selectedUnit = m?.unit;
+                                updated[index].quantity = 0;
                                 setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
                               }}
                               options={rawMaterials.map(m => ({ label: `${m.name} (${m.unit})`, value: m.id }))}
@@ -855,7 +850,7 @@ export function RecipesPage() {
         {showFinalRecipeModal && (
           <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
-              <div className="p-5 sm:p-6 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
+              <div className="p-5 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? t('manufacturing.editLink', {defaultValue: 'Edit Link'}) : t('manufacturing.linkProduct', {defaultValue: 'Link Product'})}</h2>
                 <button onClick={() => setShowFinalRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
               </div>
@@ -977,7 +972,6 @@ export function RecipesPage() {
                                   className="flex-1 w-full pl-5 pr-3 py-4 bg-transparent text-right font-black text-gray-900 dark:text-white focus:outline-none placeholder-gray-500/30 touch-manipulation settings-no-spin rounded-l-2xl"
                                   placeholder="0"
                                 />
-                                {/* Custom Unit Selector */}
                                 <div className="relative border-l border-gray-300 dark:border-white/10 rounded-r-2xl">
                                   <button
                                     onClick={(e) => {
@@ -990,7 +984,6 @@ export function RecipesPage() {
                                     <ChevronDown size={12} className="text-gray-400" />
                                   </button>
 
-                                  {/* Unit Dropdown Menu */}
                                   <AnimatePresence>
                                     {activeDropdown?.index === index && activeDropdown?.type === 'final' && (
                                       <>
@@ -1183,6 +1176,3 @@ export function RecipesPage() {
     </div>
   );
 }
-
-
-

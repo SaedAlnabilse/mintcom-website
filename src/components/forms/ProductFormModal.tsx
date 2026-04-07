@@ -494,7 +494,7 @@ export function ProductFormModal({
   const displayTaxRatePercent = effectiveTaxRate * 100;
   const netPrice = totalRetailPrice / (1 + effectiveTaxRate);
   const taxAmount = totalRetailPrice - netPrice;
-  const popupLabelBaseClass = 'text-sm font-bold text-gray-900 dark:text-white tracking-tight';
+  const popupLabelBaseClass = 'text-xs font-semibold text-gray-400 dark:text-gray-500 tracking-widest uppercase block mb-2';
 
   if (!isOpen) return null;
 
@@ -519,7 +519,7 @@ export function ProductFormModal({
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-6 sm:px-8 py-6 sm:py-8 relative isolate border-b border-gray-100 dark:border-white/5">
+            <div className="flex items-center justify-between px-6 sm:px-8 py-6 sm:py-8 relative isolate border-b border-gray-200 dark:border-white/10">
               <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
@@ -563,7 +563,7 @@ export function ProductFormModal({
                       }
                     }}
                     placeholder={t('products.form.namePlaceholder')}
-                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                   />
                   {errors.name && (
                     <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.name}</p>
@@ -668,7 +668,7 @@ export function ProductFormModal({
                             value={costPrice}
                             onChange={handleCostPriceChange}
                             placeholder={t('common.zero')}
-                            className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50"
+                            className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50"
                           />
                         </div>
                       </div>
@@ -696,7 +696,7 @@ export function ProductFormModal({
                             }
                           }}
                           placeholder={t('common.zero')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.price ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pl-16 pr-4 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.price ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pl-16 pr-4 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50`}
                         />
                       </div>
                     </div>
@@ -781,7 +781,7 @@ export function ProductFormModal({
                     onChange={(e) => setDescription(e.target.value.slice(0, 30))}
                     placeholder={t('products.form.descriptionPlaceholder')}
                     rows={2}
-                    className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none shadow-sm group-hover:border-paymint-green/50"
+                    className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none shadow-sm group-hover:border-paymint-green/50"
                   />
                 </div>
 
@@ -1065,9 +1065,8 @@ export function ProductFormModal({
                     <div>
                       <h4 className="text-gray-900 dark:text-white font-bold text-sm tracking-tight flex items-center gap-2">
                         {t('products.form.inventory.title')}
-                        <QuickInfo text="Set stock statuses for the product." />
                       </h4>
-                      <p className="text-xs font-bold text-gray-500 tracking-widest mt-1">{t('products.form.inventory.subtitle')}</p>
+                      <p className="text-xs font-bold text-gray-500 mt-1">{t('products.form.inventory.subtitle')}</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -1084,11 +1083,10 @@ export function ProductFormModal({
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                       <div className="flex items-center justify-between bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <div>
-                          <h4 className="text-gray-900 dark:text-white font-bold text-xs tracking-tight flex items-center gap-1">
+                          <h4 className="text-gray-900 dark:text-white font-bold text-sm tracking-tight flex items-center gap-1">
                             {t('products.form.inventory.overselling')}
-                            <QuickInfo text={t('products.form.inventory.oversellingTip')} />
                           </h4>
-                          <p className="text-gray-400 text-xs font-bold mt-0.5">{t('products.form.inventory.oversellingDesc')}</p>
+                          <p className="text-gray-500 text-xs font-bold mt-1">{t('products.form.inventory.oversellingDesc')}</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input

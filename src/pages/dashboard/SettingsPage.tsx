@@ -784,20 +784,26 @@ export function SettingsPage() {
           }
           
           return (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-6 rounded-2xl">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.tabs.profile')}</h3>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 rounded-2xl shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 border-b border-gray-100 dark:border-white/5">
+              <div>
+                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('settings.tabs.profile')}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">{t('settings.profile.detailsDesc' as any) || 'Manage your establishment identity and branding'}</p>
+              </div>
               
               {/* Login ID Section */}
               <div className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 group-hover:border-blue-500/20 transition-colors">
                 <div>
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5 mb-1">
+                  <label className="text-[10px] font-bold text-gray-400 tracking-widest flex items-center gap-1.5 mb-1">
                     <Key size={12} className="text-gray-400" />
-                    {t('owner.account.loginId') || 'LOGIN ID'}
+                    {t('owner.account.loginId') || 'Login ID'}
                   </label>
                   <code className="block text-sm font-mono font-bold text-gray-900 dark:text-white truncate select-all">
                     {estLoginId || t('common.na')}
                   </code>
+                  <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1.5 font-medium leading-relaxed">
+                    {t('settings.profile.passwordResetNote') || 'Password reset can only be done from the owner portal'}
+                  </p>
                 </div>
                 <div className="pl-4 border-l border-gray-200 dark:border-white/10">
                   <button
@@ -818,10 +824,10 @@ export function SettingsPage() {
               </div>
             </div>
 
-            <div>
-              <div className="flex flex-col gap-1 mb-2">
-                <label className="text-xs font-black text-gray-400 tracking-widest block">{t('settings.profile.logo')}</label>
-                <p className="text-[10px] text-gray-400 font-bold">{t('settings.profile.logoGuidelines')}</p>
+            <div className="space-y-6">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-black text-gray-900 dark:text-white tracking-widest uppercase">{t('settings.profile.logo')}</label>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{t('settings.profile.logoGuidelines')}</p>
               </div>
               <div className="flex items-center gap-8">
                 <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
@@ -844,25 +850,25 @@ export function SettingsPage() {
                 </div>
               </div>
             </div>
-            <div>
-              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.name')}</label>
+            <div className="space-y-2">
+              <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.name')}</label>
               <input type="text" {...register('restaurantName')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
             </div>
-            <div>
-              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.about')}</label>
+            <div className="space-y-2">
+              <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.about')}</label>
               <textarea {...register('restaurantDescription')} rows={3} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium resize-none" />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.address')}</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.address')}</label>
                 <input type="text" {...register('restaurantAddress')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
-              <div>
-                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.email')}</label>
+              <div className="space-y-2">
+                <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.email')}</label>
                 <input type="email" {...register('email')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
-              <div>
-                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.taxId')}</label>
+              <div className="space-y-2">
+                <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.taxId')}</label>
                 <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
             </div>

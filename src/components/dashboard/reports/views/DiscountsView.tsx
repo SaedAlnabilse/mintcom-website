@@ -141,13 +141,11 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
             </tbody>
           </table>
         </div>
-        <div className="p-4 border-t border-gray-100 dark:border-white/5">
-          <Pagination
-            currentPage={discountPage}
-            totalPages={Math.ceil((salesData.discountBreakdown?.length || 0) / itemsPerPage)}
-            onPageChange={(p) => setDiscountPage(p)}
-          />
-        </div>
+        <Pagination
+          currentPage={discountPage}
+          totalPages={Math.ceil((salesData.discountBreakdown?.length || 0) / itemsPerPage)}
+          onPageChange={(p) => setDiscountPage(p)}
+        />
       </div>
     </div>
   );

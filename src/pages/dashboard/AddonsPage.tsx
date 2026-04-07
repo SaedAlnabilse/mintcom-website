@@ -41,7 +41,7 @@ interface Attribute {
 
 export function AddonsPage() {
   const { t } = useTranslation();
-    const { currentEstablishment } = useAuth();
+  const { currentEstablishment } = useAuth();
   usePermissionGuard(['manage_inventory']);
   const { formatAmount, currencySymbol } = useCurrency();
   const location = useLocation();
@@ -59,7 +59,7 @@ export function AddonsPage() {
   const [parentAttributeId, setParentAttributeId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Creative Filter States
+  // Filter States
   const [filterSelection, setFilterSelection] = useState<string>('ALL');
   const [filterRequirement, setFilterRequirement] = useState<string>('ALL');
   const [filterPricing, setFilterPricing] = useState<string>('ALL');
@@ -121,30 +121,27 @@ export function AddonsPage() {
       const matchesSearch = attr.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesSelection = filterSelection === 'ALL' || attr.inputType === filterSelection;
       const matchesRequirement = filterRequirement === 'ALL' || (filterRequirement === 'MANDATORY' ? attr.isRequired : !attr.isRequired);
-
-      const hasPaid = (Array.isArray(attr.subAttributes) ? attr.subAttributes : []).some(sub => Number(sub.price) > 0);
-      const hasFree = (Array.isArray(attr.subAttributes) ? attr.subAttributes : []).some(sub => Number(sub.price) === 0);
+      
+      const subAttributes = Array.isArray(attr.subAttributes) ? attr.subAttributes : [];
+      const hasPaid = subAttributes.some(sub => Number(sub.price) > 0);
+      const hasFree = subAttributes.some(sub => Number(sub.price) === 0);
       const matchesPricing = filterPricing === 'ALL' || (filterPricing === 'PAID' ? hasPaid : hasFree);
 
       return matchesSearch && matchesSelection && matchesRequirement && matchesPricing;
     });
   }, [attributes, searchQuery, filterSelection, filterRequirement, filterPricing]);
 
-  const totalPages = Math.ceil((Array.isArray(filteredAttributes) ? filteredAttributes : []).length / itemsPerPage);
+  const totalPages = Math.ceil(filteredAttributes.length / itemsPerPage);
   const paginatedAttributes = useMemo(() => {
     const start = (page - 1) * itemsPerPage;
-    return (Array.isArray(filteredAttributes) ? filteredAttributes : []).slice(start, start + itemsPerPage);
+    return filteredAttributes.slice(start, start + itemsPerPage);
   }, [filteredAttributes, page]);
 
-  // Compute real stats from add-on data
   const stats = useMemo(() => {
-    const totalOptions = (Array.isArray(attributes) ? attributes : []).reduce((sum, attr) => sum + (Array.isArray(attr.subAttributes) ? attr.subAttributes.length : 0), 0);
-    const paidOptions = (Array.isArray(attributes) ? attributes : []).reduce((sum, attr) =>
-      sum + ((Array.isArray(attr.subAttributes) ? attr.subAttributes : []).filter(sub => Number(sub.price) > 0).length || 0), 0);
-    const requiredGroups = (Array.isArray(attributes) ? attributes : []).filter(attr => attr.isRequired).length;
-    const topGroup = [...(Array.isArray(attributes) ? attributes : [])].sort((a, b) =>
-      ((Array.isArray(b.subAttributes) ? b.subAttributes.length : 0)) - ((Array.isArray(a.subAttributes) ? a.subAttributes.length : 0))
-    )[0];
+    const totalOptions = attributes.reduce((sum, attr) => sum + (Array.isArray(attr.subAttributes) ? attr.subAttributes.length : 0), 0);
+    const paidOptions = attributes.reduce((sum, attr) => sum + (Array.isArray(attr.subAttributes) ? attr.subAttributes : []).filter(sub => Number(sub.price) > 0).length, 0);
+    const requiredGroups = attributes.filter(attr => attr.isRequired).length;
+    const topGroup = [...attributes].sort((a, b) => (b.subAttributes?.length || 0) - (a.subAttributes?.length || 0))[0];
 
     return {
       totalGroups: attributes.length,
@@ -154,7 +151,6 @@ export function AddonsPage() {
       topGroup,
     };
   }, [attributes]);
-
 
   const openAttributeModal = (attribute?: Attribute) => {
     if (attribute) {
@@ -206,6 +202,35 @@ export function AddonsPage() {
       }
       setShowAttributeModal(false);
       fetchAttributes();
+    } catch (error: any) {
+      if (error.response?.data?.message?.toLowerCase().includes('already exists')) {
+        setErrors({ groupName: error.response.data.message });
+      } else {
+        toast.error(t('attributes.errors.errorSaving'));
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSaveSubAttribute = async () => {
+    if (!subAttributeForm.name.trim()) {
+      setErrors({ optionName: t('attributes.errors.optionNameRequired') });
+      return;
+    }
+    if (!parentAttributeId) return;
+
+    setIsSubmitting(true);
+    try {
+      if (editingSubAttribute) {
+        await api.put(`/api/attributes/${parentAttributeId}/sub-attributes/${editingSubAttribute.id}`, subAttributeForm);
+        toast.success(t('attributes.messages.optionUpdated'));
+      } else {
+        await api.post(`/api/attributes/${parentAttributeId}/sub-attributes`, subAttributeForm);
+        toast.success(t('attributes.messages.optionCreated'));
+      }
+      setShowSubAttributeModal(false);
+      fetchAttributes();
     } catch {
       toast.error(t('attributes.errors.errorSaving'));
     } finally {
@@ -213,111 +238,65 @@ export function AddonsPage() {
     }
   };
 
-  const handleDeleteAttribute = async (id: string) => {
-    const attr = attributes.find((a) => a.id === id);
-
-    if (attr && attr.subAttributes?.length > 0) {
-      setConfirmConfig({
-        isOpen: true,
-        title: t('attributes.errors.deletionBlocked'),
-        message: t('attributes.errors.deletionBlockedMsg', { name: attr.name, count: attr.subAttributes.length }),
-        type: 'warning',
-        confirmText: t('common.gotIt') || 'Got it',
-        showCancel: false,
-        onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
-      });
-      return;
-    }
-
+  const handleDeleteAttribute = (id: string) => {
     setConfirmConfig({
       isOpen: true,
-      title: t('attributes.errors.deleteGroupTitle'),
-      message: t('attributes.errors.deleteGroupMsg', { name: attr?.name }),
+      title: t('attributes.confirm.deleteGroupTitle'),
+      message: t('attributes.confirm.deleteGroupMessage'),
+      confirmText: t('common.delete'),
       type: 'danger',
-      showCancel: true,
       onConfirm: async () => {
         try {
           await api.delete(`/api/attributes/${id}`);
-          toast.success(t('attributes.messages.groupRemoved'));
+          toast.success(t('attributes.messages.groupDeleted'));
           fetchAttributes();
         } catch {
-          toast.error(t('attributes.errors.deleteFailed') || 'Failed to delete');
+          toast.error(t('attributes.errors.errorDeleting'));
         }
-      }
+        setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+      },
     });
   };
 
-  const handleSaveSubAttribute = async () => {
-    setErrors({});
-    if (!subAttributeForm.name.trim()) {
-      setErrors({ optionName: t('attributes.errors.optionNameRequired') });
-      return;
-    }
-    if (!parentAttributeId) return;
-    setIsSubmitting(true);
-    try {
-      if (editingSubAttribute) {
-        await api.put(`/api/attributes/sub-attributes/${editingSubAttribute.id}`, subAttributeForm);
-        toast.success(t('attributes.messages.optionSaved'));
-      } else {
-        await api.post(`/api/attributes/${parentAttributeId}/sub-attributes`, subAttributeForm);
-        toast.success(t('attributes.messages.optionAdded'));
-      }
-      setShowSubAttributeModal(false);
-      fetchAttributes();
-    } catch {
-      toast.error(t('attributes.errors.errorSavingOption'));
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleDeleteSubAttribute = async (subAttrId: string) => {
+  const handleDeleteSubAttribute = (id: string) => {
     setConfirmConfig({
       isOpen: true,
-      title: t('attributes.errors.deleteOptionTitle'),
-      message: t('attributes.errors.deleteOptionMsg'),
+      title: t('attributes.confirm.deleteOptionTitle'),
+      message: t('attributes.confirm.deleteOptionMessage'),
+      confirmText: t('common.delete'),
       type: 'danger',
       onConfirm: async () => {
         try {
-          await api.delete(`/api/attributes/sub-attributes/${subAttrId}`);
-          toast.success(t('attributes.messages.optionRemoved'));
+          await api.delete(`/api/attributes/sub-attributes/${id}`);
+          toast.success(t('attributes.messages.optionDeleted'));
           fetchAttributes();
         } catch {
-          toast.error(t('attributes.errors.deleteFailed') || 'Failed to delete');
+          toast.error(t('attributes.errors.errorDeleting'));
         }
-      }
+        setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+      },
     });
   };
 
-  const handleQuickFilter = (
-    priceType: 'ALL' | 'FREE' | 'PAID',
-    findLargestInfo?: boolean
-  ) => {
-    // 1. Set Filter
+  const handleQuickFilter = (priceType: 'ALL' | 'FREE' | 'PAID', findLargestInfo = false) => {
     setFilterPricing(priceType);
-    setPage(1); // Reset to first page
-    setSearchQuery(''); // Clear search to ensure we find hits
+    setPage(1);
+    setSearchQuery('');
 
-    // 2. Find relevant group to auto-expand
     let targetGroup = null;
-
     if (findLargestInfo) {
-      // Logic for "Total Options" card: Scroll to largest group
       targetGroup = stats.topGroup;
     } else {
-      // Logic for Pricing: Find first group matching the priceType
-      targetGroup = (Array.isArray(attributes) ? attributes : []).find(attr => {
-        const hasPaid = (Array.isArray(attr.subAttributes) ? attr.subAttributes : []).some(sub => Number(sub.price) > 0);
-        const hasFree = (Array.isArray(attr.subAttributes) ? attr.subAttributes : []).some(sub => Number(sub.price) === 0);
-
+      targetGroup = attributes.find(attr => {
+        const subAttributes = Array.isArray(attr.subAttributes) ? attr.subAttributes : [];
+        const hasPaid = subAttributes.some(sub => Number(sub.price) > 0);
+        const hasFree = subAttributes.some(sub => Number(sub.price) === 0);
         if (priceType === 'PAID') return hasPaid;
         if (priceType === 'FREE') return hasFree;
-        return true; // ALL
+        return true;
       });
     }
 
-    // 3. Expand & Scroll
     if (targetGroup) {
       setExpandedId(targetGroup.id);
       setTimeout(() => {
@@ -345,13 +324,13 @@ export function AddonsPage() {
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('attributes.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('attributes.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
+            <span>{t('attributes.subtitle')}</span>
+            {currentEstablishment?.name && (
+              <span className="rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20 px-2 py-0.5">
+                {currentEstablishment.name}
+              </span>
+            )}
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -368,48 +347,27 @@ export function AddonsPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          {
-            label: t('attributes.stats.groups'),
-            value: stats.totalGroups,
-            icon: Layers,
-            color: 'text-blue-500',
-            bg: 'bg-blue-500/10'
-          },
-          {
-            label: t('attributes.stats.options'),
-            value: stats.totalOptions,
-            icon: Package,
-            color: 'text-paymint-green',
-            bg: 'bg-paymint-green/10'
-          },
-          {
-            label: t('attributes.stats.sales'),
-            value: stats.paidOptions,
-            sub: t('attributes.stats.withPrice'),
-            icon: DollarSign,
-            color: 'text-orange-500',
-            bg: 'bg-orange-500/10'
-          },
+          { label: t('attributes.stats.groups'), value: stats.totalGroups, icon: Layers, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: t('attributes.stats.options'), value: stats.totalOptions, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+          { label: t('attributes.stats.sales'), value: stats.paidOptions, sub: t('attributes.stats.withPrice'), icon: DollarSign, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
-          <div
-            key={i}
-            className="group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden text-left"
-          >
+          <div key={i} className="p-6 rounded-3xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden text-left relative">
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-            <div className="relative z-10 flex items-center gap-4">
-              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
-                <stat.icon size={20} />
+            <div className="relative z-10 flex items-center gap-5">
+              <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color}`}>
+                <stat.icon size={24} strokeWidth={2.5} />
               </div>
               <div>
-                <p className="dashboard-card-label mb-0.5">{stat.label}</p>
-                <p className="dashboard-card-value">{stat.value.toLocaleString(t('common.locale'))}</p>
-                {stat.sub && <p className="text-xs font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>}
+                <p className="dashboard-card-label mb-1.5">{stat.label}</p>
+                <div className="flex items-baseline gap-2">
+                  <p className="dashboard-card-value">{stat.value.toLocaleString(t('common.locale'))}</p>
+                </div>
+                {stat.sub && <p className="text-xs font-medium text-gray-400 dark:text-gray-500">{stat.sub}</p>}
               </div>
             </div>
           </div>
         ))}
       </div>
-
 
       {/* Control Bar & Filters */}
       <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 shadow-sm space-y-4">
@@ -420,21 +378,20 @@ export function AddonsPage() {
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
             placeholder={t('attributes.filters.searchPlaceholder')}
-            className="w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+            className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-12 pr-10 py-3.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 transition-all font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => { setSearchQuery(''); setPage(1); }}
-              aria-label={t('common.clearSearch', 'Clear search')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors rounded-lg"
             >
               <X size={12} strokeWidth={2.75} />
             </button>
           )}
         </div>
 
-        <div className="pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Selection Filter */}
           <div className="space-y-2">
             <p className="text-xs font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">{t('attributes.filters.selection')}</p>
@@ -442,11 +399,8 @@ export function AddonsPage() {
               {['ALL', 'SINGLE_SELECT', 'MULTI_SELECT'].map((f) => (
                 <button
                   key={f}
-                  onClick={() => { setFilterSelection(f as any); setPage(1); }}
-                  className={`flex-1 py-2 text-xs font-black tracking-tight rounded-lg transition-all ${filterSelection === f
-                    ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
-                    : 'text-gray-400 hover:text-gray-600'
-                    }`}
+                  onClick={() => { setFilterSelection(f); setPage(1); }}
+                  className={`flex-1 py-2 text-xs font-black tracking-tight rounded-lg transition-all ${filterSelection === f ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                 >
                   {f === 'SINGLE_SELECT' ? t('attributes.filters.single') : f === 'MULTI_SELECT' ? t('attributes.filters.multi') : t('attributes.filters.all')}
                 </button>
@@ -461,11 +415,8 @@ export function AddonsPage() {
               {['ALL', 'MANDATORY', 'OPTIONAL'].map((f) => (
                 <button
                   key={f}
-                  onClick={() => { setFilterRequirement(f as any); setPage(1); }}
-                  className={`flex-1 py-2 text-xs font-black tracking-tight rounded-lg transition-all ${filterRequirement === f
-                    ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
-                    : 'text-gray-400 hover:text-gray-600'
-                    }`}
+                  onClick={() => { setFilterRequirement(f); setPage(1); }}
+                  className={`flex-1 py-2 text-xs font-black tracking-tight rounded-lg transition-all ${filterRequirement === f ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                 >
                   {f === 'MANDATORY' ? t('attributes.filters.mandatory') : f === 'OPTIONAL' ? t('attributes.filters.optional') : t('attributes.filters.all')}
                 </button>
@@ -481,10 +432,7 @@ export function AddonsPage() {
                 <button
                   key={f}
                   onClick={() => handleQuickFilter(f as any)}
-                  className={`flex-1 py-2 text-xs font-black tracking-tight rounded-lg transition-all ${filterPricing === f
-                    ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
-                    : 'text-gray-400 hover:text-gray-600'
-                    }`}
+                  className={`flex-1 py-2 text-xs font-black tracking-tight rounded-lg transition-all ${filterPricing === f ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                 >
                   {f === 'FREE' ? t('attributes.filters.free') : f === 'PAID' ? t('attributes.filters.paid') : t('attributes.filters.all')}
                 </button>
@@ -501,6 +449,7 @@ export function AddonsPage() {
               setFilterRequirement('ALL');
               setFilterPricing('ALL');
               setSearchQuery('');
+              setPage(1);
             }}
             className="text-xs font-black text-gray-400 hover:text-paymint-red tracking-widest flex items-center gap-1.5 transition-colors"
           >
@@ -523,76 +472,80 @@ export function AddonsPage() {
           <p className="text-sm font-bold text-gray-500 max-w-xs">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'add-ons', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('attributes.list.noAddonsDesc')}</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {paginatedAttributes.map((attr) => (
-            <div
-              key={attr.id}
-              id={`group-${attr.id}`}
-              className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden hover:shadow-sm transition-all duration-300"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <>
+          <div className="space-y-4">
+            {paginatedAttributes.map((attr) => (
               <div
-                className="flex items-center justify-between p-6 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group"
+                key={attr.id}
+                id={`group-${attr.id}`}
+                className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden hover:shadow-sm transition-all duration-300"
               >
-                <div className="flex items-center gap-5">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black border ${attr.isRequired ? 'bg-paymint-green text-black border-paymint-green' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10'
-                    }`}>
-                    {attr.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <h3 className="font-bold text-gray-900 dark:text-white text-lg">{attr.name}</h3>
-                      {attr.isRequired && (
-                        <span className="text-xs font-black tracking-widest px-2 py-0.5 bg-paymint-green/10 text-paymint-green rounded-md border border-paymint-green/20">{t('attributes.list.mandatory')}</span>
-                      )}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div
+                  className="flex items-center justify-between p-6 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group"
+                >
+                  <div className="flex items-center gap-5">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black border ${attr.isRequired ? 'bg-paymint-green text-black border-paymint-green' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10'}`}>
+                      {attr.name.charAt(0).toUpperCase()}
                     </div>
-                    <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">
-                      {attr.inputType === 'SINGLE_SELECT' ? t('attributes.list.singleChoice') : t('attributes.list.multipleChoice')} &bull; {attr.subAttributes?.length || 0} {t('attributes.list.options')}
-                    </p>
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-bold text-gray-900 dark:text-white text-lg">{attr.name}</h3>
+                        {attr.isRequired && (
+                          <span className="text-xs font-black tracking-widest px-2 py-0.5 bg-paymint-green/10 text-paymint-green rounded-md border border-paymint-green/20">{t('attributes.list.mandatory')}</span>
+                        )}
+                      </div>
+                      <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">
+                        {attr.inputType === 'SINGLE_SELECT' ? t('attributes.list.singleChoice') : t('attributes.list.multipleChoice')} &bull; {attr.subAttributes?.length || 0}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex gap-3">
+                  <div className="flex items-center gap-4">
+                    <div className="flex gap-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSubAttributeForm({ name: '', price: 0, isAvailable: true });
+                          setParentAttributeId(attr.id);
+                          setShowSubAttributeModal(true);
+                        }}
+                        className="w-10 h-10 flex items-center justify-center bg-paymint-green text-black rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 group active:scale-90"
+                        title={t('attributes.addOption')}
+                      >
+                        <Plus size={20} strokeWidth={3} className="transition-transform group-hover:rotate-90" />
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); openAttributeModal(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-colors" title={t('common.edit')}>
+                        <Edit2 size={16} />
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr.id); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-red hover:border-paymint-red/30 transition-colors" title={t('common.delete')}>
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                     <button
-                      onClick={(e) => { e.stopPropagation(); openSubAttributeModal(attr.id); }}
-                      className="p-2 rounded-xl bg-paymint-green/10 border border-paymint-green/20 text-paymint-green hover:bg-paymint-green hover:text-black transition-all"
-                      title={t('attributes.list.addOption')}
+                      onClick={() => setExpandedId(expandedId === attr.id ? null : attr.id)}
+                      className={`p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-all ${expandedId === attr.id ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-300'}`}
                     >
-                      <Plus size={16} />
-                    </button>
-                    <button onClick={(e) => { e.stopPropagation(); openAttributeModal(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-colors" title={t('common.edit')}>
-                      <Edit2 size={16} />
-                    </button>
-                    <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr.id); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-red hover:border-paymint-red/30 transition-colors" title={t('common.delete')}>
-                      <Trash2 size={16} />
+                      <ChevronDown className={`w-5 h-5 transition-transform duration-500 ${expandedId === attr.id ? 'rotate-180' : ''}`} />
                     </button>
                   </div>
-                  <button 
-                    onClick={() => setExpandedId(expandedId === attr.id ? null : attr.id)}
-                    className={`p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-all ${expandedId === attr.id ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-300'}`}
-                  >
-                    <ChevronDown className={`w-5 h-5 transition-transform duration-500 ${expandedId === attr.id ? 'rotate-180' : ''}`} />
-                  </button>
                 </div>
-              </div>
 
                 {expandedId === attr.id && (
-                  <div
-                    className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-8"
-                  >
+                  <div className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-8">
                     <div className="flex items-center justify-between mb-6">
-                      <span className="text-xs font-black text-gray-400 tracking-[0.2em] font-sans">{t('attributes.list.options')}</span>
+                      <div />
                       <button
                         onClick={() => openSubAttributeModal(attr.id)}
-                        className="px-4 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-sm font-bold tracking-tight rounded-xl hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all flex items-center gap-2"
+                        className="w-10 h-10 flex items-center justify-center bg-paymint-green text-black rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 group active:scale-90"
+                        title={t('attributes.addOption')}
                       >
-                        <Plus size={14} /> {t('attributes.list.addOption')}
+                        <Plus size={20} strokeWidth={3} className="transition-transform group-hover:rotate-90" />
                       </button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                      {attr.subAttributes
-                        ?.filter(sub => {
+                      {(attr.subAttributes || [])
+                        .filter(sub => {
                           if (filterPricing === 'PAID') return Number(sub.price) > 0;
                           if (filterPricing === 'FREE') return Number(sub.price) === 0;
                           return true;
@@ -618,179 +571,179 @@ export function AddonsPage() {
                     </div>
                   </div>
                 )}
-            </div>
-          ))}
-
-          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-8" />
-        </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8">
+            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+          </div>
+        </>
       )}
 
       {/* Add-on Group Modal */}
-        {showAttributeModal && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
-            <div className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl h-[92vh] sm:h-auto flex flex-col">
-              {/* Mobile drag handle */}
-              <div className="sm:hidden flex justify-center pt-3 pb-1">
-                <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+      {showAttributeModal && (
+        <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
+          <div className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl h-[92vh] sm:h-auto flex flex-col">
+            <div className="sm:hidden flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+            </div>
+            <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.groupTitle')}</h2>
+              <button onClick={() => setShowAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+              <div>
+                <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">
+                  {t('attributes.form.groupNameLabel')} <span className="text-paymint-red">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={attributeForm.name}
+                  onChange={(e) => {
+                    setAttributeForm({ ...attributeForm, name: e.target.value });
+                    if (errors.groupName) setErrors({ ...errors, groupName: '' });
+                  }}
+                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.groupName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                  placeholder={t('attributes.form.groupNamePlaceholder')}
+                />
+                {errors.groupName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.groupName}</p>}
               </div>
-              <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('attributes.form.groupTitle')}</h2>
-                <button onClick={() => setShowAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
-                  <X size={24} />
-                </button>
-              </div>
-              <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
-                <div>
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
-                    {t('attributes.form.groupNameLabel')} <span className="text-paymint-red">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={attributeForm.name}
-                    onChange={(e) => {
-                      setAttributeForm({ ...attributeForm, name: e.target.value });
-                      if (errors.groupName) setErrors({ ...errors, groupName: '' });
-                    }}
-                    className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.groupName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder={t('attributes.form.groupNamePlaceholder')}
-                  />
-                  {errors.groupName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.groupName}</p>}
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setAttributeForm({ ...attributeForm, inputType: 'SINGLE_SELECT' })}
-                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'SINGLE_SELECT'
-                      ? 'bg-paymint-green/10 border-paymint-green'
-                      : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
-                      }`}
-                  >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'SINGLE_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
-                      <MousePointerClick size={20} strokeWidth={2.5} />
-                    </div>
-                    <div>
-                      <p className={`text-sm font-bold ${attributeForm.inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
-                      <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.singleDesc')}</p>
-                    </div>
-                    {attributeForm.inputType === 'SINGLE_SELECT' && (
-                      <div className="absolute top-4 right-4 text-paymint-green">
-                        <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                      </div>
-                    )}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setAttributeForm({ ...attributeForm, inputType: 'MULTI_SELECT' })}
-                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'MULTI_SELECT'
-                      ? 'bg-paymint-green/10 border-paymint-green'
-                      : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
-                      }`}
-                  >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'MULTI_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
-                      <CheckSquare size={20} strokeWidth={2.5} />
-                    </div>
-                    <div>
-                      <p className={`text-sm font-bold ${attributeForm.inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
-                      <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.multipleDesc')}</p>
-                    </div>
-                    {attributeForm.inputType === 'MULTI_SELECT' && (
-                      <div className="absolute top-4 right-4 text-paymint-green">
-                        <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                      </div>
-                    )}
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
-                  <div>
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">{t('attributes.form.requiredLabel')}</p>
-                    <p className="text-xs text-gray-500 font-bold mt-0.5">{t('attributes.form.requiredDesc')}</p>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setAttributeForm({ ...attributeForm, inputType: 'SINGLE_SELECT' })}
+                  className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'SINGLE_SELECT'
+                    ? 'bg-paymint-green/10 border-paymint-green'
+                    : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+                    }`}
+                >
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'SINGLE_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                    <MousePointerClick size={20} strokeWidth={2.5} />
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" checked={attributeForm.isRequired} onChange={() => setAttributeForm({ ...attributeForm, isRequired: !attributeForm.isRequired })} className="sr-only peer" />
-                    <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
-                  </label>
-                </div>
+                  <div>
+                    <p className={`text-sm font-bold ${attributeForm.inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
+                    <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.singleDesc')}</p>
+                  </div>
+                  {attributeForm.inputType === 'SINGLE_SELECT' && (
+                    <div className="absolute top-4 right-4 text-paymint-green">
+                      <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                    </div>
+                  )}
+                </button>
 
-                <button onClick={handleSaveAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
-                  {t('common.save')}
+                <button
+                  type="button"
+                  onClick={() => setAttributeForm({ ...attributeForm, inputType: 'MULTI_SELECT' })}
+                  className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'MULTI_SELECT'
+                    ? 'bg-paymint-green/10 border-paymint-green'
+                    : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+                    }`}
+                >
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'MULTI_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                    <CheckSquare size={20} strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <p className={`text-sm font-bold ${attributeForm.inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
+                    <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.multipleDesc')}</p>
+                  </div>
+                  {attributeForm.inputType === 'MULTI_SELECT' && (
+                    <div className="absolute top-4 right-4 text-paymint-green">
+                      <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                    </div>
+                  )}
                 </button>
               </div>
+
+              <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
+                <div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white leading-none mb-1">{t('attributes.form.requiredLabel')}</p>
+                  <p className="text-xs text-gray-500 font-medium">{t('attributes.form.requiredDesc')}</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" checked={attributeForm.isRequired} onChange={() => setAttributeForm({ ...attributeForm, isRequired: !attributeForm.isRequired })} className="sr-only peer" />
+                  <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
+                </label>
+              </div>
+
+              <button onClick={handleSaveAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
+                {t('common.save')}
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
       {/* Add-on Option Modal */}
-        {showSubAttributeModal && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
-            <div className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl h-[92vh] sm:h-auto flex flex-col">
-              {/* Mobile drag handle */}
-              <div className="sm:hidden flex justify-center pt-3 pb-1">
-                <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+      {showSubAttributeModal && (
+        <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
+          <div className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl h-[92vh] sm:h-auto flex flex-col">
+            <div className="sm:hidden flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+            </div>
+            <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.optionTitle')}</h2>
+              <button onClick={() => setShowSubAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+              <div>
+                <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">
+                  {t('attributes.form.optionNameLabel')} <span className="text-paymint-red">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={subAttributeForm.name}
+                  onChange={(e) => {
+                    setSubAttributeForm({ ...subAttributeForm, name: e.target.value });
+                    if (errors.optionName) setErrors({ ...errors, optionName: '' });
+                  }}
+                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.optionName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                  placeholder={t('attributes.form.optionNamePlaceholder')}
+                />
+                {errors.optionName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.optionName}</p>}
               </div>
-              <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('attributes.form.optionTitle')}</h2>
-                <button onClick={() => setShowSubAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
-                  <X size={24} />
-                </button>
-              </div>
-              <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
-                <div>
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
-                    {t('attributes.form.optionNameLabel')} <span className="text-paymint-red">*</span>
-                  </label>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">{t('attributes.form.priceLabel')}</label>
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg">
+                    <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
+                  </div>
                   <input
                     type="text"
-                    value={subAttributeForm.name}
+                    inputMode="decimal"
+                    value={subAttributeForm.price === 0 ? '' : subAttributeForm.price.toFixed(2)}
+                    placeholder="0.00"
                     onChange={(e) => {
-                      setSubAttributeForm({ ...subAttributeForm, name: e.target.value });
-                      if (errors.optionName) setErrors({ ...errors, optionName: '' });
+                      const val = e.target.value.replace(/\D/g, '');
+                      const numericValue = parseInt(val || '0', 10) / 100;
+                      setSubAttributeForm({ ...subAttributeForm, price: numericValue });
                     }}
-                    className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.optionName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder={t('attributes.form.optionNamePlaceholder')}
+                    className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-3.5 text-gray-900 dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                   />
-                  {errors.optionName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.optionName}</p>}
                 </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-gray-400 tracking-widest mb-2 px-1">{t('attributes.form.priceLabel')}</label>
-                  <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg">
-                      <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
-                    </div>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      value={subAttributeForm.price === 0 ? '' : subAttributeForm.price.toFixed(2)}
-                      placeholder="0.00"
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/\D/g, '');
-                        const numericValue = parseInt(val || '0', 10) / 100;
-                        setSubAttributeForm({ ...subAttributeForm, price: numericValue });
-                      }}
-                      className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-3 text-gray-900 dark:text-white font-bold text-lg focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
-                    />
-                  </div>
-                  <p className="mt-2 text-xs font-black text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle')}</p>
-                </div>
-
-                <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
-                  <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.availableLabel')}</p>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" checked={subAttributeForm.isAvailable} onChange={() => setSubAttributeForm({ ...subAttributeForm, isAvailable: !subAttributeForm.isAvailable })} className="sr-only peer" />
-                    <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
-                  </label>
-                </div>
-
-                <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
-                  {t('common.save')}
-                </button>
+                <p className="mt-2 text-[10px] font-medium text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle')}</p>
               </div>
+
+              <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
+                <p className="text-sm font-medium text-gray-900 dark:text-white tracking-tight">{t('attributes.form.availableLabel')}</p>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" checked={subAttributeForm.isAvailable} onChange={() => setSubAttributeForm({ ...subAttributeForm, isAvailable: !subAttributeForm.isAvailable })} className="sr-only peer" />
+                  <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
+                </label>
+              </div>
+
+              <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
+                {t('common.save')}
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}
@@ -806,5 +759,3 @@ export function AddonsPage() {
     </div>
   );
 }
-
-

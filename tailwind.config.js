@@ -168,6 +168,7 @@ export default {
       animation: {
         'marquee': 'marquee 20s linear infinite',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'spin-fast': 'spin 0.8s linear infinite',
       },
       keyframes: {
         marquee: {

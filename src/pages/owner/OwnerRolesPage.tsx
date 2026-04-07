@@ -505,18 +505,17 @@ export function OwnerRolesPage() {
                             </button>
                           </div>
                         </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+            </>
+          )}
       </div>
 
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} className="mt-6" />
-
-      <CustomRoleFormModal
+                        <CustomRoleFormModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onSubmit={handleFormSubmit}

@@ -402,7 +402,7 @@ export function StaffPage() {
               <div>
                 <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none mb-1">{stat.value.toLocaleString(t('common.locale'))}</p>
-                <p className="hidden sm:block text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize truncate">{stat.info}</p>
+                <p className="hidden sm:block text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{stat.info}</p>
               </div>
             </div>
           </div>
@@ -700,14 +700,12 @@ export function StaffPage() {
             </div>
           </>
         )}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={paginate}
+        />
       </div >
-
-      {/* Pagination Controls */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={paginate}
-      />
 
       <EmployeeFormModal
         isOpen={showModal}

@@ -175,15 +175,11 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
           </table>
         </div>
 
-        {sortedShifts.length > itemsPerPage && (
-          <div className="p-4 border-t border-gray-200 dark:border-white/5">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={Math.ceil(sortedShifts.length / itemsPerPage)}
-              onPageChange={setCurrentPage}
-            />
-          </div>
-        )}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(sortedShifts.length / itemsPerPage)}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

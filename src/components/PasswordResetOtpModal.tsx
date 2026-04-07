@@ -152,7 +152,17 @@ export function PasswordResetOtpModal({
             return;
         }
 
-        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {
+        if (!/[A-Z]/.test(newPassword)) {
+            setError(t('auth.validation.passwordUppercase'));
+            return;
+        }
+
+        if (!/[a-z]/.test(newPassword)) {
+            setError(t('auth.validation.passwordLowercase'));
+            return;
+        }
+
+        if (!/[0-9]/.test(newPassword)) {
             setError(t('auth.validation.passwordNumber'));
             return;
         }
@@ -187,6 +197,13 @@ export function PasswordResetOtpModal({
             setIsLoading(false);
         }
     };
+
+    const criteria = [
+        { label: t('auth.validation.passwordMin'), met: newPassword.length >= 8 },
+        { label: t('auth.validation.passwordUppercase'), met: /[A-Z]/.test(newPassword) },
+        { label: t('auth.validation.passwordLowercase'), met: /[a-z]/.test(newPassword) },
+        { label: t('auth.validation.passwordNumber'), met: /[0-9]/.test(newPassword) },
+    ];
 
     const handleClose = () => {
         if (step === 'success') {
@@ -396,6 +413,21 @@ export function PasswordResetOtpModal({
                                             {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                         </button>
                                     </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-gray-50 dark:bg-white/[0.02] rounded-[12px] border border-gray-200 dark:border-white/[0.05]">
+                                    {criteria.map((item, index) => (
+                                        <div key={index} className="flex items-center gap-2">
+                                            {item.met ? (
+                                                <CheckCircle2 size={14} className="text-paymint-green flex-shrink-0" />
+                                            ) : (
+                                                <div className="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-white/10 flex-shrink-0" />
+                                            )}
+                                            <span className={`text-[10px] font-bold ${item.met ? 'text-paymint-green' : 'text-gray-400'}`}>
+                                                {item.label}
+                                            </span>
+                                        </div>
+                                    ))}
                                 </div>
 
                                 {error && (

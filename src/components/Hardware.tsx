@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Tablet, Printer, X, CheckCircle2, ExternalLink } from 'lucide-react';
+import { Tablet, Printer, X, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -49,6 +49,30 @@ export const Hardware = () => {
           specs: t('landing.hardware.products.lenovo.specs'),
           price: (150).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
           link: 'https://www.amazon.com/s?k=lenovo+tab+m10+plus'
+        },
+        {
+          name: t('landing.hardware.products.ipadAir.name'),
+          specs: t('landing.hardware.products.ipadAir.specs'),
+          price: (599).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          link: 'https://www.amazon.com/s?k=ipad+air+m2'
+        },
+        {
+          name: t('landing.hardware.products.ipadPro.name'),
+          specs: t('landing.hardware.products.ipadPro.specs'),
+          price: (999).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          link: 'https://www.amazon.com/s?k=ipad+pro+m4'
+        },
+        {
+          name: t('landing.hardware.products.samsungTabS9FE.name'),
+          specs: t('landing.hardware.products.samsungTabS9FE.specs'),
+          price: (350).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          link: 'https://www.amazon.com/s?k=samsung+galaxy+tab+s9+fe'
+        },
+        {
+          name: t('landing.hardware.products.surfaceGo.name'),
+          specs: t('landing.hardware.products.surfaceGo.specs'),
+          price: (550).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          link: 'https://www.amazon.com/s?k=microsoft+surface+go+4'
         }
       ],
       note: t('landing.hardware.tablets.note')
@@ -76,6 +100,42 @@ export const Hardware = () => {
           specs: t('landing.hardware.products.star.specs'),
           price: (250).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
           link: 'https://www.amazon.com/s?k=star+micronics+tsp143'
+        },
+        {
+          name: t('landing.hardware.products.epsonM30.name'),
+          specs: t('landing.hardware.products.epsonM30.specs'),
+          price: (280).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          link: 'https://www.amazon.com/s?k=epson+tm-m30ii'
+        },
+        {
+          name: t('landing.hardware.products.starMC.name'),
+          specs: t('landing.hardware.products.starMC.specs'),
+          price: (320).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          link: 'https://www.amazon.com/s?k=star+micronics+mc-print3'
+        },
+        {
+          name: t('landing.hardware.products.starTSP654.name'),
+          specs: t('landing.hardware.products.starTSP654.specs'),
+          price: (240).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          link: 'https://www.amazon.com/s?k=star+micronics+tsp654ii'
+        },
+        {
+          name: t('landing.hardware.products.bixolon.name'),
+          specs: t('landing.hardware.products.bixolon.specs'),
+          price: (220).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          link: 'https://www.amazon.com/s?k=bixolon+srp-350plusiii'
+        },
+        {
+          name: t('landing.hardware.products.citizen.name'),
+          specs: t('landing.hardware.products.citizen.specs'),
+          price: (190).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          link: 'https://www.amazon.com/s?k=citizen+ct-e351'
+        },
+        {
+          name: t('landing.hardware.products.starMC2.name'),
+          specs: t('landing.hardware.products.starMC2.specs'),
+          price: (260).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          link: 'https://www.amazon.com/s?k=star+micronics+mc-print2'
         }
       ],
       note: t('landing.hardware.printers.note')
@@ -83,6 +143,9 @@ export const Hardware = () => {
   ];
 
   const [selectedHardware, setSelectedHardware] = useState(hardwareItems[0]);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 3;
+
 
   return (
     <>
@@ -129,19 +192,19 @@ export const Hardware = () => {
                 {/* Quick Product List */}
                 <div className="space-y-3 mb-6">
                   {item.products.slice(0, 2).map((product, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-black/20 rounded-xl">
+                    <div key={idx} className="flex items-center p-3 bg-gray-50 dark:bg-black/20 rounded-xl">
                       <div className="flex items-center gap-3">
                         <CheckCircle2 size={16} className="text-paymint-green" />
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{product.name}</span>
                       </div>
-                      <span className="text-sm font-bold text-paymint-green">{product.price}</span>
                     </div>
                   ))}
                 </div>
 
                 <button
-                  onClick={() => {
+                   onClick={() => {
                     setSelectedHardware(item);
+                    setItemOffset(0);
                     setShowModal(true);
                   }}
                   className="w-full py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white font-bold rounded-xl hover:bg-paymint-green hover:text-black transition-all"
@@ -204,26 +267,10 @@ export const Hardware = () => {
 
               {/* Content */}
               <div className="p-6 overflow-y-auto max-h-[60vh]">
-                {/* Tabs */}
-                <div className="flex gap-2 mb-6">
-                  {hardwareItems.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => setSelectedHardware(item)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${selectedHardware.id === item.id
-                        ? 'bg-paymint-green text-black'
-                        : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'
-                        }`}
-                    >
-                      <item.icon size={16} />
-                      {item.name}
-                    </button>
-                  ))}
-                </div>
 
-                {/* Products List */}
+                 {/* Products List */}
                 <div className="space-y-3 mb-6">
-                  {selectedHardware.products.map((product, idx) => (
+                  {selectedHardware.products.slice(itemOffset, itemOffset + itemsPerPage).map((product, idx) => (
                     <a
                       key={idx}
                       href={product.link}
@@ -240,20 +287,43 @@ export const Hardware = () => {
                           <p className="text-sm text-gray-500 dark:text-gray-400">{product.specs}</p>
                         </div>
                       </div>
-                      <div className="text-right flex items-center gap-3">
-                        <div>
-                          <p className="font-bold text-paymint-green">{product.price}</p>
-                          <p className="text-xs text-gray-400">Amazon</p>
-                        </div>
-                        <ExternalLink size={16} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
-                      </div>
                     </a>
                   ))}
                 </div>
 
+                {/* Item Pagination */}
+                {selectedHardware.products.length > itemsPerPage && (
+                  <div className="flex items-center justify-center gap-4 mb-6">
+                    <button
+                      disabled={itemOffset === 0}
+                      onClick={() => setItemOffset(prev => Math.max(0, prev - itemsPerPage))}
+                      className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-paymint-green disabled:opacity-50 disabled:hover:text-gray-500 transition-colors"
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                    <div className="flex gap-1.5">
+                      {Array.from({ length: Math.ceil(selectedHardware.products.length / itemsPerPage) }).map((_, i) => (
+                        <div
+                          key={i}
+                          className={`w-2 h-2 rounded-full transition-all ${Math.floor(itemOffset / itemsPerPage) === i ? 'bg-paymint-green w-4' : 'bg-gray-300 dark:bg-white/10'}`}
+                        />
+                      ))}
+                    </div>
+                    <button
+                      disabled={itemOffset + itemsPerPage >= selectedHardware.products.length}
+                      onClick={() => setItemOffset(prev => prev + itemsPerPage)}
+                      className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-paymint-green disabled:opacity-50 disabled:hover:text-gray-500 transition-colors"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  </div>
+                )}
+
+
+
                 {/* Note */}
                 <div className="p-4 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-200 dark:border-blue-500/20">
-                  <p className="text-sm text-blue-700 dark:text-blue-400">
+                  <p className="text-sm text-blue-700 dark:text-blue-400 text-center">
                     <span className="font-bold">💡 {t('common.tip')}:</span> {selectedHardware.note}
                   </p>
                 </div>

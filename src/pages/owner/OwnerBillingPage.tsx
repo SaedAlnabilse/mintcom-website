@@ -562,9 +562,11 @@ export function OwnerBillingPage() {
                                             <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-sm font-bold text-gray-400 group-hover:text-paymint-green transition-colors">
                                                 {est.name.charAt(0)}
                                             </div>
-                                            <div>
-                                                <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{est.name}</h3>
-                                                <p className="dashboard-card-meta">
+                                            <div className="min-w-0">
+                                                <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white truncate" title={est.name}>
+                                                    {est.name}
+                                                </h3>
+                                                <p className="dashboard-card-meta truncate">
                                                     {est.billingCycle === 'yearly' ? t('owner.billing.yearlyPlan') : t('owner.billing.monthlyPlan')}
                                                 </p>
                                             </div>
@@ -676,7 +678,7 @@ export function OwnerBillingPage() {
                             </div>
                         )}
 
-                        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} className="mt-6" />
+                        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
                     </div>
 
                     {/* Alert Banner for Cancellations */}

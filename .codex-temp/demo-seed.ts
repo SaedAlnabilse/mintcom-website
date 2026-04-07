@@ -1495,7 +1495,7 @@ function buildShiftPlans(
   return shiftPlans.sort((left, right) => left.startTime.getTime() - right.startTime.getTime());
 }
 
-function buildFallbackOrderWindows(establishmentId: string, employees: any[], random: DemoRandom) {
+function buildFallbackOrderWindows(establishmentId: string, employees: any[]) {
   const posEmployees = employees.filter((employee) => employee.assignments?.[0]?.posAccess !== false);
   const today = startOfDay(new Date());
   const windows: any[] = [];
@@ -1561,7 +1561,7 @@ function buildOrderPlans(params: {
 
   const orderPlans: any[] = [];
   const cashSalesByShiftKey = new Map<string, number>();
-  const sourceWindows = shiftPlans.length > 0 ? shiftPlans : buildFallbackOrderWindows(establishment.id, employees, random);
+  const sourceWindows = shiftPlans.length > 0 ? shiftPlans : buildFallbackOrderWindows(establishment.id, employees);
 
   let created = 0;
   let windowIndex = 0;

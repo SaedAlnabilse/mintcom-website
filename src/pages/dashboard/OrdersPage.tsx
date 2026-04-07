@@ -1330,7 +1330,7 @@ export function OrdersPage() {
                     </div>
 
                     <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      <span className="text-xs font-bold text-gray-500 dark:text-gray-400 capitalize">
                         {t('orders.table.staff')}: {order.user?.username}
                       </span>
                       <ChevronRight size={14} className="text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -1641,16 +1641,14 @@ export function OrdersPage() {
             </table>
           </div>
         )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          totalItems={totalCount}
+          itemsPerPage={10}
+        />
       </div>
-
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-        totalItems={totalCount}
-        itemsPerPage={10}
-        className="mt-6"
-      />
 
       {selectedOrder && (
         <OrderDetailModal

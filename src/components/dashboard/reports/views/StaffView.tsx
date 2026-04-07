@@ -374,13 +374,11 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
             </table>
           </div>
 
-          <div className="p-4 border-t border-gray-100 dark:border-white/[0.05]">
-            <Pagination
-              currentPage={staffPage}
-              totalPages={Math.ceil(sortedEmployees.length / itemsPerPage)}
-              onPageChange={(p) => setStaffPage(p)}
-            />
-          </div>
+          <Pagination
+            currentPage={staffPage}
+            totalPages={Math.ceil(sortedEmployees.length / itemsPerPage)}
+            onPageChange={(p) => setStaffPage(p)}
+          />
         </div>
       </div>
     </div>

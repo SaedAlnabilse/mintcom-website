@@ -56,7 +56,7 @@ The whole process takes just a few minutes. What would you like help with first?
 - Multi-device support - connect multiple devices to one account
 - Real-time sales tracking and analytics
 - Shift management with cash reconciliation
-- Inventory control with low-stock alerts
+- Recipe operations with low-stock alerts
 - Built-in loyalty program for customer rewards
 - Multi-language support (English & Arabic)
 - Detailed reports with PDF export
@@ -69,7 +69,7 @@ It's designed to make your daily operations smooth and efficient!`,
 - دعم أجهزة متعددة متصلة بحساب واحد
 - تتبع المبيعات والتحليلات بشكل فوري
 - إدارة الورديات مع مطابقة النقد
-- مراقبة المخزون مع تنبيهات النقص
+- عمليات الوصفات مع تنبيهات النقص
 - برنامج ولاء مدمج لمكافأة العملاء
 - دعم اللغتين العربية والإنجليزية
 - تقارير مفصلة مع تصدير PDF
@@ -299,7 +299,7 @@ All cash movements are recorded and included in your shift summary.`,
    - **Cost Price** - for profit tracking
    - **SKU/Barcode** - for scanning (optional)
    - **Image** - tap the camera icon to upload
-4. Toggle **"Track Stock"** if you want inventory tracking
+4. Toggle **"Track Stock"** if you want recipe operations tracking
 5. Click **"Save"**
 
 Your product is now ready to sell!`,
@@ -314,13 +314,13 @@ Your product is now ready to sell!`,
    - **سعر التكلفة** - لتتبع الأرباح
    - **الباركود** - للمسح (اختياري)
    - **الصورة** - لرفع صورة المنتج
-4. فعّل **"تتبع المخزون"** إذا أردت
+4. فعّل **"تتبع عمليات الوصفات"** إذا أردت
 5. اضغط **"حفظ"**
 
 منتجك جاهز للبيع الآن! 🎉`,
     category: 'products',
     navigationPath: '/dashboard/:location/products',
-    relatedTopics: ['categories', 'inventory', 'addons']
+    relatedTopics: ['categories', 'recipe operations', 'addons']
   },
   {
     id: 'categories',
@@ -353,11 +353,11 @@ Your product is now ready to sell!`,
     relatedTopics: ['add-product']
   },
   {
-    id: 'inventory',
-    keywords: ['inventory', 'stock', 'track stock', 'low stock', 'out of stock', 'quantity', 'stock levels', 'مخزون', 'تتبع المخزون', 'مخزون منخفض', 'نفاد المخزون', 'كمية', 'جرد'],
-    question: 'How do I track inventory?',
-    questionAr: 'كيف أتتبع المخزون؟',
-    answer: `PayMint makes inventory tracking automatic!
+    id: 'recipe operations',
+    keywords: ['recipe operations', 'stock', 'track stock', 'low stock', 'out of stock', 'quantity', 'stock levels', 'مخزون', 'تتبع عمليات الوصفات', 'مخزون منخفض', 'نفاد عمليات الوصفات', 'كمية', 'جرد'],
+    question: 'How do I track recipe operations?',
+    questionAr: 'كيف أتتبع عمليات الوصفات؟',
+    answer: `PayMint makes recipe operations tracking automatic!
 
 **Enabling Stock Tracking:**
 1. Go to **Products** and edit a product
@@ -373,20 +373,20 @@ Your product is now ready to sell!`,
 
 **Updating Stock:**
 Go to **Settings > Stock Management**, find the product, and adjust the quantity.`,
-    answerAr: `بيمنت يجعل تتبع المخزون تلقائياً!
+    answerAr: `بيمنت يجعل تتبع عمليات الوصفات تلقائياً!
 
-**تفعيل تتبع المخزون:**
+**تفعيل تتبع عمليات الوصفات:**
 1. اذهب إلى **المنتجات** وعدّل المنتج
-2. فعّل **"تتبع المخزون"**
+2. فعّل **"تتبع عمليات الوصفات"**
 3. حدد **الكمية الأولية**
-4. حدد **حد المخزون المنخفض** (اختياري)
+4. حدد **حد عمليات الوصفات المنخفض** (اختياري)
 
 **كيف يعمل:**
-- المخزون **ينقص تلقائياً** عند البيع
-- تحصل على **تنبيهات** عند انخفاض المخزون
+- عمليات الوصفات **ينقص تلقائياً** عند البيع
+- تحصل على **تنبيهات** عند انخفاض عمليات الوصفات
 - خيار منع بيع الأصناف المنتهية
 
-لتعديل المخزون: اذهب إلى **الإعدادات > إدارة المخزون**.`,
+لتعديل عمليات الوصفات: اذهب إلى **الإعدادات > إدارة عمليات الوصفات**.`,
     category: 'products',
     navigationPath: '/dashboard/:location/products',
     relatedTopics: ['materials-recipes']
@@ -931,7 +931,7 @@ export const FALLBACK_RESPONSES = [
   "That's a good question! I don't have specific info on that, but I'd love to help with something else. What about adding products, processing sales, or managing your team?",
   "I couldn't find an exact answer for that. Try asking things like 'How do I add a product?' or 'How do I process a refund?' - I'm great with those!",
   "Interesting question! I might need more context. Could you be more specific? In the meantime, feel free to ask about any PayMint features!",
-  "I'm still learning! 🤓 I don't have info on that specific topic, but I can help with sales, inventory, reports, staff management, and more!",
+  "I'm still learning! 🤓 I don't have info on that specific topic, but I can help with sales, recipe operations, reports, staff management, and more!",
 ];
 
 // Arabic fallback responses
@@ -940,7 +940,7 @@ export const FALLBACK_RESPONSES_AR = [
   "سؤال جيد! لا أملك معلومات محددة عن هذا، لكن يسعدني مساعدتك في شيء آخر. ماذا عن إضافة المنتجات أو معالجة المبيعات أو إدارة الفريق؟",
   "لم أجد إجابة دقيقة لهذا السؤال. جرب أسئلة مثل 'كيف أضيف منتج؟' أو 'كيف أعمل استرداد؟'",
   "سؤال مثير! قد أحتاج مزيداً من التفاصيل. هل يمكنك أن تكون أكثر تحديداً؟",
-  "ما زلت أتعلم! 🤓 لا أملك معلومات عن هذا الموضوع تحديداً، لكن يمكنني مساعدتك في المبيعات والمخزون والتقارير وإدارة الموظفين والمزيد!",
+  "ما زلت أتعلم! 🤓 لا أملك معلومات عن هذا الموضوع تحديداً، لكن يمكنني مساعدتك في المبيعات وعمليات الوصفات والتقارير وإدارة الموظفين والمزيد!",
 ];
 
 // Thinking/processing phrases

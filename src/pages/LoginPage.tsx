@@ -235,7 +235,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-paymint-green text-black text-sm font-bold hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-wait py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
+              className="w-full bg-paymint-green text-black text-sm font-bold hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
             >
               {isSubmitting ? t('auth.login.loggingIn') : t('auth.login.loginButton')}
             </button>

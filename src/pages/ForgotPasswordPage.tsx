@@ -96,7 +96,7 @@ export function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
+                  className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 disabled:cursor-paymint-wait flex items-center justify-center gap-3"
                 >
                   {isSubmitting ? <Loader2 className="animate-spin" size={24} /> : null}
                   {t('auth.forgotPassword.sendLink')}

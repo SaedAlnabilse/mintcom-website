@@ -283,7 +283,16 @@ export const ItemsView = React.memo(function ItemsView({
                   ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="py-20 text-center text-gray-400 font-black text-xs tracking-[0.2em]">{t('orders.reports.items.noData')}</td>
+                  <td colSpan={3} className="py-32 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-4">
+                      <div className="w-16 h-16 rounded-[24px] bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-300 dark:text-white/10 border border-gray-100 dark:border-white/5">
+                        <ShoppingBag size={32} />
+                      </div>
+                      <p className="text-sm font-bold text-gray-500 dark:text-gray-400 tracking-wide max-w-xs mx-auto leading-relaxed">
+                        {t('orders.reports.items.noData')}
+                      </p>
+                    </div>
+                  </td>
                 </tr>
               )}
             </tbody>
@@ -316,17 +325,17 @@ export const ItemsView = React.memo(function ItemsView({
                 className="relative w-full max-w-2xl bg-white dark:bg-[#0B1120] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
               >
                 {/* Header */}
-                <div className="px-8 py-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
+                <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
-                      <LayoutGrid size={24} />
+                    <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                      <LayoutGrid size={20} />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
                         {selectedCategory?.name}
                       </h3>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">
-                        {t('orders.reports.items.categoryBreakdown', 'Category Breakdown')}
+                      <p className="text-xs font-bold text-gray-400 mt-0.5">
+                        {t('orders.reports.items.categoryBreakdown', 'Category breakdown')}
                       </p>
                     </div>
                   </div>
@@ -338,26 +347,12 @@ export const ItemsView = React.memo(function ItemsView({
                   </button>
                 </div>
 
-                {/* Search in Breakdown */}
-                <div className="p-8 pb-4">
-                  <div className="relative">
-                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder={t('orders.reports.items.searchInBreakdown', 'Search items in category...')}
-                      value={breakdownSearchQuery}
-                      onChange={(e) => setBreakdownSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none transition-all focus:ring-2 focus:ring-paymint-green/20"
-                    />
-                  </div>
-                </div>
-
                 {/* Content */}
-                <div className="p-8 pt-0 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scroll-bar-white/10">
+                <div className="p-6 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
                   {isFetchingBreakdown ? (
                     <div className="py-20 flex flex-col items-center justify-center">
                       <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-                      <p className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('common.loading')}</p>
+                      <p className="text-sm font-bold text-gray-400">{t('common.loading')}</p>
                     </div>
                   ) : filteredBreakdown.length > 0 ? (
                     <div className="space-y-3">
@@ -371,9 +366,9 @@ export const ItemsView = React.memo(function ItemsView({
                               <ShoppingBag size={18} />
                             </div>
                             <div className="flex flex-col">
-                              <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name}</span>
+                              <span className="font-bold text-gray-900 dark:text-white text-base">{item.itemName || item.name}</span>
                               <div className="flex items-center gap-2 mt-0.5">
-                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{item.quantity} {t('orders.reports.items.unitsSold')}</span>
+                                <span className="text-xs font-bold text-gray-400">{item.quantity} {t('orders.reports.items.unitsSold')}</span>
                               </div>
                             </div>
                           </div>
@@ -386,23 +381,28 @@ export const ItemsView = React.memo(function ItemsView({
                       ))}
                     </div>
                   ) : (
-                    <div className="py-20 text-center">
-                      <p className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('orders.reports.items.noData')}</p>
+                    <div className="py-20 flex flex-col items-center justify-center">
+                      <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-300 dark:text-white/10 mb-4 border border-gray-100 dark:border-white/5">
+                        <ShoppingBag size={28} />
+                      </div>
+                      <p className="text-sm font-bold text-gray-500 dark:text-gray-400 tracking-wide text-center max-w-[240px]">
+                        {t('orders.reports.items.noData')}
+                      </p>
                     </div>
                   )}
                 </div>
 
                 {/* Footer */}
-                <div className="px-8 py-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('common.total', 'Total')}:</span>
-                    <span className="text-sm font-bold text-gray-900 dark:text-white">
+                <div className="px-6 py-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs font-bold text-gray-400">{t('common.total', 'Total')}:</span>
+                    <span className="text-base font-bold text-gray-900 dark:text-white">
                       {filteredBreakdown.length} {t('common.items', 'Items')}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('dashboard.stats.revenue')}:</span>
-                    <span className="text-sm font-bold text-paymint-green">
+                  <div className="flex flex-col gap-0.5 items-end">
+                    <span className="text-xs font-bold text-gray-400">{t('dashboard.stats.revenue')}:</span>
+                    <span className="text-xl font-bold text-paymint-green">
                       {formatCurrency(filteredBreakdown.reduce((acc, curr) => acc + ((curr.totalSales || curr.revenue) || 0), 0))}
                     </span>
                   </div>

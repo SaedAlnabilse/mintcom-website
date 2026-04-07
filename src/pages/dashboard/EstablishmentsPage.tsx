@@ -180,8 +180,8 @@ export function EstablishmentsPage() {
                   }`}>
                   <Store size={24} />
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight leading-tight group-hover:text-paymint-green transition-colors">{est.name}</h3>
+                <div className="min-w-0">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight leading-tight group-hover:text-paymint-green transition-colors truncate" title={est.name}>{est.name}</h3>
                   <span className={`inline-flex items-center px-2 py-0.5 text-xs font-black tracking-[0.2em] rounded-md mt-2 border transition-colors ${getStatusColor(est.subscriptionStatus)}`}>
                     {t(`owner.billing.${est.subscriptionStatus.toLowerCase()}`, { defaultValue: est.subscriptionStatus })}
                   </span>
@@ -280,13 +280,12 @@ export function EstablishmentsPage() {
           </div>
         </motion.button>
         )}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={(page) => setCurrentPage(page)}
-      />
 
       {/* Switcher Overlay - Truly Global (Portal equivalent) */}
       <AnimatePresence>

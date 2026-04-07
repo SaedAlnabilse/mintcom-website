@@ -125,7 +125,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
           </div>
 
-          <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-white dark:bg-[#1E293B]">
+          <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200 dark:border-white/10 flex items-center justify-between bg-white dark:bg-[#1E293B]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
                 <Award size={22} strokeWidth={2.5} />
