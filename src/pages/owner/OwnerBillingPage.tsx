@@ -207,7 +207,7 @@ export function OwnerBillingPage() {
         switch (est.subscriptionStatus?.toUpperCase()) {
             case 'TRIAL':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-xs font-bold tracking-widest text-emerald-500">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-paymint-green/ border border-paymint-green/ rounded-lg text-xs font-bold tracking-widest text-paymint-green">
                         <Zap size={12} />
                         {t('owner.locations.trial')}
                     </span>
@@ -359,7 +359,7 @@ export function OwnerBillingPage() {
                     <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
                     <button
                         onClick={() => setIsAddCardModalOpen(true)}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
                     >
                         <Plus size={18} />
                         <span>{t('owner.billing.addPaymentMethod')}</span>

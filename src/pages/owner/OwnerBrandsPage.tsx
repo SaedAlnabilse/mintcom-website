@@ -500,7 +500,7 @@ export function OwnerBrandsPage() {
                     {availableEstablishments.length >= 2 && (
                         <button
                             onClick={() => setShowCreateModal(true)}
-                            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+                            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
                         >
                             <Plus size={18} />
                             <span>{t('owner.brands.createBrand')}</span>
@@ -593,7 +593,7 @@ export function OwnerBrandsPage() {
                     {!hasActiveFilters && availableEstablishments.length >= 2 && (
                         <button
                             onClick={() => setShowCreateModal(true)}
-                            className="mt-6 px-6 py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-sm flex items-center gap-2 mx-auto"
+                            className="mt-6 px-6 py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-[#68B390] transition-all shadow-sm flex items-center gap-2 mx-auto"
                         >
                             <Link2 size={18} />
                             {t('owner.brands.createFirstBrand')}
@@ -1034,7 +1034,7 @@ export function OwnerBrandsPage() {
                                                 type="button"
                                                 onClick={wizardStep === 3 ? handleSubmit(onCreateBrand) : handleNextStep}
                                                 disabled={isCreating}
-                                                className="flex-1 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                                className="flex-1 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                             >
                                             {isCreating ? (
                                                 <>

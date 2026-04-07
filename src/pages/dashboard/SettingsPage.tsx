@@ -177,7 +177,7 @@ export function SettingsPage() {
     onConfirm: () => { },
   });
 
-  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<AppSettings>();
+  const { register, handleSubmit, reset, watch, setValue, clearErrors, formState: { errors } } = useForm<AppSettings>();
 
   // Watch all form values for dirty state comparison
   const watchedValues = watch();
@@ -657,15 +657,6 @@ export function SettingsPage() {
     <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans">
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="flex items-center gap-2">
-              <div className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-              </div>
-              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
-            </div>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('settings.subtitle')}</span>
@@ -707,7 +698,7 @@ export function SettingsPage() {
             }
           })}
           disabled={isSaving || !hasUnsavedChanges}
-          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm disabled:opacity-50 disabled:shadow-none"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm disabled:opacity-50 disabled:shadow-none"
         >
           {isSaving ? <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" /> : <Save size={18} />}
           <span>{t('settings.saveChanges')}</span>
@@ -894,63 +885,39 @@ export function SettingsPage() {
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <p className="text-xs font-black text-paymint-green tracking-[0.2em] mb-1">{t('settings.sales.taxLabel')}</p>
-                      <h4 className="text-lg font-bold text-gray-900 dark:text-white">{t('settings.sales.taxRate')}</h4>
+                      <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{t('settings.sales.taxRate')}</h4>
                     </div>
-                    <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-xs font-black tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">{t('settings.sales.update')}</button>
+                    <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-xs font-bold tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">{t('settings.sales.update')}</button>
                   </div>
                   <div className={`relative group transition-all`}>
                     <input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      onInput={(e: React.FormEvent<HTMLInputElement>) => {
-                        const target = e.target as HTMLInputElement;
-                        if (Number(target.value) < 0) {
-                          target.value = '0';
-                        }
-                        // Limit to 5 decimal places to allow high-precision entry (e.g., .11111 -> 11.111)
-                        if (target.value.includes('.')) {
-                          const parts = target.value.split('.');
-                          if (parts[1].length > 5) {
-                            target.value = `${parts[0]}.${parts[1].slice(0, 5)}`;
-                          }
-                        }
+                      type="text"
+                      inputMode="decimal"
+                      value={watch('taxRate') === 0 ? '' : watch('taxRate').toFixed(2)}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        if (val.length > 19) return;
+                        const numericValue = parseInt(val || '0', 10) / 100;
+                        setValue('taxRate', numericValue, { shouldDirty: true });
+                        if (errors.taxRate) clearErrors('taxRate');
                       }}
-                      onKeyDown={(e) => {
-                        if (e.key === '-' || e.key === 'e' || e.key === 'E') {
-                          e.preventDefault();
-                        }
-                      }}
-                      {...register('taxRate', {
-                        required: true,
-                        valueAsNumber: true,
-                        max: { value: 100, message: t('settings.sales.taxErrorRange') },
-                        min: { value: 0, message: t('settings.sales.taxErrorRange') },
-                        onBlur: (e) => {
-                          const val = parseFloat(e.target.value);
-                          if (val > 0 && val < 1) {
-                            setValue('taxRate', parseFloat((val * 100).toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 5 })), { shouldDirty: true });
-                          } else if (!isNaN(val)) {
-                            setValue('taxRate', parseFloat(val.toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 5 })), { shouldDirty: true });
-                          }
-                        }
-                      })}
-                      className={`w-full h-16 bg-white dark:bg-white/[0.03] border ${errors.taxRate ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-6 font-bold text-3xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.taxRate ? 'focus:ring-red-500/20' : 'focus:ring-paymint-green/20'} transition-all pr-16 group-hover:border-paymint-green/50 shadow-sm`}
+                      className={`w-full h-16 bg-white dark:bg-white/[0.03] border ${errors.taxRate ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-6 font-semibold text-3xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.taxRate ? 'focus:ring-red-500/20' : 'focus:ring-paymint-green/20'} transition-all pr-16 group-hover:border-paymint-green/50 shadow-sm`}
                     />
-                    <div className={`absolute ${t('common.locale') === 'ar' ? 'left-6' : 'right-6'} top-1/2 -translate-y-1/2 font-bold text-xl transition-colors ${errors.taxRate ? 'text-red-500' : 'text-gray-400 group-focus-within:text-paymint-green'}`}>%</div>
+                    <div className={`absolute ${t('common.locale') === 'ar' ? 'left-6' : 'right-6'} top-1/2 -translate-y-1/2 font-semibold text-xl transition-colors ${errors.taxRate ? 'text-red-500' : 'text-gray-400 group-focus-within:text-paymint-green'}`}>%</div>
                   </div>
+                  <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
                   {errors.taxRate && (
                     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
                         <AlertTriangle size={18} className="text-red-500" />
                       </div>
                       <div>
-                        <p className="text-xs font-black text-red-500 tracking-widest leading-none mb-1">{t('settings.sales.invalidInput')}</p>
-                        <p className="text-xs font-bold text-red-500/80 tracking-tight">{errors.taxRate.message as string || t('settings.sales.taxErrorGeneric')}</p>
+                        <p className="text-xs font-bold text-red-500 tracking-widest leading-none mb-1">{t('settings.sales.invalidInput')}</p>
+                        <p className="text-xs font-medium text-red-500/80 tracking-tight">{errors.taxRate.message as string || t('settings.sales.taxErrorGeneric')}</p>
                       </div>
                     </motion.div>
                   )}
-                  <p className="text-xs font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
+                  <p className="text-xs font-medium text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
                     <span className="text-paymint-green">•</span>
                     {t('settings.sales.taxWarning')}
                   </p>
@@ -959,7 +926,7 @@ export function SettingsPage() {
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all group/card relative overflow-hidden">
                   <div className="mb-6">
                     <p className="text-xs font-black text-blue-500 tracking-[0.2em] mb-1">{t('settings.sales.currencyLabel')}</p>
-                    <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('settings.sales.currency')}</h4>
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white">{t('settings.sales.currency')}</h4>
                   </div>
                   <div className="relative">
                     <input type="hidden" {...register('currency')} />
@@ -984,20 +951,21 @@ export function SettingsPage() {
                     />
                   </div>
                   <div className="mt-6 space-y-3">
-                    <p className="text-xs font-black text-gray-400 leading-relaxed tracking-tight flex items-start gap-2">
+                    <p className="text-xs font-medium text-gray-400 leading-relaxed tracking-tight flex items-start gap-2">
                       <span className="text-blue-500">•</span>
                       {t('settings.sales.currencyDesc')}
                     </p>
-                    <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
-                      <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 leading-tight mb-2">
+                    <div className="flex items-start gap-2.5 p-3.5 bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.05] rounded-xl transition-all hover:bg-gray-100/50 dark:hover:bg-white/[0.05]">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+                      <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
                         {t('settings.sales.currencyOwnerOnly')}
+                        <a
+                          href="/owner/account"
+                          className="ml-1 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-bold hover:underline transition-all underline-offset-2"
+                        >
+                          {t('nav.owner')}
+                        </a>
                       </p>
-                      <a
-                        href="/owner"
-                        className="text-[10px] font-black text-white bg-blue-500 px-3 py-1.5 rounded-lg inline-block hover:bg-blue-600 transition-colors shadow-sm"
-                      >
-                        {t('nav.owner')}
-                      </a>
                     </div>
                   </div>
                 </div>
@@ -1005,7 +973,7 @@ export function SettingsPage() {
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-indigo-500/20 group/card">
                   <div className="mb-6">
                     <p className="text-xs font-black text-indigo-500 tracking-[0.2em] mb-1">{t('settings.sales.holdOrderTableCountLabel')}</p>
-                    <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('settings.sales.holdOrderTableCountTitle')}</h4>
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white">{t('settings.sales.holdOrderTableCountTitle')}</h4>
                   </div>
                   <div className="relative group transition-all">
                     <input
@@ -1015,8 +983,10 @@ export function SettingsPage() {
                       inputMode="numeric"
                       onInput={(e: React.FormEvent<HTMLInputElement>) => {
                         const target = e.target as HTMLInputElement;
-                        const onlyDigits = target.value.replace(/[^\d]/g, '');
-                        target.value = onlyDigits;
+                        if (target.value.length > 19) {
+                          target.value = target.value.slice(0, 19);
+                        }
+                        const onlyDigits = target.value.replace(/[^\d]/g, '');                        target.value = onlyDigits;
                       }}
                       onKeyDown={(e) => {
                         if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E') {
@@ -1033,7 +1003,7 @@ export function SettingsPage() {
                           return Math.min(300, Math.max(0, Math.floor(parsed)));
                         },
                       })}
-                      className={`w-full h-14 bg-white dark:bg-white/[0.03] border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-5 font-bold text-2xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.holdOrderTableCount ? 'focus:ring-red-500/20' : 'focus:ring-indigo-500/20'} transition-all group-hover:border-indigo-500/50 shadow-sm`}
+                      className={`w-full h-14 bg-white dark:bg-white/[0.03] border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-5 font-semibold text-2xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.holdOrderTableCount ? 'focus:ring-red-500/20' : 'focus:ring-indigo-500/20'} transition-all group-hover:border-indigo-500/50 shadow-sm`}
                       placeholder={t('settings.sales.holdOrderTableCountPlaceholder')}
                     />
                   </div>
@@ -1043,12 +1013,12 @@ export function SettingsPage() {
                         <AlertTriangle size={18} className="text-red-500" />
                       </div>
                       <div>
-                        <p className="text-xs font-black text-red-500 tracking-widest leading-none mb-1">{t('settings.sales.invalidInput')}</p>
-                        <p className="text-xs font-bold text-red-500/80 tracking-tight">{errors.holdOrderTableCount.message as string || t('settings.sales.holdOrderTableCountErrorRange')}</p>
+                        <p className="text-xs font-bold text-red-500 tracking-widest leading-none mb-1">{t('settings.sales.invalidInput')}</p>
+                        <p className="text-xs font-medium text-red-500/80 tracking-tight">{errors.holdOrderTableCount.message as string || t('settings.sales.holdOrderTableCountErrorRange')}</p>
                       </div>
                     </motion.div>
                   )}
-                  <p className="text-xs font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
+                  <p className="text-xs font-medium text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
                     <span className="text-indigo-500">•</span>
                     {t('settings.sales.holdOrderTableCountDesc')}
                   </p>

@@ -280,8 +280,8 @@ export function OwnerEmployeesPage() {
     const getStatusBadge = (isActive: boolean | undefined) => {
         if (isActive) {
             return (
-                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-bold tracking-wide w-fit mx-auto">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-paymint-green/ text-paymint-green border border-paymint-green/ text-xs font-bold tracking-wide w-fit mx-auto">
+                    <span className="w-1.5 h-1.5 rounded-full bg-paymint-green animate-pulse" />
                     {t('common.status.active')}
                 </span>
             );
@@ -319,7 +319,7 @@ export function OwnerEmployeesPage() {
                     <button
                         id="tour-add-employee-btn"
                         onClick={handleOpenAddEmployeeModal}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
                     >
                         <UserPlus size={18} />
                         <span>{t('staff.newEmployee')}</span>
@@ -331,7 +331,7 @@ export function OwnerEmployeesPage() {
             <div id="tour-stats-grid" className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {[
                     { label: t('owner.staff.totalUsers'), info: t('owner.staff.usersInfo'), value: stats.total, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: t('owner.staff.activeNow'), info: t('owner.staff.activeInfo'), value: stats.active, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                    { label: t('owner.staff.activeNow'), info: t('owner.staff.activeInfo'), value: stats.active, icon: UserCheck, color: 'text-paymint-green', bg: 'bg-paymint-green/' },
                     { label: t('owner.staff.admins'), info: t('owner.staff.adminsInfo'), value: stats.admins, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
                     { label: t('owner.staff.standardUsers'), info: t('owner.staff.standardInfo'), value: stats.staff, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
@@ -459,7 +459,7 @@ export function OwnerEmployeesPage() {
                                             <span className="text-gray-900 dark:text-white font-bold text-xl">
                                                 {emp.firstName.charAt(0).toUpperCase()}
                                             </span>
-                                            <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                            <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
                                         </div>
                                         <div>
                                             <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-tight group-hover:text-indigo-500 transition-colors">

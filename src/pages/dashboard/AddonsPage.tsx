@@ -313,15 +313,6 @@ export function AddonsPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <div className="flex items-center gap-2">
-              <div className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-              </div>
-              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
-            </div>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('attributes.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('attributes.subtitle')}</span>
@@ -336,7 +327,7 @@ export function AddonsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => openAttributeModal()}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
           >
             <Plus size={18} />
             <span>{t('attributes.newGroup')}</span>
@@ -510,7 +501,7 @@ export function AddonsPage() {
                           setParentAttributeId(attr.id);
                           setShowSubAttributeModal(true);
                         }}
-                        className="w-10 h-10 flex items-center justify-center bg-paymint-green text-black rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 group active:scale-90"
+                        className="w-10 h-10 flex items-center justify-center bg-paymint-green text-black rounded-xl hover:bg-[#68B390] transition-all shadow-lg shadow-paymint-green/20 group active:scale-90"
                         title={t('attributes.addOption')}
                       >
                         <Plus size={20} strokeWidth={3} className="transition-transform group-hover:rotate-90" />
@@ -537,7 +528,7 @@ export function AddonsPage() {
                       <div />
                       <button
                         onClick={() => openSubAttributeModal(attr.id)}
-                        className="w-10 h-10 flex items-center justify-center bg-paymint-green text-black rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 group active:scale-90"
+                        className="w-10 h-10 flex items-center justify-center bg-paymint-green text-black rounded-xl hover:bg-[#68B390] transition-all shadow-lg shadow-paymint-green/20 group active:scale-90"
                         title={t('attributes.addOption')}
                       >
                         <Plus size={20} strokeWidth={3} className="transition-transform group-hover:rotate-90" />
@@ -720,13 +711,13 @@ export function AddonsPage() {
                     placeholder="0.00"
                     onChange={(e) => {
                       const val = e.target.value.replace(/\D/g, '');
+                      if (val.length > 19) return;
                       const numericValue = parseInt(val || '0', 10) / 100;
                       setSubAttributeForm({ ...subAttributeForm, price: numericValue });
-                    }}
-                    className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-3.5 text-gray-900 dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                    }}                    className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-3.5 text-gray-900 dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                   />
                 </div>
-                <p className="mt-2 text-[10px] font-medium text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle')}</p>
+                <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle')}</p>
               </div>
 
               <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">

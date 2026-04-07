@@ -227,7 +227,7 @@ export function OwnerRolesPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
           >
             <Plus size={18} />
             <span>{t('owner.roles.createNew')}</span>

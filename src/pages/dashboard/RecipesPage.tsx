@@ -360,15 +360,6 @@ export function RecipesPage() {
     <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans">
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <div className="flex items-center gap-2">
-              <div className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-              </div>
-              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
-            </div>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('manufacturing.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('manufacturing.subtitle')}</span>
@@ -409,7 +400,7 @@ export function RecipesPage() {
                 setShowSubRecipeModal(true);
               }
             }}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
           >
             <Plus size={18} />
             <span>{activeTab === 'materials' ? t('inventory.addIngredient', {defaultValue: 'Add Ingredient'}) : activeTab === 'final' ? t('manufacturing.linkProduct') : t('manufacturing.newPrep')}</span>
@@ -580,7 +571,7 @@ export function RecipesPage() {
                         </div>
 
                         {activeTab === 'sub' && (
-                          <button onClick={() => openManufactureModal(recipe as SubRecipe)} className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
+                          <button onClick={() => openManufactureModal(recipe as SubRecipe)} className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-[#68B390] text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
                             {t('manufacturing.produceBatch')}
                           </button>
                         )}
@@ -627,12 +618,27 @@ export function RecipesPage() {
                       {t('inventory.form.totalQuantity', {defaultValue: 'Total Quantity'})}
                       <QuickInfo text={t('inventory.tips.quantity', {defaultValue: 'Current stock available for this ingredient.'})} />
                     </label>
-                    <input type="text" inputMode="decimal" value={materialForm.quantity === 0 ? '' : materialForm.quantity} onChange={(e) => { const v = e.target.value.replace(/[^\d.]/g, ''); setMaterialForm({ ...materialForm, quantity: v ? Number(v) : 0 }); }} className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all" placeholder="0.00" />
+                    <div className="relative">
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        value={materialForm.quantity === 0 ? '' : materialForm.quantity.toFixed(2)}
+                        placeholder="0.00"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          if (val.length > 19) return;
+                          const numericValue = parseInt(val || '0', 10) / 100;
+                          setMaterialForm({ ...materialForm, quantity: numericValue });
+                        }}
+                        className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all"
+                      />
+                      <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
+                    </div>
                   </div>
                 </div>
               </form>
               <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02]">
-                <button onClick={handleMaterialSubmit} disabled={isSubmitting} className="w-full px-5 py-3.5 bg-paymint-green hover:bg-emerald-400 text-black font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
+                <button onClick={handleMaterialSubmit} disabled={isSubmitting} className="w-full px-5 py-3.5 bg-paymint-green hover:bg-[#68B390] text-black font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
                   {isSubmitting ? <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : t('common.save', {defaultValue: 'Save'})}
                 </button>
               </div>
@@ -682,6 +688,7 @@ export function RecipesPage() {
                         }
                       }}
                       onChange={(e) => {
+                        if (e.target.value.length > 19) return;
                         const val = parseFloat(e.target.value);
                         if (!isNaN(val) && val >= 0) {
                           setSubRecipeForm({ ...subRecipeForm, yield: val });
@@ -754,6 +761,7 @@ export function RecipesPage() {
                                 }}
                                 value={displayValue === 0 ? '' : displayValue}
                                 onChange={(e) => {
+                                  if (e.target.value.length > 19) return;
                                   const val = parseFloat(e.target.value);
                                   if (!isNaN(val) && val >= 0) {
                                     const baseVal = convertToBase(val, baseUnit, currentUnit);
@@ -837,7 +845,7 @@ export function RecipesPage() {
                 </div>
               </div>
               <div className="p-5 sm:p-6 border-t border-gray-200 dark:border-white/5">
-                <button onClick={handleSaveSubRecipe} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
+                <button onClick={handleSaveSubRecipe} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
                   {t('manufacturing.formula.saveFormula')}
                 </button>
               </div>
@@ -957,6 +965,7 @@ export function RecipesPage() {
                                   }}
                                   value={displayValue === 0 ? '' : displayValue}
                                   onChange={(e) => {
+                                    if (e.target.value.length > 19) return;
                                     const val = parseFloat(e.target.value);
                                     if (!isNaN(val) && val >= 0) {
                                       const baseVal = convertToBase(val, baseUnit, currentUnit);
@@ -1092,7 +1101,7 @@ export function RecipesPage() {
                 </div>
               </div>
               <div className="p-5 sm:p-6 border-t border-gray-200 dark:border-white/5">
-                <button onClick={handleSaveFinalRecipe} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
+                <button onClick={handleSaveFinalRecipe} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
                   {t('manufacturing.formula.registerRecipe')}
                 </button>
               </div>
@@ -1121,6 +1130,7 @@ export function RecipesPage() {
                     }}
                     value={numBatches}
                     onChange={(e) => {
+                      if (e.target.value.length > 19) return;
                       const val = parseInt(e.target.value);
                       if (!isNaN(val) && val >= 1) {
                         setNumBatches(val);
@@ -1156,7 +1166,7 @@ export function RecipesPage() {
                     </span>
                   </div>
                 </div>
-                <button onClick={handleManufacture} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
+                <button onClick={handleManufacture} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
                   {t('manufacturing.confirmProduction')}
                 </button>
               </div>

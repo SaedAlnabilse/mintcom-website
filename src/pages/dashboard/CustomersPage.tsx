@@ -300,15 +300,6 @@ export function CustomersPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <div className="flex items-center gap-2">
-              <div className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-              </div>
-              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
-            </div>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('customers.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('customers.subtitle')}</span>
@@ -330,7 +321,7 @@ export function CustomersPage() {
           </button>
           <button
             onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
-            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm touch-target"
+            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm touch-target"
           >
             <Plus size={18} />
             <span className="hidden xs:inline">{t('customers.addCustomer')}</span>
@@ -405,7 +396,7 @@ export function CustomersPage() {
             {!searchQuery.trim() && (
               <button
                 onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
               >
                 <Plus size={18} />
                 <span>{t('customers.addCustomer')}</span>
@@ -723,29 +714,21 @@ export function CustomersPage() {
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('customers.details.points')}</label>
                   <div className="relative">
                     <input
-                      type="number"
-                      min="0"
-                      onKeyDown={(e) => {
-                        if (e.key === '-' || e.key === 'e') {
-                          e.preventDefault();
-                        }
-                      }}
+                      type="text"
+                      inputMode="numeric"
                       value={pointsAmount === 0 ? '' : pointsAmount}
                       onChange={(e) => {
-                        const val = parseInt(e.target.value);
-                        if (!isNaN(val) && val >= 0) {
-                          setPointsAmount(val);
-                        } else if (e.target.value === '') {
-                          setPointsAmount(0);
-                        }
+                        const val = e.target.value.replace(/\D/g, '');
+                        if (val.length > 19) return;
+                        const numericValue = parseInt(val || '0', 10);
+                        setPointsAmount(numericValue);
                         setPointsError(null);
                       }}
                       className={`w-full px-4 py-3 bg-gray-50 dark:bg-black/20 border ${pointsError ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-lg font-bold focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all outline-none`}
                       placeholder="0"
                     />
                   </div>
-                  {pointsError && (
-                    <p className="text-[10px] font-bold text-paymint-red uppercase tracking-wider">
+                  <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>                  {pointsError && (                    <p className="text-[10px] font-bold text-paymint-red uppercase tracking-wider">
                       {pointsError}
                     </p>
                   )}
@@ -761,7 +744,7 @@ export function CustomersPage() {
                   <button 
                     onClick={handlePointsUpdate} 
                     disabled={isSubmitting || pointsAmount <= 0} 
-                    className="flex-[2] py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all disabled:opacity-50 text-xs"
+                    className="flex-[2] py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-[#68B390] transition-all disabled:opacity-50 text-xs"
                   >
                     {t('customers.details.confirmAdjustment')}
                   </button>

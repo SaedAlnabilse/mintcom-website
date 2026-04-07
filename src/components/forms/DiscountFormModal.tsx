@@ -56,6 +56,14 @@ export function DiscountFormModal({
   const scrollRef = useRef<HTMLDivElement>(null);
   const errorBannerRef = useRef<HTMLDivElement>(null);
 
+  const formatATM = (val: string) => {
+    const digits = val.replace(/\D/g, '');
+    if (digits.length > 19) return null;
+    const cents = parseInt(digits || '0', 10);
+    if (cents === 0) return '';
+    return (cents / 100).toFixed(2);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -155,36 +163,24 @@ export function DiscountFormModal({
                 </label>
                 <div className="relative group">
                   <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    onKeyDown={(e) => {
-                      if (e.key === '-' || e.key === 'e') {
-                        e.preventDefault();
-                      }
-                    }}
+                    type="text"
+                    inputMode="decimal"
                     value={percentage}
                     onChange={(e) => {
-                      const val = e.target.value;
-                      if (val === '') {
-                        setPercentage('');
-                        if (errors.percentage) setErrors({ ...errors, percentage: '' });
-                        return;
-                      }
-                      const num = parseFloat(val);
-                      if (num >= 0 && num <= 100) {
-                        setPercentage(val);
+                      const formatted = formatATM(e.target.value);
+                      if (formatted !== null) {
+                        setPercentage(formatted);
                         if (errors.percentage) setErrors({ ...errors, percentage: '' });
                       }
                     }}
                     placeholder={t('common.zeroDecimal')}
-                    step="0.01"
                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.percentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
                     <span className="text-paymint-green text-xs font-black">{t('common.percent')}</span>
                   </div>
                 </div>
+                <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
                 {errors.percentage && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.percentage}</p>}
               </div>
 

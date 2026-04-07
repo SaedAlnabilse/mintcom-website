@@ -345,15 +345,6 @@ export function CategoriesPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <div className="flex items-center gap-2">
-              <div className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-              </div>
-              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
-            </div>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('categories.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('categories.subtitle')}</span>
@@ -375,7 +366,7 @@ export function CategoriesPage() {
           </button>
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-sm"
+            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-[#68B390] transition-all shadow-sm"
           >
             <Plus size={18} />
             <span className="hidden xs:inline">{t('categories.newCategory')}</span>
@@ -652,7 +643,7 @@ export function CategoriesPage() {
                       <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-6">{t('products.messages.noProductsDesc')}</p>
                       <button
                         onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                        className="px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-colors flex items-center gap-2 shadow-sm"
+                        className="px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-colors flex items-center gap-2 shadow-sm"
                       >
                         <Plus size={18} />
                         {t('common.add')}

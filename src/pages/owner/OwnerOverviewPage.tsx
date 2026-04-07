@@ -150,7 +150,7 @@ export function OwnerOverviewPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="flex items-center gap-1.5 dashboard-card-meta">
-                            <Activity size={14} className="text-emerald-500" />
+                            <Activity size={14} className="text-paymint-green" />
                             {t('owner.overview.liveSystem')}
                         </span>
                     </div>
@@ -248,8 +248,8 @@ export function OwnerOverviewPage() {
                         value: formatCurrency(stats.totalRevenue),
                         change: stats.revenueChange,
                         icon: DollarSign,
-                        color: 'text-emerald-500',
-                        bg: 'bg-emerald-500/10',
+                        color: 'text-paymint-green',
+                        bg: 'bg-paymint-green/',
                         hideChange: true
                     },
                     {
@@ -301,7 +301,7 @@ export function OwnerOverviewPage() {
                                 </div>
                                 {stat.change !== undefined && !stat.hideChange && (
                                     <div className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold ${stat.change >= 0
-                                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                                        ? 'bg-paymint-green/10 text-paymint-green dark:bg-paymint-green/ dark:text-paymint-green'
                                         : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
                                         }`}>
                                         {stat.change >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
@@ -430,7 +430,7 @@ export function OwnerOverviewPage() {
                             <div className="space-y-3">
                                 <button
                                     onClick={() => navigate('/onboarding')}
-                                    className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl text-sm hover:bg-emerald-400 transition-all shadow-sm"
+                                    className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl text-sm hover:bg-[#68B390] transition-all shadow-sm"
                                 >
                                     {t('owner.overview.addLocation')}
                                 </button>
@@ -466,12 +466,12 @@ export function OwnerOverviewPage() {
                                     className="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all group/btn"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                                        <div className="w-8 h-8 rounded-lg bg-paymint-green/ text-paymint-green flex items-center justify-center">
                                             <Store size={16} />
                                         </div>
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.overview.manageLocations')}</span>
                                     </div>
-                                    <Activity size={14} className="text-gray-400 group-hover/btn:text-emerald-500 transition-colors" />
+                                    <Activity size={14} className="text-gray-400 group-hover/btn:text-paymint-green transition-colors" />
                                 </button>
                             </div>
                         </div>

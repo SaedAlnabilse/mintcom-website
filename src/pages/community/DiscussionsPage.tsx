@@ -294,7 +294,7 @@ export const DiscussionsPage = () => {
                               </span>
                             )}
                             {discussion.isSolved && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 dark:bg-green-500/20 text-green-600 rounded text-xs font-bold">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-paymint-green/10 dark:bg-paymint-green/ text-paymint-green rounded text-xs font-bold">
                                 <CheckCircle2 size={10} /> {t('community.labels.solved', 'Solved')}
                               </span>
                             )}

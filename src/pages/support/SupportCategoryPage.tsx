@@ -57,7 +57,7 @@ export const SupportCategoryPage = () => {
       title: t('support.categories.features'),
       description: t('support.categories.featuresDesc'),
       icon: BookOpen,
-      color: 'text-green-600',
+      color: 'text-paymint-green',
       bgColor: 'bg-paymint-green'
     }
   };

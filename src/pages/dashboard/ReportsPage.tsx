@@ -198,8 +198,9 @@ export function ReportsPage() {
             limit: 50
           }
         });
-        setEmployeeShifts(res.data?.map((s: any) => ({
-          label: `${format(new Date(s.startTime), 'MMM d, HH:mm', { locale: getDateLocale(t('common.locale')) })} - ${s.endTime ? format(new Date(s.endTime), 'HH:mm', { locale: getDateLocale(t('common.locale')) }) : t('dashboard.shiftStatus.active')}`,
+        const sortedShifts = (res.data || []).sort((a: any, b: any) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+        setEmployeeShifts(sortedShifts.map((s: any) => ({
+          label: `${format(new Date(s.startTime), 'MMM d, HH:mm', { locale: getDateLocale(t('common.locale')) })} - ${s.endTime ? format(new Date(s.endTime), 'HH:mm', { locale: getDateLocale(t('common.locale')) }) : t('dashboard.shiftStatus.activeOnly')}`,
           value: s.id,
           startTime: s.startTime,
           endTime: s.endTime,
@@ -411,15 +412,6 @@ export function ReportsPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="flex items-center gap-2">
-              <div className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-              </div>
-              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
-            </div>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('dashboard.menu.salesAndReporting')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('dashboard.trackingPerformance')}</span>

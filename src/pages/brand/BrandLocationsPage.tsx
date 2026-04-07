@@ -259,7 +259,7 @@ export function BrandLocationsPage() {
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'ACTIVE':
-                return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+                return 'bg-paymint-green/ text-paymint-green border-paymint-green/';
             case 'INACTIVE':
                 return 'bg-red-500/10 text-red-500 border-red-500/20';
             case 'TRIAL':
@@ -394,7 +394,7 @@ export function BrandLocationsPage() {
             <div className={`grid grid-cols-2 lg:grid-cols-5 gap-4 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
                 {[
                     { label: t('owner.locations.total'), value: stats.totalLocations, icon: Store, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: t('owner.locations.active'), value: stats.activeLocations, icon: Activity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                    { label: t('owner.locations.active'), value: stats.activeLocations, icon: Activity, color: 'text-paymint-green', bg: 'bg-paymint-green/' },
                     { label: t('brand.dashboard.totalRevenue'), value: formatCurrency(stats.totalRevenue), icon: DollarSign, color: 'text-purple-500', bg: 'bg-purple-500/10' },
                     { label: t('owner.menu.employees'), value: stats.totalEmployees, icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                     { label: t('brand.dashboard.orders'), value: stats.totalOrders.toLocaleString(), icon: ShoppingBag, color: 'text-pink-500', bg: 'bg-pink-500/10' },
@@ -533,7 +533,7 @@ export function BrandLocationsPage() {
                     {hasFilters && (
                         <button
                             onClick={clearFilters}
-                            className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-emerald-400 transition-all"
+                            className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-[#68B390] transition-all"
                         >
                             {t('attributes.filters.reset')}
                         </button>
@@ -617,7 +617,7 @@ export function BrandLocationsPage() {
                                 {/* Status Badge */}
                                 <div className="mb-6">
                                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
-                                        <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
+                                        <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                         {loc.subscriptionStatus === 'ACTIVE' ? t('common.active') :
                                          loc.subscriptionStatus === 'INACTIVE' ? t('paymentMethods.messages.notActive') :
                                          loc.subscriptionStatus === 'TRIAL' ? t('owner.locations.trial') :
@@ -697,7 +697,7 @@ export function BrandLocationsPage() {
                                     {/* Status */}
                                     <div className="col-span-2 flex items-center">
                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(loc.subscriptionStatus)}`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
+                                            <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                             {loc.subscriptionStatus === 'ACTIVE' ? t('common.active') :
                                              loc.subscriptionStatus === 'INACTIVE' ? t('paymentMethods.messages.notActive') :
                                              loc.subscriptionStatus === 'TRIAL' ? t('owner.locations.trial') :

@@ -450,7 +450,7 @@ export const ArticlePage = () => {
                   <div className="flex gap-3">
                     <button
                       onClick={() => setHelpful('yes')}
-                      className="inline-flex items-center gap-2 px-6 py-2 bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 rounded-lg font-bold hover:bg-green-200 dark:hover:bg-green-500/30 transition-colors"
+                      className="inline-flex items-center gap-2 px-6 py-2 bg-paymint-green/10 dark:bg-paymint-green/ text-paymint-green dark:text-paymint-green rounded-lg font-bold hover:bg-paymint-green/20 dark:hover:bg-[#68B390]/30 transition-colors"
                     >
                       <ThumbsUp size={16} />
                       {t('support.articles.helpfulYes')}

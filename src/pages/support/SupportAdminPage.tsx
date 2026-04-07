@@ -62,7 +62,7 @@ const SUPPORT_EMAILS = ['sa3d.n97@gmail.com'];
 const statusConfig: Record<string, { label: string; color: string; bg: string; icon: typeof Inbox }> = {
     open: { label: 'Open', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', icon: Inbox },
     in_progress: { label: 'In Progress', color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', icon: Clock },
-    resolved: { label: 'Resolved', color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', icon: CheckCircle2 },
+    resolved: { label: 'Resolved', color: 'text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2 },
     closed: { label: 'Closed', color: 'text-gray-500', bg: 'bg-gray-50 dark:bg-gray-800', icon: XCircle },
 };
 
@@ -226,7 +226,7 @@ export const SupportAdminPage = () => {
                             {[
                                 { label: t('support.tickets.stats.open'), value: stats.open, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', icon: Inbox },
                                 { label: t('support.tickets.stats.inProgress'), value: stats.inProgress, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', icon: Clock },
-                                { label: t('support.tickets.stats.resolved'), value: stats.resolved, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', icon: CheckCircle2 },
+                                { label: t('support.tickets.stats.resolved'), value: stats.resolved, color: 'text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2 },
                                 { label: t('support.admin.closed'), value: stats.closed, color: 'text-gray-500', bg: 'bg-gray-50 dark:bg-gray-800', icon: XCircle },
                                 { label: t('support.tickets.stats.total'), value: stats.total, color: 'text-gray-900 dark:text-white', bg: 'bg-white dark:bg-white/5', icon: BarChart3 },
                             ].map((stat) => {

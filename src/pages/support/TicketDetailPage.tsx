@@ -228,7 +228,7 @@ export const TicketDetailPage = () => {
   const statusConfig: Record<TicketStatus, { label: string; color: string; bg: string; icon: React.ElementType; dotColor: string }> = {
     open: { label: t('support.tickets.status.open'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: AlertCircle, dotColor: 'bg-blue-500' },
     in_progress: { label: t('support.tickets.status.inProgress'), color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/15', icon: Loader2, dotColor: 'bg-amber-500' },
-    resolved: { label: t('support.tickets.status.resolved'), color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-500/15', icon: CheckCircle2, dotColor: 'bg-emerald-500' },
+    resolved: { label: t('support.tickets.status.resolved'), color: 'text-paymint-green dark:text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2, dotColor: 'bg-paymint-green' },
     closed: { label: t('support.tickets.status.closed'), color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-500/15', icon: XCircle, dotColor: 'bg-gray-400' },
   };
 

@@ -1198,7 +1198,7 @@
       "ingredients": "Ingredients",
       "inventory": "Recipe operations",
       "inventoryDesc": "View and update recipes and ingredients",
-      "itemsMenu": "Item's Menu (Recipe Operations)",
+      "itemsMenu": "Item's Menu (Inventory)",
       "logout": "Logout",
       "loyalty": "Loyalty",
       "mainMenu": "Main Menu",
@@ -1223,7 +1223,7 @@
       "systemLogs": "System Logs",
       "team": "Team",
       "teamManagement": "Team Management",
-      "viewCustomerOrders": "View customer orders"
+      "viewCustomerOrders": "View Customer Orders"
     },
     "messages": {
       "configSaved": "Configuration Saved Successfully",
@@ -1295,6 +1295,7 @@
     },
     "shiftStatus": {
       "active": "Active Shift - {{name}}",
+      "activeOnly": "Active Shift",
       "lastCompleted": "Last Completed Shift",
       "live": "Live",
       "none": "No Active Shift",
@@ -2542,6 +2543,7 @@
       "subtitle": "Analyze your sales data",
       "cashGap": {
         "accuracyRate": "Accuracy Rate",
+        "all": "All",
         "balanced": "Balanced",
         "cashOver": "Cash Over",
         "cashShort": "Cash Short",

@@ -63,6 +63,14 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
   const scrollRef = useRef<HTMLDivElement>(null);
   const errorBannerRef = useRef<HTMLDivElement>(null);
 
+  const formatATM = (val: string) => {
+    const digits = val.replace(/\D/g, '');
+    if (digits.length > 19) return null;
+    const cents = parseInt(digits || '0', 10);
+    if (cents === 0) return '';
+    return (cents / 100).toFixed(2);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -195,8 +203,8 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                   value={pointsRequired}
                   onChange={(e) => {
                     const val = e.target.value;
-                    if (val === '' || parseInt(val) >= 0) {
-                      setPointsRequired(val);
+                    if (val.length > 19) return;
+                    if (val === '' || Number(val) >= 0) {                      setPointsRequired(val);
                       if (errors.pointsRequired) setErrors({ ...errors, pointsRequired: '' });
                     }
                   }}
@@ -217,25 +225,13 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                   <label className="label-strong block">{t('rewards.form.discountPercentageLabel')}</label>
                   <div className="relative group">
                     <input
-                      type="number"
-                      min="0"
-                      max="100"
-                      onKeyDown={(e) => {
-                        if (e.key === '-' || e.key === 'e') {
-                          e.preventDefault();
-                        }
-                      }}
+                      type="text"
+                      inputMode="decimal"
                       value={discountPercentage}
                       onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === '') {
-                          setDiscountPercentage('');
-                          if (errors.discountPercentage) setErrors({ ...errors, discountPercentage: '' });
-                          return;
-                        }
-                        const num = parseFloat(val);
-                        if (num >= 0 && num <= 100) {
-                          setDiscountPercentage(val);
+                        const formatted = formatATM(e.target.value);
+                        if (formatted !== null) {
+                          setDiscountPercentage(formatted);
                           if (errors.discountPercentage) setErrors({ ...errors, discountPercentage: '' });
                         }
                       }}
@@ -244,6 +240,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                     />
                     <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg group-focus-within:text-paymint-green transition-colors">{t('common.percent')}</div>
                   </div>
+                  <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
                   {errors.discountPercentage && <p className="mt-1 px-1 text-xs font-bold text-paymint-red">{errors.discountPercentage}</p>}
                 </motion.div>
               ) : (

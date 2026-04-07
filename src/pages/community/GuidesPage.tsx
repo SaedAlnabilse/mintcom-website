@@ -139,7 +139,7 @@ export const GuidesPage = () => {
   ];
 
   const difficultyConfig = {
-    beginner: { label: t('community.difficulty.beginner', 'Beginner'), color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20' },
+    beginner: { label: t('community.difficulty.beginner', 'Beginner'), color: 'text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/' },
     intermediate: { label: t('community.difficulty.intermediate', 'Intermediate'), color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20' },
     advanced: { label: t('community.difficulty.advanced', 'Advanced'), color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20' }
   };

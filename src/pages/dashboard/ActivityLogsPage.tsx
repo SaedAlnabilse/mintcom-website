@@ -38,12 +38,12 @@ interface ActivityLog {
 
 const actionColors: Record<string, string> = {
   // Inventory
-  'Added product': 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+  'Added product': 'bg-paymint-green/ text-paymint-green border-paymint-green/',
   'Updated product': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   'Deleted product': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
   'Removed product image': 'bg-orange-500/10 text-orange-500 border-orange-500/20',
   'Deleted all products': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
-  'Added category': 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+  'Added category': 'bg-paymint-green/ text-paymint-green border-paymint-green/',
   'Updated category': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   'Deleted category': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
 
@@ -244,15 +244,6 @@ export function ActivityLogsPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <div className="flex items-center gap-2">
-              <div className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-              </div>
-              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
-            </div>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('activity.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('activity.subtitle')}</span>

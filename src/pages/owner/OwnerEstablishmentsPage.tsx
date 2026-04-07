@@ -109,7 +109,7 @@ export function OwnerEstablishmentsPage() {
     const getStatusColor = (status: string) => {
         switch (status?.toUpperCase()) {
             case 'ACTIVE':
-                return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+                return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
             case 'TRIAL':
                 return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
             case 'CANCELED':
@@ -162,7 +162,7 @@ export function OwnerEstablishmentsPage() {
                     </button>
                     <button
                         onClick={handleAddEstablishment}
-                        className="px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm flex items-center gap-2"
+                        className="px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm flex items-center gap-2"
                     >
                         <Plus size={18} />
                         <span>{t('owner.overview.addLocation')}</span>
@@ -380,7 +380,7 @@ export function OwnerEstablishmentsPage() {
                                     {/* Status Badge */}
                                     <div className="mb-6">
                                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' :
+                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' :
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
                                                 }`} />
@@ -402,7 +402,7 @@ export function OwnerEstablishmentsPage() {
                                                 <Zap size={12} />
                                                 <p className="text-xs font-bold tracking-wide">{t('owner.locations.status')}</p>
                                             </div>
-                                            <p className="text-sm font-bold text-emerald-500">{t('owner.locations.online')}</p>
+                                            <p className="text-sm font-bold text-paymint-green">{t('owner.locations.online')}</p>
                                         </div>
                                     </div>
 
@@ -480,7 +480,7 @@ export function OwnerEstablishmentsPage() {
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
-                                                <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
+                                                <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                                 {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
                                             </span>
                                             <span className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</span>
@@ -545,7 +545,7 @@ export function OwnerEstablishmentsPage() {
                                         {/* Status */}
                                         <div className="col-span-2 flex items-center">
                                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
-                                                <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' :
+                                                <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' :
                                                     est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                         'bg-red-500'
                                                     }`} />
@@ -574,7 +574,7 @@ export function OwnerEstablishmentsPage() {
                                                     e.stopPropagation();
                                                     handleEstablishmentClick(est);
                                                 }}
-                                                className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-emerald-400 transition-all flex items-center gap-2"
+                                                className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-[#68B390] transition-all flex items-center gap-2"
                                             >
                                                 {t('owner.locations.enter')}
                                             </button>

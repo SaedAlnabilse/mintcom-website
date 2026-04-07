@@ -28,8 +28,10 @@ import {
     PlayCircle,
     ExternalLink,
     Scale,
+    Coins,
 } from 'lucide-react';
 import api from '../../config/api';
+import { CURRENCIES } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 import { PasswordResetOtpModal } from '../../components/PasswordResetOtpModal';
 import toast from 'react-hot-toast';
@@ -113,6 +115,34 @@ export function OwnerAccountManagementPage() {
     const [deleteReason, setDeleteReason] = useState('');
     const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
     const [deletePassword, setDeletePassword] = useState('');
+
+    // Global Currency state
+    const [globalCurrency, setGlobalCurrency] = useState('AED');
+    const [isUpdatingCurrency, setIsUpdatingCurrency] = useState(false);
+
+    const handleUpdateGlobalCurrency = async (newCurrency: string) => {
+        try {
+            setIsUpdatingCurrency(true);
+            const response = await api.put('/api/accounts/currency', { currency: newCurrency });
+            if (response.data?.success) {
+                setGlobalCurrency(newCurrency);
+                toast.success(`Global currency updated to ${newCurrency}`);
+                
+                // Update local establishments data
+                if (accountDetails?.establishments) {
+                    setAccountDetails(prev => prev ? ({
+                        ...prev,
+                        establishments: prev.establishments!.map(e => ({ ...e, currency: newCurrency }))
+                    }) : prev);
+                }
+            }
+        } catch (err: any) {
+            console.error('Failed to update currency:', err);
+            toast.error(err.response?.data?.message || 'Failed to update global currency');
+        } finally {
+            setIsUpdatingCurrency(false);
+        }
+    };
 
     const locationLoginEstablishments = useMemo(() => {
         const profileEstablishments = accountDetails?.establishments || [];
@@ -240,6 +270,10 @@ export function OwnerAccountManagementPage() {
                 establishments: data.establishments || [],
             });
 
+            if (data.establishments && data.establishments.length > 0) {
+                setGlobalCurrency(data.establishments[0].currency || 'AED');
+            }
+
             setBrands(data.brands || []);
             setAdminUsers(data.adminUsers || []);
         } catch (err) {
@@ -355,7 +389,7 @@ export function OwnerAccountManagementPage() {
         switch (status?.toUpperCase()) {
             case 'ACTIVE':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-xs font-bold tracking-widest text-emerald-500">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-paymint-green/ border border-paymint-green/ rounded-lg text-xs font-bold tracking-widest text-paymint-green">
                         <CheckCircle2 size={12} />
                         {t('common.status.active')}
                     </span>
@@ -549,7 +583,7 @@ export function OwnerAccountManagementPage() {
                                             </button>
                                             <button
                                                 onClick={handleSaveProfile}
-                                                className="flex items-center gap-2 px-4 py-2 bg-paymint-green hover:bg-emerald-500 text-black rounded-xl text-sm font-bold transition-all disabled:opacity-70"
+                                                className="flex items-center gap-2 px-4 py-2 bg-paymint-green hover:bg-[#68B390] text-black rounded-xl text-sm font-bold transition-all disabled:opacity-70"
                                                 disabled={isSaving}
                                             >
                                                 {isSaving ? (
@@ -634,7 +668,7 @@ export function OwnerAccountManagementPage() {
                                                 {accountDetails?.email}
                                             </p>
                                             {accountDetails?.emailVerified && (
-                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-xs font-bold tracking-widest text-emerald-500">
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-paymint-green/ border border-paymint-green/ rounded-md text-xs font-bold tracking-widest text-paymint-green">
                                                     <Shield size={10} />
                                                     Verified
                                                 </span>
@@ -762,7 +796,7 @@ export function OwnerAccountManagementPage() {
                                                                 className="text-xs font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1"
                                                             >
                                                                 {copiedId === `est-login-${est.id}` ? (
-                                                                    <span className="flex items-center gap-1 text-emerald-500"><CheckCircle2 size={10} /> {t('common.copied')}</span>
+                                                                    <span className="flex items-center gap-1 text-paymint-green"><CheckCircle2 size={10} /> {t('common.copied')}</span>
                                                                 ) : (
                                                                     <span className="flex items-center gap-1"><Copy size={10} /> {t('common.copy')}</span>
                                                                 )}
@@ -846,7 +880,7 @@ export function OwnerAccountManagementPage() {
                                                                     {t('owner.account.locationsCount', { count })}
                                                                 </span>
                                                                 <span className="text-gray-300 dark:text-gray-600">&bull;</span>
-                                                                <span className={`font-bold ${brand.isActive ? 'text-emerald-500' : 'text-gray-400'}`}>
+                                                                <span className={`font-bold ${brand.isActive ? 'text-paymint-green' : 'text-gray-400'}`}>
                                                                     {brand.isActive ? t('common.status.active') : t('common.status.inactive')}
                                                                 </span>
                                                                 <span className="text-gray-300 dark:text-gray-600">&bull;</span>
@@ -895,6 +929,53 @@ export function OwnerAccountManagementPage() {
 
                 {/* Right Column - Security & Info */}
                 <div className="space-y-6">
+
+                    {/* Global System Currency */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.15 }}
+                        className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-6 shadow-sm transition-all duration-300 overflow-hidden"
+                    >
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                                    <Coins className="w-5 h-5 text-amber-500" />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">System Currency</h2>
+                                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400">Updates currency for all your locations.</p>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <div className="relative">
+                                    <select
+                                        value={globalCurrency}
+                                        onChange={(e) => handleUpdateGlobalCurrency(e.target.value)}
+                                        disabled={isUpdatingCurrency}
+                                        className="w-full h-12 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.08] rounded-xl px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all appearance-none cursor-pointer disabled:opacity-50"
+                                    >
+                                        {CURRENCIES.map((c) => (
+                                            <option key={c.code} value={c.code} className="bg-white dark:bg-gray-800">
+                                                {c.name} ({c.symbol})
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                {isUpdatingCurrency && (
+                                    <p className="text-xs font-bold text-amber-500 animate-pulse text-center">
+                                        Applying changes to all locations...
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    </motion.div>
 
                     {/* Resources & Help */}
                     <motion.div
@@ -990,13 +1071,13 @@ export function OwnerAccountManagementPage() {
                                     className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
-                                        <Shield size={20} className="text-emerald-500 group-hover/item:scale-110 transition-transform" />
+                                        <Shield size={20} className="text-paymint-green group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
                                         <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.privacyPolicy.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.privacyPolicy.desc')}</p>
                                     </div>
-                                    <ExternalLink size={16} className="text-gray-400 group-hover/item:text-emerald-500 transition-colors" />
+                                    <ExternalLink size={16} className="text-gray-400 group-hover/item:text-paymint-green transition-colors" />
                                 </a>
 
                                 {/* Terms of Use */}
@@ -1104,7 +1185,7 @@ export function OwnerAccountManagementPage() {
                                 <button
                                     onClick={handleRestoreAccount}
                                     disabled={isRestoring}
-                                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-paymint-green hover:bg-emerald-500 text-black rounded-xl text-sm font-black transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-70"
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-paymint-green hover:bg-[#68B390] text-black rounded-xl text-sm font-black transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-70"
                                 >
                                     {isRestoring ? (
                                         <>
@@ -1362,7 +1443,7 @@ export function OwnerAccountManagementPage() {
                                 <div className="flex flex-col gap-3">
                                     <button
                                         onClick={() => navigate('/owner/establishments')}
-                                        className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-paymint-green hover:bg-emerald-500 text-black rounded-2xl text-sm font-black transition-all shadow-lg shadow-paymint-green/20"
+                                        className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-paymint-green hover:bg-[#68B390] text-black rounded-2xl text-sm font-black transition-all shadow-lg shadow-paymint-green/20"
                                     >
                                         <Store size={18} />
                                         {t('owner.account.activeEstBlockModal.goToLocations')}

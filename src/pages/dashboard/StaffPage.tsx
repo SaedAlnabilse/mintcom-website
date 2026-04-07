@@ -343,15 +343,6 @@ export function StaffPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <div className="flex items-center gap-2">
-              <div className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-              </div>
-              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
-            </div>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('staff.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('staff.subtitle')}</span>
@@ -373,7 +364,7 @@ export function StaffPage() {
           </button>
           <button
             onClick={handleOpenAddEmployeeModal}
-            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm touch-target"
+            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm touch-target"
           >
             <Plus size={18} />
             <span className="hidden xs:inline">{t('staff.addMember')}</span>
@@ -384,7 +375,7 @@ export function StaffPage() {
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
           { label: t('owner.employees.totalUsers'), info: t('owner.staff.usersInfo'), value: staff.length, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: t('owner.employees.activeNow'), info: t('owner.staff.activeInfo'), value: staff.filter(s => s.isClockedIn).length, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+          { label: t('owner.employees.activeNow'), info: t('owner.staff.activeInfo'), value: staff.filter(s => s.isClockedIn).length, icon: UserCheck, color: 'text-paymint-green', bg: 'bg-paymint-green/' },
           { label: t('owner.staff.admins'), info: t('owner.staff.adminsInfo'), value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
           { label: t('owner.staff.standardUsers'), info: t('owner.staff.standardInfo'), value: staff.filter(s => s.role !== 'ADMIN').length, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (

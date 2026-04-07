@@ -46,7 +46,7 @@ export const IdeasPage = () => {
     under_review: { label: t('community.status.under_review', 'Under Review'), color: 'text-gray-600', bg: 'bg-gray-100 dark:bg-gray-500/20', icon: Eye },
     planned: { label: t('community.status.planned', 'Planned'), color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: Clock },
     in_progress: { label: t('community.status.in_progress', 'In Progress'), color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Zap },
-    completed: { label: t('community.status.completed', 'Completed'), color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20', icon: CheckCircle2 },
+    completed: { label: t('community.status.completed', 'Completed'), color: 'text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2 },
     declined: { label: t('community.status.declined', 'Declined'), color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20', icon: Lightbulb }
   };
 
@@ -265,8 +265,8 @@ export const IdeasPage = () => {
             </div>
             <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 dark:bg-green-500/20 rounded-xl flex items-center justify-center">
-                  <CheckCircle2 size={20} className="text-green-600" />
+                <div className="w-10 h-10 bg-paymint-green/10 dark:bg-paymint-green/ rounded-xl flex items-center justify-center">
+                  <CheckCircle2 size={20} className="text-paymint-green" />
                 </div>
                 <div>
                   <p className="text-xl font-black">{ideas.filter(i => i.status === 'completed').length}</p>

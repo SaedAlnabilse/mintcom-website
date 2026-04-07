@@ -100,7 +100,7 @@ export function CookiePolicyPage() {
             <div className="not-prose grid gap-6 mt-6 mb-8">
               <div className="p-6 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
                 <div className="flex items-center gap-3 mb-3 text-gray-900 dark:text-white">
-                  <div className="p-2 bg-green-100 dark:bg-green-900/20 text-green-600 rounded-lg">
+                  <div className="p-2 bg-paymint-green/10 dark:bg-paymint-green/ text-paymint-green rounded-lg">
                     <Lock size={20} />
                   </div>
                   <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.essential')}</h3>
@@ -161,7 +161,7 @@ export function CookiePolicyPage() {
                 onClick={() => {
                    window.dispatchEvent(new Event('open-cookie-preferences'));
                 }}
-                className="px-6 py-2.5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-lg hover:bg-emerald-400 transition-colors shadow-sm"
+                className="px-6 py-2.5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-lg hover:bg-[#68B390] transition-colors shadow-sm"
               >
                 {t('legal.cookies.openSettings')}
               </button>

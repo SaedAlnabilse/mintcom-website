@@ -587,13 +587,13 @@ export function CsvImportModal({
                             <div className="space-y-5">
                                 {/* Result Summary */}
                                 <div className={`p-6 rounded-2xl text-center ${importResult.failed === 0
-                                    ? 'bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20'
+                                    ? 'bg-paymint-green/10 dark:bg-paymint-green/ border border-paymint-green/20 dark:border-paymint-green/'
                                     : importResult.success === 0
                                         ? 'bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20'
                                         : 'bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-500/20'
                                     }`}>
                                     <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center ${importResult.failed === 0
-                                        ? 'bg-emerald-500/10 text-emerald-500'
+                                        ? 'bg-paymint-green/ text-paymint-green'
                                         : importResult.success === 0
                                             ? 'bg-red-500/10 text-red-500'
                                             : 'bg-amber-500/10 text-amber-500'
@@ -620,9 +620,9 @@ export function CsvImportModal({
 
                                 {/* Stats Grid */}
                                 <div className="grid grid-cols-2 gap-3">
-                                    <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 text-center">
-                                        <p className="text-2xl font-black text-emerald-500">{importResult.success}</p>
-                                        <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1">Successful</p>
+                                    <div className="p-4 rounded-xl bg-paymint-green/10 dark:bg-paymint-green/ border border-paymint-green/20 dark:border-paymint-green/ text-center">
+                                        <p className="text-2xl font-black text-paymint-green">{importResult.success}</p>
+                                        <p className="text-xs font-bold text-paymint-green dark:text-paymint-green mt-1">Successful</p>
                                     </div>
                                     <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-center">
                                         <p className="text-2xl font-black text-red-500">{importResult.failed}</p>
@@ -689,7 +689,7 @@ export function CsvImportModal({
                                 <button
                                     onClick={handleImport}
                                     disabled={isImporting || parsedData.length === 0}
-                                    className="flex-[2] h-12 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                                    className="flex-[2] h-12 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
                                 >
                                     {isImporting ? (
                                         <>
@@ -709,7 +709,7 @@ export function CsvImportModal({
                         {step === 'result' && (
                             <button
                                 onClick={handleClose}
-                                className="flex-1 h-12 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20"
+                                className="flex-1 h-12 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20"
                             >
                                 Done
                             </button>

@@ -1510,8 +1510,8 @@ export function OnboardingPage() {
                     className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5 h-full"
                   >
                     <div className="flex items-center gap-3 mb-5">
-                      <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                        <BookOpen size={20} className="text-emerald-500" />
+                      <div className="w-10 h-10 bg-paymint-green/ rounded-lg flex items-center justify-center">
+                        <BookOpen size={20} className="text-paymint-green" />
                       </div>
                       <h3 className="text-lg font-sans font-bold text-gray-900 dark:text-white">{t('onboarding.step5.resourcesAndHelp')}</h3>
                     </div>
@@ -1579,8 +1579,8 @@ export function OnboardingPage() {
                         rel="noopener noreferrer"
                         className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
                       >
-                        <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                          <Shield size={20} className="text-emerald-500" />
+                        <div className="w-10 h-10 bg-paymint-green/ rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <Shield size={20} className="text-paymint-green" />
                         </div>
                         <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.privacy')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.dataProtection')}</p>

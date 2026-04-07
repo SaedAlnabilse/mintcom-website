@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { realtimeService } from '../services/realtimeService';
 import type { ConnectionStatus } from '../services/realtimeService';
-import { Activity, Wifi, WifiOff, AlertCircle } from 'lucide-react';
+import { Activity, WifiOff, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -35,11 +35,16 @@ export const RealtimeStatusIndicator: React.FC = () => {
     switch (status) {
       case 'connected':
         return {
-          icon: <Wifi size={14} />,
+          icon: (
+            <div className="relative flex h-2 w-2 mx-0.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+            </div>
+          ),
           text: t('common.status.live'),
-          color: 'text-green-500',
-          bgColor: 'bg-green-500/10',
-          borderColor: 'border-green-500/20',
+          color: 'text-paymint-green',
+          bgColor: 'bg-paymint-green/10',
+          borderColor: 'border-paymint-green/20',
         };
       case 'connecting':
         return {

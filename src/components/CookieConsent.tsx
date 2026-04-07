@@ -141,7 +141,7 @@ export function CookieConsent() {
                 </button>
                 <button
                   onClick={handleAcceptAll}
-                  className="px-6 py-2.5 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 shadow-lg shadow-paymint-green/20 transition-all hover:scale-105"
+                  className="px-6 py-2.5 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] shadow-lg shadow-paymint-green/20 transition-all hover:scale-105"
                 >
                   {t('cookies.banner.acceptAll')}
                 </button>

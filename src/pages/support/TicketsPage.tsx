@@ -166,7 +166,7 @@ export const TicketsPage = () => {
   const statusConfig: Record<TicketStatus, { label: string; color: string; bg: string; icon: React.ElementType; dotColor: string }> = useMemo(() => ({
     open: { label: t('support.tickets.status.open'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: Inbox, dotColor: 'bg-blue-500' },
     in_progress: { label: t('support.tickets.status.inProgress'), color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/15', icon: Loader2, dotColor: 'bg-amber-500' },
-    resolved: { label: t('support.tickets.status.resolved'), color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-500/15', icon: CheckCircle2, dotColor: 'bg-emerald-500' },
+    resolved: { label: t('support.tickets.status.resolved'), color: 'text-paymint-green dark:text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2, dotColor: 'bg-paymint-green' },
     closed: { label: t('support.tickets.status.closed'), color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-500/15', icon: XCircle, dotColor: 'bg-gray-400' }
   }), [t]);
 
@@ -276,7 +276,7 @@ export const TicketsPage = () => {
             {[
               { key: 'open' as const, icon: Inbox, value: stats.open, label: t('support.tickets.stats.open'), iconColor: 'text-blue-500', bgColor: 'bg-blue-50 dark:bg-blue-500/10' },
               { key: 'inProgress' as const, icon: Clock, value: stats.inProgress, label: t('support.tickets.stats.inProgress'), iconColor: 'text-amber-500', bgColor: 'bg-amber-50 dark:bg-amber-500/10' },
-              { key: 'resolved' as const, icon: CheckCircle2, value: stats.resolved, label: t('support.tickets.stats.resolved'), iconColor: 'text-emerald-500', bgColor: 'bg-emerald-50 dark:bg-emerald-500/10' },
+              { key: 'resolved' as const, icon: CheckCircle2, value: stats.resolved, label: t('support.tickets.stats.resolved'), iconColor: 'text-paymint-green', bgColor: 'bg-paymint-green/10 dark:bg-paymint-green/' },
               { key: 'total' as const, icon: BarChart3, value: stats.total, label: t('support.tickets.stats.total'), iconColor: 'text-purple-500', bgColor: 'bg-purple-50 dark:bg-purple-500/10' },
             ].map((stat) => (
               <motion.div

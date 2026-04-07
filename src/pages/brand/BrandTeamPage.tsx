@@ -337,7 +337,7 @@ export default function BrandTeamPage() {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={handleAddEmployee}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
                     >
                         <UserPlus size={18} />
                         <span>{t('staff.newEmployee')}</span>
@@ -485,7 +485,7 @@ export default function BrandTeamPage() {
                         {hasFilters && (
                         <button
                             onClick={clearFilters}
-                            className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-emerald-400 transition-all"
+                            className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-[#68B390] transition-all"
                         >
                             {t('attributes.filters.reset')}
                         </button>
@@ -510,7 +510,7 @@ export default function BrandTeamPage() {
                                             {emp.firstName.charAt(0).toUpperCase()}
                                         </span>
                                         {emp.isActive && (
-                                            <div className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                            <div className="absolute bottom-0 right-0 w-4 h-4 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
                                         )}
                                     </div>
                                     <div>
@@ -560,10 +560,10 @@ export default function BrandTeamPage() {
                             {/* Status Badge */}
                             <div className="mb-4">
                                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${emp.isActive
-                                    ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
+                                    ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20 dark:bg-paymint-green/ dark:text-paymint-green dark:border-paymint-green/'
                                     : 'bg-gray-100 text-gray-500 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
                                     }`}>
-                                    <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                                    <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-paymint-green' : 'bg-gray-400'}`} />
                                     {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
                                 </span>
                             </div>
@@ -644,7 +644,7 @@ export default function BrandTeamPage() {
                                             {emp.firstName.charAt(0).toUpperCase()}
                                         </span>
                                         {emp.isActive && (
-                                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
                                         )}
                                     </div>
                                     <div>
@@ -713,7 +713,7 @@ export default function BrandTeamPage() {
                                             {emp.firstName.charAt(0).toUpperCase()}
                                         </span>
                                         {emp.isActive && (
-                                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
                                         )}
                                     </div>
                                     <div>
@@ -727,10 +727,10 @@ export default function BrandTeamPage() {
                                 {/* Status */}
                                 <div className="col-span-2 flex items-center">
                                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black tracking-wider border ${emp.isActive
-                                        ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
+                                        ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20 dark:bg-paymint-green/ dark:text-paymint-green dark:border-paymint-green/'
                                         : 'bg-gray-100 text-gray-500 border-gray-200'
                                         }`}>
-                                        <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                                        <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-paymint-green' : 'bg-gray-400'}`} />
                                         {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
                                     </span>
                                 </div>

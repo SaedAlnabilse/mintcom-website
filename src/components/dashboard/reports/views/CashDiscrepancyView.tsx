@@ -17,6 +17,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
   const { t } = useTranslation();
   const { formatAmount } = useCurrency();
   const [currentPage, setCurrentPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'short' | 'over' | 'balanced'>('all');
   const itemsPerPage = 10;
 
   const formatCurrency = (value: number) => formatAmount(value);
@@ -57,14 +58,30 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
     };
   }, [closedShifts]);
 
+  // Filter shifts based on status filter
+  const filteredShifts = useMemo(() => {
+    return closedShifts.filter((s: any) => {
+      const discrepancy = s.discrepancy || 0;
+      if (statusFilter === 'over') return discrepancy > 0.001;
+      if (statusFilter === 'short') return discrepancy < -0.001;
+      if (statusFilter === 'balanced') return discrepancy >= -0.001 && discrepancy <= 0.001;
+      return true;
+    });
+  }, [closedShifts, statusFilter]);
+
   // Sort shifts by discrepancy (largest first for over, most negative for short)
   const sortedShifts = useMemo(() => {
-    return [...closedShifts].sort((a: any, b: any) => {
+    return [...filteredShifts].sort((a: any, b: any) => {
       const discA = Math.abs(a.discrepancy || 0);
       const discB = Math.abs(b.discrepancy || 0);
       return discB - discA; // Sort by absolute value, largest first
     });
-  }, [closedShifts]);
+  }, [filteredShifts]);
+
+  const handleStatusFilterChange = (filter: 'all' | 'short' | 'over' | 'balanced') => {
+    setStatusFilter(filter);
+    setCurrentPage(1);
+  };
 
   const paginatedShifts = useMemo(() => {
     return sortedShifts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -213,7 +230,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
 
       {/* Detailed Shifts Table */}
       <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
-        <div className="p-6 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
+        <div className="p-6 border-b border-gray-200 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h3 className="text-lg font-black text-gray-900 dark:text-white">{t('orders.reports.cashGap.details')}</h3>
             <p className="text-xs text-gray-500 mt-1">
@@ -223,6 +240,43 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
           <span className="text-xs font-bold text-gray-400">
             {t('common.showing')} {Math.min(paginatedShifts.length, itemsPerPage).toLocaleString(t('common.locale'))} {t('common.of')} {sortedShifts.length.toLocaleString(t('common.locale'))} {t('dashboard.menu.shiftsReports')}
           </span>
+        </div>
+
+        {/* Filter Pills */}
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01] flex flex-wrap items-center gap-2">
+          {[
+            { id: 'all', label: t('orders.reports.cashGap.all'), icon: Scale, color: 'gray' },
+            { id: 'over', label: t('orders.reports.cashGap.over'), icon: TrendingUp, color: 'emerald' },
+            { id: 'short', label: t('orders.reports.cashGap.short'), icon: TrendingDown, color: 'red' },
+            { id: 'balanced', label: t('orders.reports.cashGap.balanced'), icon: Scale, color: 'blue' },
+          ].map((filter) => {
+            const isSelected = statusFilter === filter.id;
+            return (
+              <button
+                key={filter.id}
+                onClick={() => handleStatusFilterChange(filter.id as any)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+                  isSelected
+                    ? filter.color === 'emerald'
+                      ? 'bg-emerald-500 text-white border-emerald-500 shadow-lg shadow-emerald-500/20'
+                      : filter.color === 'red'
+                        ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/20'
+                        : filter.color === 'blue'
+                          ? 'bg-blue-500 text-white border-blue-500 shadow-lg shadow-blue-500/20'
+                          : 'bg-gray-900 dark:bg-white text-white dark:text-black border-gray-900 dark:border-white shadow-lg shadow-gray-900/20 dark:shadow-white/20'
+                    : 'bg-white dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'
+                }`}
+              >
+                <filter.icon size={14} />
+                {filter.label}
+                <span className={`ml-1 px-1.5 py-0.5 rounded-lg text-[10px] ${
+                  isSelected ? 'bg-black/10 dark:bg-white/20' : 'bg-gray-100 dark:bg-white/10'
+                }`}>
+                  {filter.id === 'all' ? closedShifts.length : filter.id === 'over' ? stats.overCount : filter.id === 'short' ? stats.shortCount : stats.balancedCount}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {sortedShifts.length === 0 ? (

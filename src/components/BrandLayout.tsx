@@ -290,7 +290,7 @@ export function BrandLayout() {
                                 </div>
                                 <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-gray-100 dark:border-white/10">
                                     <div className="flex items-center gap-1.5">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] dark:shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                        <div className="w-1.5 h-1.5 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.3)] dark:shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                                         <span className="text-xs font-black text-gray-400 tracking-widest">{t('owner.overview.online')}</span>
                                     </div>
                                     <div className="flex items-center gap-1 text-xs font-bold text-gray-500 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">

@@ -1,6 +1,6 @@
 import { MobileAppModal } from './MobileAppModal';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { AppStrings } from '../constants/AppStrings';
+
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -42,6 +42,7 @@ import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 import PaymintLeafIcon from '../assets/small-logo.svg';
 import { ConfirmModal } from './ConfirmModal';
 import { getBusinessTypeIcon } from '../utils/businessTypeIcons';
+import { RealtimeStatusIndicator } from './RealtimeStatusIndicator';
 
 interface MenuItem {
   path: string;
@@ -470,10 +471,9 @@ export function DashboardLayout() {
                 </div>
                 <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-gray-100 dark:border-white/10">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] dark:shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                    <span className="text-xs font-black text-gray-400 tracking-widest">{AppStrings.STATUS.ONLINE}</span>
+                    <RealtimeStatusIndicator />
                   </div>
-                  <div className="flex items-center gap-1 text-xs font-black text-gray-400 tracking-widest group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                  <div className="flex items-center gap-1 text-xs font-medium text-gray-400 tracking-widest group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                     {t('dashboard.menu.switchLocation')} <ChevronRight size={10} className={`mt-0.5 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
                   </div>
                 </div>

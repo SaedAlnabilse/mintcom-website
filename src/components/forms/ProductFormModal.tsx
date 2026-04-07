@@ -160,8 +160,8 @@ export function ProductFormModal({
 
   const formatATM = (val: string) => {
     const digits = val.replace(/\D/g, '');
+    if (digits.length > 19) return null;
     const cents = parseInt(digits || '0', 10);
-    if (cents > 9999999) return null;
     if (cents === 0) return '';
     return (cents / 100).toFixed(2);
   };
@@ -670,6 +670,7 @@ export function ProductFormModal({
                             placeholder={t('common.zero')}
                             className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50"
                           />
+                          <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
                         </div>
                       </div>
                     )}
@@ -698,6 +699,7 @@ export function ProductFormModal({
                           placeholder={t('common.zero')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.price ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pl-16 pr-4 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50`}
                         />
+                        <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
                       </div>
                     </div>
                   </div>
@@ -1114,6 +1116,7 @@ export function ProductFormModal({
                           }}
                           onChange={(e) => {
                             const val = e.target.value;
+                            if (val.length > 19) return;
                             if (val === '' || Number(val) >= 0) {
                               setStock(val);
                               if (errors.stock) {
@@ -1147,6 +1150,7 @@ export function ProductFormModal({
                             }}
                             onChange={(e) => {
                               const val = e.target.value;
+                              if (val.length > 19) return;
                               if (val === '' || Number(val) >= 0) {
                                 setLowStockYellow(val);
                                 if (errors.lowStockYellow) {
@@ -1175,6 +1179,7 @@ export function ProductFormModal({
                             }}
                             onChange={(e) => {
                               const val = e.target.value;
+                              if (val.length > 19) return;
                               if (val === '' || Number(val) >= 0) {
                                 setLowStockRed(val);
                                 if (errors.lowStockRed) {

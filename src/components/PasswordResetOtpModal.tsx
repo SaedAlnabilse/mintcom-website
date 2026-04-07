@@ -457,8 +457,8 @@ export function PasswordResetOtpModal({
                         {/* Step 4: Success */}
                         {step === 'success' && (
                             <div className="space-y-6 text-center">
-                                <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto">
-                                    <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+                                <div className="w-20 h-20 rounded-full bg-paymint-green/ flex items-center justify-center mx-auto">
+                                    <CheckCircle2 className="w-10 h-10 text-paymint-green" />
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">

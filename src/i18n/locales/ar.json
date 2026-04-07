@@ -1191,7 +1191,7 @@
       "ingredients": "المكونات",
       "inventory": "عمليات الوصفات",
       "inventoryDesc": "عرض وتحديث الوصفات والمكونات",
-      "itemsMenu": "قائمة الأصناف (عمليات الوصفات)",
+      "itemsMenu": "قائمة الأصناف (المخزون)",
       "logout": "تسجيل الخروج",
       "loyalty": "الولاء",
       "mainMenu": "القائمة الرئيسية",
@@ -2541,6 +2541,7 @@
     "reports": {
       "cashGap": {
         "accuracyRate": "معدل الدقة",
+        "all": "الكل",
         "balanced": "متطابق",
         "cashOver": "زيادة نقدية",
         "cashShort": "نقص نقدي",

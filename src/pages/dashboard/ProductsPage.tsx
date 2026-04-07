@@ -649,7 +649,7 @@ export function ProductsPage() {
                     </button>
                     <button
                         onClick={handleCreateNew}
-                        className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-sm"
+                        className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-[#68B390] transition-all shadow-sm"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         <span className="hidden xs:inline">{t('products.addProduct')}</span>
@@ -907,7 +907,7 @@ export function ProductsPage() {
                     {!hasAnyProducts && (
                         <button
                             onClick={handleCreateNew}
-                            className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black font-bold text-xs rounded-xl hover:bg-emerald-400 transition-all tracking-widest"
+                            className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black font-bold text-xs rounded-xl hover:bg-[#68B390] transition-all tracking-widest"
                         >
                             <Plus size={16} />
                             {t('products.messages.addFirst')}

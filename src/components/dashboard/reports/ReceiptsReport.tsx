@@ -185,7 +185,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
             {/* Sub-Header / KPI - Optional, to give some context inside the tab */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                    { label: t('orders.reports.receipts.revenueSelected'), value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)), icon: Wallet, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                    { label: t('orders.reports.receipts.revenueSelected'), value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)), icon: Wallet, color: 'text-paymint-green', bg: 'bg-paymint-green/' },
                     { label: t('orders.reports.receipts.receiptsCount'), value: orders.length, icon: Receipt, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: t('orders.reports.receipts.refundsHeld'), value: orders.filter(o => o.status === 'HELD' || o.paymentStatus === 'REFUNDED').length, icon: Undo2, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (

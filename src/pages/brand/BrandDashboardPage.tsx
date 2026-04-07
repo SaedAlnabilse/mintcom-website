@@ -460,8 +460,8 @@ export function BrandDashboardPage() {
                         value: formatCurrency(stats?.totalRevenue || 0),
                         change: null,
                         icon: DollarSign,
-                        color: 'text-emerald-500',
-                        bg: 'bg-emerald-500/10'
+                        color: 'text-paymint-green',
+                        bg: 'bg-paymint-green/'
                     },
                     {
                         label: t('brand.dashboard.totalOrders'),
@@ -507,7 +507,7 @@ export function BrandDashboardPage() {
                                 </div>
                                 {stat.change !== null && (
                                     <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
-                                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                                        ? 'bg-paymint-green/10 text-paymint-green dark:bg-paymint-green/ dark:text-paymint-green'
                                         : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
                                         }`}>
                                         {stat.change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}

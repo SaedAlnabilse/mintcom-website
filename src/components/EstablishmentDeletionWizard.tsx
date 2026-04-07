@@ -512,7 +512,7 @@ export function EstablishmentDeletionWizard({
                                             onChange={(e) => setPassword(e.target.value)}
                                             placeholder={t('security.deletion.confirm.yourPassword')}
                                             className={`w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none transition-colors ${password.length >= 6
-                                                ? 'border-green-500 focus:border-green-500'
+                                                ? 'border-paymint-green focus:border-paymint-green'
                                                 : 'border-gray-300 dark:border-gray-700 focus:border-paymint-red'
                                                 }`}
                                         />
@@ -525,7 +525,7 @@ export function EstablishmentDeletionWizard({
                                         </button>
                                     </div>
                                     {password.length >= 6 && (
-                                        <p className="text-green-500 text-sm mt-2 flex items-center gap-1">
+                                        <p className="text-paymint-green text-sm mt-2 flex items-center gap-1">
                                             <Check size={14} /> {t('security.deletion.confirm.passwordEntered')}
                                         </p>
                                     )}

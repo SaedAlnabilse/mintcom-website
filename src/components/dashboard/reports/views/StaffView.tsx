@@ -186,7 +186,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
           >
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 group-hover:text-paymint-green transition-colors tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalVariances')}</p>
             <div className="flex flex-wrap items-center gap-1.5 mb-1 leading-none">
-              <span className="text-xl font-bold text-emerald-500 tracking-tight">+{positiveVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span className="text-xl font-bold text-paymint-green tracking-tight">+{positiveVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               <span className="text-gray-300 dark:text-white/20 font-light text-xl">/</span>
               <span className="text-xl font-bold text-red-500 tracking-tight">-{negativeVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
