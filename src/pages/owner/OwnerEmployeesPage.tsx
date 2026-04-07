@@ -54,13 +54,14 @@ interface Employee {
 type ViewMode = 'grid' | 'list';
 type SortKey = 'name' | 'role' | 'status' | 'access';
 const MAX_EMPLOYEES_PER_ACCOUNT = 50;
+const MAX_DELETE_PASSWORD_ATTEMPTS = 3;
 const EMPLOYEE_LIMIT_POPUP_MESSAGE =
     `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
     `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact PayMint support at support@PayMint.app with your account email and password.`;
 
 export function OwnerEmployeesPage() {
     const { t } = useTranslation();
-    const { establishments, account } = useAuth();
+    const { establishments, account, logout } = useAuth();
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -82,6 +83,7 @@ export function OwnerEmployeesPage() {
     const [showDeletePassword, setShowDeletePassword] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState('');
+    const [deleteAttemptCount, setDeleteAttemptCount] = useState(0);
 
 
 
@@ -106,6 +108,7 @@ export function OwnerEmployeesPage() {
         setEmployeeToDelete(emp);
         setDeletePassword('');
         setDeleteError('');
+        setDeleteAttemptCount(0);
         setDeleteModalOpen(true);
     };
 
@@ -114,6 +117,7 @@ export function OwnerEmployeesPage() {
         setEmployeeToDelete(null);
         setDeletePassword('');
         setDeleteError('');
+        setDeleteAttemptCount(0);
     };
 
     const confirmDelete = async () => {
@@ -130,12 +134,36 @@ export function OwnerEmployeesPage() {
         try {
             // Call delete with password verification
             await api.delete(`/api/accounts/employees/${employeeToDelete.id}`, {
-                data: { email: account.email, password: deletePassword }
+                data: { email: account.email, password: deletePassword },
+                headers: { 'X-Skip-Auth-Redirect': 'true' }
             });
             toast.success(t('owner.staff.staffRemoved'));
             closeDeleteModal();
             fetchEmployees();
         } catch (error: any) {
+            if (error.response?.status === 401) {
+                const nextAttemptCount = deleteAttemptCount + 1;
+                const remainingAttempts = MAX_DELETE_PASSWORD_ATTEMPTS - nextAttemptCount;
+
+                setDeleteAttemptCount(nextAttemptCount);
+
+                if (remainingAttempts > 0) {
+                    setDeleteError(
+                        t('owner.staff.incorrectPasswordRemaining', {
+                            count: remainingAttempts,
+                        }),
+                    );
+                    return;
+                }
+
+                const tooManyAttemptsMessage = t('owner.staff.tooManyPasswordAttempts');
+                setDeleteError(tooManyAttemptsMessage);
+                toast.error(tooManyAttemptsMessage);
+                closeDeleteModal();
+                await logout();
+                return;
+            }
+
             setDeleteError(error.response?.data?.message || t('owner.staff.incorrectPassword'));
         } finally {
             setIsDeleting(false);
@@ -656,7 +684,7 @@ export function OwnerEmployeesPage() {
                     <div
                         className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl"
                     >
-                        <div className="p-8 pb-4">
+                        <div className="p-8 pb-4 flex flex-col items-center text-center">
                             <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
                                 <AlertTriangle size={32} />
                             </div>

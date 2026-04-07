@@ -461,7 +461,7 @@ export function PasswordResetOtpModal({
                                     <CheckCircle2 className="w-10 h-10 text-paymint-green" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                                         {t('passwordReset.steps.successTitle')}
                                     </h3>
                                     <p className="text-sm font-bold text-gray-500">

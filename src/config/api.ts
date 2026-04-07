@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const ESTABLISHMENT_HEADER = 'X-Establishment-Id';
 const SKIP_ESTABLISHMENT_HEADER = 'X-Skip-Establishment-Header';
+const SKIP_AUTH_REDIRECT_HEADER = 'X-Skip-Auth-Redirect';
 const MISSING_ESTABLISHMENT_HEADER_MESSAGE = 'X-Establishment-Id header is required for this endpoint';
 
 // Api Base Url - In development, use empty string to leverage Vite proxy
@@ -99,6 +100,9 @@ api.interceptors.request.use(
 
     const skipEstablishmentHeader = config.headers.get(SKIP_ESTABLISHMENT_HEADER) === 'true';
     config.headers.delete(SKIP_ESTABLISHMENT_HEADER);
+    const skipAuthRedirect = config.headers.get(SKIP_AUTH_REDIRECT_HEADER) === 'true';
+    config.headers.delete(SKIP_AUTH_REDIRECT_HEADER);
+    (config as any).skipAuthRedirect = skipAuthRedirect;
 
     // Add current establishment ID for account owner requests
     // This is CRITICAL for multi-establishment isolation
@@ -147,6 +151,7 @@ api.interceptors.response.use(
     const isLoginRequest = error.config?.url?.includes('/api/accounts/login');
     const isLogoutRequest = error.config?.url?.includes('/api/accounts/logout');
     const isLoginPage = window.location.pathname.includes('/login');
+    const skipAuthRedirect = Boolean((error.config as any)?.skipAuthRedirect);
     
     // Log all 401 errors for debugging
     if (error.response?.status === 401) {
@@ -161,6 +166,7 @@ api.interceptors.response.use(
                           !isLoginRequest && 
                           !isLogoutRequest && 
                           !isLoginPage &&
+                          !skipAuthRedirect &&
                           localStorage.getItem('account'); // Only if we think we're logged in
 
     if (shouldRedirect) {

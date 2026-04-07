@@ -341,7 +341,7 @@ export function OwnerBillingPage() {
                         <p className="dashboard-card-label mb-1">{t('owner.billing.monthlyCost')}</p>
                         <div className="flex items-baseline justify-end gap-1">
                             <span className="dashboard-card-value">${totalMonthlyCost.toFixed(2)}</span>
-                            <span className="text-xs font-bold text-gray-400">/{t('common.monthly')}</span>
+                            <span className="text-xs font-bold text-gray-400">{t('common.monthly')}</span>
                         </div>
                     </div>
                     {hasYearlyPlan && (
@@ -351,7 +351,7 @@ export function OwnerBillingPage() {
                                 <p className="dashboard-card-label mb-1">{t('owner.billing.yearlyCost')}</p>
                                 <div className="flex items-baseline justify-end gap-1">
                                     <span className="dashboard-card-value text-paymint-green">${totalYearlyCost.toFixed(2)}</span>
-                                    <span className="text-xs font-bold text-gray-400">/{t('common.yearly')}</span>
+                                    <span className="text-xs font-bold text-gray-400">{t('common.yearly')}</span>
                                 </div>
                             </div>
                         </>
@@ -519,8 +519,8 @@ export function OwnerBillingPage() {
 
                     <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
                         {/* Table Header */}
-                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-wide items-center">
-                            <div className="col-span-3 flex items-center gap-4">
+                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-label items-center">
+                            <div className="col-span-4 flex items-center gap-3">
                                 <div className="w-10" />
                                 <span>{toHeaderCase(t('owner.billing.service'))}</span>
                             </div>
@@ -530,14 +530,14 @@ export function OwnerBillingPage() {
                                 <button
                                     type="button"
                                     onClick={() => setNextBillSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
-                                    className="inline-flex items-center gap-1 text-gray-400 hover:text-paymint-green transition-colors"
+                                    className="inline-flex items-center gap-1 hover:text-paymint-green transition-colors"
                                     title={`${toHeaderCase(t('owner.billing.nextBill'))}: ${nextBillSortOrder === 'asc' ? toHeaderCase(t('common.next')) : toHeaderCase(t('sort.latest'))}`}
                                 >
                                     <span>{toHeaderCase(t('owner.billing.nextBill'))}</span>
                                     <ArrowUpDown size={12} />
                                 </button>
                             </div>
-                            <div className="col-span-3 text-center">{toHeaderCase(t('owner.billing.payment'))}</div>
+                            <div className="col-span-2 text-center">{toHeaderCase(t('owner.billing.payment'))}</div>
                         </div>
 
                         {isLoading ? (
@@ -558,11 +558,11 @@ export function OwnerBillingPage() {
                                         className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors items-center group relative"
                                     >
                                         {/* Service */}
-                                        <div className="col-span-3 flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-sm font-bold text-gray-400 group-hover:text-paymint-green transition-colors">
+                                        <div className="col-span-4 flex items-center gap-3 min-w-0">
+                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-sm font-bold text-gray-400 group-hover:text-paymint-green transition-colors shrink-0">
                                                 {est.name.charAt(0)}
                                             </div>
-                                            <div className="min-w-0">
+                                            <div className="min-w-0 flex-1">
                                                 <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white truncate" title={est.name}>
                                                     {est.name}
                                                 </h3>
@@ -586,17 +586,16 @@ export function OwnerBillingPage() {
                                                 const isYearly = est.billingCycle === 'yearly';
                                                 const isAdditional = fullIndex > 0;
                                                 return (
-                                                    <>
-                                                        <p className="font-bold text-gray-900 dark:text-white text-sm">
-                                                            ${price}
-                                                        </p>
-                                                        <p className="text-xs text-gray-400">
-                                                            /{isYearly ? t('common.yearly') : t('common.monthly')}
-                                                            {isAdditional && !isYearly && (
-                                                                <span className="text-paymint-green ml-1">(-$3)</span>
-                                                            )}
-                                                        </p>
-                                                    </>
+                                                    <div className="flex flex-col">
+                                                        <div className="flex items-baseline gap-1">
+                                                            <span className="font-bold text-gray-900 dark:text-white text-sm">
+                                                                ${price}
+                                                            </span>
+                                                            <span className="text-xs text-gray-400">
+                                                                /{isYearly ? t('common.yearly') : t('common.monthly')}
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 );
                                             })()}
                                         </div>
@@ -612,7 +611,7 @@ export function OwnerBillingPage() {
                                         </div>
 
                                         {/* Payment & Actions */}
-                                        <div className="col-span-3 flex items-center justify-center relative">
+                                        <div className="col-span-2 flex items-center justify-center relative">
                                             <span className="dashboard-card-meta">
                                                 {est.paymentCard ? `•••• ${est.paymentCard.last4}` : t('owner.billing.noCard')}
                                             </span>
@@ -637,19 +636,28 @@ export function OwnerBillingPage() {
                                                             onClick={(e) => e.stopPropagation()}
                                                             className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
                                                         >
+                                                            <button
+                                                                onClick={() => window.open(`/dashboard`, '_blank')}
+                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 tracking-wide transition-colors flex items-center gap-2"
+                                                            >
+                                                                <Eye size={14} />
+                                                                {t('owner.billing.viewDashboard')}
+                                                            </button>
                                                             {est.subscriptionStatus === 'TRIAL' && !est.cancelAtPeriodEnd && (
                                                                 <button
                                                                     onClick={() => handleStopTrial(est.id, est.name)}
-                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors"
+                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors flex items-center gap-2"
                                                                 >
+                                                                    <Trash2 size={14} />
                                                                     {t('owner.billing.stopTrial')}
                                                                 </button>
                                                             )}
                                                             {est.subscriptionStatus === 'ACTIVE' && !est.cancelAtPeriodEnd && (
                                                                 <button
                                                                     onClick={() => handleCancelSubscription(est.id, est.name)}
-                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors"
+                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors flex items-center gap-2"
                                                                 >
+                                                                    <Trash2 size={14} />
                                                                     {t('owner.billing.cancelSub')}
                                                                 </button>
                                                             )}
@@ -661,13 +669,6 @@ export function OwnerBillingPage() {
                                                                     {est.subscriptionStatus === 'CANCELED' ? t('owner.billing.reactivate') : t('owner.billing.resume')}
                                                                 </button>
                                                             )}
-                                                            <button
-                                                                onClick={() => window.open(`/dashboard`, '_blank')}
-                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 tracking-wide transition-colors flex items-center gap-2"
-                                                            >
-                                                                <Eye size={14} />
-                                                                {t('owner.billing.viewDashboard')}
-                                                            </button>
                                                         </motion.div>
                                                     )}
                                                 </AnimatePresence>

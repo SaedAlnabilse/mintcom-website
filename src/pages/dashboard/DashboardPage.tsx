@@ -527,7 +527,7 @@ export const DashboardPage = () => {
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
-                      className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden z-50"
+                      className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden z-50"
                     >
                       {getAvailableViewModes().map((mode) => (
                         <button

@@ -113,7 +113,7 @@ export const FeedbackWidget = () => {
                         className={`fixed ${isRTL ? 'left-0 border-y border-r rounded-r-2xl' : 'right-0 border-y border-l rounded-l-2xl'} top-[40%] -translate-y-1/2 z-[9999] !bg-white dark:!bg-[#0F172A] !bg-opacity-100 !opacity-100 border-gray-200 dark:border-white/10 py-4 px-2 shadow-2xl hover:bg-gray-50 dark:hover:!bg-[#334155] transition-all flex flex-col items-center gap-3 group ring-1 ring-black/5`}
                     >
                         <MessageSquare size={18} className="text-paymint-green group-hover:scale-110 transition-transform" />
-                        <span className="text-[10px] font-bold text-gray-800 dark:text-gray-100 tracking-widest uppercase [writing-mode:vertical-rl] rotate-180">{t('feedback.tab')}</span>
+                        <span className="text-xs font-bold text-gray-800 dark:text-gray-100 [writing-mode:vertical-rl] rotate-180">{t('feedback.tab')}</span>
                     </motion.button>
                 )}
             </AnimatePresence>

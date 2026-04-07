@@ -1002,7 +1002,7 @@ export function OnboardingPage() {
                         <span className="bg-yellow-400 text-black text-xs font-sans font-bold px-2 py-0.5 rounded">{t('onboarding.step2.freeDays')}</span>
                       ) : (
                         <span className="bg-paymint-green text-black text-xs font-sans font-bold px-2 py-0.5 rounded">
-                          {billingCycle === 'yearly' ? `$${currentYearlyPrice}/${t('common.yearly').toUpperCase()}` : `$${currentMonthlyPrice}/${t('common.monthly').toUpperCase()}`}
+                          {billingCycle === 'yearly' ? `$${currentYearlyPrice}${t('common.yearly')}` : `$${currentMonthlyPrice}${t('common.monthly')}`}
                         </span>
                       )}
                     </div>
@@ -1064,20 +1064,20 @@ export function OnboardingPage() {
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-xs font-sans font-bold text-gray-500">
-                      <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : (billingCycle === 'yearly' ? t('common.yearly') : t('common.monthly'))}</span>
+                      <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : (billingCycle === 'yearly' ? t('common.yearly').toUpperCase() : t('common.monthly').toUpperCase())}</span>
                       <span>
                         {billingCycle === 'yearly' 
-                          ? `$${currentYearlyPrice}/${t('common.yearly')}` 
-                          : `$${currentMonthlyPrice.toFixed(2)}/${t('common.monthly')}`}
+                          ? `$${currentYearlyPrice}${t('common.yearly')}` 
+                          : `$${currentMonthlyPrice.toFixed(2)}${t('common.monthly')}`}
                       </span>
                     </div>
                     {billingCycle === 'yearly' && !isTrialFlow && (
                       <div className="mt-3 flex items-center justify-center gap-2">
                         <Sparkles size={12} className="text-paymint-green" />
-                        <span className="text-xs font-bold text-paymint-green tracking-wider">
-                          SAVE ${yearlySavings}/YEAR
+                        <span className="text-xs font-bold text-paymint-green tracking-wider uppercase">
+                          SAVE ${yearlySavings}/{t('common.yearly')}
                         </span>
-                        <span className="text-xs text-gray-400 line-through">${(currentMonthlyPrice * 12)}/{t('common.yearly')}</span>
+                        <span className="text-xs text-gray-400 line-through">${(currentMonthlyPrice * 12)}{t('common.yearly')}</span>
                       </div>
                     )}
                   </div>

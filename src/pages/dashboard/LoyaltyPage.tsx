@@ -382,7 +382,7 @@ export function LoyaltyPage() {
             </div>
 
             {loyaltyConfig && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 shadow-sm">
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 shadow-sm">
                     <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/5 pb-8">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
@@ -409,7 +409,7 @@ export function LoyaltyPage() {
                                         <div className="flex items-center gap-3">
                                             <span className="text-sm font-bold text-gray-900 dark:text-white px-1">{t('rewards.forEvery')}</span>
                                         </div>
-                                        <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
+                                        <div className="flex items-stretch bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
                                                 <span className="text-sm font-black text-paymint-green">{currency}</span>
                                             </div>
@@ -433,7 +433,7 @@ export function LoyaltyPage() {
                                         <div className="flex items-center gap-3">
                                             <span className="text-sm font-bold text-gray-900 dark:text-white px-1 opacity-0 lg:block hidden">Spacer</span>
                                         </div>
-                                        <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
+                                        <div className="flex items-stretch bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
                                                 <span className="text-sm font-black text-paymint-green">{t('rewards.points')}</span>
                                             </div>
@@ -449,7 +449,7 @@ export function LoyaltyPage() {
                                 </div>
 
                                 <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-                                    <div className="flex items-center gap-4 bg-white dark:bg-[#0B1120] px-6 py-4 rounded-2xl border border-gray-100 dark:border-white/[0.03] shadow-sm">
+                                    <div className="flex items-center gap-4 bg-white dark:bg-[#1E293B] px-6 py-4 rounded-2xl border border-gray-100 dark:border-white/[0.03] shadow-sm">
                                         <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
                                         <p className="text-sm font-bold text-gray-900 dark:text-white">
                                             {t('rewards.activeRule', { points: pointsPerCurrencyDisplay, amount: currencyPerPointDisplay, currency: currency })}
@@ -487,7 +487,7 @@ export function LoyaltyPage() {
                                                 initial={{ opacity: 0, scale: 0.95 }}
                                                 animate={{ opacity: 1, scale: 1 }}
                                                 key={reward.id}
-                                                className="group relative flex items-center justify-between p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/5 transition-all duration-300 hover:shadow-lg overflow-hidden"
+                                                className="group relative flex items-center justify-between p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 transition-all duration-300 hover:shadow-lg overflow-hidden"
                                             >
                                                 <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 

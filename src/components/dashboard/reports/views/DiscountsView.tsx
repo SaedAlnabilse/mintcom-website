@@ -55,7 +55,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Discount Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300">
           <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
             <Percent size={24} />
           </div>
@@ -66,7 +66,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
             </p>
           </div>
         </div>
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300">
           <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
             <Tag size={24} />
           </div>
@@ -80,7 +80,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
       </div>
 
       {/* Discounts Table */}
-      <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
         <div className="p-6 border-b border-gray-100 dark:border-white/5">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.discounts.breakdown')}</h3>
         </div>

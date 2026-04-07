@@ -42,7 +42,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
   // If no shifts, return empty state early
   if (shifts.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
+      <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
         <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transform rotate-3">
           <Clock size={32} className="text-gray-400" />
         </div>
@@ -60,7 +60,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
   return (
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center">
               <Activity size={20} />
@@ -73,7 +73,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
           </p>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{t('orders.reports.shifts.totalOverShort')}</p>
         </div>
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
               <Clock size={20} />
@@ -86,7 +86,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
       </div>
 
       {/* Shifts Table */}
-      <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm flex flex-col">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm flex flex-col">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">

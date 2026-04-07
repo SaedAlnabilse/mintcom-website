@@ -342,7 +342,7 @@ export function AddonsPage() {
           { label: t('attributes.stats.options'), value: stats.totalOptions, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
           { label: t('attributes.stats.sales'), value: stats.paidOptions, sub: t('attributes.stats.withPrice'), icon: DollarSign, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
-          <div key={i} className="p-6 rounded-3xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden text-left relative">
+          <div key={i} className="p-6 rounded-3xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden text-left relative">
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10 flex items-center gap-5">
               <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color}`}>
@@ -361,7 +361,7 @@ export function AddonsPage() {
       </div>
 
       {/* Control Bar & Filters */}
-      <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 shadow-sm space-y-4">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 shadow-sm space-y-4">
         <div className="relative w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -455,7 +455,7 @@ export function AddonsPage() {
           <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
         </div>
       ) : paginatedAttributes.length === 0 ? (
-        <div className="py-24 bg-white dark:bg-[#0B1120] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
+        <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Package size={32} className="text-gray-300" />
           </div>
@@ -469,7 +469,7 @@ export function AddonsPage() {
               <div
                 key={attr.id}
                 id={`group-${attr.id}`}
-                className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden hover:shadow-sm transition-all duration-300"
+                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden hover:shadow-sm transition-all duration-300"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

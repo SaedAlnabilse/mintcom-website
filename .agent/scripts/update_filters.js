@@ -19,7 +19,7 @@ if (startIndex === -1 || endIndex === -1) {
 // Keep startMarker, replace up to endMarker
 const newContent = `
         {/* Modern Floating Glass Bar Filter */}
-        <div className="sticky top-6 z-50 bg-white/80 dark:bg-[#0B1120]/90 backdrop-blur-xl rounded-full border border-gray-200/50 dark:border-white/10 shadow-xl shadow-gray-200/20 dark:shadow-black/20 p-1.5 flex flex-col lg:flex-row items-center gap-2 lg:gap-4 mx-auto max-w-fit transition-all duration-300 hover:bg-white/95 dark:hover:bg-[#0B1120]/95 hover:shadow-2xl">
+        <div className="sticky top-6 z-50 bg-white/80 dark:bg-[#1E293B]/90 backdrop-blur-xl rounded-full border border-gray-200/50 dark:border-white/10 shadow-xl shadow-gray-200/20 dark:shadow-black/20 p-1.5 flex flex-col lg:flex-row items-center gap-2 lg:gap-4 mx-auto max-w-fit transition-all duration-300 hover:bg-white/95 dark:hover:bg-[#0B1120]/95 hover:shadow-2xl">
 
           {/* Active Status & Quick Select */}
           <div className="flex items-center gap-1 bg-gray-100/50 dark:bg-white/5 rounded-full p-1 pl-2">

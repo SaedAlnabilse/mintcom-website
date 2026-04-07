@@ -320,7 +320,7 @@ export function PaymentMethodsPage() {
       </div>
 
       {/* Card Types Section */}
-      <section className="bg-white dark:bg-[#0B1120] rounded-[32px] border border-gray-200 dark:border-white/[0.03] p-8 sm:p-10 shadow-sm overflow-hidden relative">
+      <section className="bg-white dark:bg-[#1E293B] rounded-[32px] border border-gray-200 dark:border-white/[0.03] p-8 sm:p-10 shadow-sm overflow-hidden relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
         
         <div className="flex items-start gap-5 mb-12 relative z-10">
@@ -394,7 +394,7 @@ export function PaymentMethodsPage() {
       </section>
 
       {/* Main Section */}
-      <section className="bg-white dark:bg-[#0B1120] rounded-[32px] border border-gray-200 dark:border-white/[0.03] p-8 sm:p-10 shadow-sm overflow-hidden relative">
+      <section className="bg-white dark:bg-[#1E293B] rounded-[32px] border border-gray-200 dark:border-white/[0.03] p-8 sm:p-10 shadow-sm overflow-hidden relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
         
         <div className="flex items-start gap-5 mb-12 relative z-10">
@@ -504,7 +504,7 @@ export function PaymentMethodsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-white dark:bg-[#0B1120] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
+              className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
             >
               {/* Mobile Drag Handle */}
               <div className="h-1.5 w-12 bg-gray-200 dark:bg-white/10 rounded-full mx-auto mt-3 mb-1 sm:hidden" />
@@ -597,7 +597,7 @@ export function PaymentMethodsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-white dark:bg-[#0B1120] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
+              className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
             >
               {/* Mobile Drag Handle */}
               <div className="h-1.5 w-12 bg-gray-200 dark:bg-white/10 rounded-full mx-auto mt-3 mb-1 sm:hidden" />

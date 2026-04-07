@@ -36,7 +36,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
   // If no shifts, return empty state early
   if (shifts.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
+      <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
         <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transform rotate-3">
           <Users size={32} className="text-gray-400" />
         </div>
@@ -130,7 +130,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
   return (
     <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Overview Cards */}
-      <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-6 shadow-sm">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 flex items-center justify-center">
             <Users size={24} className="text-paymint-green" />
@@ -145,35 +145,35 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
 
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {/* Total Hours */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalHours')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{totalHours.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
           </div>
 
           {/* Total Orders */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalOrders')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{totalOrders.toLocaleString(t('common.locale'))}</p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
           </div>
 
           {/* Total Sales */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalSales')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{formatCurrency(totalSales)}</p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
           </div>
 
           {/* Total Discounts */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalDiscounts')}</p>
             <p className="text-2xl font-bold text-orange-500 tracking-tight mb-1">{formatCurrency(totalDiscounts)}</p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerIssuedText}</p>
           </div>
 
           {/* Total Refunds */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalRefunds')}</p>
             <p className="text-2xl font-bold text-red-500 tracking-tight mb-1">{formatCurrency(totalRefunds)}</p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
@@ -182,7 +182,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
           {/* Variances */}
           <div 
             onClick={() => navigate(`/dashboard/${activeSlug}/reports/shifts`)}
-            className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden cursor-pointer group"
+            className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden cursor-pointer group"
           >
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 group-hover:text-paymint-green transition-colors tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalVariances')}</p>
             <div className="flex flex-wrap items-center gap-1.5 mb-1 leading-none">
@@ -201,7 +201,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             {/* 1. Revenue Share Chart (The "Slice" View) */}
-            <div className="bg-white dark:bg-[#0B1120] p-5 rounded-[24px] border border-gray-100 dark:border-white/[0.05] shadow-sm flex flex-col">
+            <div className="bg-white dark:bg-[#1E293B] p-5 rounded-[24px] border border-gray-100 dark:border-white/[0.05] shadow-sm flex flex-col">
               <div className="mb-3">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.staff.salesShare')}</h3>
                 <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')}</p>
@@ -232,7 +232,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                 </ResponsiveContainer>
                 {/* Center Stat */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="text-center bg-white dark:bg-[#0B1120] w-20 h-20 rounded-full flex flex-col items-center justify-center shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] border border-gray-50 dark:border-white/5">
+                  <div className="text-center bg-white dark:bg-[#1E293B] w-20 h-20 rounded-full flex flex-col items-center justify-center shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] border border-gray-50 dark:border-white/5">
                     <p className="text-[10px] font-black tracking-widest text-gray-400 uppercase">{t('owner.overview.total')}</p>
                     <p className="text-sm font-black text-gray-900 dark:text-white mt-0.5">{totalStoreSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
                   </div>
@@ -308,7 +308,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
         )}
 
         {/* 3. Detailed Metrics Table */}
-        <div className="bg-white dark:bg-[#0B1120] rounded-[24px] border border-gray-100 dark:border-white/[0.05] overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-[#1E293B] rounded-[24px] border border-gray-100 dark:border-white/[0.05] overflow-hidden shadow-sm">
           <div className="p-6 border-b border-gray-100 dark:border-white/[0.05] flex items-center justify-between">
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.staff.title')}</h3>

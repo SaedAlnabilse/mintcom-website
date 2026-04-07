@@ -277,7 +277,7 @@ export function OwnerRolesPage() {
               <Globe size={40} className="text-gray-300" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">{t('owner.roles.noRoles')}</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">{t('owner.roles.noRolesDesc')}</p>
+            <p className="text-sm font-medium text-gray-500 max-w-xs mx-auto">{t('owner.roles.noRolesDesc')}</p>
           </div>
         ) : viewMode === 'grid' ? (
           /* Grid View */

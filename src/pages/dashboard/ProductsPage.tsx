@@ -787,7 +787,7 @@ export function ProductsPage() {
                 {/* Total Products */}
                 <button
                     onClick={() => setStockFilter('all')}
-                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'all'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'all'
                         ? 'border-blue-500/50 ring-1 ring-blue-500/30 bg-blue-500/[0.02]'
                         : 'border-gray-200 dark:border-white/[0.03] hover:border-blue-300'
                         }`}
@@ -814,7 +814,7 @@ export function ProductsPage() {
                 {/* Low Stock (Yellow) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'yellow' ? 'all' : 'yellow')}
-                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'yellow'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'yellow'
                         ? 'border-[#ffc107]/50 ring-1 ring-[#ffc107]/30 bg-[#ffc107]/5'
                         : 'border-gray-200 dark:border-white/[0.03] hover:border-[#ffc107]/30'
                         }`}
@@ -841,7 +841,7 @@ export function ProductsPage() {
                 {/* Critical (Red) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'red' ? 'all' : 'red')}
-                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'red'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'red'
                         ? 'border-[#D55263]/50 ring-1 ring-[#D55263]/30 bg-[#D55263]/5'
                         : 'border-gray-200 dark:border-white/[0.03] hover:border-[#D55263]/30'
                         }`}
@@ -868,7 +868,7 @@ export function ProductsPage() {
                 {/* Out of Stock (Gray) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'out' ? 'all' : 'out')}
-                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#0B1120] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'out'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'out'
                         ? 'border-slate-500/50 ring-1 ring-slate-500/30 bg-slate-500/[0.02]'
                         : 'border-gray-200 dark:border-white/[0.03] hover:border-slate-400'
                         }`}

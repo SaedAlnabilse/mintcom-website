@@ -374,7 +374,7 @@ export function BrandDashboardPage() {
 
                 <div className="flex items-center gap-3 relative z-50">
                     {/* Unified Filter Control Deck */}
-                    <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5 ">
+                    <div className="bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5 ">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">
 
                             {/* Sector 1: Quick Period Dropdown */}

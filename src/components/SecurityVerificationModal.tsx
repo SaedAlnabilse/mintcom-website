@@ -63,8 +63,8 @@ export function SecurityVerificationModal({
                     warning: t('security.modes.deleteCustomer.warning', { name: targetName }),
                     buttonText: t('security.modes.deleteCustomer.button'),
                     icon: ShieldAlert,
-                    color: 'text-red-500',
-                    bg: 'bg-red-500/10',
+                    color: 'text-paymint-red',
+                    bg: 'bg-paymint-red/10',
                     endpoint: `/api/customers/${targetId}`,
                     method: 'delete'
                 };
@@ -74,16 +74,16 @@ export function SecurityVerificationModal({
                     warning: t('security.modes.cancel.warning', { name: targetName }),
                     buttonText: t('security.modes.cancel.button'),
                     icon: ShieldAlert,
-                    color: 'text-red-500',
-                    bg: 'bg-red-500/10',
+                    color: 'text-paymint-red',
+                    bg: 'bg-paymint-red/10',
                     endpoint: `/api/accounts/subscriptions/${targetId}/cancel`,
                     method: 'post'
                 };
             case 'stop-trial':
                 return {
-                    title: t('security.modes.stop-trial.title'),
-                    warning: t('security.modes.stop-trial.warning', { name: targetName }),
-                    buttonText: t('security.modes.stop-trial.button'),
+                    title: t('security.modes.stopTrial.title'),
+                    warning: t('security.modes.stopTrial.warning', { name: targetName }),
+                    buttonText: t('security.modes.stopTrial.button'),
                     icon: AlertTriangle,
                     color: 'text-amber-500',
                     bg: 'bg-amber-500/10',
@@ -92,12 +92,12 @@ export function SecurityVerificationModal({
                 };
             case 'delete-card':
                 return {
-                    title: t('security.modes.delete-card.title'),
-                    warning: t('security.modes.delete-card.warning', { name: targetName }),
-                    buttonText: t('security.modes.delete-card.button'),
+                    title: t('security.modes.deleteCard.title'),
+                    warning: t('security.modes.deleteCard.warning', { name: targetName }),
+                    buttonText: t('security.modes.deleteCard.button'),
                     icon: CreditCard,
-                    color: 'text-red-500',
-                    bg: 'bg-red-500/10',
+                    color: 'text-paymint-red',
+                    bg: 'bg-paymint-red/10',
                     endpoint: `/api/accounts/cards/${targetId}`,
                     method: 'delete'
                 };
@@ -118,8 +118,8 @@ export function SecurityVerificationModal({
                     warning: t('security.modes.deleteEmployee.warning', { name: targetName }),
                     buttonText: t('security.modes.deleteEmployee.button'),
                     icon: ShieldAlert,
-                    color: 'text-red-500',
-                    bg: 'bg-red-500/10',
+                    color: 'text-paymint-red',
+                    bg: 'bg-paymint-red/10',
                     endpoint: `/api/users/${targetId}`,
                     method: 'delete'
                 };
@@ -129,8 +129,8 @@ export function SecurityVerificationModal({
                     warning: t('security.modes.dissolveEstablishment.warning', { name: targetName }),
                     buttonText: t('security.modes.dissolveEstablishment.button'),
                     icon: Building2,
-                    color: 'text-red-500',
-                    bg: 'bg-red-500/10',
+                    color: 'text-paymint-red',
+                    bg: 'bg-paymint-red/10',
                     endpoint: `/api/establishments/${targetId}/dissolve`,
                     method: 'delete'
                 };
@@ -171,8 +171,15 @@ export function SecurityVerificationModal({
             setIsSubmitting(true);
             setErrors({});
             const res = await (config.method === 'post'
-                ? api.post(config.endpoint, { email, password })
-                : api.delete(config.endpoint, { data: { email, password } }));
+                ? api.post(
+                    config.endpoint,
+                    { email, password },
+                    { headers: { 'X-Skip-Auth-Redirect': 'true' } },
+                )
+                : api.delete(config.endpoint, {
+                    data: { email, password },
+                    headers: { 'X-Skip-Auth-Redirect': 'true' },
+                }));
 
             toast.success(res.data.message || t('common.done'));
             onSuccess();
@@ -223,12 +230,8 @@ export function SecurityVerificationModal({
                             </button>
 
                             <div className="flex items-center gap-4 mb-4">
-                                <div className={`w-12 h-12 rounded-2xl ${config.bg} ${config.color} flex items-center justify-center`}>
-                                    <config.icon size={24} />
-                                </div>
                                 <div>
                                     <div className="flex items-center gap-2 mb-1">
-                                        <ShieldCheck size={12} className="text-paymint-green" />
                                         <span className="text-xs font-black text-paymint-green tracking-widest">{t('security.highImpact')}</span>
                                     </div>
                                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -237,7 +240,7 @@ export function SecurityVerificationModal({
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-500">
+                            <div className="flex items-center gap-4 p-4 mt-6 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-500">
                                 <AlertTriangle size={20} className="shrink-0" />
                                 <p className="text-sm font-bold text-gray-500 leading-6">
                                     {config.warning}
@@ -249,15 +252,15 @@ export function SecurityVerificationModal({
                         <form onSubmit={handleSubmit} className="p-6 space-y-5">
                             {/* Error Banner */}
                             {Object.keys(errors).length > 0 && (
-                                <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                                <div ref={errorBannerRef} className="p-4 rounded-xl bg-paymint-red/5 dark:bg-paymint-red/10 border border-paymint-red/20 text-paymint-red text-sm font-bold flex items-center gap-2 animate-pulse">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-paymint-red flex-shrink-0" />
                                     {t('security.errorBanner')}
                                 </div>
                             )}
 
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest block ml-1">{t('security.identityLabel')}</label>
+                                    <label className="text-xs font-medium text-gray-400 tracking-widest block ml-1">{t('security.identityLabel')}</label>
                                     <div className="relative group">
                                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-paymint-green opacity-50 group-focus-within:opacity-100 transition-opacity" size={16} />
                                         <input
@@ -276,7 +279,7 @@ export function SecurityVerificationModal({
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest block ml-1">{t('security.passwordLabel')}</label>
+                                    <label className="text-xs font-medium text-gray-400 tracking-widest block ml-1">{t('security.passwordLabel')}</label>
                                     <div className="relative group">
                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-paymint-green opacity-50 group-focus-within:opacity-100 transition-opacity" size={16} />
                                         <input
@@ -308,10 +311,10 @@ export function SecurityVerificationModal({
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-xs font-black text-blue-700 dark:text-blue-400 tracking-wider">
-                                            {t('security.masterKeyInfo.title', 'WHAT IS A MASTER ACCESS KEY?')}
+                                            {t('security.masterKeyInfo.title', 'What Is a Master Access Key?')}
                                         </p>
-                                        <p className="text-[11px] leading-relaxed font-bold text-blue-600/80 dark:text-blue-400/70 uppercase">
-                                            {t('security.masterKeyInfo.description', 'THIS IS YOUR PRIMARY ACCOUNT PASSWORD. YOU CAN RESET IT FROM YOUR PROFILE SETTINGS IF YOU HAVE FORGOTTEN IT.')}
+                                        <p className="text-[11px] leading-relaxed font-bold text-blue-600/80 dark:text-blue-400/70">
+                                            {t('security.masterKeyInfo.description', 'This is your primary account password. You can reset it from your account management if you have forgotten it.')}
                                         </p>
                                     </div>
                                 </div>
@@ -329,7 +332,7 @@ export function SecurityVerificationModal({
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className={`flex-1 flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl font-black text-xs tracking-[0.2em] transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 disabled:scale-95 ${config.color === 'text-red-500' ? 'bg-red-500 text-white shadow-red-500/20' : 'bg-paymint-green text-black'}`}
+                                    className={`flex-1 flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl font-black text-xs tracking-[0.2em] transition-all shadow-xl disabled:opacity-50 disabled:scale-95 ${config.color === 'text-paymint-red' ? 'bg-paymint-red text-white shadow-paymint-red/20' : 'bg-paymint-green text-black shadow-paymint-green/20'}`}
                                 >
                                     {isSubmitting ? (
                                         <>
@@ -338,7 +341,6 @@ export function SecurityVerificationModal({
                                         </>
                                     ) : (
                                         <>
-                                            <ShieldAlert size={16} />
                                             <span>{config.buttonText}</span>
                                         </>
                                     )}
@@ -346,7 +348,6 @@ export function SecurityVerificationModal({
                             </div>
 
                             <p className="text-xs font-black text-gray-400 tracking-widest text-center mt-4 flex items-center justify-center gap-2">
-                                <ShieldCheck size={12} className="text-paymint-green" />
                                 <span className="text-xs font-black text-paymint-green tracking-widest">{t('security.encrypted')}</span>
                             </p>
                         </form>

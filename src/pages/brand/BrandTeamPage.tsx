@@ -49,6 +49,7 @@ type ViewMode = 'grid' | 'list';
 type RoleFilter = 'all' | 'ADMIN' | 'CASHIER';
 type SortOption = 'name' | 'role' | 'locations';
 const MAX_EMPLOYEES_PER_ACCOUNT = 50;
+const MAX_DELETE_PASSWORD_ATTEMPTS = 3;
 const EMPLOYEE_LIMIT_POPUP_MESSAGE =
     `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
     `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact PayMint support at support@PayMint.app with your account email and password.`;
@@ -58,7 +59,7 @@ export default function BrandTeamPage() {
     const { brandId: paramBrandId } = useParams<{ brandId: string }>();
     const context = useOutletContext<{ brand: any }>() || {};
     const brandId = context.brand?.id || paramBrandId;
-    const { establishments, account } = useAuth();
+    const { establishments, account, logout } = useAuth();
 
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [brandName, setBrandName] = useState('');
@@ -82,6 +83,7 @@ export default function BrandTeamPage() {
     const [showDeletePassword, setShowDeletePassword] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState('');
+    const [deleteAttemptCount, setDeleteAttemptCount] = useState(0);
 
     const fetchBrandInfo = useCallback(async () => {
         try {
@@ -161,6 +163,7 @@ export default function BrandTeamPage() {
         setEmployeeToDelete(emp);
         setDeletePassword('');
         setDeleteError('');
+        setDeleteAttemptCount(0);
         setDeleteModalOpen(true);
         setActiveMenu(null);
     };
@@ -170,6 +173,7 @@ export default function BrandTeamPage() {
         setEmployeeToDelete(null);
         setDeletePassword('');
         setDeleteError('');
+        setDeleteAttemptCount(0);
     };
 
     const confirmDelete = async () => {
@@ -185,12 +189,36 @@ export default function BrandTeamPage() {
 
         try {
             await api.delete(`/api/accounts/employees/${employeeToDelete.id}`, {
-                data: { email: account.email, password: deletePassword }
+                data: { email: account.email, password: deletePassword },
+                headers: { 'X-Skip-Auth-Redirect': 'true' }
             });
             toast.success(t('owner.staff.staffRemoved'));
             closeDeleteModal();
             fetchEmployees();
         } catch (error: any) {
+            if (error.response?.status === 401) {
+                const nextAttemptCount = deleteAttemptCount + 1;
+                const remainingAttempts = MAX_DELETE_PASSWORD_ATTEMPTS - nextAttemptCount;
+
+                setDeleteAttemptCount(nextAttemptCount);
+
+                if (remainingAttempts > 0) {
+                    setDeleteError(
+                        t('owner.staff.incorrectPasswordRemaining', {
+                            count: remainingAttempts,
+                        }),
+                    );
+                    return;
+                }
+
+                const tooManyAttemptsMessage = t('owner.staff.tooManyPasswordAttempts');
+                setDeleteError(tooManyAttemptsMessage);
+                toast.error(tooManyAttemptsMessage);
+                closeDeleteModal();
+                await logout();
+                return;
+            }
+
             setDeleteError(error.response?.data?.message || t('owner.staff.incorrectPassword'));
         } finally {
             setIsDeleting(false);

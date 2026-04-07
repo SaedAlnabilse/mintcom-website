@@ -160,10 +160,10 @@ export function SingleSelect({
                     exit={{ opacity: 0, y: 5 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     style={dropdownStyle}
-                    className={`bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5 flex flex-col`}
+                    className={`bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5 flex flex-col`}
                 >
                     {/* Search Bar */}
-                    <div className="p-2 border-b border-gray-50 dark:border-white/5 sticky top-0 bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl z-10">
+                    <div className="p-2 border-b border-gray-50 dark:border-white/5 sticky top-0 bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-xl z-10">
                         <div className="relative flex items-center">
                             <Search size={14} className="absolute left-3 text-gray-400" />
                             <input

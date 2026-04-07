@@ -18,7 +18,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Summary Cards for Taxes */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.taxes.totalTax')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -29,7 +29,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
           <div className="absolute end-0 top-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
         </div>
 
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.taxes.taxableSales')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -40,7 +40,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
           <div className="absolute end-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
         </div>
 
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.taxes.avgRate')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -56,7 +56,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Tax Breakdown Main Card */}
-        <div className="lg:col-span-2 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col">
+        <div className="lg:col-span-2 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col">
           <div className="p-6 border-b border-gray-100 dark:border-white/5">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
               <Scale size={20} className="text-orange-500" />
@@ -149,7 +149,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
         </div>
 
         {/* Exemptions Panel */}
-        <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm p-6 flex flex-col">
+        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm p-6 flex flex-col">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
             {t('orders.reports.taxes.exemptions')}
           </h3>

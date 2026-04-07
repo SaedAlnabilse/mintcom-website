@@ -29,6 +29,7 @@ import {
     ExternalLink,
     Scale,
     Coins,
+    CreditCard,
 } from 'lucide-react';
 import api from '../../config/api';
 import { CURRENCIES } from '../../context/CurrencyContext';
@@ -725,7 +726,7 @@ export function OwnerAccountManagementPage() {
                                     <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                                         {t('owner.account.locationLogins', { count: locationLoginEstablishments.length })}
                                     </h2>
-                                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('owner.account.locationLoginsSubtitle')}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.locationLoginsSubtitle')}</p>
                                 </div>
                             </div>
 
@@ -841,7 +842,7 @@ export function OwnerAccountManagementPage() {
                                     <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                                         {t('owner.account.brandLogins', { count: brands.length })}
                                     </h2>
-                                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('owner.account.brandLoginsSubtitle')}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.brandLoginsSubtitle')}</p>
                                 </div>
                             </div>
 
@@ -945,7 +946,7 @@ export function OwnerAccountManagementPage() {
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">System Currency</h2>
-                                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400">Updates currency for all your locations.</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">Updates currency for all your locations.</p>
                                 </div>
                             </div>
                             <div className="space-y-4">
@@ -1408,16 +1409,10 @@ export function OwnerAccountManagementPage() {
                                     <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
                                         {t('owner.account.activeEstBlockModal.title')}
                                     </h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                        {t('owner.account.activeEstBlockModal.subtitle')}
-                                    </p>
                                 </div>
                             </div>
 
                             <div className="space-y-6">
-                                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                                    {t('owner.account.activeEstBlockModal.desc', { count: activeBlockingEsts.length })}
-                                </p>
 
                                 <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/[0.05] overflow-hidden">
                                     <div className="px-4 py-3 border-b border-gray-100 dark:border-white/[0.05] bg-gray-100/50 dark:bg-white/[0.02]">
@@ -1442,11 +1437,11 @@ export function OwnerAccountManagementPage() {
 
                                 <div className="flex flex-col gap-3">
                                     <button
-                                        onClick={() => navigate('/owner/establishments')}
+                                        onClick={() => navigate('/owner/billing')}
                                         className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-paymint-green hover:bg-[#68B390] text-black rounded-2xl text-sm font-black transition-all shadow-lg shadow-paymint-green/20"
                                     >
-                                        <Store size={18} />
-                                        {t('owner.account.activeEstBlockModal.goToLocations')}
+                                        <CreditCard size={18} />
+                                        {t('owner.account.activeEstBlockModal.goToBilling')}
                                     </button>
                                     <button
                                         onClick={() => setShowActiveEstBlockModal(false)}

@@ -160,7 +160,7 @@ export function CookieConsent() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-              className="bg-white dark:bg-[#0B1120] w-full max-w-2xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-gray-200 dark:border-white/10"
+              className="bg-white dark:bg-[#1E293B] w-full max-w-2xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-gray-200 dark:border-white/10"
             >
               {/* Header */}
               <div className="p-6 md:p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
@@ -217,7 +217,7 @@ export function CookieConsent() {
                           exit={{ height: 0, opacity: 0 }}
                           className="overflow-hidden"
                         >
-                          <div className="p-4 bg-white dark:bg-[#0B1120] text-sm text-gray-500 border-t border-gray-100 dark:border-white/5 leading-relaxed">
+                          <div className="p-4 bg-white dark:bg-[#1E293B] text-sm text-gray-500 border-t border-gray-100 dark:border-white/5 leading-relaxed">
                             {t('cookies.types.essential.description')}
                           </div>
                         </motion.div>
@@ -257,7 +257,7 @@ export function CookieConsent() {
                           exit={{ height: 0, opacity: 0 }}
                           className="overflow-hidden"
                         >
-                          <div className="p-4 bg-white dark:bg-[#0B1120] text-sm text-gray-500 border-t border-gray-100 dark:border-white/5 leading-relaxed">
+                          <div className="p-4 bg-white dark:bg-[#1E293B] text-sm text-gray-500 border-t border-gray-100 dark:border-white/5 leading-relaxed">
                             {t('cookies.types.analytics.description')}
                           </div>
                         </motion.div>
@@ -297,7 +297,7 @@ export function CookieConsent() {
                           exit={{ height: 0, opacity: 0 }}
                           className="overflow-hidden"
                         >
-                          <div className="p-4 bg-white dark:bg-[#0B1120] text-sm text-gray-500 border-t border-gray-100 dark:border-white/5 leading-relaxed">
+                          <div className="p-4 bg-white dark:bg-[#1E293B] text-sm text-gray-500 border-t border-gray-100 dark:border-white/5 leading-relaxed">
                             {t('cookies.types.marketing.description')}
                           </div>
                         </motion.div>
@@ -308,7 +308,7 @@ export function CookieConsent() {
               </div>
 
               {/* Footer Actions */}
-              <div className="p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50/80 dark:bg-[#0B1120] flex items-center justify-end gap-3 backdrop-blur-sm">
+              <div className="p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50/80 dark:bg-[#1E293B] flex items-center justify-end gap-3 backdrop-blur-sm">
                 <button
                   onClick={handleRejectAll}
                   className="px-6 py-3 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-sm hover:bg-gray-100 dark:hover:bg-white/5 transition-all"

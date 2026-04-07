@@ -145,7 +145,7 @@ export function CustomSelect({
                     exit={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     style={dropdownStyle}
-                    className={`bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5`}
+                    className={`bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5`}
                 >
                     {formattedOptions.length === 0 ? (
                         <div className="px-5 py-4 text-sm font-bold text-gray-500 italic text-center">{t('common.noOptions')}</div>

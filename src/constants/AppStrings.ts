@@ -71,7 +71,7 @@ export const AppStrings = {
     CUSTOMERS: "Customers",
     REPORTS: "Reports",
     SETTINGS: "Settings",
-    LOGOUT: "Log Out",
+    LOGOUT: "Log out",
     PROFILE: "Profile",
     BILLING: "Billing",
     HELP: "Help & Support",
@@ -170,7 +170,7 @@ export const AppStrings = {
       SIGN_IN: "Sign in",
     },
     LOGOUT: {
-      TITLE: "Logging Out",
+      TITLE: "Log out",
       MESSAGE: "Are you sure you want to log out?",
     }
   }

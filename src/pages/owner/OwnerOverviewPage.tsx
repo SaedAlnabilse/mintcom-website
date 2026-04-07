@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     TrendingUp,
-    TrendingDown,
     Store,
     Users,
     Building2,
@@ -325,7 +324,7 @@ export function OwnerOverviewPage() {
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5">
                             <div className="w-2 h-2 rounded-full bg-paymint-green" />
-                            <span className="text-xs font-black tracking-wider text-gray-600 dark:text-gray-400">{t('owner.overview.totalRevenue')}</span>
+                            <span className="text-xs font-medium tracking-wider text-gray-600 dark:text-gray-400">{t('owner.overview.totalRevenue')}</span>
                         </div>
                     </div>
 
@@ -435,7 +434,7 @@ export function OwnerOverviewPage() {
                         </div>
                     </div>
 
-                    <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
+                    <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 group relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gray-100 dark:bg-white/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                         <div className="relative z-10">
                             <h4 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">{t('owner.overview.quickManagement')}</h4>

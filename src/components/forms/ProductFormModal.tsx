@@ -638,7 +638,7 @@ export function ProductFormModal({
                     type="button"
                     onClick={handleGenerateImage}
                     disabled={isGeneratingImage || !name.trim()}
-                    className="mt-4 flex items-center gap-2 text-xs font-black tracking-widest text-paymint-green bg-paymint-green/10 px-4 py-2 rounded-xl hover:bg-paymint-green/20 transition-all border border-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
+                    className="mt-4 w-32 flex items-center justify-center gap-2 text-xs font-black tracking-widest text-paymint-green bg-paymint-green/10 py-2 rounded-[12px] hover:bg-paymint-green/20 transition-all border border-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
                   >
                     {isGeneratingImage ? (
                       <div className="w-3.5 h-3.5 border-2 border-paymint-green/20 border-t-paymint-green rounded-full animate-spin" />

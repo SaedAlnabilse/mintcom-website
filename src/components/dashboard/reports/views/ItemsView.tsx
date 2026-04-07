@@ -205,7 +205,7 @@ export const ItemsView = React.memo(function ItemsView({
       </div>
 
       {/* Data Table */}
-      <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
@@ -322,7 +322,7 @@ export const ItemsView = React.memo(function ItemsView({
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="relative w-full max-w-2xl bg-white dark:bg-[#0B1120] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
+                className="relative w-full max-w-2xl bg-white dark:bg-[#1E293B] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
               >
                 {/* Header */}
                 <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">

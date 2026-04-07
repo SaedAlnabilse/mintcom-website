@@ -1185,7 +1185,7 @@ export function OrdersPage() {
           <div
             key={i}
             onClick={stat.onClick}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink 
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink 
               ${stat.onClick ? 'cursor-pointer' : 'cursor-default'} 
               ${stat.active
                 ? 'border-paymint-green ring-1 ring-paymint-green/30 bg-paymint-green/[0.02]'

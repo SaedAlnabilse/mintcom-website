@@ -94,7 +94,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
 
   if (shifts.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
+      <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
         <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transform rotate-3">
           <Scale size={32} className="text-gray-400" />
         </div>
@@ -141,7 +141,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] transition-all duration-300"
+          className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] transition-all duration-300"
         >
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
@@ -162,7 +162,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] transition-all duration-300"
+          className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] transition-all duration-300"
         >
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center">
@@ -183,7 +183,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] transition-all duration-300"
+          className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] transition-all duration-300"
         >
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
@@ -201,7 +201,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
       </div>
 
       {/* Discrepancy Breakdown Chart */}
-      <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-6 shadow-sm">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-6 shadow-sm">
         <h3 className="text-lg font-black text-gray-900 dark:text-white mb-6">{t('orders.reports.cashGap.overview')}</h3>
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-100 dark:border-emerald-500/10">
@@ -229,7 +229,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
       </div>
 
       {/* Detailed Shifts Table */}
-      <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
         <div className="p-6 border-b border-gray-200 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h3 className="text-lg font-black text-gray-900 dark:text-white">{t('orders.reports.cashGap.details')}</h3>

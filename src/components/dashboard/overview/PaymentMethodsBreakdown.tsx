@@ -20,7 +20,7 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
   const isDark = resolvedTheme === 'dark';
 
   return (
-    <div id="tour-capital-sources" className="group relative p-4 sm:p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col transition-all duration-300 overflow-hidden">
+    <div id="tour-capital-sources" className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col transition-all duration-300 overflow-hidden">
       <div className="absolute top-0 end-0 w-40 h-40 bg-paymint-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10">
         <div className="flex items-start justify-between mb-6">

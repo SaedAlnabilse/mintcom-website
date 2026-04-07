@@ -190,7 +190,7 @@ export function OwnerLayout() {
                                     className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 text-paymint-green transition-all group relative"
                                     onClick={() => setSidebarOpen(true)}
                                 >
-                                    <img src={PaymintLeafIcon} width={24} height={24} loading="eager" decoding="async" className="w-6 h-6 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt="P" />
+                                    <img src={PaymintLeafIcon} width={32} height={32} loading="eager" decoding="async" className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt="P" />
                                     <PanelLeft
                                         size={24}
                                         className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"

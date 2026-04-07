@@ -39,7 +39,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Summary Cards for Payments */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.payments.totalCollected')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -51,7 +51,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
           <div className="absolute right-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
         </div>
 
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.payments.topMethod')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight text-ellipsis overflow-hidden whitespace-nowrap">
@@ -62,7 +62,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
           <div className="absolute right-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
         </div>
 
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.payments.txnCount')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -77,7 +77,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Detailed Distribution Chart */}
-        <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
+        <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
             <PieChartIcon size={20} className="text-paymint-green" />
             {t('orders.reports.payments.distribution')}
@@ -138,7 +138,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
         </div>
 
         {/* Breakdown Table */}
-        <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col h-[400px]">
+        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col h-[400px]">
           <div className="p-6 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-shrink-0">
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -165,9 +165,9 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
             <table className="w-full relative">
               <thead className="bg-gray-50 dark:bg-white/[0.02] sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-4 text-start text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.method')}</th>
-                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.revenue')}</th>
-                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.share')}</th>
+                  <th className="px-6 py-4 text-start text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.method')}</th>
+                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.revenue')}</th>
+                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.share')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">

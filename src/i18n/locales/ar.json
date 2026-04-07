@@ -565,8 +565,8 @@
     "launcher": {
       "ask": "اسأل",
       "help": "مساعدة",
-      "tasks": "المهام",
-      "help_message": "كيف يمكنني مساعدتك؟"
+      "help_message": "كيف يمكنني مساعدتك؟",
+      "tasks": "المهام"
     },
     "navigation": {
       "takeMe": "خذني إلى هناك"
@@ -1365,6 +1365,10 @@
     }
   },
   "discounts": {
+    "confirm": {
+      "deleteMessage": "هل أنت متأكد أنك تريد حذف \"{{name}}\"؟ لا يمكن التراجع عن هذا الإجراء",
+      "deleteTitle": "حذف الخصم"
+    },
     "editDiscount": "تعديل الخصم",
     "errors": {
       "nameRequired": "مطلوب",
@@ -1380,10 +1384,6 @@
       "nameTip": "الاسم على الإيصال.",
       "percentageLabel": "النسبة المئوية (%)",
       "percentageTip": "القيمة المراد خصمها."
-    },
-    "confirm": {
-      "deleteMessage": "هل أنت متأكد أنك تريد حذف \"{{name}}\"؟ لا يمكن التراجع عن هذا الإجراء",
-      "deleteTitle": "حذف الخصم"
     },
     "messages": {
       "created": "تم إنشاء الخصم بنجاح",
@@ -1507,13 +1507,13 @@
     "editIngredient": "تعديل مكون",
     "form": {
       "inStock": "في المخزون",
+      "inStockInfo": "الكمية المتوفرة لديك في المخزون",
       "lowStockThreshold": "تنبيه انخفاض المخزون",
+      "lowStockThresholdInfo": "متى تود أن يتم تنبيهك",
       "name": "الاسم",
       "namePlaceholder": "مثال: طحين نوع 00",
       "unit": "الوحدة",
-      "unitInfo": "اختر كيف تقيس هذا المكون",
-      "inStockInfo": "الكمية المتوفرة لديك في المخزون",
-      "lowStockThresholdInfo": "متى تود أن يتم تنبيهك"
+      "unitInfo": "اختر كيف تقيس هذا المكون"
     },
     "lowStock": "مخزون منخفض",
     "manage": "إدارة عمليات الوصفات والتكاليف",
@@ -1666,12 +1666,30 @@
     "hardware": {
       "alreadyHave": "لديك أجهزة بالفعل؟",
       "alreadyHaveDesc": "بساطة قم بتحميل التطبيق ووصل أجهزتك في ثوانٍ.",
+      "nextPage": "التالي",
+      "prevPage": "السابق",
       "printers": {
         "description": "طابعات إيصالات حرارية سريعة وموثوقة",
         "name": "طابعات الإيصالات",
         "note": "ورق حراري 80 مم مطلوب لجميع الموديلات المدرجة."
       },
       "products": {
+        "bixolon": {
+          "name": "Bixolon SRP-350plusIII",
+          "specs": "طابعة حرارية 80 مم عالية السرعة"
+        },
+        "citizen": {
+          "name": "Citizen CT-E351",
+          "specs": "طابعة نقاط بيع 80 مم فائقة المدمجة"
+        },
+        "cloverMini": {
+          "name": "Clover Mini",
+          "specs": "محطة دفع مدمجة الكل في واحد"
+        },
+        "elo": {
+          "name": "Elo I-Series 4.0",
+          "specs": "محطة شاشة تعمل باللمس Full HD مقاس 15.6 بوصة"
+        },
         "epson": {
           "name": "Epson TM-T20III",
           "specs": "طابعة نقاط بيع قياسية 80 مم"
@@ -1716,41 +1734,25 @@
           "name": "Star Micronics mC-Print3",
           "specs": "طابعة أنيقة جاهزة للسحاب 80 مم"
         },
+        "starMC2": {
+          "name": "Star Micronics mC-Print2",
+          "specs": "طابعة إيصالات أنيقة 58 مم"
+        },
         "starTSP654": {
           "name": "Star Micronics TSP654II",
           "specs": "طابعة بلوتوث 80 مم موثوقة"
-        },
-        "surfaceGo": {
-          "name": "Microsoft Surface Go 4",
-          "specs": "شاشة تعمل باللمس 10.5 بوصة، Intel N200"
-        },
-        "sunmiV2": {
-          "name": "Sunmi V2s",
-          "specs": "محطة أندرويد محمولة مع طابعة"
         },
         "sunmiT2": {
           "name": "Sunmi T2s",
           "specs": "محطة نقاط بيع أندرويد سطح مكتب 15.6 بوصة"
         },
-        "cloverMini": {
-          "name": "Clover Mini",
-          "specs": "محطة دفع مدمجة الكل في واحد"
+        "sunmiV2": {
+          "name": "Sunmi V2s",
+          "specs": "محطة أندرويد محمولة مع طابعة"
         },
-        "elo": {
-          "name": "Elo I-Series 4.0",
-          "specs": "محطة شاشة تعمل باللمس Full HD مقاس 15.6 بوصة"
-        },
-        "bixolon": {
-          "name": "Bixolon SRP-350plusIII",
-          "specs": "طابعة حرارية 80 مم عالية السرعة"
-        },
-        "citizen": {
-          "name": "Citizen CT-E351",
-          "specs": "طابعة نقاط بيع 80 مم فائقة المدمجة"
-        },
-        "starMC2": {
-          "name": "Star Micronics mC-Print2",
-          "specs": "طابعة إيصالات أنيقة 58 مم"
+        "surfaceGo": {
+          "name": "Microsoft Surface Go 4",
+          "specs": "شاشة تعمل باللمس 10.5 بوصة، Intel N200"
         }
       },
       "subtitle": "يعمل بيمنت مع معظم الأجهزة اللوحية والطابعات الحرارية القياسية. إليك بعض الموديلات التي نوصي بها.",
@@ -1763,9 +1765,7 @@
       "tip": "نصيحة: معظم الأجهزة اللوحية الحديثة وطابعات البلوتوث مدعومة.",
       "title": "أجهزة",
       "titleHighlight": "متوافقة",
-      "viewAllOptions": "عرض جميع الخيارات",
-      "nextPage": "التالي",
-      "prevPage": "السابق"
+      "viewAllOptions": "عرض جميع الخيارات"
     },
     "hero": {
       "activeRightNow": "نشط الآن",
@@ -1803,20 +1803,17 @@
       "watchVideo": "شاهد كيف يعمل"
     },
     "pricing": {
+      "additionalDiscount": "المواقع الإضافية تحصل على <1>خصم</1> لتصبح بـ ",
       "additionalFeatures": {
         "centralized": "إدارة مركزية من لوحة تحكم واحدة",
         "combinedReports": "تقارير مجمعة أو مفلترة حسب الفرع",
         "fullAccess": "نفس مستوى الوصول الكامل لموقعك الأساسي",
         "separate": "موظفين ومخزون منفصل لكل فرع"
       },
-      "additionalDiscount": "المواقع الإضافية تحصل على <1>خصم</1> لتصبح بـ ",
       "additionalLocations": "مواقع إضافية",
       "additionalLocationsDesc": "كل موقع إضافي بعد موقعك الأول",
       "addLocation": "إضافة موقع",
       "billedAnnually": "يتم الفوترة سنوياً",
-      "includedDesc": "جميع المميزات مشمولة في خطة واحدة.",
-      "includedTitle": "كل ما تحتاجه",
-      "setupFee": "لا توجد رسوم إعداد أو تكاليف مخفية. يمكنك الإلغاء في أي وقت.",
       "features": {
         "adminApp": "الوصول إلى تطبيق الإدارة عبر الهاتف",
         "advancedReporting": "تقارير وتحليلات متقدمة",
@@ -1832,6 +1829,8 @@
       },
       "fullAccess": "وصول كامل",
       "getStarted": "ابدأ الآن",
+      "includedDesc": "جميع المميزات مشمولة في خطة واحدة.",
+      "includedTitle": "كل ما تحتاجه",
       "insteadOf": "بدلاً من",
       "monthly": "شهرياً",
       "monthlyPlan": "الخطة الشهرية",
@@ -1880,6 +1879,7 @@
       "save": "وفر",
       "save20": "وفر 20%",
       "saveAmount": "وفر {{amount}}$",
+      "setupFee": "لا توجد رسوم إعداد أو تكاليف مخفية. يمكنك الإلغاء في أي وقت.",
       "standardPrice": "20$",
       "startFreeTrial": "ابدأ التجربة المجانية",
       "subtitle": "لحظة الـ \"aha\" الخاصة بك على بعد دقائق فقط.",
@@ -2231,6 +2231,7 @@
       "yield": "الإنتاج"
     },
     "ingredients": "المكونات",
+    "items": "عناصر",
     "kitchen": "المطبخ",
     "linkProduct": "ربط منتج",
     "manufactured": "تم التصنيع",
@@ -2259,8 +2260,7 @@
     "search": "البحث عن الوصفات...",
     "subtitle": "إدارة الوصفات والتحضير",
     "title": "الوصفات",
-    "totalOutput": "إجمالي الإنتاج",
-    "items": "عناصر"
+    "totalOutput": "إجمالي الإنتاج"
   },
   "nav": {
     "community": "المجتمع",
@@ -2319,8 +2319,8 @@
         "USD": "دولار أمريكي"
       },
       "currency": "العملة",
-      "currencyTip": "العملة الأساسية للمبيعات.",
       "currencyLockedNote": "العملة موحدة عبر الحساب بالكامل. لاستخدام عملة مختلفة، يرجى إنشاء حساب منفصل.",
+      "currencyTip": "العملة الأساسية للمبيعات.",
       "discounts": "الخصومات",
       "discountsDesc": "أكواد الخصم وقواعد الخصم",
       "errors": {
@@ -2767,6 +2767,7 @@
       "activeEstBlockModal": {
         "activeLocations": "مواقع نشطة",
         "desc": "لديك مواقع نشطة مرتبطة بحسابك. يرجى تعطيلها أو نقلها أولاً.",
+        "goToBilling": "الانتقال للخطط",
         "goToLocations": "الانتقال للمواقع",
         "subtitle": "يجب تعطيل جميع المواقع قبل حذف حسابك.",
         "title": "تم العثور على مواقع نشطة"
@@ -3230,6 +3231,7 @@
       "enterPassword": "يرجى إدخال كلمة المرور",
       "enterPasswordPlaceholder": "أدخل كلمة المرور",
       "incorrectPassword": "كلمة مرور غير صحيحة أو فشل في الحذف",
+      "incorrectPasswordRemaining": "كلمة المرور غير صحيحة. حاول مرة أخرى. متبقي {{count}} محاولات قبل تسجيل الخروج.",
       "loading": "جاري تحميل الموظفين...",
       "locationsCount": "{{count}} موقع",
       "moreLocations": "+{{count}} إضافي",
@@ -3250,6 +3252,7 @@
       "subtitle": "إدارة الموظفين في جميع المواقع",
       "syncError": "فشل في مزامنة بيانات الموظفين",
       "title": "كل الموظفين",
+      "tooManyPasswordAttempts": "تم إدخال كلمة المرور بشكل خاطئ عدة مرات. يرجى تسجيل الدخول مرة أخرى.",
       "totalUsers": "إجمالي المستخدمين",
       "undoneWarning": "لا يمكن التراجع عن هذا الإجراء",
       "usersInfo": "العدد الإجمالي للمستخدمين المسجلين في جميع المواقع.",
@@ -3829,12 +3832,12 @@
       "about": "نبذة",
       "aboutPlaceholder": "صف عملك التجاري...",
       "address": "العنوان",
-      "detailsDesc": "إدارة هوية منشأتك",
       "addressPlaceholder": "أدخل عنوان عملك...",
       "changeLogo": "تغيير الشعار",
       "chooseDays": "اختر أيام العمل الخاصة بك",
       "comingSoon": "قريباً",
       "deleteLogo": "حذف الشعار",
+      "detailsDesc": "إدارة هوية منشأتك",
       "email": "البريد الإلكتروني",
       "logo": "الشعار",
       "logoGuidelines": "يفضل: 512x512 بكسل مربعة PNG أو JPG أو SVG. بحد أقصى 2 ميجابايت.",
@@ -3868,8 +3871,8 @@
     "sales": {
       "currency": "عملة النظام",
       "currencyDesc": "العملة الرئيسية للمبيعات والتقارير.",
-      "currencyOwnerOnly": "يمكن تغيير العملة فقط من بوابة المالك.",
       "currencyLabel": "المنطقة",
+      "currencyOwnerOnly": "يمكن تغيير العملة فقط من بوابة المالك.",
       "enterValidTax": "يرجى إدخال معدل ضريبة عددي صالح للمتابعة في التحديث.",
       "holdOrderTableCountDesc": "عدد خيارات الطاولات (طاولة 1، طاولة 2...) في قائمة تعليق الطلب.",
       "holdOrderTableCountErrorRange": "عدد اختصارات الطاولات يجب أن يكون بين 0 و 300.",

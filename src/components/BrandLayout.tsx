@@ -156,7 +156,7 @@ export function BrandLayout() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-paymint-dark flex items-center justify-center">
                 <div className="flex flex-col items-center space-y-4">
                     <div className="relative">
                         <div className="w-14 h-14 border-4 border-paymint-green/20 rounded-full" />
@@ -243,7 +243,7 @@ export function BrandLayout() {
                                     className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 text-paymint-green transition-all group relative"
                                     onClick={() => setSidebarOpen(true)}
                                 >
-                                    <img src={PaymintLeafIcon} width={24} height={24} loading="eager" decoding="async" className="w-6 h-6 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} />
+                                    <img src={PaymintLeafIcon} width={32} height={32} loading="eager" decoding="async" className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} />
                                     <PanelLeft
                                         size={24}
                                         className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
@@ -271,7 +271,7 @@ export function BrandLayout() {
                     {sidebarOpen ? (
                         <div
                             onClick={goBackToOwner}
-                            className="p-3.5 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer transition-all duration-300 hover:border-paymint-green/30"
+                            className="p-3.5 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer transition-all duration-300 hover:border-paymint-green/30"
                         >
                             <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 dark:bg-paymint-green/10 rounded-full blur-3xl pointer-events-none transition-transform duration-1000" />
                             <div className="relative z-10">
@@ -439,7 +439,7 @@ export function BrandLayout() {
                                             initial={{ opacity: 0, scale: 0.95, x: 20 }}
                                             animate={{ opacity: 1, scale: 1, x: 0 }}
                                             exit={{ opacity: 0, scale: 0.95, x: 20 }}
-                                            className="absolute left-full rtl:left-auto rtl:right-full bottom-10 ml-4 rtl:ml-0 rtl:mr-4 w-64 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[70] p-2"
+                                            className="absolute left-full rtl:left-auto rtl:right-full bottom-10 ml-4 rtl:ml-0 rtl:mr-4 w-64 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[70] p-2"
                                         >
                                             {/* Header */}
                                             <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-xl">
@@ -517,7 +517,7 @@ export function BrandLayout() {
                 </div>
 
                 {/* Content Landscape */}
-                <main className="flex-1 relative bg-gray-50 dark:bg-[#050505] overflow-hidden">
+                <main className="flex-1 relative bg-gray-50 dark:bg-paymint-dark overflow-hidden">
                     <div ref={mainContentRef} className="h-full overflow-y-auto relative z-10 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
                         <div className="p-4 md:p-6 lg:p-8 max-w-[1920px] mx-auto">
                             <Outlet context={{ brand }} />

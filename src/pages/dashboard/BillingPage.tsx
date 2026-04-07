@@ -162,8 +162,8 @@ export function BillingPage() {
                   </span>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  {isYearly ? 'Billed annually' : 'Billed monthly'}
-                  {isYearly && ` &bull; ~${effectiveMonthlyRate.toFixed(2)}/mo`}
+                  {isYearly ? t('common.yearly') : t('common.monthly')}
+                  {isYearly && ` &bull; ~${effectiveMonthlyRate.toFixed(2)}${t('common.monthly')}`}
                 </p>
               </div>
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">

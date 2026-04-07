@@ -146,7 +146,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
             {isOpen && (
                 <div
                     dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                    className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans"
+                    className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-barlow"
                 >
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -201,7 +201,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             value={cardNumber}
                                             onChange={handleCardNumberChange}
                                             placeholder="0000 0000 0000 0000"
-                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cardNumber ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-12 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all font-mono`}
+                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cardNumber ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-12 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
                                         />
                                         <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                                         <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -225,7 +225,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             onChange={handleExpiryChange}
                                             placeholder={t('paymentMethods.modal.expiryPlaceholder') || "MM/YY"}
                                             maxLength={5}
-                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.expiry ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all text-center font-mono`}
+                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.expiry ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all text-center`}
                                         />
                                         {errors.expiry && <p className="text-xs font-bold text-red-500 pl-1">{errors.expiry}</p>}
                                     </div>
@@ -238,7 +238,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                                 onChange={(e) => { setCvc(e.target.value.replace(/\D/g, '').slice(0, 4)); if (errors.cvc) setErrors({ ...errors, cvc: '' }); }}
                                                 placeholder="123"
                                                 maxLength={4}
-                                                className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cvc ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-10 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all font-mono`}
+                                                className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cvc ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-10 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
                                             />
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={16} />
                                         </div>
@@ -253,7 +253,6 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                         type="text"
                                         value={name}
                                         onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                                        placeholder={t('onboarding.step2.cardName')}
                                         className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
                                     />
                                     {errors.name && <p className="text-xs font-bold text-red-500 pl-1">{errors.name}</p>}
@@ -262,15 +261,12 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full h-14 bg-paymint-green text-black rounded-xl font-black text-xs tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
+                                    className="w-full h-14 bg-paymint-green text-black rounded-xl font-black text-xs tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none uppercase"
                                 >
                                     {isSubmitting ? (
                                         <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                                     ) : (
-                                        <>
-                                            <ShieldCheck size={18} />
-                                            {t('paymentMethods.modal.secureVault')}
-                                        </>
+                                        t('paymentMethods.modal.secureVault')
                                     )}
                                 </button>
 

@@ -194,7 +194,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300"
+                        className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300"
                     >
                         <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
                             <stat.icon size={20} />
@@ -211,7 +211,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
 
             {/* Local Filters (Search & Status) */}
             <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1 relative group bg-white dark:bg-[#0B1120] rounded-xl border border-gray-200 dark:border-white/[0.05] hover:border-paymint-green/50 transition-all p-1">
+                <div className="flex-1 relative group bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/[0.05] hover:border-paymint-green/50 transition-all p-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                         type="text"
@@ -249,7 +249,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                     {canExport && (
                         <button
                             onClick={handleExport}
-                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.05] text-gray-900 dark:text-white font-bold text-xs hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.05] text-gray-900 dark:text-white font-bold text-xs hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
                         >
                             <Download size={16} className="text-paymint-green" />
                             <span>{t('orders.export')}</span>
@@ -259,7 +259,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
             </div>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]">
+            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]">
                 {isLoading ? (
                     <div className="flex-1 flex flex-col items-center justify-center py-20">
                         <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />

@@ -475,7 +475,7 @@ export function ReportsPage() {
                 }}
                 className={`relative flex-none lg:flex-1 flex flex-col xl:flex-row items-center justify-center gap-1.5 xl:gap-2 px-3 py-2.5 xl:py-3 rounded-xl transition-none isolate min-w-[60px] lg:min-w-0 ${isSelected
                   ? 'text-black shadow-lg shadow-paymint-green/20'
-                  : 'bg-white dark:bg-[#0B1120] text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 border border-gray-200 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/20'
+                  : 'bg-white dark:bg-[#1E293B] text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 border border-gray-200 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/20'
                   }`}
               >
                 {isSelected && (
@@ -529,7 +529,7 @@ export function ReportsPage() {
         {/* Unified Filter Dashboard */}
 
         {/* Unified Filter Control Deck */}
-        <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-xl shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-2">
+        <div className="bg-white dark:bg-[#1E293B] rounded-[20px] shadow-xl shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-2">
           {/* Single Row Layout - wraps on smaller screens */}
           <div className="flex flex-wrap items-stretch gap-2">
 

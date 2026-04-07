@@ -57,7 +57,7 @@
       "deleteEmployee": "Staff: delete",
       "deletePayment": "Payment: delete",
       "deleteProduct": "Product: delete",
-      "logout": "Logout",
+      "logout": "Log Out",
       "removeProductImage": "Product: remove image",
       "updateCategory": "Category: update",
       "updated_discount": "Discount: update",
@@ -274,7 +274,7 @@
       "welcomeBack": "Welcome back"
     },
     "logout": {
-      "loggingOut": "Logging out...",
+      "loggingOut": "Log out...",
       "message": "You have been logged out successfully",
       "seeYou": "See you next time!"
     },
@@ -334,7 +334,7 @@
       "resetTitle": "Reset",
       "subtitle": "Enter your new password below",
       "success": "Password reset successfully",
-      "successTitle": "Success",
+      "successTitle": "Password Reset Successful!",
       "title": "Reset password"
     },
     "signup": {
@@ -378,7 +378,7 @@
       "resendVerification": "Resend Verification",
       "signUpButton": "Sign Up",
       "subscribeToNews": "Keep me updated with PayMint news and product updates",
-      "subtitle": "Join paymint and start growing your business",
+      "subtitle": "Join PayMint and start growing your business",
       "success": "Account created successfully! Please check your email to verify.",
       "title": "Create your account",
       "verificationSent": "Verification link sent"
@@ -554,7 +554,7 @@
       "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
       "noResults": "No results found",
       "searchPlaceholder": "Search FAQs...",
-      "subtitle": "Find answers to common questions about paymint",
+      "subtitle": "Find answers to common questions about PayMint",
       "title": "Frequently asked questions",
       "tryDifferent": "Try different keywords or browse categories"
     },
@@ -567,8 +567,8 @@
     "launcher": {
       "ask": "Ask",
       "help": "Help",
-      "tasks": "Tasks",
-      "help_message": "How can I help you?"
+      "help_message": "How can I help you?",
+      "tasks": "Tasks"
     },
     "navigation": {
       "takeMe": "Take me there"
@@ -658,7 +658,7 @@
     "app": "App",
     "arabic": "Arabic",
     "aria": {
-      "changeLanguage": "Change language",
+      "changeLanguage": "Change Language",
       "closeMenu": "Close navigation menu",
       "mobileNav": "Mobile navigation",
       "nextMonth": "Next month",
@@ -763,10 +763,10 @@
     "location": "Location",
     "locations": "Locations",
     "logoAlt": "PayMint logo",
-    "logout": "Logout",
-    "mo": "/mo",
+    "logout": "Log Out",
+    "mo": "m",
     "month": "Month",
-    "monthly": "Monthly",
+    "monthly": "m",
     "more": "More",
     "na": "N/A",
     "name": "Name",
@@ -795,7 +795,7 @@
     "pos": "POS",
     "previous": "Previous",
     "print": "Print",
-    "privacyPolicy": "Privacy policy",
+    "privacyPolicy": "Privacy Policy",
     "refresh": "Refresh",
     "reloadPage": "Reload page",
     "required": "Required",
@@ -863,9 +863,9 @@
     "welcome": "Welcome!",
     "welcomeBack": "Welcome Back!",
     "year": "Year",
-    "yearly": "Yearly",
+    "yearly": "y",
     "yes": "Yes",
-    "yr": "/yr",
+    "yr": "y",
     "zero": "0",
     "zeroDecimal": "0.00"
   },
@@ -893,7 +893,7 @@
       "ui_ux": "UI/UX"
     },
     "cta": {
-      "subtitle": "Help others, earn badges, and get early access to new features. join the paymint community today!",
+      "subtitle": "Help others, earn badges, and get early access to new features. Join the PayMint community today!",
       "title": "Become a Community Champion"
     },
     "difficulty": {
@@ -964,7 +964,7 @@
       "popular_subtitle": "Most-read tutorials from the community",
       "search_placeholder": "Search guides...",
       "start": "Start Learning",
-      "subtitle": "Learn everything about paymint with our comprehensive guides",
+      "subtitle": "Learn everything about PayMint with our comprehensive guides",
       "title": "Guides & Tutorials"
     },
     "hub": {
@@ -1012,7 +1012,7 @@
       "see_all": "See all ideas",
       "submit": "Share an Idea",
       "submit_first": "Submit the First Idea",
-      "subtitle": "Vote and help shape the future of paymint",
+      "subtitle": "Vote and help shape the future of PayMint",
       "title": "Feature Ideas",
       "top": "Top Feature Ideas",
       "top_subtitle": "Vote to help prioritize what we build next",
@@ -1199,7 +1199,7 @@
       "inventory": "Recipe operations",
       "inventoryDesc": "View and update recipes and ingredients",
       "itemsMenu": "Item's Menu (Inventory)",
-      "logout": "Logout",
+      "logout": "Log Out",
       "loyalty": "Loyalty",
       "mainMenu": "Main Menu",
       "openSidebar": "Open Sidebar",
@@ -1373,6 +1373,10 @@
     }
   },
   "discounts": {
+    "confirm": {
+      "deleteMessage": "Are you sure you want to delete \"{{name}}\"? This action can't be undone",
+      "deleteTitle": "Delete Discount"
+    },
     "editDiscount": "Edit Discount",
     "errors": {
       "nameRequired": "Required",
@@ -1388,10 +1392,6 @@
       "nameTip": "Name on receipt.",
       "percentageLabel": "Percentage (%)",
       "percentageTip": "Value to deduct."
-    },
-    "confirm": {
-      "deleteMessage": "Are you sure you want to delete \"{{name}}\"? This action can't be undone",
-      "deleteTitle": "Delete Discount"
     },
     "messages": {
       "created": "Discount Created Successfully",
@@ -1463,7 +1463,7 @@
     "send": "Send Feedback",
     "sending": "Sending...",
     "sent": "Feedback Sent",
-    "subtitle": "Help us improve paymint",
+    "subtitle": "Help us improve PayMint",
     "tab": "Feedback",
     "thanks": "Thanks for your feedback!",
     "title": "Send Feedback"
@@ -1520,17 +1520,16 @@
     "editIngredient": "Edit Ingredient",
     "form": {
       "inStock": "In Stock",
+      "inStockInfo": "How much you have in your inventory",
       "lowStockThreshold": "Low Stock Alert",
+      "lowStockThresholdInfo": "When do you like to be alerted",
       "name": "Name",
       "namePlaceholder": "E.g. Flour Type 00",
       "unit": "Unit",
-      "unitInfo": "Choose how you measure this ingredient",
-      "inStockInfo": "How much you have in your inventory",
-      "lowStockThresholdInfo": "When do you like to be alerted"
+      "unitInfo": "Choose how you measure this ingredient"
     },
     "lowStock": "Low Stock",
     "manage": "Manage stock and costs",
-    "subtitle": "View and update recipes and ingredients",
     "materials": "Ingredients",
     "messages": {
       "created": "Material Created",
@@ -1548,6 +1547,7 @@
     "quantity": "Quantity",
     "search": "Search Items...",
     "stock": "Stock",
+    "subtitle": "View and update recipes and ingredients",
     "title": "Recipe operations",
     "unitCost": "Unit Cost",
     "units": {
@@ -1672,7 +1672,7 @@
       "readMore": "Read more",
       "seamlessSync": "Seamless real-time synchronization across all devices",
       "seeInAction": "See PayMint in Action",
-      "subtitle": "At paymint, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing.",
+      "subtitle": "At PayMint, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing.",
       "title": "Why",
       "titleHighlight": "PayMint?",
       "videoTitle": "PayMint Demo Video"
@@ -1680,12 +1680,30 @@
     "hardware": {
       "alreadyHave": "Already have hardware?",
       "alreadyHaveDesc": "Simply download the app and connect your devices in seconds.",
+      "nextPage": "Next",
+      "prevPage": "Back",
       "printers": {
         "description": "Fast and reliable thermal receipt printers",
         "name": "Receipt Printers",
         "note": "80mm thermal paper is required for all listed models."
       },
       "products": {
+        "bixolon": {
+          "name": "Bixolon SRP-350plusIII",
+          "specs": "High-Speed 80mm Thermal Printer"
+        },
+        "citizen": {
+          "name": "Citizen CT-E351",
+          "specs": "Ultra-Compact 80mm POS Printer"
+        },
+        "cloverMini": {
+          "name": "Clover Mini",
+          "specs": "Compact All-in-One Payment Terminal"
+        },
+        "elo": {
+          "name": "Elo I-Series 4.0",
+          "specs": "15.6\" Full HD Touchscreen Terminal"
+        },
         "epson": {
           "name": "Epson TM-T20III",
           "specs": "Standard 80mm POS Printer"
@@ -1730,41 +1748,25 @@
           "name": "Star Micronics mC-Print3",
           "specs": "Elegant 80mm Cloud-Ready Printer"
         },
+        "starMC2": {
+          "name": "Star Micronics mC-Print2",
+          "specs": "Elegant 58mm Receipt Printer"
+        },
         "starTSP654": {
           "name": "Star Micronics TSP654II",
           "specs": "Reliable 80mm Bluetooth Printer"
-        },
-        "surfaceGo": {
-          "name": "Microsoft Surface Go 4",
-          "specs": "10.5\" Touchscreen, Intel N200"
-        },
-        "sunmiV2": {
-          "name": "Sunmi V2s",
-          "specs": "Handheld Android Terminal with Printer"
         },
         "sunmiT2": {
           "name": "Sunmi T2s",
           "specs": "15.6\" Android Desktop POS Terminal"
         },
-        "cloverMini": {
-          "name": "Clover Mini",
-          "specs": "Compact All-in-One Payment Terminal"
+        "sunmiV2": {
+          "name": "Sunmi V2s",
+          "specs": "Handheld Android Terminal with Printer"
         },
-        "elo": {
-          "name": "Elo I-Series 4.0",
-          "specs": "15.6\" Full HD Touchscreen Terminal"
-        },
-        "bixolon": {
-          "name": "Bixolon SRP-350plusIII",
-          "specs": "High-Speed 80mm Thermal Printer"
-        },
-        "citizen": {
-          "name": "Citizen CT-E351",
-          "specs": "Ultra-Compact 80mm POS Printer"
-        },
-        "starMC2": {
-          "name": "Star Micronics mC-Print2",
-          "specs": "Elegant 58mm Receipt Printer"
+        "surfaceGo": {
+          "name": "Microsoft Surface Go 4",
+          "specs": "10.5\" Touchscreen, Intel N200"
         }
       },
       "subtitle": "Paymint works with most standard tablets and thermal printers. here are some models we recommend.",
@@ -1777,9 +1779,7 @@
       "tip": "Tip: Most modern tablets and Bluetooth printers are supported.",
       "title": "Compatible",
       "titleHighlight": "Hardware",
-      "viewAllOptions": "View All Options",
-      "nextPage": "Next",
-      "prevPage": "Back"
+      "viewAllOptions": "View All Options"
     },
     "hero": {
       "activeRightNow": "active right now",
@@ -1820,9 +1820,6 @@
       "additionalDiscount": "Additional locations receive a <1>DISCOUNT</1> for ",
       "additionalLocations": "Additional Locations",
       "billedAnnually": "Billed annually.",
-      "includedDesc": "All features included in a single plan.",
-      "includedTitle": "Everything you need",
-      "setupFee": "No setup fees or hidden charges. Cancel anytime.",
       "features": {
         "adminApp": "Access to the Admin Mobile App",
         "advancedReporting": "Advanced Reporting",
@@ -1838,6 +1835,8 @@
       },
       "fullAccess": "FULL ACCESS",
       "getStarted": "Get Started",
+      "includedDesc": "All features included in a single plan.",
+      "includedTitle": "Everything you need",
       "monthly": "MONTHLY",
       "monthlyPlan": "Monthly Plan",
       "noCommitment": "No commitment.",
@@ -1883,6 +1882,7 @@
       "save": "SAVE",
       "save20": "Save 20%",
       "saveAmount": "SAVE ${{amount}}",
+      "setupFee": "No setup fees or hidden charges. Cancel anytime.",
       "standardPrice": "20$",
       "startFreeTrial": "Start Free Trial",
       "subtitle": "Your \"aha\" moment is just minutes away.",
@@ -2232,6 +2232,7 @@
       "yield": "Yield"
     },
     "ingredients": "Ingredients",
+    "items": "Items",
     "kitchen": "Kitchen",
     "linkProduct": "Link Product",
     "manufactured": "Manufactured",
@@ -2260,8 +2261,7 @@
     "search": "Search Recipes...",
     "subtitle": "View and update recipes and ingredients",
     "title": "Recipe operations",
-    "totalOutput": "Total Output",
-    "items": "Items"
+    "totalOutput": "Total Output"
   },
   "nav": {
     "community": "Community",
@@ -2320,8 +2320,8 @@
         "USD": "USD - US Dollar"
       },
       "currency": "Currency",
-      "currencyTip": "Primary currency for sales.",
       "currencyLockedNote": "Currency is consistent across the entire account. To use a different currency, please create a separate account.",
+      "currencyTip": "Primary currency for sales.",
       "discounts": "Discounts",
       "discountsDesc": "Promo codes and discount rules",
       "errors": {
@@ -2540,7 +2540,6 @@
     },
     "period": "Period",
     "reports": {
-      "subtitle": "Analyze your sales data",
       "cashGap": {
         "accuracyRate": "Accuracy Rate",
         "all": "All",
@@ -2715,6 +2714,7 @@
         "totalSales": "Total sales",
         "totalVariances": "Total variances"
       },
+      "subtitle": "Analyze your sales data",
       "taxes": {
         "avgRate": "Avg. Rate",
         "avgRateDesc": "Average Tax Percentage",
@@ -2770,6 +2770,7 @@
       "activeEstBlockModal": {
         "activeLocations": "Active locations",
         "desc": "You have active locations linked to your account. Please deactivate or transfer them before proceeding.",
+        "goToBilling": "Go to plans",
         "goToLocations": "Go to locations",
         "subtitle": "You have active locations that need to be resolved before proceeding.",
         "title": "Active locations found"
@@ -2777,7 +2778,7 @@
       "admins": "Admins",
       "badge": "Account",
       "brandLoginId": "Brand login ID",
-      "brandLogins": "Brand logins",
+      "brandLogins": "Brand Logins",
       "brandLoginsSubtitle": "Login credentials for your brand dashboards",
       "brands": "Brands",
       "cancel": "Cancel",
@@ -2787,7 +2788,7 @@
       "copyFailed": "Failed to copy",
       "createdDate": "Created {{date}}",
       "createFirst": "Create your first resource",
-      "dangerZone": "Danger zone",
+      "dangerZone": "Danger Zone",
       "dangerZoneHint": "Once you delete your account, there is no going back. Please be certain.",
       "delete": "Delete",
       "deleteAccount": "Delete account",
@@ -2821,8 +2822,8 @@
       "joined": "Joined",
       "lastName": "Last name",
       "loading": "Loading account...",
-      "locationLogins": "Location logins",
-      "locationLoginsSubtitle": "Login credentials for your pos locations",
+      "locationLogins": "Location Logins",
+      "locationLoginsSubtitle": "Login credentials for your POS locations",
       "locations": "Locations",
       "locationsCount": "{{count}} locations",
       "loginId": "Login ID",
@@ -2836,33 +2837,33 @@
       "resources": {
         "aboutUs": {
           "desc": "Learn about our mission and team",
-          "title": "About us"
+          "title": "About Us"
         },
         "privacyPolicy": {
           "desc": "How we protect your data",
-          "title": "Privacy policy"
+          "title": "Privacy Policy"
         },
         "qa": {
           "desc": "Find answers to common questions",
-          "title": "Q&A center"
+          "title": "Q&A Center"
         },
         "setupManual": {
           "desc": "Step-by-step hardware setup guide",
-          "title": "Setup manual"
+          "title": "Setup Manual"
         },
         "subtitle": "Helpful guides and documentation",
         "termsOfUse": {
           "desc": "Our terms and conditions",
-          "title": "Terms of use"
+          "title": "Terms of Use"
         },
-        "title": "Resources & help",
+        "title": "Resources & Help",
         "userManual": {
           "desc": "Complete guide to using PayMint",
-          "title": "User manual"
+          "title": "User Manual"
         },
         "videoTutorial": {
           "desc": "Watch step-by-step video guides",
-          "title": "Video tutorial"
+          "title": "Video Tutorial"
         }
       },
       "restore": "Restore",
@@ -2878,7 +2879,7 @@
       "saving": "Saving...",
       "securityTips": {
         "neverShareOtp": "Never share your OTP or verification codes with anyone",
-        "title": "Security tips",
+        "title": "Security Tips",
         "uniquePasswords": "Use unique, strong passwords for each account",
         "updatePeriodically": "Update your password periodically for better security"
       },
@@ -2891,15 +2892,15 @@
       "subtitle": "Manage your profile and security",
       "terms": "Terms",
       "tips": "Tips",
-      "title": "Account management",
+      "title": "Account Management",
       "updateFailed": "Failed to update profile",
-      "userManual": "User manual",
+      "userManual": "User Manual",
       "validation": {
         "requiredFields": "Please fill in all required fields"
       },
       "verified": "Verified",
       "verifyEmail": "Verify email",
-      "videoTutorial": "Video tutorial"
+      "videoTutorial": "Video Tutorial"
     },
     "billing": {
       "active": "Active",
@@ -3068,19 +3069,19 @@
       "view": "View details"
     },
     "menu": {
-      "accountManagement": "Account management",
+      "accountManagement": "Account Management",
       "billing": "Billing",
       "brands": "Brands",
       "employees": "Employees",
-      "enterpriseOwner": "Enterprise owner",
-      "getMobileApp": "Get mobile app",
-      "globalRoles": "Global roles",
+      "enterpriseOwner": "Enterprise Owner",
+      "getMobileApp": "Get Mobile App",
+      "globalRoles": "Global Roles",
       "locations": "Locations",
-      "mainMenu": "Main menu",
-      "openSidebar": "Open sidebar",
+      "mainMenu": "Main Menu",
+      "openSidebar": "Open Sidebar",
       "overview": "Overview",
-      "scanToDownload": "Scan to download",
-      "signOut": "Sign out"
+      "scanToDownload": "Scan To Download",
+      "signOut": "Log Out"
     },
     "merge": {
       "available": "Available",
@@ -3133,32 +3134,32 @@
     "overview": {
       "activeHours": "Active hours",
       "activeLocations": "Active locations",
-      "addLocation": "Add location",
+      "addLocation": "Add Location",
       "badge": "Enterprise overview",
       "brands": "Brands",
       "growBusiness": "Grow your business",
       "growBusinessDesc": "Expand your reach by adding more locations or managing multiple brands.",
-      "liveSystem": "Live system",
-      "manageBrands": "Manage brands",
+      "liveSystem": "Live System",
+      "manageBrands": "Manage Brands",
       "managed": "Managed",
-      "manageLocations": "Manage locations",
-      "noRevenueData": "No revenue data",
+      "manageLocations": "Manage Locations",
+      "noRevenueData": "No Revenue Data",
       "noSalesRecorded": "No sales recorded for this period.",
       "online": "System online",
       "open": "Open",
       "period": "Period",
-      "quickManagement": "Quick management",
+      "quickManagement": "Quick Management",
       "revenue": "Revenue",
-      "salesTrends": "Sales trends",
-      "selectPeriod": "Select period",
-      "staffManagement": "Staff management",
+      "salesTrends": "Sales Trends",
+      "selectPeriod": "Select Period",
+      "staffManagement": "Staff Management",
       "subtitle": "You are managing {{count}} locations across {{brands}} brands.",
       "title": "Owner portal",
       "total": "Total",
-      "totalProfit": "Total profit",
-      "totalRevenue": "Total revenue",
-      "totalSales": "Total sales",
-      "totalStaff": "Total staff"
+      "totalProfit": "Total Profit",
+      "totalRevenue": "Total Revenue",
+      "totalSales": "Total Sales",
+      "totalStaff": "Total Staff"
     },
     "roles": {
       "actions": "Actions",
@@ -3174,7 +3175,7 @@
         "staff": "Staff",
         "staffDesc": "Manage team members and roles"
       },
-      "backofficeAccess": "Advanced back office permission",
+      "backofficeAccess": "Advanced Back-office Permissions",
       "createdOn": "Created {{date}}",
       "createNew": "Create role",
       "deleteConfirm": "Are you sure you want to delete the \"{{name}}\" role? It will be removed from all locations.",
@@ -3207,14 +3208,14 @@
         "viewTransactions": "View transactions",
         "viewTransactionsDesc": "Allow employee to see transaction history"
       },
-      "posAccess": "POS access",
+      "posAccess": "Basic Sales Permissions",
       "roleCreated": "Role created",
       "roleDeleted": "Role deleted",
       "roleUpdated": "Role updated",
       "scope": "Scope",
       "searchPlaceholder": "Search roles...",
       "subtitle": "Define and assign roles that apply across all locations",
-      "title": "Global roles"
+      "title": "Global Roles"
     },
     "staff": {
       "access": "Access",
@@ -3233,6 +3234,7 @@
       "enterPassword": "Please enter your password",
       "enterPasswordPlaceholder": "Enter your password to confirm",
       "incorrectPassword": "Incorrect password or failed to delete",
+      "incorrectPasswordRemaining": "Incorrect password. Please try again. {{count}} tries remaining before logout.",
       "loading": "Loading staff...",
       "locationsCount": "{{count}} locations",
       "moreLocations": "+{{count}} more",
@@ -3253,6 +3255,7 @@
       "subtitle": "Manage staff across all locations",
       "syncError": "Failed to sync staff data",
       "title": "All staff",
+      "tooManyPasswordAttempts": "Too many incorrect password attempts. Please log in again.",
       "totalUsers": "Total users",
       "undoneWarning": "This action cannot be undone.",
       "usersInfo": "Total number of registered users across all locations.",
@@ -3287,8 +3290,8 @@
       "enterCodeTitle": "Enter Verification Code",
       "newPasswordDesc": "Create a new, strong password for your account",
       "newPasswordTitle": "Create New Password",
-      "successDesc": "Your password has been reset. You can now log in with your new password.",
-      "successTitle": "Password Reset Complete",
+      "successDesc": "You can now log in with your new password.",
+      "successTitle": "Password Reset Successful!",
       "verifyDesc": "Enter the code we sent to your email",
       "verifyTitle": "Verify Your Identity"
     },
@@ -3348,7 +3351,7 @@
     "modal": {
       "cardholder": "Cardholder Name",
       "cardNumber": "Card Number",
-      "cvc": "Cvc",
+      "cvc": "CVV",
       "encrypted": "256-Bit Ssl Encrypted",
       "errors": {
         "correctErrors": "Please correct the errors below",
@@ -3356,9 +3359,9 @@
       },
       "expiry": "Expiry",
       "expiryPlaceholder": "MM/YY",
-      "secureVault": "Secure Vault",
+      "secureVault": "Add Card",
       "subtitle": "Secure payment vault",
-      "title": "New Card"
+      "title": "Add New Card"
     },
     "newType": "New Type",
     "noCardBrands": "No card brands added yet.",
@@ -3610,7 +3613,6 @@
     "title": "Loyalty & rewards"
   },
   "roles": {
-    "subtitle": "Manage access and permissions",
     "backoffice": {
       "billing": "Manage billing",
       "billingDesc": "Access billing and subscription settings",
@@ -3618,7 +3620,7 @@
       "costsDesc": "View item costs and profit margins",
       "customers": "Manage customers",
       "customersDesc": "Manage customer database and loyalty",
-      "description": "Access to back office management features",
+      "description": "Access to Back-office and management roles",
       "discounts": "Manage discounts",
       "discountsDesc": "Create and manage discount codes",
       "inventory": "Manage recipe operations",
@@ -3635,7 +3637,7 @@
       "settingsDesc": "Modify store and establishment settings",
       "staff": "Manage staff",
       "staffDesc": "Manage team members and roles",
-      "title": "Advanced back office permission"
+      "title": "Advanced Back-office Permissions"
     },
     "createRole": "Create role",
     "editRole": "Edit role",
@@ -3643,8 +3645,8 @@
       "allAllowed": "All discounts allowed",
       "allowAllDiscounts": "Allow all discounts",
       "allowedDiscounts": "Allowed discounts",
-      "roleNameLabel": "Role name",
-      "roleNamePlaceholder": "E.g. Shift manager",
+      "roleNameLabel": "Role Name",
+      "roleNamePlaceholder": "E.g. Shift Manager",
       "selectedCount": "{{count}} selected"
     },
     "newRole": "New role",
@@ -3657,7 +3659,7 @@
       "changeTaxes": "Change taxes",
       "changeTaxesDesc": "Modify tax rates on transactions",
       "defaultSalesInfo": "Sales screen access is included by default when this section is enabled.",
-      "description": "Access to point of sale features",
+      "description": "Access to basic sales operations",
       "manageItems": "Manage items",
       "manageItemsDesc": "Add or edit items in POS",
       "openDrawer": "Open cash drawer",
@@ -3670,12 +3672,13 @@
       "settingsDesc": "Access POS configuration",
       "support": "Live support",
       "supportDesc": "Access in-app live chat support",
-      "title": "Basic sales permissions",
+      "title": "Basic Sales Permissions",
       "viewCosts": "View costs",
       "viewCostsDesc": "View item costs in POS",
       "viewReceipts": "View receipts",
       "viewReceiptsDesc": "View all receipts and transactions"
     },
+    "subtitle": "Manage access and permissions",
     "systemNames": {
       "backOfficeAnalyst": "Back Office Analyst",
       "cashier": "Cashier",
@@ -3747,6 +3750,10 @@
     "errorBanner": "Please correct the highlighted errors below",
     "highImpact": "High impact action",
     "identityLabel": "Identity confirmation (email)",
+    "masterKeyInfo": {
+      "description": "This is your primary account password. You can reset it from your account management if you have forgotten it.",
+      "title": "What Is a Master Access Key?"
+    },
     "modes": {
       "cancel": {
         "button": "Confirm Cancellation",
@@ -3816,7 +3823,7 @@
       "cancelFailed": "Failed To Cancel Deletion",
       "description": "This will permanently delete \"{{name}}\". All data including orders, products, and customer info will be deleted.",
       "startDeletion": "Start deletion",
-      "subtitle": "Danger zone",
+      "subtitle": "Danger Zone",
       "thisLocation": "This location",
       "title": "Delete location",
       "undoWarning": "You cannot undo this after 30 days.",
@@ -3835,12 +3842,12 @@
       "about": "About",
       "aboutPlaceholder": "Describe your business...",
       "address": "Address",
-      "detailsDesc": "Manage your establishment identity",
       "addressPlaceholder": "Enter your business address...",
       "changeLogo": "Change logo",
       "chooseDays": "Choose your operating days",
       "comingSoon": "Coming soon",
       "deleteLogo": "Delete logo",
+      "detailsDesc": "Manage your establishment identity",
       "email": "Email",
       "logo": "Logo",
       "logoGuidelines": "Recommended: 512x512px square PNG, JPG or SVG. Max 2MB.",
@@ -3875,8 +3882,8 @@
     "sales": {
       "currency": "System Currency",
       "currencyDesc": "Main currency for sales and reports.",
-      "currencyOwnerOnly": "Currency can only be changed from the owner portal.",
       "currencyLabel": "REGION",
+      "currencyOwnerOnly": "Currency can only be changed from the owner portal.",
       "enterValidTax": "Please enter a valid numeric tax rate to proceed with the update.",
       "holdOrderTableCountDesc": "How many table options (Table 1, Table 2...) to show in the hold order menu.",
       "holdOrderTableCountErrorRange": "Table shortcut count must be between 0 and 300.",
@@ -3928,15 +3935,15 @@
       "adminRole": "Admin (Full Access)",
       "allLocations": "All locations",
       "backofficePermissions": "Back office permissions",
-      "confirmPasswordLabel": "Confirm password",
-      "confirmPasswordPlaceholder": "Confirm password",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm Password",
       "createRolesInSettings": "Create roles in settings",
       "defaultFirstName": "Staff",
       "emailLabel": "Email",
       "emailOptional": "(Optional)",
       "emailPlaceholder": "E.g. Name@email.com",
       "globalRoles": "Global Roles",
-      "leaveBlank": "Leave Blank To Keep Current",
+      "leaveBlank": "Leave blank to keep current",
       "location": "Location",
       "locationDisclaimer": "To add more locations or manage cross-location access for an employee, please do so through the <1>Owner Portal</1>.",
       "locationLabel": "Location Access",
@@ -3964,10 +3971,10 @@
       "permissionsCount_two": "2 Permissions",
       "permissionsCount_zero": "{{count}} Permissions",
       "phoneLabel": "Phone",
+      "phoneNumber": "Phone number",
       "phoneOptional": "(Optional)",
       "phonePlaceholder": "E.g. +1 234 567 8900",
       "posPermissions": "Basic Sales Permissions",
-      "phoneNumber": "Phone number",
       "roleLabel": "Role",
       "selectLocation": "Select location...",
       "selectRole": "Select role...",
@@ -4046,19 +4053,19 @@
       },
       "pos": "Basic Sales Permissions",
       "pos_list": {
-        "change_taxes": "Change Tax Rate In Order",
-        "dashboard": "View Current Analytics In Dashboard",
+        "change_taxes": "Change Tax Rate in Order",
+        "dashboard": "View Current Analytics in Dashboard",
         "discounts": "Discounts",
         "live_chat": "Access Support Portal",
         "loyalty_system_access": "Loyalty System Access",
         "manage_open_tickets": "Manage Previous Hold Orders",
-        "open_cash_drawer": "Open Drawer",
-        "pay_in_pay_out": "Pay In Pay Out",
+        "open_cash_drawer": "Open Drawer Without Making Sale",
+        "pay_in_pay_out": "Pay-In/Pay-Out (Non-Sales Transactions)",
         "pos": "Access POS",
         "refunds": "Refunds",
-        "reprint_receipts": "Reprint Receipt Or Send",
+        "reprint_receipts": "Reprint Receipt or Send",
         "restock_items": "Restock Items",
-        "view_shift_reports": "View Previous Shift Analytics In Dashboard"
+        "view_shift_reports": "View Previous Shift Analytics in Dashboard"
       }
     },
     "roles": {
@@ -4443,7 +4450,7 @@
     "hero": {
       "badge": "Help Center",
       "searchPlaceholder": "Search for help articles...",
-      "subtitle": "Find answers, guides, and support for all things paymint",
+      "subtitle": "Find answers, guides, and support for all things PayMint",
       "titleHighlight": "help",
       "titlePart1": "How can we",
       "titlePart2": "you?"
@@ -4453,7 +4460,7 @@
       "downloadButton": "Download PDF manual",
       "fileSize": "57 KB",
       "subtitle": "Download the complete guide",
-      "title": "User manual",
+      "title": "User Manual",
       "updated": "Updated March 2024"
     },
     "newTicket": {
@@ -4606,7 +4613,7 @@
   "theme": {
     "dark": "Dark",
     "light": "Light",
-    "switchTheme": "Switch theme",
+    "switchTheme": "Switch Theme",
     "system": "System",
     "toggle": "Toggle theme"
   },

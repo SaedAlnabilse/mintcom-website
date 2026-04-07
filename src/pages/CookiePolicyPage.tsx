@@ -13,7 +13,7 @@ export function CookiePolicyPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0B1120] font-sans text-gray-900 dark:text-white pb-20" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-white dark:bg-[#1E293B] font-sans text-gray-900 dark:text-white pb-20" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header / Hero */}
       <div className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-6">

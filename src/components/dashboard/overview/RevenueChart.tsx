@@ -94,7 +94,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
   const hasRevenueData = chartData.length > 0 && chartData.some((d: any) => Number(d.revenue) > 0);
 
   return (
-    <div id="tour-revenue-chart" className="lg:col-span-2 p-4 sm:p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm transition-all duration-300 group relative overflow-hidden">
+    <div id="tour-revenue-chart" className="lg:col-span-2 p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm transition-all duration-300 group relative overflow-hidden">
       <div className="absolute top-0 end-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10">
         <div className="flex items-start justify-between mb-6">

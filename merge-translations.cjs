@@ -825,8 +825,8 @@ const properEnglish = {
       "enterCodeTitle": "Enter Verification Code",
       "newPasswordDesc": "Create a new, strong password for your account",
       "newPasswordTitle": "Create New Password",
-      "successDesc": "Your password has been reset. You can now log in with your new password.",
-      "successTitle": "Password Reset Complete",
+      "successDesc": "You can now log in with your new password.",
+      "successTitle": "Password Reset Successful!",
       "verifyDesc": "Enter the code we sent to your email",
       "verifyTitle": "Verify Your Identity"
     },

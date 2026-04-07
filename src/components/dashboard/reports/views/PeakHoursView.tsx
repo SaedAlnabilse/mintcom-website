@@ -17,7 +17,7 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
   const isDark = resolvedTheme === 'dark';
 
   return (
-    <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
+    <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
@@ -92,7 +92,7 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-[#0B1120]/50 rounded-2xl border border-dashed border-gray-200 dark:border-white/[0.03]">
+          <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-[#1E293B]/50 rounded-2xl border border-dashed border-gray-200 dark:border-white/[0.03]">
             <div className="p-5 rounded-full bg-gray-100 dark:bg-white/5">
               <Clock size={36} className="text-gray-400 dark:text-gray-600" />
             </div>

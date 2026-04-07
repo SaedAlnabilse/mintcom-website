@@ -775,7 +775,7 @@ export function SettingsPage() {
           }
           
           return (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 rounded-2xl shadow-sm">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 rounded-2xl shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 border-b border-gray-100 dark:border-white/5">
               <div>
                 <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('settings.tabs.profile')}</h3>
@@ -869,7 +869,7 @@ export function SettingsPage() {
 
         {activeTab === 'sales' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            <div className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8 shadow-sm">
+            <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8 shadow-sm">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-sm">
                   <DollarSign size={20} />
@@ -1029,7 +1029,7 @@ export function SettingsPage() {
         )}
 
         {activeTab === 'receipt' && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center">
                 <Receipt className="w-6 h-6 text-paymint-green" />
@@ -1044,7 +1044,7 @@ export function SettingsPage() {
                 <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest mb-6 px-1">{t('settings.receipts.options')}</h4>
                 <div className="space-y-4">
                   {/* Identity Visibility */}
-                  <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
+                  <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="space-y-4">
                       {/* Restaurant Name */}
                       <div>
@@ -1090,7 +1090,7 @@ export function SettingsPage() {
                   </div>
 
                   {/* Branding */}
-                  <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
+                  <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showLogo')}</span>
@@ -1116,7 +1116,7 @@ export function SettingsPage() {
                   </div>
 
                   {/* Location Info */}
-                  <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
+                  <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showAddress')}</span>
@@ -1137,7 +1137,7 @@ export function SettingsPage() {
                   </div>
 
                   {/* Tax Info */}
-                  <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
+                  <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showTaxId')}</span>
@@ -1158,7 +1158,7 @@ export function SettingsPage() {
                   </div>
 
                   {/* Footer */}
-                  <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
+                  <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.footerMessage')}</span>
@@ -1211,7 +1211,7 @@ export function SettingsPage() {
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-red-200/50 dark:border-red-900/20 shadow-sm">
+                <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-red-200/50 dark:border-red-900/20 shadow-sm">
                   <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
                     {t('settings.danger.description', { name: establishmentInfo?.name || t('settings.danger.thisLocation') })}
                   </p>
