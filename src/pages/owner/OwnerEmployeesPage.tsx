@@ -483,7 +483,7 @@ export function OwnerEmployeesPage() {
                             <div className="relative z-10">
                                 <div className="flex items-start justify-between mb-6">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center relative flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                                        <div className="w-14 h-14 rounded-[12px] bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center relative flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
                                             <span className="text-gray-900 dark:text-white font-bold text-xl">
                                                 {emp.firstName.charAt(0).toUpperCase()}
                                             </span>
@@ -613,7 +613,7 @@ export function OwnerEmployeesPage() {
                                     className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors items-center"
                                 >
                                     <div className="col-span-4 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-sm font-bold text-gray-900 dark:text-white">
+                                        <div className="w-10 h-10 rounded-[12px] bg-gray-100 dark:bg-white/5 flex items-center justify-center text-sm font-bold text-gray-900 dark:text-white">
                                             {emp.firstName.charAt(0).toUpperCase()}
                                         </div>
                                         <div>

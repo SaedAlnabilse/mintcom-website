@@ -254,12 +254,12 @@ export function SingleSelect({
                 ref={buttonRef}
                 type="button"
                 onClick={toggleOpen}
-                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-start flex items-center justify-between transition-[color,background-color,border-color,box-shadow,ring] outline-none shadow-sm
+                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-start flex items-center transition-[color,background-color,border-color,box-shadow,ring] outline-none shadow-sm
                     ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
                     ${isOpen ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-gray-50 dark:bg-white/[0.08]' : ''
-                    } ${buttonClassName}`}
+                    } ${buttonClassName} ${buttonClassName.includes('justify-center') ? 'justify-center' : 'justify-between'}`}
             >
-                <div className="flex items-center gap-2 overflow-hidden flex-1">
+                <div className={`flex items-center gap-2 overflow-hidden ${buttonClassName.includes('justify-center') ? 'flex-none' : 'flex-1'}`}>
                      {selectedOption?.icon && (
                          <div className="text-gray-500 dark:text-gray-400 shrink-0">
                              {selectedOption.icon}
@@ -282,7 +282,7 @@ export function SingleSelect({
                 </div>
                 <ChevronDown
                     size={18}
-                    className={`text-gray-400 transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`text-gray-400 transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''} ${buttonClassName.includes('justify-center') ? 'absolute right-5' : ''}`}
                 />
             </button>
 

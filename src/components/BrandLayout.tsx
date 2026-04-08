@@ -181,7 +181,7 @@ export function BrandLayout() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] lg:hidden"
                     />
                 )}
             </AnimatePresence>
@@ -195,7 +195,7 @@ export function BrandLayout() {
                     transition: { duration: 0.3, type: "spring", damping: 25, stiffness: 200 }
                 }}
                 className={`
-                    relative z-50 flex flex-col h-screen py-4 bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-lg group/sidebar
+                    relative z-[100] flex flex-col h-screen py-4 bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-lg group/sidebar
                     ${mobileMenuOpen ? 'fixed left-0 top-0 w-[280px]' : 'hidden lg:flex'}
                 `}
             >
@@ -432,14 +432,14 @@ export function BrandLayout() {
                                     <>
                                         {/* Backdrop to close */}
                                         <div
-                                            className="fixed inset-0 z-[60]"
+                                            className="fixed inset-0 z-[95]"
                                             onClick={() => setSettingsMenuOpen(false)}
                                         />
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.95, x: 20 }}
                                             animate={{ opacity: 1, scale: 1, x: 0 }}
                                             exit={{ opacity: 0, scale: 0.95, x: 20 }}
-                                            className="absolute left-full rtl:left-auto rtl:right-full bottom-10 ml-4 rtl:ml-0 rtl:mr-4 w-64 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[70] p-2"
+                                            className="absolute left-full rtl:left-auto rtl:right-full bottom-10 ml-4 rtl:ml-0 rtl:mr-4 w-64 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[100] p-2"
                                         >
                                             {/* Header */}
                                             <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-xl">
@@ -534,7 +534,7 @@ export function BrandLayout() {
                         animate={{ x: 0 }}
                         exit={{ x: -280 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="fixed left-0 top-0 h-screen w-[280px] bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-2xl z-50 flex flex-col lg:hidden"
+                        className="fixed left-0 top-0 h-screen w-[280px] bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-2xl z-[100] flex flex-col lg:hidden"
                     >
                         {/* Close Button */}
                         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100 dark:border-white/5">

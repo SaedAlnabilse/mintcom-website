@@ -148,10 +148,6 @@ export function OwnerOverviewPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="flex items-center gap-1.5 dashboard-card-meta">
-                            <Activity size={14} className="text-paymint-green" />
-                            {t('owner.overview.liveSystem')}
-                        </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.overview.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
@@ -159,13 +155,13 @@ export function OwnerOverviewPage() {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-stretch lg:items-center gap-3 w-full lg:w-auto">
                     {/* Unified Filter Control Deck */}
-                    <div className="bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
+                    <div className="w-full lg:w-auto bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0">
 
                             {/* Sector 1: Quick Period Dropdown */}
-                            <div className={`flex-none w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'border-transparent'}`}>
+                            <div className={`flex-none w-full xl:w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'border-transparent'}`}>
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
                                     onChange={(val) => setQuickDate(val || 'today')}
@@ -173,7 +169,7 @@ export function OwnerOverviewPage() {
                                     showAllOption={false}
                                     placeholder={t('owner.overview.selectPeriod')}
                                     className="w-full"
-                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
+                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold !justify-center xl:!justify-between ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
                                 />
                             </div>
 
@@ -185,9 +181,9 @@ export function OwnerOverviewPage() {
                                 const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
 
                                 return (
-                                    <div className="flex-1 flex flex-col md:flex-row gap-4 items-center">
+                                    <div className="flex-1 flex flex-col md:flex-row gap-4 items-stretch md:items-center">
                                         {/* Date Input Group */}
-                                        <div className="flex-none min-w-[200px] sm:min-w-[240px] relative z-[60]">
+                                        <div className="w-full md:w-auto md:min-w-[240px] relative z-[60]">
                                             <DateRangePicker
                                                 startDate={startDate}
                                                 endDate={endDate}
@@ -199,6 +195,7 @@ export function OwnerOverviewPage() {
                                                 onClear={() => setQuickDate('today')}
                                                 isActive={selectedDateRange === 'custom'}
                                                 align="left"
+                                                buttonClassName="justify-center md:justify-start"
                                             />
                                         </div>
 
@@ -206,16 +203,17 @@ export function OwnerOverviewPage() {
                                         <div className="hidden md:block w-px h-6 bg-gray-100 dark:bg-white/10" />
 
                                         {/* Time Input Group */}
-                                        <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
+                                        <div className={`w-full md:w-auto md:min-w-[180px] relative z-[55]`}>
                                             <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
                                                 ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
                                                 : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-paymint-green/50'
                                                 }`}>
-                                                <div className="flex items-center gap-2 justify-between relative">
+                                                <div className="flex items-center gap-2 justify-center md:justify-between relative">
                                                     <CustomTimePicker
                                                         value={startTime}
                                                         onChange={(val) => { setStartTime(val); }}
-                                                        className="w-[85px] sm:w-[95px]"
+                                                        className="flex-none"
+                                                        buttonClassName="justify-center md:justify-start"
                                                         showIcon={true}
                                                         isActive={isTimeFiltered}
                                                     />
@@ -223,7 +221,8 @@ export function OwnerOverviewPage() {
                                                     <CustomTimePicker
                                                         value={endTime}
                                                         onChange={(val) => { setEndTime(val); }}
-                                                        className="w-[85px] sm:w-[95px]"
+                                                        className="flex-none"
+                                                        buttonClassName="justify-center md:justify-start"
                                                         showIcon={true}
                                                         align="right"
                                                         isActive={isTimeFiltered}

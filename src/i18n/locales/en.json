@@ -2362,6 +2362,7 @@
       "expiry": "Expiry",
       "freeDays": "7 DAYS FREE",
       "monthly": "Monthly",
+      "yearly": "Yearly",
       "priceMonth": "$20/MONTH",
       "startTrialButton": "Start Free Trial",
       "totalDue": "Total Due Today",

@@ -16,6 +16,7 @@ interface DateRangePickerProps {
     minDate?: string;
     maxDate?: string;
     align?: 'left' | 'right' | 'center';
+    buttonClassName?: string;
 }
 
 type SelectionState = 'start' | 'end';
@@ -30,7 +31,8 @@ export function DateRangePicker({
     placeholder,
     minDate,
     maxDate,
-    align = 'center'
+    align = 'center',
+    buttonClassName = ''
 }: DateRangePickerProps) {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
@@ -297,6 +299,7 @@ export function DateRangePicker({
                         ? 'border-paymint-green ring-2 ring-paymint-green bg-paymint-green/5 text-paymint-green shadow-lg shadow-paymint-green/10'
                         : 'border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white hover:border-paymint-green/50'
                     }
+                    ${buttonClassName}
                 `}
             >
                 <CalendarIcon size={18} className={(isOpen || isActive) ? 'text-paymint-green' : 'text-gray-400'} />

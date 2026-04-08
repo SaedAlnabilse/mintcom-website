@@ -10,9 +10,10 @@ interface CustomTimePickerProps {
     showIcon?: boolean;
     align?: 'left' | 'right';
     isActive?: boolean;
+    buttonClassName?: string;
 }
 
-export function CustomTimePicker({ value, onChange, className = '', showIcon = false, align = 'left', isActive = false }: CustomTimePickerProps) {
+export function CustomTimePicker({ value, onChange, className = '', showIcon = false, align = 'left', isActive = false, buttonClassName = '' }: CustomTimePickerProps) {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -57,6 +58,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                 className={`
           flex items-center gap-2 w-full bg-transparent p-0 text-sm font-bold border-none focus:ring-0 cursor-pointer transition-colors
           ${(isOpen || isActive) ? 'text-[#7CC39F]' : 'text-gray-600 dark:text-white/60'}
+          ${buttonClassName}
         `}
             >
                 {showIcon && <Clock size={14} className={(isOpen || isActive) ? 'text-[#7CC39F]' : 'text-gray-400'} />}

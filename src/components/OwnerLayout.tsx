@@ -122,7 +122,7 @@ export function OwnerLayout() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] lg:hidden"
                     />
                 )}
             </AnimatePresence>
@@ -136,7 +136,7 @@ export function OwnerLayout() {
                     transition: { duration: 0.4, type: "spring", damping: 25, stiffness: 200 }
                 }}
                 className={`
-                    relative z-50 flex-col h-screen py-4 bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/[0.05] transition-colors duration-500 group/sidebar
+                    relative z-[100] flex-col h-screen py-4 bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/[0.05] transition-colors duration-500 group/sidebar
                     hidden lg:flex
                 `}
             >
@@ -416,7 +416,7 @@ export function OwnerLayout() {
                         animate={{ x: 0 }}
                         exit={{ x: -280 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="fixed left-0 top-0 h-screen w-[280px] bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-2xl z-50 flex flex-col lg:hidden"
+                        className="fixed left-0 top-0 h-screen w-[280px] bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-2xl z-[100] flex flex-col lg:hidden"
                     >
                         {/* Close Button */}
                         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100 dark:border-white/5">

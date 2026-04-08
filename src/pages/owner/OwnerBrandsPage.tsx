@@ -779,7 +779,7 @@ export function OwnerBrandsPage() {
             {/* Create Brand Modal */}
             <AnimatePresence>
                 {showCreateModal && (
-                    <div className="fixed inset-0 z-50 popup-surface flex items-center justify-center p-4 sm:p-6 lg:p-12">
+                    <div className="fixed inset-0 z-50 popup-surface flex items-center justify-center p-4">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -791,119 +791,119 @@ export function OwnerBrandsPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-2xl bg-white dark:bg-[#1E293B] rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-white/10"
+                            className="relative w-full max-w-lg bg-white dark:bg-[#0a0a0a] rounded-[2rem] shadow-2xl overflow-hidden border border-gray-200 dark:border-white/10"
                         >
                             {/* Modal Content */}
-                            <div className="flex flex-col h-[85vh] sm:h-auto max-h-[90vh]">
+                            <div className="flex flex-col max-h-[85vh]">
                                 {/* Header */}
-                                <div className="px-6 py-4 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
+                                <div className="px-6 pt-6 pb-2 flex items-start justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
                                             <Building2 size={20} />
                                         </div>
                                         <div>
-                                            <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.brands.createBrandTitle')}</h2>
-                                            <p className="text-xs text-gray-500">{t('owner.brands.createBrandSubtitle')}</p>
+                                            <h2 className="text-lg font-sans font-bold text-gray-900 dark:text-white leading-tight">{t('owner.brands.createBrandTitle')}</h2>
+                                            <p className="text-xs font-sans font-medium text-gray-500 max-w-[180px] leading-snug">{t('owner.brands.createBrandSubtitle')}</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-4 pt-1">
+                                        <div className="flex items-center gap-1.5">
                                             {[1, 2, 3].map((step) => (
                                                 <div
                                                     key={step}
-                                                    className={`h-1.5 rounded-full transition-all duration-300 ${wizardStep === step ? 'w-8 bg-paymint-green' : 'w-2 bg-gray-200 dark:bg-white/10'}`}
+                                                    className={`h-1.5 rounded-full transition-all duration-300 ${wizardStep === step ? 'w-6 bg-paymint-green' : 'w-1.5 bg-gray-200 dark:bg-white/10'}`}
                                                 />
                                             ))}
                                         </div>
                                         <button
-                                            onClick={handleCloseModal}
-                                            className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-400 transition-colors"
+                                            onClick={wizardStep === 1 ? handleCloseModal : handlePrevStep}
+                                            className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-400 transition-colors"
                                         >
-                                            <ChevronLeft size={20} />
+                                            <ChevronLeft size={18} />
                                         </button>
                                     </div>
                                 </div>
 
                                 {/* Wizard Body */}
-                                <div className="flex-1 overflow-y-auto p-6">
+                                <div className="flex-1 overflow-y-auto px-6 py-2">
                                     {wizardStep === 1 && (
-                                        <div className="space-y-6 w-full py-4">
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <label className="block dashboard-card-label mb-2">{t('owner.brands.brandName')}</label>
-                                                    <div className="relative">
-                                                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                                        <input
-                                                            {...register('name')}
-                                                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
-                                                            placeholder={t('owner.brands.brandNamePlaceholder')}
-                                                        />
-                                                    </div>
-                                                    {errors.name && <p className="text-[#ef4444] text-xs mt-1 font-bold">{errors.name.message}</p>}
+                                        <div className="space-y-4 py-2">
+                                            <div className="space-y-1.5">
+                                                <label className="text-[13px] font-sans font-bold text-gray-500 ml-0.5">{t('owner.brands.brandName')}</label>
+                                                <div className="relative group">
+                                                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={18} />
+                                                    <input
+                                                        {...register('name')}
+                                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 rounded-xl text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all"
+                                                        placeholder={t('owner.brands.brandNamePlaceholder')}
+                                                    />
                                                 </div>
+                                                {errors.name && <p className="text-[#ef4444] text-[11px] mt-1 font-bold ml-0.5">{errors.name.message}</p>}
+                                            </div>
 
-                                                <div>
-                                                    <label className="block dashboard-card-label mb-2">{t('owner.brands.adminLoginId')}</label>
-                                                    <div className="relative">
-                                                        <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                                        <input
-                                                            {...establishmentLoginIdField}
-                                                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
-                                                            placeholder={t('owner.brands.adminLoginIdPlaceholder')}
-                                                        />
-                                                    </div>
-                                                    <p className="dashboard-card-meta mt-1">
-                                                        {t('owner.brands.adminLoginIdHint')} {t('owner.brands.validation.loginIdTakenHint', { defaultValue: 'It must be unique across all locations and brands.' })}
+                                            <div className="space-y-1.5">
+                                                <label className="text-[13px] font-sans font-bold text-gray-500 ml-0.5">{t('owner.brands.adminLoginId')}</label>
+                                                <div className="relative group">
+                                                    <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={18} />
+                                                    <input
+                                                        {...establishmentLoginIdField}
+                                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 rounded-xl text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all"
+                                                        placeholder={t('owner.brands.adminLoginIdPlaceholder')}
+                                                    />
+                                                </div>
+                                                <p className="text-[11px] font-sans font-medium text-gray-400 mt-1 ml-0.5 leading-relaxed">
+                                                    {t('owner.brands.adminLoginIdHint')} {t('owner.brands.validation.loginIdTakenHint', { defaultValue: 'It must be unique across all locations and brands.' })}
+                                                </p>
+                                                {loginIdCheckState === 'checking' && (
+                                                    <p className="mt-1 text-[11px] font-bold text-gray-500 flex items-center gap-1.5 ml-0.5">
+                                                        <Loader2 size={10} className="animate-spin" />
+                                                        {t('owner.brands.validation.loginIdChecking', { defaultValue: 'Checking availability...' })}
                                                     </p>
-                                                    {loginIdCheckState === 'checking' && (
-                                                        <p className="mt-2 text-xs font-bold text-gray-500 flex items-center gap-2">
-                                                            <Loader2 size={12} className="animate-spin" />
-                                                            {t('owner.brands.validation.loginIdChecking', { defaultValue: 'Checking availability...' })}
-                                                        </p>
-                                                    )}
-                                                    {loginIdCheckState === 'available' && !errors.establishmentLoginId && (
-                                                        <p className="mt-2 text-xs font-bold text-paymint-green flex items-center gap-2">
-                                                            <Check size={12} />
-                                                            {loginIdCheckMessage || t('owner.brands.validation.loginIdAvailable', { defaultValue: 'This Login ID is available.' })}
-                                                        </p>
-                                                    )}
-                                                    {errors.establishmentLoginId && <p className="text-[#ef4444] text-xs mt-1 font-bold">{errors.establishmentLoginId.message}</p>}
-                                                </div>
+                                                )}
+                                                {loginIdCheckState === 'available' && !errors.establishmentLoginId && (
+                                                    <p className="mt-1 text-[11px] font-bold text-paymint-green flex items-center gap-1.5 ml-0.5">
+                                                        <Check size={10} />
+                                                        {loginIdCheckMessage || t('owner.brands.validation.loginIdAvailable', { defaultValue: 'This Login ID is available.' })}
+                                                    </p>
+                                                )}
+                                                {errors.establishmentLoginId && <p className="text-[#ef4444] text-[11px] mt-1 font-bold ml-0.5">{errors.establishmentLoginId.message}</p>}
+                                            </div>
 
-                                                <div>
-                                                    <label className="block dashboard-card-label mb-2">{t('owner.brands.adminPassword')}</label>
-                                                    <div className="relative">
-                                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                                        <input
-                                                            {...register('establishmentPassword')}
-                                                            type={showPassword ? "text" : "password"}
-                                                            className="w-full pl-12 pr-12 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
-                                                            placeholder="********"
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setShowPassword(!showPassword)}
-                                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                                                        >
-                                                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                                        </button>
-                                                    </div>
-                                                    {errors.establishmentPassword && <p className="text-[#ef4444] text-xs mt-1 font-bold">{errors.establishmentPassword.message}</p>}
+                                            <div className="space-y-1.5">
+                                                <label className="text-[13px] font-sans font-bold text-gray-500 ml-0.5">{t('owner.brands.adminPassword')}</label>
+                                                <div className="relative group">
+                                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={18} />
+                                                    <input
+                                                        {...register('establishmentPassword')}
+                                                        type={showPassword ? "text" : "password"}
+                                                        className="w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 rounded-xl text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all"
+                                                        placeholder="********"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowPassword(!showPassword)}
+                                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                                    >
+                                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                                    </button>
                                                 </div>
+                                                {errors.establishmentPassword && <p className="text-[#ef4444] text-[11px] mt-1 font-bold ml-0.5">{errors.establishmentPassword.message}</p>}
                                             </div>
                                         </div>
                                     )}
 
                                     {wizardStep === 2 && (
-                                        <div className="space-y-6">
-                                            <div className="flex items-center justify-between">
-                                                <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.brands.selectLocationsToLink')}</h3>
-                                                <span className="text-xs font-bold text-paymint-green bg-paymint-green/10 px-3 py-1 rounded-full">
+                                        <div className="space-y-4 py-2">
+                                            <div className="flex items-center justify-between gap-4">
+                                                <h3 className="text-lg font-sans font-bold text-gray-900 dark:text-white leading-tight">
+                                                    {t('owner.brands.selectLocationsToLink')}
+                                                </h3>
+                                                <span className="flex-shrink-0 text-[11px] font-sans font-bold text-paymint-green bg-paymint-green/10 px-2.5 py-1 rounded-full">
                                                     {t('owner.brands.selectedCount', { count: selectedEstablishments.length })}
                                                 </span>
                                             </div>
 
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div className="space-y-2.5">
                                                 {availableEstablishments.map((est: any) => {
                                                     const Icon = getBusinessTypeIcon(est.type);
                                                     const isSelected = selectedEstablishments.includes(est.id);
@@ -912,20 +912,20 @@ export function OwnerBrandsPage() {
                                                             key={est.id}
                                                             type="button"
                                                             onClick={() => toggleEstablishment(est.id)}
-                                                            className={`flex items-center gap-4 p-4 rounded-2xl border transition-all text-left ${isSelected
-                                                                ? 'border-paymint-green bg-paymint-green/5 ring-4 ring-paymint-green/10'
-                                                                : 'border-gray-200 dark:border-white/10 hover:border-paymint-green/30'
+                                                            className={`w-full flex items-center gap-3 p-3 rounded-2xl border transition-all text-left ${isSelected
+                                                                ? 'border-paymint-green bg-paymint-green/5'
+                                                                : 'border-gray-50 dark:border-white/5 bg-white dark:bg-black/10 hover:border-paymint-green/20'
                                                                 }`}
                                                         >
-                                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isSelected ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
-                                                                <Icon size={24} />
+                                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isSelected ? 'bg-paymint-green text-black' : 'bg-gray-50 dark:bg-white/5 text-gray-400'}`}>
+                                                                <Icon size={20} />
                                                             </div>
                                                             <div className="flex-1 min-w-0">
-                                                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{est.name || est.establishmentName}</p>
-                                                                <p className="dashboard-card-meta truncate">{est.type || t('owner.brands.location')}</p>
+                                                                <p className="text-[13px] font-sans font-bold text-gray-900 dark:text-white truncate">{est.name || est.establishmentName}</p>
+                                                                <p className="text-[10px] font-sans font-bold text-gray-400 tracking-wider uppercase mt-0.5">{est.type || t('owner.brands.location')}</p>
                                                             </div>
-                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-300 dark:border-white/10'}`}>
-                                                                {isSelected && <Check size={14} className="text-black" strokeWidth={3} />}
+                                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-200 dark:border-white/10'}`}>
+                                                                {isSelected && <Check size={12} className="text-black" strokeWidth={4} />}
                                                             </div>
                                                         </button>
                                                     );
@@ -935,79 +935,71 @@ export function OwnerBrandsPage() {
                                     )}
 
                                     {wizardStep === 3 && (
-                                        <div className="space-y-6">
-                                            <div className="bg-paymint-green/5 border border-paymint-green/20 rounded-2xl p-4 flex gap-3">
-                                                <Shield className="text-paymint-green shrink-0" size={20} />
-                                                <p className="dashboard-card-meta">
+                                        <div className="space-y-4 py-2">
+                                            <div className="bg-paymint-green/5 border border-paymint-green/10 rounded-2xl p-3 flex gap-3">
+                                                <Shield className="text-paymint-green shrink-0" size={18} />
+                                                <p className="text-[11px] font-sans font-medium text-gray-500 leading-relaxed">
                                                     {t('owner.brands.wizard.finalStepDesc')}
                                                 </p>
                                             </div>
 
                                             {loadingEmployees ? (
-                                                <div className="flex flex-col items-center justify-center py-12">
-                                                    <Loader2 className="animate-spin text-paymint-green mb-4" size={32} />
-                                                    <p className="text-sm font-bold text-gray-500">{t('owner.brands.wizard.scanningEmployees')}</p>
+                                                <div className="flex flex-col items-center justify-center py-8">
+                                                    <Loader2 className="animate-spin text-paymint-green mb-3" size={28} />
+                                                    <p className="text-xs font-sans font-bold text-gray-500">{t('owner.brands.wizard.scanningEmployees')}</p>
                                                 </div>
                                             ) : (
-                                                <div className="space-y-8">
-                                                    {employeesForMerging.map((group) => (
-                                                        <div key={group.establishmentId} className="space-y-4">
-                                                            <div className="flex items-center justify-between sticky top-0 bg-white dark:bg-[#1E293B] z-10 py-2">
-                                                                <h4 className="dashboard-card-label flex items-center gap-2">
-                                                                    <Store size={14} />
+                                                <div className="space-y-6">
+                                                    {employeesForMerging.map((group) => (group.employees.length > 0 && (
+                                                        <div key={group.establishmentId} className="space-y-3">
+                                                            <div className="flex items-center justify-between sticky top-0 bg-white dark:bg-[#0a0a0a] z-10 py-1">
+                                                                <h4 className="text-[12px] font-sans font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                                                    <Store size={14} className="text-paymint-green" />
                                                                     {group.establishmentName}
                                                                 </h4>
-                                                                {group.employees.length > 0 && (
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => {
-                                                                            const allSelected = group.employees.every(e => selectedEmployees.includes(e.employeeId));
-                                                                            selectAllFromEstablishment(group, !allSelected);
-                                                                        }}
-                                                                        className="text-xs font-bold text-paymint-green hover:underline"
-                                                                    >
-                                                                        {group.employees.every(e => selectedEmployees.includes(e.employeeId)) ? t('owner.brands.wizard.deselectAll') : t('owner.brands.wizard.selectAll')}
-                                                                    </button>
-                                                                )}
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const allSelected = group.employees.every(e => selectedEmployees.includes(e.employeeId));
+                                                                        selectAllFromEstablishment(group, !allSelected);
+                                                                    }}
+                                                                    className="text-[10px] font-sans font-bold text-paymint-green hover:underline"
+                                                                >
+                                                                    {group.employees.every(e => selectedEmployees.includes(e.employeeId)) ? t('owner.brands.wizard.deselectAll') : t('owner.brands.wizard.selectAll')}
+                                                                </button>
                                                             </div>
 
-                                                            {group.employees.length === 0 ? (
-                                                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 text-center">
-                                                                    <p className="text-sm font-bold text-gray-500">{t('owner.brands.wizard.noEmployees', 'This location does not have any employees.')}</p>
-                                                                </div>
-                                                            ) : (
-                                                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                                                    {group.employees.map((emp) => {
-                                                                        const isSelected = selectedEmployees.includes(emp.employeeId);
-                                                                        return (
-                                                                            <button
-                                                                                key={`${group.establishmentId}-${emp.employeeId}`}
-                                                                                type="button"
-                                                                                onClick={() => toggleEmployee(emp.employeeId)}
-                                                                                className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left group ${isSelected
-                                                                                    ? 'border-paymint-green bg-paymint-green/5'
-                                                                                    : 'border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
-                                                                                    }`}
-                                                                            >
-                                                                                <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${isSelected ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-500'}`}>
-                                                                                    {emp.firstName[0]}{emp.lastName[0]}
-                                                                                </div>
-                                                                                <div className="flex-1 min-w-0">
-                                                                                    <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{emp.firstName} {emp.lastName}</p>
-                                                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold ${getRoleBadgeColor(emp.role)}`}>
-                                                                                        {emp.role}
-                                                                                    </span>
-                                                                                </div>
-                                                                                <div className={`w-5 h-5 rounded-md border transition-all flex items-center justify-center ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-200 dark:border-white/10'}`}>
-                                                                                    {isSelected && <Check size={12} className="text-black" strokeWidth={3} />}
-                                                                                </div>
-                                                                            </button>
-                                                                        );
-                                                                    })}
-                                                                </div>
-                                                            )}
+                                                            <div className="space-y-2">
+                                                                {group.employees.map((emp) => {
+                                                                    const isSelected = selectedEmployees.includes(emp.employeeId);
+                                                                    return (
+                                                                        <button
+                                                                            key={`${group.establishmentId}-${emp.employeeId}`}
+                                                                            type="button"
+                                                                            onClick={() => toggleEmployee(emp.employeeId)}
+                                                                            className={`w-full flex items-center gap-3 p-3 rounded-2xl border transition-all text-left ${isSelected
+                                                                                ? 'border-paymint-green bg-paymint-green/5'
+                                                                                : 'border-gray-50 dark:border-white/5 bg-white dark:bg-black/10 hover:border-paymint-green/20'
+                                                                                }`}
+                                                                        >
+                                                                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-[12px] font-sans font-bold transition-all ${isSelected ? 'bg-paymint-green text-black' : 'bg-gray-50 dark:bg-white/5 text-gray-500'}`}>
+                                                                                {emp.firstName[0].toUpperCase()}{emp.lastName[0].toUpperCase()}
+                                                                            </div>
+                                                                            <div className="flex-1 min-w-0">
+                                                                                <p className="text-[13px] font-sans font-bold text-gray-900 dark:text-white truncate">{emp.firstName} {emp.lastName}</p>
+                                                                                <span className={`inline-block mt-0.5 px-1.5 py-0.5 rounded text-[8px] font-sans font-bold uppercase border ${getRoleBadgeColor(emp.role)}`}>
+                                                                                    {emp.role}
+                                                                                </span>
+                                                                            </div>
+                                                                            <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-200 dark:border-white/10'}`}>
+                                                                                {isSelected && <Check size={12} className="text-black" strokeWidth={4} />}
+                                                                            </div>
+                                                                        </button>
+                                                                    );
+                                                                })}
+                                                            </div>
                                                         </div>
-                                                    ))}
+                                                    )))}
                                                 </div>
                                             )}
                                         </div>
@@ -1015,10 +1007,10 @@ export function OwnerBrandsPage() {
                                 </div>
 
                                 {/* Footer */}
-                                <div className="p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01]">
+                                <div className="px-6 pt-2 pb-6">
                                     <div className="w-full">
                                         {error && (
-                                            <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold text-center">
+                                            <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-[12px] font-sans font-bold text-center">
                                                 {error}
                                             </div>
                                         )}
@@ -1026,7 +1018,7 @@ export function OwnerBrandsPage() {
                                             <button
                                                 type="button"
                                                 onClick={wizardStep === 1 ? handleCloseModal : handlePrevStep}
-                                                className="px-6 py-3 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                                                className="px-4 py-3 rounded-xl text-sm font-sans font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
                                             >
                                                 {wizardStep === 1 ? t('common.cancel') : t('common.back')}
                                             </button>
@@ -1034,7 +1026,7 @@ export function OwnerBrandsPage() {
                                                 type="button"
                                                 onClick={wizardStep === 3 ? handleSubmit(onCreateBrand) : handleNextStep}
                                                 disabled={isCreating}
-                                                className="flex-1 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                                className="flex-1 max-w-[180px] py-3 rounded-xl bg-paymint-green text-black font-sans font-bold text-sm hover:bg-paymint-green/90 transition-all shadow-lg shadow-paymint-green/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                             >
                                             {isCreating ? (
                                                 <>
@@ -1044,7 +1036,7 @@ export function OwnerBrandsPage() {
                                             ) : (
                                                 <>
                                                     {wizardStep === 3 ? t('owner.brands.createBrand') : t('common.continue')}
-                                                    <ChevronRight size={16} />
+                                                    <ChevronRight size={18} />
                                                 </>
                                             )}
                                         </button>

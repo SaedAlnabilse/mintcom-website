@@ -1002,7 +1002,7 @@ export function OnboardingPage() {
                         <span className="bg-yellow-400 text-black text-xs font-sans font-bold px-2 py-0.5 rounded">{t('onboarding.step2.freeDays')}</span>
                       ) : (
                         <span className="bg-paymint-green text-black text-xs font-sans font-bold px-2 py-0.5 rounded">
-                          {billingCycle === 'yearly' ? `$${currentYearlyPrice}${t('common.yearly')}` : `$${currentMonthlyPrice}${t('common.monthly')}`}
+                          {billingCycle === 'yearly' ? `$${currentYearlyPrice}${t('onboarding.step2.yearly')}` : `$${currentMonthlyPrice}${t('onboarding.step2.monthly')}`}
                         </span>
                       )}
                     </div>
@@ -1028,25 +1028,25 @@ export function OnboardingPage() {
                         <button
                           type="button"
                           onClick={() => setBillingCycle('monthly')}
-                          className={`px-5 py-2.5 rounded-xl text-xs font-sans font-bold transition-all duration-300 ${billingCycle === 'monthly'
+                          className={`px-8 py-2.5 rounded-xl text-xs font-sans font-bold transition-all duration-300 ${billingCycle === 'monthly'
                             ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
                             : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                             }`}
                         >
-                          {t('common.monthly')}
+                          {t('onboarding.step2.monthly')}
                         </button>
                         <button
                           type="button"
                           onClick={() => setBillingCycle('yearly')}
-                          className={`px-5 py-2.5 rounded-xl text-xs font-sans font-bold transition-all duration-300 relative ${billingCycle === 'yearly'
+                          className={`px-8 py-2.5 rounded-xl text-xs font-sans font-bold transition-all duration-300 relative ${billingCycle === 'yearly'
                             ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
                             : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                             }`}
                         >
-                          {t('common.yearly')}
+                          {t('onboarding.step2.yearly')}
                           <span className={`absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full text-[8px] font-sans font-bold ${billingCycle === 'yearly' ? 'bg-black text-paymint-green' : 'bg-paymint-green text-black'
                             } shadow`}>
-                            Save
+                            {t('common.save', { defaultValue: 'Save' })}
                           </span>
                         </button>
                       </div>
@@ -1064,20 +1064,20 @@ export function OnboardingPage() {
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-xs font-sans font-bold text-gray-500">
-                      <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : (billingCycle === 'yearly' ? t('common.yearly').toUpperCase() : t('common.monthly').toUpperCase())}</span>
+                      <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : (billingCycle === 'yearly' ? t('onboarding.step2.yearly').toUpperCase() : t('onboarding.step2.monthly').toUpperCase())}</span>
                       <span>
                         {billingCycle === 'yearly' 
-                          ? `$${currentYearlyPrice}${t('common.yearly')}` 
-                          : `$${currentMonthlyPrice.toFixed(2)}${t('common.monthly')}`}
+                          ? `$${currentYearlyPrice}${t('onboarding.step2.yearly')}` 
+                          : `$${currentMonthlyPrice.toFixed(2)}${t('onboarding.step2.monthly')}`}
                       </span>
                     </div>
                     {billingCycle === 'yearly' && !isTrialFlow && (
                       <div className="mt-3 flex items-center justify-center gap-2">
                         <Sparkles size={12} className="text-paymint-green" />
                         <span className="text-xs font-bold text-paymint-green tracking-wider uppercase">
-                          SAVE ${yearlySavings}/{t('common.yearly')}
+                          SAVE ${yearlySavings}/{t('onboarding.step2.yearly')}
                         </span>
-                        <span className="text-xs text-gray-400 line-through">${(currentMonthlyPrice * 12)}{t('common.yearly')}</span>
+                        <span className="text-xs text-gray-400 line-through">${(currentMonthlyPrice * 12)}{t('onboarding.step2.yearly')}</span>
                       </div>
                     )}
                   </div>
