@@ -1,6 +1,18 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Landing Page Smoke Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    // Inject cookie consent to avoid the banner intercepting clicks
+    await page.addInitScript(() => {
+      window.localStorage.setItem('paymint-cookie-consent', JSON.stringify({
+        essential: true,
+        analytics: true,
+        marketing: true,
+        functional: true
+      }));
+    });
+  });
+
   test('should load the landing page and show key sections', async ({ page }) => {
     await page.goto('/');
     
@@ -8,24 +20,24 @@ test.describe('Landing Page Smoke Tests', () => {
     await expect(page.locator('nav img[alt="PayMint"]').first()).toBeVisible();
 
     // Check for Hero Section (Get Started button)
-    // The text might be in different languages, so we check for a general pattern or the link
-    await expect(page.locator('a[href="/signup"]').first()).toBeVisible();
+    // Use getByRole for more robust matching
+    await expect(page.getByRole('link', { name: /Get Started/i }).first()).toBeVisible();
 
     // Check for Footer
     await expect(page.locator('footer')).toBeVisible();
   });
 
-  test('should toggle dark mode if available', async ({ page }) => {
+  test('should navigate to legal pages', async ({ page, context }) => {
     await page.goto('/');
-    // Assuming there's a theme toggle button. Let's look for one in the code or just verify the initial class.
-    // We can't easily trigger it if we don't know the button, but we can check if it respects system preference or has a class
-    // For now, just check if the page has the 'dark' or 'light' context correctly
-  });
-
-  test('should navigate to legal pages', async ({ page }) => {
-    await page.goto('/');
-    await page.click('text=Privacy Policy');
-    await expect(page).toHaveURL(/\/legal\/privacy/);
-    await expect(page.locator('h1')).toBeVisible();
+    
+    // Privacy Policy in footer has target="_blank"
+    // We wait for the new page to be created
+    const [privacyPage] = await Promise.all([
+      context.waitForEvent('page'),
+      page.getByRole('link', { name: /Privacy Policy/i }).last().click()
+    ]);
+    
+    await expect(privacyPage).toHaveURL(/\/legal\/privacy/);
+    await expect(privacyPage.getByRole('heading', { level: 1 })).toBeVisible();
   });
 });
