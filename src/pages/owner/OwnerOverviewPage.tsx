@@ -390,10 +390,10 @@ export function OwnerOverviewPage() {
                                 <div className="w-20 h-20 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-4">
                                     <Activity size={32} className="text-gray-400 dark:text-gray-500" />
                                 </div>
-                                <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">
+                                <h3 className="text-xl font-normal tracking-tight text-gray-900 dark:text-white mb-2">
                                     {t('owner.overview.noRevenueData')}
                                 </h3>
-                                <p className="text-sm font-bold text-gray-500 text-center">
+                                <p className="text-sm font-normal text-gray-500 text-center">
                                     {t('owner.overview.noSalesRecorded')}
                                 </p>
                             </div>
