@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { realtimeService } from '../services/realtimeService';
 import type { ConnectionStatus } from '../services/realtimeService';
-import { Activity, WifiOff, AlertCircle } from 'lucide-react';
+import { Activity, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 /**
