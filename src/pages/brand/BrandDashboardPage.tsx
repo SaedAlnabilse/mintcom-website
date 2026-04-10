@@ -569,7 +569,7 @@ export function BrandDashboardPage() {
                                 {/* Location Info */}
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-3">
-                                        <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate">
+                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate">
                                             {loc.name}
                                         </h4>
 
@@ -818,6 +818,7 @@ export function BrandDashboardPage() {
                     {
                         title: t('brand.dashboard.viewAllLocations'),
                         description: t('brand.dashboard.manageLocationsDesc'),
+                        linkLabel: t('brand.dashboard.links.viewAllLocations'),
                         icon: Store,
                         color: 'text-blue-500',
                         bg: 'bg-blue-500/10',
@@ -826,6 +827,7 @@ export function BrandDashboardPage() {
                     {
                         title: t('brand.dashboard.manageTeam'),
                         description: t('brand.dashboard.manageTeamDesc'),
+                        linkLabel: t('brand.dashboard.links.manageStaff'),
                         icon: Users,
                         color: 'text-purple-500',
                         bg: 'bg-purple-500/10',
@@ -846,9 +848,9 @@ export function BrandDashboardPage() {
                         <h4 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white mb-1">
                             {action.title}
                         </h4>
-                        <p className="text-sm font-bold text-gray-500">{action.description}</p>
+                        <p className="text-sm font-medium text-gray-500">{action.description}</p>
                         <div className="flex items-center gap-1 mt-4 text-xs font-bold text-paymint-green">
-                            <span>{t('brand.dashboard.goTo', { name: action.title })}</span>
+                            <span>{action.linkLabel}</span>
                             <ArrowRight size={14} />
                         </div>
                     </motion.button>

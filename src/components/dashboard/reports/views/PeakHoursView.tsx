@@ -84,7 +84,7 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
                   boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
                   padding: '12px'
                 }}
-                itemStyle={{ color: '#f97316', fontWeight: 'bold', fontSize: '12px', textTransform: 'capitalize' }}
+                itemStyle={{ color: '#f97316', fontWeight: 'bold', fontSize: '12px' }}
                 labelStyle={{ color: isDark ? '#fff' : '#000', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
                 formatter={(val: any) => [formatAmount(val), t('orders.reports.peakHours.revenue')]}
               />

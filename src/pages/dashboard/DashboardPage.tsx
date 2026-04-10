@@ -489,9 +489,6 @@ export const DashboardPage = () => {
                     ? t('dashboard.shiftStatus.active', { name: getShiftEmployeeName() })
                     : t('dashboard.shiftStatus.none')}
                 </span>
-
-                {/* Live indicator for active shift */}
-
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
               <div className="flex items-center gap-2 sm:gap-3 mt-2 text-gray-500 dark:text-gray-400 text-sm sm:text-base flex-wrap">

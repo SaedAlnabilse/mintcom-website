@@ -46,7 +46,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
         <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transform rotate-3">
           <Clock size={32} className="text-gray-400" />
         </div>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('orders.reports.shifts.noActivity')}</h3>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{t('orders.reports.shifts.noActivity')}</h3>
         <p className="text-xs font-medium text-gray-500 max-w-sm leading-relaxed">
           {t('orders.reports.shifts.noActivityDesc')}
         </p>
@@ -65,23 +65,23 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center">
               <Activity size={20} />
             </div>
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide capitalize">{t('orders.reports.shifts.cashVariance')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.shifts.cashVariance')}</p>
           </div>
-          <p className={`text-2xl font-bold ${totalVariance < -0.01 ? 'text-red-500' : 'text-paymint-green'} tracking-tight`}>
+          <p className={`text-2xl font-bold ${totalVariance < -0.01 ? 'text-red-500' : totalVariance > 0.01 ? 'text-amber-500' : 'text-paymint-green'} tracking-tight`}>
             {totalVariance > 0 ? '+' : ''}{totalVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             <span className="text-sm mx-1 text-gray-400 font-black"> {currencySymbol}</span>
           </p>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{t('orders.reports.shifts.totalOverShort')}</p>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.shifts.totalOverShort')}</p>
         </div>
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
               <Clock size={20} />
             </div>
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide capitalize">{t('dashboard.menu.shiftsReports')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.menu.shiftsReports')}</p>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{shifts.length.toLocaleString(t('common.locale'))}</p>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{t('orders.reports.shifts.activeShifts', { count: activeShiftsCount })}</p>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.shifts.activeShifts', { count: activeShiftsCount })}</p>
         </div>
       </div>
 
@@ -145,10 +145,10 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                     {shift.status === 'CLOSED' && shift.discrepancy !== null && shift.discrepancy !== undefined ? (
                       <div className="flex flex-col items-center">
                         <span className={`px-2.5 py-1 rounded-lg text-xs font-black tracking-widest border ${shift.discrepancy > 0.001
-                          ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                          ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
                           : shift.discrepancy < -0.001
                             ? 'bg-red-500/10 text-red-500 border-red-500/20'
-                            : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
+                            : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
                           }`}>
                           {shift.discrepancy > 0.001
                             ? `+${shift.discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t('orders.reports.shifts.over')}`

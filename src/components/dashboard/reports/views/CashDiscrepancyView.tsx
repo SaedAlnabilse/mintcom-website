@@ -98,7 +98,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
         <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transform rotate-3">
           <Scale size={32} className="text-gray-400" />
         </div>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('orders.reports.cashGap.noData')}</h3>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{t('orders.reports.cashGap.noData')}</h3>
         <p className="text-xs font-medium text-gray-500 max-w-sm leading-relaxed">
           {t('orders.reports.cashGap.noDataDesc')}
         </p>
@@ -126,12 +126,12 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             }`}>
               <Scale size={20} />
             </div>
-            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide capitalize">{t('orders.reports.cashGap.netVariance')}</span>
+            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.cashGap.netVariance')}</span>
           </div>
           <p className={`text-2xl font-bold ${stats.netVariance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'} tracking-tight`}>
             {stats.netVariance >= 0 ? '+' : ''}{formatCurrency(stats.netVariance)}
           </p>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
             {stats.netVariance >= 0 ? t('orders.reports.cashGap.overExpected') : t('orders.reports.cashGap.underExpected')}
           </p>
         </motion.div>
@@ -144,15 +144,15 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
           className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] transition-all duration-300"
         >
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
               <TrendingUp size={20} />
             </div>
-            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide capitalize">{t('orders.reports.cashGap.totalOver')}</span>
+            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.cashGap.totalOver')}</span>
           </div>
-          <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+          <p className="text-2xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">
             +{formatCurrency(stats.totalOver)}
           </p>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
             {t('orders.reports.cashGap.shiftsOver', { count: stats.overCount })}
           </p>
         </motion.div>
@@ -168,12 +168,12 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center">
               <TrendingDown size={20} />
             </div>
-            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide capitalize">{t('orders.reports.cashGap.totalShort')}</span>
+            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.cashGap.totalShort')}</span>
           </div>
           <p className="text-2xl font-bold text-red-600 dark:text-red-400 tracking-tight">
             -{formatCurrency(stats.totalShort)}
           </p>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
             {t('orders.reports.cashGap.shiftsShort', { count: stats.shortCount })}
           </p>
         </motion.div>
@@ -189,12 +189,12 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
               <AlertCircle size={20} />
             </div>
-            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide capitalize">{t('orders.reports.cashGap.accuracyRate')}</span>
+            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.cashGap.accuracyRate')}</span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
             {accuracyRate}
           </p>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
             {t('orders.reports.cashGap.shiftsBalanced', { count: stats.balancedCount, total: stats.totalShifts })}
           </p>
         </motion.div>
@@ -202,13 +202,18 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
 
       {/* Discrepancy Breakdown Chart */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-6 shadow-sm">
-        <h3 className="text-lg font-black text-gray-900 dark:text-white mb-6">{t('orders.reports.cashGap.overview')}</h3>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+            <TrendingUp size={20} />
+          </div>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.cashGap.overview')}</h3>
+        </div>
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-100 dark:border-emerald-500/10">
-            <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-emerald-500/10 flex items-center justify-center">
-              <TrendingUp size={24} className="text-emerald-500" />
+          <div className="text-center p-4 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-100 dark:border-amber-500/10">
+            <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-amber-500/10 flex items-center justify-center">
+              <TrendingUp size={24} className="text-amber-500" />
             </div>
-            <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{stats.overCount.toLocaleString(t('common.locale'))}</p>
+            <p className="text-2xl font-black text-amber-600 dark:text-amber-400">{stats.overCount.toLocaleString(t('common.locale'))}</p>
             <p className="text-xs font-bold text-gray-500">{t('orders.reports.cashGap.cashOver')}</p>
           </div>
           <div className="text-center p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
@@ -231,11 +236,16 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
       {/* Detailed Shifts Table */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
         <div className="p-6 border-b border-gray-200 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-black text-gray-900 dark:text-white">{t('orders.reports.cashGap.details')}</h3>
-            <p className="text-xs text-gray-500 mt-1">
-              {t('orders.reports.cashGap.detailsDesc')}
-            </p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+              <Scale size={20} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.cashGap.details')}</h3>
+              <p className="text-xs text-gray-500 mt-1">
+                {t('orders.reports.cashGap.detailsDesc')}
+              </p>
+            </div>
           </div>
           <span className="text-xs font-bold text-gray-400">
             {t('common.showing')} {Math.min(paginatedShifts.length, itemsPerPage).toLocaleString(t('common.locale'))} {t('common.of')} {sortedShifts.length.toLocaleString(t('common.locale'))} {t('dashboard.menu.shiftsReports')}
@@ -246,7 +256,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
         <div className="px-6 py-4 border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01] flex flex-wrap items-center gap-2">
           {[
             { id: 'all', label: t('orders.reports.cashGap.all'), icon: Scale, color: 'gray' },
-            { id: 'over', label: t('orders.reports.cashGap.over'), icon: TrendingUp, color: 'emerald' },
+            { id: 'over', label: t('orders.reports.cashGap.over'), icon: TrendingUp, color: 'amber' },
             { id: 'short', label: t('orders.reports.cashGap.short'), icon: TrendingDown, color: 'red' },
             { id: 'balanced', label: t('orders.reports.cashGap.balanced'), icon: Scale, color: 'blue' },
           ].map((filter) => {
@@ -257,8 +267,8 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                 onClick={() => handleStatusFilterChange(filter.id as any)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                   isSelected
-                    ? filter.color === 'emerald'
-                      ? 'bg-emerald-500 text-white border-emerald-500 shadow-lg shadow-emerald-500/20'
+                    ? filter.color === 'amber'
+                      ? 'bg-amber-500 text-white border-amber-500 shadow-lg shadow-amber-500/20'
                       : filter.color === 'red'
                         ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/20'
                         : filter.color === 'blue'
@@ -352,10 +362,10 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                         <td className="px-5 py-4 text-center">
                           <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${
                             isOver
-                              ? 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
+                              ? 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'
                               : isShort
                                 ? 'bg-red-100 text-red-700 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20'
-                                : 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
+                                : 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20'
                           }`}>
                             {isOver ? (
                               <><TrendingUp size={12} /> +{discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</>
@@ -369,13 +379,13 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                         <td className="px-5 py-4 text-center">
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
                             isOver 
-                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
+                              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' 
                               : isShort 
                                 ? 'bg-red-500/10 text-red-600 dark:text-red-400' 
-                                : 'bg-gray-100 text-gray-500 dark:bg-white/5'
+                                : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
                           }`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${
-                              isOver ? 'bg-emerald-500' : isShort ? 'bg-red-500' : 'bg-gray-400'
+                              isOver ? 'bg-amber-500' : isShort ? 'bg-red-500' : 'bg-blue-500'
                             }`} />
                             {isOver ? t('orders.reports.cashGap.over') : isShort ? t('orders.reports.cashGap.short') : t('orders.reports.cashGap.isBalanced')}
                           </span>

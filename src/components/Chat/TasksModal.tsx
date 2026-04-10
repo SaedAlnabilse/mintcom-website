@@ -91,7 +91,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
         path: dashboardRoute('/settings', '/onboarding/step/1'),
         state: { openSettingsTab: 'profile' }
       },
-      estimateMinutes: 2
+      estimateMinutes: 1
     },
     {
       id: 'receipt-settings',
@@ -102,7 +102,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
         path: dashboardRoute('/settings', '/onboarding/step/1'),
         state: { openSettingsTab: 'receipt' }
       },
-      estimateMinutes: 2
+      estimateMinutes: 1
     },
     {
       id: 'create-category',
@@ -113,7 +113,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
         path: dashboardRoute('/categories', '/onboarding/step/1'),
         state: { openCreateModal: true }
       },
-      estimateMinutes: 2
+      estimateMinutes: 1
     },
     {
       id: 'add-product',
@@ -124,7 +124,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
         path: dashboardRoute('/products', '/onboarding/step/1'),
         state: { openCreateModal: true }
       },
-      estimateMinutes: 2
+      estimateMinutes: 1
     },
     {
       id: 'setup-payments',
@@ -135,7 +135,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
         path: dashboardRoute('/payment-methods', '/onboarding/step/2'),
         state: { openCreateModal: true }
       },
-      estimateMinutes: 2
+      estimateMinutes: 1
     },
     {
       id: 'setup-taxes',
@@ -165,7 +165,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
       description: t('chat.tasks.goLive.description'),
       actionLabel: t('chat.tasks.goLive.action'),
       navigation: { path: '/onboarding/step/5' },
-      estimateMinutes: 3
+      estimateMinutes: 2
     }
   ], [t, dashboardRoute]);
 

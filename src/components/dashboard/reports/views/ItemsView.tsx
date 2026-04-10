@@ -288,7 +288,7 @@ export const ItemsView = React.memo(function ItemsView({
                       <div className="w-16 h-16 rounded-[24px] bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-300 dark:text-white/10 border border-gray-100 dark:border-white/5">
                         <ShoppingBag size={32} />
                       </div>
-                      <p className="text-sm font-bold text-gray-500 dark:text-gray-400 tracking-wide max-w-xs mx-auto leading-relaxed">
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide max-w-xs mx-auto leading-relaxed">
                         {t('orders.reports.items.noData')}
                       </p>
                     </div>
@@ -326,7 +326,7 @@ export const ItemsView = React.memo(function ItemsView({
               >
                 {/* Header */}
                 <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
                       <LayoutGrid size={20} />
                     </div>
@@ -334,8 +334,8 @@ export const ItemsView = React.memo(function ItemsView({
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
                         {selectedCategory?.name}
                       </h3>
-                      <p className="text-xs font-bold text-gray-400 mt-0.5">
-                        {t('orders.reports.items.categoryBreakdown', 'Category breakdown')}
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {t('orders.reports.items.categoryBreakdown')}
                       </p>
                     </div>
                   </div>

@@ -549,20 +549,20 @@ export function StaffPage() {
                       </div>
                     </th>
                     <th
-                      className="px-6 py-4 text-left dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
+                      className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('role')}
                     >
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center justify-center gap-1">
                         {t('staff.table.role')}
                         {sortConfig?.key === 'role' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left dashboard-card-label">{t('staff.table.contact')}</th>
+                    <th className="px-6 py-4 text-center dashboard-card-label">{t('staff.table.contact')}</th>
                     <th
-                      className="px-6 py-4 text-left dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
+                      className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('status')}
                     >
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center justify-center gap-1">
                         {t('staff.table.status')}
                         {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
@@ -588,7 +588,7 @@ export function StaffPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 text-center">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
                           <Shield size={10} />
                           {t(`staff.roles.${member.role.toLowerCase()}`) !== `staff.roles.${member.role.toLowerCase()}`
@@ -596,8 +596,8 @@ export function StaffPage() {
                             : member.role.charAt(0) + member.role.slice(1).toLowerCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="space-y-1">
+                      <td className="px-6 py-4 text-center">
+                        <div className="space-y-1 flex flex-col items-center justify-center">
                           <div className="flex items-center gap-2 text-xs text-gray-500">
                             <Mail size={12} className="text-gray-400" />
                             <span className="font-medium">{member.email || t('owner.staff.noEmail')}</span>
@@ -608,8 +608,8 @@ export function StaffPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className={`flex items-center gap-2 font-black text-xs tracking-wide ${!member.isActive
+                      <td className="px-6 py-4 text-center">
+                        <div className={`flex items-center justify-center gap-2 font-medium text-xs tracking-wide ${!member.isActive
                           ? 'text-paymint-red'
                           : member.isClockedIn
                             ? 'text-paymint-green'
@@ -695,6 +695,9 @@ export function StaffPage() {
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={paginate}
+          totalItems={filteredStaff.length}
+          itemsPerPage={itemsPerPage}
+          variant="footer"
         />
       </div >
 

@@ -338,20 +338,18 @@ export function OwnerBillingPage() {
 
                 <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
-                        <p className="dashboard-card-label mb-1">{t('owner.billing.monthlyCost')}</p>
-                        <div className="flex items-baseline justify-end gap-1">
+                        <div className="flex items-baseline justify-end">
                             <span className="dashboard-card-value text-xl">${totalMonthlyCost.toFixed(2)}</span>
-                            <span className="text-xs font-bold text-gray-400">{t('common.monthly')}</span>
+                            <span className="text-xs font-bold text-gray-400 ml-0.5">{t('common.monthly')}</span>
                         </div>
                     </div>
                     {hasYearlyPlan && (
                         <>
                             <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
                             <div className="text-right hidden sm:block">
-                                <p className="dashboard-card-label mb-1">{t('owner.billing.yearlyCost')}</p>
-                                <div className="flex items-baseline justify-end gap-1">
+                                <div className="flex items-baseline justify-end">
                                     <span className="dashboard-card-value text-xl text-paymint-green">${totalYearlyCost.toFixed(2)}</span>
-                                    <span className="text-xs font-bold text-gray-400">{t('common.yearly')}</span>
+                                    <span className="text-xs font-bold text-gray-400 ml-0.5">{t('common.yearly')}</span>
                                 </div>
                             </div>
                         </>
@@ -524,9 +522,9 @@ export function OwnerBillingPage() {
                                 <div className="w-10" />
                                 <span>{toHeaderCase(t('owner.billing.service'))}</span>
                             </div>
-                            <div className="col-span-2">{toHeaderCase(t('owner.billing.status'))}</div>
-                            <div className="col-span-2">{toHeaderCase(t('owner.billing.cost'))}</div>
-                            <div className="col-span-2">
+                            <div className="col-span-2 text-center flex justify-center">{toHeaderCase(t('owner.billing.status'))}</div>
+                            <div className="col-span-1 text-center flex justify-center">{toHeaderCase(t('owner.billing.cost'))}</div>
+                            <div className="col-span-2 text-center flex justify-center">
                                 <button
                                     type="button"
                                     onClick={() => setNextBillSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
@@ -537,7 +535,8 @@ export function OwnerBillingPage() {
                                     <ArrowUpDown size={12} />
                                 </button>
                             </div>
-                            <div className="col-span-2 text-center">{toHeaderCase(t('owner.billing.payment'))}</div>
+                            <div className="col-span-2 text-center flex justify-center">{toHeaderCase(t('owner.billing.payment'))}</div>
+                            <div className="col-span-1 text-center flex justify-center">{toHeaderCase(t('common.actions'))}</div>
                         </div>
 
                         {isLoading ? (
@@ -573,112 +572,120 @@ export function OwnerBillingPage() {
                                         </div>
 
                                         {/* Status */}
-                                        <div className="col-span-2">
+                                        <div className="col-span-2 text-center flex justify-center">
                                             {getStatusBadge(est)}
                                         </div>
 
                                         {/* Cost */}
-                                        <div className="col-span-2">
+                                        <div className="col-span-1 text-center flex justify-center">
                                             {(() => {
                                                 // Find original index in full list for correct pricing
                                                 const fullIndex = billingData?.establishments.findIndex(e => e.id === est.id) ?? 0;
                                                 const price = getEstablishmentPrice(est, fullIndex);
                                                 const isYearly = est.billingCycle === 'yearly';
                                                 return (
-                                                    <div className="flex flex-col">
-                                                        <div className="flex items-baseline gap-1">
+                                                    <div className="flex flex-col items-center">
+                                                        <div className="flex items-baseline">
                                                             <span className="font-bold text-gray-900 dark:text-white text-sm">
                                                                 ${price}
                                                             </span>
-                                                            <span className="text-xs text-gray-400">
-                                                                /{isYearly ? t('common.yearly') : t('common.monthly')}
+                                                            <span className="text-xs text-gray-400 ml-0.5">
+                                                                {isYearly ? t('common.yearly') : t('common.monthly')}
                                                             </span>
                                                         </div>
                                                     </div>
                                                 );
                                             })()}
                                         </div>
+
                                         {/* Next Bill */}
-                                        <div className="col-span-2">
+                                        <div className="col-span-2 text-center flex justify-center">
                                             {formatBillingDate(est.nextBillDate) ? (
-                                                <p className="dashboard-card-meta">
+                                                <p className="dashboard-card-meta text-center">
                                                     {formatBillingDate(est.nextBillDate)}
                                                 </p>
                                             ) : (
-                                                <p className="text-xs font-bold text-gray-400">—</p>
+                                                <p className="text-xs font-bold text-gray-400 text-center">—</p>
                                             )}
                                         </div>
 
-                                        {/* Payment & Actions */}
-                                        <div className="col-span-2 flex items-center justify-center relative">
-                                            <span className="dashboard-card-meta">
+                                        {/* Payment */}
+                                        <div className="col-span-2 text-center flex justify-center">
+                                            <span className="dashboard-card-meta truncate text-center">
                                                 {est.paymentCard ? `•••• ${est.paymentCard.last4}` : t('owner.billing.noCard')}
                                             </span>
+                                        </div>
 
-                                            <div className="absolute right-0">
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setActiveMenu(activeMenu === est.id ? null : est.id);
-                                                    }}
-                                                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                                                >
-                                                    <MoreVertical size={16} />
-                                                </button>
+                                        {/* Actions */}
+                                        <div className="col-span-1 text-center flex justify-center relative">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setActiveMenu(activeMenu === est.id ? null : est.id);
+                                                }}
+                                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                            >
+                                                <MoreVertical size={16} />
+                                            </button>
 
-                                                <AnimatePresence>
-                                                    {activeMenu === est.id && (
-                                                        <motion.div
-                                                            initial={{ opacity: 0, scale: 0.95, y: 5 }}
-                                                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                            exit={{ opacity: 0, scale: 0.95, y: 5 }}
-                                                            onClick={(e) => e.stopPropagation()}
-                                                            className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                            <AnimatePresence>
+                                                {activeMenu === est.id && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.95, y: 5 }}
+                                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                        exit={{ opacity: 0, scale: 0.95, y: 5 }}
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                    >
+                                                        <button
+                                                            onClick={() => window.open(`/dashboard`, '_blank')}
+                                                            className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 tracking-wide transition-colors flex items-center gap-2"
                                                         >
+                                                            <Eye size={14} />
+                                                            {t('owner.billing.viewDashboard')}
+                                                        </button>
+                                                        {est.subscriptionStatus === 'TRIAL' && !est.cancelAtPeriodEnd && (
                                                             <button
-                                                                onClick={() => window.open(`/dashboard`, '_blank')}
-                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 tracking-wide transition-colors flex items-center gap-2"
+                                                                onClick={() => handleStopTrial(est.id, est.name)}
+                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors flex items-center gap-2"
                                                             >
-                                                                <Eye size={14} />
-                                                                {t('owner.billing.viewDashboard')}
+                                                                <Trash2 size={14} />
+                                                                {t('owner.billing.stopTrial')}
                                                             </button>
-                                                            {est.subscriptionStatus === 'TRIAL' && !est.cancelAtPeriodEnd && (
-                                                                <button
-                                                                    onClick={() => handleStopTrial(est.id, est.name)}
-                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors flex items-center gap-2"
-                                                                >
-                                                                    <Trash2 size={14} />
-                                                                    {t('owner.billing.stopTrial')}
-                                                                </button>
-                                                            )}
-                                                            {est.subscriptionStatus === 'ACTIVE' && !est.cancelAtPeriodEnd && (
-                                                                <button
-                                                                    onClick={() => handleCancelSubscription(est.id, est.name)}
-                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors flex items-center gap-2"
-                                                                >
-                                                                    <Trash2 size={14} />
-                                                                    {t('owner.billing.cancelSub')}
-                                                                </button>
-                                                            )}
-                                                            {(est.cancelAtPeriodEnd || est.subscriptionStatus === 'CANCELED') && (
-                                                                <button
-                                                                    onClick={() => handleResumeSubscription(est.id, est.name, est.cancelAtPeriodEnd)}
-                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-paymint-green hover:bg-paymint-green/10 tracking-wide transition-colors"
-                                                                >
-                                                                    {est.subscriptionStatus === 'CANCELED' ? t('owner.billing.reactivate') : t('owner.billing.resume')}
-                                                                </button>
-                                                            )}
-                                                        </motion.div>
-                                                    )}
-                                                </AnimatePresence>
-                                            </div>
+                                                        )}
+                                                        {est.subscriptionStatus === 'ACTIVE' && !est.cancelAtPeriodEnd && (
+                                                            <button
+                                                                onClick={() => handleCancelSubscription(est.id, est.name)}
+                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors flex items-center gap-2"
+                                                            >
+                                                                <Trash2 size={14} />
+                                                                {t('owner.billing.cancelSub')}
+                                                            </button>
+                                                        )}
+                                                        {(est.cancelAtPeriodEnd || est.subscriptionStatus === 'CANCELED') && (
+                                                            <button
+                                                                onClick={() => handleResumeSubscription(est.id, est.name, est.cancelAtPeriodEnd)}
+                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-paymint-green hover:bg-paymint-green/10 tracking-wide transition-colors"
+                                                            >
+                                                                {est.subscriptionStatus === 'CANCELED' ? t('owner.billing.reactivate') : t('owner.billing.resume')}
+                                                            </button>
+                                                        )}
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                        )}
+                        )
+}
 
-                        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                            variant="footer"
+                        />
                     </div>
 
                     {/* Alert Banner for Cancellations */}

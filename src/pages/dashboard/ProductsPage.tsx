@@ -610,20 +610,11 @@ export function ProductsPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
-                    <div className="flex items-center gap-2 sm:gap-3 mb-2">
-                        <div className="flex items-center gap-2">
-                            <div className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-                            </div>
-                            <span className="text-xs font-bold text-paymint-green tracking-wide uppercase italic">{t('dashboard.shiftStatus.live')}</span>
-                        </div>
-                    </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('products.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('products.subtitle')}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[11px] font-bold tracking-tight border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                                 {currentEstablishment.name}
                             </span>
                         )}
@@ -917,108 +908,118 @@ export function ProductsPage() {
             ) : (
                 <>
                     {viewMode === 'grid' ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            {paginatedProducts.map((p) => (
-                                <div
-                                    key={p.id || `prod-${p.name}`}
-                                    className="group bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer"
-                                    onClick={() => handleEdit(p)}
-                                >
-                                    <div className="aspect-[4/3] bg-gray-50 dark:bg-black/20 relative overflow-hidden">
-                                        {p.image ? (
-                                            <img src={getProductImageUrl(p.image)!} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                        ) : (
-                                            <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                        )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-end justify-between p-3">
-                                            <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={18} /></button>
-                                            <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={18} /></button>
-                                        </div>
-                                    </div>
-                                    <div className="p-3 flex-1 flex flex-col">
-                                        <div className="flex items-start justify-between mb-2 gap-2">
-                                            <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2">{p.name}</h3>
-                                            <span className="text-[10px] font-bold text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg whitespace-nowrap shrink-0">
-                                                {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
-                                            </span>
-                                        </div>
-                                        {p.description && <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1">{p.description}</p>}
-                                        <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto">
-                                            <div>
-                                                <p className="text-[10px] font-bold text-gray-400 mb-0.5">{t('products.table.price')}</p>
-                                                <p className="text-sm font-bold text-paymint-green">
-                                                    {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
-                                                </p>
-                                            </div>
-                                            <div className="text-right">
-                                                <p className="text-[10px] font-bold text-gray-400 mb-0.5">{t('products.table.stock')}</p>
-                                                {p.trackStock ? (
-                                                    <div className={`text-xs font-bold flex items-center justify-end gap-1 ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow)}`}>
-                                                        {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 5) && <AlertCircle size={10} />}
-                                                        {(p.availableStock || 0).toLocaleString(t('common.locale'))}
-                                                    </div>
-                                                ) : (
-                                                    <div className="text-xs font-bold text-gray-400 dark:text-gray-500 flex items-center justify-end">
-                                                        <InfinityIcon size={16} strokeWidth={3} />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
                         <>
-                            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
-                                        <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
-                                            <tr>
-                                                <th className="px-6 py-4 text-left text-[11px] font-bold text-gray-400 w-16">{t('products.table.image')}</th>
-                                                <th
-                                                    className="px-6 py-4 text-left text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
-                                                    onClick={() => handleSort('name')}
-                                                >
-                                                    <div className="flex items-center gap-1">
-                                                        {t('products.table.name')}
-                                                        {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                                                    </div>
-                                                </th>
-                                                <th
-                                                    className="px-6 py-4 text-left text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
-                                                    onClick={() => handleSort('category')}
-                                                >
-                                                    <div className="flex items-center gap-1">
-                                                        {t('products.table.category')}
-                                                        {sortConfig?.key === 'category' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                                                    </div>
-                                                </th>
-                                                <th
-                                                    className="px-6 py-4 text-left text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
-                                                    onClick={() => handleSort('availableStock')}
-                                                >
-                                                    <div className="flex items-center gap-1">
-                                                        {t('products.table.stock')}
-                                                        {sortConfig?.key === 'availableStock' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                                                    </div>
-                                                </th>
-                                                <th
-                                                    className="px-6 py-4 text-right text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
-                                                    onClick={() => handleSort('price')}
-                                                >
-                                                    <div className="flex items-center justify-end gap-1">
-                                                        {t('products.table.price')}
-                                                        {sortConfig?.key === 'price' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                                                    </div>
-                                                </th>
-                                                <th className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 w-24">{t('owner.locations.actions')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                                            {paginatedProducts.map((p, idx) => (
-                                                <tr key={p.id || `table-row-${idx}`} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => handleEdit(p)}>
-                                                    <td className="px-6 py-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                                {paginatedProducts.map((p) => (
+                                    <div
+                                        key={p.id || `prod-${p.name}`}
+                                        className="group bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer"
+                                        onClick={() => handleEdit(p)}
+                                    >
+                                        <div className="aspect-[4/3] bg-gray-50 dark:bg-black/20 relative overflow-hidden">
+                                            {p.image ? (
+                                                <img src={getProductImageUrl(p.image)!} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                            ) : (
+                                                <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                            )}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-end justify-between p-3">
+                                                <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={18} /></button>
+                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={18} /></button>
+                                            </div>
+                                        </div>
+                                        <div className="p-3 flex-1 flex flex-col">
+                                            <div className="flex items-start justify-between mb-2 gap-2">
+                                                <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2">{p.name}</h3>
+                                                <span className="text-[10px] font-bold text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg whitespace-nowrap shrink-0">
+                                                    {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
+                                                </span>
+                                            </div>
+                                            {p.description && <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1">{p.description}</p>}
+                                            <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto">
+                                                <div>
+                                                    <p className="text-[10px] font-bold text-gray-400 mb-0.5">{t('products.table.price')}</p>
+                                                    <p className="text-sm font-bold text-paymint-green">
+                                                        {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
+                                                    </p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-[10px] font-bold text-gray-400 mb-0.5">{t('products.table.stock')}</p>
+                                                    {p.trackStock ? (
+                                                        <div className={`text-xs font-bold flex items-center justify-end gap-1 ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow)}`}>
+                                                            {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 5) && <AlertCircle size={10} />}
+                                                            {(p.availableStock || 0).toLocaleString(t('common.locale'))}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="text-xs font-bold text-gray-400 dark:text-gray-500 flex items-center justify-end">
+                                                            <InfinityIcon size={16} strokeWidth={3} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
+                                totalItems={filteredProducts.length}
+                                itemsPerPage={ITEMS_PER_PAGE}
+                                className="mt-6"
+                            />
+                        </>
+                    ) : (
+                        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
+                                        <tr>
+                                            <th className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 w-16">{t('products.table.image')}</th>
+                                            <th
+                                                className="px-6 py-4 text-left text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                onClick={() => handleSort('name')}
+                                            >
+                                                <div className="flex items-center gap-1">
+                                                    {t('products.table.name')}
+                                                    {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                                </div>
+                                            </th>
+                                            <th
+                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                onClick={() => handleSort('category')}
+                                            >
+                                                <div className="flex items-center justify-center gap-1">
+                                                    {t('products.table.category')}
+                                                    {sortConfig?.key === 'category' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                                </div>
+                                            </th>
+                                            <th
+                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                onClick={() => handleSort('availableStock')}
+                                            >
+                                                <div className="flex items-center justify-center gap-1">
+                                                    {t('products.table.stock')}
+                                                    {sortConfig?.key === 'availableStock' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                                </div>
+                                            </th>
+                                            <th
+                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                onClick={() => handleSort('price')}
+                                            >
+                                                <div className="flex items-center justify-center gap-1">
+                                                    {t('products.table.price')}
+                                                    {sortConfig?.key === 'price' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                                </div>
+                                            </th>
+                                            <th className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 w-24">{t('owner.locations.actions')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                                        {paginatedProducts.map((p, idx) => (
+                                            <tr key={p.id || `table-row-${idx}`} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => handleEdit(p)}>
+                                                <td className="px-6 py-4">
+                                                    <div className="flex justify-center">
                                                         <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden">
                                                             {p.image ? (
                                                                 <img src={getProductImageUrl(p.image)!} alt="" className="w-full h-full object-cover" />
@@ -1026,49 +1027,52 @@ export function ProductsPage() {
                                                                 <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover" />
                                                             )}
                                                         </div>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <p className="text-sm font-bold text-gray-900 dark:text-white">{p.name}</p>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <span className="inline-flex px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500">
-                                                            {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <p className="text-sm font-bold text-gray-900 dark:text-white">{p.name}</p>
+                                                </td>
+                                                <td className="px-6 py-4 text-center">
+                                                    <span className="inline-flex px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500">
+                                                        {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-center">
+                                                    {p.trackStock ? (
+                                                        <span className={`text-xs font-bold ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow, true)}`}>
+                                                            {t('products.table.units', { count: p.availableStock || 0 })}
                                                         </span>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        {p.trackStock ? (
-                                                            <span className={`text-xs font-bold ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow, true)}`}>
-                                                                {t('products.table.units', { count: p.availableStock || 0 })}
-                                                            </span>
-                                                        ) : (
-                                                            <div className="inline-flex items-center px-2 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/5">
-                                                                <InfinityIcon size={16} className="text-gray-400" strokeWidth={2.5} />
-                                                            </div>
-                                                        )}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-right">
-                                                        <span className="font-bold text-gray-900 dark:text-white">
-                                                            {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center">
-                                                        <div className="flex items-center justify-center gap-1 sm:gap-2">
-                                                            <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
-                                                            <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
+                                                    ) : (
+                                                        <div className="inline-flex items-center px-2 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/5">
+                                                            <InfinityIcon size={16} className="text-gray-400" strokeWidth={2.5} />
                                                         </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4 text-center">
+                                                    <span className="font-bold text-gray-900 dark:text-white">
+                                                        {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-center">
+                                                    <div className="flex items-center justify-center gap-1 sm:gap-2">
+                                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
+                                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                             <Pagination
                                 currentPage={currentPage}
                                 totalPages={totalPages}
                                 onPageChange={setCurrentPage}
+                                totalItems={filteredProducts.length}
+                                itemsPerPage={ITEMS_PER_PAGE}
+                                variant="footer"
                             />
-                        </>
+                        </div>
                     )}
                 </>
             )

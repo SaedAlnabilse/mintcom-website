@@ -20,35 +20,35 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.taxes.totalTax')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.taxes.totalTax')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {formatCurrency(salesData.taxCollected || 0)}
             </p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{t('orders.reports.taxes.totalTaxDesc')}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.taxes.totalTaxDesc')}</p>
           </div>
           <div className="absolute end-0 top-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
         </div>
 
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.taxes.taxableSales')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.taxes.taxableSales')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {formatCurrency(salesData.totalRevenue || 0)}
             </p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{t('orders.reports.taxes.taxableSalesDesc')}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.taxes.taxableSalesDesc')}</p>
           </div>
           <div className="absolute end-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
         </div>
 
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.taxes.avgRate')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.taxes.avgRate')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {salesData.totalRevenue > 0
                 ? ((salesData.taxCollected / salesData.totalRevenue)).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
                 : (0).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
             </p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{t('orders.reports.taxes.avgRateDesc')}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.taxes.avgRateDesc')}</p>
           </div>
           <div className="absolute end-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
         </div>
@@ -58,10 +58,17 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
         {/* Tax Breakdown Main Card */}
         <div className="lg:col-span-2 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col">
           <div className="p-6 border-b border-gray-100 dark:border-white/5">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Scale size={20} className="text-orange-500" />
-              {t('orders.reports.taxes.details')}
-            </h3>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                <Scale size={20} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  {t('orders.reports.taxes.details')}
+                </h3>
+                <p className="text-xs text-gray-500 mt-1">{t('orders.reports.taxes.share')}</p>
+              </div>
+            </div>
           </div>
           <div className="flex-1 overflow-x-auto">
             <table className="w-full">

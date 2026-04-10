@@ -279,243 +279,257 @@ export function OwnerRolesPage() {
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">{t('owner.roles.noRoles')}</h3>
             <p className="text-sm font-medium text-gray-500 max-w-xs mx-auto">{t('owner.roles.noRolesDesc')}</p>
           </div>
-        ) : viewMode === 'grid' ? (
-          /* Grid View */
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
-            {currentItems.map((role) => (
-              <div
-                key={role.id}
-                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-6 transition-all shadow-sm overflow-hidden"
-              >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
-
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-6 relative z-10">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300">
-                        <Shield size={24} />
-                      </div>
-                      <div>
-                        <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
-                        <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
-                          <UserCheck size={10} />
-                          {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleEdit(role)}
-                        className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all"
-                        title={t('owner.roles.editRole')}
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteClick(role)}
-                        className="p-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-400 hover:text-red-500 transition-all"
-                        title={t('owner.roles.deleteRole')}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-2 gap-3 mb-6 relative z-10">
-                    <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl">
-                      <span className="label-strong block mb-2">{t('owner.roles.permissions')}</span>
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
-                          <span className="text-xs font-bold text-paymint-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                          <span className="text-xs font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl">
-                      <span className="label-strong block mb-2">{t('owner.roles.scope')}</span>
-                      <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-xs font-black tracking-wide">
-                        <Globe size={10} />
-                        {t('owner.roles.global')}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Date */}
-                  <div className="pt-4 border-t border-gray-100 dark:border-white/5 relative z-10">
-                    <span className="text-xs text-gray-400 font-medium">
-                      {t('owner.roles.createdOn', { date: new Date(role.createdAt).toLocaleDateString() })}
-                    </span>
-                  </div>
-              </div>
-            ))}
-          </div>
         ) : (
-          /* List View */
-          <>
-            {/* Mobile Card View */}
-            <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-              {currentItems.map((role) => (
-                <div
-                  key={role.id}
-                  className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
-                          <Shield size={20} />
-                        </div>
-                        <div>
-                          <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
-                          <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
-                            <UserCheck size={10} />
-                            {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleEdit(role)}
-                          className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteClick(role)}
-                          className="p-2 rounded-lg bg-red-500/10 text-red-500"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
+          /* Main Content Area */
+          <div className="flex-1 flex flex-col">
+            {viewMode === 'grid' ? (
+              /* Grid View */
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
+                {currentItems.map((role) => (
+                  <div
+                    key={role.id}
+                    className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-6 transition-all shadow-sm overflow-hidden"
+                  >
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
 
-                    <div className="grid grid-cols-2 gap-3 text-xs">
-                      <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
-                        <span className="text-gray-500 block mb-1">{t('owner.roles.permissions')}</span>
-                        <div className="flex gap-2">
-                          <span className="font-bold text-paymint-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
-                          <span className="font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
-                        </div>
-                      </div>
-                      <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
-                        <span className="text-gray-500 block mb-1">{t('owner.overview.period')}</span>
-                        <span className="font-bold text-gray-900 dark:text-white">
-                          {new Date(role.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Desktop Table View */}
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-white/[0.02]">
-                  <tr className="border-b border-gray-200 dark:border-white/5">
-                    <th
-                      className="px-6 py-4 text-left label-strong cursor-pointer hover:text-paymint-green transition-colors"
-                      onClick={() => handleSort('name')}
-                    >
-                      <div className="flex items-center gap-1">
-                        {t('common.search')}
-                        {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                      </div>
-                    </th>
-                    <th
-                      className="px-6 py-4 text-left label-strong cursor-pointer hover:text-paymint-green transition-colors"
-                      onClick={() => handleSort('baseRole')}
-                    >
-                      <div className="flex items-center gap-1">
-                        {t('owner.locations.type')}
-                        {sortConfig?.key === 'baseRole' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                      </div>
-                    </th>
-                    <th className="px-6 py-4 text-left label-strong">{t('staff.form.accessLabel')}</th>
-                    <th
-                      className="px-6 py-4 text-left label-strong cursor-pointer hover:text-paymint-green transition-colors"
-                      onClick={() => handleSort('createdAt')}
-                    >
-                      <div className="flex items-center gap-1">
-                        {t('owner.overview.period')}
-                        {sortConfig?.key === 'createdAt' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                      </div>
-                    </th>
-                    <th className="px-6 py-4 text-center label-strong">{t('common.actions')}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                  {currentItems.map((role) => (
-                    <tr
-                      key={role.id}
-                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                    >
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                              <Shield size={20} />
-                            </div>
-                            <div>
-                              <p className="font-bold text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</p>
-                            </div>
+                      {/* Header */}
+                      <div className="flex items-start justify-between mb-6 relative z-10">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300">
+                            <Shield size={24} />
                           </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
-                            <UserCheck size={10} />
-                            {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
+                          <div>
+                            <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
+                            <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
+                              <UserCheck size={10} />
+                              {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEdit(role)}
+                            className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all"
+                            title={t('owner.roles.editRole')}
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(role)}
+                            className="p-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-400 hover:text-red-500 transition-all"
+                            title={t('owner.roles.deleteRole')}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Stats */}
+                      <div className="grid grid-cols-2 gap-3 mb-6 relative z-10">
+                        <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl">
+                          <span className="label-strong block mb-2">{t('owner.roles.permissions')}</span>
                           <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
-                              <span className="text-xs text-gray-500 font-medium">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
+                              <span className="text-xs font-bold text-paymint-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                              <span className="text-xs text-gray-500 font-medium">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
+                              <span className="text-xs font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
                             </div>
                           </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <p className="text-xs text-gray-500 font-medium">
-                            {new Date(role.createdAt).toLocaleDateString()}
-                          </p>
-                        </td>
-                        <td className="px-8 py-5 text-center">
-                          <div className="flex items-center justify-center gap-2">
+                        </div>
+                        <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl">
+                          <span className="label-strong block mb-2">{t('owner.roles.scope')}</span>
+                          <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-xs font-black tracking-wide">
+                            <Globe size={10} />
+                            {t('owner.roles.global')}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Date */}
+                      <div className="pt-4 border-t border-gray-100 dark:border-white/5 relative z-10">
+                        <span className="text-xs text-gray-400 font-medium">
+                          {t('owner.roles.createdOn', { date: new Date(role.createdAt).toLocaleDateString() })}
+                        </span>
+                      </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              /* List View */
+              <>
+                {/* Mobile Card View */}
+                <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                  {currentItems.map((role) => (
+                    <div
+                      key={role.id}
+                      className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                    >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
+                              <Shield size={20} />
+                            </div>
+                            <div>
+                              <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
+                              <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
+                                <UserCheck size={10} />
+                                {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
                             <button
                               onClick={() => handleEdit(role)}
-                              className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
-                              title={t('owner.roles.editRole')}
+                              className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"
                             >
                               <Edit2 size={16} />
                             </button>
                             <button
                               onClick={() => handleDeleteClick(role)}
-                              className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-red/60 hover:text-paymint-red hover:bg-paymint-red/5 transition-all shadow-sm active:scale-90"
-                              title={t('owner.roles.deleteRole')}
+                              className="p-2 rounded-lg bg-red-500/10 text-red-500"
                             >
                               <Trash2 size={16} />
                             </button>
                           </div>
-                        </td>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 text-xs">
+                          <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
+                            <span className="text-gray-500 block mb-1">{t('owner.roles.permissions')}</span>
+                            <div className="flex gap-2">
+                              <span className="font-bold text-paymint-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
+                              <span className="font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
+                            </div>
+                          </div>
+                          <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
+                            <span className="text-gray-500 block mb-1">{t('owner.overview.period')}</span>
+                            <span className="font-bold text-gray-900 dark:text-white">
+                              {new Date(role.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 dark:bg-white/[0.02]">
+                      <tr className="border-b border-gray-200 dark:border-white/5">
+                        <th
+                          className="px-6 py-4 text-left label-strong cursor-pointer hover:text-paymint-green transition-colors"
+                          onClick={() => handleSort('name')}
+                        >
+                          <div className="flex items-center gap-1">
+                            {t('common.search')}
+                            {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                          </div>
+                        </th>
+                        <th
+                          className="px-6 py-4 text-center label-strong cursor-pointer hover:text-paymint-green transition-colors"
+                          onClick={() => handleSort('baseRole')}
+                        >
+                          <div className="flex items-center justify-center gap-1 text-center">
+                            {t('owner.locations.type')}
+                            {sortConfig?.key === 'baseRole' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                          </div>
+                        </th>
+                        <th className="px-6 py-4 text-center label-strong flex justify-center">{t('staff.form.accessLabel')}</th>
+                        <th
+                          className="px-6 py-4 text-center label-strong cursor-pointer hover:text-paymint-green transition-colors"
+                          onClick={() => handleSort('createdAt')}
+                        >
+                          <div className="flex items-center justify-center gap-1 text-center">
+                            {t('owner.overview.period')}
+                            {sortConfig?.key === 'createdAt' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                          </div>
+                        </th>
+                        <th className="px-6 py-4 text-center label-strong flex justify-center">{t('common.actions')}</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-            </>
-          )}
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                      {currentItems.map((role) => (
+                        <tr
+                          key={role.id}
+                          className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                        >
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                  <Shield size={20} />
+                                </div>
+                                <div>
+                                  <p className="font-bold text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-center">
+                              <div className="flex justify-center">
+                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
+                                  <UserCheck size={10} />
+                                  {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-center">
+                              <div className="flex flex-col items-center gap-1 justify-center">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
+                                  <span className="text-xs text-gray-500 font-medium">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                  <span className="text-xs text-gray-500 font-medium">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-center">
+                              <p className="text-xs text-gray-500 font-medium text-center">
+                                {new Date(role.createdAt).toLocaleDateString()}
+                              </p>
+                            </td>
+                            <td className="px-8 py-5 text-center">
+                              <div className="flex items-center justify-center gap-2">
+                                <button
+                                  onClick={() => handleEdit(role)}
+                                  className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
+                                  title={t('owner.roles.editRole')}
+                                >
+                                  <Edit2 size={16} />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteClick(role)}
+                                  className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-red/60 hover:text-paymint-red hover:bg-paymint-red/5 transition-all shadow-sm active:scale-90"
+                                  title={t('owner.roles.deleteRole')}
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+              </>
+            )}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              variant="footer"
+              totalItems={filteredRoles.length}
+              itemsPerPage={itemsPerPage}
+            />
+          </div>
+        )}
       </div>
 
-                        <CustomRoleFormModal
+      <CustomRoleFormModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onSubmit={handleFormSubmit}

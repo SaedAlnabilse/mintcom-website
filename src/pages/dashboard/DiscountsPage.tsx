@@ -343,55 +343,65 @@ export function DiscountsPage() {
         <div className="space-y-8">
           {viewMode === 'grid' ? (
             /* Grid View */
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {paginatedDiscounts.map((discount) => (
-                <div
-                  key={discount.id}
-                  className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 overflow-hidden"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {paginatedDiscounts.map((discount) => (
+                  <div
+                    key={discount.id}
+                    className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                  <div className="flex justify-between items-start mb-6 relative z-10">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
-                      {discount.type === 'percentage' ? <Percent size={20} /> : <DollarSign size={20} />}
+                    <div className="flex justify-between items-start mb-6 relative z-10">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
+                        {discount.type === 'percentage' ? <Percent size={20} /> : <DollarSign size={20} />}
+                      </div>
+
+                      <div className="flex gap-2 transition-all translate-y-0">
+                        <button
+                          onClick={() => openEditModal(discount)}
+                          className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-600 dark:text-white transition-colors"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(discount.id, discount.name)}
+                          className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-paymint-red/10 hover:text-paymint-red rounded-lg transition-colors text-gray-600 dark:text-white"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="flex gap-2 transition-all translate-y-0">
-                      <button
-                        onClick={() => openEditModal(discount)}
-                        className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-600 dark:text-white transition-colors"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(discount.id, discount.name)}
-                        className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-paymint-red/10 hover:text-paymint-red rounded-lg transition-colors text-gray-600 dark:text-white"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                    <div className="relative z-10">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
+                      <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 tracking-widest ml-1">{t('common.active')}</span></p>
+
+                      <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
+                        {discount.adminOnly ? (
+                          <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-xs text-amber-700 dark:text-yellow-500 font-bold tracking-wider">
+                            {t('discounts.form.managerOnly')}
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-500 font-bold tracking-wider">
+                            {t('common.all')}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-
-                  <div className="relative z-10">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
-                    <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 tracking-widest ml-1">{t('common.active')}</span></p>
-
-                    <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
-                      {discount.adminOnly ? (
-                        <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-xs text-amber-700 dark:text-yellow-500 font-bold tracking-wider">
-                          {t('discounts.form.managerOnly')}
-                        </span>
-                      ) : (
-                        <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-500 font-bold tracking-wider">
-                          {t('common.all')}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+                totalItems={filteredDiscounts.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                className="mt-6"
+              />
+            </>
           ) : (
             /* List View */
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
@@ -409,19 +419,19 @@ export function DiscountsPage() {
                         </div>
                       </th>
                       <th
-                        className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                        className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                         onClick={() => handleSort('value')}
                       >
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center justify-center gap-1">
                           {t('products.table.price')}
                           {sortConfig?.key === 'value' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                       </th>
                       <th
-                        className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                        className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                         onClick={() => handleSort('adminOnly')}
                       >
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center justify-center gap-1">
                           {t('staff.form.accessLabel')}
                           {sortConfig?.key === 'adminOnly' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
@@ -435,7 +445,7 @@ export function DiscountsPage() {
                         key={discount.id}
                         className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                       >
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 text-left">
                             <div className="flex items-center gap-4">
                               <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
                                 {discount.type === 'percentage' ? <Percent size={18} /> : <DollarSign size={18} />}
@@ -445,10 +455,10 @@ export function DiscountsPage() {
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 text-center">
                             <span className="text-lg font-black text-paymint-green">{formatValue(discount)}</span>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 text-center">
                             {discount.adminOnly ? (
                               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-xs text-amber-700 dark:text-yellow-500 font-bold tracking-wide">
                                 <ShieldAlert size={10} />
@@ -487,6 +497,9 @@ export function DiscountsPage() {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={(page) => setCurrentPage(page)}
+                totalItems={filteredDiscounts.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                variant="footer"
               />
             </div>
           )}

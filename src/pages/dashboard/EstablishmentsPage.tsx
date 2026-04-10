@@ -114,15 +114,6 @@ export function EstablishmentsPage() {
               <Store size={28} className="text-black" />
             </div>
             <div>
-              <div className="flex items-center gap-2 sm:gap-3 mb-1">
-                <div className="flex items-center gap-2">
-                  <div className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-                  </div>
-                  <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
-                </div>
-              </div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('establishments.title')}</h1>
               <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('establishments.subtitle')}</span>
@@ -158,132 +149,139 @@ export function EstablishmentsPage() {
         </div>
       </div>
 
-      {/* Locations Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {paginatedEstablishments.map((est) => (
-          <motion.div
-            layout
-            key={est.id}
-            className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl p-8 border-2 transition-all duration-300 overflow-hidden shadow-sm ${currentEstablishment?.id === est.id
-              ? 'border-paymint-green ring-4 ring-paymint-green/5'
-              : 'border-gray-100 dark:border-white/5 hover:shadow-xl'
-              }`}
-          >
-            {/* Background Effects */}
-            <div className={`absolute top-0 ${t('common.locale') === 'ar' ? 'left-0' : 'right-0'} w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${currentEstablishment?.id === est.id ? 'bg-paymint-green/10 opacity-100' : 'bg-paymint-green/5'
-              }`} />
+      {/* Locations Display */}
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+        <div className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {paginatedEstablishments.map((est) => (
+              <motion.div
+                layout
+                key={est.id}
+                className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl p-8 border-2 transition-all duration-300 overflow-hidden shadow-sm ${currentEstablishment?.id === est.id
+                  ? 'border-paymint-green ring-4 ring-paymint-green/5'
+                  : 'border-gray-100 dark:border-white/5 hover:shadow-xl'
+                  }`}
+              >
+                {/* Background Effects */}
+                <div className={`absolute top-0 ${t('common.locale') === 'ar' ? 'left-0' : 'right-0'} w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${currentEstablishment?.id === est.id ? 'bg-paymint-green/10 opacity-100' : 'bg-paymint-green/5'
+                  }`} />
 
-            {/* Card Header */}
-            <div className="relative z-10 flex items-start justify-between mb-8">
-              <div className="flex items-center gap-4">
-                <div className={`w-14 h-14 rounded-xl flex items-center justify-center border transition-all duration-500 group-hover:scale-110 ${currentEstablishment?.id === est.id ? 'bg-paymint-green text-black border-paymint-green shadow-lg shadow-paymint-green/20' : 'bg-gray-50 dark:bg-white/[0.03] text-gray-400 border-gray-100 dark:border-white/10'
-                  }`}>
-                  <Store size={24} />
-                </div>
-                <div className="min-w-0">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight leading-tight group-hover:text-paymint-green transition-colors truncate" title={est.name}>{est.name}</h3>
-                  <span className={`inline-flex items-center px-2 py-0.5 text-xs font-black tracking-[0.2em] rounded-md mt-2 border transition-colors ${getStatusColor(est.subscriptionStatus)}`}>
-                    {t(`owner.billing.${est.subscriptionStatus.toLowerCase()}`, { defaultValue: est.subscriptionStatus })}
-                  </span>
-                </div>
-              </div>
+                {/* Card Header */}
+                <div className="relative z-10 flex items-start justify-between mb-8">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center border transition-all duration-500 group-hover:scale-110 ${currentEstablishment?.id === est.id ? 'bg-paymint-green text-black border-paymint-green shadow-lg shadow-paymint-green/20' : 'bg-gray-50 dark:bg-white/[0.03] text-gray-400 border-gray-100 dark:border-white/10'
+                      }`}>
+                      <Store size={24} />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight leading-tight group-hover:text-paymint-green transition-colors truncate" title={est.name}>{est.name}</h3>
+                      <span className={`inline-flex items-center px-2 py-0.5 text-xs font-black tracking-[0.2em] rounded-md mt-2 border transition-colors ${getStatusColor(est.subscriptionStatus)}`}>
+                        {t(`owner.billing.${est.subscriptionStatus.toLowerCase()}`, { defaultValue: est.subscriptionStatus })}
+                      </span>
+                    </div>
+                  </div>
 
-              <div className="relative">
-                <button
-                  onClick={() => setOpenMenuId(openMenuId === est.id ? null : est.id)}
-                  className="p-2.5 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-all text-gray-400 border border-transparent hover:border-gray-200 dark:hover:border-white/10 shadow-sm"
-                >
-                  <MoreVertical size={18} />
-                </button>
-                <AnimatePresence>
-                  {openMenuId === est.id && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                      className={`absolute ${t('common.locale') === 'ar' ? 'left-0' : 'right-0'} mt-3 w-56 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-2xl z-50 overflow-hidden py-2 shadow-2xl`}
+                  <div className="relative">
+                    <button
+                      onClick={() => setOpenMenuId(openMenuId === est.id ? null : est.id)}
+                      className="p-2.5 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-all text-gray-400 border border-transparent hover:border-gray-200 dark:hover:border-white/10 shadow-sm"
                     >
-                      <button onClick={() => { handleSelectEstablishment(est); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green hover:text-black transition-all flex items-center gap-3 tracking-widest">
-                        <CheckCircle size={14} /> {t('establishments.switch')}
-                      </button>
-                      <button onClick={() => { navigate(`/dashboard/${locationSlug}/settings`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">{t('dashboard.menu.settings')}</button>
-                      <button onClick={() => { navigate(`/dashboard/${locationSlug}/staff`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">{t('dashboard.menu.team')}</button>
-                    </motion.div>
+                      <MoreVertical size={18} />
+                    </button>
+                    <AnimatePresence>
+                      {openMenuId === est.id && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                          className={`absolute ${t('common.locale') === 'ar' ? 'left-0' : 'right-0'} mt-3 w-56 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-2xl z-50 overflow-hidden py-2 shadow-2xl`}
+                        >
+                          <button onClick={() => { handleSelectEstablishment(est); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green hover:text-black transition-all flex items-center gap-3 tracking-widest">
+                            <CheckCircle size={14} /> {t('establishments.switch')}
+                          </button>
+                          <button onClick={() => { navigate(`/dashboard/${locationSlug}/settings`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">{t('dashboard.menu.settings')}</button>
+                          <button onClick={() => { navigate(`/dashboard/${locationSlug}/staff`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">{t('dashboard.menu.team')}</button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                {/* Details List */}
+                <div className="relative z-10 space-y-3 mb-8 px-1">
+                  <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest">
+                    <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
+                      <DollarSign size={14} className="text-paymint-green" />
+                    </div>
+                    <span>{t('establishments.details.currency')}: {est.currency?.toUpperCase()}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest">
+                    <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
+                      <ShieldCheck size={14} className="text-blue-500" />
+                    </div>
+                    <span className="truncate">{t(`establishments.types.${est.type.toLowerCase()}`, { defaultValue: est.type.replace('_', ' ') })}</span>
+                  </div>
+                </div>
+
+                {/* Action Button */}
+                <div className="relative z-10">
+                  {currentEstablishment?.id === est.id ? (
+                    <div className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-paymint-green text-black shadow-lg shadow-paymint-green/20">
+                      <CheckCircle size={18} strokeWidth={3} />
+                      <span className="font-black text-xs tracking-[0.2em]">{t('establishments.currentLocation')}</span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleSelectEstablishment(est)}
+                      className="w-full py-4 px-6 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-[1.02] transition-all active:scale-95 text-xs tracking-[0.2em] shadow-md"
+                    >
+                      {t('establishments.switch')}
+                    </button>
                   )}
-                </AnimatePresence>
-              </div>
-            </div>
-
-            {/* Details List */}
-            <div className="relative z-10 space-y-3 mb-8 px-1">
-              <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest">
-                <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
-                  <DollarSign size={14} className="text-paymint-green" />
                 </div>
-                <span>{t('establishments.details.currency')}: {est.currency?.toUpperCase()}</span>
-              </div>
-              <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest">
-                <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
-                  <ShieldCheck size={14} className="text-blue-500" />
+              </motion.div>
+            ))}
+
+            {searchQuery.trim() && paginatedEstablishments.length === 0 && (
+              <div className="col-span-full py-20 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+                <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Store size={28} className="text-gray-300" />
                 </div>
-                <span className="truncate">{t(`establishments.types.${est.type.toLowerCase()}`, { defaultValue: est.type.replace('_', ' ') })}</span>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('common.noResults')}</h3>
+                <p className="text-sm font-bold text-gray-500">
+                  {t('common.noMatchingResults', {
+                    entity: 'locations',
+                    query: searchQuery.trim(),
+                    defaultValue: 'No {{entity}} matching "{{query}}"',
+                  })}
+                </p>
               </div>
-            </div>
+            )}
 
-            {/* Action Button */}
-            <div className="relative z-10">
-              {currentEstablishment?.id === est.id ? (
-                <div className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-paymint-green text-black shadow-lg shadow-paymint-green/20">
-                  <CheckCircle size={18} strokeWidth={3} />
-                  <span className="font-black text-xs tracking-[0.2em]">{t('establishments.currentLocation')}</span>
+            {/* Add New Establishment Card */}
+            {!searchQuery.trim() && (
+              <motion.button
+                onClick={() => navigate('/onboarding')}
+                className="bg-white dark:bg-[#1E293B] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl p-10 flex flex-col items-center justify-center gap-8 hover:border-paymint-green dark:hover:border-paymint-green hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all min-h-[250px] lg:min-h-[350px] group shadow-sm"
+              >
+                <div className="w-24 h-24 bg-gray-50 dark:bg-white/[0.03] rounded-full flex items-center justify-center border border-gray-200 dark:border-white/5 group-hover:scale-110 transition-transform duration-500 shadow-sm">
+                  <Plus size={40} className="text-gray-300 group-hover:text-paymint-green transition-colors" />
                 </div>
-              ) : (
-                <button
-                  onClick={() => handleSelectEstablishment(est)}
-                  className="w-full py-4 px-6 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-[1.02] transition-all active:scale-95 text-xs tracking-[0.2em] shadow-md"
-                >
-                  {t('establishments.switch')}
-                </button>
-              )}
-            </div>
-          </motion.div>
-        ))}
-
-        {searchQuery.trim() && paginatedEstablishments.length === 0 && (
-          <div className="col-span-full py-20 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-            <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Store size={28} className="text-gray-300" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('common.noResults')}</h3>
-            <p className="text-sm font-bold text-gray-500">
-              {t('common.noMatchingResults', {
-                entity: 'locations',
-                query: searchQuery.trim(),
-                defaultValue: 'No {{entity}} matching "{{query}}"',
-              })}
-            </p>
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
+                  <p className="text-xs font-black text-gray-400 tracking-widest max-w-[200px]">{t('establishments.details.create')}</p>
+                </div>
+              </motion.button>
+            )}
           </div>
-        )}
-
-        {/* Add New Establishment Card */}
-        {!searchQuery.trim() && (
-        <motion.button
-          onClick={() => navigate('/onboarding')}
-          className="bg-white dark:bg-[#1E293B] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl p-10 flex flex-col items-center justify-center gap-8 hover:border-paymint-green dark:hover:border-paymint-green hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all min-h-[250px] lg:min-h-[350px] group shadow-sm"
-        >
-          <div className="w-24 h-24 bg-gray-50 dark:bg-white/[0.03] rounded-full flex items-center justify-center border border-gray-200 dark:border-white/5 group-hover:scale-110 transition-transform duration-500 shadow-sm">
-            <Plus size={40} className="text-gray-300 group-hover:text-paymint-green transition-colors" />
-          </div>
-          <div className="text-center">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
-            <p className="text-xs font-black text-gray-400 tracking-widest max-w-[200px]">{t('establishments.details.create')}</p>
-          </div>
-        </motion.button>
-        )}
+        </div>
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={(page) => setCurrentPage(page)}
+          variant="footer"
+          totalItems={filteredEstablishments.length}
+          itemsPerPage={ITEMS_PER_PAGE}
         />
       </div>
 

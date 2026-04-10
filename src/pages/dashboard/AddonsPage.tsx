@@ -317,7 +317,7 @@ export function AddonsPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('attributes.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20 px-2 py-0.5">
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -463,8 +463,8 @@ export function AddonsPage() {
           <p className="text-sm font-bold text-gray-500 max-w-xs">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'add-ons', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('attributes.list.noAddonsDesc')}</p>
         </div>
       ) : (
-        <>
-          <div className="space-y-4">
+        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
+          <div className="p-6 space-y-4">
             {paginatedAttributes.map((attr) => (
               <div
                 key={attr.id}
@@ -565,10 +565,15 @@ export function AddonsPage() {
               </div>
             ))}
           </div>
-          <div className="mt-8">
-            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-          </div>
-        </>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            variant="footer"
+            totalItems={filteredAttributes.length}
+            itemsPerPage={itemsPerPage}
+          />
+        </div>
       )}
 
       {/* Add-on Group Modal */}

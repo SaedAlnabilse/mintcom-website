@@ -310,14 +310,14 @@ export function OwnerEmployeesPage() {
     const getStatusBadge = (isActive: boolean | undefined) => {
         if (isActive) {
             return (
-                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-paymint-green/ text-paymint-green border border-paymint-green/ text-xs font-bold tracking-wide w-fit mx-auto">
+                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-paymint-green/ text-paymint-green border border-paymint-green/ text-xs font-medium tracking-wide w-fit mx-auto">
                     <span className="w-1.5 h-1.5 rounded-full bg-paymint-green animate-pulse" />
                     {t('common.status.active')}
                 </span>
             );
         }
         return (
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-paymint-red/10 text-paymint-red border border-paymint-red/20 text-xs font-bold tracking-wide w-fit mx-auto">
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-paymint-red/10 text-paymint-red border border-paymint-red/20 text-xs font-medium tracking-wide w-fit mx-auto">
                 <span className="w-1.5 h-1.5 rounded-full bg-paymint-red" />
                 {t('common.status.inactive')}
             </span>
@@ -473,188 +473,198 @@ export function OwnerEmployeesPage() {
                     <p className="dashboard-card-value">{searchQuery.trim() ? t('common.noResults') : t('owner.staff.noStaffFound')}</p>
                     <p className="text-sm font-medium text-gray-500 mt-1">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('owner.staff.noStaffDesc')}</p>
                 </div>
-            ) : viewMode === 'grid' ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {paginatedEmployees.map((emp) => (
-                        <div
-                            key={emp.id}
-                            className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg hover:border-indigo-500/30 p-6 transition-all duration-300 overflow-hidden"
-                        >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                            <div className="relative z-10">
-                                <div className="flex items-start justify-between mb-6">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 rounded-[12px] bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center relative flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
-                                            <span className="text-gray-900 dark:text-white font-bold text-xl">
-                                                {emp.firstName.charAt(0).toUpperCase()}
-                                            </span>
-                                            <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-tight group-hover:text-indigo-500 transition-colors">
-                                                {emp.firstName} {emp.lastName}
-                                            </h3>
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                {emp.email || `@${emp.username}`}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="relative">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                triggerRef.current = e.currentTarget;
-                                                setActiveMenu(activeMenu === emp.id ? null : emp.id);
-                                            }}
-                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
-                                        >
-                                            <MoreVertical size={18} />
-                                        </button>
-
-                                        <PortalDropdown
-                                            isOpen={activeMenu === emp.id}
-                                            onClose={() => setActiveMenu(null)}
-                                            triggerRef={triggerRef}
-                                            align={t('common.locale') === 'ar' ? 'left' : 'right'}
-                                        >
-                                            <button
-                                                onClick={() => {
-                                                    setEditingEmployee(emp);
-                                                    setIsFormModalOpen(true);
-                                                    setActiveMenu(null);
-                                                }}
-                                                className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                            >
-                                                <Edit2 size={16} />
-                                                {t('owner.staff.editDetails')}
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    handleDeleteEmployee(emp.id);
-                                                    setActiveMenu(null);
-                                                }}
-                                                className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors border-t border-gray-100 dark:border-white/5"
-                                            >
-                                                <Trash2 size={16} />
-                                                {t('owner.staff.remove')}
-                                            </button>
-                                        </PortalDropdown>
-                                    </div>
-                                </div>
-
-                                <div className="mb-6">
-                                    {getRoleBadge(emp.role)}
-                                </div>
-
-                                <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-white/5">
-                                    <div className="flex items-center gap-2 dashboard-card-label uppercase">
-                                        <MapPin size={12} />
-                                        {t('owner.staff.accessLocations')}
-                                    </div>
-                                    <div className="flex flex-wrap gap-2">
-                                        {emp.assignments?.length > 0 ? (
-                                            emp.assignments.slice(0, 3).map((assign, idx) => (
-                                                <span key={idx} className="px-2 py-1 bg-gray-50 dark:bg-white/5 rounded text-xs font-medium text-gray-700 dark:text-gray-300 border border-gray-100 dark:border-white/5 hover:border-indigo-500/20 transition-colors">
-                                                    {assign.establishmentName}
-                                                </span>
-                                            ))
-                                        ) : (
-                                            <span className="dashboard-card-meta italic">{t('owner.staff.noLocationsAssigned')}</span>
-                                        )}
-                                        {emp.assignments?.length > 3 && (
-                                            <span className="px-2 py-1 bg-gray-50 dark:bg-white/5 rounded dashboard-card-meta">
-                                                +{emp.assignments.length - 3} {t('common.more')}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
             ) : (
                 <>
-                    <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-label">
-                            <div
-                                className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
-                                onClick={() => handleSort('name')}
-                            >
-                                {t('common.name')}
-                                {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                            </div>
-                            <div
-                                className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
-                                onClick={() => handleSort('role')}
-                            >
-                                {t('common.role')}
-                                {sortConfig?.key === 'role' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                            </div>
-                            <div
-                                className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
-                                onClick={() => handleSort('status')}
-                            >
-                                {t('common.status.label')}
-                                {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                            </div>
-                            <div
-                                className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
-                                onClick={() => handleSort('access')}
-                            >
-                                {t('owner.staff.access')}
-                                {sortConfig?.key === 'access' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                            </div>
-                            <div className="col-span-2 text-center">{t('common.actions')}</div>
-                        </div>
-                        <div className="divide-y divide-gray-100 dark:divide-white/5">
+                    {viewMode === 'grid' ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                             {paginatedEmployees.map((emp) => (
                                 <div
                                     key={emp.id}
-                                    className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors items-center"
+                                    className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg hover:border-indigo-500/30 p-6 transition-all duration-300 overflow-hidden"
                                 >
-                                    <div className="col-span-4 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-[12px] bg-gray-100 dark:bg-white/5 flex items-center justify-center text-sm font-bold text-gray-900 dark:text-white">
-                                            {emp.firstName.charAt(0).toUpperCase()}
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                                    <div className="relative z-10">
+                                        <div className="flex items-start justify-between mb-6">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-14 h-14 rounded-[12px] bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center relative flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                                                    <span className="text-gray-900 dark:text-white font-bold text-xl">
+                                                        {emp.firstName.charAt(0).toUpperCase()}
+                                                    </span>
+                                                    <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-tight group-hover:text-indigo-500 transition-colors">
+                                                        {emp.firstName} {emp.lastName}
+                                                    </h3>
+                                                    <p className="text-xs text-gray-500 mt-1">
+                                                        {emp.email || `@${emp.username}`}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="relative">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        triggerRef.current = e.currentTarget;
+                                                        setActiveMenu(activeMenu === emp.id ? null : emp.id);
+                                                    }}
+                                                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                                >
+                                                    <MoreVertical size={18} />
+                                                </button>
+
+                                                <PortalDropdown
+                                                    isOpen={activeMenu === emp.id}
+                                                    onClose={() => setActiveMenu(null)}
+                                                    triggerRef={triggerRef}
+                                                    align={t('common.locale') === 'ar' ? 'left' : 'right'}
+                                                >
+                                                    <button
+                                                        onClick={() => {
+                                                            setEditingEmployee(emp);
+                                                            setIsFormModalOpen(true);
+                                                            setActiveMenu(null);
+                                                        }}
+                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                    >
+                                                        <Edit2 size={16} />
+                                                        {t('owner.staff.editDetails')}
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            handleDeleteEmployee(emp.id);
+                                                            setActiveMenu(null);
+                                                        }}
+                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors border-t border-gray-100 dark:border-white/5"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                        {t('owner.staff.remove')}
+                                                    </button>
+                                                </PortalDropdown>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{emp.firstName} {emp.lastName}</h3>
-                                            <p className="dashboard-card-meta">{emp.username}</p>
+
+                                        <div className="mb-6">
+                                            {getRoleBadge(emp.role)}
                                         </div>
-                                    </div>
-                                    <div className="col-span-2 flex justify-center">
-                                        {getRoleBadge(emp.role)}
-                                    </div>
-                                    <div className="col-span-2 flex justify-center">
-                                        {getStatusBadge(emp.hasActiveShift)}
-                                    </div>
-                                    <div className="col-span-2 text-sm font-bold text-gray-900 dark:text-white text-center">
-                                        {t('owner.staff.locationsCount', { count: emp.assignments?.length || 0 })}
-                                    </div>
-                                    <div className="col-span-2 flex items-center justify-center gap-2">
-                                        <button
-                                            onClick={() => { setEditingEmployee(emp); setIsFormModalOpen(true); }}
-                                            className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/5"
-                                        >
-                                            {t('common.edit')}
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteEmployee(emp.id)}
-                                            className="p-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
+
+                                        <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-white/5">
+                                            <div className="flex items-center gap-2 dashboard-card-label uppercase">
+                                                <MapPin size={12} />
+                                                {t('owner.staff.accessLocations')}
+                                            </div>
+                                            <div className="flex flex-wrap gap-2">
+                                                {emp.assignments?.length > 0 ? (
+                                                    emp.assignments.slice(0, 3).map((assign, idx) => (
+                                                        <span key={idx} className="px-2 py-1 bg-gray-50 dark:bg-white/5 rounded text-xs font-medium text-gray-700 dark:text-gray-300 border border-gray-100 dark:border-white/5 hover:border-indigo-500/20 transition-colors">
+                                                            {assign.establishmentName}
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <span className="dashboard-card-meta italic">{t('owner.staff.noLocationsAssigned')}</span>
+                                                )}
+                                                {emp.assignments?.length > 3 && (
+                                                    <span className="px-2 py-1 bg-gray-50 dark:bg-white/5 rounded dashboard-card-meta">
+                                                        +{emp.assignments.length - 3} {t('common.more')}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                    </div>
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={setCurrentPage}
-                    />
+                    ) : (
+                        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                            <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-label items-center">
+                                <div
+                                    className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
+                                    onClick={() => handleSort('name')}
+                                >
+                                    {t('common.name')}
+                                    {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                </div>
+                                <div
+                                    className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
+                                    onClick={() => handleSort('role')}
+                                >
+                                    {t('common.role')}
+                                    {sortConfig?.key === 'role' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                </div>
+                                <div
+                                    className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
+                                    onClick={() => handleSort('status')}
+                                >
+                                    {t('common.status.label')}
+                                    {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                </div>
+                                <div
+                                    className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
+                                    onClick={() => handleSort('access')}
+                                >
+                                    {t('owner.staff.access')}
+                                    {sortConfig?.key === 'access' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                </div>
+                                <div className="col-span-2 text-center flex justify-center">{t('common.actions')}</div>
+                            </div>
+                            <div className="divide-y divide-gray-100 dark:divide-white/5">
+                                {paginatedEmployees.map((emp) => (
+                                    <div
+                                        key={emp.id}
+                                        className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors items-center"
+                                    >
+                                        <div className="col-span-4 flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-[12px] bg-gray-100 dark:bg-white/5 flex items-center justify-center text-sm font-bold text-gray-900 dark:text-white">
+                                                {emp.firstName.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{emp.firstName} {emp.lastName}</h3>
+                                                <p className="dashboard-card-meta">{emp.username}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-span-2 text-center flex justify-center">
+                                            {getRoleBadge(emp.role)}
+                                        </div>
+                                        <div className="col-span-2 text-center flex justify-center">
+                                            {getStatusBadge(emp.hasActiveShift)}
+                                        </div>
+                                        <div className="col-span-2 text-sm font-bold text-gray-900 dark:text-white text-center flex justify-center">
+                                            {t('owner.staff.locationsCount', { count: emp.assignments?.length || 0 })}
+                                        </div>
+                                        <div className="col-span-2 text-center flex items-center justify-center gap-2">
+                                            <button
+                                                onClick={() => { setEditingEmployee(emp); setIsFormModalOpen(true); }}
+                                                className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/5"
+                                            >
+                                                {t('common.edit')}
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteEmployee(emp.id)}
+                                                className="p-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
+                                variant="footer"
+                            />
+                        </div>
+                    )}
+                    {viewMode === 'grid' && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                        />
+                    )}
                 </>
             )}
 

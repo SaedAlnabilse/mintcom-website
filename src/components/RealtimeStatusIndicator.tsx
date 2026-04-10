@@ -34,6 +34,8 @@ export const RealtimeStatusIndicator: React.FC = () => {
   const getStatusConfig = () => {
     switch (status) {
       case 'connected':
+      case 'disconnected':
+      default:
         return {
           icon: (
             <div className="relative flex h-2 w-2 mx-0.5">
@@ -62,15 +64,6 @@ export const RealtimeStatusIndicator: React.FC = () => {
           bgColor: 'bg-red-500/10',
           borderColor: 'border-red-500/20',
         };
-      case 'disconnected':
-      default:
-        return {
-          icon: <WifiOff size={14} />,
-          text: t('common.status.offline'),
-          color: 'text-gray-400',
-          bgColor: 'bg-gray-50/10',
-          borderColor: 'border-gray-500/20',
-        };
     }
   };
 
@@ -86,7 +79,7 @@ export const RealtimeStatusIndicator: React.FC = () => {
     <button
       onClick={handleClick}
       className={`
-        flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium
+        flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-[0.1em]
         ${config.bgColor} ${config.color} ${config.borderColor}
         border transition-all duration-200 hover:opacity-80
         ${(status === 'disconnected' || status === 'error') ? 'cursor-pointer' : 'cursor-default'}
@@ -94,7 +87,7 @@ export const RealtimeStatusIndicator: React.FC = () => {
       title={status === 'disconnected' || status === 'error' ? t('common.status.reconnect') : `${t('common.status.label')}: ${t(`common.status.${status}`)}`}
     >
       {config.icon}
-      <span className="hidden sm:inline">{config.text}</span>
+      <span className="hidden sm:inline-block">{config.text}</span>
     </button>
   );
 };

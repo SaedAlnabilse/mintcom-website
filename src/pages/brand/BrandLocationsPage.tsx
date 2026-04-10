@@ -539,246 +539,253 @@ export function BrandLocationsPage() {
                         </button>
                     )}
                 </div>
-            ) : viewMode === 'grid' ? (
-                /* Grid View */
-                <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
-                    {paginatedLocations.map((loc) => {
-                        const Icon = getBusinessTypeIcon(loc.type);
-                        return (
-                            <div
-                                key={loc.id}
-                                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 cursor-pointer transition-all shadow-sm hover:shadow-lg overflow-hidden"
-                            >
-                                {/* Hover gradient */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                                {/* Header */}
-                                <div className="flex items-start justify-between mb-6 relative z-10">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center text-gray-500 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-all">
-                                            <Icon size={28} />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
-                                                {loc.name}
-                                            </h3>
-                                            <div className="flex items-center gap-2 mt-1">
-                                                <span className="dashboard-card-meta">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : t('onboarding.step1.businessTypes.restaurant')}</span>
-                                                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                <span className="dashboard-card-meta">{loc.currency ? loc.currency.toUpperCase() : 'USD'}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="relative">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setActiveMenu(activeMenu === loc.id ? null : loc.id);
-                                            }}
-                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
-                                        >
-                                            <MoreVertical size={18} />
-                                        </button>
-
-                                        {activeMenu === loc.id && (
-                                            <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                            >
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleLocationClick(loc);
-                                                    }}
-                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                >
-                                                    <Eye size={16} />
-                                                    {t('brand.dashboard.viewDashboard')}
-                                                </button>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setSecurityModal({
-                                                            isOpen: true,
-                                                            targetId: loc.id,
-                                                            targetName: loc.name
-                                                        });
-                                                        setActiveMenu(null);
-                                                    }}
-                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                                >
-                                                    <Trash2 size={16} />
-                                                    {t('brand.dashboard.dissolveLocation')}
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Status Badge */}
-                                <div className="mb-6">
-                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
-                                        <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
-                                        {loc.subscriptionStatus === 'ACTIVE' ? t('common.active') :
-                                         loc.subscriptionStatus === 'INACTIVE' ? t('paymentMethods.messages.notActive') :
-                                         loc.subscriptionStatus === 'TRIAL' ? t('owner.locations.trial') :
-                                         loc.subscriptionStatus}
-                                    </span>
-                                </div>
-
-                                {/* Stats Grid */}
-                                <div className="grid grid-cols-2 gap-3 mb-6">
-                                    <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="dashboard-card-label mb-1">{t('brand.dashboard.revenue')}</p>
-                                        <p className="text-base font-bold text-gray-900 dark:text-white">{formatCurrency(loc.totalRevenue || 0)}</p>
-                                    </div>
-                                    <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="dashboard-card-label mb-1">{t('brand.dashboard.orders')}</p>
-                                        <p className="text-base font-bold text-gray-900 dark:text-white">{loc.orderCount}</p>
-                                    </div>
-                                    <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="dashboard-card-label mb-1">{t('brand.dashboard.staff')}</p>
-                                        <p className="text-base font-bold text-gray-900 dark:text-white">{loc.employeeCount}</p>
-                                    </div>
-                                    <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="dashboard-card-label mb-1">{t('dashboard.menu.products')}</p>
-                                        <p className="text-base font-bold text-gray-900 dark:text-white">{loc.itemCount}</p>
-                                    </div>
-                                </div>
-
-                                {/* Action Button */}
-                                <button
-                                    onClick={() => handleLocationClick(loc)}
-                                    className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-paymint-green hover:text-black transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-paymint-green"
-                                >
-                                    <span>{t('brand.dashboard.openDashboard')}</span>
-                                    <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
-                                </button>
-                            </div>
-                        );
-                    })}
-                </div>
             ) : (
-                /* List View */
-                <div className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
-                    {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-meta tracking-wide">
-                        <div className="col-span-3">{t('common.location')}</div>
-                        <div className="col-span-2">{t('common.status.label')}</div>
-                        <div className="col-span-2 text-right">{t('brand.dashboard.revenue')}</div>
-                        <div className="col-span-1 text-right">{t('brand.dashboard.orders')}</div>
-                        <div className="col-span-1 text-right">{t('brand.dashboard.staff')}</div>
-                        <div className="col-span-1 text-right">{t('dashboard.menu.products')}</div>
-                        <div className="col-span-2 text-right">{t('common.actions')}</div>
-                    </div>
+                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                    {viewMode === 'grid' ? (
+                        /* Grid View */
+                        <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
+                            {paginatedLocations.map((loc) => {
+                                const Icon = getBusinessTypeIcon(loc.type);
+                                return (
+                                    <div
+                                        key={loc.id}
+                                        className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 cursor-pointer transition-all shadow-sm hover:shadow-lg overflow-hidden"
+                                    >
+                                        {/* Hover gradient */}
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                    {/* Table Body */}
-                    <div className="divide-y divide-gray-100 dark:divide-white/5">
-                        {paginatedLocations.map((loc) => {
-                            const Icon = getBusinessTypeIcon(loc.type);
-                            return (
-                                <div
-                                    key={loc.id}
-                                    className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group items-center"
-                                    onClick={() => handleLocationClick(loc)}
-                                >
-                                    {/* Location Info */}
-                                    <div className="col-span-3 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
-                                            <Icon size={20} />
-                                        </div>
-                                        <div className="min-w-0">
-                                            <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate" title={loc.name}>
-                                                {loc.name}
-                                            </h3>
-                                            <p className="text-xs text-gray-500 mt-0.5 truncate">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : t('onboarding.step1.businessTypes.restaurant')} - {loc.currency ? loc.currency.toUpperCase() : 'USD'}</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Status */}
-                                    <div className="col-span-2 flex items-center">
-                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(loc.subscriptionStatus)}`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
-                                            {loc.subscriptionStatus === 'ACTIVE' ? t('common.active') :
-                                             loc.subscriptionStatus === 'INACTIVE' ? t('paymentMethods.messages.notActive') :
-                                             loc.subscriptionStatus === 'TRIAL' ? t('owner.locations.trial') :
-                                             loc.subscriptionStatus}
-                                        </span>
-                                    </div>
-
-                                    {/* Revenue */}
-                                    <div className="col-span-2 flex items-center justify-end">
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                            {formatCurrency(loc.totalRevenue || 0)}
-                                        </span>
-                                    </div>
-
-                                    {/* Orders */}
-                                    <div className="col-span-1 flex items-center justify-end">
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.orderCount}</span>
-                                    </div>
-
-                                    {/* Staff */}
-                                    <div className="col-span-1 flex items-center justify-end">
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.employeeCount}</span>
-                                    </div>
-
-
-                                    {/* Products */}
-                                    <div className="col-span-1 flex items-center justify-end">
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.itemCount}</span>
-                                    </div>
-                                    {/* Actions */}
-                                    <div className="col-span-2 flex items-center justify-end relative">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setActiveMenu(activeMenu === loc.id ? null : loc.id);
-                                            }}
-                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-600 transition-colors"
-                                        >
-                                            <MoreVertical size={18} />
-                                        </button>
-
-                                        {activeMenu === loc.id && (
-                                            <div className="absolute right-8 top-1/2 -translate-y-1/2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                            >
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleLocationClick(loc);
-                                                        setActiveMenu(null);
-                                                    }}
-                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                >
-                                                    <Eye size={16} />
-                                                    {t('brand.dashboard.viewDashboard')}
-                                                </button>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setSecurityModal({
-                                                            isOpen: true,
-                                                            targetId: loc.id,
-                                                            targetName: loc.name
-                                                        });
-                                                        setActiveMenu(null);
-                                                    }}
-                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                                >
-                                                    <Trash2 size={16} />
-                                                    {t('brand.dashboard.dissolveLocation')}
-                                                </button>
+                                        {/* Header */}
+                                        <div className="flex items-start justify-between mb-6 relative z-10">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-14 h-14 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center text-gray-500 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-all">
+                                                    <Icon size={28} />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
+                                                        {loc.name}
+                                                    </h3>
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                        <span className="dashboard-card-meta">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : t('onboarding.step1.businessTypes.restaurant')}</span>
+                                                        <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
+                                                        <span className="dashboard-card-meta">{loc.currency ? loc.currency.toUpperCase() : 'USD'}</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        )}
+
+                                            <div className="relative">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setActiveMenu(activeMenu === loc.id ? null : loc.id);
+                                                    }}
+                                                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                                >
+                                                    <MoreVertical size={18} />
+                                                </button>
+
+                                                {activeMenu === loc.id && (
+                                                    <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                    >
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleLocationClick(loc);
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                        >
+                                                            <Eye size={16} />
+                                                            {t('brand.dashboard.viewDashboard')}
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setSecurityModal({
+                                                                    isOpen: true,
+                                                                    targetId: loc.id,
+                                                                    targetName: loc.name
+                                                                });
+                                                                setActiveMenu(null);
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                            {t('brand.dashboard.dissolveLocation')}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Status Badge */}
+                                        <div className="mb-6">
+                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
+                                                <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
+                                                {loc.subscriptionStatus === 'ACTIVE' ? t('common.active') :
+                                                 loc.subscriptionStatus === 'INACTIVE' ? t('paymentMethods.messages.notActive') :
+                                                 loc.subscriptionStatus === 'TRIAL' ? t('owner.locations.trial') :
+                                                 loc.subscriptionStatus}
+                                            </span>
+                                        </div>
+
+                                        {/* Stats Grid */}
+                                        <div className="grid grid-cols-2 gap-3 mb-6">
+                                            <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
+                                                <p className="dashboard-card-label mb-1">{t('brand.dashboard.revenue')}</p>
+                                                <p className="text-base font-bold text-gray-900 dark:text-white">{formatCurrency(loc.totalRevenue || 0)}</p>
+                                            </div>
+                                            <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
+                                                <p className="dashboard-card-label mb-1">{t('brand.dashboard.orders')}</p>
+                                                <p className="text-base font-bold text-gray-900 dark:text-white">{loc.orderCount}</p>
+                                            </div>
+                                            <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
+                                                <p className="dashboard-card-label mb-1">{t('brand.dashboard.staff')}</p>
+                                                <p className="text-base font-bold text-gray-900 dark:text-white">{loc.employeeCount}</p>
+                                            </div>
+                                            <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
+                                                <p className="dashboard-card-label mb-1">{t('dashboard.menu.products')}</p>
+                                                <p className="text-base font-bold text-gray-900 dark:text-white">{loc.itemCount}</p>
+                                            </div>
+                                        </div>
+
+                                        {/* Action Button */}
+                                        <button
+                                            onClick={() => handleLocationClick(loc)}
+                                            className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-paymint-green hover:text-black transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-paymint-green"
+                                        >
+                                            <span>{t('brand.dashboard.openDashboard')}</span>
+                                            <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                                        </button>
                                     </div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        /* List View */
+                        <div className={`transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
+                            {/* Table Header */}
+                            <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-meta tracking-wide">
+                                <div className="col-span-3">{t('common.location')}</div>
+                                <div className="col-span-2 text-center">{t('common.status.label')}</div>
+                                <div className="col-span-2 text-center">{t('brand.dashboard.revenue')}</div>
+                                <div className="col-span-1 text-center">{t('brand.dashboard.orders')}</div>
+                                <div className="col-span-1 text-center">{t('brand.dashboard.staff')}</div>
+                                <div className="col-span-1 text-center">{t('dashboard.menu.products')}</div>
+                                <div className="col-span-2 text-center">{t('common.actions')}</div>
+                            </div>
+
+                            {/* Table Body */}
+                            <div className="divide-y divide-gray-100 dark:divide-white/5">
+                                {paginatedLocations.map((loc) => {
+                                    const Icon = getBusinessTypeIcon(loc.type);
+                                    return (
+                                        <div
+                                            key={loc.id}
+                                            className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group items-center"
+                                            onClick={() => handleLocationClick(loc)}
+                                        >
+                                            {/* Location Info */}
+                                            <div className="col-span-3 flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
+                                                    <Icon size={20} />
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate" title={loc.name}>
+                                                        {loc.name}
+                                                    </h3>
+                                                    <p className="text-xs text-gray-500 mt-0.5 truncate">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : t('onboarding.step1.businessTypes.restaurant')} - {loc.currency ? loc.currency.toUpperCase() : 'USD'}</p>
+                                                </div>
+                                            </div>
+
+                                            {/* Status */}
+                                            <div className="col-span-2 flex items-center justify-center">
+                                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(loc.subscriptionStatus)}`}>
+                                                    <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
+                                                    {loc.subscriptionStatus === 'ACTIVE' ? t('common.active') :
+                                                     loc.subscriptionStatus === 'INACTIVE' ? t('paymentMethods.messages.notActive') :
+                                                     loc.subscriptionStatus === 'TRIAL' ? t('owner.locations.trial') :
+                                                     loc.subscriptionStatus}
+                                                </span>
+                                            </div>
+
+                                            {/* Revenue */}
+                                            <div className="col-span-2 flex items-center justify-center">
+                                                <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                                    {formatCurrency(loc.totalRevenue || 0)}
+                                                </span>
+                                            </div>
+
+                                            {/* Orders */}
+                                            <div className="col-span-1 flex items-center justify-center">
+                                                <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.orderCount}</span>
+                                            </div>
+
+                                            {/* Staff */}
+                                            <div className="col-span-1 flex items-center justify-center">
+                                                <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.employeeCount}</span>
+                                            </div>
+
+
+                                            {/* Products */}
+                                            <div className="col-span-1 flex items-center justify-center">
+                                                <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.itemCount}</span>
+                                            </div>
+                                            {/* Actions */}
+                                            <div className="col-span-2 flex items-center justify-center relative">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setActiveMenu(activeMenu === loc.id ? null : loc.id);
+                                                    }}
+                                                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-600 transition-colors"
+                                                >
+                                                    <MoreVertical size={18} />
+                                                </button>
+
+                                                {activeMenu === loc.id && (
+                                                    <div className="absolute right-8 top-1/2 -translate-y-1/2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                    >
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleLocationClick(loc);
+                                                                setActiveMenu(null);
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                        >
+                                                            <Eye size={16} />
+                                                            {t('brand.dashboard.viewDashboard')}
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setSecurityModal({
+                                                                    isOpen: true,
+                                                                    targetId: loc.id,
+                                                                    targetName: loc.name
+                                                                });
+                                                                setActiveMenu(null);
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                            {t('brand.dashboard.dissolveLocation')}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
                         onPageChange={setCurrentPage}
+                        variant="footer"
+                        totalItems={filteredLocations.length}
+                        itemsPerPage={ITEMS_PER_PAGE}
                     />
                 </div>
             )}

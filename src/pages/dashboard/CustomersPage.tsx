@@ -479,9 +479,9 @@ export function CustomersPage() {
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
                     <th className="px-6 py-4 text-left dashboard-card-label">{t('customers.form.name')}</th>
-                    <th className="px-6 py-4 text-left dashboard-card-label">{t('customers.details.points')}</th>
-                    <th className="px-6 py-4 text-left dashboard-card-label">{t('staff.table.contact')}</th>
-                    <th className="px-6 py-4 text-left dashboard-card-label">{t('customers.details.spent')}</th>
+                    <th className="px-6 py-4 text-center dashboard-card-label">{t('customers.details.points')}</th>
+                    <th className="px-6 py-4 text-center dashboard-card-label">{t('staff.table.contact')}</th>
+                    <th className="px-6 py-4 text-center dashboard-card-label">{t('customers.details.spent')}</th>
                     <th className="px-6 py-4 text-center dashboard-card-label">{t('owner.locations.actions')}</th>
                   </tr>
                 </thead>
@@ -506,14 +506,14 @@ export function CustomersPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col gap-1">
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex flex-col gap-1 items-center justify-center">
                           <p className="text-sm font-black text-paymint-green">{customer.points}</p>
                           <p className="dashboard-card-label">{t('rewards.points')}</p>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="space-y-1">
+                      <td className="px-6 py-4 text-center">
+                        <div className="space-y-1 flex flex-col items-center justify-center">
                           <div className="flex items-center gap-2 text-xs text-gray-500">
                             <Phone size={12} className="text-gray-400" />
                             <span className="font-medium">{customer.phone}</span>
@@ -524,7 +524,7 @@ export function CustomersPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 text-center">
                         <p className="font-black text-gray-900 dark:text-white text-sm">{customer.totalSpent.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}</p>
                         <p className="text-xs text-paymint-green font-black tracking-widest">{t('common.active')}</p>
                       </td>
@@ -559,7 +559,12 @@ export function CustomersPage() {
                 </tbody>
               </table>
             </div>
-            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+              variant="footer"
+            />
           </>
         )}
       </div>

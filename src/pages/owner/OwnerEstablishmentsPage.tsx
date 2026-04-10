@@ -299,158 +299,48 @@ export function OwnerEstablishmentsPage() {
                 </div>
             ) : viewMode === 'grid' ? (
                 /* Grid View */
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {paginatedEstablishments.map((est) => {
-                        const Icon = getBusinessTypeIcon(est.type);
-                        return (
-                            <div
-                                key={est.id}
-                                id={`establishment-${est.id}`}
-                                className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${est.id === highlightId
-                                    ? 'border-paymint-green ring-2 ring-paymint-green/50 shadow-xl shadow-paymint-green/20'
-                                    : 'border-gray-200 dark:border-white/5 hover:border-blue-500/30'
-                                    }`}
-                                onClick={() => handleEstablishmentClick(est)}
-                            >
-                                {/* Hover gradient */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {paginatedEstablishments.map((est) => {
+                            const Icon = getBusinessTypeIcon(est.type);
+                            return (
+                                <div
+                                    key={est.id}
+                                    id={`establishment-${est.id}`}
+                                    className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${est.id === highlightId
+                                        ? 'border-paymint-green ring-2 ring-paymint-green/50 shadow-xl shadow-paymint-green/20'
+                                        : 'border-gray-200 dark:border-white/5 hover:border-blue-500/30'
+                                        }`}
+                                    onClick={() => handleEstablishmentClick(est)}
+                                >
+                                    {/* Hover gradient */}
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                                {est.id === highlightId && (
-                                    <div className="absolute top-0 right-0 p-2">
-                                        <span className="bg-paymint-green text-black text-xs font-black px-2 py-1 rounded-bl-xl rounded-tr-xl tracking-widest shadow-sm">{t('owner.locations.new')}</span>
-                                    </div>
-                                )}
+                                    {est.id === highlightId && (
+                                        <div className="absolute top-0 right-0 p-2">
+                                            <span className="bg-paymint-green text-black text-xs font-black px-2 py-1 rounded-bl-xl rounded-tr-xl tracking-widest shadow-sm">{t('owner.locations.new')}</span>
+                                        </div>
+                                    )}
 
-                                {/* Content Container */}
-                                <div className="relative z-10">
-                                    {/* Header */}
-                                    <div className="flex items-start justify-between mb-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
-                                                <Icon size={28} />
-                                            </div>
-                                            <div>                                                <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
-                                                {est.name}
-                                            </h3>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-xs font-bold text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}</span>
-                                                    <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                    <span className="text-xs font-bold text-gray-500">{est.currency || 'JOD'}</span>
+                                    {/* Content Container */}
+                                    <div className="relative z-10">
+                                        {/* Header */}
+                                        <div className="flex items-start justify-between mb-6">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
+                                                    <Icon size={28} />
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="relative">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setActiveMenu(activeMenu === est.id ? null : est.id);
-                                                }}
-                                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
-                                            >
-                                                <MoreVertical size={18} />
-                                            </button>
-
-                                            {activeMenu === est.id && (
-                                                <div
-                                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                                >
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleEstablishmentClick(est);
-                                                            }}
-                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                        >
-                                                            <Eye size={16} />
-                                                            {t('owner.locations.enter')}
-                                                        </button>
-                                                        <button
-                                                            onClick={(e) => e.stopPropagation()}
-                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                        >
-                                                            <Settings size={16} />
-                                                            {t('common.settings')}
-                                                        </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Status Badge */}
-                                    <div className="mb-6">
-                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' :
-                                                est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
-                                                    'bg-red-500'
-                                                }`} />
-                                            {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
-                                        </span>
-                                    </div>
-
-                                    {/* Quick Stats */}
-                                    <div className="grid grid-cols-2 gap-3 mb-6">
-                                        <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
-                                            <div className="flex items-center gap-2 mb-1 text-gray-400">
-                                                <DollarSign size={12} />
-                                                <p className="text-xs font-bold tracking-wide">{t('owner.locations.currency')}</p>
-                                            </div>
-                                            <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</p>
-                                        </div>
-                                        <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
-                                            <div className="flex items-center gap-2 mb-1 text-gray-400">
-                                                <Zap size={12} />
-                                                <p className="text-xs font-bold tracking-wide">{t('owner.locations.status')}</p>
-                                            </div>
-                                            <p className="text-sm font-bold text-paymint-green">{t('owner.locations.online')}</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Action Button */}
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleEstablishmentClick(est);
-                                        }}
-                                        className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-blue-500 shadow-sm"
-                                    >
-                                        <span>{t('owner.locations.open')}</span>
-                                        <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
-                                    </button>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            ) : (
-                /* List View */
-                <>
-                    <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                        {/* Mobile Card View */}
-                        <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-                            {paginatedEstablishments.map((est) => {
-                                const Icon = getBusinessTypeIcon(est.type);
-                                return (
-                                    <div
-                                        key={est.id}
-                                        className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer ${est.id === highlightId ? 'bg-paymint-green/5' : ''}`}
-                                        onClick={() => handleEstablishmentClick(est)}
-                                    >
-                                        <div className="flex items-start justify-between mb-3">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400">
-                                                    <Icon size={20} />
-                                                </div>
-                                                <div>
-                                                    <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{est.name}</h3>
+                                                <div>                                                <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
+                                                    {est.name}
+                                                </h3>
                                                     <div className="flex items-center gap-2 mt-1">
-                                                        <span className="text-xs text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}</span>
-                                                        {est.id === highlightId && (
-                                                            <span className="text-xs text-paymint-green font-bold tracking-wider">{t('owner.locations.new')}</span>
-                                                        )}
+                                                        <span className="text-xs font-bold text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}</span>
+                                                        <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
+                                                        <span className="text-xs font-bold text-gray-500">{est.currency || 'JOD'}</span>
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div className="relative">
                                                 <button
                                                     onClick={(e) => {
@@ -459,92 +349,38 @@ export function OwnerEstablishmentsPage() {
                                                     }}
                                                     className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
                                                 >
-                                                    <MoreVertical size={16} />
+                                                    <MoreVertical size={18} />
                                                 </button>
+
                                                 {activeMenu === est.id && (
                                                     <div
-                                                        className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                        className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
                                                     >
                                                             <button
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
                                                                     handleEstablishmentClick(est);
                                                                 }}
-                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                                className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                             >
-                                                                <Eye size={14} /> {t('owner.locations.view')}
+                                                                <Eye size={16} />
+                                                                {t('owner.locations.enter')}
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => e.stopPropagation()}
+                                                                className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                            >
+                                                                <Settings size={16} />
+                                                                {t('common.settings')}
                                                             </button>
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
-                                                <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
-                                                {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
-                                            </span>
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</span>
-                                        </div>
-                                        <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-                                            {t('owner.brands.created')}: <span className="font-semibold text-gray-700 dark:text-gray-200">{formatCreatedDate(est.createdAt)}</span>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
 
-                        {/* Desktop Table Header */}
-                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 label-strong uppercase items-center">
-                            <div className="col-span-3 flex items-center gap-4">
-                                <div className="w-10" />
-                                <span>{t('owner.locations.title')}</span>
-                            </div>
-                            <div className="col-span-2">{t('owner.locations.type')}</div>
-                            <div className="col-span-2">{t('owner.locations.status')}</div>
-                            <div className="col-span-1">{t('owner.locations.currency')}</div>
-                            <div className="col-span-2">{t('owner.brands.created')}</div>
-                            <div className="col-span-2 text-center">{t('owner.locations.actions')}</div>
-                        </div>
-
-                        {/* Desktop Table Body */}
-                        <div className="hidden md:block divide-y divide-gray-100 dark:divide-white/5">
-                            {paginatedEstablishments.map((est) => {
-                                const Icon = getBusinessTypeIcon(est.type);
-                                return (
-                                    <div
-                                        key={est.id}
-                                        id={`establishment-${est.id}`}
-                                        className={`grid grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group items-center ${est.id === highlightId
-                                            ? 'bg-paymint-green/5 ring-1 ring-paymint-green inset-0 z-10'
-                                            : ''
-                                            }`}
-                                        onClick={() => handleEstablishmentClick(est)}
-                                    >
-                                        {/* Info */}
-                                        <div className="col-span-3 flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
-                                                <Icon size={20} />
-                                            </div>
-                                            <div className="min-w-0">
-                                                <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate" title={est.name}>
-                                                    {est.name}
-                                                </h3>
-                                                {est.id === highlightId && (
-                                                    <span className="text-xs text-paymint-green font-bold tracking-wider">{t('owner.locations.new')}</span>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {/* Type */}
-                                        <div className="col-span-2 flex items-center">
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                                {est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}
-                                            </span>
-                                        </div>
-
-                                        {/* Status */}
-                                        <div className="col-span-2 flex items-center">
-                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
+                                        {/* Status Badge */}
+                                        <div className="mb-6">
+                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
                                                 <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' :
                                                     est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                         'bg-red-500'
@@ -553,43 +389,217 @@ export function OwnerEstablishmentsPage() {
                                             </span>
                                         </div>
 
-                                        {/* Currency */}
-                                        <div className="col-span-1 flex items-center">
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                                {est.currency || 'JOD'}
-                                            </span>
+                                        {/* Quick Stats */}
+                                        <div className="grid grid-cols-2 gap-3 mb-6">
+                                            <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
+                                                <div className="flex items-center gap-2 mb-1 text-gray-400">
+                                                    <DollarSign size={12} />
+                                                    <p className="text-xs font-bold tracking-wide">{t('owner.locations.currency')}</p>
+                                                </div>
+                                                <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</p>
+                                            </div>
+                                            <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
+                                                <div className="flex items-center gap-2 mb-1 text-gray-400">
+                                                    <Zap size={12} />
+                                                    <p className="text-xs font-bold tracking-wide">{t('owner.locations.status')}</p>
+                                                </div>
+                                                <p className="text-sm font-bold text-paymint-green">{t('owner.locations.online')}</p>
+                                            </div>
                                         </div>
 
-
-                                        {/* Created */}
-                                        <div className="col-span-2 flex items-center">
-                                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                                                {formatCreatedDate(est.createdAt)}
-                                            </span>
-                                        </div>
-                                        {/* Actions */}
-                                        <div className="col-span-2 flex items-center justify-center gap-2">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleEstablishmentClick(est);
-                                                }}
-                                                className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-[#68B390] transition-all flex items-center gap-2"
-                                            >
-                                                {t('owner.locations.enter')}
-                                            </button>
-                                        </div>
+                                        {/* Action Button */}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleEstablishmentClick(est);
+                                            }}
+                                            className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-blue-500 shadow-sm"
+                                        >
+                                            <span>{t('owner.locations.open')}</span>
+                                            <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                                        </button>
                                     </div>
-                                );
-                            })}
-                        </div>
+                                </div>
+                            );
+                        })}
                     </div>
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
                         onPageChange={setCurrentPage}
+                        totalItems={filteredEstablishments.length}
+                        itemsPerPage={ITEMS_PER_PAGE}
                     />
-                </>
+                </div>
+            ) : (
+                /* List View */
+                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                    {/* Mobile Card View */}
+                    <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                        {paginatedEstablishments.map((est) => {
+                            const Icon = getBusinessTypeIcon(est.type);
+                            return (
+                                <div
+                                    key={est.id}
+                                    className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer ${est.id === highlightId ? 'bg-paymint-green/5' : ''}`}
+                                    onClick={() => handleEstablishmentClick(est)}
+                                >
+                                    <div className="flex items-start justify-between mb-3">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400">
+                                                <Icon size={20} />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{est.name}</h3>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <span className="text-xs text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}</span>
+                                                    {est.id === highlightId && (
+                                                        <span className="text-xs text-paymint-green font-bold tracking-wider">{t('owner.locations.new')}</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="relative">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setActiveMenu(activeMenu === est.id ? null : est.id);
+                                                }}
+                                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                            >
+                                                <MoreVertical size={16} />
+                                            </button>
+                                            {activeMenu === est.id && (
+                                                <div
+                                                    className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                >
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleEstablishmentClick(est);
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                        >
+                                                            <Eye size={14} /> {t('owner.locations.view')}
+                                                        </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
+                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
+                                            {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
+                                        </span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</span>
+                                    </div>
+                                    <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                                        {t('owner.brands.created')}: <span className="font-semibold text-gray-700 dark:text-gray-200">{formatCreatedDate(est.createdAt)}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Desktop Table Header */}
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 label-strong uppercase items-center">
+                        <div className="col-span-3 flex items-center gap-4">
+                            <div className="w-10" />
+                            <span>{t('owner.locations.title')}</span>
+                        </div>
+                        <div className="col-span-2 text-center flex justify-center">{t('owner.locations.type')}</div>
+                        <div className="col-span-2 text-center flex justify-center">{t('owner.locations.status')}</div>
+                        <div className="col-span-1 text-center flex justify-center">{t('owner.locations.currency')}</div>
+                        <div className="col-span-2 text-center flex justify-center">{t('owner.brands.created')}</div>
+                        <div className="col-span-2 text-center flex justify-center">{t('owner.locations.actions')}</div>
+                    </div>
+
+                    {/* Desktop Table Body */}
+                    <div className="hidden md:block divide-y divide-gray-100 dark:divide-white/5">
+                        {paginatedEstablishments.map((est) => {
+                            const Icon = getBusinessTypeIcon(est.type);
+                            return (
+                                <div
+                                    key={est.id}
+                                    id={`establishment-${est.id}`}
+                                    className={`grid grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group items-center ${est.id === highlightId
+                                        ? 'bg-paymint-green/5 ring-1 ring-paymint-green inset-0 z-10'
+                                        : ''
+                                        }`}
+                                    onClick={() => handleEstablishmentClick(est)}
+                                >
+                                    {/* Info */}
+                                    <div className="col-span-3 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
+                                            <Icon size={20} />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate" title={est.name}>
+                                                {est.name}
+                                            </h3>
+                                            {est.id === highlightId && (
+                                                <span className="text-xs text-paymint-green font-bold tracking-wider">{t('owner.locations.new')}</span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Type */}
+                                    <div className="col-span-2 flex items-center justify-center text-center">
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white text-center">
+                                            {est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}
+                                        </span>
+                                    </div>
+
+                                    {/* Status */}
+                                    <div className="col-span-2 flex items-center justify-center text-center">
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
+                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' :
+                                                est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
+                                                    'bg-red-500'
+                                                }`} />
+                                            {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
+                                        </span>
+                                    </div>
+
+                                    {/* Currency */}
+                                    <div className="col-span-1 flex items-center justify-center text-center">
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white text-center">
+                                            {est.currency || 'JOD'}
+                                        </span>
+                                    </div>
+
+
+                                    {/* Created */}
+                                    <div className="col-span-2 flex items-center justify-center text-center">
+                                        <span className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                                            {formatCreatedDate(est.createdAt)}
+                                        </span>
+                                    </div>
+                                    {/* Actions */}
+                                    <div className="col-span-2 flex items-center justify-center gap-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleEstablishmentClick(est);
+                                            }}
+                                            className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-[#68B390] transition-all flex items-center gap-2"
+                                        >
+                                            {t('owner.locations.enter')}
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                        variant="footer"
+                        totalItems={filteredEstablishments.length}
+                        itemsPerPage={ITEMS_PER_PAGE}
+                    />
+                </div>
             )}
         </div>
     );

@@ -478,8 +478,8 @@ export function RecipesPage() {
                     <thead className="bg-gray-50 dark:bg-white/[0.02]">
                       <tr className="border-b border-gray-200 dark:border-white/5">
                         <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('inventory.form.name', {defaultValue: 'NAME'})}</th>
-                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('inventory.quantity', {defaultValue: 'QUANTITY'})}</th>
-                        <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.table.actions', {defaultValue: 'ACTIONS'})}</th>
+                        <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('inventory.quantity', {defaultValue: 'QUANTITY'})}</th>
+                        <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.table.actions', {defaultValue: 'ACTIONS'})}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -488,7 +488,7 @@ export function RecipesPage() {
                         const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
                         return (
                           <tr key={m.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
-                            <td className="px-6 py-4">
+                            <td className="px-6 py-4 text-left">
                               <div className="flex items-center gap-3">
                                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs border ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
                                   {m.name.charAt(0).toUpperCase()}
@@ -496,12 +496,12 @@ export function RecipesPage() {
                                 <span className="font-bold text-gray-900 dark:text-white text-sm">{m.name}</span>
                               </div>
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-6 py-4 text-center">
                               <span className="font-bold text-gray-900 dark:text-white">{(Number(m.quantity || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                               <span className="ml-1 text-xs font-medium text-gray-500">{m.unit}</span>
                             </td>
-                            <td className="px-6 py-4 text-right">
-                              <div className="flex items-center justify-end gap-2 transition-opacity">
+                            <td className="px-6 py-4 text-center">
+                              <div className="flex items-center justify-center gap-2 transition-opacity">
                                 <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors"><Edit2 size={14} /></button>
                                 <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors"><Trash2 size={14} /></button>
                               </div>
@@ -516,6 +516,9 @@ export function RecipesPage() {
                   currentPage={page}
                   totalPages={totalPages}
                   onPageChange={setPage}
+                  totalItems={filteredMaterials.length}
+                  itemsPerPage={itemsPerPage}
+                  variant="footer"
                 />
               </div>
             ) : (
@@ -583,6 +586,9 @@ export function RecipesPage() {
                   currentPage={page}
                   totalPages={totalPages}
                   onPageChange={setPage}
+                  totalItems={(activeTab === 'final' ? filteredFinal : filteredSub).length}
+                  itemsPerPage={itemsPerPage}
+                  className="mt-6"
                 />
               </>
             )}

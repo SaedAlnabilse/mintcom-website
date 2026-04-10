@@ -117,7 +117,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
           {hasRevenueData ? (
             <div className="flex h-full relative" dir="ltr">
                 {/* Fixed Y-Axis Container */}
-                <div className="absolute start-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to right, ' + (isDark ? '#0B1120 80%, transparent' : '#FFFFFF 80%, transparent') + ')' }}>
+                <div className="absolute start-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to right, ' + (isDark ? '#1E293B 80%, transparent' : '#FFFFFF 80%, transparent') + ')' }}>
                 <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                     data={chartData}

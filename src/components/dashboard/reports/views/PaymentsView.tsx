@@ -41,35 +41,35 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.payments.totalCollected')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.payments.totalCollected')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {(salesData.totalRevenue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               <span className="text-sm mx-1 text-gray-400 font-black"> {currencySymbol}</span>
             </p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{t('orders.reports.payments.totalCollectedDesc')}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.payments.totalCollectedDesc')}</p>
           </div>
           <div className="absolute right-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
         </div>
 
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.payments.topMethod')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.payments.topMethod')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight text-ellipsis overflow-hidden whitespace-nowrap">
               {getMethodName([...(salesData.paymentMethodBreakdown || [])].sort((a: any, b: any) => b.value - a.value)[0]?.name)}
             </p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{t('orders.reports.payments.topMethodDesc')}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.payments.topMethodDesc')}</p>
           </div>
           <div className="absolute right-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
         </div>
 
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize">{t('orders.reports.payments.txnCount')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.payments.txnCount')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {(salesData.totalOrders || 0).toLocaleString(t('common.locale'))}
               <span className="text-sm mx-1 text-gray-400 font-black"> {t('dashboard.stats.orders')}</span>
             </p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{t('orders.reports.payments.txnCountDesc')}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.payments.txnCountDesc')}</p>
           </div>
           <div className="absolute right-0 top-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
         </div>
@@ -78,10 +78,14 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Detailed Distribution Chart */}
         <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-            <PieChartIcon size={20} className="text-paymint-green" />
-            {t('orders.reports.payments.distribution')}
-          </h3>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+              <PieChartIcon size={20} />
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+              {t('orders.reports.payments.distribution')}
+            </h3>
+          </div>
           <div className="h-[300px] w-full relative">
             {salesData.paymentMethodBreakdown && salesData.paymentMethodBreakdown.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -111,8 +115,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                     itemStyle={{
                       color: isDark ? '#fff' : '#111',
                       fontWeight: '800',
-                      fontSize: '12px',
-                      textTransform: 'capitalize'
+                      fontSize: '12px'
                     }}
                     formatter={(val: any) => formatCurrency(val)}
                     labelFormatter={(name: any) => getMethodName(name)}
@@ -140,12 +143,16 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
         {/* Breakdown Table */}
         <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col h-[400px]">
           <div className="p-6 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-shrink-0">
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <Activity size={20} className="text-paymint-green" />
-                {t('orders.reports.payments.details')}
-              </h3>
-              <p className="text-xs text-gray-500 mt-1">{t('orders.reports.payments.detailsDesc')}</p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                <Activity size={20} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  {t('orders.reports.payments.details')}
+                </h3>
+                <p className="text-xs text-gray-500 mt-1">{t('orders.reports.payments.detailsDesc')}</p>
+              </div>
             </div>
             <button
               onClick={() => navigate(`/dashboard/${locationSlug}/orders`, {

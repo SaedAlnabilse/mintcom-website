@@ -510,6 +510,9 @@ export function CategoriesPage() {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={(page) => setCurrentPage(page)}
+                totalItems={filteredCategories.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                className="mt-6"
               />
             </>
           ) : (
@@ -518,9 +521,9 @@ export function CategoriesPage() {
                 <table className="w-full">
                   <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
                     <tr>
-                      <th className="px-6 py-4 text-left dashboard-card-label w-16">{t('categories.table.icon')}</th>
+                      <th className="px-6 py-4 text-center dashboard-card-label w-16">{t('categories.table.icon')}</th>
                       <th className="px-6 py-4 text-left dashboard-card-label">{t('categories.table.name')}</th>
-                      <th className="px-6 py-4 text-left dashboard-card-label">{t('categories.table.items')}</th>
+                      <th className="px-6 py-4 text-center dashboard-card-label">{t('categories.table.items')}</th>
                       <th className="px-6 py-4 text-center dashboard-card-label w-32">{t('owner.locations.actions')}</th>
                     </tr>
                   </thead>
@@ -533,15 +536,15 @@ export function CategoriesPage() {
                           onClick={() => setViewingCategory(category)}
                           className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
                         >
-                          <td className="px-6 py-4">
-                            <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 group-hover:bg-paymint-green group-hover:text-black transition-colors">
+                          <td className="px-6 py-4 text-center">
+                            <div className="w-10 h-10 mx-auto rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 group-hover:bg-paymint-green group-hover:text-black transition-colors">
                               <IconComponent size={20} />
                             </div>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 text-left">
                             <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{category.name}</p>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 text-center">
                             <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 dashboard-card-meta">
                               <Package size={12} />
                               {category._count?.items || 0}
@@ -573,6 +576,9 @@ export function CategoriesPage() {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={(page) => setCurrentPage(page)}
+                totalItems={filteredCategories.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                variant="footer"
               />
             </div>
           )}

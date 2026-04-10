@@ -415,7 +415,7 @@ export function OwnerOverviewPage() {
                                 <Zap size={24} />
                             </div>
                             <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">{t('owner.overview.growBusiness')}</h3>
-                            <p className="text-sm font-bold text-gray-500 mb-6">{t('owner.overview.growBusinessDesc')}</p>
+                            <p className="text-sm font-normal text-gray-500 mb-6">{t('owner.overview.growBusinessDesc')}</p>
                             <div className="space-y-3">
                                 <button
                                     onClick={() => navigate('/onboarding')}

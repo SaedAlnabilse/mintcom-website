@@ -157,8 +157,8 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       value: null as any,
       sub: null as any,
       icon: Scale,
-      color: previousShiftSnapshot.discrepancy >= 0 ? 'text-paymint-green' : 'text-red-500',
-      bg: previousShiftSnapshot.discrepancy >= 0 ? 'bg-paymint-green/10' : 'bg-red-500/10',
+      color: previousShiftSnapshot.discrepancy > 0.01 ? 'text-amber-500' : previousShiftSnapshot.discrepancy < -0.01 ? 'text-red-500' : 'text-paymint-green',
+      bg: previousShiftSnapshot.discrepancy > 0.01 ? 'bg-amber-500/10' : previousShiftSnapshot.discrepancy < -0.01 ? 'bg-red-500/10' : 'bg-paymint-green/10',
       customContent: (
         <div className="space-y-3 mt-6">
           <div className="flex items-center justify-between">
@@ -173,7 +173,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
           <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.variance')}</span>
-            <span className={`text-sm font-bold tracking-tight ${previousShiftSnapshot.discrepancy > 0.01 ? 'text-paymint-green' : previousShiftSnapshot.discrepancy < -0.01 ? 'text-red-500' : 'text-gray-500'}`}>
+            <span className={`text-sm font-bold tracking-tight ${previousShiftSnapshot.discrepancy > 0.01 ? 'text-amber-500' : previousShiftSnapshot.discrepancy < -0.01 ? 'text-red-500' : 'text-gray-500'}`}>
               {previousShiftSnapshot.discrepancy > 0.01
                 ? `+${previousShiftSnapshot.discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t('dashboard.stats.over')}`
                 : previousShiftSnapshot.discrepancy < -0.01

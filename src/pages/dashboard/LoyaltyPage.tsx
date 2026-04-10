@@ -523,6 +523,9 @@ export function LoyaltyPage() {
                                         currentPage={currentPage}
                                         totalPages={totalPages}
                                         onPageChange={(page) => setCurrentPage(page)}
+                                        totalItems={rewards.length}
+                                        itemsPerPage={ITEMS_PER_PAGE}
+                                        className="mt-6"
                                     />
                                 </div>
                             )}

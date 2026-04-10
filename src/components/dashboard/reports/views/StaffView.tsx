@@ -40,7 +40,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
         <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transform rotate-3">
           <Users size={32} className="text-gray-400" />
         </div>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('orders.reports.staff.noActivity')}</h3>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{t('orders.reports.staff.noActivity')}</h3>
         <p className="text-xs font-medium text-gray-500 max-w-sm leading-relaxed">
           {t('orders.reports.staff.noActivityDesc')}
         </p>
@@ -132,8 +132,8 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
       {/* Overview Cards */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 flex items-center justify-center">
-            <Users size={24} className="text-paymint-green" />
+          <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+            <Users size={20} />
           </div>
           <div>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -146,37 +146,37 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {/* Total Hours */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalHours')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 truncate">{t('orders.reports.staff.totalHours')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{totalHours.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
+            <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerText}>{footerText}</p>
           </div>
 
           {/* Total Orders */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalOrders')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 truncate">{t('orders.reports.staff.totalOrders')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{totalOrders.toLocaleString(t('common.locale'))}</p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
+            <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerText}>{footerText}</p>
           </div>
 
           {/* Total Sales */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalSales')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 truncate">{t('orders.reports.staff.totalSales')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{formatCurrency(totalSales)}</p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
+            <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerText}>{footerText}</p>
           </div>
 
           {/* Total Discounts */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalDiscounts')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 truncate">{t('orders.reports.staff.totalDiscounts')}</p>
             <p className="text-2xl font-bold text-orange-500 tracking-tight mb-1">{formatCurrency(totalDiscounts)}</p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerIssuedText}</p>
+            <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerIssuedText}>{footerIssuedText}</p>
           </div>
 
           {/* Total Refunds */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalRefunds')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 truncate">{t('orders.reports.staff.totalRefunds')}</p>
             <p className="text-2xl font-bold text-red-500 tracking-tight mb-1">{formatCurrency(totalRefunds)}</p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
+            <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerText}>{footerText}</p>
           </div>
 
           {/* Variances */}
@@ -184,13 +184,13 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
             onClick={() => navigate(`/dashboard/${activeSlug}/reports/shifts`)}
             className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden cursor-pointer group"
           >
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 group-hover:text-paymint-green transition-colors tracking-wide mb-1 capitalize truncate">{t('orders.reports.staff.totalVariances')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 group-hover:text-paymint-green transition-colors tracking-wide mb-1 truncate">{t('orders.reports.staff.totalVariances')}</p>
             <div className="flex flex-wrap items-center gap-1.5 mb-1 leading-none">
-              <span className="text-xl font-bold text-paymint-green tracking-tight">+{positiveVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span className="text-xl font-bold text-amber-500 tracking-tight">+{positiveVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               <span className="text-gray-300 dark:text-white/20 font-light text-xl">/</span>
               <span className="text-xl font-bold text-red-500 tracking-tight">-{negativeVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-auto capitalize truncate">{footerText}</p>
+            <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerText}>{footerText}</p>
           </div>
         </div>
       </div>
@@ -242,7 +242,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                 {pieData.map((entry: any) => (
                   <div key={entry.name} className="flex items-center gap-2 bg-gray-50 dark:bg-white/5 px-3 py-1.5 rounded-full border border-gray-100 dark:border-white/5">
                     <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: entry.color }} />
-                    <p className="text-[13px] font-bold text-gray-600 dark:text-gray-300 truncate max-w-[120px]">{entry.name}</p>
+                    <p className="text-[13px] font-bold text-gray-600 dark:text-gray-300 truncate max-w-[120px]" title={entry.name}>{entry.name}</p>
                   </div>
                 ))}
               </div>
@@ -344,7 +344,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="font-bold text-gray-900 dark:text-white text-sm">{emp.username}</span>
+                          <span className="font-bold text-gray-900 dark:text-white text-sm" title={emp.username}>{emp.username}</span>
                         </td>
                         <td className="px-6 py-4 text-end font-black text-gray-900 dark:text-white">
                           {formatCurrency(emp.totalSales)}

@@ -8,6 +8,7 @@ interface PaginationProps {
     className?: string;
     totalItems?: number;
     itemsPerPage?: number;
+    variant?: 'default' | 'footer';
 }
 
 export function Pagination({
@@ -16,7 +17,8 @@ export function Pagination({
     onPageChange,
     className = "",
     totalItems,
-    itemsPerPage = 10
+    itemsPerPage = 10,
+    variant = 'default'
 }: PaginationProps) {
     const { t } = useTranslation();
     if (totalPages <= 1) return null;
@@ -74,16 +76,20 @@ export function Pagination({
     const startItem = (currentPage - 1) * itemsPerPage + 1;
     const endItem = Math.min(currentPage * itemsPerPage, totalItems || currentPage * itemsPerPage);
 
+    const baseStyles = variant === 'footer'
+        ? "px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.03]"
+        : `bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm`;
+
     return (
-        <div className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm ${className}`}>
+        <div className={`${baseStyles} ${className}`}>
             <div className="flex items-center gap-3">
-                <p className="text-base font-bold text-gray-400 flex items-center">
-                    <span className="lowercase font-normal text-sm mr-1">{t('common.page')}</span>
-                    <span className="text-gray-900 dark:text-white font-bold">{currentPage.toLocaleString(t('common.locale'))}</span>
-                    <span className="lowercase font-normal text-sm mx-1">{t('common.of')}</span>
-                    <span className="text-gray-900 dark:text-white font-bold">{totalPages.toLocaleString(t('common.locale'))}</span>
+                <p className="text-sm text-gray-400 flex items-center font-normal">
+                    <span className="lowercase mr-1.5">{t('common.page')}</span>
+                    <span className="text-gray-700 dark:text-gray-200">{currentPage.toLocaleString(t('common.locale'))}</span>
+                    <span className="lowercase mx-1.5 text-[10px] opacity-70">{t('common.of')}</span>
+                    <span className="text-gray-700 dark:text-gray-200">{totalPages.toLocaleString(t('common.locale'))}</span>
                 </p>
-                {totalItems !== undefined && (
+                {totalItems !== undefined && variant === 'default' && (
                     <p className="text-xs font-medium text-gray-400">
                         ({t('common.showing')} {startItem.toLocaleString(t('common.locale'))}-{endItem.toLocaleString(t('common.locale'))} {t('common.of')} {totalItems.toLocaleString(t('common.locale'))})
                     </p>
@@ -93,7 +99,7 @@ export function Pagination({
                 <button
                     onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
-                    className="p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all"
+                    className="p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all shadow-sm"
                     title={t('common.previous')}
                 >
                     <ArrowUpRight size={18} className="rotate-[225deg]" />
@@ -111,9 +117,9 @@ export function Pagination({
                             <button
                                 key={pageNum}
                                 onClick={() => onPageChange(pageNum)}
-                                className={`w-10 h-10 rounded-xl text-xs font-black transition-all ${currentPage === pageNum
+                                className={`w-10 h-10 rounded-xl text-xs font-medium transition-all ${currentPage === pageNum
                                     ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
-                                    : 'bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                                    : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white shadow-sm'
                                     }`}
                             >
                                 {pageNum.toLocaleString(t('common.locale'))}
@@ -124,7 +130,7 @@ export function Pagination({
                 <button
                     onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
-                    className="p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all"
+                    className="p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all shadow-sm"
                     title={t('common.next')}
                 >
                     <ArrowUpRight size={18} className="rotate-45" />

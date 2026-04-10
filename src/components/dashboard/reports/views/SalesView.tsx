@@ -149,7 +149,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                   </div>
                 )}
               </div>
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 flex items-center gap-1 capitalize">
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 flex items-center gap-1">
                 {stat.label}
               </p>
               {stat.customContent ? (
@@ -160,7 +160,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                     {stat.value}
                     {stat.suffix && <span className="text-sm ml-1 text-gray-400 font-black">{stat.suffix}</span>}
                   </p>
-                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
                     {stat.sub}
                   </p>
                 </>
@@ -174,12 +174,16 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
         {/* Revenue Line Chart */}
         <div className="lg:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
           <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <TrendingUp className="text-paymint-green" size={20} />
-                {t('orders.reports.sales.revenueStats')}
-              </h3>
-              <p className="card-subtitle">{t('orders.reports.sales.performance')}</p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                <TrendingUp size={20} />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {t('orders.reports.sales.revenueStats')}
+                </h3>
+                <p className="card-subtitle">{t('orders.reports.sales.performance')}</p>
+              </div>
             </div>
             <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
               <Activity size={12} className="text-paymint-green" />
@@ -260,13 +264,13 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
 
                 if (!hasRevenueData) {
                   return (
-                    <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/[0.03]">
-                      <div className="p-5 rounded-full bg-gray-100 dark:bg-white/5">
-                        <Activity size={36} className="text-gray-400 dark:text-gray-600" />
-                      </div>
-                      <div className="text-center">
-                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('orders.reports.sales.noRevenue')}</p>
-                        <p className="card-subtitle">{t('orders.reports.sales.noRevenueDesc')}</p>
+                    <div className="h-full w-full flex items-center justify-center bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/[0.03]">
+                      <div className="flex flex-col items-center gap-2 text-center">
+                        <Activity size={32} className="text-gray-300 dark:text-gray-600 mb-1" />
+                        <div>
+                          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.sales.noRevenue')}</p>
+                          <p className="text-xs text-gray-400 mt-1">{t('orders.reports.sales.noRevenueDesc')}</p>
+                        </div>
                       </div>
                     </div>
                   );
@@ -274,7 +278,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
 
                 return (
                   <>
-                    <div className="absolute start-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to ' + (t('common.locale') === 'ar' ? 'left' : 'right') + ', ' + (isDark ? '#0B1120 80%, transparent' : '#FFFFFF 80%, transparent') + ')' }}>
+                    <div className="absolute start-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to ' + (t('common.locale') === 'ar' ? 'left' : 'right') + ', ' + (isDark ? '#1E293B 80%, transparent' : '#FFFFFF 80%, transparent') + ')' }}>
                       <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart data={chartData} margin={{ top: 10, right: 0, left: 0, bottom: 20 }}>
                           <YAxis
@@ -339,7 +343,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                                 boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
                                 padding: '12px'
                               }}
-                              itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'capitalize' }}
+                              itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px' }}
                               labelStyle={{ fontWeight: '900', color: isDark ? '#fff' : '#000', marginBottom: '8px', fontSize: '10px' }}
                               labelFormatter={(val, payload) => {
                                 const dateLocale = getDateLocale(t('common.locale'));
@@ -439,8 +443,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                         itemStyle={{
                           color: isDark ? '#fff' : '#111',
                           fontWeight: '800',
-                          fontSize: '10px',
-                          textTransform: 'capitalize'
+                          fontSize: '10px'
                         }}
                       />
                     </PieChart>
@@ -460,8 +463,10 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
               </>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                <CreditCard size={32} className="mb-3 opacity-20" />
-                <p className="text-xs font-bold tracking-wide">{t('dashboard.paymentMethods.noData')}</p>
+                <div className="flex flex-col items-center gap-2">
+                  <CreditCard size={32} className="opacity-20" />
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.paymentMethods.noData')}</p>
+                </div>
               </div>
             )}
           </div>

@@ -497,316 +497,319 @@ export default function BrandTeamPage() {
 
                         {/* Team Display */}
                         {filteredEmployees.length === 0 ? (
-                        <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                        <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                        <p className="text-lg font-medium text-gray-900 dark:text-white">{searchQuery.trim() ? t('common.noResults') : t('owner.staff.noStaffFound')}</p>
-                        {searchQuery.trim() && (
-                        <p className="text-sm text-gray-500 mt-1">
-                            {t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })}
-                        </p>
-                        )}
-                        {!hasActiveFilters && (
-                        <p className="text-sm text-gray-500 mt-1">
-                            {t('owner.staff.addStaffDesc')}
-                        </p>
-                        )}
-                        {hasFilters && (
-                        <button
-                            onClick={clearFilters}
-                            className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-[#68B390] transition-all"
-                        >
-                            {t('attributes.filters.reset')}
-                        </button>
-                        )}
-                        </div>
-            ) : viewMode === 'grid' ? (
-                /* Grid View */
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {paginatedEmployees.map((emp) => (
-                        <div
-                            key={emp.id}
-                            className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
-                        >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                            {/* Header */}
-                            {/* Header */}
-                            <div className="flex items-start justify-between mb-6">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-14 h-14 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center relative flex-shrink-0">
-                                        <span className="text-gray-900 dark:text-white font-bold text-xl">
-                                            {emp.firstName.charAt(0).toUpperCase()}
-                                        </span>
-                                        {emp.isActive && (
-                                            <div className="absolute bottom-0 right-0 w-4 h-4 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
-                                        )}
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
-                                            {emp.firstName} {emp.lastName}
-                                        </h3>
-                                        <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                                            <AtSign size={12} />
-                                            {emp.username}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="relative">
+                            <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+                                <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
+                                <p className="text-lg font-medium text-gray-900 dark:text-white">{searchQuery.trim() ? t('common.noResults') : t('owner.staff.noStaffFound')}</p>
+                                {searchQuery.trim() && (
+                                    <p className="text-sm text-gray-500 mt-1">
+                                        {t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })}
+                                    </p>
+                                )}
+                                {!hasActiveFilters && (
+                                    <p className="text-sm text-gray-500 mt-1">
+                                        {t('owner.staff.addStaffDesc')}
+                                    </p>
+                                )}
+                                {hasFilters && (
                                     <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setActiveMenu(activeMenu === emp.id ? null : emp.id);
-                                        }}
-                                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                        onClick={clearFilters}
+                                        className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-[#68B390] transition-all"
                                     >
-                                        <MoreVertical size={18} />
+                                        {t('attributes.filters.reset')}
                                     </button>
-
-                                    {activeMenu === emp.id && (
-                                        <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                        >
-                                            <button
-                                                onClick={() => handleEditEmployee(emp)}
-                                                className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                            >
-                                                <Edit2 size={16} />
-                                                {t('common.edit')}
-                                            </button>
-                                            <button
-                                                onClick={() => openDeleteModal(emp)}
-                                                className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                            >
-                                                <Trash2 size={16} />
-                                                {t('common.remove')}
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Status Badge */}
-                            <div className="mb-4">
-                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${emp.isActive
-                                    ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20 dark:bg-paymint-green/ dark:text-paymint-green dark:border-paymint-green/'
-                                    : 'bg-gray-100 text-gray-500 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
-                                    }`}>
-                                    <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-paymint-green' : 'bg-gray-400'}`} />
-                                    {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
-                                </span>
-                            </div>
-
-                            {/* Contact Info */}
-                            <div className="space-y-3 mb-6">
-                                {emp.email && (
-                                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl">
-                                        <Mail size={16} className="text-gray-400" />
-                                        <span className="text-xs font-bold text-gray-600 dark:text-gray-300 truncate">{emp.email}</span>
-                                    </div>
                                 )}
                             </div>
+                        ) : (
+                            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                                {viewMode === 'grid' ? (
+                                    /* Grid View */
+                                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
+                                        {paginatedEmployees.map((emp) => (
+                                            <div
+                                                key={emp.id}
+                                                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
+                                            >
+                                                <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                            {/* Access Rights */}
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                    <p className="dashboard-card-label uppercase">{t('owner.staff.accessRights')}</p>
-                                    <span className="text-sm font-bold text-gray-900 dark:text-white">{emp.establishments.length} {emp.establishments.length !== 1 ? t('common.locations') : t('common.location')}</span>
-                                </div>
-                                <div className="space-y-2">
-                                    {emp.establishments.slice(0, 2).map((est, eIdx) => (
-                                        <div
-                                            key={eIdx}
-                                            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5"
-                                        >
-                                            <div className="flex items-center gap-2 overflow-hidden">
-                                                <MapPin size={14} className="text-gray-400 flex-shrink-0" />
-                                                <span className="text-xs font-bold text-gray-900 dark:text-white truncate">
-                                                    {est.name}
-                                                </span>
+                                                {/* Header */}
+                                                <div className="flex items-start justify-between mb-6">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-14 h-14 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center relative flex-shrink-0">
+                                                            <span className="text-gray-900 dark:text-white font-bold text-xl">
+                                                                {emp.firstName.charAt(0).toUpperCase()}
+                                                            </span>
+                                                            {emp.isActive && (
+                                                                <div className="absolute bottom-0 right-0 w-4 h-4 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                                                                {emp.firstName} {emp.lastName}
+                                                            </h3>
+                                                            <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                                                <AtSign size={12} />
+                                                                {emp.username}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="relative">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setActiveMenu(activeMenu === emp.id ? null : emp.id);
+                                                            }}
+                                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                                        >
+                                                            <MoreVertical size={18} />
+                                                        </button>
+
+                                                        {activeMenu === emp.id && (
+                                                            <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                            >
+                                                                <button
+                                                                    onClick={() => handleEditEmployee(emp)}
+                                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                                >
+                                                                    <Edit2 size={16} />
+                                                                    {t('common.edit')}
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => openDeleteModal(emp)}
+                                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                                                >
+                                                                    <Trash2 size={16} />
+                                                                    {t('common.remove')}
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Status Badge */}
+                                                <div className="mb-4">
+                                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${emp.isActive
+                                                        ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20 dark:bg-paymint-green/ dark:text-paymint-green dark:border-paymint-green/'
+                                                        : 'bg-gray-100 text-gray-500 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
+                                                        }`}>
+                                                        <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-paymint-green' : 'bg-gray-400'}`} />
+                                                        {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
+                                                    </span>
+                                                </div>
+
+                                                {/* Contact Info */}
+                                                <div className="space-y-3 mb-6">
+                                                    {emp.email && (
+                                                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl">
+                                                            <Mail size={16} className="text-gray-400" />
+                                                            <span className="text-xs font-bold text-gray-600 dark:text-gray-300 truncate">{emp.email}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Access Rights */}
+                                                <div className="space-y-3">
+                                                    <div className="flex items-center justify-between">
+                                                        <p className="dashboard-card-label uppercase">{t('owner.staff.accessRights')}</p>
+                                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{emp.establishments.length} {emp.establishments.length !== 1 ? t('common.locations') : t('common.location')}</span>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        {emp.establishments.slice(0, 2).map((est, eIdx) => (
+                                                            <div
+                                                                key={eIdx}
+                                                                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5"
+                                                            >
+                                                                <div className="flex items-center gap-2 overflow-hidden">
+                                                                    <MapPin size={14} className="text-gray-400 flex-shrink-0" />
+                                                                    <span className="text-xs font-bold text-gray-900 dark:text-white truncate">
+                                                                        {est.name}
+                                                                    </span>
+                                                                </div>
+                                                                <span className={getRoleBadgeStyle(est.role)}>
+                                                                    {getRoleDisplay(est.role)}
+                                                                </span>
+                                                            </div>
+                                                        ))}
+                                                        {emp.establishments.length > 2 && (
+                                                            <div className="text-center py-1">
+                                                                <span className="dashboard-card-meta">+ {emp.establishments.length - 2} more locations</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Action Buttons */}
+                                                <div className="flex items-center gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
+                                                    <button
+                                                        onClick={() => handleEditEmployee(emp)}
+                                                        className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 label-strong hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5"
+                                                    >
+                                                        <Edit2 size={14} />
+                                                        {t('common.edit')}
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openDeleteModal(emp)}
+                                                        className="p-2.5 rounded-xl text-red-500 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors border border-red-100 dark:border-red-500/20"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <span className={getRoleBadgeStyle(est.role)}>
-                                                {getRoleDisplay(est.role)}
-                                            </span>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    /* List View */
+                                    <div className="divide-y divide-gray-100 dark:divide-white/5">
+                                        {/* Mobile Card View */}
+                                        <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                                            {paginatedEmployees.map((emp) => (
+                                                <div
+                                                    key={emp.id}
+                                                    className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                                                >
+                                                    <div className="flex items-center gap-3 mb-3">
+                                                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center relative">
+                                                            <span className="text-gray-900 dark:text-white font-bold text-sm">
+                                                                {emp.firstName.charAt(0).toUpperCase()}
+                                                            </span>
+                                                            {emp.isActive && (
+                                                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                                                                {emp.firstName} {emp.lastName}
+                                                            </h3>
+                                                            <p className="dashboard-card-meta mt-0.5">@{emp.username}</p>
+                                                        </div>
+                                                        <div className="ml-auto flex gap-2">
+                                                            <button
+                                                                onClick={() => handleEditEmployee(emp)}
+                                                                className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                                            >
+                                                                <Edit2 size={16} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => openDeleteModal(emp)}
+                                                                className="p-2 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-500 transition-colors"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 gap-3 text-xs">
+                                                        <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                                                            <p className="text-gray-500 mb-1">{t('common.role')}</p>
+                                                            <span className={getRoleBadgeStyle(emp.establishments[0]?.role || 'USER')}>
+                                                                {getRoleDisplay(emp.establishments[0]?.role || 'USER')}
+                                                            </span>
+                                                        </div>
+                                                        <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                                                            <p className="text-gray-500 mb-1">{t('brand.dashboard.locations')}</p>
+                                                            <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                                                {emp.establishments.length} {t('brand.dashboard.locations')}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                    {emp.establishments.length > 2 && (
-                                        <div className="text-center py-1">
-                                            <span className="dashboard-card-meta">+ {emp.establishments.length - 2} more locations</span>
+
+                                        {/* Desktop Table Header */}
+                                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-meta tracking-wide">
+                                            <div className="col-span-4">{t('common.name')}</div>
+                                            <div className="col-span-2 text-center">{t('common.status.label')}</div>
+                                            <div className="col-span-2 text-center">{t('common.role')}</div>
+                                            <div className="col-span-2 text-center">{t('common.locations')}</div>
+                                            <div className="col-span-2 text-center">{t('common.actions')}</div>
                                         </div>
-                                    )}
-                                </div>
+
+                                        {/* Table Body */}
+                                        <div className="divide-y divide-gray-100 dark:divide-white/5">
+                                            {paginatedEmployees.map((emp) => (
+                                                <div
+                                                    key={emp.id}
+                                                    className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                                                    onClick={() => handleEditEmployee(emp)}
+                                                >
+
+                                                    {/* Member Info */}
+                                                    <div className="col-span-4 flex items-center gap-4">
+                                                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center relative">
+                                                            <span className="text-gray-900 dark:text-white font-bold text-sm">
+                                                                {emp.firstName.charAt(0).toUpperCase()}
+                                                            </span>
+                                                            {emp.isActive && (
+                                                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                                                                {emp.firstName} {emp.lastName}
+                                                            </h3>
+                                                            <p className="dashboard-card-meta mt-0.5">@{emp.username}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Status */}
+                                                    <div className="col-span-2 flex items-center justify-center">
+                                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium tracking-wider border ${emp.isActive
+                                                            ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20 dark:bg-paymint-green/ dark:text-paymint-green dark:border-paymint-green/'
+                                                            : 'bg-gray-100 text-gray-500 border-gray-200'
+                                                            }`}>
+                                                            <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-paymint-green' : 'bg-gray-400'}`} />
+                                                            {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Primary Role */}
+                                                    <div className="col-span-2 flex items-center justify-center">
+                                                        {emp.establishments[0] && (
+                                                            <span className={getRoleBadgeStyle(emp.establishments[0].role)}>
+                                                                {getRoleDisplay(emp.establishments[0].role)}
+                                                            </span>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Locations Count */}
+                                                    <div className="col-span-2 flex items-center justify-center">
+                                                        <span className="font-bold text-gray-900 dark:text-white">
+                                                            {emp.establishments.length} {emp.establishments.length !== 1 ? t('common.locations') : t('common.location')}
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Actions */}
+                                                    <div className="col-span-2 flex items-center justify-center gap-2">
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); handleEditEmployee(emp); }}
+                                                            className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"
+                                                        >
+                                                            <Edit2 size={14} />
+                                                            {t('common.edit')}
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); openDeleteModal(emp); }}
+                                                            className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 transition-colors"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    onPageChange={setCurrentPage}
+                                    variant="footer"
+                                    totalItems={filteredEmployees.length}
+                                    itemsPerPage={ITEMS_PER_PAGE}
+                                />
                             </div>
-
-                            {/* Action Buttons */}
-                            <div className="flex items-center gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
-                                <button
-                                    onClick={() => handleEditEmployee(emp)}
-                                    className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 label-strong hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5"
-                                >
-                                    <Edit2 size={14} />
-                                    {t('common.edit')}
-                                </button>
-                                <button
-                                    onClick={() => openDeleteModal(emp)}
-                                    className="p-2.5 rounded-xl text-red-500 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors border border-red-100 dark:border-red-500/20"
-                                >
-                                    <Trash2 size={16} />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                /* List View */
-                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                    {/* Mobile Card View */}
-                    <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-                        {paginatedEmployees.map((emp) => (
-                            <div
-                                key={emp.id}
-                                className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                            >
-                                <div className="flex items-center gap-3 mb-3">
-                                    <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center relative">
-                                        <span className="text-gray-900 dark:text-white font-bold text-sm">
-                                            {emp.firstName.charAt(0).toUpperCase()}
-                                        </span>
-                                        {emp.isActive && (
-                                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
-                                        )}
-                                    </div>
-                                    <div>
-                                        <h3 className="text-sm font-bold text-gray-900 dark:text-white">
-                                            {emp.firstName} {emp.lastName}
-                                        </h3>
-                                        <p className="dashboard-card-meta mt-0.5">@{emp.username}</p>
-                                    </div>
-                                    <div className="ml-auto flex gap-2">
-                                        <button
-                                            onClick={() => handleEditEmployee(emp)}
-                                            className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
-                                        >
-                                            <Edit2 size={16} />
-                                        </button>
-                                        <button
-                                            onClick={() => openDeleteModal(emp)}
-                                            className="p-2 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-500 transition-colors"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3 text-xs">
-                                    <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                                        <p className="text-gray-500 mb-1">{t('common.role')}</p>
-                                        <span className={getRoleBadgeStyle(emp.establishments[0]?.role || 'USER')}>
-                                            {getRoleDisplay(emp.establishments[0]?.role || 'USER')}
-                                        </span>
-                                    </div>
-                                    <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                                        <p className="text-gray-500 mb-1">{t('brand.dashboard.locations')}</p>
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                            {emp.establishments.length} {t('brand.dashboard.locations')}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Desktop Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-meta tracking-wide">
-                        <div className="col-span-4">{t('common.name')}</div>
-                        <div className="col-span-2">{t('common.status.label')}</div>
-                        <div className="col-span-2">{t('common.role')}</div>
-                        <div className="col-span-2">{t('common.locations')}</div>
-                        <div className="col-span-2 text-center">{t('common.actions')}</div>
-                    </div>
-
-                    {/* Table Body */}
-                    <div className="divide-y divide-gray-100 dark:divide-white/5">
-                        {paginatedEmployees.map((emp) => (
-                            <div
-                                key={emp.id}
-                                className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
-                                onClick={() => handleEditEmployee(emp)}
-                            >
-
-                                {/* Member Info */}
-                                {/* Member Info */}
-                                <div className="col-span-4 flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center relative">
-                                        <span className="text-gray-900 dark:text-white font-bold text-sm">
-                                            {emp.firstName.charAt(0).toUpperCase()}
-                                        </span>
-                                        {emp.isActive && (
-                                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-paymint-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
-                                        )}
-                                    </div>
-                                    <div>
-                                        <h3 className="text-sm font-bold text-gray-900 dark:text-white">
-                                            {emp.firstName} {emp.lastName}
-                                        </h3>
-                                        <p className="dashboard-card-meta mt-0.5">@{emp.username}</p>
-                                    </div>
-                                </div>
-
-                                {/* Status */}
-                                <div className="col-span-2 flex items-center">
-                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black tracking-wider border ${emp.isActive
-                                        ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20 dark:bg-paymint-green/ dark:text-paymint-green dark:border-paymint-green/'
-                                        : 'bg-gray-100 text-gray-500 border-gray-200'
-                                        }`}>
-                                        <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-paymint-green' : 'bg-gray-400'}`} />
-                                        {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
-                                    </span>
-                                </div>
-
-                                {/* Primary Role */}
-                                <div className="col-span-2 flex items-center">
-                                    {emp.establishments[0] && (
-                                        <span className={getRoleBadgeStyle(emp.establishments[0].role)}>
-                                            {getRoleDisplay(emp.establishments[0].role)}
-                                        </span>
-                                    )}
-                                </div>
-
-                                {/* Locations Count */}
-                                <div className="col-span-2 flex items-center">
-                                    <span className="font-bold text-gray-900 dark:text-white">
-                                        {emp.establishments.length} {emp.establishments.length !== 1 ? t('common.locations') : t('common.location')}
-                                    </span>
-                                </div>
-
-                                {/* Actions */}
-                                <div className="col-span-2 flex items-center justify-center gap-2">
-                                    <button
-                                        onClick={(e) => { e.stopPropagation(); handleEditEmployee(emp); }}
-                                        className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"
-                                    >
-                                        <Edit2 size={14} />
-                                        {t('common.edit')}
-                                    </button>
-                                    <button
-                                        onClick={(e) => { e.stopPropagation(); openDeleteModal(emp); }}
-                                        className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 transition-colors"
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={setCurrentPage}
-                    />
-                </div>
-            )}
-
+                        )}
             {/* Employee Form Modal */}
 
             <EmployeeFormModal

@@ -161,7 +161,7 @@ export function DashboardLayout() {
         label: t('dashboard.menu.system'),
         icon: Sliders,
         items: [
-          { path: 'settings', label: t('dashboard.menu.settings'), icon: Sliders },
+          { path: 'settings', label: t('dashboard.menu.establishmentSettings'), icon: Sliders },
           { path: 'activity-logs', label: t('dashboard.menu.systemLogs'), icon: History },
         ],
       },

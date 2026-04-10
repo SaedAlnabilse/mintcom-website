@@ -601,179 +601,165 @@ export function OwnerBrandsPage() {
                     )}
                 </div>
             ) : (
-                /* Grid View (Box View) */
-                <>
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                        {paginatedBrands.map((brand) => (
-                            <div
-                                key={brand.id}
-                                className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
-                                    ? 'border-paymint-green bg-paymint-green/[0.02]'
-                                    : 'border-gray-200 dark:border-white/5 hover:border-purple-500/30'
-                                    }`}
-                            >
-                                {/* Hover gradient */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                    <div className="p-6">
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                            {paginatedBrands.map((brand) => (
+                                <div
+                                    key={brand.id}
+                                    className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
+                                        ? 'border-paymint-green bg-paymint-green/[0.02]'
+                                        : 'border-gray-200 dark:border-white/5 hover:border-purple-500/30'
+                                        }`}
+                                >
+                                    {/* Hover gradient */}
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                                <div className="relative z-10">
-                                    {/* Header */}
-                                    <div className="flex items-start justify-between mb-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                                <Building2 size={28} className="text-purple-500" />
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-purple-500 transition-colors">
-                                                        {brand.name}
-                                                    </h3>
+                                    <div className="relative z-10">
+                                        {/* Header */}
+                                        <div className="flex items-start justify-between mb-6">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                                    <Building2 size={28} className="text-purple-500" />
                                                 </div>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green label-strong">
-                                                        {t('common.status.active')}
-                                                    </span>
-                                                    <span className="dashboard-card-label">
-                                                        {t('owner.brands.locationsCount', { count: brand.establishmentCount })}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="relative">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setActiveMenu(activeMenu === brand.id ? null : brand.id);
-                                                }}
-                                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
-                                            >
-                                                <MoreVertical size={18} />
-                                            </button>
-
-                                            {activeMenu === brand.id && (
-                                                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden">
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            const slug = brand.establishmentLoginId || brand.id;
-                                                            window.open(`/brand/${slug}`, '_blank');
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Eye size={16} />
-                                                        {t('owner.brands.viewDashboard')}
-                                                    </button>
-
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setActiveMenu(null);
-                                                            setSecurityModal({
-                                                                isOpen: true,
-                                                                targetId: brand.id,
-                                                                targetName: brand.name,
-                                                                mode: 'dissolve-brand'
-                                                            });
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                        {t('owner.brands.deleteBrand')}
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Details */}
-                                    <div className="grid grid-cols-2 gap-4 mb-6 relative z-10">
-                                        <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Hash size={14} className="text-purple-500" />
-                                                <span className="dashboard-card-label">{t('owner.brands.loginId')}</span>
-                                            </div>
-                                            <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
-                                                {brand.establishmentLoginId}
-                                            </p>
-                                        </div>
-                                        <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Calendar size={14} className="text-blue-500" />
-                                                <span className="dashboard-card-label">{t('owner.brands.created')}</span>
-                                            </div>
-                                            <p className="text-sm font-bold text-gray-900 dark:text-white">
-                                                {formatDate(brand.createdAt)}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Locations */}
-                                    <div className="space-y-3 relative z-10">
-                                        <div className="flex items-center justify-between">
-                                            <span className="dashboard-card-label">{t('owner.brands.locations')}</span>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            {brand.establishments.slice(0, 4).map((est) => {
-                                                const Icon = getBusinessTypeIcon(est.type);
-                                                return (
-                                                    <div key={est.id} className="px-3 py-2 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-lg flex items-center gap-2 hover:border-purple-500/30 transition-all">
-                                                        <Icon size={12} className="text-gray-400" />
-                                                        <span className="text-xs font-bold text-gray-600 dark:text-gray-400 truncate max-w-[100px]">{est.name}</span>
+                                                <div>
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-purple-500 transition-colors">
+                                                            {brand.name}
+                                                        </h3>
                                                     </div>
-                                                )
-                                            })}
-                                            {brand.establishments.length > 4 && (
-                                                <div className="px-3 py-2 bg-gray-100 dark:bg-white/5 rounded-lg">
-                                                    <span className="dashboard-card-meta">
-                                                        +{brand.establishments.length - 4} {t('common.more')}
-                                                    </span>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green label-strong">
+                                                            {t('common.status.active')}
+                                                        </span>
+                                                        <span className="dashboard-card-label">
+                                                            {t('owner.brands.locationsCount', { count: brand.establishmentCount })}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            )}
-                                        </div>
-                                    </div>
+                                            </div>
 
-                                    {/* Action */}
-                                    <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                                        <button
-                                            onClick={() => {
-                                              const slug = brand.establishmentLoginId || brand.id;
-                                              window.open(`/brand/${slug}`, '_blank');
-                                            }}
-                                            className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 label-strong hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-purple-500 shadow-sm"
-                                        >
-                                            <span>{t('owner.brands.openDashboard')}</span>
-                                            <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
-                                        </button>
+                                            <div className="relative">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setActiveMenu(brand.id === activeMenu ? null : brand.id);
+                                                    }}
+                                                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                                >
+                                                    <MoreVertical size={18} />
+                                                </button>
+
+                                                {activeMenu === brand.id && (
+                                                    <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                const slug = brand.establishmentLoginId || brand.id;
+                                                                window.open(`/brand/${slug}`, '_blank');
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                        >
+                                                            <Eye size={16} />
+                                                            {t('owner.brands.viewDashboard')}
+                                                        </button>
+
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setActiveMenu(null);
+                                                                setSecurityModal({
+                                                                    isOpen: true,
+                                                                    targetId: brand.id,
+                                                                    targetName: brand.name,
+                                                                    mode: 'dissolve-brand'
+                                                                });
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                            {t('owner.brands.deleteBrand')}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Details */}
+                                        <div className="grid grid-cols-2 gap-4 mb-6 relative z-10">
+                                            <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <Hash size={14} className="text-purple-500" />
+                                                    <span className="dashboard-card-label">{t('owner.brands.loginId')}</span>
+                                                </div>
+                                                <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
+                                                    {brand.establishmentLoginId}
+                                                </p>
+                                            </div>
+                                            <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <Calendar size={14} className="text-blue-500" />
+                                                    <span className="dashboard-card-label">{t('owner.brands.created')}</span>
+                                                </div>
+                                                <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                                    {formatDate(brand.createdAt)}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Locations */}
+                                        <div className="space-y-3 relative z-10">
+                                            <div className="flex items-center justify-between">
+                                                <span className="dashboard-card-label">{t('owner.brands.locations')}</span>
+                                            </div>
+                                            <div className="flex flex-wrap gap-2">
+                                                {brand.establishments.slice(0, 4).map((est) => {
+                                                    const Icon = getBusinessTypeIcon(est.type);
+                                                    return (
+                                                        <div key={est.id} className="px-3 py-2 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-lg flex items-center gap-2 hover:border-purple-500/30 transition-all">
+                                                            <Icon size={12} className="text-gray-400" />
+                                                            <span className="text-xs font-bold text-gray-600 dark:text-gray-400 truncate max-w-[100px]">{est.name}</span>
+                                                        </div>
+                                                    )
+                                                })}
+                                                {brand.establishments.length > 4 && (
+                                                    <div className="px-3 py-2 bg-gray-100 dark:bg-white/5 rounded-lg">
+                                                        <span className="dashboard-card-meta">
+                                                            +{brand.establishments.length - 4} {t('common.more')}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Action */}
+                                        <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+                                            <button
+                                                onClick={() => {
+                                                    const slug = brand.establishmentLoginId || brand.id;
+                                                    window.open(`/brand/${slug}`, '_blank');
+                                                }}
+                                                className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 label-strong hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-purple-500 shadow-sm"
+                                            >
+                                                <span>{t('owner.brands.openDashboard')}</span>
+                                                <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
 
-                    {/* Results Summary and Pagination */}
-                    <div className="space-y-6 pt-10 border-t border-gray-100 dark:border-white/5">
-                        {filteredBrands.length > 0 && (
-                            <div className="text-center">
-                                <p className="text-base font-bold text-gray-400 tracking-widest flex items-center justify-center">
-                                    <span className="font-normal text-sm tracking-normal mr-2">Showing</span>
-                                    <span className="text-gray-900 dark:text-white">
-                                        {Math.min((currentPage * ITEMS_PER_PAGE), filteredBrands.length)}
-                                    </span>
-                                    <span className="lowercase font-normal text-sm tracking-normal mx-2">of</span>
-                                    <span className="text-gray-900 dark:text-white">{filteredBrands.length}</span>
-                                    <span className="lowercase font-normal text-sm tracking-normal ml-2">brands</span>
-                                </p>
-                            </div>
-                        )}
-
-                        <Pagination
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            onPageChange={(page) => setCurrentPage(page)}
-                            className="max-w-md mx-auto"
-                        />
-                    </div>
-                </>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={(page) => setCurrentPage(page)}
+                        variant="footer"
+                        totalItems={filteredBrands.length}
+                        itemsPerPage={ITEMS_PER_PAGE}
+                    />
+                </div>
             )}
 
             {/* Create Brand Modal */}

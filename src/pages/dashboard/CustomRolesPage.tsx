@@ -441,20 +441,20 @@ export function CustomRolesPage() {
                       </div>
                     </th>
                     <th
-                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                      className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('baseRole')}
                     >
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center justify-center gap-1">
                         {t('dashboard.roles.type')}
                         {sortConfig?.key === 'baseRole' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('dashboard.roles.access')}</th>
+                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('dashboard.roles.access')}</th>
                     <th
-                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                      className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('createdAt')}
                     >
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center justify-center gap-1">
                         {t('dashboard.roles.date')}
                         {sortConfig?.key === 'createdAt' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
@@ -478,14 +478,14 @@ export function CustomRolesPage() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 text-center">
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                             <UserCheck size={10} />
                             {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex flex-col gap-1">
+                          <div className="flex flex-col items-center gap-1">
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
                               <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.pos')}: {(role.permissions?.length || 0).toLocaleString(t('common.locale'))}</span>
@@ -496,7 +496,7 @@ export function CustomRolesPage() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 text-center">
                           <p className="text-xs text-gray-500 font-medium">
                             {new Date(role.createdAt).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
                           </p>
@@ -524,9 +524,16 @@ export function CustomRolesPage() {
                   </tbody>
                 </table>
               </div>
-              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={paginate} />
             </>
           )}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={paginate}
+          variant="footer"
+          totalItems={filteredRoles.length}
+          itemsPerPage={itemsPerPage}
+        />
       </div>
 
                         <CustomRoleFormModal

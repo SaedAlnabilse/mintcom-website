@@ -1123,8 +1123,14 @@ export function ProductFormModal({
                             }
                           }}
                           onChange={(e) => {
-                            const val = e.target.value;
+                            let val = e.target.value;
                             if (val.length > 19) return;
+                            
+                            // Prevent leading zeros unless it's just "0"
+                            if (val.length > 1 && val.startsWith('0')) {
+                              val = String(parseInt(val));
+                            }
+
                             if (val === '' || Number(val) >= 0) {
                               setStock(val);
                               if (errors.stock) {
@@ -1144,7 +1150,7 @@ export function ProductFormModal({
 
                       <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className={`${popupLabelBaseClass} flex items-center justify-center gap-1`}>
+                          <label className={`text-sm font-bold text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
                             <span className="text-yellow-500 text-sm">&bull;</span> {t('products.form.inventory.low')}
                           </label>
                           <input
@@ -1157,8 +1163,14 @@ export function ProductFormModal({
                               }
                             }}
                             onChange={(e) => {
-                              const val = e.target.value;
+                              let val = e.target.value;
                               if (val.length > 19) return;
+
+                              // Prevent leading zeros
+                              if (val.length > 1 && val.startsWith('0')) {
+                                val = String(parseInt(val));
+                              }
+
                               if (val === '' || Number(val) >= 0) {
                                 setLowStockYellow(val);
                                 if (errors.lowStockYellow) {
@@ -1171,9 +1183,12 @@ export function ProductFormModal({
                             placeholder={(5).toLocaleString(t('common.locale'))}
                             className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockYellow ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                           />
+                          {errors.lowStockYellow && (
+                            <p className="mt-1.5 text-center text-[10px] font-bold text-paymint-red leading-tight px-1">{errors.lowStockYellow}</p>
+                          )}
                         </div>
                         <div className="space-y-2">
-                          <label className={`${popupLabelBaseClass} flex items-center justify-center gap-1`}>
+                          <label className={`text-sm font-bold text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
                             <span className="text-paymint-red text-sm">&bull;</span> {t('products.form.inventory.veryLow')}
                           </label>
                           <input
@@ -1186,8 +1201,14 @@ export function ProductFormModal({
                               }
                             }}
                             onChange={(e) => {
-                              const val = e.target.value;
+                              let val = e.target.value;
                               if (val.length > 19) return;
+
+                              // Prevent leading zeros
+                              if (val.length > 1 && val.startsWith('0')) {
+                                val = String(parseInt(val));
+                              }
+
                               if (val === '' || Number(val) >= 0) {
                                 setLowStockRed(val);
                                 if (errors.lowStockRed) {
@@ -1200,6 +1221,9 @@ export function ProductFormModal({
                             placeholder={(2).toLocaleString(t('common.locale'))}
                             className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockRed ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                           />
+                          {errors.lowStockRed && (
+                            <p className="mt-1.5 text-center text-[10px] font-bold text-paymint-red leading-tight px-1">{errors.lowStockRed}</p>
+                          )}
                         </div>
                       </div>
                     </motion.div>

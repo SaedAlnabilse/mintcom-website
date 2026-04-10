@@ -96,7 +96,7 @@ export function ActivityLogsPage() {
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [, setTotalLogs] = useState(0);
+  const [totalLogs, setTotalLogs] = useState(0);
   const [selectedLog, setSelectedLog] = useState<ActivityLog | null>(null);
 
   useEffect(() => {
@@ -449,10 +449,10 @@ export function ActivityLogsPage() {
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
                 <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('activity.time')}</th>
-                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('activity.user')}</th>
-                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('activity.action')}</th>
-                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('activity.details')}</th>
-                <th className="px-8 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('activity.data')}</th>
+                <th className="px-8 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('activity.user')}</th>
+                <th className="px-8 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('activity.action')}</th>
+                <th className="px-8 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('activity.details')}</th>
+                <th className="px-8 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('activity.data')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -505,8 +505,8 @@ export function ActivityLogsPage() {
                           </span>
                         </div>
                       </td>
-                      <td className="px-8 py-4">
-                        <div className="flex items-center gap-3">
+                      <td className="px-8 py-4 text-center">
+                        <div className="flex items-center justify-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black group-hover:scale-110 transition-transform">
                             {getActorInitial(log)}
                           </div>
@@ -516,24 +516,26 @@ export function ActivityLogsPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-8 py-4">
+                      <td className="px-8 py-4 text-center">
                         <span className={`inline-flex px-2 py-0.5 rounded-lg text-xs font-black tracking-widest border ${getActionColor(log.action)}`}>
                           {(translation => translation.includes('activity.actions.') ? log.action : translation)(t(`activity.actions.${getActionKey(log.action)}`))}
                         </span>
                       </td>
-                      <td className="px-8 py-4">
-                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300 max-w-sm line-clamp-1 group-hover:line-clamp-none transition-all">
+                      <td className="px-8 py-4 text-center">
+                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300 max-w-sm line-clamp-1 group-hover:line-clamp-none transition-all text-center">
                           {log.description}
                         </p>
                       </td>
-                      <td className="px-8 py-4 text-right">
+                      <td className="px-8 py-4 text-center">
                         {log.metadata ? (
-                          <button
-                            onClick={() => setSelectedLog(log)}
-                            className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green transition-all"
-                          >
-                            <FileText size={16} />
-                          </button>
+                          <div className="flex justify-center">
+                            <button
+                              onClick={() => setSelectedLog(log)}
+                              className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green transition-all"
+                            >
+                              <FileText size={16} />
+                            </button>
+                          </div>
                         ) : (
                           <span className="text-xs font-black text-gray-200 dark:text-white/5 tracking-widest">-</span>
                         )}
@@ -545,7 +547,14 @@ export function ActivityLogsPage() {
             </table>
           </div>
 
-          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            totalItems={totalLogs}
+            itemsPerPage={10}
+            variant="footer"
+          />
         </div>
 
             {/* Detail Modal */}
