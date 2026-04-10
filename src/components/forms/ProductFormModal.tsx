@@ -1110,7 +1110,7 @@ export function ProductFormModal({
                       </div>
 
                       <div className="space-y-2">
-                        <label className={`${popupLabelBaseClass} flex items-center justify-center gap-1`}>
+                        <label className={`text-sm font-bold text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
                           <span className="text-paymint-green text-sm">&bull;</span> {t('products.form.inventory.quantity')}
                         </label>
                         <input
@@ -1141,10 +1141,10 @@ export function ProductFormModal({
                             }
                           }}
                           placeholder={(0).toLocaleString(t('common.locale'))}
-                          className={`w-full bg-white dark:bg-black/20 border ${errors.stock ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                          className={`w-full bg-white dark:bg-black/20 border ${errors.stock ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                         />
                         {errors.stock && (
-                          <p className="mt-1.5 text-center text-xs font-bold text-paymint-red">{errors.stock}</p>
+                          <p className="mt-1.5 text-center text-[10px] font-bold text-paymint-red leading-tight px-1">{errors.stock}</p>
                         )}
                       </div>
 
