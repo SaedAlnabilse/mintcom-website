@@ -113,3 +113,4 @@ export function EstablishmentUrlResolver({ children }: { children: React.ReactNo
 
     return <>{children}</>;
 }
+

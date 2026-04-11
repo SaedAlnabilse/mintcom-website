@@ -26,7 +26,7 @@ export function SearchInput({
       <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10 transition-colors">
         <Search size={18} strokeWidth={2.5} />
       </div>
-      <input
+      <input maxLength={255}
         type="text"
         value={value}
         onChange={onChange}
@@ -47,3 +47,4 @@ export function SearchInput({
     </div>
   );
 }
+

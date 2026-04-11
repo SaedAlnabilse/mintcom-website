@@ -133,7 +133,7 @@ export function AttributeFormModal({
                                     {t('attributes.form.nameLabel')} <span className="text-paymint-red">*</span>
                                     <QuickInfo text={t('attributes.form.nameTip')} />
                                 </label>
-                                <input
+                                <input maxLength={255}
                                     type="text"
                                     value={name}
                                     onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
@@ -258,4 +258,5 @@ export function AttributeFormModal({
         document.body
     );
 }
+
 

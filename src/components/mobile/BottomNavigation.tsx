@@ -94,3 +94,4 @@ export function BottomNavigation({ onMenuClick, items }: BottomNavigationProps) 
     </div>
   );
 }
+

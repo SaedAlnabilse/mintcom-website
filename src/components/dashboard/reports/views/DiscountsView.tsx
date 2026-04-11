@@ -155,3 +155,4 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
     </div>
   );
 });
+

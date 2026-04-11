@@ -215,3 +215,4 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
     </>
   );
 };
+

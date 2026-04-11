@@ -404,7 +404,7 @@ export default function BrandTeamPage() {
                     {/* Search */}
                     <div className="relative flex-1">
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input
+                        <input maxLength={255}
                             type="text"
                             placeholder={t('owner.staff.searchPlaceholder')}
                             value={searchQuery}
@@ -851,7 +851,7 @@ export default function BrandTeamPage() {
                                     {t('common.password')}
                                 </label>
                                 <div className="relative">
-                                    <input
+                                    <input maxLength={255}
                                         type={showDeletePassword ? 'text' : 'password'}
                                         value={deletePassword}
                                         onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
@@ -898,6 +898,7 @@ export default function BrandTeamPage() {
         </div >
     );
 }
+
 
 
 

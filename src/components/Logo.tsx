@@ -120,3 +120,4 @@ export const Logo: React.FC<LogoProps> = ({
 
 // Export the SVG imports for use in other components
 export { PaymintLogoGreen, PaymintLogoWhite, PaymintLeafIcon };
+

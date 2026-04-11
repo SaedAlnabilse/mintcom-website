@@ -411,7 +411,7 @@ Access inventory management through **Settings > Product Management**.
 
 #### Managing Add-ons (Attributes)
 
-Navigate to **Settings > Add-Ons (Attributes)**.
+Navigate to **Settings > Add-ons (Attributes)**.
 
 *[Insert Screenshot of Attributes Screen]*
 

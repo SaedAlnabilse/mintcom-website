@@ -194,3 +194,4 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
     </div>
   );
 });
+

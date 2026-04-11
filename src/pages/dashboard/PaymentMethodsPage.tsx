@@ -544,7 +544,7 @@ export function PaymentMethodsPage() {
                       <div className="flex flex-col items-center gap-2">
                         <Upload size={32} className="text-gray-300" />
                         <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('common.upload')}</span>
-                        <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleImageChange} />
+                        <input  maxLength={255}type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleImageChange} />
                       </div>
                     )}
                   </div>
@@ -555,7 +555,7 @@ export function PaymentMethodsPage() {
                     <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase mb-3 px-1 flex items-center gap-2">
                       {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
                     </label>
-                    <input
+                    <input maxLength={255}
                       type="text"
                       {...register('name')}
                       className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
@@ -637,7 +637,7 @@ export function PaymentMethodsPage() {
                       <div className="flex flex-col items-center gap-2">
                         <Upload size={32} className="text-gray-300" />
                         <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('common.upload')}</span>
-                        <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleCardImageChange} />
+                        <input  maxLength={255}type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleCardImageChange} />
                       </div>
                     )}
                   </div>
@@ -648,7 +648,7 @@ export function PaymentMethodsPage() {
                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                       {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
                     </label>
-                    <input
+                    <input maxLength={255}
                       type="text"
                       value={newCardName}
                       onChange={(e) => {
@@ -692,5 +692,6 @@ export function PaymentMethodsPage() {
     </div>
   );
 }
+
 
 

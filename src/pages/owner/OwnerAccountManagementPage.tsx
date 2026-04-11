@@ -628,14 +628,14 @@ export function OwnerAccountManagementPage() {
                                     </label>
                                     {isEditing ? (
                                         <div className="flex gap-2">
-                                            <input
+                                            <input maxLength={255}
                                                 type="text"
                                                 value={editForm.firstName}
                                                 onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
                                                 placeholder="First Name"
                                                 className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                                             />
-                                            <input
+                                            <input maxLength={255}
                                                 type="text"
                                                 value={editForm.lastName}
                                                 onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
@@ -656,7 +656,7 @@ export function OwnerAccountManagementPage() {
                                         Email
                                     </label>
                                     {isEditing ? (
-                                        <input
+                                        <input maxLength={255}
                                             type="email"
                                             value={editForm.email}
                                             onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
@@ -1322,7 +1322,7 @@ export function OwnerAccountManagementPage() {
                                     <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
                                         {t('owner.account.deleteAccountModal.confirmDeletePrompt', { keyword: t('common.delete') })}
                                     </label>
-                                    <input
+                                    <input maxLength={255}
                                         type="text"
                                         value={deleteConfirmationText}
                                         onChange={(e) => setDeleteConfirmationText(e.target.value)}
@@ -1355,7 +1355,7 @@ export function OwnerAccountManagementPage() {
                                         <Lock size={14} />
                                         {t('owner.account.deleteAccountModal.confirmPassword')}
                                     </label>
-                                    <input
+                                    <input maxLength={255}
                                         type="password"
                                         value={deletePassword}
                                         onChange={(e) => setDeletePassword(e.target.value)}
@@ -1458,5 +1458,6 @@ export function OwnerAccountManagementPage() {
         </div>
     );
 }
+
 
 

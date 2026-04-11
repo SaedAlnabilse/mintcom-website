@@ -184,7 +184,7 @@ export const FeedbackWidget = () => {
 
                                         <div>
                                             <label className="block text-xs font-sans font-bold text-gray-500 mb-3">{t('feedback.comments')}</label>
-                                            <textarea
+                                            <textarea maxLength={2000}
                                                 required
                                                 value={comment}
                                                 onChange={(e) => setComment(e.target.value)}
@@ -222,3 +222,4 @@ export const FeedbackWidget = () => {
         </>
     );
 };
+

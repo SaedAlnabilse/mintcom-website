@@ -491,7 +491,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
           <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border-t border-gray-100 dark:border-white/5">
             <div className="flex gap-2 items-center">
               <div className="flex-1 relative">
-                <input
+                <input maxLength={255}
                   ref={inputRef}
                   type="text"
                   value={input}
@@ -522,3 +522,4 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
     </AnimatePresence>
   );
 }
+

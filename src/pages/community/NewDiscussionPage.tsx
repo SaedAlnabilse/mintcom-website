@@ -180,7 +180,7 @@ export const NewDiscussionPage = () => {
                                         <label className="block text-sm font-bold mb-3 text-gray-500 uppercase tracking-widest">
                                             {t('community.discussions.titleLabel', 'Discussion Title')} <span className="text-red-500">*</span>
                                         </label>
-                                        <input
+                                        <input maxLength={255}
                                             type="text"
                                             value={formData.title}
                                             onChange={(e) => {
@@ -203,7 +203,7 @@ export const NewDiscussionPage = () => {
                                         <label className="block text-sm font-bold mb-3 text-gray-500 uppercase tracking-widest">
                                             {t('community.discussions.descriptionLabel', 'Details')} <span className="text-red-500">*</span>
                                         </label>
-                                        <textarea
+                                        <textarea maxLength={2000}
                                             value={formData.description}
                                             onChange={(e) => {
                                                 setFormData({ ...formData, description: e.target.value });
@@ -265,3 +265,4 @@ export const NewDiscussionPage = () => {
         </div>
     );
 };
+

@@ -850,7 +850,7 @@ export function EmployeeFormModal({
                 <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.nameLabel')} <span className="text-paymint-red">*</span>
                 </label>
-                <input
+                <input maxLength={255}
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
@@ -865,7 +865,7 @@ export function EmployeeFormModal({
                 <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.usernameLabel')} <span className="text-paymint-red">*</span>
                 </label>
-                <input
+                <input maxLength={255}
                   type="text"
                   value={username}
                   onChange={(e) => { setUsername(e.target.value); if (errors.username) setErrors({ ...errors, username: '' }); }}
@@ -880,7 +880,7 @@ export function EmployeeFormModal({
                 <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.emailLabel')} {role === 'ADMIN' ? <span className="text-paymint-red">*</span> : t('staff.form.emailOptional')}
                 </label>
-                <input
+                <input maxLength={255}
                   type="email"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors({ ...errors, email: '' }); }}
@@ -895,7 +895,7 @@ export function EmployeeFormModal({
                 <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.phoneLabel')} {t('staff.form.phoneOptional')}
                 </label>
-                <input
+                <input maxLength={255}
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
@@ -938,7 +938,7 @@ export function EmployeeFormModal({
                       >
                         {/* Search */}
                         <div className="relative p-3 border-b border-gray-100 dark:border-white/5 shrink-0">
-                          <input
+                          <input maxLength={255}
                             type="text"
                             placeholder={t('common.search')}
                             value={establishmentSearch}
@@ -1225,7 +1225,7 @@ export function EmployeeFormModal({
                   {initialData ? t('staff.form.newPasswordOptional') : t('staff.form.passwordLabel')} {(!initialData) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">
-                  <input
+                  <input maxLength={255}
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors({ ...errors, password: '' }); }}
@@ -1248,7 +1248,7 @@ export function EmployeeFormModal({
                   {t('staff.form.confirmPasswordLabel')} {(!initialData || password) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">
-                  <input
+                  <input maxLength={255}
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => { setConfirmPassword(e.target.value); if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: '' }); }}
@@ -1306,4 +1306,5 @@ export function EmployeeFormModal({
     document.body
   );
 }
+
 

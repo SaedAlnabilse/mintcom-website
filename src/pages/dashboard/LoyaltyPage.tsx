@@ -413,7 +413,7 @@ export function LoyaltyPage() {
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
                                                 <span className="text-sm font-black text-paymint-green">{currency}</span>
                                             </div>
-                                            <input
+                                            <input maxLength={255}
                                                 type="text"
                                                 value={currencyPerPointDisplay}
                                                 onChange={handleCurrencyPerPointChange}
@@ -437,7 +437,7 @@ export function LoyaltyPage() {
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
                                                 <span className="text-sm font-black text-paymint-green">{t('rewards.points')}</span>
                                             </div>
-                                            <input
+                                            <input maxLength={255}
                                                 type="text"
                                                 value={pointsPerCurrencyDisplay}
                                                 onChange={handlePointsPerCurrencyChange}
@@ -556,5 +556,6 @@ export function LoyaltyPage() {
         </div>
     );
 }
+
 
 

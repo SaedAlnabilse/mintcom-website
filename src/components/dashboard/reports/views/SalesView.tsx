@@ -475,3 +475,4 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
     </div>
   );
 });
+

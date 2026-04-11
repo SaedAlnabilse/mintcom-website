@@ -695,7 +695,7 @@ export function ProductsPage() {
                                     <div className="p-2 border-b border-gray-100 dark:border-white/5 bg-white dark:bg-[#0f172a]">
                                         <div className="relative">
                                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={12} />
-                                            <input
+                                            <input maxLength={255}
                                                 type="text"
                                                 placeholder={t('common.search')}
                                                 value={categorySearchQuery}
@@ -913,28 +913,32 @@ export function ProductsPage() {
                                 {paginatedProducts.map((p) => (
                                     <div
                                         key={p.id || `prod-${p.name}`}
-                                        className="group bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer"
+                                        className="group bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer h-full"
                                         onClick={() => handleEdit(p)}
                                     >
-                                        <div className="aspect-[4/3] bg-gray-50 dark:bg-black/20 relative overflow-hidden">
+                                        <div className="aspect-[4/3] bg-gray-50 dark:bg-black/20 relative overflow-hidden shrink-0">
                                             {p.image ? (
                                                 <img src={getProductImageUrl(p.image)!} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                             ) : (
                                                 <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                             )}
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-end justify-between p-3">
-                                                <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={18} /></button>
-                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={18} /></button>
+                                                <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors shadow-sm"><Edit2 size={18} /></button>
+                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors shadow-sm"><Trash2 size={18} /></button>
                                             </div>
                                         </div>
-                                        <div className="p-3 flex-1 flex flex-col">
+                                        <div className="p-3 flex-1 flex flex-col min-h-0">
                                             <div className="flex items-start justify-between mb-2 gap-2">
-                                                <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2">{p.name}</h3>
-                                                <span className="text-[10px] font-bold text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg whitespace-nowrap shrink-0">
+                                                <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2 h-10">{p.name}</h3>
+                                                <span className="text-[10px] font-bold text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg whitespace-nowrap shrink-0 h-fit">
                                                     {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
                                                 </span>
                                             </div>
-                                            {p.description && <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1">{p.description}</p>}
+                                            {p.description ? (
+                                                <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1 min-h-[2.5rem]">{p.description}</p>
+                                            ) : (
+                                                <div className="flex-1 min-h-[2.5rem]" />
+                                            )}
                                             <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto">
                                                 <div>
                                                     <p className="text-[10px] font-bold text-gray-400 mb-0.5">{t('products.table.price')}</p>
@@ -1115,4 +1119,5 @@ export function ProductsPage() {
 
     );
 }
+
 

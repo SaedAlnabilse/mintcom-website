@@ -191,3 +191,4 @@ export function MobileStatusBadge({ status, label }: StatusBadgeProps) {
     </span>
   );
 }
+

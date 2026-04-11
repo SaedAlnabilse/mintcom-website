@@ -145,7 +145,7 @@ export function DiscountFormModal({
                   {t('discounts.form.nameLabel')} <span className="text-paymint-red">*</span>
                   <QuickInfo text={t('discounts.form.nameTip')} />
                 </label>
-                <input
+                <input maxLength={255}
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
@@ -162,7 +162,7 @@ export function DiscountFormModal({
                   <QuickInfo text={t('discounts.form.percentageTip')} />
                 </label>
                 <div className="relative group">
-                  <input
+                  <input maxLength={255}
                     type="text"
                     inputMode="decimal"
                     value={percentage}
@@ -243,6 +243,7 @@ export function DiscountFormModal({
     document.body
   );
 }
+
 
 
 

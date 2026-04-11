@@ -136,13 +136,15 @@
     "title": "المسؤولين"
   },
   "attributes": {
+    "confirm": {
+      "deleteGroupMessage": "هل أنت متأكد أنك تريد حذف مجموعة \"{{name}}\" نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
+      "deleteGroupTitle": "حذف مجموعة الإضافات",
+      "deleteOptionMessage": "هل أنت متأكد أنك تريد حذف الخيار \"{{name}}\"؟",
+      "deleteOptionTitle": "حذف الخيار"
+    },
     "editAttribute": "تعديل الإضافة",
     "errors": {
       "deleteFailed": "فشل في الحذف",
-      "deleteGroupMsg": "هل أنت متأكد أنك تريد حذف مجموعة \"{{name}}\" نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
-      "deleteGroupTitle": "حذف مجموعة الإضافات",
-      "deleteOptionMsg": "إزالة هذا الخيار المحدد؟",
-      "deleteOptionTitle": "حذف الخيار",
       "deletionBlocked": "الحذف محظور",
       "deletionBlockedMsg": "المجموعة \"{{name}}\" تحتوي على {{count}} خيارات نشطة. يجب حذف جميع الخيارات داخل هذه المجموعة قبل التمكن من إزالتها.",
       "errorSaving": "خطأ في حفظ المجموعة",
@@ -203,11 +205,11 @@
     },
     "messages": {
       "groupCreated": "تم إنشاء المجموعة",
-      "groupRemoved": "تمت إزالة المجموعة",
+      "groupDeleted": "تمت إزالة المجموعة",
       "groupUpdated": "تم تحديث المجموعة",
-      "optionAdded": "تم إضافة الخيار",
-      "optionRemoved": "تم إزالة الخيار",
-      "optionSaved": "تم حفظ الخيار"
+      "optionCreated": "تم إنشاء الخيار",
+      "optionDeleted": "تم إزالة الخيار",
+      "optionUpdated": "تم تحديث الخيار"
     },
     "newAttribute": "إضافة جديدة",
     "newGroup": "مجموعة جديدة",
@@ -778,9 +780,10 @@
     "noResults": "لا توجد نتائج",
     "notAvailable": "غير متوفر",
     "note": "ملاحظة",
-    "notice": "تنبيه",
+    "notice": "ملاحظة",
     "of": "من",
     "offline": "غير متصل",
+    "ok": "تم",
     "online": "متصل",
     "optional": "اختياري",
     "or": "أو",

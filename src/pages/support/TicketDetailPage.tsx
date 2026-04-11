@@ -492,7 +492,7 @@ export const TicketDetailPage = () => {
               ) : (
                 <form onSubmit={handleSendMessage}>
                   <div className="mb-4">
-                    <textarea
+                    <textarea maxLength={2000}
                       ref={textareaRef}
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
@@ -552,3 +552,4 @@ export const TicketDetailPage = () => {
     </div>
   );
 };
+

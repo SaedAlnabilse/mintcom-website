@@ -284,3 +284,4 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, onOpenTasks, isChatOpen, i
     </div>
   );
 }
+

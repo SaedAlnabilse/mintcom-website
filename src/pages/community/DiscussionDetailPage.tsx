@@ -228,7 +228,7 @@ export const DiscussionDetailPage = () => {
                                     {/* Reply Input */}
                                     <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-6 mb-10 shadow-sm relative focus-within:border-PayMint-green/50 transition-all">
                                         <form onSubmit={handlePostComment}>
-                                            <textarea
+                                            <textarea maxLength={2000}
                                                 value={commentText}
                                                 onChange={(e) => setCommentText(e.target.value)}
                                                 placeholder={isAuthenticated ? t('community.discussions.replyPlaceholder', 'What are your thoughts?') : t('community.discussions.loginToReply', 'Sign in to reply...')}
@@ -362,3 +362,4 @@ export const DiscussionDetailPage = () => {
         </div>
     );
 };
+

@@ -139,7 +139,7 @@ export function MultiSelect({
                     <div className="p-2 border-b border-gray-50 dark:border-white/5 sticky top-0 bg-white dark:bg-[#111111] z-10">
                         <div className="relative flex items-center">
                             <Search size={14} className="absolute left-3 text-gray-400" />
-                            <input
+                            <input maxLength={255}
                                 ref={searchInputRef}
                                 type="text"
                                 value={searchQuery}
@@ -230,3 +230,4 @@ export function MultiSelect({
         </div>
     );
 }
+

@@ -395,3 +395,4 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
     </AnimatePresence>
   );
 }
+

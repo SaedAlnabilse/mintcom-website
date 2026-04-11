@@ -106,3 +106,4 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
     </div>
   );
 });
+

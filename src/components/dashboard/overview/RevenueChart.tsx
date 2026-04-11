@@ -342,3 +342,4 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
     </div>
   );
 });
+

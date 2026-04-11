@@ -234,7 +234,7 @@ export function OwnerMergePage() {
                                     <div className="absolute inset-y-0 left-6 flex items-center text-gray-400 group-hover:text-paymint-green transition-colors">
                                         <Building2 size={20} />
                                     </div>
-                                    <input
+                                    <input maxLength={255}
                                         type="text"
                                         value={brandName}
                                         onChange={(e) => setBrandName(e.target.value)}
@@ -295,3 +295,4 @@ export function OwnerMergePage() {
         </div>
     );
 }
+

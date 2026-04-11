@@ -262,7 +262,7 @@ export const IdeaDetailPage = () => {
                                     {/* Post Comment */}
                                     <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-6 mb-10 shadow-sm transition-all focus-within:border-PayMint-green/50">
                                         <form onSubmit={handlePostComment} className="relative">
-                                            <textarea
+                                            <textarea maxLength={2000}
                                                 value={commentText}
                                                 onChange={(e) => setCommentText(e.target.value)}
                                                 placeholder={isAuthenticated ? t('community.labels.writeComment', 'Add a comment...') : t('community.labels.loginToComment', 'Join the discussion...')}
@@ -418,3 +418,4 @@ export const IdeaDetailPage = () => {
         </div>
     );
 };
+

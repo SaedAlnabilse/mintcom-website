@@ -543,7 +543,7 @@ export function OwnerBrandsPage() {
                             size={18}
                             className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
                         />
-                        <input
+                        <input maxLength={255}
                             type="text"
                             placeholder={t('owner.brands.searchPlaceholder')}
                             value={searchQuery}
@@ -818,7 +818,7 @@ export function OwnerBrandsPage() {
                                                 <label className="text-[13px] font-sans font-bold text-gray-500 ml-0.5">{t('owner.brands.brandName')}</label>
                                                 <div className="relative group">
                                                     <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={18} />
-                                                    <input
+                                                    <input maxLength={255}
                                                         {...register('name')}
                                                         className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 rounded-xl text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all"
                                                         placeholder={t('owner.brands.brandNamePlaceholder')}
@@ -831,7 +831,7 @@ export function OwnerBrandsPage() {
                                                 <label className="text-[13px] font-sans font-bold text-gray-500 ml-0.5">{t('owner.brands.adminLoginId')}</label>
                                                 <div className="relative group">
                                                     <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={18} />
-                                                    <input
+                                                    <input maxLength={255}
                                                         {...establishmentLoginIdField}
                                                         className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 rounded-xl text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all"
                                                         placeholder={t('owner.brands.adminLoginIdPlaceholder')}
@@ -859,7 +859,7 @@ export function OwnerBrandsPage() {
                                                 <label className="text-[13px] font-sans font-bold text-gray-500 ml-0.5">{t('owner.brands.adminPassword')}</label>
                                                 <div className="relative group">
                                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={18} />
-                                                    <input
+                                                    <input maxLength={255}
                                                         {...register('establishmentPassword')}
                                                         type={showPassword ? "text" : "password"}
                                                         className="w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 rounded-xl text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all"
@@ -1050,3 +1050,4 @@ export function OwnerBrandsPage() {
         </div>
     );
 }
+

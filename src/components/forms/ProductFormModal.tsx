@@ -551,7 +551,7 @@ export function ProductFormModal({
                     {t('products.form.nameLabel')} <span className="text-paymint-red">*</span>
                     <QuickInfo text="Names are used to generate images" />
                   </label>
-                  <input
+                  <input maxLength={255}
                     type="text"
                     value={name}
                     onChange={(e) => {
@@ -666,7 +666,7 @@ export function ProductFormModal({
                                 <span className="text-gray-400 text-xs font-black">{currencySymbol}</span>
                               </div>
                             </div>
-                            <input
+                            <input maxLength={255}
                               type="text"
                               value={costPrice}
                               onChange={handleCostPriceChange}
@@ -692,7 +692,7 @@ export function ProductFormModal({
                               <span className="text-paymint-green text-xs font-black">{currencySymbol}</span>
                             </div>
                           </div>
-                          <input
+                          <input maxLength={255}
                             type="text"
                             value={price}
                             onChange={(e) => {
@@ -786,7 +786,7 @@ export function ProductFormModal({
                       {description.length.toLocaleString(t('common.locale'))} / {(30).toLocaleString(t('common.locale'))}
                     </span>
                   </div>
-                  <textarea
+                  <textarea maxLength={2000}
                     value={description}
                     onChange={(e) => setDescription(e.target.value.slice(0, 30))}
                     placeholder={t('products.form.descriptionPlaceholder')}
@@ -829,7 +829,7 @@ export function ProductFormModal({
                         {/* Search Bar */}
                         <div className="bg-white dark:bg-[#1E293B] p-3 border-b border-gray-100 dark:border-white/5 z-10 shrink-0">
                           <div className="relative">
-                            <input
+                            <input maxLength={255}
                               type="text"
                               value={categorySearchQuery}
                               onChange={(e) => setCategorySearchQuery(e.target.value)}
@@ -971,7 +971,7 @@ export function ProductFormModal({
                         {/* Search Bar */}
                         <div className="bg-white dark:bg-[#1E293B] p-3 border-b border-gray-100 dark:border-white/5 z-10 shrink-0">
                           <div className="relative">
-                            <input
+                            <input maxLength={255}
                               type="text"
                               value={addonsSearchQuery}
                               onChange={(e) => setAddonsSearchQuery(e.target.value)}
@@ -1321,3 +1321,4 @@ export function ProductFormModal({
     document.body
   );
 }
+

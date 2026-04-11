@@ -156,3 +156,4 @@ export function MobileAppModal({ isOpen, onClose }: MobileAppModalProps) {
     document.body
   );
 }
+

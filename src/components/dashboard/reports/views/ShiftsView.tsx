@@ -184,3 +184,4 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
     </div>
   );
 });
+

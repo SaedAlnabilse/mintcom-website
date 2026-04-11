@@ -119,7 +119,7 @@ export const CommunityPage = () => {
             {/* Search Bar */}
             <div className="relative max-w-2xl mx-auto">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400" size={22} />
-              <input
+              <input maxLength={255}
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -469,3 +469,4 @@ export const CommunityPage = () => {
     </div>
   );
 };
+

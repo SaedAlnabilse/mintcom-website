@@ -224,7 +224,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                 <motion.div key="discount" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
                   <label className="label-strong block">{t('rewards.form.discountPercentageLabel')}</label>
                   <div className="relative group">
-                    <input
+                    <input maxLength={255}
                       type="text"
                       inputMode="decimal"
                       value={discountPercentage}
@@ -297,4 +297,5 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
     document.body
   );
 }
+
 

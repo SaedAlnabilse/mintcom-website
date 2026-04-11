@@ -192,7 +192,7 @@ export const CommunityHubPage = () => {
                     <div className="flex-1 max-w-2xl mx-auto hidden md:block">
                         <div className="relative">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <input
+                            <input maxLength={255}
                                 type="text"
                                 placeholder="Search topics, posts, or users..."
                                 value={searchQuery}
@@ -407,4 +407,5 @@ export const CommunityHubPage = () => {
         </div>
     );
 };
+
 

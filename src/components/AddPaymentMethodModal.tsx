@@ -196,7 +196,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.cardNumber')}</label>
                                     <div className="relative group">
-                                        <input
+                                        <input maxLength={255}
                                             type="text"
                                             value={cardNumber}
                                             onChange={handleCardNumberChange}
@@ -232,7 +232,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.cvc')}</label>
                                         <div className="relative group">
-                                            <input
+                                            <input maxLength={255}
                                                 type="password"
                                                 value={cvc}
                                                 onChange={(e) => { setCvc(e.target.value.replace(/\D/g, '').slice(0, 4)); if (errors.cvc) setErrors({ ...errors, cvc: '' }); }}
@@ -249,7 +249,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                 {/* Cardholder Name */}
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.cardholder')}</label>
-                                    <input
+                                    <input maxLength={255}
                                         type="text"
                                         value={name}
                                         onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
@@ -283,5 +283,6 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
         document.body
     );
 }
+
 
 

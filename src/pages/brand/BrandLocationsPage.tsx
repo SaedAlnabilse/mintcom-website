@@ -423,7 +423,7 @@ export function BrandLocationsPage() {
                     {/* Search */}
                     <div className="relative flex-1">
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input
+                        <input maxLength={255}
                             type="text"
                             placeholder={t('owner.locations.searchPlaceholder')}
                             value={searchQuery}
@@ -801,6 +801,7 @@ export function BrandLocationsPage() {
         </div >
     );
 }
+
 
 
 

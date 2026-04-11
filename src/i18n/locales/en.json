@@ -136,13 +136,15 @@
     "title": "Admins"
   },
   "attributes": {
+    "confirm": {
+      "deleteGroupMessage": "Are you sure you want to permanently remove the \"{{name}}\" group? This action cannot be undone.",
+      "deleteGroupTitle": "Delete add-on group",
+      "deleteOptionMessage": "Are you sure you want to remove the \"{{name}}\" option?",
+      "deleteOptionTitle": "Delete option"
+    },
     "editAttribute": "Edit Add-on",
     "errors": {
       "deleteFailed": "Failed to delete attribute",
-      "deleteGroupMsg": "Are you sure you want to permanently remove the \"{{name}}\" group? This action cannot be undone.",
-      "deleteGroupTitle": "Delete add-on group",
-      "deleteOptionMsg": "Remove this specific add-on option?",
-      "deleteOptionTitle": "Delete option",
       "deletionBlocked": "Deletion blocked",
       "deletionBlockedMsg": "The group \"{{name}}\" contains {{count}} active options. You must delete all options within this group before you can remove the group itself.",
       "errorSaving": "Error saving group",
@@ -170,6 +172,7 @@
     "form": {
       "atmStyle": "Digits shift right to left (ATM style)",
       "availableLabel": "Available",
+      "availableTip": "If the add-on is currently out of stock, you can uncheck this at any time.",
       "groupNameLabel": "Group name",
       "groupNamePlaceholder": "E.g. Cooking preference",
       "groupTitle": "Add-on group",
@@ -180,7 +183,7 @@
       "nameLabel": "Name",
       "namePlaceholder": "E.g. Spice level",
       "nameTip": "Name (e.g. size, sauce).",
-      "optionNameLabel": "Option name",
+      "optionNameLabel": "Option Name",
       "optionNamePlaceholder": "E.g. Double espresso",
       "optionTitle": "Add-on option",
       "priceLabel": "Price",
@@ -203,18 +206,18 @@
     },
     "messages": {
       "groupCreated": "Group created",
-      "groupRemoved": "Group removed",
+      "groupDeleted": "Group removed",
       "groupUpdated": "Group updated",
-      "optionAdded": "Option added",
-      "optionRemoved": "Option removed",
-      "optionSaved": "Option saved"
+      "optionCreated": "Option created",
+      "optionDeleted": "Option removed",
+      "optionUpdated": "Option updated"
     },
     "newAttribute": "New Add-on",
     "newGroup": "New Group",
     "stats": {
-      "groups": "Attributes / groups",
-      "options": "Add-on options",
-      "sales": "Sales from paid add-ons",
+      "groups": "Attributes/Groups",
+      "options": "Add-on Options",
+      "sales": "Sales from Paid Add-ons",
       "withPrice": "With price"
     },
     "subtitle": "Manage extra options and pricing",
@@ -787,6 +790,7 @@
     "notice": "Notice",
     "of": "of",
     "offline": "Offline",
+    "ok": "Ok",
     "online": "Online",
     "optional": "Optional",
     "or": "or",
@@ -1189,7 +1193,7 @@
     "loading": "Loading Dashboard...",
     "menu": {
       "activeLocation": "Active Location",
-      "addons": "Add-Ons",
+      "addons": "Add-ons",
       "billing": "Billing",
       "cashGapReports": "Cash Gap Reports",
       "categories": "Categories",
@@ -1215,7 +1219,7 @@
       "recipes": "Recipes",
       "roles": "Roles",
       "salesAndReporting": "Sales and Reporting",
-      "salesByAddons": "Sales by Add-Ons",
+      "salesByAddons": "Sales by Add-ons",
       "salesByItems": "Sales by Items",
       "salesByStaff": "Sales by Staff",
       "salesSummary": "Sales Summary",
@@ -2325,10 +2329,10 @@
         "USD": "USD - US Dollar"
       },
       "currency": "Currency",
-      "currencyLockedNote": "Currency is consistent across the entire account. To use a different currency, please create a separate account.",
+      "currencyLockedNote": "You can change the currency from Account Management. Note that this will apply to all locations in the account. To use a different currency, please create a separate account.",
       "currencyTip": "Primary currency for sales.",
-      "discounts": "Discounts",
-      "discountsDesc": "Promo codes and discount rules",
+      "discounts": "Copy discounts options",
+      "discountsDesc": "Copy all promo codes and discount rules",
       "errors": {
         "addressRequired": "Address is required",
         "currencyRequired": "Currency is required",
@@ -2338,15 +2342,15 @@
       "locationName": "Location Name",
       "locationNamePlaceholder": "e.g. The Coffee House",
       "locationNameTip": "The name of your business.",
-      "menu": "Menu",
-      "menuDesc": "Items & categories",
+      "menu": "Products, categories and addons",
+      "menuDesc": "Copy menu items, categories and their addons",
       "paymentMethods": "Payment Methods",
       "paymentMethodsDesc": "Card types and custom payment options",
       "quickSetup": "Quick setup",
       "selectData": "Select data to duplicate:",
       "startFresh": "Do not import (Start fresh)",
       "subtitle": "Tell us about your business location.",
-      "title": "Location details"
+      "title": "Location Details"
     },
     "step2": {
       "activateButton": "Activate & Pay",
@@ -2362,7 +2366,7 @@
         "cardNameRequired": "Name on card is required",
         "cardNumberMin": "Card number must be 16 digits",
         "cvcRequired": "Cvc required",
-        "expiryRequired": "Mm/Yy required"
+        "expiryRequired": "MM/YY required"
       },
       "expiry": "Expiry",
       "freeDays": "7 DAYS FREE",
@@ -2382,14 +2386,14 @@
         "passwordMin": "Location Password must be at least 6 characters"
       },
       "locationId": "Location ID",
-      "locationIdDesc": "Unique ID for this location.",
-      "locationIdPlaceholder": "e.g. mycompany-downtown",
+      "locationIdDesc": "",
+      "locationIdPlaceholder": "my-restaurant",
       "locationIdTip": "Unique ID for POS login.",
-      "password": "Location password",
+      "password": "Location Password",
       "passwordPlaceholder": "••••••••",
       "passwordTip": "Password for this location.",
-      "subtitle": "This id is for the pos app.",
-      "title": "Create location login",
+      "subtitle": "This is the ID used to access the POS application.",
+      "title": "Create Location Login",
       "uniqueAccess": "Unique access:",
       "uniqueAccessDesc": "Each location needs its own ID and password."
     },
@@ -2402,17 +2406,17 @@
         "usernameMin": "Username must be at least 3 characters",
         "usernameRegex": "Username can only contain letters, numbers, underscores, and hyphens"
       },
-      "firstName": "First name",
+      "firstName": "First Name",
       "firstNamePlaceholder": "John",
-      "lastName": "Last name",
+      "lastName": "Last Name",
       "lastNamePlaceholder": "Doe",
-      "password": "Personal password",
+      "password": "Personal Password",
       "passwordPlaceholder": "••••••••",
       "passwordTip": "Your unique password.",
       "step2Note": "This is step 2 of the POS login.",
       "subtitle": "Create your personal account.",
-      "title": "Create your login",
-      "username": "Admin username",
+      "title": "Create Your Login",
+      "username": "Admin Username",
       "usernamePlaceholder": "admin",
       "usernameTip": "Your username."
     },
@@ -2590,9 +2594,9 @@
         "value": "Value"
       },
       "items": {
-        "addonName": "Add-On Name",
+        "addonName": "Add-on Name",
         "attributeGroup": "Attribute Group",
-        "byAddons": "By Add-Ons",
+        "byAddons": "By Add-ons",
         "byAttributes": "By Attributes (Groups)",
         "byCategory": "By Category",
         "byProducts": "By Products",
@@ -2605,7 +2609,7 @@
           "attributes": "Attributes",
           "categories": "Categories",
           "items": "Items",
-          "modifiers": "Add-Ons"
+          "modifiers": "Add-ons"
         },
         "unitsSold": "Units Sold"
       },
@@ -2774,12 +2778,12 @@
       "accountRestored": "Your account has been restored successfully",
       "activeBlock": "Active block",
       "activeEstBlockModal": {
-        "activeLocations": "Active locations",
+        "activeLocations": "Active Locations",
         "desc": "You have active locations linked to your account. Please deactivate or transfer them before proceeding.",
         "goToBilling": "Go to plans",
         "goToLocations": "Go to locations",
         "subtitle": "You have active locations that need to be resolved before proceeding.",
-        "title": "Active locations found"
+        "title": "Active Locations Found"
       },
       "admins": "Admins",
       "badge": "Account",
@@ -3052,7 +3056,7 @@
       "actions": "Actions",
       "active": "Active",
       "addFirstLocation": "Start by adding your first business location.",
-      "allStatuses": "All statuses",
+      "allStatuses": "All status",
       "allTypes": "All types",
       "badge": "Fleet",
       "canceled": "Canceled",
@@ -3139,7 +3143,7 @@
     },
     "overview": {
       "activeHours": "Active hours",
-      "activeLocations": "Active locations",
+      "activeLocations": "Active Locations",
       "addLocation": "Add Location",
       "badge": "Enterprise overview",
       "brands": "Brands",
@@ -3706,19 +3710,20 @@
         "title": "Deletion scheduled"
       },
       "confirm": {
-        "button": "Schedule deletion",
-        "confirmYou": "To confirm it's you.",
+        "button": "Schedule Deletion",
+        "confirmYou": "Account level password (Owner Portal)",
         "deletionDate": "Deletion date:",
         "fail": "Failed to request deletion",
         "gracePeriod": "Grace period",
         "gracePeriodDesc": "You can stop this anytime in the next 30 days.",
         "locationId": "Location ID",
-        "locationPassword": "Location password",
+        "locationIdTip": "The unique ID for this location",
+        "locationPassword": "Location Password",
         "passwordEntered": "Password entered",
         "processing": "Processing...",
         "success": "Deletion scheduled. Check your email for data exports.",
-        "yourEmail": "Your email",
-        "yourPassword": "Your password"
+        "yourEmail": "Your Email",
+        "yourPassword": "Your Password"
       },
       "export": {
         "customers": "Customers",
@@ -3734,8 +3739,8 @@
         "shiftsDesc": "Work shifts and cash logs",
         "staff": "Staff",
         "staffDesc": "Team members and roles",
-        "subtitle": "We'll email you these files.",
-        "title": "Export data"
+        "subtitle": "We will email you these files",
+        "title": "Export Data"
       },
       "loadFailed": "Failed to load establishment data",
       "loading": "Loading Location Data...",
@@ -3744,10 +3749,10 @@
         "export": "Export",
         "warning": "Warning"
       },
-      "title": "Delete location",
+      "title": "Delete Location",
       "warning": {
         "subtitle": "All data will be gone forever after 30 days.",
-        "summary": "Deletion summary",
+        "summary": "Deletion Summary",
         "title": "This cannot be undone"
       }
     },
@@ -3828,10 +3833,10 @@
     "danger": {
       "cancelFailed": "Failed To Cancel Deletion",
       "description": "This will permanently delete \"{{name}}\". All data including orders, products, and customer info will be deleted.",
-      "startDeletion": "Start deletion",
+      "startDeletion": "Start Deletion",
       "subtitle": "Danger Zone",
       "thisLocation": "This location",
-      "title": "Delete location",
+      "title": "Delete Location",
       "undoWarning": "You cannot undo this after 30 days.",
       "warning": "Warning"
     },
@@ -3911,7 +3916,7 @@
     "saveChanges": "Save Changes",
     "subtitle": "General store configuration",
     "tabs": {
-      "danger": "Delete location",
+      "danger": "Delete Location",
       "profile": "Profile",
       "receipts": "Receipts",
       "sales": "Sales setup"

@@ -608,7 +608,7 @@ export function RecipesPage() {
               <form onSubmit={handleMaterialSubmit} className="p-4 sm:p-8 space-y-6 overflow-y-auto flex-1">
                 <div>
                   <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-paymint-red mx-1">*</span></label>
-                  <input type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
+                  <input  maxLength={255}type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
                   {errors.name && <p className="mt-2 text-xs font-bold text-paymint-red px-1">{errors.name}</p>}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -625,7 +625,7 @@ export function RecipesPage() {
                       <QuickInfo text={t('inventory.tips.quantity', {defaultValue: 'Current stock available for this ingredient.'})} />
                     </label>
                     <div className="relative">
-                      <input
+                      <input maxLength={255}
                         type="text"
                         inputMode="decimal"
                         value={materialForm.quantity === 0 ? '' : materialForm.quantity.toFixed(2)}
@@ -666,7 +666,7 @@ export function RecipesPage() {
                   <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                     {t('manufacturing.formula.name')} <span className="text-paymint-red mx-1">*</span>
                   </label>
-                  <input
+                  <input maxLength={255}
                     type="text"
                     value={subRecipeForm.name}
                     onChange={(e) => {
@@ -1192,3 +1192,4 @@ export function RecipesPage() {
     </div>
   );
 }
+

@@ -96,7 +96,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
           <div className="p-3 border-b border-gray-100 dark:border-white/5">
             <div className="relative">
               <Search size={16} className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 text-gray-400`} />
-              <input
+              <input maxLength={255}
                 type="text"
                 placeholder={t('support.qa.searchPlaceholder')}
                 value={search}
@@ -248,4 +248,5 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
     </AnimatePresence>
   );
 }
+
 

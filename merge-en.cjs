@@ -596,7 +596,7 @@ const supportOverrides = {
   'support.articles.ft5_excerpt': 'Manage multiple locations.',
   'support.articles.ft6': 'Staff Performance Tracking',
   'support.articles.ft6_excerpt': 'Monitor staff sales performance.',
-  'support.articles.ft7': 'Add-Ons & Modifiers',
+  'support.articles.ft7': 'Add-ons & Modifiers',
   'support.articles.ft7_excerpt': 'Create product add-ons.',
   'support.articles.ft8': 'Recipe Management',
   'support.articles.ft8_excerpt': 'Track ingredient costs.',

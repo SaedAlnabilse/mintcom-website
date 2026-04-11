@@ -411,7 +411,7 @@ export const SupportAdminDetailPage = () => {
                                     Replying as Paymint Support
                                 </div>
                                 <div className="flex gap-3">
-                                    <textarea
+                                    <textarea maxLength={2000}
                                         value={replyText}
                                         onChange={(e) => setReplyText(e.target.value)}
                                         placeholder="Type your support reply..."
@@ -454,3 +454,4 @@ export const SupportAdminDetailPage = () => {
         </>
     );
 };
+

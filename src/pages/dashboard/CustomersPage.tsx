@@ -597,7 +597,7 @@ export function CustomersPage() {
                   </label>
                   <div className="relative group">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
-                    <input
+                    <input maxLength={255}
                       type="text"
                       {...register('name')}
                       placeholder={t('customers.form.namePlaceholder')}
@@ -612,7 +612,7 @@ export function CustomersPage() {
                     <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">
                       {t('customers.form.phone')} (optional)
                     </label>
-                    <input
+                    <input maxLength={255}
                       type="tel"
                       {...register('phone')}
                       placeholder={t('customers.form.phonePlaceholder')}
@@ -622,7 +622,7 @@ export function CustomersPage() {
                   </div>
                   <div className="space-y-3">
                     <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">{t('customers.form.email')} (optional)</label>
-                    <input
+                    <input maxLength={255}
                       type="email"
                       {...register('email')}
                       placeholder={t('customers.form.emailPlaceholder')}
@@ -634,7 +634,7 @@ export function CustomersPage() {
 
                 <div className="space-y-3">
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">{t('customers.form.address')} (optional)</label>
-                  <input
+                  <input maxLength={255}
                     type="text"
                     {...register('address')}
                     placeholder={t('customers.form.addressPlaceholder')}
@@ -718,7 +718,7 @@ export function CustomersPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('customers.details.points')}</label>
                   <div className="relative">
-                    <input
+                    <input maxLength={255}
                       type="text"
                       inputMode="numeric"
                       value={pointsAmount === 0 ? '' : pointsAmount}
@@ -882,3 +882,4 @@ export function CustomersPage() {
     </div>
   );
 }
+

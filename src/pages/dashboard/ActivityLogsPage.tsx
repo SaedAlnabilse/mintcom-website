@@ -88,11 +88,14 @@ export function ActivityLogsPage() {
   const [actionFilter, setActionFilter] = useState('all');
 
   // Date Filters State
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
-    start: new Date().toISOString().split('T')[0],
-    end: new Date().toISOString().split('T')[0]
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>(() => {
+    const { start, end } = calculateDateRange('last_30_days');
+    return {
+      start: formatDateForInput(start),
+      end: formatDateForInput(end)
+    };
   });
-  const [activePreset, setActivePreset] = useState('today');
+  const [activePreset, setActivePreset] = useState('last_30_days');
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -273,7 +276,7 @@ export function ActivityLogsPage() {
         <div className="flex flex-col xl:flex-row items-start xl:items-center gap-4 w-full">
           <div className="flex-1 w-full xl:w-auto relative group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
+            <input maxLength={255}
               type="text"
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
@@ -609,5 +612,6 @@ export function ActivityLogsPage() {
     </div>
   );
 }
+
 
 

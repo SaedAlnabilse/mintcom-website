@@ -311,7 +311,7 @@ export function PasswordResetOtpModal({
                                 {/* Otp Input */}
                                 <div className="flex justify-center gap-2">
                                     {otp.map((digit, index) => (
-                                        <input
+                                        <input maxLength={255}
                                             key={index}
                                             ref={(el) => {
                                                 otpRefs.current[index] = el;
@@ -378,7 +378,7 @@ export function PasswordResetOtpModal({
                                         <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
                                             {t('passwordReset.form.newPassword')}
                                         </label>
-                                        <input
+                                        <input maxLength={255}
                                             type={showPassword ? 'text' : 'password'}
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
@@ -398,7 +398,7 @@ export function PasswordResetOtpModal({
                                         <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
                                             {t('passwordReset.form.confirmPassword')}
                                         </label>
-                                        <input
+                                        <input maxLength={255}
                                             type={showConfirmPassword ? 'text' : 'password'}
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -484,4 +484,5 @@ export function PasswordResetOtpModal({
         document.body
     );
 }
+
 

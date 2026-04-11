@@ -244,3 +244,4 @@ export function FilterChip({ label, value, isActive, onClick, onClear }: FilterC
     </button>
   );
 }
+

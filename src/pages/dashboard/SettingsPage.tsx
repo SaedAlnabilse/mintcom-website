@@ -843,24 +843,24 @@ export function SettingsPage() {
             </div>
             <div className="space-y-2">
               <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.name')}</label>
-              <input type="text" {...register('restaurantName')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
+              <input type="text" {...register('restaurantName')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
             </div>
             <div className="space-y-2">
               <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.about')}</label>
-              <textarea {...register('restaurantDescription')} rows={3} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium resize-none" />
+              <textarea {...register('restaurantDescription')} rows={3} maxLength={2000} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium resize-none" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.address')}</label>
-                <input type="text" {...register('restaurantAddress')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
+                <input type="text" {...register('restaurantAddress')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.email')}</label>
-                <input type="email" {...register('email')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
+                <input type="email" {...register('email')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.taxId')}</label>
-                <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
+                <input type="text" {...register('taxIdNumber')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
             </div>
           </motion.div>
@@ -1050,8 +1050,8 @@ export function SettingsPage() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showName')}</span>
-                            <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.showNameDesc')}</span>
+                            <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showName')}</span>
+                            <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.showNameDesc')}</span>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" {...register('showRestaurantName')} className="sr-only peer" />
@@ -1062,6 +1062,7 @@ export function SettingsPage() {
                           type="text"
                           {...register('restaurantName')}
                           disabled={!showRestaurantName}
+                          maxLength={255}
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
                           placeholder={t('settings.profile.namePlaceholder')}
                         />
@@ -1070,8 +1071,8 @@ export function SettingsPage() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showTagline')}</span>
-                            <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.showTaglineDesc')}</span>
+                            <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showTagline')}</span>
+                            <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.showTaglineDesc')}</span>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" {...register('showDescription')} className="sr-only peer" />
@@ -1082,6 +1083,7 @@ export function SettingsPage() {
                           type="text"
                           {...register('restaurantDescription')}
                           disabled={!showDescription}
+                          maxLength={255}
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
                           placeholder={t('settings.profile.aboutPlaceholder')}
                         />
@@ -1093,8 +1095,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showLogo')}</span>
-                        <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.showLogoDesc')}</span>
+                        <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showLogo')}</span>
+                        <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.showLogoDesc')}</span>
                         <p className="text-[10px] text-gray-400 font-bold mt-1.5">{t('settings.profile.logoGuidelines')}</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
@@ -1119,8 +1121,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showAddress')}</span>
-                        <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.showAddressDesc')}</span>
+                        <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showAddress')}</span>
+                        <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.showAddressDesc')}</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showAddress')} className="sr-only peer" />
@@ -1131,6 +1133,7 @@ export function SettingsPage() {
                       type="text"
                       {...register('restaurantAddress')}
                       disabled={!showAddress}
+                      maxLength={255}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
                       placeholder={t('settings.profile.addressPlaceholder')}
                     />
@@ -1140,8 +1143,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showTaxId')}</span>
-                        <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.showTaxIdDesc')}</span>
+                        <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showTaxId')}</span>
+                        <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.showTaxIdDesc')}</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showTaxId')} className="sr-only peer" />
@@ -1152,6 +1155,7 @@ export function SettingsPage() {
                       type="text"
                       {...register('taxIdNumber')}
                       disabled={!showTaxId}
+                      maxLength={255}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
                       placeholder={t('settings.profile.taxIdPlaceholder')}
                     />
@@ -1161,8 +1165,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.footerMessage')}</span>
-                        <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.footerMessageDesc')}</span>
+                        <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.footerMessage')}</span>
+                        <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.footerMessageDesc')}</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showFarewellMessage')} className="sr-only peer" />
@@ -1173,6 +1177,7 @@ export function SettingsPage() {
                       {...register('farewellMessage')}
                       rows={2}
                       disabled={!showFarewellMessage}
+                      maxLength={2000}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
                       placeholder={t('settings.receipts.footerPlaceholder')}
                     />
@@ -1196,13 +1201,10 @@ export function SettingsPage() {
                   <Trash2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.danger.title')}</h3>
-                  <p className="text-xs text-red-600/80 dark:text-red-400/80 font-black tracking-widest px-1">{t('settings.danger.subtitle')}</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white leading-none mb-1">{t('settings.danger.title')}</h3>
+                  <p className="text-xs text-red-600/80 dark:text-red-400/80 font-medium tracking-widest">{t('settings.danger.subtitle')}</p>
                 </div>
               </div>
-              <span className="px-3 py-1 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-xs font-black tracking-widest border border-red-200 dark:border-red-900/30">
-                {t('settings.danger.warning')}
-              </span>
             </div>
 
             {deletionStatus?.status === 'pending_deletion' ? (

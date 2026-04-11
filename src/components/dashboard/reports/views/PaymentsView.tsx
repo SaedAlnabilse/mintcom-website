@@ -267,3 +267,4 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
     </div>
   );
 });
+

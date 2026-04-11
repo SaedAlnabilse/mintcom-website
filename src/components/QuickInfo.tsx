@@ -71,3 +71,4 @@ export function QuickInfo({ text }: { text: string }) {
     </>
   );
 }
+

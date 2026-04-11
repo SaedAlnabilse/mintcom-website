@@ -108,7 +108,7 @@ export const QAPage = () => {
                         transition={{ delay: 0.1 }}
                         className="relative max-w-2xl mx-auto"
                     >
-                        <input
+                        <input maxLength={255}
                             type="text"
                             placeholder={t('support.qa.search_placeholder', 'Search for questions...')}
                             value={searchQuery}
@@ -242,3 +242,4 @@ export const QAPage = () => {
         </div>
     );
 };
+

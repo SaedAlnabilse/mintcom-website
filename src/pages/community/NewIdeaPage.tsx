@@ -188,7 +188,7 @@ export const NewIdeaPage = () => {
                                         <label className="block text-sm font-bold mb-3 text-gray-500 uppercase tracking-widest">
                                             {t('community.ideas.titleLabel', 'Idea Summary')} <span className="text-red-500">*</span>
                                         </label>
-                                        <input
+                                        <input maxLength={255}
                                             type="text"
                                             value={formData.title}
                                             onChange={(e) => {
@@ -215,7 +215,7 @@ export const NewIdeaPage = () => {
                                         <label className="block text-sm font-bold mb-3 text-gray-500 uppercase tracking-widest">
                                             {t('community.ideas.descriptionLabel', 'Details & Context')} <span className="text-red-500">*</span>
                                         </label>
-                                        <textarea
+                                        <textarea maxLength={2000}
                                             value={formData.description}
                                             onChange={(e) => {
                                                 setFormData({ ...formData, description: e.target.value });
@@ -277,3 +277,4 @@ export const NewIdeaPage = () => {
         </div>
     );
 };
+

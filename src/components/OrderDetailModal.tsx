@@ -383,7 +383,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                 <label className="block text-sm font-semibold text-gray-800 dark:text-gray-100 mb-2">
                                     Refund reason
                                 </label>
-                                <textarea
+                                <textarea maxLength={2000}
                                     value={refundReason}
                                     onChange={(e) => {
                                         setRefundReason(e.target.value);
@@ -453,4 +453,5 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
         document.body
     );
 }
+
 

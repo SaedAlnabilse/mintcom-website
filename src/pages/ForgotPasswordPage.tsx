@@ -81,7 +81,7 @@ export function ForgotPasswordPage() {
                   <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('auth.forgotPassword.emailLabel')}</label>
                   <div className="relative group">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
-                    <input
+                    <input maxLength={255}
                       type="email"
                       {...register('email')}
                       className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
@@ -146,3 +146,4 @@ export function ForgotPasswordPage() {
     </div>
   );
 }
+

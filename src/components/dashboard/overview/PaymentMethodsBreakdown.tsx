@@ -95,3 +95,4 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
     </div>
   );
 });
+

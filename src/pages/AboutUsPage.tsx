@@ -116,3 +116,4 @@ export const AboutUsPage = () => {
         </div>
     );
 };
+

@@ -9,6 +9,7 @@ import {
     Calendar,
     Package,
     Users,
+    User,
     ShoppingCart,
     Clock,
     X,
@@ -207,7 +208,7 @@ export function EstablishmentDeletionWizard({
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white dark:bg-[#1E293B] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col border border-gray-200 dark:border-white/5 shadow-2xl"
+                className="bg-white dark:bg-[#1E293B] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-xl"
             >
                 {/* Header */}
                 <div className="bg-gradient-to-r from-paymint-red to-paymint-red p-6 text-white relative">
@@ -267,13 +268,13 @@ export function EstablishmentDeletionWizard({
                                 className="space-y-6"
                             >
                                 <div className="bg-paymint-red/10 dark:bg-paymint-red/10 border border-red-200 dark:border-paymint-red/20 rounded-2xl p-4">
-                                    <div className="flex items-start gap-3">
-                                        <AlertTriangle className="text-paymint-red flex-shrink-0 mt-0.5" size={20} />
+                                    <div className="flex items-center gap-3">
+                                        <AlertTriangle className="text-paymint-red flex-shrink-0" size={20} />
                                         <div>
-                                            <h3 className="font-bold text-red-700 dark:text-paymint-red">
+                                            <h3 className="font-bold text-red-700 dark:text-paymint-red leading-none">
                                                 {t('security.deletion.warning.title')}
                                             </h3>
-                                            <p className="text-paymint-red dark:text-red-300 text-sm mt-1">
+                                            <p className="text-paymint-red dark:text-red-300 text-sm mt-1.5 leading-none">
                                                 {t('security.deletion.warning.subtitle')}
                                             </p>
                                         </div>
@@ -281,8 +282,7 @@ export function EstablishmentDeletionWizard({
                                 </div>
 
                                 <div>
-                                    <h3 className="text-xs font-black text-gray-400 dark:text-gray-500 tracking-[0.2em] mb-4 flex items-center gap-2 px-1">
-                                        <Package size={14} className="text-paymint-red" />
+                                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4 px-1">
                                         {t('security.deletion.warning.summary')}
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3">
@@ -292,7 +292,7 @@ export function EstablishmentDeletionWizard({
                                             value={stats?.stats.orders || 0}
                                         />
                                         <StatCard
-                                            icon={Users}
+                                            icon={User}
                                             label={t('dashboard.menu.customers')}
                                             value={stats?.stats.customers || 0}
                                         />
@@ -313,11 +313,11 @@ export function EstablishmentDeletionWizard({
                                     <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-2xl p-4">
                                         <div className="flex items-center gap-3">
                                             <Clock className="text-amber-500" size={20} />
-                                            <div>
+                                            <div className="flex items-center gap-1.5 flex-wrap">
                                                 <span className="font-bold text-amber-700 dark:text-amber-400">
-                                                    {stats.dataRange.age}
+                                                    {stats.dataRange.age.trim()}
                                                 </span>
-                                                <span className="text-amber-600 dark:text-amber-300 text-sm ml-2">
+                                                <span className="text-amber-600 dark:text-amber-300 text-sm">
                                                     {t('owner.overview.managed')}
                                                 </span>
                                             </div>
@@ -337,13 +337,13 @@ export function EstablishmentDeletionWizard({
                                 className="space-y-6"
                             >
                                 <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl p-4">
-                                    <div className="flex items-start gap-3">
-                                        <Mail className="text-blue-500 flex-shrink-0 mt-0.5" size={20} />
+                                    <div className="flex items-center gap-3">
+                                        <Mail className="text-blue-500 flex-shrink-0" size={20} />
                                         <div>
-                                            <h3 className="font-bold text-blue-700 dark:text-blue-400">
+                                            <h3 className="font-bold text-blue-700 dark:text-blue-400 leading-none">
                                                 {t('security.deletion.export.title')}
                                             </h3>
-                                            <p className="text-blue-600 dark:text-blue-300 text-sm mt-1">
+                                            <p className="text-blue-600 dark:text-blue-300 text-sm mt-1.5 leading-none">
                                                 {t('security.deletion.export.subtitle')}
                                             </p>
                                         </div>
@@ -440,13 +440,12 @@ export function EstablishmentDeletionWizard({
                                 <div>
                                     <label className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2 flex items-center">
                                         {t('security.deletion.confirm.locationId')}
-                                        <QuickInfo text={t('onboarding.tour.locationStatsDesc')} />
+                                        <QuickInfo text={t('security.deletion.confirm.locationIdTip')} />
                                     </label>
-                                    <input
+                                    <input maxLength={255}
                                         type="text"
                                         value={establishmentLoginId}
                                         onChange={(e) => setEstablishmentLoginId(e.target.value)}
-                                        placeholder={t('security.deletion.confirm.locationId')}
                                         className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
                                     />
                                 </div>
@@ -458,14 +457,12 @@ export function EstablishmentDeletionWizard({
                                             <Lock size={14} className="text-paymint-red" />
                                             {t('security.deletion.confirm.locationPassword')}
                                         </div>
-                                        <QuickInfo text={t('onboarding.validation.locationPasswordMin')} />
                                     </label>
                                     <div className="relative">
-                                        <input
+                                        <input maxLength={255}
                                             type={showEstablishmentPassword ? 'text' : 'password'}
                                             value={establishmentPassword}
                                             onChange={(e) => setEstablishmentPassword(e.target.value)}
-                                            placeholder={t('security.deletion.confirm.locationPassword')}
                                             className="w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
                                         />
                                         <button
@@ -485,13 +482,11 @@ export function EstablishmentDeletionWizard({
                                             <Mail size={14} className="text-paymint-red" />
                                             {t('security.deletion.confirm.yourEmail')}
                                         </div>
-                                        <QuickInfo text={t('security.identityLabel')} />
                                     </label>
-                                    <input
+                                    <input maxLength={255}
                                         type="email"
                                         value={accountEmail}
                                         onChange={(e) => setAccountEmail(e.target.value)}
-                                        placeholder={t('security.deletion.confirm.yourEmail')}
                                         className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
                                     />
                                 </div>
@@ -506,11 +501,10 @@ export function EstablishmentDeletionWizard({
                                         <QuickInfo text={t('security.deletion.confirm.confirmYou')} />
                                     </label>
                                     <div className="relative">
-                                        <input
+                                        <input maxLength={255}
                                             type={showPassword ? 'text' : 'password'}
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            placeholder={t('security.deletion.confirm.yourPassword')}
                                             className={`w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none transition-colors ${password.length >= 6
                                                 ? 'border-paymint-green focus:border-paymint-green'
                                                 : 'border-gray-300 dark:border-gray-700 focus:border-paymint-red'
@@ -735,3 +729,4 @@ export function PendingDeletionBanner({
         </motion.div>
     );
 }
+

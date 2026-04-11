@@ -313,7 +313,7 @@ export const NewTicketPage = () => {
                 <label className="block text-sm font-bold text-gray-900 dark:text-white mb-3">
                   {t('support.newTicket.subjectLabel')} <span className="text-red-500">*</span>
                 </label>
-                <input
+                <input maxLength={255}
                   type="text"
                   value={formData.subject}
                   onChange={(e) => {
@@ -343,7 +343,7 @@ export const NewTicketPage = () => {
                 <label className="block text-sm font-bold text-gray-900 dark:text-white mb-3">
                   {t('support.newTicket.descriptionLabel')} <span className="text-red-500">*</span>
                 </label>
-                <textarea
+                <textarea maxLength={2000}
                   value={formData.description}
                   onChange={(e) => {
                     setFormData({ ...formData, description: e.target.value });
@@ -448,3 +448,4 @@ export const NewTicketPage = () => {
     </div>
   );
 };
+

@@ -127,7 +127,7 @@ export const Contact = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.fullName')}</label>
-                        <input
+                        <input maxLength={255}
                           required
                           type="text"
                           name="fullName"
@@ -139,7 +139,7 @@ export const Contact = () => {
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.businessName')}</label>
-                        <input
+                        <input maxLength={255}
                           required
                           type="text"
                           name="businessName"
@@ -153,7 +153,7 @@ export const Contact = () => {
 
                     <div className="space-y-2">
                       <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.emailAddress')}</label>
-                      <input
+                      <input maxLength={255}
                         required
                         type="email"
                         name="email"
@@ -166,7 +166,7 @@ export const Contact = () => {
 
                     <div className="space-y-2">
                       <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.yourMessage')}</label>
-                      <textarea
+                      <textarea maxLength={2000}
                         required
                         name="message"
                         value={formData.message}
@@ -207,3 +207,4 @@ export const Contact = () => {
     </section>
   );
 };
+

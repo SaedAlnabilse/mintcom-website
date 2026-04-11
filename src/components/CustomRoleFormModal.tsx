@@ -523,7 +523,7 @@ export function CustomRoleFormModal({
               {/* Name Input */}
               <div className="relative space-y-2">
                 <label className="label-strong block">{t('roles.form.roleNameLabel')}</label>
-                <input
+                <input maxLength={255}
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
@@ -774,4 +774,5 @@ export function CustomRoleFormModal({
     document.body
   );
 }
+
 

@@ -213,7 +213,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
             <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative group bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/[0.05] hover:border-paymint-green/50 transition-all p-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
+                    <input maxLength={255}
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -371,3 +371,4 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
         </div>
     );
 }
+

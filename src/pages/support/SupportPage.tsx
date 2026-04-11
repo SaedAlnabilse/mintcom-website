@@ -161,7 +161,7 @@ export const SupportPage = () => {
             {/* Search Bar with Dropdown */}
             <div className="relative max-w-2xl mx-auto" ref={searchContainerRef}>
               <Search className={`absolute left-6 top-1/2 -translate-y-1/2 transition-colors ${isSearchFocused ? 'text-paymint-green' : 'text-gray-400'}`} size={22} />
-              <input
+              <input maxLength={255}
                 type="text"
                 value={searchQuery}
                 onFocus={() => setIsSearchFocused(true)}
@@ -394,3 +394,4 @@ export const SupportPage = () => {
     </div>
   );
 };
+

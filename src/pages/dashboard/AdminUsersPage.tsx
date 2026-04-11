@@ -437,7 +437,7 @@ export function AdminUsersPage() {
                                         <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
                                             {t('adminUsers.form.firstName')} <span className="text-paymint-red">*</span>
                                         </label>
-                                        <input
+                                        <input maxLength={255}
                                             type="text"
                                             value={formData.firstName}
                                             onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
@@ -449,7 +449,7 @@ export function AdminUsersPage() {
                                         <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
                                             {t('adminUsers.form.lastName')} <span className="text-paymint-red">*</span>
                                         </label>
-                                        <input
+                                        <input maxLength={255}
                                             type="text"
                                             value={formData.lastName}
                                             onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
@@ -463,7 +463,7 @@ export function AdminUsersPage() {
                                         <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
                                             {t('adminUsers.form.email')} <span className="text-paymint-red">*</span>
                                         </label>
-                                        <input
+                                        <input maxLength={255}
                                             type="email"
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -480,7 +480,7 @@ export function AdminUsersPage() {
                                             {t('adminUsers.form.password')} <span className="text-paymint-red">*</span>
                                         </label>
                                         <div className="relative group">
-                                            <input
+                                            <input maxLength={255}
                                                 type={showPassword ? 'text' : 'password'}
                                                 value={formData.password}
                                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -565,6 +565,7 @@ export function AdminUsersPage() {
         </div>
     );
 }
+
 
 
 

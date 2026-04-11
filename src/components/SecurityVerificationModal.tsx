@@ -263,7 +263,7 @@ export function SecurityVerificationModal({
                                     <label className="text-xs font-medium text-gray-400 tracking-widest block ml-1">{t('security.identityLabel')}</label>
                                     <div className="relative group">
                                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-paymint-green opacity-50 group-focus-within:opacity-100 transition-opacity" size={16} />
-                                        <input
+                                        <input maxLength={255}
                                             type="email"
                                             value={email}
                                             onChange={(e) => {
@@ -282,7 +282,7 @@ export function SecurityVerificationModal({
                                     <label className="text-xs font-medium text-gray-400 tracking-widest block ml-1">{t('security.passwordLabel')}</label>
                                     <div className="relative group">
                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-paymint-green opacity-50 group-focus-within:opacity-100 transition-opacity" size={16} />
-                                        <input
+                                        <input maxLength={255}
                                             type={showPassword ? 'text' : 'password'}
                                             value={password}
                                             onChange={(e) => {
@@ -358,4 +358,5 @@ export function SecurityVerificationModal({
         document.body
     );
 }
+
 

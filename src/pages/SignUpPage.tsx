@@ -253,7 +253,7 @@ export function SignUpPage() {
                   </label>
                   <div className="relative">
                     <User className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
+                    <input maxLength={255}
                       {...register('firstName')}
                       type="text"
                       id="firstName"
@@ -273,7 +273,7 @@ export function SignUpPage() {
                   <label htmlFor="lastName" className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
                     {t('auth.signup.lastNameLabel')}<span className="text-accent ml-1">*</span>
                   </label>
-                  <input
+                  <input maxLength={255}
                     {...register('lastName')}
                     type="text"
                     id="lastName"
@@ -296,7 +296,7 @@ export function SignUpPage() {
                 </label>
                 <div className="relative">
                   <Mail className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
+                  <input maxLength={255}
                     {...register('email')}
                     type="email"
                     id="email"
@@ -319,7 +319,7 @@ export function SignUpPage() {
                 </label>
                 <div className="relative">
                   <Lock className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
+                  <input maxLength={255}
                     {...register('password')}
                     type={showPassword ? 'text' : 'password'}
                     id="password"
@@ -350,7 +350,7 @@ export function SignUpPage() {
                 </label>
                 <div className="relative">
                   <Lock className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
+                  <input maxLength={255}
                     {...register('confirmPassword')}
                     type={showConfirmPassword ? 'text' : 'password'}
                     id="confirmPassword"
@@ -620,3 +620,4 @@ export function SignUpPage() {
     </div>
   );
 }
+

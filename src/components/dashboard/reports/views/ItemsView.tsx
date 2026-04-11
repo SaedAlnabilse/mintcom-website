@@ -137,7 +137,7 @@ export const ItemsView = React.memo(function ItemsView({
         {/* Search Bar */}
         <div className="relative w-full md:flex-1">
           <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
+          <input maxLength={255}
             type="text"
             placeholder={t('orders.reports.items.searchPlaceholder', { type: t(`orders.reports.items.types.${itemReportTab}`) })}
             value={itemSearchQuery}
@@ -416,3 +416,4 @@ export const ItemsView = React.memo(function ItemsView({
     </div>
   );
 });
+

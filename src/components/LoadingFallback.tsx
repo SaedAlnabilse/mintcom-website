@@ -65,3 +65,4 @@ export function LoadingFallback({
 export function InlineLoader({ message }: { message?: string }) {
   return <LoadingFallback message={message} fullScreen={false} />;
 }
+

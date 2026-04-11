@@ -384,3 +384,4 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
     </div>
   );
 });
+

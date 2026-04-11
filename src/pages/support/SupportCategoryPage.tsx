@@ -400,7 +400,7 @@ export const SupportCategoryPage = () => {
           {/* Search */}
           <div className="relative max-w-xl mb-10">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input
+            <input maxLength={255}
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -553,3 +553,4 @@ export const SupportCategoryPage = () => {
     </div>
   );
 };
+
