@@ -152,7 +152,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+                        className="fixed inset-0 bg-black/30 dark:bg-black/80 backdrop-blur-sm transition-opacity"
                         onClick={onClose}
                     />
                     <motion.div
@@ -160,7 +160,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 100 }}
                         transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                        className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-2xl w-full sm:max-w-md overflow-hidden relative z-10 max-h-[92vh] sm:max-h-[90vh]"
+                        className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-[2rem] border border-gray-200 dark:border-white/10 w-full sm:max-w-md overflow-hidden relative z-10 max-h-[92vh] sm:max-h-[90vh]"
                     >
                         {/* Mobile drag handle */}
                         <div className="sm:hidden flex justify-center pt-3 pb-1">
@@ -232,7 +232,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.cvc')}</label>
                                         <div className="relative group">
-                                            <input maxLength={255}
+                                            <input
                                                 type="password"
                                                 value={cvc}
                                                 onChange={(e) => { setCvc(e.target.value.replace(/\D/g, '').slice(0, 4)); if (errors.cvc) setErrors({ ...errors, cvc: '' }); }}

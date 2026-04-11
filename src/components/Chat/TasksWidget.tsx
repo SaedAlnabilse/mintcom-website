@@ -343,7 +343,7 @@ export function TasksWidget() {
                         whileHover={{ scale: 1.08 }}
                         whileTap={{ scale: 0.92 }}
                         onClick={openPanel}
-                        className={`fixed bottom-[96px] md:bottom-[100px] ${isRTL ? 'left-6' : 'right-6'} z-[999998] group`}
+                        className={`fixed bottom-[96px] md:bottom-[100px] ${isRTL ? 'left-6' : 'right-6'} z-[900] group`}
                         aria-label="Open setup tasks"
                     >
                         {/* Outer glow ring */}
@@ -395,7 +395,7 @@ export function TasksWidget() {
                         exit={{ opacity: 0, y: 30, scale: 0.92 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                         dir={isRTL ? 'rtl' : 'ltr'}
-                        className={`fixed bottom-[96px] md:bottom-[100px] ${isRTL ? 'left-[30px]' : 'right-[30px]'} z-[999999] w-[400px] max-w-[calc(100vw-60px)] h-[600px] max-h-[calc(100vh-150px)] bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 flex flex-col overflow-hidden`}
+                        className={`fixed bottom-[96px] md:bottom-[100px] ${isRTL ? 'left-[30px]' : 'right-[30px]'} z-[950] w-[400px] max-w-[calc(100vw-60px)] h-[600px] max-h-[calc(100vh-150px)] bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 flex flex-col overflow-hidden`}
                     >
                         {/* ---------- Header ---------- */}
                         <div className="px-4 py-3 border-b border-gray-100 dark:border-white/5 flex items-center justify-between flex-shrink-0">

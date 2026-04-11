@@ -360,7 +360,7 @@ export function CsvImportModal({
         <AnimatePresence>
             <div
                 dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 dark:bg-black/80 backdrop-blur-sm font-sans"
+                className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
                 onClick={handleClose}
             >
                 <motion.div
@@ -368,7 +368,7 @@ export function CsvImportModal({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 100 }}
                     transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                    className="bg-white dark:bg-[#1E293B] w-full sm:w-[95vw] sm:max-w-3xl rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh] border border-gray-200 dark:border-white/5 shadow-2xl"
+                    className="bg-white dark:bg-[#1E293B] w-full sm:w-[95vw] sm:max-w-3xl rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh] border border-gray-200 dark:border-white/5"
                     onClick={e => e.stopPropagation()}
                 >
                     {/* Mobile drag handle */}

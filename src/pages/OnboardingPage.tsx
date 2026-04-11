@@ -1153,7 +1153,7 @@ export function OnboardingPage() {
                         <label className="text-xs font-sans text-gray-400 ml-1">{t('onboarding.step2.cardNumber')}</label>
                         <div className="relative group">
                           <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                          <input maxLength={255}
+                          <input
                             type="text"
                             {...form4.register('cardNumber')}
                             onChange={(e) => {
@@ -1171,7 +1171,7 @@ export function OnboardingPage() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <label className="text-xs font-sans text-gray-400 ml-1">{t('onboarding.step2.expiry')}</label>
-                          <input maxLength={255}
+                          <input
                             type="text"
                             {...form4.register('expiryDate')}
                             onChange={(e) => {
@@ -1185,7 +1185,7 @@ export function OnboardingPage() {
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-sans text-gray-400 ml-1">{t('onboarding.step2.cvc')}</label>
-                          <input maxLength={255}
+                          <input
                             type="text"
                             {...form4.register('cvc')}
                             onChange={(e) => {

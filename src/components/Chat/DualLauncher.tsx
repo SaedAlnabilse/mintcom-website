@@ -79,7 +79,7 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, onOpenTasks, isChatOpen, i
   // Keep mode switcher visible while one panel is open so users can switch directly.
   if (isAnyOpen) {
     return (
-      <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[999]`} ref={containerRef} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900]`} ref={containerRef} dir={isRTL ? 'rtl' : 'ltr'}>
         <motion.div
           initial={{ opacity: 0, y: 10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -149,7 +149,7 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, onOpenTasks, isChatOpen, i
   }
 
   return (
-    <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[999]`} ref={containerRef} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900]`} ref={containerRef} dir={isRTL ? 'rtl' : 'ltr'}>
       <motion.div
         layout
         transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}

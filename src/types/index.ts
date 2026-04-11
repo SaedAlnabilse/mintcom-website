@@ -14,6 +14,7 @@ export interface Account {
   deletionRequestedAt?: string; // ISO date string if deletion is pending
   permissions?: string[]; // Admin permissions
   isSecondaryAdmin?: boolean; // Flag for secondary admin users
+  hasPassword?: boolean; // Whether the user has a local password
 }
 
 export interface Establishment {

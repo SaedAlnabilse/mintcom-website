@@ -155,14 +155,14 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
         <AnimatePresence>
             <div
                 dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                className="fixed inset-0 bg-black/40 backdrop-blur-sm popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 z-[9999] transition-colors duration-300 font-sans"
+                className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
             >
                 <motion.div
                     initial={{ opacity: 0, y: 100 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 100 }}
                     transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                    className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[85vh] overflow-y-auto overflow-x-hidden shadow-2xl relative scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10 scrollbar-track-transparent hover:scrollbar-thumb-gray-300 dark:hover:scrollbar-thumb-white/20 custom-scrollbar-modal"
+                    className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[85vh] overflow-y-auto overflow-x-hidden relative scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10 scrollbar-track-transparent hover:scrollbar-thumb-gray-300 dark:hover:scrollbar-thumb-white/20 custom-scrollbar-modal"
                 >
                     {/* Mobile drag handle */}
                     <div className="sm:hidden flex justify-center pt-3 pb-1 sticky top-0 bg-white dark:bg-[#1E293B] z-10">
@@ -372,7 +372,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
 
                 {isRefundReasonModalOpen && (
                     <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/60 p-4">
-                        <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 p-5 sm:p-6 shadow-2xl">
+                        <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 p-5 sm:p-6">
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                                 {t('orders.details.refundConfirmTitle')}
                             </h3>

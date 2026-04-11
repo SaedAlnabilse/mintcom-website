@@ -2943,6 +2943,7 @@
       "location": "Location",
       "main": "Main",
       "managePayments": "Manage payments for {{name}}",
+      "monthly": "Monthly",
       "monthlyCost": "Monthly cost",
       "monthlyPlan": "Monthly plan",
       "needHelp": "Need help?",
@@ -2969,6 +2970,7 @@
       "title": "Billing",
       "upgrade": "Upgrade",
       "viewDashboard": "View dashboard",
+      "yearly": "Yearly",
       "yearlyCost": "Yearly cost",
       "yearlyPlan": "Yearly plan"
     },
@@ -2976,16 +2978,16 @@
       "activeBrands": "Active brands",
       "activeFilters": "Active filters",
       "adminLoginId": "Brand login ID",
-      "adminLoginIdHint": "This ID will be used to access the brand dashboard",
-      "adminLoginIdPlaceholder": "E.g. brand_admin",
+      "adminLoginIdHint": "This ID will be used to access the brand dashboard. It must be unique across all locations and brands.",
+      "adminLoginIdPlaceholder": "e.g. brand_admin",
       "adminPassword": "Brand password",
       "availableLocations": "Available locations",
       "badge": "Brands",
       "brand": "Brand",
       "brandName": "Brand name",
-      "brandNamePlaceholder": "E.g. My restaurant chain",
+      "brandNamePlaceholder": "e.g. My restaurant chain",
       "countSummary": "{{count}} brands",
-      "createBrand": "Create Brand",
+      "createBrand": "Create new brand",
       "createBrandHint": "Group multiple locations under one brand for unified management.",
       "createBrandSubtitle": "Set up a new brand to manage multiple locations",
       "createBrandTitle": "Create new brand",
@@ -3326,7 +3328,7 @@
     "confirm": {
       "deleteCardMessage": "Remove \"{{name}}\" from accepted card types?",
       "deleteCardTitle": "Delete Card Type",
-      "removeMessage": "Are you sure you want to delete \"{{name}}\"? This may affect historical reporting.",
+      "removeMessage": "Are you sure you want to delete \"{{name}}\"? It will no longer be available for future orders but will remain in your historical reports.",
       "removeTitle": "Remove Payment Method"
     },
     "editBrand": "Edit Brand",
@@ -3774,7 +3776,7 @@
       "deleteCard": {
         "button": "Delete Card",
         "title": "Delete Payment Method",
-        "warning": "Removing card ending in \"{{name}}\". This action is permanent. You won't be able to use this card for future payments unless re-added."
+        "warning": "Removing card ending in \"{{name}}\". Past reports remain unaffected."
       },
       "deleteCustomer": {
         "button": "Delete Customer",

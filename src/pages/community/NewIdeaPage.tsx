@@ -188,7 +188,7 @@ export const NewIdeaPage = () => {
                                         <label className="block text-sm font-bold mb-3 text-gray-500 uppercase tracking-widest">
                                             {t('community.ideas.titleLabel', 'Idea Summary')} <span className="text-red-500">*</span>
                                         </label>
-                                        <input maxLength={255}
+                                        <input
                                             type="text"
                                             value={formData.title}
                                             onChange={(e) => {

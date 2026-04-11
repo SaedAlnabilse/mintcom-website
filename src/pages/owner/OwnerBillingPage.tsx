@@ -338,6 +338,9 @@ export function OwnerBillingPage() {
 
                 <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
+                        <p className="text-[10px] font-bold text-gray-400 tracking-widest capitalize mb-1">
+                            {t('owner.billing.monthly')}
+                        </p>
                         <div className="flex items-baseline justify-end">
                             <span className="dashboard-card-value text-xl">${totalMonthlyCost.toFixed(2)}</span>
                             <span className="text-xs font-bold text-gray-400 ml-0.5">{t('common.monthly')}</span>
@@ -347,6 +350,9 @@ export function OwnerBillingPage() {
                         <>
                             <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
                             <div className="text-right hidden sm:block">
+                                <p className="text-[10px] font-bold text-paymint-green tracking-widest capitalize mb-1">
+                                    {t('owner.billing.yearly')}
+                                </p>
                                 <div className="flex items-baseline justify-end">
                                     <span className="dashboard-card-value text-xl text-paymint-green">${totalYearlyCost.toFixed(2)}</span>
                                     <span className="text-xs font-bold text-gray-400 ml-0.5">{t('common.yearly')}</span>

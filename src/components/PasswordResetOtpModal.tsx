@@ -311,7 +311,7 @@ export function PasswordResetOtpModal({
                                 {/* Otp Input */}
                                 <div className="flex justify-center gap-2">
                                     {otp.map((digit, index) => (
-                                        <input maxLength={255}
+                                        <input
                                             key={index}
                                             ref={(el) => {
                                                 otpRefs.current[index] = el;

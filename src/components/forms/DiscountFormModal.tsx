@@ -109,7 +109,7 @@ export function DiscountFormModal({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 100 }}
           transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-          className="bg-white dark:bg-[#1e1e1e] w-full sm:w-[90vw] sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/10 shadow-2xl"
+          className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/5"
         >
           {/* Mobile drag handle */}
           <div className="sm:hidden flex justify-center pt-2 pb-1">

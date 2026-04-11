@@ -39,45 +39,8 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
     const [logs, setLogs] = useState<CashLog[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [totals, setTotals] = useState({ payIn: 0, payOut: 0 });
-    const [sidebarOffset, setSidebarOffset] = useState(0);
 
     useScrollLock(isOpen);
-
-    useEffect(() => {
-        const updateOffset = () => {
-            // Only apply offset on desktop layout (lg breakpoint = 1024px)
-            if (window.innerWidth >= 1024) {
-                const aside = document.querySelector('aside');
-                if (aside) {
-                    setSidebarOffset(aside.getBoundingClientRect().width);
-                }
-            } else {
-                setSidebarOffset(0);
-            }
-        };
-
-        updateOffset();
-
-        // Watch for window resizes
-        window.addEventListener('resize', updateOffset);
-
-        // Watch for sidebar width changes (animation)
-        const aside = document.querySelector('aside');
-        let observer: ResizeObserver;
-
-        if (aside) {
-            observer = new ResizeObserver(updateOffset);
-            observer.observe(aside);
-        } else {
-            // If aside not found immediately, poll briefly or rely on window resize
-            // In most cases aside exists as layout wraps this
-        }
-
-        return () => {
-            window.removeEventListener('resize', updateOffset);
-            if (observer) observer.disconnect();
-        };
-    }, [isOpen]);
 
     useEffect(() => {
         if (isOpen) {
@@ -137,14 +100,13 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
             {isOpen && (
                 <div
                     dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                    className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-[padding] duration-300 ease-in-out font-sans"
-                    style={{ paddingLeft: t('common.locale') === 'ar' ? '1rem' : `calc(1rem + ${sidebarOffset}px)`, paddingRight: t('common.locale') === 'ar' ? `calc(1rem + ${sidebarOffset}px)` : '1rem' }}
+                    className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm transition-[padding] duration-300 ease-in-out font-sans"
                 >
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="w-full max-w-2xl bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/5 overflow-hidden flex flex-col max-h-[85vh]"
+                        className="w-full max-w-2xl bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden flex flex-col max-h-[85vh]"
                     >
                         {/* Header */}
                         <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between shrink-0 bg-white dark:bg-[#1E293B] z-10">

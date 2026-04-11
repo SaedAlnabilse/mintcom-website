@@ -2,6 +2,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus,
   Search,
@@ -597,171 +599,201 @@ export function AddonsPage() {
       )}
 
       {/* Add-on Group Modal */}
-      {showAttributeModal && (
-        <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
-          <div className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl h-[92vh] sm:h-auto flex flex-col">
-            <div className="sm:hidden flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-            </div>
-            <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.groupTitle')}</h2>
-              <button onClick={() => setShowAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
-                <X size={24} />
-              </button>
-            </div>
-            <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
-              <div>
-                <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">
-                  {t('attributes.form.groupNameLabel')} <span className="text-paymint-red">*</span>
-                </label>
-                <input maxLength={255}
-                  type="text"
-                  value={attributeForm.name}
-                  onChange={(e) => {
-                    setAttributeForm({ ...attributeForm, name: e.target.value });
-                    if (errors.groupName) setErrors({ ...errors, groupName: '' });
-                  }}
-                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.groupName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                  placeholder={t('attributes.form.groupNamePlaceholder')}
-                />
-                {errors.groupName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.groupName}</p>}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => setAttributeForm({ ...attributeForm, inputType: 'SINGLE_SELECT' })}
-                  className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'SINGLE_SELECT'
-                    ? 'bg-paymint-green/10 border-paymint-green'
-                    : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
-                    }`}
-                >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'SINGLE_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
-                    <MousePointerClick size={20} strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <p className={`text-sm font-bold ${attributeForm.inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
-                    <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.singleDesc')}</p>
-                  </div>
-                  {attributeForm.inputType === 'SINGLE_SELECT' && (
-                    <div className="absolute top-4 right-4 text-paymint-green">
-                      <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                    </div>
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setAttributeForm({ ...attributeForm, inputType: 'MULTI_SELECT' })}
-                  className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'MULTI_SELECT'
-                    ? 'bg-paymint-green/10 border-paymint-green'
-                    : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
-                    }`}
-                >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'MULTI_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
-                    <CheckSquare size={20} strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <p className={`text-sm font-bold ${attributeForm.inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
-                    <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.multipleDesc')}</p>
-                  </div>
-                  {attributeForm.inputType === 'MULTI_SELECT' && (
-                    <div className="absolute top-4 right-4 text-paymint-green">
-                      <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                    </div>
-                  )}
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
-                <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white leading-none mb-1">{t('attributes.form.requiredLabel')}</p>
-                  <p className="text-xs text-gray-500 font-medium">{t('attributes.form.requiredDesc')}</p>
+      {createPortal(
+        <AnimatePresence>
+          {showAttributeModal && (
+            <div
+              key="attribute-group-modal-overlay"
+              className="fixed inset-0 z-[10000] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
+              dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 100 }}
+                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+                className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden h-[92vh] sm:h-auto flex flex-col"
+              >
+                <div className="sm:hidden flex justify-center pt-3 pb-1">
+                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" checked={attributeForm.isRequired} onChange={() => setAttributeForm({ ...attributeForm, isRequired: !attributeForm.isRequired })} className="sr-only peer" />
-                  <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
-                </label>
-              </div>
+                <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.groupTitle')}</h2>
+                  <button onClick={() => setShowAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+                    <X size={24} />
+                  </button>
+                </div>
+                <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">
+                      {t('attributes.form.groupNameLabel')} <span className="text-paymint-red">*</span>
+                    </label>
+                    <input maxLength={255}
+                      type="text"
+                      value={attributeForm.name}
+                      onChange={(e) => {
+                        setAttributeForm({ ...attributeForm, name: e.target.value });
+                        if (errors.groupName) setErrors({ ...errors, groupName: '' });
+                      }}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.groupName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                      placeholder={t('attributes.form.groupNamePlaceholder')}
+                    />
+                    {errors.groupName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.groupName}</p>}
+                  </div>
 
-              <button onClick={handleSaveAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
-                {t('common.save')}
-              </button>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setAttributeForm({ ...attributeForm, inputType: 'SINGLE_SELECT' })}
+                      className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'SINGLE_SELECT'
+                        ? 'bg-paymint-green/10 border-paymint-green'
+                        : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+                        }`}
+                    >
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'SINGLE_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                        <MousePointerClick size={20} strokeWidth={2.5} />
+                      </div>
+                      <div>
+                        <p className={`text-sm font-bold ${attributeForm.inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
+                        <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.singleDesc')}</p>
+                      </div>
+                      {attributeForm.inputType === 'SINGLE_SELECT' && (
+                        <div className="absolute top-4 right-4 text-paymint-green">
+                          <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                        </div>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setAttributeForm({ ...attributeForm, inputType: 'MULTI_SELECT' })}
+                      className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'MULTI_SELECT'
+                        ? 'bg-paymint-green/10 border-paymint-green'
+                        : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+                        }`}
+                    >
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'MULTI_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                        <CheckSquare size={20} strokeWidth={2.5} />
+                      </div>
+                      <div>
+                        <p className={`text-sm font-bold ${attributeForm.inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
+                        <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.multipleDesc')}</p>
+                      </div>
+                      {attributeForm.inputType === 'MULTI_SELECT' && (
+                        <div className="absolute top-4 right-4 text-paymint-green">
+                          <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                        </div>
+                      )}
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white leading-none mb-1">{t('attributes.form.requiredLabel')}</p>
+                      <p className="text-xs text-gray-500 font-medium">{t('attributes.form.requiredDesc')}</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" checked={attributeForm.isRequired} onChange={() => setAttributeForm({ ...attributeForm, isRequired: !attributeForm.isRequired })} className="sr-only peer" />
+                      <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
+                    </label>
+                  </div>
+
+                  <button onClick={handleSaveAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
+                    {t('common.save')}
+                  </button>
+                </div>
+              </motion.div>
             </div>
-          </div>
-        </div>
+          )}
+        </AnimatePresence>,
+        document.body
       )}
 
       {/* Add-on Option Modal */}
-      {showSubAttributeModal && (
-        <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
-          <div className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl h-[92vh] sm:h-auto flex flex-col">
-            <div className="sm:hidden flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-            </div>
-            <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.optionTitle')}</h2>
-              <button onClick={() => setShowSubAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
-                <X size={24} />
-              </button>
-            </div>
-            <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
-              <div>
-                <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">
-                  {t('attributes.form.optionNameLabel')} <span className="text-paymint-red">*</span>
-                </label>
-                <input maxLength={255}
-                  type="text"
-                  value={subAttributeForm.name}
-                  onChange={(e) => {
-                    setSubAttributeForm({ ...subAttributeForm, name: e.target.value });
-                    if (errors.optionName) setErrors({ ...errors, optionName: '' });
-                  }}
-                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.optionName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                  placeholder={t('attributes.form.optionNamePlaceholder')}
-                />
-                {errors.optionName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.optionName}</p>}
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">{t('attributes.form.priceLabel')}</label>
-                <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg">
-                    <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
+      {createPortal(
+        <AnimatePresence>
+          {showSubAttributeModal && (
+            <div
+              key="attribute-option-modal-overlay"
+              className="fixed inset-0 z-[10000] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
+              dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 100 }}
+                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+                className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden h-[92vh] sm:h-auto flex flex-col"
+              >
+                <div className="sm:hidden flex justify-center pt-3 pb-1">
+                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+                </div>
+                <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.optionTitle')}</h2>
+                  <button onClick={() => setShowSubAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+                    <X size={24} />
+                  </button>
+                </div>
+                <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">
+                      {t('attributes.form.optionNameLabel')} <span className="text-paymint-red">*</span>
+                    </label>
+                    <input maxLength={255}
+                      type="text"
+                      value={subAttributeForm.name}
+                      onChange={(e) => {
+                        setSubAttributeForm({ ...subAttributeForm, name: e.target.value });
+                        if (errors.optionName) setErrors({ ...errors, optionName: '' });
+                      }}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.optionName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                      placeholder={t('attributes.form.optionNamePlaceholder')}
+                    />
+                    {errors.optionName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.optionName}</p>}
                   </div>
-                  <input maxLength={255}
-                    type="text"
-                    inputMode="decimal"
-                    value={subAttributeForm.price === 0 ? '' : subAttributeForm.price.toFixed(2)}
-                    placeholder="0.00"
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/\D/g, '');
-                      if (val.length > 19) return;
-                      const numericValue = parseInt(val || '0', 10) / 100;
-                      setSubAttributeForm({ ...subAttributeForm, price: numericValue });
-                    }}                    className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-3.5 text-gray-900 dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
-                  />
-                </div>
-                <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle')}</p>
-              </div>
 
-              <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white tracking-tight">{t('attributes.form.availableLabel')}</p>
-                  <QuickInfo text={t('attributes.form.availableTip')} />
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" checked={subAttributeForm.isAvailable} onChange={() => setSubAttributeForm({ ...subAttributeForm, isAvailable: !subAttributeForm.isAvailable })} className="sr-only peer" />
-                  <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
-                </label>
-              </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">{t('attributes.form.priceLabel')}</label>
+                    <div className="relative group">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg">
+                        <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
+                      </div>
+                      <input maxLength={255}
+                        type="text"
+                        inputMode="decimal"
+                        value={subAttributeForm.price === 0 ? '' : subAttributeForm.price.toFixed(2)}
+                        placeholder="0.00"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          if (val.length > 19) return;
+                          const numericValue = parseInt(val || '0', 10) / 100;
+                          setSubAttributeForm({ ...subAttributeForm, price: numericValue });
+                        }}                    className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-3.5 text-gray-900 dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                      />
+                    </div>
+                    <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle')}</p>
+                  </div>
 
-              <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
-                {t('common.save')}
-              </button>
+                  <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white tracking-tight">{t('attributes.form.availableLabel')}</p>
+                      <QuickInfo text={t('attributes.form.availableTip')} />
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" checked={subAttributeForm.isAvailable} onChange={() => setSubAttributeForm({ ...subAttributeForm, isAvailable: !subAttributeForm.isAvailable })} className="sr-only peer" />
+                      <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
+                    </label>
+                  </div>
+
+                  <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
+                    {t('common.save')}
+                  </button>
+                </div>
+              </motion.div>
             </div>
-          </div>
-        </div>
+          )}
+        </AnimatePresence>,
+        document.body
       )}
 
       <ConfirmModal
@@ -778,4 +810,3 @@ export function AddonsPage() {
     </div>
   );
 }
-
