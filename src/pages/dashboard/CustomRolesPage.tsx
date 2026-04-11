@@ -36,11 +36,28 @@ interface CustomRole {
 type ViewMode = 'grid' | 'list';
 type SortKey = 'name' | 'baseRole' | 'createdAt';
 
-const LEGACY_AUTO_DEFAULT_BACKOFFICE_PERMISSIONS = [
+const HIDDEN_POS_PERMISSIONS = new Set([
+  'pos',
+  'void_items'
+]);
+
+const HIDDEN_BACKOFFICE_PERMISSIONS = new Set([
   'dashboard',
   'view_orders',
   'view_reports',
-] as const;
+]);
+
+const getPosPermissionCount = (permissions: string[] | undefined): number => {
+  if (!Array.isArray(permissions) || permissions.length === 0) return 0;
+  const normalized = Array.from(
+    new Set(
+      permissions
+        .filter((permission): permission is string => typeof permission === 'string')
+        .map((permission) => permission.trim().toLowerCase()),
+    ),
+  );
+  return normalized.filter(p => !HIDDEN_POS_PERMISSIONS.has(p)).length;
+};
 
 const getBackofficePermissionCount = (permissions: string[] | undefined): number => {
   if (!Array.isArray(permissions) || permissions.length === 0) return 0;
@@ -52,15 +69,11 @@ const getBackofficePermissionCount = (permissions: string[] | undefined): number
         .map((permission) => permission.trim().toLowerCase()),
     ),
   );
-  const normalizedSet = new Set(normalized);
+  
+  // Filter out hidden/default permissions to show only what the user explicitly added
+  const explicitPermissions = normalized.filter(p => !HIDDEN_BACKOFFICE_PERMISSIONS.has(p));
 
-  const isLegacyAutoDefaultOnly =
-    normalized.length === LEGACY_AUTO_DEFAULT_BACKOFFICE_PERMISSIONS.length &&
-    LEGACY_AUTO_DEFAULT_BACKOFFICE_PERMISSIONS.every((permission) =>
-      normalizedSet.has(permission),
-    );
-
-  return isLegacyAutoDefaultOnly ? 2 : normalized.length;
+  return explicitPermissions.length;
 };
 
 export function CustomRolesPage() {
@@ -350,7 +363,7 @@ export function CustomRolesPage() {
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
-                        <span className="text-xs font-bold text-paymint-green">{t('dashboard.roles.pos')}: {role.permissions?.length || 0}</span>
+                        <span className="text-xs font-bold text-paymint-green">{t('dashboard.roles.pos')}: {getPosPermissionCount(role.permissions)}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
@@ -411,7 +424,7 @@ export function CustomRolesPage() {
                       <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
                         <span className="text-gray-500 block mb-1">{t('dashboard.roles.permissions')}</span>
                         <div className="flex gap-2">
-                          <span className="font-bold text-paymint-green">{t('dashboard.roles.pos')}: {(role.permissions?.length || 0).toLocaleString(t('common.locale'))}</span>
+                          <span className="font-bold text-paymint-green">{t('dashboard.roles.pos')}: {(getPosPermissionCount(role.permissions)).toLocaleString(t('common.locale'))}</span>
                           <span className="font-bold text-blue-500">{t('dashboard.roles.office')}: {getBackofficePermissionCount(role.backofficePermissions).toLocaleString(t('common.locale'))}</span>
                         </div>
                       </div>
@@ -488,7 +501,7 @@ export function CustomRolesPage() {
                           <div className="flex flex-col items-center gap-1">
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
-                              <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.pos')}: {(role.permissions?.length || 0).toLocaleString(t('common.locale'))}</span>
+                              <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.pos')}: {(getPosPermissionCount(role.permissions)).toLocaleString(t('common.locale'))}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>

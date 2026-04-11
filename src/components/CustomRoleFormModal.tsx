@@ -264,6 +264,7 @@ export function CustomRoleFormModal({
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [name, setName] = useState('');
+  const [baseRole, setBaseRole] = useState<CustomRole['baseRole']>('USER');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useScrollLock(isOpen);
@@ -309,6 +310,7 @@ export function CustomRoleFormModal({
       fetchDiscounts();
       if (initialData) {
         setName(initialData.name || '');
+        setBaseRole(initialData.baseRole || 'USER');
         setPosAccess(initialData.posAccess !== false); // Default true
         setBackofficeAccess(initialData.backofficeAccess || false);
         setPermissions(
@@ -334,6 +336,7 @@ export function CustomRoleFormModal({
       } else {
         // Defaults for new role
         setName('');
+        setBaseRole('USER');
         setPosAccess(true);
         setBackofficeAccess(false);
         setPermissions(
@@ -463,7 +466,7 @@ export function CustomRoleFormModal({
 
     const payload: Omit<CustomRole, 'id'> = {
       name: name.trim(),
-      baseRole: 'USER', // Default base role for custom roles
+      baseRole,
       permissions: posAccess ? Array.from(new Set([...finalPermissions, 'pos', 'void_items'])) : [],
       allowedDiscounts: allDiscountsSelected ? [] : allowedDiscounts,
       // Access Control
@@ -520,17 +523,37 @@ export function CustomRoleFormModal({
                   {errors.general}
                 </div>
               )}
-              {/* Name Input */}
-              <div className="relative space-y-2">
-                <label className="label-strong block">{t('roles.form.roleNameLabel')}</label>
-                <input maxLength={255}
-                  type="text"
-                  value={name}
-                  onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                  placeholder={t('roles.form.roleNamePlaceholder')}
-                  className={`w-full bg-transparent border-b-2 ${errors.name ? 'border-paymint-red' : 'border-gray-200 dark:border-gray-700'} py-2 text-lg font-bold text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:border-paymint-green transition-colors`}
-                />
-                {errors.name && <p className="absolute -bottom-5 left-0 text-xs font-bold text-paymint-red">{errors.name}</p>}
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {/* Name Input */}
+                <div className="relative space-y-2">
+                  <label className="label-strong block">{t('roles.form.roleNameLabel')}</label>
+                  <input maxLength={255}
+                    type="text"
+                    value={name}
+                    onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
+                    placeholder={t('roles.form.roleNamePlaceholder')}
+                    className={`w-full bg-transparent border-b-2 ${errors.name ? 'border-paymint-red' : 'border-gray-200 dark:border-gray-700'} py-2 text-lg font-bold text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:border-paymint-green transition-colors`}
+                  />
+                  {errors.name && <p className="absolute -bottom-5 left-0 text-xs font-bold text-paymint-red">{errors.name}</p>}
+                </div>
+
+                {/* Base Role Selection */}
+                <div className="relative space-y-2">
+                  <label className="label-strong block">{t('roles.form.baseRoleLabel')}</label>
+                  <select
+                    value={baseRole}
+                    onChange={(e) => setBaseRole(e.target.value as CustomRole['baseRole'])}
+                    className="w-full bg-transparent border-b-2 border-gray-200 dark:border-gray-700 py-2 text-lg font-bold text-gray-900 dark:text-white focus:outline-none focus:border-paymint-green transition-colors appearance-none cursor-pointer"
+                  >
+                    <option value="USER" className="dark:bg-[#1E293B]">{t('staff.roles.user')}</option>
+                    <option value="CASHIER" className="dark:bg-[#1E293B]">{t('staff.roles.cashier')}</option>
+                    <option value="MANAGER" className="dark:bg-[#1E293B]">{t('staff.roles.manager')}</option>
+                  </select>
+                  <div className={`absolute bottom-3 ${t('common.locale') === 'ar' ? 'left-2' : 'right-2'} pointer-events-none text-gray-400`}>
+                    <ChevronDown size={20} />
+                  </div>
+                </div>
               </div>
 
               {/* Pos Section */}
@@ -563,6 +586,19 @@ export function CustomRoleFormModal({
                       className="border-t border-gray-200 dark:border-white/10"
                     >
                       <div className="p-5 space-y-6">
+                        {/* POS Defaults Info */}
+                        <div className="px-3 py-2.5 rounded-xl bg-paymint-green/5 border border-paymint-green/10 flex items-start gap-2.5">
+                          <div className="w-5 h-5 rounded-full bg-paymint-green/10 text-paymint-green flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check size={12} strokeWidth={3} />
+                          </div>
+                          <div>
+                            <p className="text-[11px] font-black text-paymint-green uppercase tracking-wider mb-0.5">{t('roles.form.includedByDefault')}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
+                              {t('roles.pos.includedDefaults')}
+                            </p>
+                          </div>
+                        </div>
+
                         {/* Pos Permissions List */}
                         <div className="space-y-3">
                           {POS_PERMISSIONS.map(perm => (
@@ -577,8 +613,13 @@ export function CustomRoleFormModal({
                                 }`}>
                                 {permissions.includes(perm.id) && <Check size={14} className="text-white" />}
                               </div>
-                              <div>
+                              <div className="flex items-center gap-1">
                                 <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
+                                {perm.description && 
+                                 perm.description.toLowerCase().trim() !== perm.label.toLowerCase().trim() && 
+                                 perm.description.toLowerCase().replace(/[^a-z0-9]/g, '') !== perm.label.toLowerCase().replace(/[^a-z0-9]/g, '') && (
+                                  <QuickInfo text={perm.description} />
+                                )}
                               </div>
                             </div>
                           ))}
@@ -692,6 +733,19 @@ export function CustomRoleFormModal({
                       className="border-t border-gray-200 dark:border-white/10"
                     >
                       <div className="p-5 space-y-3">
+                        {/* Backoffice Defaults Info */}
+                        <div className="px-3 py-2.5 rounded-xl bg-paymint-green/5 border border-paymint-green/10 flex items-start gap-2.5 mb-4">
+                          <div className="w-5 h-5 rounded-full bg-paymint-green/10 text-paymint-green flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check size={12} strokeWidth={3} />
+                          </div>
+                          <div>
+                            <p className="text-[11px] font-black text-paymint-green uppercase tracking-wider mb-0.5">{t('roles.form.includedByDefault')}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
+                              {t('roles.backoffice.includedDefaults')}
+                            </p>
+                          </div>
+                        </div>
+
                         {BACKOFFICE_PERMISSIONS.map(perm => (
                           <div key={perm.id}>
                             <div
