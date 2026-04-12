@@ -33,7 +33,9 @@ import {
   Heart,
   Award,
   Scale,
-  ArrowLeft
+  ArrowLeft,
+  PlusCircle,
+  ShoppingBag
 } from 'lucide-react';
 
 // Paymint Logo imports
@@ -119,8 +121,8 @@ export function DashboardLayout() {
         icon: FileBarChart,
         items: [
           { path: 'reports/sales', label: t('dashboard.menu.salesSummary'), icon: FileBarChart },
-          { path: 'reports/items', label: t('dashboard.menu.salesByItems'), icon: Package },
-          { path: 'reports/modifiers', label: t('dashboard.menu.salesByAddons'), icon: Package },
+          { path: 'reports/items', label: t('dashboard.menu.salesByItems'), icon: ShoppingBag },
+          { path: 'reports/modifiers', label: t('dashboard.menu.salesByAddons'), icon: PlusCircle },
           { path: 'reports/staff-sales', label: t('dashboard.menu.salesByStaff'), icon: Users },
           { path: 'reports/shifts', label: t('dashboard.menu.shiftsReports'), icon: FileBarChart },
           { path: 'reports/cash-discrepancy', label: t('dashboard.menu.cashGapReports'), icon: Scale },
@@ -135,7 +137,7 @@ export function DashboardLayout() {
         items: [
           { path: 'categories', label: t('dashboard.menu.categories'), icon: LayoutDashboard },
           { path: 'products', label: t('dashboard.menu.products'), icon: Package },
-          { path: 'addons', label: t('dashboard.menu.addons'), icon: Package },
+          { path: 'addons', label: t('dashboard.menu.addons'), icon: PlusCircle },
           { path: 'inventory', label: t('dashboard.menu.inventory'), icon: Package },
         ],
       },

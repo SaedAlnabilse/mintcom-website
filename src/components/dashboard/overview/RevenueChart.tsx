@@ -332,9 +332,14 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                 </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full text-gray-400">
-              <Zap size={32} className="mb-3 opacity-20" />
-              <p className="text-xs font-bold tracking-wide">{t('dashboard.revenueChart.noData')}</p>
+            <div className="h-full w-full flex items-center justify-center bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/[0.03]">
+              <div className="flex flex-col items-center gap-2 text-center">
+                <Zap size={32} className="text-gray-300 dark:text-gray-600 mb-1" />
+                <div>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.revenueChart.noData')}</p>
+                  <p className="text-xs text-gray-400 mt-1">{t('dashboard.revenueChart.noDataDesc')}</p>
+                </div>
+              </div>
             </div>
           )}
         </div>

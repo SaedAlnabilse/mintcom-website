@@ -16,7 +16,8 @@ import {
     MoreVertical,
     Eye,
     X,
-    Trash2
+    Trash2,
+    Plus
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -29,6 +30,7 @@ import { DateRangePicker } from '../../components/DateRangePicker';
 import { CustomTimePicker } from '../../components/CustomTimePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
+import { LinkLocationModal } from '../../components/LinkLocationModal';
 
 interface LocationStats {
     id: string;
@@ -79,6 +81,10 @@ export function BrandLocationsPage() {
         targetName: ''
     });
 
+    // Link Location Modal state
+    const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+    const [allBrands, setAllBrands] = useState<any[]>([]);
+
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
     const hasLoadedOnceRef = useRef(false);
@@ -91,6 +97,15 @@ export function BrandLocationsPage() {
         setStartTime('00:00');
         setEndTime('23:59');
     };
+
+    const fetchBrands = useCallback(async () => {
+        try {
+            const response = await api.get('/api/brands');
+            setAllBrands(response.data || []);
+        } catch (err) {
+            console.error('Failed to fetch brands:', err);
+        }
+    }, []);
 
     const fetchLocations = useCallback(async () => {
         try {
@@ -120,7 +135,7 @@ export function BrandLocationsPage() {
             setBrandName(brandResponse.data?.name || t('brand.dashboard.title'));
             setStatsData(statsResponse.data?.stats);
 
-            const establishments = brandResponse.data?.establishments || [];
+            const establishmentsData = brandResponse.data?.establishments || [];
             const locationPerformance = statsResponse.data?.locationPerformance || [];
 
             // Create a map of performance data for easy lookup
@@ -128,8 +143,8 @@ export function BrandLocationsPage() {
                 locationPerformance.map((lp: any) => [lp.id, lp])
             );
 
-            if (establishments) {
-                const mappedLocations = establishments.map((loc: any) => {
+            if (establishmentsData) {
+                const mappedLocations = establishmentsData.map((loc: any) => {
                     const stats = performanceMap.get(loc.id) || {} as any;
                     return {
                         ...loc,
@@ -144,6 +159,9 @@ export function BrandLocationsPage() {
                 });
                 setLocations(mappedLocations);
             }
+            
+            // Refresh brands list to identify available ones
+            fetchBrands();
         } catch (err: any) {
             console.error('Failed to fetch locations:', err);
             toast.error(`${t('brand.dashboard.failedToLoad')}: ${err.message || t('common.error')}`);
@@ -152,7 +170,7 @@ export function BrandLocationsPage() {
             setIsLoading(false);
             setIsRefreshing(false);
         }
-    }, [brandId, endDate, endTime, startDate, startTime, t]);
+    }, [brandId, endDate, endTime, startDate, startTime, t, fetchBrands]);
 
     useEffect(() => {
         if (brandId) {
@@ -318,6 +336,15 @@ export function BrandLocationsPage() {
                 </div>
 
                 <div className="flex items-center gap-3 relative z-50">
+                    {/* Add Location Button */}
+                    <button
+                        onClick={() => setIsLinkModalOpen(true)}
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:bg-[#68B390] transition-all shadow-lg active:scale-95"
+                    >
+                        <Plus size={18} strokeWidth={3} />
+                        <span>{t('owner.overview.addLocation')}</span>
+                    </button>
+
                     <div className="bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">
                             <div className={`flex-none w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'border-transparent'}`}>
@@ -530,14 +557,23 @@ export function BrandLocationsPage() {
                                 ? t('brand.dashboard.adjustFilters')
                                 : t('brand.dashboard.addLocationsDesc')}
                     </p>
-                    {hasFilters && (
+                    <div className="flex items-center justify-center gap-4 mt-6">
+                        {hasFilters && (
+                            <button
+                                onClick={clearFilters}
+                                className="px-6 py-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 text-sm font-bold hover:bg-gray-200 transition-all"
+                            >
+                                {t('attributes.filters.reset')}
+                            </button>
+                        )}
                         <button
-                            onClick={clearFilters}
-                            className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-[#68B390] transition-all"
+                            onClick={() => setIsLinkModalOpen(true)}
+                            className="px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-[#68B390] transition-all flex items-center gap-2"
                         >
-                            {t('attributes.filters.reset')}
+                            <Plus size={16} />
+                            {t('owner.overview.addLocation')}
                         </button>
-                    )}
+                    </div>
                 </div>
             ) : (
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
@@ -797,6 +833,14 @@ export function BrandLocationsPage() {
                 targetId={securityModal.targetId}
                 targetName={securityModal.targetName}
                 mode="dissolve-establishment"
+            />
+
+            <LinkLocationModal
+                isOpen={isLinkModalOpen}
+                onClose={() => setIsLinkModalOpen(false)}
+                brandId={brandId as string}
+                onSuccess={fetchLocations}
+                existingBrands={allBrands}
             />
         </div >
     );

@@ -56,7 +56,9 @@ export function OwnerBillingPage() {
         isOpen: boolean,
         targetId: string,
         targetName: string,
-        mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'reactivate'
+        mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'reactivate',
+        price?: number,
+        isResuming?: boolean
     }>({
         isOpen: false,
         targetId: '',
@@ -176,11 +178,21 @@ export function OwnerBillingPage() {
                 toast.error(err.response?.data?.message || t('owner.billing.resumeFailed'));
             }
         } else {
+            // Check if within paid period
+            const est = billingData?.establishments.find(e => e.id === establishmentId);
+            const isWithinPaidPeriod = est?.subscriptionEndDate ? new Date() < new Date(est.subscriptionEndDate) : false;
+            
+            // Find index for correct price
+            const fullIndex = billingData?.establishments.findIndex(e => e.id === establishmentId) ?? 0;
+            const price = est ? getEstablishmentPrice(est, fullIndex) : 20;
+
             setSecurityModal({
                 isOpen: true,
                 targetId: establishmentId,
                 targetName: name,
-                mode: 'reactivate'
+                mode: 'reactivate',
+                price: price,
+                isResuming: isWithinPaidPeriod
             });
         }
     };
@@ -194,13 +206,30 @@ export function OwnerBillingPage() {
         });
     };
 
+    const getDaysLeft = (canceledAt?: string) => {
+        if (!canceledAt) return 30;
+        const cancelDate = new Date(canceledAt);
+        const now = new Date();
+        const diffTime = now.getTime() - cancelDate.getTime();
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const remaining = 30 - diffDays;
+        return remaining > 0 ? remaining : 0;
+    };
+
     const getStatusBadge = (est: EstablishmentBilling) => {
         if (est.cancelAtPeriodEnd) {
             return (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-lg text-xs font-bold tracking-widest text-amber-500">
-                    <Calendar size={12} />
-                    {t('owner.billing.cancelsSoon')}
-                </span>
+                <div className="flex flex-col items-center gap-1">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-lg text-xs font-bold tracking-widest text-amber-500">
+                        <Calendar size={12} />
+                        {t('owner.billing.cancelsSoon')}
+                    </span>
+                    {est.subscriptionEndDate && (
+                        <span className="text-[10px] font-bold text-amber-500/60 tracking-tight">
+                            {t('owner.billing.canceledOn', { date: formatBillingDate(est.canceledAt || new Date()) })}
+                        </span>
+                    )}
+                </div>
             );
         }
 
@@ -220,11 +249,18 @@ export function OwnerBillingPage() {
                     </span>
                 );
             case 'CANCELED':
+                const daysLeft = getDaysLeft(est.canceledAt);
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-xs font-bold tracking-widest text-red-500">
-                        <XCircle size={12} />
-                        {t('owner.locations.canceled')}
-                    </span>
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-xs font-bold tracking-widest text-red-500">
+                            <XCircle size={12} />
+                            {t('owner.locations.canceled')}
+                        </span>
+                        <span className="text-[10px] font-bold text-red-500/60 tracking-tight flex flex-col items-center">
+                            <span>{t('owner.billing.canceledOn', { date: formatBillingDate(est.canceledAt) })}</span>
+                            <span className="text-red-500 font-black uppercase text-[9px] mt-0.5">{t('owner.billing.daysRemaining', { count: daysLeft })}</span>
+                        </span>
+                    </div>
                 );
             default:
                 return (
@@ -722,6 +758,8 @@ export function OwnerBillingPage() {
                 targetId={securityModal.targetId}
                 targetName={securityModal.targetName}
                 mode={securityModal.mode}
+                price={securityModal.price}
+                isResuming={securityModal.isResuming}
             />
         </div>
     );

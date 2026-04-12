@@ -54,8 +54,11 @@ export const TermsPage = () => {
                             <p className="text-sm font-medium mb-4">
                                 {t('legal.terms.payments.p1')}
                             </p>
-                            <p className="text-sm font-medium">
+                            <p className="text-sm font-medium mb-4">
                                 {t('legal.terms.payments.p2')}
+                            </p>
+                            <p className="text-sm font-medium">
+                                {t('legal.terms.payments.p3')}
                             </p>
                         </section>
 
@@ -108,8 +111,11 @@ export const TermsPage = () => {
                         {/* 8. Termination */}
                         <section>
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s8')}</h2>
-                            <p className="text-sm font-medium">
+                            <p className="text-sm font-medium mb-4">
                                 {t('legal.terms.termination.desc')}
+                            </p>
+                            <p className="text-sm font-medium">
+                                {t('legal.terms.termination.deletion')}
                             </p>
                         </section>
 
@@ -139,4 +145,3 @@ export const TermsPage = () => {
         </div>
     );
 };
-

@@ -1248,12 +1248,13 @@
     "paymentMethods": {
       "distribution": "Distribution",
       "noData": "No payment data",
+      "noDataDesc": "No payment method activity recorded for this period.",
       "title": "Payment Methods",
       "viewAll": "View All"
     },
     "peakHours": {
       "noData": "No traffic data",
-      "noDataDesc": "There Is No Transaction Activity Recorded.",
+      "noDataDesc": "There is no transaction activity recorded.",
       "revenue": "Revenue",
       "subtitle": "Hourly Traffic",
       "title": "Rush Hours"
@@ -1264,6 +1265,7 @@
       "currentTitle": "Current Shift Sales",
       "last24hTitle": "Sales (Last 24h)",
       "noData": "No revenue data",
+      "noDataDesc": "No sales activity recorded for the selected period.",
       "previousTitle": "Previous Shift Sales",
       "realtime": "Real-Time",
       "revenue": "Revenue",
@@ -1326,9 +1328,9 @@
       "live": "LIVE",
       "netSales": "Total Sales",
       "netSalesCosts": "Total Sales - Costs",
-      "noCategories": "No Category Data",
+      "noCategories": "No category data",
       "nonSales": "Non Sales",
-      "noProducts": "No Products Data",
+      "noProducts": "No products data",
       "onHold": "On Hold",
       "orders": "Orders",
       "over": "Over",
@@ -2181,7 +2183,8 @@
       },
       "payments": {
         "p1": "You agree to pay all fees associated with your subscription plan. Fees are non-refundable except as required by law.",
-        "p2": "We may change our pricing with 30 days' notice. Continued use after the change constitutes acceptance of the new pricing."
+        "p2": "We may change our pricing with 30 days' notice. Continued use after the change constitutes acceptance of the new pricing.",
+        "p3": "If a subscription is canceled and reactivated within the same billing cycle, the existing cycle will be resumed without additional charges. If reactivated after the cycle has ended, a new cycle will begin at the then-current rate."
       },
       "privacy": {
         "p1": "Your use of our services is also governed by our Privacy Policy, which is incorporated into these Terms by reference.",
@@ -2210,6 +2213,7 @@
         "title": "Terms of Service"
       },
       "termination": {
+        "deletion": "Locations scheduled for deletion enter a 30-day grace period during which they can be reactivated. After 30 days, all data associated with the location will be permanently and irreversibly deleted.",
         "desc": "We may suspend or terminate your access to our services at any time for violation of these terms. You may cancel your account at any time through your account settings."
       },
       "title": "Terms of Service",
@@ -2919,6 +2923,7 @@
       "billingQuestions": "Questions about billing?",
       "cancel": "Cancel",
       "canceled": "Canceled",
+      "canceledOn": "Canceled on {{date}}",
       "cancelsSoon": "Cancels soon",
       "cancelSub": "Cancel subscription",
       "cards": "Cards",
@@ -2926,6 +2931,7 @@
       "cardUpdateFailed": "Failed to update card",
       "contactSupport": "Contact support",
       "cost": "Cost",
+      "daysRemaining": "{{count}} days left",
       "deleteCard": "Delete card",
       "endingSoon": "Ending soon",
       "endingSoonDesc": "Your subscription is ending soon",
@@ -3166,7 +3172,7 @@
       "selectPeriod": "Select Period",
       "staffManagement": "Staff Management",
       "subtitle": "You are managing {{count}} locations across {{brands}} brands.",
-      "title": "Owner portal",
+      "title": "Owner Portal",
       "total": "Total",
       "totalProfit": "Total Profit",
       "totalRevenue": "Total Revenue",
@@ -3326,7 +3332,7 @@
     "cardBrands": "Card Brands",
     "cardBrandsSubtitle": "Manage accepted card logos.",
     "confirm": {
-      "deleteCardMessage": "Remove \"{{name}}\" from accepted card types?",
+      "deleteCardMessage": "Are you sure you want to delete \"{{name}}\"? It will no longer be available for future orders but will remain in your historical reports.",
       "deleteCardTitle": "Delete Card Type",
       "removeMessage": "Are you sure you want to delete \"{{name}}\"? It will no longer be available for future orders but will remain in your historical reports.",
       "removeTitle": "Remove Payment Method"
@@ -3805,7 +3811,9 @@
       "reactivate": {
         "button": "Reactivate Now",
         "title": "Reactivate Subscription",
-        "warning": "This will charge your default card $20.00 to start a new billing cycle for \"{{name}}\"."
+        "warning": "This action will resume your subscription for \"{{name}}\".",
+        "warningRestart": "This will charge your default card ${{price}} to start a new billing cycle for \"{{name}}\".",
+        "warningResume": "You are resuming your current subscription. No immediate charge will occur."
       },
       "stopTrial": {
         "button": "Stop Trial Now",
@@ -3871,7 +3879,7 @@
       "name": "Name",
       "namePlaceholder": "E.g. The Coffee House",
       "openingHours": "Opening hours",
-      "passwordResetNote": "Password reset can only be done from the owner portal",
+      "passwordResetNote": "Password reset can only be done from the Owner Portal",
       "selectDay": "Select a day to edit",
       "setServiceTimes": "Set service times",
       "taxId": "Tax ID / TRN",
@@ -3900,7 +3908,7 @@
       "currency": "System Currency",
       "currencyDesc": "Main currency for sales and reports.",
       "currencyLabel": "REGION",
-      "currencyOwnerOnly": "Currency can only be changed from the owner portal.",
+      "currencyOwnerOnly": "Currency can only be changed from the Owner Portal.",
       "enterValidTax": "Please enter a valid numeric tax rate to proceed with the update.",
       "holdOrderTableCountDesc": "How many table options (Table 1, Table 2...) to show in the hold order menu.",
       "holdOrderTableCountErrorRange": "Table shortcut count must be between 0 and 300.",

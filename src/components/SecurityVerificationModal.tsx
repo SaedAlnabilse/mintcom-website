@@ -38,6 +38,8 @@ interface SecurityVerificationModalProps {
     targetId: string;
     targetName: string;
     mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'delete-employee' | 'dissolve-establishment' | 'reactivate' | 'delete-customer';
+    price?: number;
+    isResuming?: boolean;
 }
 
 export function SecurityVerificationModal({
@@ -46,7 +48,9 @@ export function SecurityVerificationModal({
     onSuccess,
     targetId,
     targetName,
-    mode
+    mode,
+    price,
+    isResuming
 }: SecurityVerificationModalProps) {
     const { t } = useTranslation();
     const { account } = useAuth();
@@ -155,7 +159,9 @@ export function SecurityVerificationModal({
             case 'reactivate':
                 return {
                     title: t('security.modes.reactivate.title'),
-                    warning: t('security.modes.reactivate.warning', { name: targetName }),
+                    warning: isResuming 
+                        ? t('security.modes.reactivate.warningResume') 
+                        : t('security.modes.reactivate.warningRestart', { name: targetName, price: price?.toFixed(2) || '20.00' }),
                     buttonText: t('security.modes.reactivate.button'),
                     icon: ShieldCheck,
                     color: 'text-paymint-green',

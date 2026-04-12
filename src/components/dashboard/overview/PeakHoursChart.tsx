@@ -99,8 +99,8 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
                 <Clock size={28} className="text-gray-400 dark:text-gray-600" />
               </div>
               <div className="text-center">
-                <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('dashboard.peakHours.noData')}</p>
-                <p className="card-subtitle">{t('dashboard.peakHours.noDataDesc')}</p>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.peakHours.noData')}</p>
+                <p className="text-xs text-gray-400 mt-1">{t('dashboard.peakHours.noDataDesc')}</p>
               </div>
             </div>
           )}

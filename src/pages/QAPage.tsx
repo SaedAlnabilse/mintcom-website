@@ -1,18 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Plus, Minus, MessageCircle, CreditCard, Shield, Settings, HelpCircle, ChevronRight,
-  X
+import { Search, Plus, Minus, MessageCircle, CreditCard, Wrench, Settings, HelpCircle, ChevronRight,
+  X, Package, ClipboardList, Users
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-
-interface QAItem {
-    id: string;
-    question: string;
-    answer: string;
-    category: string;
-}
+import { FAQ_DATA } from '../data/faq';
 
 export const QAPage = () => {
     const { t } = useTranslation();
@@ -22,64 +16,16 @@ export const QAPage = () => {
 
     const categories = [
         { id: 'All', label: t('support.qa.categories.all', 'All Questions'), icon: HelpCircle },
-        { id: 'General', label: t('support.qa.categories.general', 'General'), icon: MessageCircle },
-        { id: 'Payments', label: t('support.qa.categories.payments', 'Payments'), icon: CreditCard },
-        { id: 'Security', label: t('support.qa.categories.security', 'Security'), icon: Shield },
-        { id: 'Account', label: t('support.qa.categories.account', 'Account'), icon: Settings },
+        { id: 'general', label: t('support.qa.categories.general', 'General Support'), icon: MessageCircle },
+        { id: 'products', label: t('support.qa.categories.products', 'Product Management'), icon: Package },
+        { id: 'orders', label: t('support.qa.categories.orders', 'Sales And Orders'), icon: ClipboardList },
+        { id: 'staff', label: t('support.qa.categories.staff', 'Team And Staff'), icon: Users },
+        { id: 'billing', label: t('support.qa.categories.payments', 'Billing And Plans'), icon: CreditCard },
+        { id: 'technical', label: t('support.qa.categories.technical', 'Technical Support'), icon: Wrench },
+        { id: 'account', label: t('support.qa.categories.account', 'Account Settings'), icon: Settings },
     ];
 
-    const qaData: QAItem[] = [
-        {
-            id: '1',
-            category: 'General',
-            question: t('support.qa.q1.question', 'What is PayMint?'),
-            answer: t('support.qa.q1.answer', 'PayMint is a comprehensive digital payment solution designed to help businesses of all sizes accept payments, manage finances, and grow. We offer a suite of tools including a payment gateway, point-of-sale systems, and detailed analytics.')
-        },
-        {
-            id: '2',
-            category: 'General',
-            question: t('support.qa.q2.question', 'Is PayMint available in my country?'),
-            answer: t('support.qa.q2.answer', 'PayMint is currently available in over 30 countries across North America, Europe, and Asia. We are rapidly expanding to new regions. Please check our supported countries list on our pricing page for the most up-to-date information.')
-        },
-        {
-            id: '3',
-            category: 'Payments',
-            question: t('support.qa.q3.question', 'What payment methods can I accept?'),
-            answer: t('support.qa.q3.answer', 'With PayMint, you can accept all major credit and debit cards (Visa, Mastercard, Amex), digital wallets (Apple Pay, Google Pay), and local payment methods specific to your region.')
-        },
-        {
-            id: '4',
-            category: 'Payments',
-            question: t('support.qa.q4.question', 'How long do payouts take?'),
-            answer: t('support.qa.q4.answer', 'Standard payouts are processed daily and typically arrive in your bank account within 2 business days. We also offer an Instant Payout feature for eligible merchants, allowing you to access your funds in minutes for a small fee.')
-        },
-        {
-            id: '5',
-            category: 'Security',
-            question: t('support.qa.q5.question', 'Is PayMint secure?'),
-            answer: t('support.qa.q5.answer', 'Yes, security is our top priority. We are PCI DSS Level 1 compliant, which is the highest standard of payment security. All data is encrypted using advanced encryption standards (AES-256), and we employ 24/7 fraud monitoring.')
-        },
-        {
-            id: '6',
-            category: 'Account',
-            question: t('support.qa.q6.question', 'How do I reset my password?'),
-            answer: t('support.qa.q6.answer', 'You can reset your password by clicking on the "Forgot Password" link on the login page. Follow the instructions sent to your registered email address to create a new password. If you are logged in, you can change it from your Account Settings.')
-        },
-        {
-            id: '7',
-            category: 'Account',
-            question: t('support.qa.q7.question', 'Can I add multiple users to my account?'),
-            answer: t('support.qa.q7.answer', 'Yes! Our Team Management feature allows you to add multiple users with different roles and permissions (e.g., Admin, Manager, Cashier). You can manage these settings from the "Team" section in your dashboard.')
-        },
-        {
-            id: '8',
-            category: 'Payments',
-            question: t('support.qa.q8.question', 'Are there any hidden fees?'),
-            answer: t('support.qa.q8.answer', 'No, we believe in complete transparency. Our pricing model is simple: a small percentage per transaction plus a fixed fee. There are no setup fees, monthly fees, or hidden charges for our standard plan.')
-        }
-    ];
-
-    const filteredQA = qaData.filter(item => {
+    const filteredQA = FAQ_DATA.filter(item => {
         const matchesSearch = item.question.toLowerCase().includes(searchQuery.toLowerCase()) || 
                               item.answer.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
@@ -98,7 +44,7 @@ export const QAPage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight"
                     >
-                        {t('support.qa.title', 'How can we help you?')}
+                        {t('support.qa.title', 'How Can We Help You?')}
                     </motion.h1>
 
                     {/* Search Bar */}
@@ -110,10 +56,10 @@ export const QAPage = () => {
                     >
                         <input maxLength={255}
                             type="text"
-                            placeholder={t('support.qa.search_placeholder', 'Search for questions...')}
+                            placeholder={t('support.qa.search_placeholder', 'Search For Answers...')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-11 py-4 bg-gray-100 dark:bg-black/20 border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none transition-all shadow-sm"
+                            className="w-full pl-12 pr-11 py-4 bg-gray-100 dark:bg-black/20 border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none transition-all"
                         />
                         {searchQuery && (
                           <button
@@ -133,22 +79,28 @@ export const QAPage = () => {
             {/* Main Content */}
             <div className="max-w-6xl mx-auto px-6 py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    {/* Sidebar Categories */}
-                    <div className="lg:col-span-1 space-y-2">
-                        <p className="text-xs font-black text-gray-400 tracking-widest mb-4 px-2">
-                            {t('community.labels.categories', 'Categories')}
+                    {/* Sidebar Topics */}
+                    <div className="lg:col-span-1 space-y-1">
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-4 px-2 uppercase">
+                            {t('support.qa.topics', 'Help Topics')}
                         </p>
                         {categories.map((cat) => (
                             <button
                                 key={cat.id}
                                 onClick={() => setActiveCategory(cat.id)}
-                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all relative overflow-hidden group ${
                                     activeCategory === cat.id
-                                    ? 'bg-PayMint-green text-black shadow-lg shadow-PayMint-green/20'
+                                    ? 'bg-paymint-green/10 text-paymint-green'
                                     : 'text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
                                 }`}
                             >
-                                <cat.icon size={18} />
+                                {activeCategory === cat.id && (
+                                  <motion.div 
+                                    layoutId="active-indicator"
+                                    className={`absolute inset-y-0 ${t('common.locale') === 'ar' ? 'right-0' : 'left-0'} w-1 bg-paymint-green rounded-full`}
+                                  />
+                                )}
+                                <cat.icon size={18} className={activeCategory === cat.id ? 'text-paymint-green' : 'text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'} />
                                 {cat.label}
                                 {activeCategory === cat.id && <ChevronRight size={16} className={t('common.locale') === 'ar' ? 'mr-auto rotate-180' : 'ml-auto'} />}
                             </button>
@@ -170,25 +122,20 @@ export const QAPage = () => {
                                         <motion.div
                                             key={item.id}
                                             layout
-                                            className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden transition-all hover:border-PayMint-green/30"
+                                            className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden transition-all hover:border-paymint-green/30"
                                         >
                                             <button
                                                 onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
                                                 className="w-full flex items-start justify-between p-6 text-left"
                                             >
                                                 <div className="flex-1 pr-8">
-                                                    <div className="flex items-center gap-3 mb-2">
-                                                        <span className="px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/5 text-[10px] font-bold uppercase tracking-wider text-gray-500">
-                                                            {item.category}
-                                                        </span>
-                                                    </div>
-                                                    <h3 className={`text-base font-bold transition-colors ${expandedId === item.id ? 'text-PayMint-green' : 'text-gray-900 dark:text-white'}`}>
+                                                    <h3 className={`text-base font-bold transition-colors ${expandedId === item.id ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
                                                         {item.question}
                                                     </h3>
                                                 </div>
                                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                                                     expandedId === item.id 
-                                                    ? 'bg-PayMint-green text-black rotate-180' 
+                                                    ? 'bg-paymint-green text-black rotate-180' 
                                                     : 'bg-gray-100 dark:bg-white/5 text-gray-500'
                                                 }`}>
                                                     {expandedId === item.id ? <Minus size={18} /> : <Plus size={18} />}
@@ -226,10 +173,10 @@ export const QAPage = () => {
                                         <Search className="w-8 h-8 text-gray-400" />
                                     </div>
                                     <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">
-                                        {t('support.qa.empty_title', 'No results found')}
+                                        {t('support.qa.empty_title', 'No Results Found')}
                                     </h3>
                                     <p className="text-xs font-bold text-gray-500">
-                                        {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'questions', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('support.qa.empty_subtitle', 'Try adjusting your search or category filter.')}
+                                        {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'questions', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('support.qa.empty_subtitle', 'Try adjusting your search or topic filter.')}
                                     </p>
                                 </motion.div>
                             )}
@@ -242,4 +189,3 @@ export const QAPage = () => {
         </div>
     );
 };
-

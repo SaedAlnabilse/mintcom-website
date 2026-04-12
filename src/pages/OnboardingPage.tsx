@@ -322,7 +322,7 @@ export function OnboardingPage() {
           goToStep(2);
           return;
       }
-    } catch (err) {
+    } catch {
       // Continue if check fails
     }
 

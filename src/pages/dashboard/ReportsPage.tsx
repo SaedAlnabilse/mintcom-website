@@ -4,8 +4,9 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { endOfDay, startOfDay, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  TrendingUp, Clock, Activity, ShoppingBag,
-  Download, CreditCard, Percent, Tag, Scale
+  TrendingUp, Clock, ShoppingBag,
+  Download, CreditCard, Percent, Scale,
+  Users, PlusCircle
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -443,8 +444,8 @@ export function ReportsPage() {
           {[
             { id: 'sales', label: t('dashboard.menu.salesSummary'), icon: TrendingUp },
             { id: 'items-categories', label: t('dashboard.menu.salesByItems'), icon: ShoppingBag },
-            { id: 'addons', label: t('dashboard.menu.salesByAddons'), icon: Tag },
-            { id: 'staff-sales', label: t('dashboard.menu.salesByStaff'), icon: Activity },
+            { id: 'addons', label: t('dashboard.menu.salesByAddons'), icon: PlusCircle },
+            { id: 'staff-sales', label: t('dashboard.menu.salesByStaff'), icon: Users },
             { id: 'shifts', label: t('dashboard.menu.shiftsReports'), icon: Clock },
             { id: 'cash-discrepancy', label: t('dashboard.menu.cashGapReports'), icon: Scale },
             { id: 'payments', label: t('dashboard.menu.paymentsReports'), icon: CreditCard },
