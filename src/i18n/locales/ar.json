@@ -2998,6 +2998,7 @@
       "deleteBrand": "حذف العلامة تجارية",
       "failedToLoad": "فشل تحميل العلامات التجارية",
       "linkedLocations": "المواقع المرتبطة",
+      "linkLocations": "ربط المواقع",
       "loading": "جاري التحميل...",
       "location": "الموقع",
       "locations": "المواقع",
@@ -3024,7 +3025,7 @@
       "wizard": {
         "adminLoginId": "معرف دخول المدير",
         "adminLoginPlaceholder": "مثال: burger_house_admin",
-        "adminPassword": "Admin Password",
+        "adminPassword": "كلمة مرور المدير",
         "brandName": "اسم العلامة التجارية",
         "brandNamePlaceholder": "مثال: برجر هاوس العالمية",
         "createFailed": "فشل إنشاء العلامة التجارية",

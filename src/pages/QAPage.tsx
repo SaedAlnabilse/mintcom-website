@@ -42,7 +42,7 @@ export const QAPage = () => {
                     <motion.h1
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight"
+                        className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white mb-6 tracking-tight"
                     >
                         {t('support.qa.title', 'How Can We Help You?')}
                     </motion.h1>
@@ -59,7 +59,7 @@ export const QAPage = () => {
                             placeholder={t('support.qa.search_placeholder', 'Search For Answers...')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-11 py-4 bg-gray-100 dark:bg-black/20 border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none transition-all"
+                            className="w-full pl-12 pr-11 py-4 bg-gray-100 dark:bg-black/20 border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none transition-all"
                         />
                         {searchQuery && (
                           <button
@@ -88,7 +88,7 @@ export const QAPage = () => {
                             <button
                                 key={cat.id}
                                 onClick={() => setActiveCategory(cat.id)}
-                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all relative overflow-hidden group ${
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all relative overflow-hidden group ${
                                     activeCategory === cat.id
                                     ? 'bg-paymint-green/10 text-paymint-green'
                                     : 'text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
@@ -129,7 +129,7 @@ export const QAPage = () => {
                                                 className="w-full flex items-start justify-between p-6 text-left"
                                             >
                                                 <div className="flex-1 pr-8">
-                                                    <h3 className={`text-base font-bold transition-colors ${expandedId === item.id ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
+                                                    <h3 className={`text-base font-medium transition-colors ${expandedId === item.id ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
                                                         {item.question}
                                                     </h3>
                                                 </div>
@@ -152,7 +152,7 @@ export const QAPage = () => {
                                                     >
                                                         <div className="px-6 pb-6 pt-0">
                                                             <div className="h-px w-full bg-gray-100 dark:bg-white/5 mb-4" />
-                                                            <p className="text-sm font-bold text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                                                 {item.answer}
                                                             </p>
                                                         </div>
@@ -172,10 +172,10 @@ export const QAPage = () => {
                                     <div className="w-16 h-16 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <Search className="w-8 h-8 text-gray-400" />
                                     </div>
-                                    <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">
                                         {t('support.qa.empty_title', 'No Results Found')}
                                     </h3>
-                                    <p className="text-xs font-bold text-gray-500">
+                                    <p className="text-xs font-medium text-gray-500">
                                         {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'questions', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('support.qa.empty_subtitle', 'Try adjusting your search or topic filter.')}
                                     </p>
                                 </motion.div>
