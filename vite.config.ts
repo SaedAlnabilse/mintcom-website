@@ -1,9 +1,40 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'paymint-logo.svg', 'paymint-logo.png'],
+      manifest: {
+        name: 'PayMint POS',
+        short_name: 'PayMint',
+        description: 'All-in-One Cloud POS & Business Management',
+        theme_color: '#7CC39F',
+        icons: [
+          {
+            src: 'paymint-logo.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'paymint-logo.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: 'paymint-logo.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          }
+        ]
+      }
+    })
+  ],
   base: '/',
 
   // Build optimization settings

@@ -71,7 +71,7 @@ export const AppStrings = {
     CUSTOMERS: "Customers",
     REPORTS: "Reports",
     SETTINGS: "Settings",
-    LOGOUT: "Log out",
+    LOGOUT: "Log Out",
     PROFILE: "Profile",
     BILLING: "Billing",
     HELP: "Help & Support",
@@ -79,7 +79,7 @@ export const AppStrings = {
     ADMIN: "Admin",
     POS: "POS App",
     KITCHEN: "Kitchen Display",
-    INVENTORY: "Recipe operations",
+    INVENTORY: "Recipe Operations",
     DISCOUNTS: "Discounts",
     LOYALTY: "Loyalty",
     GIFT_CARDS: "Gift Cards",
@@ -141,7 +141,7 @@ export const AppStrings = {
   },
   MODALS: {
     CONFIRM_DELETE: {
-      TITLE: "Are you sure?",
+      TITLE: "Are You Sure?",
       MESSAGE: "This action cannot be undone. This will permanently delete the selected item.",
       CONFIRM: "Yes, Delete",
       CANCEL: "No, Keep",
@@ -170,7 +170,7 @@ export const AppStrings = {
       SIGN_IN: "Sign in",
     },
     LOGOUT: {
-      TITLE: "Log out",
+      TITLE: "Log Out",
       MESSAGE: "Are you sure you want to log out?",
     }
   }

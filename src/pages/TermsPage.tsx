@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Scale } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 
@@ -9,6 +10,12 @@ export const TermsPage = () => {
     const { t } = useTranslation();
     return (
         <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+            <Helmet>
+                <title>{t('metadata.terms.title')}</title>
+                <meta name="description" content={t('metadata.terms.description')} />
+                <meta property="og:title" content={t('metadata.terms.title')} />
+                <meta property="og:description" content={t('metadata.terms.description')} />
+            </Helmet>
             <Navbar />
 
             {/* Header */}

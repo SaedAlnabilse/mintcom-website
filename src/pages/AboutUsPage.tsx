@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Target, Shield, Zap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 
@@ -26,6 +27,12 @@ export const AboutUsPage = () => {
 
     return (
         <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white overflow-x-hidden font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+            <Helmet>
+                <title>{t('metadata.about.title')}</title>
+                <meta name="description" content={t('metadata.about.description')} />
+                <meta property="og:title" content={t('metadata.about.title')} />
+                <meta property="og:description" content={t('metadata.about.description')} />
+            </Helmet>
             <Navbar />
 
             {/* About PayMint - Main Introduction */}

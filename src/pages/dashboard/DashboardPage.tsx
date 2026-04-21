@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   FileBarChart,
@@ -451,263 +452,265 @@ export const DashboardPage = () => {
   };
 
   return (
-    <AnimatePresence mode="wait">
-      {isLoading && !stats ? (
-        <motion.div
-          key="loader"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="flex flex-col items-center justify-center min-h-[60vh] space-y-6"
-        >
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
-            <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
-          </div>
-          <p className="text-xs font-black text-gray-400 tracking-widest">{t('dashboard.loading')}</p>
-        </motion.div>
-      ) : (
-        <motion.div
-          key="dashboard-content"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10 font-sans"
-          dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-        >
-          {/* Header */}
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-            {/* Top row: Status and greeting */}
-            <div>
-              <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
-                {/* Real Shift Status Badge */}
-                <span className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold tracking-wide border ${shiftStatus?.shiftStatus === 'ACTIVE'
-                  ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
-                  : 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20'
-                  }`}>
-                  {shiftStatus?.shiftStatus === 'ACTIVE'
-                    ? t('dashboard.shiftStatus.active', { name: getShiftEmployeeName() })
-                    : t('dashboard.shiftStatus.none')}
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
-              <div className="flex items-center gap-2 sm:gap-3 mt-2 text-gray-500 dark:text-gray-400 text-sm sm:text-base flex-wrap">
-                <Calendar size={14} className="sm:w-4 sm:h-4" />
-                <span>{formatDate()}</span>
-                {currentEstablishment?.name && (
-                    <>
-                        <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20 hidden sm:block" />
-                        <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            {currentEstablishment.name}
-                        </span>
-                    </>
-                )}
-              </div>
+    <>
+      <AnimatePresence mode="wait">
+        {isLoading && !stats ? (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex flex-col items-center justify-center min-h-[60vh] space-y-6"
+          >
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
+              <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
             </div>
-
-            {/* Action buttons - stack on mobile */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
-              {/* View Mode Selector */}
-              <div id="tour-view-mode" className="relative flex-1 sm:flex-none" ref={viewModeRef}>
-                <button
-                  onClick={() => setIsViewModeOpen(!isViewModeOpen)}
-                  className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-[color,background-color,border-color,box-shadow,ring] min-w-[180px] ${isViewModeOpen ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-gray-50' : ''}`}
-                >
-                  {currentViewModeInfo?.icon}
-                  <span className="flex-1 text-left">{currentViewModeInfo?.label}</span>
-                  <ChevronDown size={16} className={`transition-transform duration-200 ${isViewModeOpen ? 'rotate-180' : ''}`} />
-                </button>
-
-                <AnimatePresence>
-                  {isViewModeOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -5 }}
-                      className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden z-50"
-                    >
-                      {getAvailableViewModes().map((mode) => (
-                        <button
-                          key={mode.mode}
-                          onClick={() => {
-                            setViewMode(mode.mode);
-                            setIsViewModeOpen(false);
-                          }}
-                          className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${viewMode === mode.mode ? 'bg-paymint-green/10' : ''
-                            }`}
-                        >
-                          <span className={viewMode === mode.mode ? 'text-paymint-green' : 'text-gray-400'}>{mode.icon}</span>
-                          <div className="flex-1 text-left">
-                            <p className={`text-sm font-bold ${viewMode === mode.mode ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
-                              {mode.label}
-                            </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">{mode.description}</p>
-                          </div>
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Action buttons row */}
-              <div className="flex items-center gap-2 sm:gap-3">
-
-                {canOpenReportsPage && (
-                  <button
-                    onClick={() => navigate(`/dashboard/${locationSlug}/reports/sales`)}
-                    className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
-                  >
-                    <FileBarChart size={18} className="text-paymint-green" />
-                    <span className="hidden xs:inline">{t('dashboard.menu.salesAndReporting')}</span>
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* View Mode Info Bar */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm shadow-gray-200/70 dark:shadow-black/20 ring-1 ring-gray-200/60 dark:ring-white/5">
-            <div className="flex items-center gap-3">
-              {currentViewModeInfo?.icon && (
-                <span className="text-paymint-green">{currentViewModeInfo.icon}</span>
-              )}
+            <p className="text-xs font-black text-gray-400 tracking-widest">{t('dashboard.loading')}</p>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="dashboard-content"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10 font-sans"
+            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+          >
+            {/* Header */}
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+              {/* Top row: Status and greeting */}
               <div>
-                <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">
-                  {viewMode === 'current_shift' && shiftStatus?.activeShift && (
-                    <>{t('dashboard.viewMode.showingSince', { date: format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a', { locale: getDateLocale(t('common.locale')) }) })}</>
+                <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
+                  {/* Real Shift Status Badge */}
+                  <span className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold tracking-wide border ${shiftStatus?.shiftStatus === 'ACTIVE'
+                    ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                    : 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20'
+                    }`}>
+                    {shiftStatus?.shiftStatus === 'ACTIVE'
+                      ? t('dashboard.shiftStatus.active', { name: getShiftEmployeeName() })
+                      : t('dashboard.shiftStatus.none')}
+                  </span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
+                <div className="flex items-center gap-2 sm:gap-3 mt-2 text-gray-500 dark:text-gray-400 text-sm sm:text-base flex-wrap">
+                  <Calendar size={14} className="sm:w-4 sm:h-4" />
+                  <span>{formatDate()}</span>
+                  {currentEstablishment?.name && (
+                      <>
+                          <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20 hidden sm:block" />
+                          <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                              {currentEstablishment.name}
+                          </span>
+                      </>
                   )}
-                  {viewMode === 'previous_shift' && t('dashboard.viewMode.showingLastShift')}
-                  {viewMode === 'last_24_hours' && t('dashboard.viewMode.showingLast24h')}
-                </span>
+                </div>
+              </div>
+
+              {/* Action buttons - stack on mobile */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+                {/* View Mode Selector */}
+                <div id="tour-view-mode" className="relative flex-1 sm:flex-none" ref={viewModeRef}>
+                  <button
+                    onClick={() => setIsViewModeOpen(!isViewModeOpen)}
+                    className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-[color,background-color,border-color,box-shadow,ring] min-w-[180px] ${isViewModeOpen ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-gray-50' : ''}`}
+                  >
+                    {currentViewModeInfo?.icon}
+                    <span className="flex-1 text-left">{currentViewModeInfo?.label}</span>
+                    <ChevronDown size={16} className={`transition-transform duration-200 ${isViewModeOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {isViewModeOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden z-50"
+                      >
+                        {getAvailableViewModes().map((mode) => (
+                          <button
+                            key={mode.mode}
+                            onClick={() => {
+                              setViewMode(mode.mode);
+                              setIsViewModeOpen(false);
+                            }}
+                            className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${viewMode === mode.mode ? 'bg-paymint-green/10' : ''
+                              }`}
+                          >
+                            <span className={viewMode === mode.mode ? 'text-paymint-green' : 'text-gray-400'}>{mode.icon}</span>
+                            <div className="flex-1 text-left">
+                              <p className={`text-sm font-bold ${viewMode === mode.mode ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
+                                {mode.label}
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">{mode.description}</p>
+                            </div>
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Action buttons row */}
+                <div className="flex items-center gap-2 sm:gap-3">
+
+                  {canOpenReportsPage && (
+                    <button
+                      onClick={() => navigate(`/dashboard/${locationSlug}/reports/sales`)}
+                      className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
+                    >
+                      <FileBarChart size={18} className="text-paymint-green" />
+                      <span className="hidden xs:inline">{t('dashboard.menu.salesAndReporting')}</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">
-              {t('dashboard.lastUpdated')} {format(lastRefresh, 'h:mm a', { locale: getDateLocale(t('common.locale')) })}
-            </span>
-          </div>
 
-          {!canViewDashboardAnalytics && (
-            <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-bold">
-              {t('dashboard.permissions.analyticsRequired', {
-                defaultValue: 'You do not have permission to load dashboard analytics.',
-              })}
+            {/* View Mode Info Bar */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm shadow-gray-200/70 dark:shadow-black/20 ring-1 ring-gray-200/60 dark:ring-white/5">
+              <div className="flex items-center gap-3">
+                {currentViewModeInfo?.icon && (
+                  <span className="text-paymint-green">{currentViewModeInfo.icon}</span>
+                )}
+                <div>
+                  <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">
+                    {viewMode === 'current_shift' && shiftStatus?.activeShift && (
+                      <>{t('dashboard.viewMode.showingSince', { date: format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a', { locale: getDateLocale(t('common.locale')) }) })}</>
+                    )}
+                    {viewMode === 'previous_shift' && t('dashboard.viewMode.showingLastShift')}
+                    {viewMode === 'last_24_hours' && t('dashboard.viewMode.showingLast24h')}
+                  </span>
+                </div>
+              </div>
+              <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">
+                {t('dashboard.lastUpdated')} {format(lastRefresh, 'h:mm a', { locale: getDateLocale(t('common.locale')) })}
+              </span>
             </div>
-          )}
 
-          {/* Components Grid */}
-          <DashboardStatsCards 
-            stats={stats} 
-            viewMode={viewMode} 
-            previousShiftSnapshot={previousShiftSnapshot}
-            setShowPayInOutModal={setShowPayInOutModal}
-          />
-
-          <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 sm:gap-6">
-            <RevenueChart 
-              dailyBreakdown={stats?.dailyBreakdown || []}
-              viewMode={viewMode}
-              selectedDateRange={viewMode === 'last_24_hours' ? 'today' : 'custom'} 
-            />
-            <PaymentMethodsBreakdown 
-              paymentMethodBreakdown={stats?.paymentMethodBreakdown || []}
-              viewMode={viewMode}
-            />
-          </div>
-
-          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-6">
-            <TopSellingProducts 
-              topProducts={topProducts}
-              categoryBreakdown={stats?.categoryBreakdown || []}
-              viewMode={viewMode}
-              canViewReports={canOpenReportsPage}
-            />
-            <PeakHoursChart 
-              peakHours={peakHours} 
-            />
-          </div>
-
-          <PayInPayOutLogModal
-            isOpen={showPayInOutModal}
-            onClose={() => setShowPayInOutModal(false)}
-            startDate={activeDateRange.start}
-            endDate={activeDateRange.end}
-          />
-
-          {/* Welcome Popup */}
-          <AnimatePresence>
-            {showWelcomePopup && (
-              <div className="fixed inset-0 z-[9999999] flex items-center justify-center p-4">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onClick={() => setShowWelcomePopup(false)}
-                  className="absolute inset-0 bg-[#0F172A]/40 backdrop-blur-sm"
-                />
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  className="relative w-full max-w-sm bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 overflow-hidden"
-                >
-                  <div className="px-6 pt-8 pb-6 flex flex-col items-center text-center">
-                    <div className="w-16 h-16 mb-4 rounded-full bg-[#7CC39F]/10 flex items-center justify-center">
-                      <PartyPopper size={32} className="text-[#7CC39F]" />
-                    </div>
-                    
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                      {t('common.congratulations')}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
-                      {t('dashboard.welcome.message', {
-                        location: currentEstablishment?.name || 'this location'
-                      })}
-                    </p>
-
-                    <button
-                      onClick={handleStartTasks}
-                      className="w-full py-3.5 px-4 bg-gradient-to-r from-[#7CC39F] to-[#5BA882] hover:brightness-105 text-white font-bold rounded-xl shadow-lg shadow-[#7CC39F]/30 transition-all active:scale-[0.98]"
-                    >
-                      {t('dashboard.welcome.startGuide')}
-                    </button>
-                  </div>
-                  
-                  <button
-                    onClick={() => setShowWelcomePopup(false)}
-                    className="absolute top-4 right-4 rtl:left-4 rtl:right-auto p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors"
-                  >
-                    <X size={16} />
-                  </button>
-                </motion.div>
+            {!canViewDashboardAnalytics && (
+              <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-bold">
+                {t('dashboard.permissions.analyticsRequired', {
+                  defaultValue: 'You do not have permission to load dashboard analytics.',
+                })}
               </div>
             )}
-          </AnimatePresence>
 
-          <TourGuide
-            isOpen={showTasksTour}
-            onClose={() => setShowTasksTour(false)}
-            onComplete={() => setShowTasksTour(false)}
-            steps={[
-              {
-                targetId: 'tasks-widget-panel',
-                title: t('dashboard.tour.tasks.title'),
-                description: t('dashboard.tour.tasks.desc'),
-                position: isRTL ? 'right' : 'left'
-              },
-              {
-                targetId: 'widget-task-item-location-profile',
-                title: t('dashboard.tour.taskItem.title'),
-                description: t('dashboard.tour.taskItem.desc'),
-                position: isRTL ? 'right' : 'left'
-              }
-            ]}
-          />
+            {/* Components Grid */}
+            <DashboardStatsCards 
+              stats={stats} 
+              viewMode={viewMode} 
+              previousShiftSnapshot={previousShiftSnapshot}
+              setShowPayInOutModal={setShowPayInOutModal}
+            />
 
-        </motion.div>
-      )}
-    </AnimatePresence>
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 sm:gap-6">
+              <RevenueChart 
+                dailyBreakdown={stats?.dailyBreakdown || []}
+                viewMode={viewMode}
+                selectedDateRange={viewMode === 'last_24_hours' ? 'today' : 'custom'} 
+              />
+              <PaymentMethodsBreakdown 
+                paymentMethodBreakdown={stats?.paymentMethodBreakdown || []}
+                viewMode={viewMode}
+              />
+            </div>
+
+            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-6">
+              <TopSellingProducts 
+                topProducts={topProducts}
+                categoryBreakdown={stats?.categoryBreakdown || []}
+                viewMode={viewMode}
+                canViewReports={canOpenReportsPage}
+              />
+              <PeakHoursChart 
+                peakHours={peakHours} 
+              />
+            </div>
+
+            <PayInPayOutLogModal
+              isOpen={showPayInOutModal}
+              onClose={() => setShowPayInOutModal(false)}
+              startDate={activeDateRange.start}
+              endDate={activeDateRange.end}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Welcome Popup */}
+      <AnimatePresence>
+        {showWelcomePopup && createPortal(
+          <div className="fixed inset-0 z-[9999999] flex items-center justify-center p-4 isolate">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowWelcomePopup(false)}
+              className="absolute inset-0 bg-gray-900/60 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              className="relative w-full max-w-sm bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 overflow-hidden"
+            >
+              <div className="px-6 pt-8 pb-6 flex flex-col items-center text-center">
+                <div className="w-16 h-16 mb-4 rounded-full bg-[#7CC39F]/10 flex items-center justify-center">
+                  <PartyPopper size={32} className="text-[#7CC39F]" />
+                </div>
+                
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  {t('common.congratulations')}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+                  {t('dashboard.welcome.message', {
+                    location: currentEstablishment?.name || 'this location'
+                  })}
+                </p>
+
+                <button
+                  onClick={handleStartTasks}
+                  className="w-full py-3.5 px-4 bg-gradient-to-r from-[#7CC39F] to-[#5BA882] hover:brightness-105 text-white font-bold rounded-xl shadow-lg shadow-[#7CC39F]/30 transition-all active:scale-[0.98]"
+                >
+                  {t('dashboard.welcome.startGuide')}
+                </button>
+              </div>
+              
+              <button
+                onClick={() => setShowWelcomePopup(false)}
+                className="absolute top-4 right-4 rtl:left-4 rtl:right-auto p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </motion.div>
+          </div>,
+          document.body
+        )}
+      </AnimatePresence>
+
+      <TourGuide
+        isOpen={showTasksTour}
+        onClose={() => setShowTasksTour(false)}
+        onComplete={() => setShowTasksTour(false)}
+        steps={[
+          {
+            targetId: 'tasks-launcher',
+            title: t('dashboard.tour.tasks.title'),
+            description: t('dashboard.tour.tasks.desc'),
+            position: isRTL ? 'right' : 'left'
+          },
+          {
+            targetId: 'widget-task-item-location-profile',
+            title: t('dashboard.tour.taskItem.title'),
+            description: t('dashboard.tour.taskItem.desc'),
+            position: isRTL ? 'right' : 'left'
+          }
+        ]}
+      />
+    </>
   );
 };
 

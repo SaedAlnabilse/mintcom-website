@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Shield, Clock, Globe, BarChart3, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 
 export function CookiePolicyPage() {
   const navigate = useNavigate();
@@ -14,6 +15,12 @@ export function CookiePolicyPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#1E293B] font-sans text-gray-900 dark:text-white pb-20" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+      <Helmet>
+        <title>{t('metadata.cookiePolicy.title')}</title>
+        <meta name="description" content={t('metadata.cookiePolicy.description')} />
+        <meta property="og:title" content={t('metadata.cookiePolicy.title')} />
+        <meta property="og:description" content={t('metadata.cookiePolicy.description')} />
+      </Helmet>
       {/* Header / Hero */}
       <div className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-6">

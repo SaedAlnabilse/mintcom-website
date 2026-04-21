@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { env } from './env';
 
 const ESTABLISHMENT_HEADER = 'X-Establishment-Id';
 const SKIP_ESTABLISHMENT_HEADER = 'X-Skip-Establishment-Header';
@@ -6,14 +7,12 @@ const SKIP_AUTH_REDIRECT_HEADER = 'X-Skip-Auth-Redirect';
 const MISSING_ESTABLISHMENT_HEADER_MESSAGE = 'X-Establishment-Id header is required for this endpoint';
 
 // Api Base Url - In development, use empty string to leverage Vite proxy
-// In production, use the full Url
-export const API_BASE_URL = import.meta.env.PROD
-  ? 'https://grateful-liberation-production-d036.up.railway.app'
-  : '';
+// In production, use the validated VITE_API_URL or fallback
+export const API_BASE_URL = env.DEV ? '' : env.VITE_API_URL;
 
 // Debug logging for production cross-origin issues
-if (import.meta.env.PROD) {
-  console.log('[API] Production mode - API Base URL:', API_BASE_URL);
+if (env.PROD) {
+  console.log(`[API] Production mode - API Base URL: ${API_BASE_URL}`);
   console.log('[API] withCredentials enabled for cross-origin cookie support');
 }
 

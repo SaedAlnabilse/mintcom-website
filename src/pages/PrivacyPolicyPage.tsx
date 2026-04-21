@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Shield } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 
@@ -8,6 +9,12 @@ export const PrivacyPolicyPage = () => {
     const { t } = useTranslation();
     return (
         <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+            <Helmet>
+                <title>{t('metadata.privacy.title')}</title>
+                <meta name="description" content={t('metadata.privacy.description')} />
+                <meta property="og:title" content={t('metadata.privacy.title')} />
+                <meta property="og:description" content={t('metadata.privacy.description')} />
+            </Helmet>
             <Navbar />
 
             {/* Header */}

@@ -165,7 +165,11 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (chatRef.current && !chatRef.current.contains(event.target as Node)) {
-        onClose();
+        // Ignore clicks on the launcher switcher bar
+        const isSwitcher = (event.target as Element).closest('#paymint-launcher-switcher');
+        if (!isSwitcher) {
+          onClose();
+        }
       }
     }
     

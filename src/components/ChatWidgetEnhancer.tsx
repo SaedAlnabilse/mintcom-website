@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { DualLauncher } from './Chat/DualLauncher';
 import { FAQModal } from './Chat/FAQModal';
 import { SmartChatbot } from './Chat/SmartChatbot';
-import { TasksWidget } from './Chat/TasksWidget';
 import { TasksModal } from './Chat/TasksModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PartyPopper, X, CheckCircle2 } from 'lucide-react';
@@ -35,6 +35,7 @@ export const ChatWidgetEnhancer = () => {
     const [isFAQOpen, setIsFAQOpen] = useState(false);
     const [isTasksOpen, setIsTasksOpen] = useState(false);
     const [isAllTasksCompleted, setIsAllTasksCompleted] = useState(checkAllCompleted);
+    const [tasksCount, setTasksCount] = useState(0);
     const [showCongratsPopup, setShowCongratsPopup] = useState(false);
 
     useEffect(() => {
@@ -42,6 +43,17 @@ export const ChatWidgetEnhancer = () => {
             const completed = checkAllCompleted();
             setIsAllTasksCompleted(completed);
             
+            // Calculate pending count
+            if (typeof window !== 'undefined') {
+                try {
+                    const raw = window.localStorage.getItem(STORAGE_KEY);
+                    const completedCount = raw ? Object.values(JSON.parse(raw)).filter(Boolean).length : 0;
+                    setTasksCount(TOTAL_TASKS - completedCount);
+                } catch {
+                    setTasksCount(TOTAL_TASKS);
+                }
+            }
+
             // If completed and we haven't shown the popup yet, show it
             if (completed && typeof window !== 'undefined') {
                 const seen = window.localStorage.getItem(POPUP_SEEN_KEY);
@@ -88,11 +100,12 @@ export const ChatWidgetEnhancer = () => {
             <DualLauncher
                 onOpenChat={handleOpenChat}
                 onOpenFAQ={handleOpenFAQ}
-                onOpenTasks={isAllTasksCompleted ? handleOpenTasks : undefined}
+                onOpenTasks={handleOpenTasks}
                 isChatOpen={isChatOpen}
                 isFAQOpen={isFAQOpen}
                 isTasksOpen={isTasksOpen}
                 onCloseAll={handleCloseAll}
+                tasksCount={tasksCount}
             />
             <SmartChatbot
                 isOpen={isChatOpen}
@@ -106,19 +119,17 @@ export const ChatWidgetEnhancer = () => {
                 isOpen={isTasksOpen}
                 onClose={() => setIsTasksOpen(false)}
             />
-            {/* Show standalone Tasks Widget only if tasks are NOT fully completed */}
-            {!isAllTasksCompleted && <TasksWidget />}
 
             {/* Congratulations Popup */}
             <AnimatePresence>
-                {showCongratsPopup && (
-                    <div className="fixed inset-0 z-[9000] flex items-center justify-center p-4">
+                {showCongratsPopup && createPortal(
+                    <div className="fixed inset-0 z-[9999999] flex items-center justify-center p-4 isolate">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setShowCongratsPopup(false)}
-                            className="absolute inset-0 bg-[#0F172A]/40 backdrop-blur-sm"
+                            className="absolute inset-0 bg-gray-900/60 backdrop-blur-md"
                         />
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -165,7 +176,8 @@ export const ChatWidgetEnhancer = () => {
                                 <X size={16} />
                             </button>
                         </motion.div>
-                    </div>
+                    </div>,
+                    document.body
                 )}
             </AnimatePresence>
         </>

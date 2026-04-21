@@ -22,9 +22,9 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        // Only close if it's not the launcher button that triggered it
-        const isLauncher = (event.target as Element).closest('[aria-label="Help"]');
-        if (!isLauncher) {
+        // Ignore clicks on the launcher switcher bar
+        const isSwitcher = (event.target as Element).closest('#paymint-launcher-switcher');
+        if (!isSwitcher) {
           onClose();
         }
       }

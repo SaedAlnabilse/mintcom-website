@@ -221,11 +221,9 @@ export function ProductFormModal({
 
     setIsGeneratingImage(true);
     try {
-      // Use backend proxy to avoid CORS/403 issues
-      const promptText = `professional appetizing food photography of ${name}, studio lighting, high resolution, 4k, delicious, isolated`;
-
+      // Send only the clean name; backend handles complex prompt engineering and multi-provider fallback
       const response = await api.post('/api/items/generate-image',
-        { prompt: promptText }
+        { prompt: name.trim() }
       );
 
       if (response.data.success && response.data.image) {

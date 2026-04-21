@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { GoogleAuthButton, AuthDivider, GOOGLE_CLIENT_ID, type GoogleAuthButtonHandle } from '../components/GoogleAuthButton';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import { Spinner } from '../components/ui/Spinner';
 
 // PayMint Logo imports
@@ -187,6 +188,12 @@ export function SignUpPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex transition-colors duration-300 relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+      <Helmet>
+        <title>{t('metadata.signup.title')}</title>
+        <meta name="description" content={t('metadata.signup.description')} />
+        <meta property="og:title" content={t('metadata.signup.title')} />
+        <meta property="og:description" content={t('metadata.signup.description')} />
+      </Helmet>
       {/* Full-screen Loading Overlay */}
       <AnimatePresence>
         {isSubmitting && (

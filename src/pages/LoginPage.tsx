@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { GoogleAuthButton, AuthDivider } from '../components/GoogleAuthButton';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 // PayMint Logo imports
@@ -117,7 +118,13 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 transition-colors duration-300 relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+      <Helmet>
+        <title>{t('metadata.login.title')}</title>
+        <meta name="description" content={t('metadata.login.description')} />
+        <meta property="og:title" content={t('metadata.login.title')} />
+        <meta property="og:description" content={t('metadata.login.description')} />
+      </Helmet>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

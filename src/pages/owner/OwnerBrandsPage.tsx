@@ -21,7 +21,8 @@ import {
     Eye,
     EyeOff,
     Trash2,
-    X
+    X,
+    AlertTriangle
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -85,6 +86,7 @@ export function OwnerBrandsPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
     const [selectedEstablishments, setSelectedEstablishments] = useState<string[]>([]);
     const [isCreating, setIsCreating] = useState(false);
     const [sortBy, setSortBy] = useState<SortOption>('name');
@@ -487,15 +489,19 @@ export function OwnerBrandsPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    {availableEstablishments.length >= 2 && (
-                        <button
-                            onClick={() => setShowCreateModal(true)}
-                            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
-                        >
-                            <Plus size={18} />
-                            <span>{t('owner.brands.createBrand')}</span>
-                        </button>
-                    )}
+                    <button
+                        onClick={() => {
+                            if (availableEstablishments.length < 2) {
+                                setShowDisclaimerModal(true);
+                            } else {
+                                setShowCreateModal(true);
+                            }
+                        }}
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
+                    >
+                        <Plus size={18} />
+                        <span>{t('owner.brands.createBrand')}</span>
+                    </button>
                 </div>
             </div>
 
@@ -580,9 +586,15 @@ export function OwnerBrandsPage() {
                     <p className="text-sm text-gray-500 mt-1">
                         {hasActiveFilters ? t('common.noMatchingResults', { entity: 'brands', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('owner.brands.createBrandHint')}
                     </p>
-                    {!hasActiveFilters && availableEstablishments.length >= 2 && (
+                    {!hasActiveFilters && (
                         <button
-                            onClick={() => setShowCreateModal(true)}
+                            onClick={() => {
+                                if (availableEstablishments.length < 2) {
+                                    setShowDisclaimerModal(true);
+                                } else {
+                                    setShowCreateModal(true);
+                                }
+                            }}
                             className="mt-6 px-6 py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-[#68B390] transition-all shadow-sm flex items-center gap-2 mx-auto"
                         >
                             <Link2 size={18} />
@@ -887,9 +899,14 @@ export function OwnerBrandsPage() {
                                     {wizardStep === 2 && (
                                         <div className="space-y-6 py-2">
                                             <div className="flex items-center justify-between gap-4">
-                                                <h3 className="text-xl font-sans font-bold text-gray-900 dark:text-white leading-tight">
-                                                    {t('owner.brands.selectLocationsToLink')}
-                                                </h3>
+                                                <div className="space-y-1">
+                                                    <h3 className="text-xl font-sans font-bold text-gray-900 dark:text-white leading-tight">
+                                                        {t('owner.brands.selectLocationsToLink')}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-500 font-sans font-medium">
+                                                        (These are the available locations to add, any locations not listed here are already included in other brand groups)
+                                                    </p>
+                                                </div>
                                                 <span className="flex-shrink-0 text-[13px] font-sans font-bold text-paymint-green bg-paymint-green/10 px-3 py-1.5 rounded-full">
                                                     {t('owner.brands.selectedCount', { count: selectedEstablishments.length })}
                                                 </span>
@@ -1058,6 +1075,72 @@ export function OwnerBrandsPage() {
                 targetName={securityModal.targetName}
                 mode={securityModal.mode}
             />
+
+            {/* Disclaimer Modal */}
+            {createPortal(
+                <AnimatePresence>
+                    {showDisclaimerModal && (
+                        <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-paymint-green selection:text-black">
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setShowDisclaimerModal(false)}
+                                className="absolute inset-0 bg-black/30 dark:bg-black/80 backdrop-blur-sm"
+                            />
+                            
+                            <motion.div
+                                initial={{ opacity: 0, y: 100 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 100 }}
+                                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+                                className="relative w-full max-w-md bg-white dark:bg-[#1E293B] rounded-[2.5rem] overflow-hidden border border-gray-200 dark:border-white/5 flex flex-col transition-colors duration-300"
+                            >
+                                <div className="sm:hidden flex justify-center pt-3 pb-1">
+                                    <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+                                </div>
+
+                                <div className="p-8">
+                                    <div className="flex flex-col items-center text-center space-y-6">
+                                        <div className="w-20 h-20 rounded-[1.5rem] bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-sm">
+                                            <AlertTriangle size={40} />
+                                        </div>
+                                        
+                                        <div className="space-y-2">
+                                            <h2 className="text-2xl font-sans font-bold text-gray-900 dark:text-white tracking-tight">
+                                                {t('owner.brands.disclaimerTitle')}
+                                            </h2>
+                                            <p className="text-[15px] font-sans font-medium text-gray-500">
+                                                {establishments.length < 2 
+                                                    ? t('owner.brands.disclaimerNoLocations')
+                                                    : t('owner.brands.disclaimerSubtitle')
+                                                }
+                                            </p>
+                                        </div>
+
+                                        <div className="bg-gray-50 dark:bg-black/20 rounded-3xl p-6 border border-gray-100 dark:border-white/5">
+                                            <p className="text-[14px] font-sans font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
+                                                {establishments.length < 2
+                                                    ? t('owner.brands.disclaimerNoLocations')
+                                                    : t('owner.brands.disclaimerDesc')
+                                                }
+                                            </p>
+                                        </div>
+
+                                        <button
+                                            onClick={() => setShowDisclaimerModal(false)}
+                                            className="w-full py-4 rounded-xl bg-paymint-green text-black font-sans font-bold text-sm tracking-tight hover:bg-paymint-green/90 transition-all shadow-lg shadow-paymint-green/20 active:scale-[0.98] mt-4"
+                                        >
+                                            {t('owner.brands.disclaimerAction')}
+                                        </button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )}
         </div>
     );
 }

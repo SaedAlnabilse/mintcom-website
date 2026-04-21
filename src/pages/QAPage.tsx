@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, Minus, MessageCircle, CreditCard, Wrench, Settings, HelpCircle, ChevronRight,
   X, Package, ClipboardList, Users
@@ -34,6 +35,12 @@ export const QAPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-[#0F172A] text-gray-900 dark:text-white font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+            <Helmet>
+                <title>{t('metadata.qa.title')}</title>
+                <meta name="description" content={t('metadata.qa.description')} />
+                <meta property="og:title" content={t('metadata.qa.title')} />
+                <meta property="og:description" content={t('metadata.qa.description')} />
+            </Helmet>
             <Navbar />
 
             {/* Header Section */}
