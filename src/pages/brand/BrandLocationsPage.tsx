@@ -10,7 +10,6 @@ import {
     ShoppingBag,
     DollarSign,
     Activity,
-    ExternalLink,
     MoreVertical,
     Eye,
     X,
@@ -43,7 +42,6 @@ interface LocationStats {
     establishmentLoginId?: string;
 }
 
-type ViewMode = 'grid' | 'list';
 type SortOption = 'name' | 'revenue' | 'orders' | 'employees';
 type StatusFilter = 'all' | 'ACTIVE' | 'INACTIVE' | 'TRIAL';
 type DateRangePreset = DatePeriod;
@@ -67,7 +65,6 @@ export function BrandLocationsPage() {
     const [endTime, setEndTime] = useState<string>('23:59');
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [viewMode, setViewMode] = useState<ViewMode>('list');
     const [sortBy, setSortBy] = useState<SortOption>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');

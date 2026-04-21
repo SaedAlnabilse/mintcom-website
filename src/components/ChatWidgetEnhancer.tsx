@@ -34,15 +34,13 @@ export const ChatWidgetEnhancer = () => {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [isFAQOpen, setIsFAQOpen] = useState(false);
     const [isTasksOpen, setIsTasksOpen] = useState(false);
-    const [isAllTasksCompleted, setIsAllTasksCompleted] = useState(checkAllCompleted);
     const [tasksCount, setTasksCount] = useState(0);
     const [showCongratsPopup, setShowCongratsPopup] = useState(false);
 
     useEffect(() => {
         const handleTasksUpdate = () => {
             const completed = checkAllCompleted();
-            setIsAllTasksCompleted(completed);
-            
+
             // Calculate pending count
             if (typeof window !== 'undefined') {
                 try {
