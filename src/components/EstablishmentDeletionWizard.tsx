@@ -150,6 +150,7 @@ export function EstablishmentDeletionWizard({
             setIsSubmitting(true);
             await api.post(`/api/establishments/${establishmentId}/request-deletion`, {
                 ...exportOptions,
+                exportFinancial: true, // Always mandatory
                 establishmentLoginId,
                 establishmentPassword,
                 accountEmail,
@@ -354,8 +355,9 @@ export function EstablishmentDeletionWizard({
                                     <ExportOption
                                         label={t('security.deletion.export.financial')}
                                         description={t('security.deletion.export.financialDesc')}
-                                        checked={exportOptions.exportFinancial}
-                                        onChange={(v) => setExportOptions({ ...exportOptions, exportFinancial: v })}
+                                        checked={true}
+                                        onChange={() => {}}
+                                        disabled={true}
                                         onDownload={() => handleDownloadExport('financial')}
                                         count={stats?.stats.orders || 0}
                                         countLabel={t('dashboard.stats.totalOrders')}
@@ -620,6 +622,7 @@ function ExportOption({
     onDownload,
     count,
     countLabel,
+    disabled = false,
 }: {
     label: string;
     description: string;
@@ -628,15 +631,17 @@ function ExportOption({
     onDownload: () => void;
     count: number;
     countLabel: string;
+    disabled?: boolean;
 }) {
     const { t } = useTranslation();
     return (
-        <div className="bg-gray-100 dark:bg-white/5 rounded-xl p-4 flex items-center gap-4">
+        <div className={`rounded-xl p-4 flex items-center gap-4 ${disabled ? 'bg-gray-50 dark:bg-white/5 opacity-80' : 'bg-gray-100 dark:bg-white/5'}`}>
             <input
                 type="checkbox"
                 checked={checked}
-                onChange={(e) => onChange(e.target.checked)}
-                className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
+                onChange={(e) => !disabled && onChange(e.target.checked)}
+                disabled={disabled}
+                className={`w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
             />
             <FileSpreadsheet size={20} className="text-gray-400" />
             <div className="flex-1">

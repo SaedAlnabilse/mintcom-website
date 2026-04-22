@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { SecurityVerificationModal } from './SecurityVerificationModal';
 
 interface ApiError {
   response?: {
@@ -18,6 +19,7 @@ export function DeletionRestorationBanner() {
   const { account, updateAccount } = useAuth();
   const [isRestoring, setIsRestoring] = useState(false);
   const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
 
   useEffect(() => {
     if (account?.deletionRequestedAt) {
@@ -32,21 +34,13 @@ export function DeletionRestorationBanner() {
 
   if (!account?.deletionRequestedAt) return null;
 
-  const handleRestore = async () => {
-    try {
-      setIsRestoring(true);
-      const response = await api.post('/api/accounts/me/restore');
-      
-      if (response.data.success) {
-        toast.success(t('account.restored'));
-        updateAccount({ deletionRequestedAt: undefined });
-      }
-    } catch (error) {
-      console.error('Failed to restore account:', error);
-      toast.error((error as ApiError).response?.data?.message || t('account.restoreFailed'));
-    } finally {
-      setIsRestoring(false);
-    }
+  const handleRestoreClick = () => {
+    setShowVerifyModal(true);
+  };
+
+  const handleSuccess = () => {
+    updateAccount({ deletionRequestedAt: undefined });
+    toast.success(t('account.restored'));
   };
 
   return (
@@ -58,7 +52,7 @@ export function DeletionRestorationBanner() {
         </p>
       </div>
       <button
-        onClick={handleRestore}
+        onClick={handleRestoreClick}
         disabled={isRestoring}
         className="flex items-center gap-2 px-4 py-1.5 bg-white text-red-600 rounded-lg text-xs font-black tracking-widest hover:bg-gray-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-sm"
       >
@@ -71,6 +65,15 @@ export function DeletionRestorationBanner() {
           t('account.restoreAction')
         )}
       </button>
+
+      <SecurityVerificationModal
+        isOpen={showVerifyModal}
+        onClose={() => setShowVerifyModal(false)}
+        onSuccess={handleSuccess}
+        targetId="me"
+        targetName={account.email || ''}
+        mode="reactivate-account"
+      />
     </div>
   );
 }

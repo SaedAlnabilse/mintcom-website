@@ -7,6 +7,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { EstablishmentDeletionWizard, PendingDeletionBanner } from '../../components/EstablishmentDeletionWizard';
+import { RestoreLocationModal } from '../../components/RestoreLocationModal';
 import { CustomSelect } from '../../components/CustomSelect';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useTranslation } from 'react-i18next';
@@ -556,6 +557,7 @@ export function SettingsPage() {
   const [deletionStatus, setDeletionStatus] = useState<DeletionStatus | null>(null);
   const [establishmentInfo, setEstablishmentInfo] = useState<EstablishmentInfo | null>(null);
   const [isCancellingDeletion, setIsCancellingDeletion] = useState(false);
+  const [showRestoreModal, setShowRestoreModal] = useState(false);
 
   useEffect(() => {
     fetchEstablishmentInfo();
@@ -576,19 +578,30 @@ export function SettingsPage() {
   };
 
   const handleCancelDeletion = async () => {
+    setShowRestoreModal(true);
+  };
+
+  const handleRestore = async (data: any) => {
     if (!establishmentInfo) return;
     try {
       setIsCancellingDeletion(true);
-      await api.post(`/api/establishments/${establishmentInfo.id}/cancel-deletion`);
-      setConfirmConfig({
-        isOpen: true,
-        title: t('settings.confirm.actionCancelledTitle'),
-        message: t('settings.confirm.actionCancelledMessage'),
-        type: 'success',
-        confirmText: t('common.gotIt'),
-        showCancel: false,
-        onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
-      });
+      await api.post(`/api/establishments/${establishmentInfo.id}/cancel-deletion`, data);
+      
+      toast.success(t('security.restore.success'));
+      setShowRestoreModal(false);
+      
+      // Refresh context to update establishment data (new loginId)
+      await refreshEstablishments();
+      
+      // If the current establishment was updated, we might need to update session storage
+      const updatedEstablishments = await refreshEstablishments();
+      if (updatedEstablishments) {
+          const updated = updatedEstablishments.find((e: any) => e.id === establishmentInfo.id);
+          if (updated) {
+              setCurrentEstablishment(updated);
+          }
+      }
+
       fetchEstablishmentInfo();
     } catch (err: any) {
       toast.error(err.response?.data?.message || t('settings.danger.cancelFailed'));
@@ -1251,6 +1264,12 @@ export function SettingsPage() {
       {showDeletionWizard && establishmentInfo && (
         <EstablishmentDeletionWizard establishmentId={establishmentInfo.id} establishmentName={establishmentInfo.name} onClose={() => setShowDeletionWizard(false)} onDeletionRequested={() => { fetchEstablishmentInfo(); setShowDeletionWizard(false); }} />
       )}
+      <RestoreLocationModal
+        isOpen={showRestoreModal}
+        onClose={() => setShowRestoreModal(false)}
+        onRestore={handleRestore}
+        isRestoring={isCancellingDeletion}
+      />
     </div>
   );
 }

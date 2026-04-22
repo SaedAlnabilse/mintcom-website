@@ -169,6 +169,17 @@ export function SecurityVerificationModal({
                     endpoint: `/api/accounts/subscriptions/${targetId}/resume`,
                     method: 'post'
                 };
+            case 'reactivate-account':
+                return {
+                    title: t('security.modes.reactivateAccount.title'),
+                    warning: t('security.modes.reactivateAccount.warning'),
+                    buttonText: t('security.modes.reactivateAccount.button'),
+                    icon: ShieldCheck,
+                    color: 'text-paymint-green',
+                    bg: 'bg-paymint-green/10',
+                    endpoint: `/api/accounts/me/restore`,
+                    method: 'post'
+                };
             default:
                 throw new Error('Invalid mode');
         }

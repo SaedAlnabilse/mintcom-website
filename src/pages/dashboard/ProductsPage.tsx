@@ -76,6 +76,12 @@ export function ProductsPage() {
     const [stockFilter, setStockFilter] = useState<'all' | 'yellow' | 'red' | 'out'>('all');
     const [showCsvImport, setShowCsvImport] = useState(false);
     const ITEMS_PER_PAGE = 10;
+    const topRef = useRef<HTMLDivElement>(null);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
     // Click outside handler for category dropdown
     useEffect(() => {
@@ -607,6 +613,7 @@ export function ProductsPage() {
 
     return (
         <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+            <div ref={topRef} className="scroll-mt-24" />
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
@@ -967,7 +974,7 @@ export function ProductsPage() {
                             <Pagination
                                 currentPage={currentPage}
                                 totalPages={totalPages}
-                                onPageChange={setCurrentPage}
+                                onPageChange={handlePageChange}
                                 totalItems={filteredProducts.length}
                                 itemsPerPage={ITEMS_PER_PAGE}
                                 className="mt-6"
@@ -1071,7 +1078,7 @@ export function ProductsPage() {
                             <Pagination
                                 currentPage={currentPage}
                                 totalPages={totalPages}
-                                onPageChange={setCurrentPage}
+                                onPageChange={handlePageChange}
                                 totalItems={filteredProducts.length}
                                 itemsPerPage={ITEMS_PER_PAGE}
                                 variant="footer"

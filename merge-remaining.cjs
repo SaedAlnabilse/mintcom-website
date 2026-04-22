@@ -319,7 +319,7 @@ const remaining = {
   // -- SETTINGS --
   settings: {
     confirm: {
-      actionCancelledMessage: 'تم إلغاء الحذف!',
+      actionCancelledMessage: 'تم الاحتفاظ بالموقع بنجاح',
       actionCancelledTitle: 'تم الإلغاء',
       changeCurrencyMessage: 'أنت تغير عملة النظام من {{from}} إلى {{to}}.',
       changeCurrencyTitle: 'تغيير عملة النظام',

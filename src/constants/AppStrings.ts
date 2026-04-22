@@ -127,7 +127,7 @@ export const AppStrings = {
       SELECT: "Select...",
       SEARCH: "Type to search...",
       ENTER_NAME: "Enter name",
-      ENTER_EMAIL: "Enter email address",
+      ENTER_EMAIL: "Enter Email Address",
       ENTER_PHONE: "Enter phone number",
     },
     VALIDATION: {
