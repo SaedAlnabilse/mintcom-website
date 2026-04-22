@@ -1,23 +1,13 @@
 import { useState, useEffect } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { SecurityVerificationModal } from './SecurityVerificationModal';
 
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
-}
-
 export function DeletionRestorationBanner() {
   const { t } = useTranslation();
   const { account, updateAccount } = useAuth();
-  const [isRestoring, setIsRestoring] = useState(false);
   const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
 
@@ -53,17 +43,9 @@ export function DeletionRestorationBanner() {
       </div>
       <button
         onClick={handleRestoreClick}
-        disabled={isRestoring}
-        className="flex items-center gap-2 px-4 py-1.5 bg-white text-red-600 rounded-lg text-xs font-black tracking-widest hover:bg-gray-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-sm"
+        className="flex items-center gap-2 px-4 py-1.5 bg-white text-red-600 rounded-lg text-xs font-black tracking-widest hover:bg-gray-100 transition-all shadow-sm"
       >
-        {isRestoring ? (
-          <>
-            <div className="w-3.5 h-3.5 border-2 border-red-600/20 border-t-red-600 rounded-full animate-spin" />
-            {t('account.restoring')}
-          </>
-        ) : (
-          t('account.restoreAction')
-        )}
+        {t('account.restoreAction')}
       </button>
 
       <SecurityVerificationModal

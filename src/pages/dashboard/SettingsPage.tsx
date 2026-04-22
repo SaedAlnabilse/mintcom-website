@@ -591,11 +591,10 @@ export function SettingsPage() {
       setShowRestoreModal(false);
       
       // Refresh context to update establishment data (new loginId)
-      await refreshEstablishments();
+      const updatedEstablishments = await refreshEstablishments();
       
       // If the current establishment was updated, we might need to update session storage
-      const updatedEstablishments = await refreshEstablishments();
-      if (updatedEstablishments) {
+      if (updatedEstablishments && updatedEstablishments.length > 0) {
           const updated = updatedEstablishments.find((e: any) => e.id === establishmentInfo.id);
           if (updated) {
               setCurrentEstablishment(updated);

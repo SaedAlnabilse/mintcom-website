@@ -37,7 +37,7 @@ interface SecurityVerificationModalProps {
     onSuccess: () => void;
     targetId: string;
     targetName: string;
-    mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'delete-employee' | 'dissolve-establishment' | 'reactivate' | 'delete-customer';
+    mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'delete-employee' | 'dissolve-establishment' | 'reactivate' | 'delete-customer' | 'reactivate-account';
     price?: number;
     isResuming?: boolean;
 }

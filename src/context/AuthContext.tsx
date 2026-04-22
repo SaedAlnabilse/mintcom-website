@@ -31,7 +31,7 @@ interface AuthContextType {
 
   // Establishment methods
   setCurrentEstablishment: (establishment: Establishment) => void;
-  refreshEstablishments: () => Promise<void>;
+  refreshEstablishments: () => Promise<Establishment[]>;
   refreshProfile: () => Promise<void>;
 
   // Account update
@@ -89,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Fetch fresh data - this will validate the HttpOnly cookie
         try {
-          const refreshTasks: Promise<void>[] = [refreshEstablishments()];
+          const refreshTasks: Promise<any>[] = [refreshEstablishments()];
 
           // Secondary admins/employees log in through /api/accounts/login but
           // /api/accounts/profile returns the owner profile and can overwrite session identity.
@@ -384,7 +384,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     sessionStorage.setItem('currentEstablishment', JSON.stringify(establishment));
   };
 
-  const refreshEstablishments = async () => {
+  const refreshEstablishments = async (): Promise<Establishment[]> => {
     try {
       console.log('[Auth] Fetching establishments...');
       // The HttpOnly cookie will be sent automatically with the request
@@ -403,7 +403,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const updated = finalEstablishments.find((e: Establishment) => e.id === parsed.id);
         if (updated) {
           setCurrentEstablishment(updated);
-          return;
+          return finalEstablishments;
         }
       }
 
@@ -411,13 +411,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const updated = finalEstablishments.find((e: Establishment) => e.id === localEstId);
         if (updated) {
           setCurrentEstablishment(updated);
-          return;
+          return finalEstablishments;
         }
       }
 
       if (finalEstablishments.length > 0) {
         setCurrentEstablishment(finalEstablishments[0]);
       }
+
+      return finalEstablishments;
     } catch (error: any) {
       console.error('[Auth] Failed to refresh establishments:', error.response?.status, error.message);
       // Don't clear auth state here - let the API interceptor handle 401s
