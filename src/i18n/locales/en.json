@@ -500,7 +500,7 @@
     "description": "The ultimate 360° point-of-sale solution designed for modern growing businesses.",
     "menu": {
       "activeBrand": "Active Brand",
-      "backToBrands": "Back To Brands",
+      "backToBrands": "Back to Brands",
       "brandAdmin": "Brand Administrator",
       "locations": "Locations",
       "locationsDesc": "Manage Locations",
@@ -649,7 +649,7 @@
       "goLive": {
         "action": "Open Launch Guide",
         "description": "Open the launch guide, sign in on POS, and complete one test order to verify your full setup.",
-        "title": "Install POS App And Run Test Sale"
+        "title": "Install POS App and Run Test Sale"
       },
       "markAsCompleted": "Mark as completed",
       "payments": {
@@ -1216,7 +1216,7 @@
       "deleteFailed": "Failed To Delete Reward",
       "failedToLoad": "Failed To Load Loyalty Configuration",
       "saveFailed": "Failed To Save Configuration",
-      "validValues": "Please Enter Valid Values For Points And Currency"
+      "validValues": "Please enter valid values for points and currency"
     },
     "greetings": {
       "afternoon": "Good Afternoon",
@@ -1235,11 +1235,11 @@
       "dashboard": "Dashboard",
       "discountReports": "Discount Reports",
       "discounts": "Discounts",
-      "discountsAndLoyalty": "Discounts And Loyalty",
+      "discountsAndLoyalty": "Discounts and Loyalty",
       "getMobileApp": "Get Mobile App",
       "ingredients": "Ingredients",
       "inventory": "Recipe Operations",
-      "inventoryDesc": "View and Update Recipes and Ingredients",
+      "inventoryDesc": "View and update recipes and ingredients",
       "itemsMenu": "Item's Menu (Inventory)",
       "logout": "Log Out",
       "loyalty": "Loyalty",
@@ -1252,7 +1252,7 @@
       "products": "Products",
       "recipes": "Recipes",
       "roles": "Roles",
-      "salesAndReporting": "Sales And Reporting",
+      "salesAndReporting": "Sales and Reporting",
       "salesByAddons": "Sales by Add-ons",
       "salesByItems": "Sales by Items",
       "salesByStaff": "Sales by Staff",
@@ -1592,7 +1592,7 @@
     "quantity": "Quantity",
     "search": "Search items...",
     "stock": "Stock",
-    "subtitle": "View and Update Recipes and Ingredients",
+    "subtitle": "View and update recipes and ingredients",
     "title": "Recipe Operations",
     "unitCost": "Unit Cost",
     "units": {
@@ -2306,7 +2306,7 @@
     "products": "Products",
     "runBatch": "Run Batch",
     "search": "Search recipes...",
-    "subtitle": "View and Update Recipes and Ingredients",
+    "subtitle": "View and update recipes and ingredients",
     "title": "Recipe Operations",
     "totalOutput": "Total Output"
   },
@@ -4116,7 +4116,7 @@
         "manage_loyalty_program": "Configure Loyalty Rewards",
         "manage_open_tickets": "",
         "manage_payment_methods": "",
-        "manage_pos_devices": "Manage POS Registers And Devices",
+        "manage_pos_devices": "Manage POS Registers and Devices",
         "manage_settings": "",
         "manage_taxes_backoffice": "Manage Tax Configurations",
         "open_cash_drawer": "",
@@ -4126,7 +4126,7 @@
         "reprint_receipts": "",
         "restock_items": "Quick access to restock products without accessing Backoffice",
         "view_activity_logs": "View System Audit Logs",
-        "view_cost": "See Item Costs And Margins",
+        "view_cost": "See Item Costs and Margins",
         "view_orders": "View Complete Order History",
         "view_reports": "Access detailed sales analytics, peak hours, and financial summaries",
         "view_shift_reports": "",
@@ -4195,7 +4195,7 @@
       "unknown": "Unknown"
     },
     "articles": {
-      "allSubtitle": "Browse All Help Articles And Guides",
+      "allSubtitle": "Browse All Help Articles and Guides",
       "allTitle": "All Articles",
       "backTo": "Back to",
       "backToHelp": "Back to Help Center",

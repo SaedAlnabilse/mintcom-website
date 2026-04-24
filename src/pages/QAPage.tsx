@@ -19,9 +19,9 @@ export const QAPage = () => {
         { id: 'All', label: t('support.qa.categories.all', 'All Questions'), icon: HelpCircle },
         { id: 'general', label: t('support.qa.categories.general', 'General Support'), icon: MessageCircle },
         { id: 'products', label: t('support.qa.categories.products', 'Product Management'), icon: Package },
-        { id: 'orders', label: t('support.qa.categories.orders', 'Sales And Orders'), icon: ClipboardList },
-        { id: 'staff', label: t('support.qa.categories.staff', 'Team And Staff'), icon: Users },
-        { id: 'billing', label: t('support.qa.categories.payments', 'Billing And Plans'), icon: CreditCard },
+        { id: 'orders', label: t('support.qa.categories.orders', 'Sales and Orders'), icon: ClipboardList },
+        { id: 'staff', label: t('support.qa.categories.staff', 'Team and Staff'), icon: Users },
+        { id: 'billing', label: t('support.qa.categories.payments', 'Billing and Plans'), icon: CreditCard },
         { id: 'technical', label: t('support.qa.categories.technical', 'Technical Support'), icon: Wrench },
         { id: 'account', label: t('support.qa.categories.account', 'Account Settings'), icon: Settings },
     ];

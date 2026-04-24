@@ -135,7 +135,7 @@ export function DualLauncher({
             {isDashboardRoute && (
               <button
                 onClick={() => {
-                  onOpenTasks && onOpenTasks();
+                  if (onOpenTasks) onOpenTasks();
                   dismissTooltip();
                 }}
                 aria-pressed={isTasksOpen}
@@ -300,7 +300,7 @@ export function DualLauncher({
                   <button
                     onClick={() => {
                       setIsExpanded(false);
-                      onOpenTasks && onOpenTasks();
+                      if (onOpenTasks) onOpenTasks();
                     }}
                     className={`h-10 px-4 flex items-center gap-2 rounded-lg font-bold text-xs transition-all ${tasksCount > 0 
                       ? 'bg-[#6FAE4A]/10 text-[#6FAE4A]' 

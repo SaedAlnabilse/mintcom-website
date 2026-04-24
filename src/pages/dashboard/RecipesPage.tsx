@@ -939,9 +939,9 @@ export function RecipesPage() {
                                 }}
                                 options={validMaterialOptions}
                                 placeholder={t('manufacturing.formula.addMaterial')}
-                                className="flex-[2] text-sm"
+                                className="w-[240px] text-sm shrink-0"
                               />
-                            ) : (
+                              ) : (
                               <CustomSelect
                                 value={ing.subRecipeId || ''}
                                 onChange={(val) => {
@@ -955,12 +955,12 @@ export function RecipesPage() {
                                 }}
                                 options={validSubRecipeOptions}
                                 placeholder={t('manufacturing.prep')}
-                                className="flex-[2] text-sm"
+                                className="w-[240px] text-sm shrink-0"
                               />
-                            )}
+                              )}
 
-                            {(ing.rawMaterialId || ing.subRecipeId) && (
-                              <div className="flex bg-white dark:bg-[#1a1a1a] rounded-2xl border border-gray-300 dark:border-white/10 w-48 transition-all hover:border-gray-400 dark:hover:border-white/20 focus-within:border-paymint-green/50 focus-within:ring-2 focus-within:ring-paymint-green/20 relative group/input">
+                              {(ing.rawMaterialId || ing.subRecipeId) && (
+                              <div className="flex flex-1 bg-white dark:bg-[#1a1a1a] rounded-2xl border border-gray-300 dark:border-white/10 transition-all hover:border-gray-400 dark:hover:border-white/20 focus-within:border-paymint-green/50 focus-within:ring-2 focus-within:ring-paymint-green/20 relative group/input">
                                 <input
                                   type="number"
                                   min="0"
@@ -984,21 +984,20 @@ export function RecipesPage() {
                                       setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                                     }
                                   }}
-                                  className="flex-1 w-full pl-5 pr-3 py-4 bg-transparent text-right font-black text-gray-900 dark:text-white focus:outline-none placeholder-gray-500/30 touch-manipulation settings-no-spin rounded-l-2xl"
+                                  className="flex-1 w-full pl-5 pr-3 py-4 bg-transparent text-right font-bold text-gray-900 dark:text-white focus:outline-none placeholder-gray-500/30 touch-manipulation settings-no-spin rounded-l-2xl"
                                   placeholder="0"
                                 />
-                                <div className="relative border-l border-gray-300 dark:border-white/10 rounded-r-2xl">
+                                <div className="relative border-l border-gray-300 dark:border-white/10 rounded-r-2xl w-[80px] shrink-0">
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       setActiveDropdown(activeDropdown?.index === index && activeDropdown?.type === 'final' ? null : { index, type: 'final' });
                                     }}
-                                    className="h-full px-4 flex items-center gap-2 bg-gray-100/50 dark:bg-white/5 hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors rounded-r-2xl"
+                                    className="h-full w-full px-4 flex items-center justify-between gap-2 bg-gray-100/50 dark:bg-white/5 hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors rounded-r-2xl"
                                   >
-                                    <span className="text-xs font-black text-gray-600 dark:text-gray-400 group-hover/input:text-gray-900 dark:group-hover/input:text-white transition-colors">{t(`inventory.units.${currentUnit.toLowerCase()}`, { defaultValue: currentUnit })}</span>
-                                    <ChevronDown size={12} className="text-gray-400" />
+                                    <span className="text-xs font-black text-gray-600 dark:text-gray-400 group-hover/input:text-gray-900 dark:group-hover/input:text-white transition-colors truncate">{t(`inventory.units.${currentUnit.toLowerCase()}`, { defaultValue: currentUnit })}</span>
+                                    <ChevronDown size={12} className="text-gray-400 shrink-0" />
                                   </button>
-
                                   <AnimatePresence>
                                     {activeDropdown?.index === index && activeDropdown?.type === 'final' && (
                                       <>

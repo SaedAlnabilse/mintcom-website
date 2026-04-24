@@ -248,7 +248,7 @@ export function OwnerBillingPage() {
                         {t('common.active')}
                     </span>
                 );
-            case 'CANCELED':
+            case 'CANCELED': {
                 const daysLeft = getDaysLeft(est.canceledAt);
                 return (
                     <div className="flex flex-col items-center gap-1">
@@ -262,6 +262,7 @@ export function OwnerBillingPage() {
                         </span>
                     </div>
                 );
+            }
             default:
                 return (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg text-xs font-bold tracking-widest text-gray-500">
