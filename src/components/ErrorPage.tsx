@@ -78,7 +78,7 @@ export function ErrorPage() {
                 <div className="flex flex-col space-y-3">
                     <button
                         onClick={() => window.location.reload()}
-                        className="w-full flex items-center justify-center space-x-2 bg-paymint-green hover:bg-paymint-green/90 text-black text-xs font-black tracking-widest py-3 px-4 rounded-xl transition-all shadow-sm active:scale-[0.98]"
+                        className="w-full flex items-center justify-center space-x-2 bg-paymint-green hover:bg-paymint-green/90 text-black label-strong font-outfit py-3 px-4 rounded-xl transition-all shadow-sm active:scale-[0.98]"
                     >
                         <span>{t('common.reloadPage')}</span>
                     </button>
@@ -86,7 +86,7 @@ export function ErrorPage() {
                     <div className="grid grid-cols-2 gap-3">
                         <button
                             onClick={() => navigate(-1)}
-                            className="flex items-center justify-center space-x-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest py-3 px-4 rounded-xl transition-colors"
+                            className="flex items-center justify-center space-x-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 label-strong font-outfit py-3 px-4 rounded-xl transition-colors"
                         >
                             <ArrowLeft className="w-4 h-4" />
                             <span>{t('common.goBack')}</span>
@@ -94,7 +94,7 @@ export function ErrorPage() {
 
                         <Link
                             to="/"
-                            className="flex items-center justify-center space-x-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest py-3 px-4 rounded-xl transition-colors"
+                            className="flex items-center justify-center space-x-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 label-strong font-outfit py-3 px-4 rounded-xl transition-colors"
                         >
                             <Home className="w-4 h-4" />
                             <span>{t('common.home')}</span>

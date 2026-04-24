@@ -971,7 +971,7 @@ export function OrdersPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('orders.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -1486,7 +1486,7 @@ export function OrdersPage() {
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
                   <th
-                    className={`px-6 py-4 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'date' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-left label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'date' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                     onClick={() => requestSort('date')}
                   >
                     <div className="flex items-center gap-2">
@@ -1495,7 +1495,7 @@ export function OrdersPage() {
                     </div>
                   </th>
                   <th
-                    className={`px-6 py-4 text-center text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'customer' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-center label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'customer' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                     onClick={() => requestSort('customer')}
                   >
                     <div className="flex items-center justify-center gap-2">
@@ -1504,7 +1504,7 @@ export function OrdersPage() {
                     </div>
                   </th>
                   <th
-                    className={`px-6 py-4 text-center text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'total' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-center label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'total' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                     onClick={() => requestSort('total')}
                   >
                     <div className="flex items-center justify-center gap-2">
@@ -1513,7 +1513,7 @@ export function OrdersPage() {
                     </div>
                   </th>
                   <th
-                    className={`px-6 py-4 text-center text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'status' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-center label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'status' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                     onClick={() => requestSort('status')}
                   >
                     <div className="flex items-center justify-center gap-2">

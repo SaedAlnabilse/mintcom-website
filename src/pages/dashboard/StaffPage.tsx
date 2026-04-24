@@ -347,7 +347,7 @@ export function StaffPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('staff.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -434,7 +434,7 @@ export function StaffPage() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black tracking-widest text-gray-400">{t('staff.messages.loading')}</p>
+            <p className="label-strong font-outfit">{t('staff.messages.loading')}</p>
           </div>
         ) : filteredStaff.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32 text-center bg-gray-50/30 dark:bg-black/10">
@@ -668,14 +668,14 @@ export function StaffPage() {
                             >
                               <button
                                 onClick={() => { setActiveDropdown(null); toast.success(t('staff.messages.resetSuccess')); }}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+                                className="w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
                               >
                                 <Key size={14} className="text-paymint-green" />
                                 <span>{t('staff.actions.resetPassword')}</span>
                               </button>
                               <button
                                 onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+                                className="w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
                               >
                                 <Trash2 size={14} />
                                 <span>{t('common.delete')}</span>

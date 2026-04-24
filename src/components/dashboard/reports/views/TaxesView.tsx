@@ -74,11 +74,11 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr>
-                  <th className="px-6 py-4 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.type')}</th>
-                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.rate')}</th>
-                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.taxable')}</th>
-                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.tax')}</th>
-                  <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.share')}</th>
+                  <th className="px-6 py-4 text-start label-strong font-outfit">{t('orders.reports.taxes.type')}</th>
+                  <th className="px-6 py-4 text-end label-strong font-outfit">{t('orders.reports.taxes.rate')}</th>
+                  <th className="px-6 py-4 text-end label-strong font-outfit">{t('orders.reports.taxes.taxable')}</th>
+                  <th className="px-6 py-4 text-end label-strong font-outfit">{t('orders.reports.taxes.tax')}</th>
+                  <th className="px-6 py-4 text-center label-strong font-outfit">{t('orders.reports.taxes.share')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">

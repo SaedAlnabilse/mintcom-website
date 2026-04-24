@@ -636,7 +636,7 @@ export function ProductFormModal({
                     type="button"
                     onClick={handleGenerateImage}
                     disabled={isGeneratingImage || !name.trim()}
-                    className="mt-4 w-32 flex items-center justify-center gap-2 text-xs font-black tracking-widest text-paymint-green bg-paymint-green/10 py-2 rounded-[12px] hover:bg-paymint-green/20 transition-all border border-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
+                    className="mt-4 w-32 flex items-center justify-center gap-2 label-strong font-outfit text-paymint-green bg-paymint-green/10 py-2 rounded-[12px] hover:bg-paymint-green/20 transition-all border border-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
                   >
                     {isGeneratingImage ? (
                       <div className="w-3.5 h-3.5 border-2 border-paymint-green/20 border-t-paymint-green rounded-full animate-spin" />
@@ -754,14 +754,14 @@ export function ProductFormModal({
                         return (
                           <>
                             <div className={`${bgClass} rounded-2xl p-4 border shadow-sm transition-colors`}>
-                              <p className={`text-xs font-black tracking-widest mb-1.5 leading-tight ${colorClass}`}>{t('products.stats.profit')}</p>
+                              <p className={`label-strong font-outfit mb-1.5 leading-tight ${colorClass}`}>{t('products.stats.profit')}</p>
                               <div className="flex items-baseline gap-1">
                                 <p className={`${colorClass} font-bold text-lg`}>{profit.toLocaleString(t('common.locale'), { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
                                 <p className={`text-[8px] font-black ${colorClass} opacity-60`}>{currencySymbol}</p>
                               </div>
                             </div>
                             <div className={`${bgClass} rounded-2xl p-4 border shadow-sm transition-colors`}>
-                              <p className={`text-xs font-black tracking-widest mb-1.5 leading-tight ${colorClass}`}>{t('products.stats.margin')}</p>
+                              <p className={`label-strong font-outfit mb-1.5 leading-tight ${colorClass}`}>{t('products.stats.margin')}</p>
                               <div className="flex items-baseline gap-1">
                                 <p className={`${colorClass} font-bold text-lg`}>{margin.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
                               </div>
@@ -780,7 +780,7 @@ export function ProductFormModal({
                       {t('products.form.descriptionLabel')}
                       <QuickInfo text="Describe your product for customers and employees." />
                     </label>
-                    <span className={`text-xs font-black tracking-widest ${description.length >= 30 ? 'text-paymint-red' : 'text-gray-400'}`}>
+                    <span className={`label-strong font-outfit ${description.length >= 30 ? 'text-paymint-red' : 'text-gray-400'}`}>
                       {description.length.toLocaleString(t('common.locale'))} / {(30).toLocaleString(t('common.locale'))}
                     </span>
                   </div>
@@ -927,7 +927,7 @@ export function ProductFormModal({
                           <AlertCircle size={16} className="text-red-600 dark:text-red-500" strokeWidth={2.5} />
                         </div>
                         <div>
-                          <p className="text-xs font-black tracking-widest text-red-600 dark:text-red-500">{t('common.notice')}</p>
+                          <p className="label-strong font-outfit text-red-600 dark:text-red-500">{t('common.notice')}</p>
                           <p className="text-[11px] font-bold text-red-500/90 dark:text-red-400/70 leading-snug">{t('products.messages.noAddons')} <span className="underline cursor-pointer hover:text-red-600" onClick={() => setShowAddonsWarning(true)}>{t('products.messages.createHere')}</span>.</p>
                         </div>
                       </div>

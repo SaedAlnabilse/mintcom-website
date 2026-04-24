@@ -281,7 +281,7 @@ export function BrandLayout() {
                                         <Building2 size={18} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-xs font-black text-paymint-green tracking-widest mb-0.5">
+                                        <p className="label-strong font-outfit text-paymint-green mb-0.5">
                                             {brand?.id === 'cmkek5eme0001vjjqvfm3wjwa' ? t('brand.dashboard.liveData') : t('brand.menu.activeBrand')}
                                         </p>
                                         <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
@@ -395,7 +395,7 @@ export function BrandLayout() {
                                 <p className="text-xs font-black text-gray-900 dark:text-white tracking-widest truncate">
                                     {account?.firstName} {account?.lastName}
                                 </p>
-                                <p className="text-xs font-black text-gray-400 tracking-widest truncate">{t('brand.menu.brandAdmin')}</p>
+                                <p className="label-strong font-outfit truncate">{t('brand.menu.brandAdmin')}</p>
                             </div>
 
                             <div className="flex items-center gap-1">

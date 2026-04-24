@@ -251,7 +251,7 @@ export function ActivityLogsPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('activity.subtitle')}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
                                 {currentEstablishment.name}
                             </span>
                         )}
@@ -373,7 +373,7 @@ export function ActivityLogsPage() {
               <div className="py-32 text-center">
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin" />
-                  <p className="text-xs font-black text-gray-400 tracking-widest">{t('activity.loading')}</p>
+                  <p className="label-strong font-outfit">{t('activity.loading')}</p>
                 </div>
               </div>
             ) : logs.length === 0 ? (
@@ -451,11 +451,11 @@ export function ActivityLogsPage() {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
-                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('activity.time')}</th>
-                <th className="px-8 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('activity.user')}</th>
-                <th className="px-8 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('activity.action')}</th>
-                <th className="px-8 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('activity.details')}</th>
-                <th className="px-8 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('activity.data')}</th>
+                <th className="px-8 py-4 text-left label-strong font-outfit">{t('activity.time')}</th>
+                <th className="px-8 py-4 text-center label-strong font-outfit">{t('activity.user')}</th>
+                <th className="px-8 py-4 text-center label-strong font-outfit">{t('activity.action')}</th>
+                <th className="px-8 py-4 text-center label-strong font-outfit">{t('activity.details')}</th>
+                <th className="px-8 py-4 text-center label-strong font-outfit">{t('activity.data')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -464,7 +464,7 @@ export function ActivityLogsPage() {
                     <td colSpan={5} className="py-32 text-center">
                       <div className="flex flex-col items-center gap-4">
                         <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin" />
-                        <p className="text-xs font-black text-gray-400 tracking-widest">{t('activity.loading')}</p>
+                        <p className="label-strong font-outfit">{t('activity.loading')}</p>
                       </div>
                     </td>
                   </tr>
@@ -520,7 +520,7 @@ export function ActivityLogsPage() {
                         </div>
                       </td>
                       <td className="px-8 py-4 text-center">
-                        <span className={`inline-flex px-2 py-0.5 rounded-lg text-xs font-black tracking-widest border ${getActionColor(log.action)}`}>
+                        <span className={`inline-flex px-2 py-0.5 rounded-lg label-strong font-outfit border ${getActionColor(log.action)}`}>
                           {(translation => translation.includes('activity.actions.') ? log.action : translation)(t(`activity.actions.${getActionKey(log.action)}`))}
                         </span>
                       </td>
@@ -573,7 +573,7 @@ export function ActivityLogsPage() {
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('activity.logDetails')}</h2>
-                    <p className="text-xs font-black text-paymint-green tracking-widest">{selectedLog.action ? ((translation => translation.includes('activity.actions.') ? selectedLog.action : translation)(t(`activity.actions.${getActionKey(selectedLog.action)}`))) : ''}</p>
+                    <p className="label-strong font-outfit text-paymint-green">{selectedLog.action ? ((translation => translation.includes('activity.actions.') ? selectedLog.action : translation)(t(`activity.actions.${getActionKey(selectedLog.action)}`))) : ''}</p>
                   </div>
                 </div>
                 <button onClick={() => setSelectedLog(null)} className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-black dark:hover:text-white transition-colors">
@@ -584,17 +584,17 @@ export function ActivityLogsPage() {
               <div className="p-8 overflow-y-auto custom-scrollbar space-y-8">
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('activity.time')}</p>
+                    <p className="label-strong font-outfit mb-2">{t('activity.time')}</p>
                     <p className="font-bold text-gray-900 dark:text-white">{formatDate(selectedLog.timestamp)}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('activity.user')}</p>
+                    <p className="label-strong font-outfit mb-2">{t('activity.user')}</p>
                     <p className="font-bold text-gray-900 dark:text-white">{getActorName(selectedLog)}</p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-xs font-black text-gray-400 tracking-widest mb-3">{t('activity.data')}</p>
+                  <p className="label-strong font-outfit mb-3">{t('activity.data')}</p>
                   <pre className="bg-gray-50 dark:bg-black/40 p-6 rounded-[1.5rem] overflow-x-auto text-xs text-gray-700 dark:text-paymint-green font-mono leading-relaxed border border-gray-200 dark:border-white/5">
                     {JSON.stringify(selectedLog.metadata, null, 2)}
                   </pre>

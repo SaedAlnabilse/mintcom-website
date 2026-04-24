@@ -1,38 +1,4 @@
 {
-  "metadata": {
-    "home": {
-      "title": "PayMint | All-in-One Cloud POS & Business Management",
-      "description": "Simplify your business with PayMint. Fast sales, real-time inventory, and powerful analytics on any device. Start your 14-day free trial today."
-    },
-    "about": {
-      "title": "About Us | PayMint",
-      "description": "Learn about PayMint's mission to empower business owners with modern, secure, and scalable POS solutions."
-    },
-    "qa": {
-      "title": "Questions & Answers | PayMint Support",
-      "description": "Find answers to frequently asked questions about PayMint POS, pricing, and features."
-    },
-    "login": {
-      "title": "Login | PayMint Dashboard",
-      "description": "Access your PayMint business dashboard to manage sales, inventory, and staff."
-    },
-    "signup": {
-      "title": "Sign Up | Start Your Free Trial With PayMint",
-      "description": "Join thousands of businesses using PayMint. Create your account and start your 14-day free trial."
-    },
-    "privacy": {
-      "title": "Privacy Policy | PayMint",
-      "description": "Read our privacy policy to understand how we protect your data and maintain your privacy."
-    },
-    "terms": {
-      "title": "Terms Of Service | PayMint",
-      "description": "Review our terms of service for using the PayMint platform and services."
-    },
-    "cookiePolicy": {
-      "title": "Cookie Policy | PayMint",
-      "description": "Learn about how we use cookies to improve your experience on our website."
-    }
-  },
   "about": {
     "intro": {
       "p1": "PayMint LLC is a technology solutions company specializing in Point of Sale (POS) systems and digital business management platforms. Our products are designed to simplify daily operations—from fast, reliable sales processing on digital devices to automated management tools that give businesses full operational visibility.",
@@ -463,6 +429,10 @@
       "dissolveLocation": "Dissolve location from brand",
       "failedToLoad": "Failed to load dashboard data",
       "goTo": "Go to {{name}}",
+      "links": {
+        "manageStaff": "Manage staff",
+        "viewAllLocations": "View all locations"
+      },
       "liveData": "Live Data",
       "loading": "Loading dashboard...",
       "localRevenue": "Local",
@@ -491,11 +461,7 @@
       "updatedNow": "Updated just now",
       "viewAll": "View All",
       "viewAllLocations": "View All Locations",
-      "viewDashboard": "View Dashboard",
-      "links": {
-        "viewAllLocations": "View all locations",
-        "manageStaff": "Manage staff"
-      }
+      "viewDashboard": "View Dashboard"
     },
     "description": "The ultimate 360° point-of-sale solution designed for modern growing businesses.",
     "menu": {
@@ -954,7 +920,7 @@
         "title": "How We Reduced Checkout Time By 40%"
       },
       "featured_3": {
-        "title": "Integrating PayMint With Our Inventory System"
+        "title": "Integrating PayMint With Our Recipe operations system"
       },
       "item_1": {
         "excerpt": "I recently expanded to 3 locations and looking for tips on how to manage inventory and staff across all of them efficiently...",
@@ -966,7 +932,7 @@
       },
       "item_3": {
         "excerpt": "Has anyone successfully integrated PayMint with a third-party inventory management system? Looking for recommendations...",
-        "title": "Integrating PayMint With Our Inventory System"
+        "title": "Integrating PayMint With Our Recipe operations system"
       },
       "item_4": {
         "excerpt": "I want to add our logo and customize the footer of our receipts. Is this possible with the current version?",
@@ -1236,6 +1202,7 @@
       "discountReports": "Discount Reports",
       "discounts": "Discounts",
       "discountsAndLoyalty": "Discounts and Loyalty",
+      "establishmentSettings": "Establishment Settings",
       "getMobileApp": "Get Mobile App",
       "ingredients": "Ingredients",
       "inventory": "Recipe Operations",
@@ -1259,7 +1226,6 @@
       "salesSummary": "Sales Summary",
       "scanToDownload": "Scan To Download",
       "settings": "Settings",
-      "establishmentSettings": "Establishment Settings",
       "shiftsReports": "Shifts Reports",
       "switchLocation": "Switch Location",
       "system": "System",
@@ -1863,7 +1829,15 @@
     },
     "pricing": {
       "additionalDiscount": "Additional locations receive a <1>DISCOUNT</1> for ",
+      "additionalFeatures": {
+        "centralized": "Centralized management from a single dashboard",
+        "combinedReports": "Combined or filtered reports by branch",
+        "fullAccess": "Same full access level as your primary site",
+        "separate": "Separate staff and inventory for each branch"
+      },
       "additionalLocations": "Additional Locations",
+      "additionalLocationsDesc": "Each additional location after your first",
+      "addLocation": "Add Location",
       "billedAnnually": "Billed annually.",
       "features": {
         "adminApp": "Access to the Admin Mobile App",
@@ -1882,12 +1856,15 @@
       "getStarted": "Get Started",
       "includedDesc": "All features included in a single plan.",
       "includedTitle": "Everything You Need",
+      "insteadOf": "instead of",
       "monthly": "MONTHLY",
       "monthlyPlan": "Monthly Plan",
+      "multiBranch": "Multi-Branch",
       "noCommitment": "No commitment.",
       "perMonth": "/MONTH",
       "perYear": "/YEAR",
       "planDescription": "",
+      "planDetails": "Plan Details",
       "plans": {
         "enterprise": {
           "description": "Tailored solutions for large-scale operations.",
@@ -1932,6 +1909,8 @@
       "startFreeTrial": "Start Free Trial",
       "subtitle": "Your \"aha\" moment is just minutes away.",
       "title": "Get Started",
+      "viewDetails": "View Details",
+      "whatsIncluded": "What's included in the plan",
       "yearly": "YEARLY",
       "yearlyPlan": "Yearly Plan"
     },
@@ -2310,6 +2289,40 @@
     "title": "Recipe Operations",
     "totalOutput": "Total Output"
   },
+  "metadata": {
+    "about": {
+      "description": "Learn about PayMint's mission to empower business owners with modern, secure, and scalable POS solutions.",
+      "title": "About Us | PayMint"
+    },
+    "cookiePolicy": {
+      "description": "Learn about how we use cookies to improve your experience on our website.",
+      "title": "Cookie Policy | PayMint"
+    },
+    "home": {
+      "description": "Simplify your business with PayMint. Fast sales, real-time inventory, and powerful analytics on any device. Start your 14-day free trial today.",
+      "title": "PayMint | All-in-One Cloud POS & Business Management"
+    },
+    "login": {
+      "description": "Access your PayMint business dashboard to manage sales, inventory, and staff.",
+      "title": "Login | PayMint Dashboard"
+    },
+    "privacy": {
+      "description": "Read our privacy policy to understand how we protect your data and maintain your privacy.",
+      "title": "Privacy Policy | PayMint"
+    },
+    "qa": {
+      "description": "Find answers to frequently asked questions about PayMint POS, pricing, and features.",
+      "title": "Questions & Answers | PayMint Support"
+    },
+    "signup": {
+      "description": "Join thousands of businesses using PayMint. Create your account and start your 14-day free trial.",
+      "title": "Sign Up | Start Your Free Trial With PayMint"
+    },
+    "terms": {
+      "description": "Review our terms of service for using the PayMint platform and services.",
+      "title": "Terms Of Service | PayMint"
+    }
+  },
   "nav": {
     "community": "Community",
     "createAccount": "Create Account",
@@ -2409,13 +2422,13 @@
       "expiry": "Expiry",
       "freeDays": "7 DAYS FREE",
       "monthly": "Monthly",
-      "yearly": "Yearly",
       "priceMonth": "$20/MONTH",
       "startTrialButton": "Start Free Trial",
       "totalDue": "Total Due Today",
       "trialDesc": "You won't be charged today. Cancel anytime before your trial ends.",
       "trialTitle": "Start Free Trial",
-      "useSaved": "Use Saved Card"
+      "useSaved": "Use Saved Card",
+      "yearly": "Yearly"
     },
     "step3": {
       "errors": {
@@ -3708,6 +3721,7 @@
       "includedByDefault": "Included by Default",
       "roleNameLabel": "Role Name",
       "roleNamePlaceholder": "E.g. Shift Manager",
+      "roleSetupHelp": "Use the Role Name to identify this position and the Role Template to quickly pre-set common permissions. You can adjust all permissions individually after selecting a template.",
       "selectedCount": "{{count}} selected"
     },
     "newRole": "New Role",
@@ -3753,18 +3767,6 @@
     }
   },
   "security": {
-    "restore": {
-      "title": "Restore Location",
-      "step": "Step {{current}} of {{total}}",
-      "step1Desc": "Please provide your owner account credentials to verify your identity.",
-      "step2Desc": "Set a new Login ID and password for this location to restore it.",
-      "ownerEmail": "Owner Email",
-      "ownerPassword": "Owner Password",
-      "newLoginId": "New Location Login ID",
-      "newPassword": "New Location Password",
-      "confirm": "Restore Location",
-      "success": "Location has been restored successfully"
-    },
     "deletion": {
       "banner": {
         "cancel": "Cancel deletion",
@@ -3879,6 +3881,18 @@
       }
     },
     "passwordLabel": "Master Access Key (password)",
+    "restore": {
+      "confirm": "Restore Location",
+      "newLoginId": "New Location Login ID",
+      "newPassword": "New Location Password",
+      "ownerEmail": "Owner Email",
+      "ownerPassword": "Owner Password",
+      "step": "Step {{current}} of {{total}}",
+      "step1Desc": "Please provide your owner account credentials to verify your identity.",
+      "step2Desc": "Set a new Login ID and password for this location to restore it.",
+      "success": "Location has been restored successfully",
+      "title": "Restore Location"
+    },
     "verificationFailed": "Verification failed",
     "verifying": "Verifying..."
   },

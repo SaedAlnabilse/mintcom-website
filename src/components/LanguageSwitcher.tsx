@@ -98,7 +98,7 @@ export const LanguageSwitcher = ({
               <button
                 key={lang.code}
                 onClick={() => changeLanguage(lang.code)}
-                className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all ${
+                className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl label-strong font-outfit transition-all ${
                   normalizedLanguage === lang.code
                     ? 'bg-paymint-green/10 text-paymint-green'
                     : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'

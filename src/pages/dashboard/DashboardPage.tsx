@@ -466,7 +466,7 @@ export const DashboardPage = () => {
               <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
               <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
             </div>
-            <p className="text-xs font-black text-gray-400 tracking-widest">{t('dashboard.loading')}</p>
+            <p className="label-strong font-outfit">{t('dashboard.loading')}</p>
           </motion.div>
         ) : (
           <motion.div
@@ -499,7 +499,7 @@ export const DashboardPage = () => {
                   {currentEstablishment?.name && (
                       <>
                           <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20 hidden sm:block" />
-                          <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                          <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
                               {currentEstablishment.name}
                           </span>
                       </>

@@ -29,7 +29,7 @@ export const TermsPage = () => {
                             <Scale className="w-8 h-8 text-blue-500" />
                         </div>
                         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('legal.terms.title')}</h1>
-                        <p className="text-xs font-black text-gray-400 tracking-widest">
+                        <p className="label-strong font-outfit">
                             {t('legal.terms.lastUpdated')}: {new Date('2025-02-05').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
                         </p>
                     </motion.div>

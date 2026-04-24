@@ -101,7 +101,7 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
                     setTheme(option.id);
                     setIsOpen(false);
                   }}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all ${theme === option.id
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl label-strong font-outfit transition-all ${theme === option.id
                     ? 'bg-paymint-green/10 text-paymint-green'
                     : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
                     }`}

@@ -88,7 +88,7 @@ export const QAPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Sidebar Topics */}
                     <div className="lg:col-span-1 space-y-1">
-                        <p className="text-xs font-black text-gray-400 tracking-widest mb-4 px-2 uppercase">
+                        <p className="label-strong font-outfit mb-4 px-2 uppercase">
                             {t('support.qa.topics', 'Help Topics')}
                         </p>
                         {categories.map((cat) => (

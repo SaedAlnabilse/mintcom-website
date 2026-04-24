@@ -336,7 +336,7 @@ export function AddonsPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('attributes.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -504,7 +504,7 @@ export function AddonsPage() {
                       <div className="flex items-center gap-3">
                         <h3 className="font-bold text-gray-900 dark:text-white text-lg">{attr.name}</h3>
                         {attr.isRequired && (
-                          <span className="text-xs font-black tracking-widest px-2 py-0.5 bg-paymint-green/10 text-paymint-green rounded-md border border-paymint-green/20">{t('attributes.list.mandatory')}</span>
+                          <span className="label-strong font-outfit px-2 py-0.5 bg-paymint-green/10 text-paymint-green rounded-md border border-paymint-green/20">{t('attributes.list.mandatory')}</span>
                         )}
                       </div>
                       <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">

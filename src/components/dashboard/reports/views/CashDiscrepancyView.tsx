@@ -299,14 +299,14 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
-                    <th className="px-5 py-4 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.cashGap.staff')}</th>
-                    <th className="px-5 py-4 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.cashGap.period')}</th>
-                    <th className="px-5 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.cashGap.opening')}</th>
-                    <th className="px-5 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.cashGap.sales')}</th>
-                    <th className="px-5 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.cashGap.closing')}</th>
-                    <th className="px-5 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.cashGap.expected')}</th>
-                    <th className="px-5 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.cashGap.variance')}</th>
-                    <th className="px-5 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.cashGap.status')}</th>
+                    <th className="px-5 py-4 text-start label-strong font-outfit">{t('orders.reports.cashGap.staff')}</th>
+                    <th className="px-5 py-4 text-start label-strong font-outfit">{t('orders.reports.cashGap.period')}</th>
+                    <th className="px-5 py-4 text-end label-strong font-outfit">{t('orders.reports.cashGap.opening')}</th>
+                    <th className="px-5 py-4 text-end label-strong font-outfit">{t('orders.reports.cashGap.sales')}</th>
+                    <th className="px-5 py-4 text-end label-strong font-outfit">{t('orders.reports.cashGap.closing')}</th>
+                    <th className="px-5 py-4 text-center label-strong font-outfit">{t('orders.reports.cashGap.expected')}</th>
+                    <th className="px-5 py-4 text-center label-strong font-outfit">{t('orders.reports.cashGap.variance')}</th>
+                    <th className="px-5 py-4 text-center label-strong font-outfit">{t('orders.reports.cashGap.status')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">

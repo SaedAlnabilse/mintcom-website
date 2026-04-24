@@ -296,7 +296,7 @@ export function LoginPage() {
                 <button
                   onClick={handleResendVerification}
                   disabled={isResending}
-                  className="w-full flex items-center justify-center bg-paymint-green text-black text-xs font-black tracking-widest py-5 rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50"
+                  className="w-full flex items-center justify-center bg-paymint-green text-black label-strong font-outfit py-5 rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50"
                 >
                   {isResending ? (
                     t('auth.verifyEmail.sending')
@@ -309,7 +309,7 @@ export function LoginPage() {
                 </button>
                 <button
                   onClick={() => setShowVerifyModal(false)}
-                  className="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-700 text-xs font-black tracking-widest text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-700 label-strong font-outfit text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   {t('common.close').toUpperCase()}
                 </button>

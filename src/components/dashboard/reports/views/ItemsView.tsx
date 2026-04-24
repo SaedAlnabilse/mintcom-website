@@ -211,7 +211,7 @@ export const ItemsView = React.memo(function ItemsView({
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
                 <th
-                  className={`px-8 py-5 text-start text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-start label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                   onClick={() => requestSort('name')}
                 >
                   <div className="flex items-center gap-2">
@@ -220,7 +220,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                 </th>
                 <th
-                  className={`px-8 py-5 text-end text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-end label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                   onClick={() => requestSort('quantity')}
                 >
                   <div className="flex items-center justify-end gap-2">
@@ -229,7 +229,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                 </th>
                 <th
-                  className={`px-8 py-5 text-end text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-end label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                   onClick={() => requestSort('revenue')}
                 >
                   <div className="flex items-center justify-end gap-2">

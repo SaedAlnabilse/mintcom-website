@@ -15,136 +15,114 @@ function deepMerge(target, source) {
   return target;
 }
 
-// === Keys missing from EN (exist in AR only) — add English ===
 const addToEn = {
-  about: {
-    story: {
-      description: 'PayMint was founded with a mission to simplify business operations for merchants everywhere.'
-    }
-  },
   landing: {
-    download: {
-      downloadAPK: 'Download APK',
-      getApp: 'Get the App',
-      ios: 'iOS',
-      qrCode: 'Scan QR code to download'
-    },
-    hero: {
-      stats: {
-        activeNow: 'Active Now',
-        items: 'Items',
-        orders: 'Orders',
-        revenue: 'Revenue',
-        table: 'Table'
+    pricing: {
+      additionalFeatures: {
+        centralized: "Centralized management from a single dashboard",
+        combinedReports: "Combined or filtered reports by branch",
+        fullAccess: "Same full access level as your primary site",
+        separate: "Separate staff and inventory for each branch"
       },
-      subtitle: 'The all-in-one POS solution built for growth, efficiency, and seamless operations.'
-    }
-  },
-  legal: {
-    cookies: {
-      content: {
-        controlTitle: 'Control Your Cookies',
-        questionsTitle: 'Questions About Cookies',
-        thirdPartyTitle: 'Third-Party Services',
-        typesTitle: 'Types of Cookies',
-        updatesTitle: 'Policy Updates',
-        whatAreTitle: 'What Are Cookies?',
-        whyUseTitle: 'Why Do We Use Them?'
-      },
-      intro: 'Cookie Policy'
-    },
-    privacy: {
-      sections: {
-        lastUpdated: 'Last Updated',
-        subtitle: 'How we protect your data',
-        title: 'Privacy Policy'
-      }
-    },
-    terms: {
-      sections: {
-        lastUpdated: 'Last Updated',
-        subtitle: 'Terms & Conditions',
-        title: 'Terms of Service'
-      }
-    }
-  },
-  portal: {
-    quickActions: {
-      title: 'Quick Actions'
-    },
-    recentTickets: {
-      newTicket: 'New Ticket'
-    },
-    resources: {
-      subtitle: 'Helpful resources',
-      videoGuides: 'Video Guides'
-    }
-  },
-  staff: {
-    form: {
-      locationsCount_few: '{{count}} locations',
-      locationsCount_many: '{{count}} locations',
-      locationsCount_one: '1 location',
-      locationsCount_other: '{{count}} locations',
-      locationsCount_two: '2 locations',
-      locationsCount_zero: '{{count}} locations',
-      permissionsCount_few: '{{count}} permissions',
-      permissionsCount_many: '{{count}} permissions',
-      permissionsCount_one: '1 permission',
-      permissionsCount_other: '{{count}} permissions',
-      permissionsCount_two: '2 permissions',
-      permissionsCount_zero: '{{count}} permissions'
+      additionalLocationsDesc: "Each additional location after your first",
+      addLocation: "Add Location",
+      insteadOf: "instead of",
+      multiBranch: "Multi-Branch",
+      planDetails: "Plan Details",
+      viewDetails: "View Details",
+      whatsIncluded: "What's included in the plan"
     }
   }
 };
 
-// === Keys missing from AR (exist in EN only) — add Arabic ===
 const addToAr = {
-  landing: {
-    download: {
-      completed: 'مكتمل',
-      downloadFor: 'تحميل لـ',
-      instantSync: 'مزامنة سحابية فورية',
-      offline: 'إمكانيات كاملة بدون اتصال',
-      order: 'طلب',
-      platforms: 'متاح لأنظمة iOS و Android',
-      totalSales: 'إجمالي المبيعات',
-      universal: 'دعم شامل للأجهزة اللوحية والهواتف',
-      updateLinkAlert: 'رابط التحميل سيكون متاحاً قريباً. يرجى المراجعة لاحقاً.'
+  attributes: {
+    form: {
+      availableTip: "إذا كان المنتج الإضافي غير متوفر حاليًا، يمكنك إلغاء تحديده في أي وقت."
     }
   },
-  legal: {
-    cookies: {
-      legalCenter: 'المركز القانوني',
-      openSettings: 'فتح إعدادات ملفات تعريف الارتباط',
-      preferenceCenterSubtitle: 'يمكنك تغيير إعداداتك في أي وقت بالنقر على الزر أدناه.',
-      preferenceCenterTitle: 'مركز التفضيلات',
-      questions: 'أسئلة؟',
-      sections: {
-        control: 'كيفية التحكم في ملفات تعريف الارتباط',
-        thirdParty: 'ملفات تعريف ارتباط الطرف الثالث',
-        types: 'أنواع ملفات تعريف الارتباط',
-        updates: 'تحديثات هذه السياسة',
-        whatAre: 'ما هي ملفات تعريف الارتباط؟',
-        whyUse: 'لماذا نستخدمها؟'
-      }
-    },
-    privacy: {
-      sections: {
-        s9: '9. العمليات الدولية',
-        s10: '10. خصوصية الأطفال',
-        s11: '11. التغييرات على هذه السياسة',
-        s12: '12. اتصل بنا'
-      }
+  categories: {
+    messages: {
+      noMatchingResults: "لا توجد {{entity}} تطابق \"{{query}}\""
     }
   },
-  portal: {
-    quickActions: {
-      updatePayment: 'تحديث طريقة الدفع'
+  chat: {
+    faq: {
+      noMatchingResults: "لا توجد {{entity}} تطابق \"{{query}}\""
     },
-    resources: {
-      guides: 'الأدلة',
-      guidesDesc: 'تعلم أفضل الممارسات'
+    tasks: {
+      allDoneSubtitle: "موقعك جاهز تماماً للعمل.",
+      allDoneTitle: "تم كل شيء! 🎉"
+    }
+  },
+  common: {
+    confirmDelete: "هل أنت متأكد أنك تريد الحذف؟",
+    noMatchingResults: "لا توجد {{entity}} تطابق \"{{query}}\"",
+    sortBy: "ترتيب حسب"
+  },
+  dashboard: {
+    menu: {
+      establishmentSettings: "إعدادات المنشأة"
+    },
+    shiftStatus: {
+      activeOnly: "الوردية النشطة"
+    }
+  },
+  discounts: {
+    messages: {
+      emptySubtitle: "أنشئ أول خصم لك للبدء في تقديم عروض خاصة لعملائك.",
+      emptyTitle: "لم يتم إنشاء خصومات بعد",
+      noMatchingResults: "لا توجد {{entity}} تطابق \"{{query}}\"",
+      noResults: "لم يتم العثور على نتائج",
+      noResultsDesc: "لا توجد خصومات تطابق \"{{query}}\""
+    }
+  },
+  inventory: {
+    subtitle: "عرض وتحديث الوصفات والمكونات"
+  },
+  orders: {
+    reports: {
+      subtitle: "تحليل بيانات مبيعاتك"
+    },
+    status: {
+      paidTaxChanged: "مدفوع (تغيير الضريبة)"
+    }
+  },
+  products: {
+    messages: {
+      noMatchingResults: "لا توجد {{entity}} تطابق \"{{query}}\""
+    }
+  },
+  roles: {
+    pos: {
+      defaultSalesInfo: "يتم تضمين الوصول إلى شاشة المبيعات افتراضيًا عند تمكين هذا القسم."
+    },
+    subtitle: "إدارة الوصول والأذونات"
+  },
+  security: {
+    deletion: {
+      confirm: {
+        locationIdTip: "المعرف الفريد لهذا الموقع"
+      }
+    },
+    masterKeyInfo: {
+      description: "هذه هي كلمة المرور الرئيسية لحسابك. يمكنك إعادة تعيينها من بوابة المالك.",
+      title: "ما هو مفتاح الوصول الرئيسي؟"
+    }
+  },
+  settings: {
+    profile: {
+      passwordResetNote: "لا يمكن إعادة تعيين كلمة المرور إلا من بوابة المالك"
+    }
+  },
+  staff: {
+    form: {
+      phoneNumber: "رقم الهاتف"
+    }
+  },
+  support: {
+    qa: {
+      noMatchingResults: "لا توجد {{entity}} تطابق \"{{query}}\""
     }
   }
 };
@@ -161,20 +139,7 @@ function sortKeys(obj) {
   return sorted;
 }
 
-function countKeys(o) {
-  let n = 0;
-  for (const v of Object.values(o)) {
-    if (v && typeof v === 'object' && !Array.isArray(v)) n += countKeys(v);
-    else n++;
-  }
-  return n;
-}
+fs.writeFileSync('src/i18n/locales/en.json', JSON.stringify(sortKeys(en), null, 2) + '\n', 'utf8');
+fs.writeFileSync('src/i18n/locales/ar.json', JSON.stringify(sortKeys(ar), null, 2) + '\n', 'utf8');
 
-const sortedEn = sortKeys(en);
-const sortedAr = sortKeys(ar);
-
-fs.writeFileSync('src/i18n/locales/en.json', JSON.stringify(sortedEn, null, 2) + '\n', 'utf8');
-fs.writeFileSync('src/i18n/locales/ar.json', JSON.stringify(sortedAr, null, 2) + '\n', 'utf8');
-
-console.log('EN keys:', countKeys(sortedEn));
-console.log('AR keys:', countKeys(sortedAr));
+console.log('Locales synchronized successfully.');

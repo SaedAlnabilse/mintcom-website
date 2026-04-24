@@ -89,7 +89,7 @@ export function ResetPasswordPage() {
           </p>
           <Link
             to="/forgot-password"
-            className="inline-flex items-center justify-center w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-xl hover:bg-paymint-green/90 transition-all active:scale-95 shadow-md shadow-paymint-green/20"
+            className="inline-flex items-center justify-center w-full bg-paymint-green text-black label-strong font-outfit py-4 px-6 rounded-xl hover:bg-paymint-green/90 transition-all active:scale-95 shadow-md shadow-paymint-green/20"
           >
             {t('auth.resetPassword.getNewLink')}
           </Link>
@@ -115,7 +115,7 @@ export function ResetPasswordPage() {
           </p>
           <Link
             to="/login"
-            className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-black tracking-widest py-4 px-6 rounded-xl hover:scale-105 transition-all active:scale-95 shadow-md shadow-gray-900/20"
+            className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black label-strong font-outfit py-4 px-6 rounded-xl hover:scale-105 transition-all active:scale-95 shadow-md shadow-gray-900/20"
           >
             {t('auth.resetPassword.goToLogin')}
           </Link>
@@ -200,7 +200,7 @@ export function ResetPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 disabled:cursor-paymint-wait flex items-center justify-center gap-3 active:scale-95"
+              className="w-full bg-paymint-green text-black label-strong font-outfit py-4 px-6 rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 disabled:cursor-paymint-wait flex items-center justify-center gap-3 active:scale-95"
             >
               {isLoading ? <Loader2 className="animate-spin" size={20} /> : null}
               {t('auth.resetPassword.reset').toUpperCase()}

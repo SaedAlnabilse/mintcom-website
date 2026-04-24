@@ -364,7 +364,7 @@ export function RecipesPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('manufacturing.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -419,9 +419,9 @@ export function RecipesPage() {
           />
         </div>
         <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl overflow-x-auto hide-scrollbar">
-          <button onClick={() => { setActiveTab('materials'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all whitespace-nowrap ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('inventory.materials', {defaultValue: 'Ingredients'})}</button>
-          <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all whitespace-nowrap ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.prep', {defaultValue: 'Prep'})}</button>
-          <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all whitespace-nowrap ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.products', {defaultValue: 'Products'})}</button>
+          <button onClick={() => { setActiveTab('materials'); setPage(1); }} className={`px-4 py-2 rounded-lg label-strong font-outfit transition-all whitespace-nowrap ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('inventory.materials', {defaultValue: 'Ingredients'})}</button>
+          <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg label-strong font-outfit transition-all whitespace-nowrap ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.prep', {defaultValue: 'Prep'})}</button>
+          <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg label-strong font-outfit transition-all whitespace-nowrap ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.products', {defaultValue: 'Products'})}</button>
         </div>
       </div>
 
@@ -429,7 +429,7 @@ export function RecipesPage() {
         {isLoading ? (
           <div className="py-32 flex flex-col items-center">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black tracking-widest text-gray-400">{t('common.loading')}</p>
+            <p className="label-strong font-outfit">{t('common.loading')}</p>
           </div>
         ) : paginatedItems.length === 0 ? (
           <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
@@ -477,9 +477,9 @@ export function RecipesPage() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-white/[0.02]">
                       <tr className="border-b border-gray-200 dark:border-white/5">
-                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('inventory.form.name', {defaultValue: 'NAME'})}</th>
-                        <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('inventory.quantity', {defaultValue: 'QUANTITY'})}</th>
-                        <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.table.actions', {defaultValue: 'ACTIONS'})}</th>
+                        <th className="px-6 py-4 text-left label-strong font-outfit">{t('inventory.form.name', {defaultValue: 'NAME'})}</th>
+                        <th className="px-6 py-4 text-center label-strong font-outfit">{t('inventory.quantity', {defaultValue: 'QUANTITY'})}</th>
+                        <th className="px-6 py-4 text-center label-strong font-outfit">{t('orders.table.actions', {defaultValue: 'ACTIONS'})}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -543,7 +543,7 @@ export function RecipesPage() {
                               <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
                                 {activeTab === 'final' ? (recipe as FinalRecipe).item?.name : (recipe as SubRecipe).name}
                               </h3>
-                              <p className="text-xs font-black text-gray-400 tracking-widest">{((recipe as any).ingredients || []).length} {t('manufacturing.ingredients')}</p>
+                              <p className="label-strong font-outfit">{((recipe as any).ingredients || []).length} {t('manufacturing.ingredients')}</p>
                             </div>
                           </div>
                           <div className="flex gap-1 transition-all">
@@ -720,7 +720,7 @@ export function RecipesPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
                     <label className="text-sm font-bold text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
-                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
+                    <span className="label-strong font-outfit bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
                   </div>
 
                   <div className="space-y-3 min-h-[40px]">
@@ -815,7 +815,7 @@ export function RecipesPage() {
                     {subRecipeForm.ingredients.length === 0 && (
                       <div className="py-8 text-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-2xl">
                         <Package size={24} className="mx-auto text-gray-300 mb-2 opacity-50" />
-                        <p className="text-xs font-black text-gray-400 tracking-widest">{t('manufacturing.formula.noIngredients')}</p>
+                        <p className="label-strong font-outfit">{t('manufacturing.formula.noIngredients')}</p>
                       </div>
                     )}
                   </div>
@@ -842,7 +842,7 @@ export function RecipesPage() {
                         }
                         setSubRecipeForm(prev => ({ ...prev, ingredients: [...prev.ingredients, { rawMaterialId: '', quantity: 0 }] }));
                       }}
-                      className="w-full flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl text-xs font-black text-paymint-green tracking-widest hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
+                      className="w-full flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl label-strong font-outfit text-paymint-green hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
                     >
                       <Plus size={16} className="group-hover:scale-125 transition-transform" />
                       <span>{t('manufacturing.formula.addMaterial')}</span>
@@ -888,7 +888,7 @@ export function RecipesPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
                     <label className="text-sm font-bold text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
-                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
+                    <span className="label-strong font-outfit bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
                   </div>
 
                   <div className="space-y-3 min-h-[40px]">
@@ -1046,7 +1046,7 @@ export function RecipesPage() {
                       <div className="py-12 text-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-[2rem]">
                         <Pizza size={32} className="mx-auto text-gray-300 mb-4 opacity-50" />
                         <p className="text-sm font-bold text-gray-500">{t('manufacturing.formula.noIngredients')}</p>
-                        <p className="text-xs font-black text-gray-400 tracking-widest mt-1">{t('manufacturing.messages.noSubFormulasDesc')}</p>
+                        <p className="label-strong font-outfit mt-1">{t('manufacturing.messages.noSubFormulasDesc')}</p>
                       </div>
                     )}
                   </div>
@@ -1073,7 +1073,7 @@ export function RecipesPage() {
                         }
                         setFinalRecipeForm(prev => ({ ...prev, ingredients: [...prev.ingredients, { rawMaterialId: '', quantity: 0, type: 'raw' }] }));
                       }}
-                      className="flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl text-xs font-black text-paymint-green tracking-widest hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
+                      className="flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl label-strong font-outfit text-paymint-green hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
                     >
                       <Package size={16} className="group-hover:scale-125 transition-transform" />
                       <span>{t('manufacturing.formula.addMaterial')}</span>
@@ -1147,7 +1147,7 @@ export function RecipesPage() {
                     autoFocus
                   />
                   <div className="flex items-center justify-center mt-4 gap-1">
-                    <p className="text-xs font-black text-gray-400 tracking-widest">{t('manufacturing.numBatches')}</p>
+                    <p className="label-strong font-outfit">{t('manufacturing.numBatches')}</p>
                   </div>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">

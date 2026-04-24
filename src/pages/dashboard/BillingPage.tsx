@@ -119,7 +119,7 @@ export function BillingPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('owner.billing.managePayments', { name: currentEstablishment?.name })}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
                                 {currentEstablishment.name}
                             </span>
                         )}
@@ -253,10 +253,10 @@ export function BillingPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('common.date')}</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('orders.table.amount')}</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('orders.table.status')}</th>
-                    <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.table.actions')}</th>
+                    <th className="px-6 py-4 text-left label-strong font-outfit">{t('common.date')}</th>
+                    <th className="px-6 py-4 text-left label-strong font-outfit">{t('orders.table.amount')}</th>
+                    <th className="px-6 py-4 text-left label-strong font-outfit">{t('orders.table.status')}</th>
+                    <th className="px-6 py-4 text-right label-strong font-outfit">{t('orders.table.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -338,7 +338,7 @@ export function BillingPage() {
                     <p className="text--[10px] font-bold text-gray-500 dark:text-gray-400 tracking-wide">{t('owner.billing.expires')} 12/26</p>
                   </div>
                 </div>
-                <button className="text-xs font-black text-paymint-green tracking-widest opacity-0 group-hover:opacity-100 transition-opacity hover:underline">{t('common.edit')}</button>
+                <button className="label-strong font-outfit text-paymint-green opacity-0 group-hover:opacity-100 transition-opacity hover:underline">{t('common.edit')}</button>
               </div>
 
               <button className="w-full flex flex-col items-center gap-2 p-6 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all group">

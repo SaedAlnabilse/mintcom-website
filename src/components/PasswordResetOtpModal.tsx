@@ -375,7 +375,7 @@ export function PasswordResetOtpModal({
 
                                 <div className="space-y-4">
                                     <div className="relative">
-                                        <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
+                                        <label className="label-strong font-outfit mb-2 block">
                                             {t('passwordReset.form.newPassword')}
                                         </label>
                                         <input maxLength={255}
@@ -395,7 +395,7 @@ export function PasswordResetOtpModal({
                                     </div>
 
                                     <div className="relative">
-                                        <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
+                                        <label className="label-strong font-outfit mb-2 block">
                                             {t('passwordReset.form.confirmPassword')}
                                         </label>
                                         <input maxLength={255}

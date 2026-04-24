@@ -1,0 +1,414 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - navigation [ref=e4]:
+      - generic [ref=e5]:
+        - link "PayMint" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - img "PayMint" [ref=e8]
+        - generic [ref=e9]:
+          - button "Change Language" [ref=e11] [cursor=pointer]:
+            - img [ref=e12]
+            - generic [ref=e15]: EN
+          - button "Toggle theme" [ref=e17] [cursor=pointer]:
+            - img [ref=e20]
+          - button "Open navigation menu" [ref=e22] [cursor=pointer]:
+            - img [ref=e23]
+    - main [ref=e24]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - generic [ref=e29]:
+            - img [ref=e31]
+            - generic [ref=e34]: All-in-One Point of Sale System
+          - heading "Earn More. Manage Better. Work Smarter." [level=1] [ref=e35]:
+            - generic [ref=e36]:
+              - generic [ref=e37]: Earn
+              - generic [ref=e38]: More.
+            - generic [ref=e39]:
+              - generic [ref=e40]: Manage
+              - generic [ref=e41]: Better.
+            - generic [ref=e42]:
+              - generic [ref=e43]: Work
+              - generic [ref=e44]: Smarter.
+          - paragraph [ref=e45]: PayMint is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.
+          - generic [ref=e46]:
+            - button "Start Free Trial" [ref=e47] [cursor=pointer]:
+              - text: Start Free Trial
+              - img [ref=e48]
+            - button "See how it works" [ref=e50] [cursor=pointer]:
+              - img [ref=e51]
+              - text: See how it works
+        - img "PayMint All-in-One POS System" [ref=e58]
+      - generic [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]:
+            - img [ref=e66]
+            - generic [ref=e70]: Features
+          - heading "Why PayMint?" [level=2] [ref=e71]:
+            - generic [ref=e72]:
+              - generic [ref=e73]: Why
+              - generic [ref=e74]: PayMint?
+          - paragraph [ref=e75]: "At PayMint, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing."
+        - generic [ref=e76]:
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - img [ref=e81]
+              - heading "A Complete Solution — No Hidden Costs" [level=3] [ref=e85]
+              - generic [ref=e86]:
+                - paragraph [ref=e88]: PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more—all included in one fixed monthly plan.
+                - button "Read more" [ref=e89] [cursor=pointer]
+            - generic [ref=e90]:
+              - img [ref=e93]
+              - heading "Designed For Real Users" [level=3] [ref=e95]
+              - generic [ref=e96]:
+                - paragraph [ref=e98]: PayMint is built for business owners, cashiers, and managers—not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes.
+                - button "Read more" [ref=e99] [cursor=pointer]
+            - generic [ref=e100]:
+              - img [ref=e103]
+              - heading "Enterprise-Grade Security" [level=3] [ref=e106]
+              - generic [ref=e107]:
+                - paragraph [ref=e109]: Your data is fully encrypted, securely stored, and automatically archived. We've invested heavily in top-tier security standards to ensure your business information is protected at all times.
+                - button "Read more" [ref=e110] [cursor=pointer]
+            - generic [ref=e111]:
+              - img [ref=e114]
+              - heading "Multi-Branch Management" [level=3] [ref=e117]
+              - generic [ref=e118]:
+                - paragraph [ref=e120]: Run one store or many—PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel.
+                - button "Read more" [ref=e121] [cursor=pointer]
+          - generic [ref=e123]:
+            - generic [ref=e125]:
+              - img [ref=e127]
+              - paragraph [ref=e129]: Loading video...
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic: LIVE DEMO
+                  - heading "See PayMint in Action" [level=4]
+                  - paragraph: Seamless real-time synchronization across all devices
+      - generic [ref=e134]:
+        - generic [ref=e135]:
+          - generic [ref=e136]:
+            - heading "What Do You Get For $20/Month?" [level=2] [ref=e137]:
+              - generic [ref=e138]: What Do You Get For
+              - text: $20/Month?
+            - paragraph
+          - generic [ref=e139]:
+            - generic [ref=e140]:
+              - generic [ref=e141]:
+                - img [ref=e143]
+                - heading "Point Of Sale" [level=3] [ref=e145]
+              - paragraph [ref=e147]: Create products and categories, process sales quickly and easily.
+            - generic [ref=e148]:
+              - generic [ref=e149]:
+                - img [ref=e151]
+                - heading "Recipe Operations" [level=3] [ref=e155]
+              - paragraph [ref=e157]: View and update recipes and ingredients
+            - generic [ref=e158]:
+              - generic [ref=e159]:
+                - img [ref=e161]
+                - heading "Staff Management" [level=3] [ref=e166]
+              - paragraph [ref=e168]: Add unlimited staff, assign roles, and track shifts and performance.
+            - generic [ref=e169]:
+              - generic [ref=e170]:
+                - img [ref=e172]
+                - heading "Advanced Reporting" [level=3] [ref=e174]
+              - generic [ref=e175]:
+                - paragraph [ref=e176]: Get real-time analytics and insights across every part of your business.
+                - button "Read more" [ref=e177] [cursor=pointer]
+            - generic [ref=e178]:
+              - generic [ref=e179]:
+                - img [ref=e181]
+                - heading "Production & Cost Tracking" [level=3] [ref=e184]
+              - paragraph [ref=e186]: Set recipes, calculate costs, and track profit margins accurately.
+        - img "Workflow and Notifications Showcase" [ref=e189]
+      - generic [ref=e193]:
+        - generic [ref=e194]:
+          - generic [ref=e197]:
+            - generic [ref=e198]:
+              - generic [ref=e199]:
+                - paragraph [ref=e200]: Good morning,
+                - paragraph [ref=e201]: Business Owner
+              - img [ref=e203]
+            - generic [ref=e206]:
+              - generic [ref=e208]:
+                - img [ref=e210]
+                - generic [ref=e214]: Daily Revenue
+              - generic [ref=e215]: JOD 2,450
+            - generic [ref=e216]:
+              - generic [ref=e217]:
+                - generic [ref=e218]:
+                  - img [ref=e219]
+                  - generic [ref=e223]: Orders
+                - generic [ref=e224]: "142"
+              - generic [ref=e225]:
+                - generic [ref=e226]:
+                  - img [ref=e227]
+                  - generic [ref=e232]: Staff
+                - generic [ref=e233]: 8 / 12
+            - generic [ref=e236]: Sales Activity
+          - generic [ref=e250]:
+            - generic [ref=e251]:
+              - generic [ref=e252]:
+                - paragraph [ref=e253]: Welcome back,
+                - paragraph [ref=e254]: Admin Dashboard
+              - img [ref=e256]
+            - generic [ref=e259]:
+              - generic [ref=e260]:
+                - generic [ref=e261]:
+                  - img [ref=e263]
+                  - generic [ref=e267]: Daily Revenue
+                - generic [ref=e268]: +14.2%
+              - generic [ref=e269]: JOD 2,450
+            - generic [ref=e270]:
+              - generic [ref=e271] [cursor=pointer]:
+                - img [ref=e273]
+                - generic [ref=e276]:
+                  - generic [ref=e277]: Stock Alerts
+                  - generic [ref=e278]: Coffee Beans -5 kg
+              - generic [ref=e279] [cursor=pointer]:
+                - img [ref=e281]
+                - generic [ref=e284]:
+                  - generic [ref=e285]: Shift Alerts
+                  - generic [ref=e286]: Sarah left at 4:00 PM
+        - generic [ref=e288]:
+          - generic [ref=e289]:
+            - img [ref=e291]
+            - generic [ref=e294]: Owner App
+          - heading "Full Visibility. Full Control. From Your Pocket." [level=2] [ref=e295]:
+            - generic [ref=e296]:
+              - generic [ref=e297]: Full
+              - generic [ref=e298]: Visibility.
+            - generic [ref=e299]:
+              - generic [ref=e300]: Full
+              - generic [ref=e301]: Control.
+            - generic [ref=e302]:
+              - generic [ref=e303]: From
+              - generic [ref=e304]: Your
+              - generic [ref=e305]: Pocket.
+          - generic [ref=e306]:
+            - img "PayMint logo" [ref=e307]
+            - generic [ref=e309]:
+              - img [ref=e310]
+              - generic [ref=e312]: PayMint Admin App
+          - paragraph [ref=e313]: With the PayMint Admin Mobile App, you can monitor and manage your business anytime, anywhere—right from your phone.
+          - list [ref=e314]:
+            - listitem [ref=e315]:
+              - generic [ref=e318]: Shift Alerts
+            - listitem [ref=e319]:
+              - generic [ref=e322]: Stock Alerts
+            - listitem [ref=e323]:
+              - generic [ref=e326]: Live Sales & Performance Reports
+      - generic [ref=e328]:
+        - generic [ref=e329]:
+          - heading "Get Started" [level=2] [ref=e330]
+          - paragraph [ref=e331]: Your "aha" moment is just minutes away.
+        - generic [ref=e335]:
+          - generic [ref=e336]:
+            - generic [ref=e337]:
+              - generic [ref=e338]: FULL ACCESS
+              - heading "Monthly Plan" [level=3] [ref=e339]
+              - generic [ref=e340]:
+                - button "MONTHLY" [ref=e341] [cursor=pointer]
+                - button "YEARLY SAVE" [ref=e342] [cursor=pointer]:
+                  - text: YEARLY
+                  - generic [ref=e343]: SAVE
+              - generic [ref=e345]:
+                - generic [ref=e346]:
+                  - generic [ref=e347]: $20
+                  - generic [ref=e348]: /MONTH
+                - paragraph [ref=e349]: No commitment.
+            - generic [ref=e350]:
+              - button "Get Started" [ref=e351] [cursor=pointer]:
+                - text: Get Started
+                - img [ref=e352]
+              - generic [ref=e354]:
+                - img [ref=e356]
+                - generic [ref=e359]:
+                  - text: Additional locations receive a DISCOUNT for
+                  - generic [ref=e360]: $17/MONTH
+          - generic [ref=e362]:
+            - generic [ref=e363]:
+              - heading "Everything You Need" [level=4] [ref=e364]
+              - paragraph [ref=e365]: All features included in a single plan.
+            - list [ref=e366]:
+              - listitem [ref=e367]:
+                - img [ref=e369]
+                - text: POS for tablets and mobile devices
+              - listitem [ref=e371]:
+                - img [ref=e373]
+                - text: Online dashboard & management system
+              - listitem [ref=e375]:
+                - img [ref=e377]
+                - text: Unlimited staff accounts
+              - listitem [ref=e379]:
+                - img [ref=e381]
+                - text: Access to the Admin Mobile App
+              - listitem [ref=e383]:
+                - img [ref=e385]
+                - text: Dedicated customer support
+              - listitem [ref=e387]:
+                - img [ref=e389]
+                - text: Advanced reports & analytics
+            - paragraph [ref=e392]: No setup fees or hidden charges. Cancel anytime.
+      - generic [ref=e395]:
+        - generic [ref=e396]:
+          - heading "Compatible Hardware" [level=2] [ref=e397]:
+            - generic [ref=e398]:
+              - generic [ref=e399]: Compatible
+              - generic [ref=e400]: Hardware
+          - paragraph [ref=e401]: Paymint works with most standard tablets and thermal printers. here are some models we recommend.
+        - generic [ref=e402]:
+          - generic [ref=e403]:
+            - generic [ref=e404]:
+              - img [ref=e406]
+              - generic [ref=e408]:
+                - heading "Tablets & Terminals" [level=3] [ref=e409]
+                - paragraph [ref=e410]: Powerful handheld and desktop devices for your staff
+            - generic [ref=e411]:
+              - generic [ref=e413]:
+                - img [ref=e414]
+                - generic [ref=e417]: Samsung Galaxy Tab A8
+              - generic [ref=e419]:
+                - img [ref=e420]
+                - generic [ref=e423]: IPad 10th Generation
+            - button "View All Options" [ref=e424] [cursor=pointer]
+          - generic [ref=e425]:
+            - generic [ref=e426]:
+              - img [ref=e428]
+              - generic [ref=e432]:
+                - heading "Receipt Printers" [level=3] [ref=e433]
+                - paragraph [ref=e434]: Fast and reliable thermal receipt printers
+            - generic [ref=e435]:
+              - generic [ref=e437]:
+                - img [ref=e438]
+                - generic [ref=e441]: MUNBYN Thermal Receipt Printer
+              - generic [ref=e443]:
+                - img [ref=e444]
+                - generic [ref=e447]: Epson TM-T20III
+            - button "View All Options" [ref=e448] [cursor=pointer]
+        - paragraph [ref=e450]: 💡 Already have hardware? Simply download the app and connect your devices in seconds.
+      - generic [ref=e454]:
+        - generic [ref=e456]:
+          - heading "Get In Touch With Us" [level=2] [ref=e457]:
+            - generic [ref=e458]:
+              - generic [ref=e459]: Get
+              - generic [ref=e460]: In
+              - generic [ref=e461]: Touch
+              - generic [ref=e462]: With
+              - generic [ref=e463]: Us
+          - paragraph [ref=e464]: Have questions? our team is here to help.
+          - generic [ref=e465]:
+            - generic [ref=e466]:
+              - img [ref=e468]
+              - generic [ref=e471]:
+                - paragraph [ref=e472]: Email
+                - paragraph [ref=e473]: hello@paymint.com
+            - generic [ref=e474]:
+              - img [ref=e476]
+              - generic [ref=e478]:
+                - paragraph [ref=e479]: Phone
+                - paragraph [ref=e480]: +962 7XXXXXXXX
+        - generic [ref=e482]:
+          - generic [ref=e483]:
+            - generic [ref=e484]:
+              - text: Full Name
+              - textbox "John Doe" [ref=e485]
+            - generic [ref=e486]:
+              - text: Business Name
+              - textbox "My Business LLC" [ref=e487]
+          - generic [ref=e488]:
+            - text: Email Address
+            - textbox "john@example.com" [ref=e489]
+          - generic [ref=e490]:
+            - text: Your Message
+            - textbox "How can we help you?" [ref=e491]
+          - generic [ref=e492]:
+            - checkbox "I agree to the Privacy Policy and Terms of Service." [ref=e493] [cursor=pointer]
+            - generic [ref=e494]:
+              - text: I agree to the
+              - link "Privacy Policy" [ref=e495] [cursor=pointer]:
+                - /url: /legal/privacy
+              - text: and
+              - link "Terms of Service" [ref=e496] [cursor=pointer]:
+                - /url: /legal/terms
+              - text: .
+          - button "Send Message" [ref=e497] [cursor=pointer]:
+            - img [ref=e498]
+            - text: Send Message
+    - contentinfo [ref=e501]:
+      - generic [ref=e502]:
+        - generic [ref=e503]:
+          - generic [ref=e504]:
+            - img "PayMint" [ref=e507]
+            - generic [ref=e508]:
+              - paragraph [ref=e509]: The ultimate 360° point-of-sale solution designed for modern growing businesses.
+              - generic [ref=e510]:
+                - link [ref=e511] [cursor=pointer]:
+                  - /url: https://www.instagram.com
+                  - img [ref=e512]
+                - link [ref=e515] [cursor=pointer]:
+                  - /url: https://www.youtube.com
+                  - img [ref=e516]
+          - generic [ref=e519]:
+            - generic [ref=e520]: Product
+            - list [ref=e521]:
+              - listitem [ref=e522]:
+                - link "Features" [ref=e523] [cursor=pointer]:
+                  - /url: /#features
+              - listitem [ref=e524]:
+                - link "Pricing" [ref=e525] [cursor=pointer]:
+                  - /url: /#pricing
+              - listitem [ref=e526]:
+                - link "Support" [ref=e527] [cursor=pointer]:
+                  - /url: /support
+          - generic [ref=e528]:
+            - generic [ref=e529]: Company
+            - list [ref=e530]:
+              - listitem [ref=e531]:
+                - link "About Us" [ref=e532] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e533]:
+                - link "Contact Us" [ref=e534] [cursor=pointer]:
+                  - /url: /#contact
+          - generic [ref=e535]:
+            - generic [ref=e536]: Resources
+            - list [ref=e537]:
+              - listitem [ref=e538]:
+                - link "Help Center" [ref=e539] [cursor=pointer]:
+                  - /url: /support
+              - listitem [ref=e540]:
+                - link "Privacy Policy" [ref=e541] [cursor=pointer]:
+                  - /url: /legal/privacy
+              - listitem [ref=e542]:
+                - link "Terms of Service" [ref=e543] [cursor=pointer]:
+                  - /url: /legal/terms
+          - generic [ref=e544]:
+            - generic [ref=e545]: Get in Touch
+            - list [ref=e546]:
+              - listitem [ref=e547]:
+                - img [ref=e549]
+                - generic [ref=e552]: hello@paymint.com
+              - listitem [ref=e553]:
+                - img [ref=e555]
+                - generic [ref=e557]: +962 790 000 000
+        - generic [ref=e558]:
+          - paragraph [ref=e559]: © 2025 PayMint LLC. All rights reserved.
+          - generic [ref=e560]:
+            - link "About Us" [ref=e561] [cursor=pointer]:
+              - /url: /about
+            - link "Privacy Policy" [ref=e562] [cursor=pointer]:
+              - /url: /legal/privacy
+            - link "Terms of Service" [ref=e563] [cursor=pointer]:
+              - /url: /legal/terms
+            - button "Feedback" [ref=e564] [cursor=pointer]
+  - generic [ref=e566]:
+    - generic [ref=e567]:
+      - generic [ref=e568]: How can I help you? 👋
+      - button [ref=e569] [cursor=pointer]:
+        - img [ref=e570]
+    - button [ref=e574] [cursor=pointer]:
+      - img [ref=e575]
+```

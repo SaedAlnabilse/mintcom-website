@@ -237,7 +237,7 @@ export const Navbar = () => {
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="w-full py-5 bg-paymint-green text-black rounded-[2rem] text-xl font-black tracking-tight text-center shadow-xl shadow-paymint-green/20"
                     >
-                      {t('nav.createAccount')}
+                      {t('nav.getStarted')}
                     </Link>
                   </>
                 )}

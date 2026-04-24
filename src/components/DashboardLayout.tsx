@@ -465,7 +465,7 @@ export function DashboardLayout() {
                     })()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-black text-paymint-green tracking-widest mb-0.5">{t('dashboard.menu.activeLocation')}</p>
+                    <p className="label-strong font-outfit text-paymint-green mb-0.5">{t('dashboard.menu.activeLocation')}</p>
                     <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
                       {currentEstablishment?.name || t('common.loading')}
                     </h2>

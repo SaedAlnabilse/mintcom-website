@@ -63,7 +63,7 @@ export function VerifyEmailPage() {
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{message}</p>
             <Link
               to="/login"
-              className="inline-flex items-center justify-center w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all active:scale-95 shadow-lg shadow-paymint-green/20"
+              className="inline-flex items-center justify-center w-full bg-paymint-green text-black label-strong font-outfit py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all active:scale-95 shadow-lg shadow-paymint-green/20"
             >
               {t('auth.verifyEmail.continueLogin').toUpperCase()}
             </Link>
@@ -82,7 +82,7 @@ export function VerifyEmailPage() {
             <div className="flex flex-col gap-3">
               <Link
                 to="/login"
-                className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-black tracking-widest py-4 px-6 rounded-2xl hover:scale-105 transition-all active:scale-95 shadow-lg"
+                className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black label-strong font-outfit py-4 px-6 rounded-2xl hover:scale-105 transition-all active:scale-95 shadow-lg"
               >
                 {t('auth.verifyEmail.goToLogin')}
               </Link>

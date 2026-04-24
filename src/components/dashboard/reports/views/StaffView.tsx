@@ -319,12 +319,12 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
             <table className="w-full">
               <thead className="bg-gray-50/50 dark:bg-white/[0.01]">
                 <tr className="border-b border-gray-100 dark:border-white/[0.05]">
-                  <th className="px-6 py-4 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.rank')}</th>
-                  <th className="px-6 py-4 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.staff')}</th>
-                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.sales')}</th>
-                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.share')}</th>
-                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.avgOrder')}</th>
-                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.salesPerHour')}</th>
+                  <th className="px-6 py-4 text-start label-strong font-outfit">{t('orders.reports.staff.rank')}</th>
+                  <th className="px-6 py-4 text-start label-strong font-outfit">{t('orders.reports.staff.staff')}</th>
+                  <th className="px-6 py-4 text-end label-strong font-outfit">{t('orders.reports.staff.sales')}</th>
+                  <th className="px-6 py-4 text-end label-strong font-outfit">{t('orders.reports.staff.share')}</th>
+                  <th className="px-6 py-4 text-end label-strong font-outfit">{t('orders.reports.staff.avgOrder')}</th>
+                  <th className="px-6 py-4 text-end label-strong font-outfit">{t('orders.reports.staff.salesPerHour')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">

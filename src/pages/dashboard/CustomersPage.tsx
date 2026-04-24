@@ -304,7 +304,7 @@ export function CustomersPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('customers.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -374,7 +374,7 @@ export function CustomersPage() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black tracking-widest text-gray-400">{t('customers.messages.loading')}</p>
+            <p className="label-strong font-outfit">{t('customers.messages.loading')}</p>
           </div>
         ) : customers.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32 text-center bg-gray-50/30 dark:bg-black/10">
@@ -838,7 +838,7 @@ export function CustomersPage() {
 
                 {selectedCustomer.notes && (
                   <div className="p-6 bg-paymint-green/5 border border-paymint-green/10 rounded-xl">
-                    <p className="text-xs font-black text-paymint-green tracking-widest mb-2">{t('customers.details.notes')}</p>
+                    <p className="label-strong font-outfit text-paymint-green mb-2">{t('customers.details.notes')}</p>
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
                       {selectedCustomer.notes}
                     </p>

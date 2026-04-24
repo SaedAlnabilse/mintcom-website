@@ -191,7 +191,7 @@ export function MultiSelect({
     return (
         <div className={`relative ${className}`} ref={containerRef} dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             {label && (
-                <label className="block text-xs font-black text-gray-400 tracking-widest mb-2 px-1">
+                <label className="block label-strong font-outfit mb-2 px-1">
                     {label}
                 </label>
             )}

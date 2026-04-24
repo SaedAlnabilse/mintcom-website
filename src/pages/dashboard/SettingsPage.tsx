@@ -660,7 +660,7 @@ export function SettingsPage() {
           <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
           <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
         </div>
-        <p className="text-xs font-black text-gray-400 tracking-widest">{t('settings.messages.loading')}</p>
+        <p className="label-strong font-outfit">{t('settings.messages.loading')}</p>
       </div>
     );
   }
@@ -673,7 +673,7 @@ export function SettingsPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('settings.subtitle')}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
                                 {currentEstablishment.name}
                             </span>
                         )}
@@ -853,24 +853,24 @@ export function SettingsPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.name')}</label>
+              <label className="label-strong font-outfit uppercase block">{t('settings.profile.name')}</label>
               <input type="text" {...register('restaurantName')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.about')}</label>
+              <label className="label-strong font-outfit uppercase block">{t('settings.profile.about')}</label>
               <textarea {...register('restaurantDescription')} rows={3} maxLength={2000} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium resize-none" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
-                <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.address')}</label>
+                <label className="label-strong font-outfit uppercase block">{t('settings.profile.address')}</label>
                 <input type="text" {...register('restaurantAddress')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.email')}</label>
+                <label className="label-strong font-outfit uppercase block">{t('settings.profile.email')}</label>
                 <input type="email" {...register('email')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-gray-400 tracking-widest uppercase block">{t('settings.profile.taxId')}</label>
+                <label className="label-strong font-outfit uppercase block">{t('settings.profile.taxId')}</label>
                 <input type="text" {...register('taxIdNumber')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
             </div>
@@ -1120,7 +1120,7 @@ export function SettingsPage() {
                         <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
                           {receiptLogoPreview ? <img src={receiptLogoPreview} alt="Receipt Logo" className="w-full h-full object-cover" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
                         </div>
-                        <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer text-xs font-black tracking-widest transition-all hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
+                        <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer label-strong font-outfit transition-all hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
                           {t('settings.receipts.uploadLogo')}
                           <input type="file" accept="image/*" onChange={handleReceiptLogoChange} className="hidden" disabled={!watch('showLogoOnReceipt')} />
                         </label>

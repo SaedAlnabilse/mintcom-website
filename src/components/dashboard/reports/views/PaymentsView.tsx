@@ -162,7 +162,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                   selectedDateRange: selectedDateRange
                 }
               })}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all text-xs font-black tracking-widest border border-gray-200 dark:border-white/10"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all label-strong font-outfit border border-gray-200 dark:border-white/10"
             >
               <span>{t('orders.reports.payments.viewAllOrders')}</span>
               <ChevronRight size={14} className={`text-paymint-green transition-transform ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
@@ -172,9 +172,9 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
             <table className="w-full relative">
               <thead className="bg-gray-50 dark:bg-white/[0.02] sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-4 text-start text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.method')}</th>
-                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.revenue')}</th>
-                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.share')}</th>
+                  <th className="px-6 py-4 text-start label-strong font-outfit bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.method')}</th>
+                  <th className="px-6 py-4 text-end label-strong font-outfit bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.revenue')}</th>
+                  <th className="px-6 py-4 text-end label-strong font-outfit bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.share')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">

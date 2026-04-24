@@ -166,7 +166,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                 <button
                   type="button"
                   onClick={() => setType('DISCOUNT')}
-                  className={`relative flex-1 py-3 rounded-lg text-xs font-black tracking-widest transition-all duration-300 z-10 ${type === 'DISCOUNT' ? 'text-black' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                  className={`relative flex-1 py-3 rounded-lg label-strong font-outfit transition-all duration-300 z-10 ${type === 'DISCOUNT' ? 'text-black' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
                     }`}
                 >
                   {type === 'DISCOUNT' && (
@@ -177,7 +177,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                 <button
                   type="button"
                   onClick={() => setType('FREE_ITEM')}
-                  className={`relative flex-1 py-3 rounded-lg text-xs font-black tracking-widest transition-all duration-300 z-10 ${type === 'FREE_ITEM' ? 'text-black' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                  className={`relative flex-1 py-3 rounded-lg label-strong font-outfit transition-all duration-300 z-10 ${type === 'FREE_ITEM' ? 'text-black' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
                     }`}
                 >
                   {type === 'FREE_ITEM' && (

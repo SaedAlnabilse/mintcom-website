@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronDown, Check } from 'lucide-react';
+import { X, ChevronDown, Check, Info } from 'lucide-react';
 import api from '../config/api';
 import { QuickInfo } from './QuickInfo';
 import {
@@ -523,6 +523,16 @@ export function CustomRoleFormModal({
                   {errors.general}
                 </div>
               )}
+
+              {/* Role Setup Help Info */}
+              <div className="px-4 py-3.5 rounded-2xl bg-blue-50/50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/10 flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Info size={14} strokeWidth={2.5} />
+                </div>
+                <p className="text-xs sm:text-sm text-blue-700/80 dark:text-blue-300/80 font-medium leading-relaxed">
+                  {t('roles.form.roleSetupHelp')}
+                </p>
+              </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {/* Name Input */}

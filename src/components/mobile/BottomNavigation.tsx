@@ -59,7 +59,7 @@ export function BottomNavigation({ onMenuClick, items }: BottomNavigationProps) 
                     />
                   </div>
                   <span
-                    className={`mt-1 text-xs font-black tracking-widest transition-colors ${isActive ? 'text-paymint-green' : 'text-gray-400'
+                    className={`mt-1 label-strong font-outfit transition-colors ${isActive ? 'text-paymint-green' : 'text-gray-400'
                       }`}
                   >
                     {item.label}
@@ -77,7 +77,7 @@ export function BottomNavigation({ onMenuClick, items }: BottomNavigationProps) 
           className="flex flex-col items-center justify-center flex-1 h-full touch-target text-gray-400 hover:text-paymint-green transition-colors"
         >
           <Smartphone size={22} />
-          <span className="mt-1 text-xs font-black tracking-widest text-gray-400">{t('common.app')}</span>
+          <span className="mt-1 label-strong font-outfit">{t('common.app')}</span>
         </a>
 
 
@@ -88,7 +88,7 @@ export function BottomNavigation({ onMenuClick, items }: BottomNavigationProps) 
           className="flex flex-col items-center justify-center flex-1 h-full touch-target"
         >
           <Menu size={22} className="text-gray-400" />
-          <span className="mt-1 text-xs font-black tracking-widest text-gray-400">{t('common.more')}</span>
+          <span className="mt-1 label-strong font-outfit">{t('common.more')}</span>
         </button>
       </nav>
     </div>

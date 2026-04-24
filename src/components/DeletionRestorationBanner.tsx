@@ -43,7 +43,7 @@ export function DeletionRestorationBanner() {
       </div>
       <button
         onClick={handleRestoreClick}
-        className="flex items-center gap-2 px-4 py-1.5 bg-white text-red-600 rounded-lg text-xs font-black tracking-widest hover:bg-gray-100 transition-all shadow-sm"
+        className="flex items-center gap-2 px-4 py-1.5 bg-white text-red-600 rounded-lg label-strong font-outfit hover:bg-gray-100 transition-all shadow-sm"
       >
         {t('account.restoreAction')}
       </button>

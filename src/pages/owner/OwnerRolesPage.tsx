@@ -269,7 +269,7 @@ export function OwnerRolesPage() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black tracking-widest text-gray-400">{t('owner.roles.loading')}</p>
+            <p className="label-strong font-outfit">{t('owner.roles.loading')}</p>
           </div>
         ) : filteredRoles.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32 text-center bg-gray-50/30 dark:bg-black/10">

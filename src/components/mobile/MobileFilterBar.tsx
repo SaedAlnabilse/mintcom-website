@@ -65,7 +65,7 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
             <Filter size={18} />
             <span className="text-sm font-bold">{t('common.filters')}</span>
             {activeCount > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-paymint-green text-black text-xs font-black tracking-widest">
+              <span className="px-2 py-0.5 rounded-full bg-paymint-green text-black label-strong font-outfit">
                 {activeCount}
               </span>
             )}

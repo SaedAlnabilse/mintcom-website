@@ -211,7 +211,7 @@ export function AttributeFormModal({
                             <div className="bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/10 rounded-xl p-4 flex gap-3">
                                 <AlertCircle size={18} className="text-blue-500 shrink-0 mt-0.5" />
                                 <div>
-                                    <p className="text-xs font-black tracking-widest text-blue-500 mb-1">{t('attributes.form.infoTitle')}</p>
+                                    <p className="label-strong font-outfit text-blue-500 mb-1">{t('attributes.form.infoTitle')}</p>
                                     <p className="text-xs font-bold text-gray-500 leading-relaxed">
                                         {t('attributes.form.infoDesc')}
                                     </p>

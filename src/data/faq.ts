@@ -24,13 +24,13 @@ export const FAQ_DATA: FAQItem[] = [
     category: 'products',
     question: 'How do I add a new product?',
     questionAr: 'كيف أضيف منتج جديد؟',
-    answer: 'Navigate to Dashboard > Products and click "Add Product". Fill in the essential details like name, price, and category. You can also upload a product image and enable "Track Stock" for advanced inventory management.',
+    answer: 'Navigate to Dashboard > Products and click "Add Product". Fill in the essential details like name, price, and category. You can also upload a product image and enable "Track Stock" for advanced recipe operations.',
     answerAr: 'اذهب إلى لوحة التحكم > المنتجات واضغط "إضافة منتج". أكمل الاسم والسعر والتصنيف وأضف صورة اختيارياً. فعّل "تتبع عمليات الوصفات" لإدارة عمليات الوصفات.'
   },
   {
     id: 'track-stock',
     category: 'products',
-    question: 'Can I track inventory and recipe operations?',
+    question: 'Can I track recipe operations and recipe operations?',
     questionAr: 'هل يمكنني تتبع عمليات الوصفات؟',
     answer: 'Yes! When editing a product, enable "Track Stock" to set your initial quantity and low-stock thresholds. This allows you to receive alerts when items are running low and manage your kitchen recipes effectively.',
     answerAr: 'نعم! عند تعديل المنتج، فعّل "تتبع عمليات الوصفات" وحدد الكمية الأولية. يمكنك أيضاً تحديد حد عمليات الوصفات المنخفض للحصول على تنبيهات عند النقص.'

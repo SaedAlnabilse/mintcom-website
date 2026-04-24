@@ -94,19 +94,19 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
                 <th
-                  className="px-6 py-4 text-start text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="px-6 py-4 text-start label-strong font-outfit cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   onClick={() => requestSort('name')}
                 >
                   {t('orders.reports.discounts.name')}
                 </th>
                 <th
-                  className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="px-6 py-4 text-center label-strong font-outfit cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   onClick={() => requestSort('count')}
                 >
                   {t('orders.reports.discounts.count')}
                 </th>
                 <th
-                  className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="px-6 py-4 text-center label-strong font-outfit cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   onClick={() => requestSort('value')}
                 >
                   {t('orders.reports.discounts.value')}

@@ -91,13 +91,13 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
-                <th className="px-5 py-5 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.staff')}</th>
-                <th className="px-5 py-5 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.time')}</th>
-                <th className="px-5 py-5 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.opening')}</th>
-                <th className="px-5 py-5 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.stats.totalSales')}</th>
-                <th className="px-5 py-5 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.closing')}</th>
-                <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.variance')}</th>
-                <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.status')}</th>
+                <th className="px-5 py-5 text-start label-strong font-outfit">{t('orders.reports.shifts.staff')}</th>
+                <th className="px-5 py-5 text-start label-strong font-outfit">{t('orders.reports.shifts.time')}</th>
+                <th className="px-5 py-5 text-end label-strong font-outfit">{t('orders.reports.shifts.opening')}</th>
+                <th className="px-5 py-5 text-end label-strong font-outfit">{t('orders.stats.totalSales')}</th>
+                <th className="px-5 py-5 text-end label-strong font-outfit">{t('orders.reports.shifts.closing')}</th>
+                <th className="px-5 py-5 text-center label-strong font-outfit">{t('orders.reports.shifts.variance')}</th>
+                <th className="px-5 py-5 text-center label-strong font-outfit">{t('orders.reports.shifts.status')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -138,13 +138,13 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                           : '—'}
                       </span>
                     ) : (
-                      <span className="text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.active')}</span>
+                      <span className="label-strong font-outfit">{t('orders.reports.shifts.active')}</span>
                     )}
                   </td>
                   <td className="px-5 py-5 text-center">
                     {shift.status === 'CLOSED' && shift.discrepancy !== null && shift.discrepancy !== undefined ? (
                       <div className="flex flex-col items-center">
-                        <span className={`px-2.5 py-1 rounded-lg text-xs font-black tracking-widest border ${shift.discrepancy > 0.001
+                        <span className={`px-2.5 py-1 rounded-lg label-strong font-outfit border ${shift.discrepancy > 0.001
                           ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
                           : shift.discrepancy < -0.001
                             ? 'bg-red-500/10 text-red-500 border-red-500/20'
@@ -158,11 +158,11 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                         </span>
                       </div>
                     ) : (
-                      <span className="text-xs font-black text-gray-400 tracking-widest">—</span>
+                      <span className="label-strong font-outfit">—</span>
                     )}
                   </td>
                   <td className="px-5 py-5 text-center">
-                    <span className={`px-2.5 py-1 rounded-lg text-xs font-black tracking-widest border transition-all ${shift.status === 'OPEN'
+                    <span className={`px-2.5 py-1 rounded-lg label-strong font-outfit border transition-all ${shift.status === 'OPEN'
                       ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
                       : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
                       }`}>

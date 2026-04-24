@@ -194,7 +194,7 @@ export function EstablishmentDeletionWizard({
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-200 dark:border-white/5 shadow-xl">
                 <div className="w-12 h-12 border-4 border-paymint-red/10 border-t-paymint-red rounded-full animate-spin mx-auto" />
-                <p className="text-xs font-black tracking-widest text-gray-400 mt-4 text-center">{t('security.deletion.loading')}</p>
+                <p className="label-strong font-outfit mt-4 text-center">{t('security.deletion.loading')}</p>
             </div>
             </div>
         );

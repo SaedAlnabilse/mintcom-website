@@ -177,7 +177,7 @@ export function SignUpPage() {
           </div>
           <Link
             to="/login"
-            className="inline-flex items-center justify-center w-full bg-paymint-green text-black text-xs font-black tracking-widest py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
+            className="inline-flex items-center justify-center w-full bg-paymint-green text-black label-strong font-outfit py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
           >
             {t('auth.signup.goToLogin')}
           </Link>
