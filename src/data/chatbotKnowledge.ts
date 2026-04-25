@@ -13,6 +13,8 @@ export interface KnowledgeEntry {
   answerAr?: string;
   category: 'navigation' | 'feature' | 'billing' | 'technical' | 'account' | 'getting-started' | 'products' | 'orders' | 'staff' | 'reports' | 'settings' | 'pos' | 'shifts' | 'payments' | 'loyalty' | 'troubleshooting';
   navigationPath?: string;
+  navigationFallbackPath?: string;
+  priority?: number;
   relatedTopics?: string[];
 }
 
@@ -166,10 +168,10 @@ The reset link expires in **24 hours** for security.`,
   },
   {
     id: 'onboarding',
-    keywords: ['onboarding', 'setup', 'first time', 'new establishment', 'create store', 'add location', 'إعداد', 'تهيئة', 'أول مرة', 'موقع جديد', 'إنشاء متجر', 'إضافة موقع'],
+    keywords: ['onboarding', 'setup', 'first time', 'first location', 'new establishment', 'create first store', 'initial setup', 'Ø¥Ø¹Ø¯Ø§Ø¯', 'ØªÙ‡ÙŠØ¦Ø©', 'Ø£ÙˆÙ„ Ù…Ø±Ø©', 'Ø£ÙˆÙ„ Ù…ÙˆÙ‚Ø¹', 'Ù…ÙˆÙ‚Ø¹ Ø¬Ø¯ÙŠØ¯', 'Ø¥Ù†Ø´Ø§Ø¡ Ø£ÙˆÙ„ Ù…ØªØ¬Ø±'],
     question: 'How does the onboarding process work?',
-    questionAr: 'كيف تعمل عملية الإعداد؟',
-    answer: `Our onboarding wizard makes setup a breeze! It's a 4-step process:
+    questionAr: 'ÙƒÙŠÙ ØªØ¹Ù…Ù„ Ø¹Ù…Ù„ÙŠØ© Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯ØŸ',
+    answer: `Our onboarding wizard is used when you are creating a brand-new location and setting up its first POS connection. It's a 4-step process:
 
 **Step 1: Establishment Details**
 - Business name and category (Restaurant, Cafe, Retail)
@@ -177,23 +179,39 @@ The reset link expires in **24 hours** for security.`,
 - Currency settings
 
 **Step 2: Subscription & Payment**
-- New users get a 7-day free trial!
+- New users get a 7-day free trial
 - Securely link your payment card
 
 **Step 3: Establishment Credentials**
-- Create a unique Establishment ID (e.g., "downtown-cafe")
+- Create a unique Establishment ID (for example: "downtown-cafe")
 - Set a password for POS app connections
 
 **Step 4: First Admin Profile**
-- Create the primary administrator account`,
-    answerAr: `معالج الإعداد يجعل التهيئة سهلة! العملية من 4 خطوات:
+- Create the primary administrator account
 
-**الخطوة 1: تفاصيل المنشأة** - اسم العمل والفئة والعنوان والعملة
-**الخطوة 2: الاشتراك والدفع** - تجربة مجانية 7 أيام! ربط بطاقة الدفع
-**الخطوة 3: بيانات المنشأة** - إنشاء معرف فريد وكلمة مرور للتطبيق
-**الخطوة 4: ملف المسؤول الأول** - إنشاء حساب المسؤول الرئيسي`,
+If you already have a brand and only want to connect an existing location to it, use **Brand > Locations > Add Location** instead of onboarding.`,
+    answerAr: `ÙŠÙØ³ØªØ®Ø¯Ù… Ù…Ø¹Ø§Ù„Ø¬ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯ Ø¹Ù†Ø¯Ù…Ø§ ØªØ±ÙŠØ¯ Ø¥Ù†Ø´Ø§Ø¡ Ù…ÙˆÙ‚Ø¹ Ø¬Ø¯ÙŠØ¯ Ø¨Ø§Ù„ÙƒØ§Ù…Ù„ ÙˆØªØ¬Ù‡ÙŠØ² Ø£ÙˆÙ„ Ø§ØªØµØ§Ù„ Ù„Ù‡ Ù…Ø¹ Ù†Ø¸Ø§Ù… Ù†Ù‚Ø§Ø· Ø§Ù„Ø¨ÙŠØ¹. Ø§Ù„Ø¹Ù…Ù„ÙŠØ© Ù…Ù† 4 Ø®Ø·ÙˆØ§Øª:
+
+**Ø§Ù„Ø®Ø·ÙˆØ© 1: ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù…Ù†Ø´Ø£Ø©**
+- Ø§Ø³Ù… Ø§Ù„Ù†Ø´Ø§Ø· ÙˆØ§Ù„ÙØ¦Ø© (Ù…Ø·Ø¹Ù…ØŒ ÙƒØ§ÙÙŠÙ‡ØŒ Ù…ØªØ¬Ø±)
+- Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„ØªÙˆØ§ØµÙ„ ÙˆØ§Ù„Ø¹Ù†ÙˆØ§Ù†
+- Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„Ø¹Ù…Ù„Ø©
+
+**Ø§Ù„Ø®Ø·ÙˆØ© 2: Ø§Ù„Ø§Ø´ØªØ±Ø§Ùƒ ÙˆØ§Ù„Ø¯ÙØ¹**
+- ÙŠØ­ØµÙ„ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… Ø§Ù„Ø¬Ø¯ÙŠØ¯ Ø¹Ù„Ù‰ ØªØ¬Ø±Ø¨Ø© Ù…Ø¬Ø§Ù†ÙŠØ© Ù„Ù…Ø¯Ø© 7 Ø£ÙŠØ§Ù…
+- Ø±Ø¨Ø· Ø¨Ø·Ø§Ù‚Ø© Ø§Ù„Ø¯ÙØ¹ Ø¨Ø´ÙƒÙ„ Ø¢Ù…Ù†
+
+**Ø§Ù„Ø®Ø·ÙˆØ© 3: Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ù†Ø´Ø£Ø©**
+- Ø¥Ù†Ø´Ø§Ø¡ Ù…Ø¹Ø±Ù ÙØ±ÙŠØ¯ Ù„Ù„Ù…Ù†Ø´Ø£Ø© (Ù…Ø«Ù„: "downtown-cafe")
+- ØªØ¹ÙŠÙŠÙ† ÙƒÙ„Ù…Ø© Ù…Ø±ÙˆØ± Ù„Ø§ØªØµØ§Ù„ ØªØ·Ø¨ÙŠÙ‚ Ù†Ù‚Ø§Ø· Ø§Ù„Ø¨ÙŠØ¹
+
+**Ø§Ù„Ø®Ø·ÙˆØ© 4: Ù…Ù„Ù Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„ Ø§Ù„Ø£ÙˆÙ„**
+- Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨ Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„ Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠ
+
+Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ù„Ø¯ÙŠÙƒ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ© Ù…ÙˆØ¬ÙˆØ¯Ø© ÙˆØªØ±ÙŠØ¯ ÙÙ‚Ø· Ø±Ø¨Ø· Ù…ÙˆÙ‚Ø¹ Ù‚Ø§Ø¦Ù… Ø¨Ù‡Ø§ØŒ Ø§Ø³ØªØ®Ø¯Ù… **Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ© > Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹ > Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹** Ø¨Ø¯Ù„Ø§Ù‹ Ù…Ù† Ù…Ø¹Ø§Ù„Ø¬ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯.`,
     category: 'getting-started',
-    navigationPath: '/onboarding'
+    navigationPath: '/onboarding',
+    priority: 6
   },
 
   // ========== SHIFTS ==========
@@ -754,40 +772,125 @@ Go to **Dashboard > Reports** to explore!`,
   },
   {
     id: 'establishments',
-    keywords: ['establishment', 'location', 'store', 'branch', 'multiple locations', 'add store', 'موقع', 'فرع', 'متجر', 'مواقع متعددة', 'إضافة فرع', 'منشأة'],
+    keywords: ['establishment', 'location', 'store', 'branch', 'multiple locations', 'manage locations', 'owner locations', 'Ù…ÙˆÙ‚Ø¹', 'ÙØ±Ø¹', 'Ù…ØªØ¬Ø±', 'Ù…ÙˆØ§Ù‚Ø¹ Ù…ØªØ¹Ø¯Ø¯Ø©', 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹', 'Ù…ÙˆØ§Ù‚Ø¹ Ø§Ù„Ù…Ø§Ù„Ùƒ', 'Ù…Ù†Ø´Ø£Ø©'],
     question: 'How do I manage multiple locations?',
-    questionAr: 'كيف أدير مواقع متعددة؟',
-    answer: `Go to **Owner Portal** to see all establishments. Add new locations with the onboarding wizard. Group locations under **Brands** for unified management.`,
-    answerAr: `اذهب إلى **بوابة المالك** لرؤية جميع المنشآت. أضف مواقع جديدة بمعالج الإعداد. جمّع المواقع تحت **العلامات التجارية** لإدارة موحدة.`,
+    questionAr: 'ÙƒÙŠÙ Ø£Ø¯ÙŠØ± Ù…ÙˆØ§Ù‚Ø¹ Ù…ØªØ¹Ø¯Ø¯Ø©ØŸ',
+    answer: `Use **Owner > Locations** to manage all locations across your account.
+
+- **View all locations:** Open the Locations list in the Owner Portal.
+- **Create a brand-new location:** Click **Add Location**. This takes you to onboarding to create the location.
+- **Add a location to an existing brand:** Open the brand dashboard, go to **Brand > Locations**, then click **Add Location** to link an unlinked location.
+- **Create a new brand:** Go to **Owner > Brands** and click **Create Brand**.
+
+Important: if a location is already linked to another brand, it will not appear in the brand linking list.`,
+    answerAr: `Ø§Ø³ØªØ®Ø¯Ù… **Ø§Ù„Ù…Ø§Ù„Ùƒ > Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹** Ù„Ø¥Ø¯Ø§Ø±Ø© Ø¬Ù…ÙŠØ¹ Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹ ÙÙŠ Ø­Ø³Ø§Ø¨Ùƒ.
+
+- **Ø¹Ø±Ø¶ ÙƒÙ„ Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹:** Ø§ÙØªØ­ Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹ Ø¯Ø§Ø®Ù„ Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„Ù…Ø§Ù„Ùƒ.
+- **Ø¥Ù†Ø´Ø§Ø¡ Ù…ÙˆÙ‚Ø¹ Ø¬Ø¯ÙŠØ¯ Ø¨Ø§Ù„ÙƒØ§Ù…Ù„:** Ø§Ø¶ØºØ· **Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹**. Ø³ÙŠØªÙ… Ù†Ù‚Ù„Ùƒ Ø¥Ù„Ù‰ Ù…Ø¹Ø§Ù„Ø¬ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯ Ù„Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ù…ÙˆÙ‚Ø¹.
+- **Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹ Ø¥Ù„Ù‰ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ© Ù…ÙˆØ¬ÙˆØ¯Ø©:** Ø§ÙØªØ­ Ù„ÙˆØ­Ø© Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ© Ø«Ù… Ø§Ø°Ù‡Ø¨ Ø¥Ù„Ù‰ **Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ© > Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹** ÙˆØ§Ø¶ØºØ· **Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹** Ù„Ø±Ø¨Ø· Ù…ÙˆÙ‚Ø¹ ØºÙŠØ± Ù…Ø±ØªØ¨Ø·.
+- **Ø¥Ù†Ø´Ø§Ø¡ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ© Ø¬Ø¯ÙŠØ¯Ø©:** Ø§Ø°Ù‡Ø¨ Ø¥Ù„Ù‰ **Ø§Ù„Ù…Ø§Ù„Ùƒ > Ø§Ù„Ø¹Ù„Ø§Ù…Ø§Øª Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©** ÙˆØ§Ø¶ØºØ· **Ø¥Ù†Ø´Ø§Ø¡ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©**.
+
+Ù…Ù‡Ù…: Ø¥Ø°Ø§ ÙƒØ§Ù† Ø§Ù„Ù…ÙˆÙ‚Ø¹ Ù…Ø±ØªØ¨Ø·Ø§Ù‹ Ù…Ø³Ø¨Ù‚Ø§Ù‹ Ø¨Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ© Ø£Ø®Ø±Ù‰ ÙÙ„Ù† ÙŠØ¸Ù‡Ø± ÙÙŠ Ù‚Ø§Ø¦Ù…Ø© Ø±Ø¨Ø· Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹.`,
     category: 'feature',
-    navigationPath: '/owner/establishments'
+    navigationPath: '/owner/establishments',
+    priority: 14,
+    relatedTopics: ['add-owner-location', 'link-location-brand', 'create-brand']
+  },
+  {
+    id: 'add-owner-location',
+    keywords: ['add location', 'create location', 'new location', 'add new location', 'create new location', 'add store', 'create store', 'new branch', 'Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹', 'Ø¥Ù†Ø´Ø§Ø¡ Ù…ÙˆÙ‚Ø¹', 'Ù…ÙˆÙ‚Ø¹ Ø¬Ø¯ÙŠØ¯', 'Ø¥Ø¶Ø§ÙØ© ÙØ±Ø¹', 'Ø¥Ù†Ø´Ø§Ø¡ ÙØ±Ø¹'],
+    question: 'How do I create a new location?',
+    questionAr: 'ÙƒÙŠÙ Ø£Ù†Ø´Ø¦ Ù…ÙˆÙ‚Ø¹Ø§Ù‹ Ø¬Ø¯ÙŠØ¯Ø§Ù‹ØŸ',
+    answer: `If the location does not exist yet, create it first from the owner side:
+
+1. Go to **Owner Overview** or **Owner > Locations**.
+2. Click **Add Location**.
+3. Complete the onboarding flow with the new location details.
+4. When the location is created, return to your brand and use **Brand > Locations > Add Location** if you want to link it to a brand.
+
+This flow is for creating a brand-new location. Linking an existing unlinked location to a brand is a separate step.`,
+    answerAr: `Ø¥Ø°Ø§ ÙƒØ§Ù† Ø§Ù„Ù…ÙˆÙ‚Ø¹ ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯ Ø¨Ø¹Ø¯ØŒ Ø£Ù†Ø´Ø¦Ù‡ Ø£ÙˆÙ„Ø§Ù‹ Ù…Ù† Ø¬Ù‡Ø© Ø§Ù„Ù…Ø§Ù„Ùƒ:
+
+1. Ø§Ø°Ù‡Ø¨ Ø¥Ù„Ù‰ **Ù†Ø¸Ø±Ø© Ø¹Ø§Ù…Ø© Ø§Ù„Ù…Ø§Ù„Ùƒ** Ø£Ùˆ **Ø§Ù„Ù…Ø§Ù„Ùƒ > Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹**.
+2. Ø§Ø¶ØºØ· **Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹**.
+3. Ø£ÙƒÙ…Ù„ Ù…Ø¹Ø§Ù„Ø¬ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯ Ø¨Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…ÙˆÙ‚Ø¹ Ø§Ù„Ø¬Ø¯ÙŠØ¯.
+4. Ø¨Ø¹Ø¯ Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ù…ÙˆÙ‚Ø¹ØŒ Ø§Ø±Ø¬Ø¹ Ø¥Ù„Ù‰ Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ© ÙˆØ§Ø³ØªØ®Ø¯Ù… **Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ© > Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹ > Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹** Ø¥Ø°Ø§ Ø£Ø±Ø¯Øª Ø±Ø¨Ø·Ù‡ Ø¨Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©.
+
+Ù‡Ø°Ø§ Ø§Ù„Ù…Ø³Ø§Ø± Ù…Ø®ØµØµ Ù„Ø¥Ù†Ø´Ø§Ø¡ Ù…ÙˆÙ‚Ø¹ Ø¬Ø¯ÙŠØ¯ Ø¨Ø§Ù„ÙƒØ§Ù…Ù„. Ø£Ù…Ø§ Ø±Ø¨Ø· Ù…ÙˆÙ‚Ø¹ Ù…ÙˆØ¬ÙˆØ¯ ÙˆØºÙŠØ± Ù…Ø±ØªØ¨Ø· Ø¨Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ© ÙÙ‡Ùˆ Ø®Ø·ÙˆØ© Ù…Ø®ØªÙ„ÙØ©.`,
+    category: 'feature',
+    navigationPath: '/onboarding',
+    navigationFallbackPath: '/owner/establishments',
+    priority: 18,
+    relatedTopics: ['link-location-brand', 'establishments', 'create-brand']
+  },
+  {
+    id: 'create-brand',
+    keywords: ['create brand', 'new brand', 'add brand', 'brand setup', 'set up brand', 'Ø¥Ù†Ø´Ø§Ø¡ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©', 'Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ© Ø¬Ø¯ÙŠØ¯Ø©', 'Ø¥Ø¶Ø§ÙØ© Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©', 'Ø¥Ø¹Ø¯Ø§Ø¯ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©'],
+    question: 'How do I create a brand?',
+    questionAr: 'ÙƒÙŠÙ Ø£Ù†Ø´Ø¦ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©ØŸ',
+    answer: `To create a new brand:
+
+1. Go to **Owner > Brands**.
+2. Click **Create Brand**.
+3. Enter the brand details such as **brand name**, **login ID**, and **admin password**.
+4. In the next step, select the **unlinked locations** you want to include in the new brand.
+5. If prompted, review employee merge options.
+6. Click **Create Brand** to finish.
+
+Later, if you want to add more locations to the same brand, open the brand dashboard and use **Brand > Locations > Add Location**.`,
+    answerAr: `Ù„Ø¥Ù†Ø´Ø§Ø¡ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ© Ø¬Ø¯ÙŠØ¯Ø©:
+
+1. Ø§Ø°Ù‡Ø¨ Ø¥Ù„Ù‰ **Ø§Ù„Ù…Ø§Ù„Ùƒ > Ø§Ù„Ø¹Ù„Ø§Ù…Ø§Øª Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©**.
+2. Ø§Ø¶ØºØ· **Ø¥Ù†Ø´Ø§Ø¡ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©**.
+3. Ø£Ø¯Ø®Ù„ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ù…Ø«Ù„ **Ø§Ø³Ù… Ø§Ù„Ø¹Ù„Ø§Ù…Ø©** Ùˆ**Ù…Ø¹Ø±Ù ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„** Ùˆ**ÙƒÙ„Ù…Ø© Ù…Ø±ÙˆØ± Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„**.
+4. ÙÙŠ Ø§Ù„Ø®Ø·ÙˆØ© Ø§Ù„ØªØ§Ù„ÙŠØ© Ø§Ø®ØªØ± **Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹ ØºÙŠØ± Ø§Ù„Ù…Ø±ØªØ¨Ø·Ø©** Ø§Ù„ØªÙŠ ØªØ±ÙŠØ¯ Ø¥Ø¶Ø§ÙØªÙ‡Ø§ Ø¥Ù„Ù‰ Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„Ø¬Ø¯ÙŠØ¯Ø©.
+5. Ø¥Ø°Ø§ Ø¸Ù‡Ø± Ù„Ùƒ Ø®ÙŠØ§Ø± Ø¯Ù…Ø¬ Ø§Ù„Ù…ÙˆØ¸ÙÙŠÙ† ÙØ±Ø§Ø¬Ø¹ Ø§Ù„Ø§Ø®ØªÙŠØ§Ø±Ø§Øª Ø§Ù„Ù…Ù†Ø§Ø³Ø¨Ø©.
+6. Ø§Ø¶ØºØ· **Ø¥Ù†Ø´Ø§Ø¡ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©** Ù„Ø¥ÙƒÙ…Ø§Ù„ Ø§Ù„Ø¹Ù…Ù„ÙŠØ©.
+
+Ù„Ø§Ø­Ù‚Ø§Ù‹ØŒ Ø¥Ø°Ø§ Ø£Ø±Ø¯Øª Ø¥Ø¶Ø§ÙØ© Ù…ÙˆØ§Ù‚Ø¹ Ø£Ø®Ø±Ù‰ Ø¥Ù„Ù‰ Ù†ÙØ³ Ø§Ù„Ø¹Ù„Ø§Ù…Ø©ØŒ Ø§ÙØªØ­ Ù„ÙˆØ­Ø© Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø«Ù… Ø§Ø³ØªØ®Ø¯Ù… **Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ© > Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹ > Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹**.`,
+    category: 'feature',
+    navigationPath: '/owner/brands',
+    priority: 18,
+    relatedTopics: ['link-location-brand', 'add-owner-location', 'establishments']
   },
   {
     id: 'link-location-brand',
-    keywords: ['add location to brand', 'link location', 'brand management', 'group locations', 'إضافة موقع للعلامة التجارية', 'ربط موقع', 'إدارة العلامة التجارية', 'تجميع المواقع'],
+    keywords: ['add a location to my brand', 'add location to my brand', 'link location to brand', 'link a location to my brand', 'attach location to brand', 'assign location to brand', 'brand locations', 'Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹ Ù„Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©', 'Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹ Ø¥Ù„Ù‰ Ø¹Ù„Ø§Ù…ØªÙŠ Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©', 'Ø±Ø¨Ø· Ù…ÙˆÙ‚Ø¹ Ø¨Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©', 'Ø±Ø¨Ø· ÙØ±Ø¹ Ø¨Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©', 'Ù…ÙˆØ§Ù‚Ø¹ Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©'],
     question: 'How do I add or link a location to my brand?',
-    questionAr: 'كيف أضيف أو أربط موقعاً بعلامتي التجارية؟',
-    answer: `To add or link locations to a brand, follow these steps in the **Owner Portal**:
+    questionAr: 'ÙƒÙŠÙ Ø£Ø¶ÙŠÙ Ø£Ùˆ Ø£Ø±Ø¨Ø· Ù…ÙˆÙ‚Ø¹Ø§Ù‹ Ø¨Ø¹Ù„Ø§Ù…ØªÙŠ Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©ØŸ',
+    answer: `If the brand already exists and you want to connect an existing unlinked location to it:
 
-1. Go to the **Brands** section from the sidebar.
-2. Find the brand you want to update and click the **three dots** (actions) or open its dashboard.
-3. Click on **"Link Locations"**.
-4. Select the unlinked locations you want to add to this brand.
-5. Click **"Save"** or **"Link"** to confirm.
+1. Go to **Owner > Brands**.
+2. Open the brand dashboard.
+3. Go to **Brand > Locations**.
+4. Click **Add Location**.
+5. Select the unlinked locations you want to connect.
+6. Click **Continue**.
+7. Review employee merge options if the modal asks you to do that.
+8. Click **Link** to finish.
 
-**Note:** Only locations that are not already part of another brand will appear in the "Unlinked Locations" list.`,
-    answerAr: `لإضافة أو ربط مواقع بعلامة تجارية، اتبع الخطوات التالية في **بوابة المالك**:
+Important:
+- Only locations that are not linked to any brand appear in this list.
+- If the location does not exist yet, create it first from **Owner Overview > Add Location** or **Owner > Locations > Add Location**, then come back and link it to the brand.`,
+    answerAr: `Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ© Ù…ÙˆØ¬ÙˆØ¯Ø© Ø¨Ø§Ù„ÙØ¹Ù„ ÙˆØªØ±ÙŠØ¯ Ø±Ø¨Ø· Ù…ÙˆÙ‚Ø¹ Ù‚Ø§Ø¦Ù… ÙˆØºÙŠØ± Ù…Ø±ØªØ¨Ø· Ø¨Ù‡Ø§:
 
-1. اذهب إلى قسم **العلامات التجارية** من القائمة الجانبية.
-2. ابحث عن العلامة التجارية المطلوبة واضغط على **النقاط الثلاث** (الإجراءات).
-3. اضغط على **"ربط المواقع" (Link Locations)**.
-4. اختر المواقع غير المرتبطة التي تريد إضافتها لهذه العلامة التجارية.
-5. اضغط **"حفظ"** أو **"ربط"** للتأكيد.
+1. Ø§Ø°Ù‡Ø¨ Ø¥Ù„Ù‰ **Ø§Ù„Ù…Ø§Ù„Ùƒ > Ø§Ù„Ø¹Ù„Ø§Ù…Ø§Øª Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©**.
+2. Ø§ÙØªØ­ Ù„ÙˆØ­Ø© Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©.
+3. Ø§Ø°Ù‡Ø¨ Ø¥Ù„Ù‰ **Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ© > Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹**.
+4. Ø§Ø¶ØºØ· **Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹**.
+5. Ø§Ø®ØªØ± Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹ ØºÙŠØ± Ø§Ù„Ù…Ø±ØªØ¨Ø·Ø© Ø§Ù„ØªÙŠ ØªØ±ÙŠØ¯ ØªÙˆØµÙŠÙ„Ù‡Ø§.
+6. Ø§Ø¶ØºØ· **Ù…ØªØ§Ø¨Ø¹Ø©**.
+7. Ø¥Ø°Ø§ Ø·Ù„Ø¨Øª Ø§Ù„Ù†Ø§ÙØ°Ø© Ø°Ù„ÙƒØŒ Ø±Ø§Ø¬Ø¹ Ø®ÙŠØ§Ø±Ø§Øª Ø¯Ù…Ø¬ Ø§Ù„Ù…ÙˆØ¸ÙÙŠÙ†.
+8. Ø§Ø¶ØºØ· **Ø±Ø¨Ø·** Ù„Ø¥ØªÙ…Ø§Ù… Ø§Ù„Ø¹Ù…Ù„ÙŠØ©.
 
-**ملاحظة:** فقط المواقع التي ليست جزءاً من علامة تجارية أخرى ستظهر في قائمة "المواقع غير المرتبطة".`,
+Ù…Ù‡Ù…:
+- ØªØ¸Ù‡Ø± Ù‡Ù†Ø§ ÙÙ‚Ø· Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹ Ø§Ù„ØªÙŠ Ù„Ø§ ØªØ±ØªØ¨Ø· Ø¨Ø£ÙŠ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©.
+- Ø¥Ø°Ø§ ÙƒØ§Ù† Ø§Ù„Ù…ÙˆÙ‚Ø¹ ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯ Ø¨Ø¹Ø¯ØŒ Ø£Ù†Ø´Ø¦Ù‡ Ø£ÙˆÙ„Ø§Ù‹ Ù…Ù† **Ù†Ø¸Ø±Ø© Ø¹Ø§Ù…Ø© Ø§Ù„Ù…Ø§Ù„Ùƒ > Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹** Ø£Ùˆ **Ø§Ù„Ù…Ø§Ù„Ùƒ > Ø§Ù„Ù…ÙˆØ§Ù‚Ø¹ > Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹** Ø«Ù… Ø§Ø±Ø¬Ø¹ Ù„Ø±Ø¨Ø·Ù‡ Ø¨Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©.`,
     category: 'feature',
-    navigationPath: '/owner/brands',
-    relatedTopics: ['establishments', 'brands']
+    navigationPath: '/brand/:brand/locations',
+    navigationFallbackPath: '/owner/brands',
+    priority: 24,
+    relatedTopics: ['add-owner-location', 'create-brand', 'establishments']
   },
 
   // ========== HARDWARE ==========

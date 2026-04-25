@@ -39,114 +39,255 @@ interface SmartChatbotProps {
   onClose: () => void;
 }
 
+interface ChatbotNavigationContext {
+  pathname: string;
+  currentLocationSlug: string | null;
+  currentBrandSlug: string | null;
+}
 
-// Detect if text contains Arabic characters
+const ENGLISH_STOP_WORDS = new Set([
+  'a', 'an', 'and', 'are', 'can', 'do', 'for', 'from', 'how', 'i', 'in', 'is', 'it', 'me', 'my',
+  'of', 'on', 'or', 'the', 'to', 'what', 'where', 'which', 'with', 'you', 'your'
+]);
+
+const ARABIC_STOP_WORDS = new Set([
+  'Ø§Ù„Ù‰', 'Ø¥Ù„Ù‰', 'ÙÙŠ', 'Ù…Ù†', 'Ø¹Ù„Ù‰', 'Ø¹Ù†', 'ÙƒÙŠÙ', 'Ù…Ø§', 'Ù…Ø§Ø°Ø§', 'Ù‡Ù„', 'Ù‡Ø°Ø§', 'Ù‡Ø°Ù‡', 'Ù‡Ù†Ø§Ùƒ', 'Ù„Ø¯ÙŠ',
+  'Ø¹Ù†Ø¯ÙŠ', 'Ø§Ø±ÙŠØ¯', 'Ø£Ø±ÙŠØ¯', 'Ù„Ùˆ', 'Ù…Ø¹', 'Ø§Ùˆ', 'Ø£Ùˆ', 'Ùˆ'
+]);
+
 function isArabicText(text: string): boolean {
   return /[\u0600-\u06FF]/.test(text);
 }
 
-// Simple but effective fuzzy matching
-function calculateRelevance(query: string, entry: KnowledgeEntry): number {
-  const queryLower = query.toLowerCase().trim();
-  const words = queryLower.split(/\s+/).filter(w => w.length > 2);
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFKC')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getMeaningfulTokens(text: string): string[] {
+  return normalizeText(text)
+    .split(' ')
+    .filter(token => {
+      if (token.length <= 2) {
+        return false;
+      }
+
+      return !ENGLISH_STOP_WORDS.has(token) && !ARABIC_STOP_WORDS.has(token);
+    });
+}
+
+function scoreTextMatch(queryText: string, queryTokens: string[], sourceText?: string, baseWeight = 1): number {
+  if (!sourceText) {
+    return 0;
+  }
+
+  const normalizedSource = normalizeText(sourceText);
+  if (!normalizedSource) {
+    return 0;
+  }
 
   let score = 0;
 
-  // Check keywords (highest weight) - includes both EN and AR keywords
+  if (queryText === normalizedSource) {
+    score += baseWeight * 8;
+  } else if (queryText.includes(normalizedSource) || normalizedSource.includes(queryText)) {
+    score += baseWeight * 4;
+  }
+
+  const sourceTokens = getMeaningfulTokens(normalizedSource);
+  if (sourceTokens.length === 0) {
+    return score;
+  }
+
+  const matchedTokens = sourceTokens.filter(token => queryTokens.includes(token)).length;
+
+  if (matchedTokens === sourceTokens.length) {
+    score += sourceTokens.length > 1 ? baseWeight * 5 : baseWeight * 3;
+  }
+
+  score += matchedTokens * baseWeight;
+
+  return score;
+}
+
+function calculateRelevance(query: string, entry: KnowledgeEntry, context: ChatbotNavigationContext): number {
+  const queryText = normalizeText(query);
+  const queryTokens = getMeaningfulTokens(queryText);
+
+  if (!queryText) {
+    return 0;
+  }
+
+  let score = entry.priority ?? 0;
+
   for (const keyword of entry.keywords) {
-    if (queryLower.includes(keyword.toLowerCase())) {
-      score += 10;
+    const normalizedKeyword = normalizeText(keyword);
+    if (!normalizedKeyword) {
+      continue;
     }
-    for (const word of words) {
-      if (keyword.toLowerCase().includes(word)) {
-        score += 5;
+
+    const keywordTokens = getMeaningfulTokens(normalizedKeyword);
+
+    if (queryText === normalizedKeyword) {
+      score += 36;
+    } else if (queryText.includes(normalizedKeyword)) {
+      score += 22;
+    }
+
+    if (keywordTokens.length > 0) {
+      const matchedKeywordTokens = keywordTokens.filter(token => queryTokens.includes(token)).length;
+
+      if (matchedKeywordTokens === keywordTokens.length) {
+        score += keywordTokens.length > 1 ? 18 : 10;
       }
+
+      score += matchedKeywordTokens * 4;
     }
   }
 
-  // Check question text (both EN and AR)
-  const questionLower = entry.question.toLowerCase();
-  for (const word of words) {
-    if (questionLower.includes(word)) {
-      score += 3;
-    }
-  }
-  if (entry.questionAr) {
-    for (const word of words) {
-      if (entry.questionAr.includes(word)) {
-        score += 3;
-      }
-    }
-  }
+  score += scoreTextMatch(queryText, queryTokens, entry.question, 3);
+  score += scoreTextMatch(queryText, queryTokens, entry.questionAr, 3);
+  score += scoreTextMatch(queryText, queryTokens, entry.answer, 1);
+  score += scoreTextMatch(queryText, queryTokens, entry.answerAr, 1);
 
-  // Check answer text (lower weight, both EN and AR)
-  const answerLower = entry.answer.toLowerCase();
-  for (const word of words) {
-    if (answerLower.includes(word)) {
-      score += 1;
+  if (context.pathname.startsWith('/brand/')) {
+    if (
+      entry.id === 'link-location-brand' ||
+      entry.navigationPath?.startsWith('/brand/') ||
+      entry.navigationFallbackPath?.startsWith('/brand/')
+    ) {
+      score += 8;
     }
-  }
-  if (entry.answerAr) {
-    for (const word of words) {
-      if (entry.answerAr.includes(word)) {
-        score += 1;
-      }
+  } else if (context.pathname.startsWith('/owner/')) {
+    if (
+      entry.navigationPath?.startsWith('/owner/') ||
+      entry.navigationFallbackPath?.startsWith('/owner/') ||
+      ['create-brand', 'add-owner-location', 'establishments', 'link-location-brand'].includes(entry.id)
+    ) {
+      score += 8;
     }
+  } else if (context.pathname.startsWith('/dashboard/') && entry.navigationPath?.startsWith('/dashboard/')) {
+    score += 6;
   }
 
   return score;
 }
 
-function findBestMatch(query: string): KnowledgeEntry | null {
-  // Check for greetings first (EN and AR)
-  const greetingPatterns = /^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what's up|sup|مرحبا|مرحباً|أهلاً|أهلا|هاي|السلام عليكم|سلام|صباح الخير|مساء الخير|كيف حالك|كيفك|هلا)/i;
+function findBestMatch(query: string, context: ChatbotNavigationContext): KnowledgeEntry | null {
+  const greetingPatterns = /^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what's up|sup|yo|Ù…Ø±Ø­Ø¨Ø§|Ù…Ø±Ø­Ø¨Ø§Ù‹|Ø£Ù‡Ù„Ø§Ù‹|Ø£Ù‡Ù„Ø§|Ù‡Ø§ÙŠ|Ø§Ù„Ø³Ù„Ø§Ù… Ø¹Ù„ÙŠÙƒÙ…|Ø³Ù„Ø§Ù…|ØµØ¨Ø§Ø­ Ø§Ù„Ø®ÙŠØ±|Ù…Ø³Ø§Ø¡ Ø§Ù„Ø®ÙŠØ±|ÙƒÙŠÙ Ø­Ø§Ù„Ùƒ|ÙƒÙŠÙÙƒ|Ù‡Ù„Ø§)$/i;
   if (greetingPatterns.test(query.trim())) {
-    return null; // Will trigger greeting response
+    return null;
   }
 
   const scored = PAYMINT_KNOWLEDGE.map(entry => ({
     entry,
-    score: calculateRelevance(query, entry)
+    score: calculateRelevance(query, entry, context)
   })).filter(item => item.score > 0);
 
-  scored.sort((a, b) => b.score - a.score);
+  scored.sort((a, b) => b.score - a.score || (b.entry.priority ?? 0) - (a.entry.priority ?? 0));
 
-  if (scored.length > 0 && scored[0].score >= 5) {
+  if (scored.length > 0 && scored[0].score >= 8) {
     return scored[0].entry;
   }
 
   return null;
 }
 
-function getRelatedSuggestions(entry: KnowledgeEntry | null, defaultSuggestions: string[]): string[] {
+function getLocalizedQuestion(entry: KnowledgeEntry, useArabic: boolean): string {
+  return useArabic && entry.questionAr ? entry.questionAr : entry.question;
+}
+
+function getKnowledgeQuestionById(id: string, useArabic: boolean): string | undefined {
+  const entry = PAYMINT_KNOWLEDGE.find(item => item.id === id);
+  return entry ? getLocalizedQuestion(entry, useArabic) : undefined;
+}
+
+function getDefaultSuggestions(pathname: string, useArabic: boolean, t: (key: string) => string): string[] {
+  const ownerSuggestions = [
+    getKnowledgeQuestionById('create-brand', useArabic),
+    getKnowledgeQuestionById('add-owner-location', useArabic),
+    getKnowledgeQuestionById('link-location-brand', useArabic),
+    getKnowledgeQuestionById('establishments', useArabic)
+  ].filter((value): value is string => Boolean(value));
+
+  if (pathname.startsWith('/owner/')) {
+    return ownerSuggestions;
+  }
+
+  if (pathname.startsWith('/brand/')) {
+    return [
+      getKnowledgeQuestionById('link-location-brand', useArabic),
+      getKnowledgeQuestionById('add-owner-location', useArabic),
+      getKnowledgeQuestionById('establishments', useArabic),
+      t('chat.suggestions.view_reports')
+    ].filter((value): value is string => Boolean(value));
+  }
+
+  return [
+    t('chat.suggestions.add_product'),
+    t('chat.suggestions.view_orders'),
+    t('chat.suggestions.manage_staff'),
+    t('chat.suggestions.view_reports')
+  ];
+}
+
+function getRelatedSuggestions(entry: KnowledgeEntry | null, defaultSuggestions: string[], useArabic: boolean): string[] {
   if (!entry) {
     return defaultSuggestions;
   }
 
   const suggestions: string[] = [];
 
-  // Get related topics
   if (entry.relatedTopics) {
     for (const topic of entry.relatedTopics) {
-      const related = PAYMINT_KNOWLEDGE.find(e => e.id === topic);
-      if (related) {
-        suggestions.push(related.question);
+      const related = PAYMINT_KNOWLEDGE.find(item => item.id === topic);
+      if (!related) {
+        continue;
+      }
+
+      const question = getLocalizedQuestion(related, useArabic);
+      if (!suggestions.includes(question)) {
+        suggestions.push(question);
       }
     }
   }
 
-  // Add category-related suggestions
   const sameCategory = PAYMINT_KNOWLEDGE.filter(
-    e => e.category === entry.category && e.id !== entry.id
+    item => item.category === entry.category && item.id !== entry.id
   ).slice(0, 2);
 
-  for (const e of sameCategory) {
-    if (!suggestions.includes(e.question)) {
-      suggestions.push(e.question);
+  for (const related of sameCategory) {
+    const question = getLocalizedQuestion(related, useArabic);
+    if (!suggestions.includes(question)) {
+      suggestions.push(question);
     }
   }
 
-  return suggestions.slice(0, 3);
+  return (suggestions.length > 0 ? suggestions : defaultSuggestions).slice(0, 3);
+}
+
+function resolveNavigationPath(entry: KnowledgeEntry, context: ChatbotNavigationContext): string | undefined {
+  let resolvedPath = entry.navigationPath;
+
+  if (resolvedPath) {
+    if (context.currentLocationSlug) {
+      resolvedPath = resolvedPath.replace(':location', context.currentLocationSlug);
+    }
+
+    if (context.currentBrandSlug) {
+      resolvedPath = resolvedPath.replace(':brand', context.currentBrandSlug);
+    }
+
+    if (!resolvedPath.includes(':')) {
+      return resolvedPath;
+    }
+  }
+
+  return entry.navigationFallbackPath;
 }
 
 export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
@@ -161,34 +302,45 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
 
-  // Handle click outside to close
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (chatRef.current && !chatRef.current.contains(event.target as Node)) {
-        // Ignore clicks on the launcher switcher bar
         const isSwitcher = (event.target as Element).closest('#paymint-launcher-switcher');
         if (!isSwitcher) {
           onClose();
         }
       }
     }
-    
+
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, onClose]);
 
-  // Get current location slug for navigation
   const currentLocationSlug = useMemo(() => {
     const match = location.pathname.match(/\/dashboard\/([^/]+)/);
     return match ? match[1] : null;
   }, [location.pathname]);
 
-  // Initialize with welcome message
+  const currentBrandSlug = useMemo(() => {
+    const match = location.pathname.match(/\/brand\/([^/]+)/);
+    return match ? match[1] : null;
+  }, [location.pathname]);
+
+  const navigationContext = useMemo<ChatbotNavigationContext>(() => ({
+    pathname: location.pathname,
+    currentLocationSlug,
+    currentBrandSlug
+  }), [location.pathname, currentLocationSlug, currentBrandSlug]);
+
+  const welcomeSuggestions = useMemo(() => {
+    return getDefaultSuggestions(location.pathname, isRTL, t);
+  }, [location.pathname, isRTL, t]);
+
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       const index = Math.floor(Math.random() * 3);
@@ -198,22 +350,15 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
         type: 'bot',
         content: greeting,
         timestamp: new Date(),
-        suggestions: [
-          t('chat.suggestions.0'),
-          t('chat.suggestions.1'),
-          t('chat.suggestions.2'),
-          t('chat.suggestions.3')
-        ]
+        suggestions: welcomeSuggestions
       }]);
     }
-  }, [isOpen, messages.length, t]);
+  }, [isOpen, messages.length, t, welcomeSuggestions]);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Focus input when opened
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 300);
@@ -221,15 +366,9 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
   }, [isOpen]);
 
   const processMessage = useCallback(async (userMessage: string) => {
-    // Default suggestions for when no match is found
-    const defaultSuggestions = [
-      t('chat.suggestions.add_product'),
-      t('chat.suggestions.view_orders'),
-      t('chat.suggestions.manage_staff'),
-      t('chat.suggestions.view_reports')
-    ];
+    const useArabic = isArabicText(userMessage) || isRTL;
+    const defaultSuggestions = getDefaultSuggestions(location.pathname, useArabic, t);
 
-    // Add user message
     const userMsg: Message = {
       id: Date.now().toString(),
       type: 'user',
@@ -240,14 +379,10 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
     setInput('');
     setIsTyping(true);
 
-    // Simulate thinking delay for natural feel
     await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 500));
 
-    // Check for greetings (EN and AR)
-    const greetingPatterns = /^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what's up|sup|yo|مرحبا|مرحباً|أهلاً|أهلا|هاي|السلام عليكم|سلام|صباح الخير|مساء الخير|كيف حالك|كيفك|هلا)$/i;
+    const greetingPatterns = /^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what's up|sup|yo|Ù…Ø±Ø­Ø¨Ø§|Ù…Ø±Ø­Ø¨Ø§Ù‹|Ø£Ù‡Ù„Ø§Ù‹|Ø£Ù‡Ù„Ø§|Ù‡Ø§ÙŠ|Ø§Ù„Ø³Ù„Ø§Ù… Ø¹Ù„ÙŠÙƒÙ…|Ø³Ù„Ø§Ù…|ØµØ¨Ø§Ø­ Ø§Ù„Ø®ÙŠØ±|Ù…Ø³Ø§Ø¡ Ø§Ù„Ø®ÙŠØ±|ÙƒÙŠÙ Ø­Ø§Ù„Ùƒ|ÙƒÙŠÙÙƒ|Ù‡Ù„Ø§)$/i;
     if (greetingPatterns.test(userMessage.trim())) {
-      // Detect if the user typed in Arabic or if locale is Arabic
-      const useArabic = isArabicText(userMessage) || isRTL;
       const greetings = useArabic ? GREETINGS_AR : GREETINGS;
       const greeting = greetings[Math.floor(Math.random() * greetings.length)];
       const botMsg: Message = {
@@ -262,20 +397,11 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
       return;
     }
 
-    // Find best matching knowledge entry
-    const match = findBestMatch(userMessage);
+    const match = findBestMatch(userMessage, navigationContext);
 
     let botResponse: Message;
 
     if (match) {
-      // Resolve navigation path with current location
-      let resolvedPath = match.navigationPath;
-      if (resolvedPath && currentLocationSlug) {
-        resolvedPath = resolvedPath.replace(':location', currentLocationSlug);
-      }
-
-      // Detect if user typed in Arabic or if locale is Arabic
-      const useArabic = isArabicText(userMessage) || isRTL;
       const answer = useArabic && match.answerAr ? match.answerAr : match.answer;
 
       botResponse = {
@@ -283,12 +409,10 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
         type: 'bot',
         content: answer,
         timestamp: new Date(),
-        suggestions: getRelatedSuggestions(match, defaultSuggestions),
-        navigationPath: resolvedPath
+        suggestions: getRelatedSuggestions(match, defaultSuggestions, useArabic),
+        navigationPath: resolveNavigationPath(match, navigationContext)
       };
     } else {
-      // Fallback response - detect language
-      const useArabic = isArabicText(userMessage) || isRTL;
       const fallbacks = useArabic ? FALLBACK_RESPONSES_AR : FALLBACK_RESPONSES;
       const fallback = fallbacks[Math.floor(Math.random() * fallbacks.length)];
       botResponse = {
@@ -296,18 +420,13 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
         type: 'bot',
         content: fallback,
         timestamp: new Date(),
-        suggestions: [
-          t('chat.suggestions.get_started'),
-          t('chat.suggestions.add_product'),
-          t('chat.suggestions.view_orders'),
-          t('chat.suggestions.contact_support')
-        ]
+        suggestions: defaultSuggestions
       };
     }
 
     setMessages(prev => [...prev, botResponse]);
     setIsTyping(false);
-  }, [currentLocationSlug, t, isRTL]);
+  }, [isRTL, location.pathname, navigationContext, t]);
 
   const handleSend = () => {
     if (input.trim() && !isTyping) {
@@ -343,9 +462,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
             dir={isRTL ? 'rtl' : 'ltr'}
             className={`fixed bottom-[100px] ${isRTL ? 'left-[30px]' : 'right-[30px]'} z-[950] w-[400px] max-w-[calc(100vw-60px)] h-[600px] max-h-[calc(100vh-150px)] bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 flex flex-col overflow-hidden`}
           >
-          {/* Header */}
           <div className="relative px-5 py-4 bg-gradient-to-r from-[#7CC39F] to-[#5BA882] overflow-hidden">
-            {/* Decorative elements */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl" />
               <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-black/5 rounded-full blur-xl" />
@@ -371,7 +488,6 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
             </div>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
             {messages.map((message) => (
               <motion.div
@@ -381,7 +497,6 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                 className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div className={`flex gap-2 max-w-[85%] ${message.type === 'user' ? 'flex-row-reverse' : ''}`}>
-                  {/* Avatar */}
                   <div className={`flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center ${
                     message.type === 'user'
                       ? 'bg-gray-100 dark:bg-white/10'
@@ -393,17 +508,15 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                     }
                   </div>
 
-                  {/* Message Content */}
                   <div className={`space-y-2 ${message.type === 'user' ? 'text-right' : ''}`}>
                     <div className={`inline-block px-4 py-3 rounded-2xl ${
                       message.type === 'user'
                         ? 'bg-[#7CC39F] text-black rounded-tr-sm'
                         : 'bg-gray-100 dark:bg-white/5 text-gray-800 dark:text-gray-200 rounded-tl-sm'
                     }`}>
-                                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
                     </div>
 
-                    {/* Navigation Button */}
                     {message.navigationPath && (
                       <motion.button
                         whileHover={{ scale: 1.02 }}
@@ -417,7 +530,6 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                       </motion.button>
                     )}
 
-                    {/* Suggestions */}
                     {message.suggestions && message.suggestions.length > 0 && (
                       <div className="flex flex-wrap gap-1.5 mt-2">
                         {message.suggestions.map((suggestion, index) => (
@@ -438,7 +550,6 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
               </motion.div>
             ))}
 
-            {/* Typing Indicator */}
             {isTyping && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -468,7 +579,6 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Actions */}
           <div className="px-4 py-2 border-t border-gray-100 dark:border-white/5">
             <div className="flex gap-2 overflow-x-auto scrollbar-none">
               {[
@@ -491,7 +601,6 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
             </div>
           </div>
 
-          {/* Input Area */}
           <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border-t border-gray-100 dark:border-white/5">
             <div className="flex gap-2 items-center">
               <div className="flex-1 relative">
@@ -526,4 +635,3 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
     </AnimatePresence>
   );
 }
-
