@@ -762,6 +762,33 @@ Go to **Dashboard > Reports** to explore!`,
     category: 'feature',
     navigationPath: '/owner/establishments'
   },
+  {
+    id: 'link-location-brand',
+    keywords: ['add location to brand', 'link location', 'brand management', 'group locations', 'إضافة موقع للعلامة التجارية', 'ربط موقع', 'إدارة العلامة التجارية', 'تجميع المواقع'],
+    question: 'How do I add or link a location to my brand?',
+    questionAr: 'كيف أضيف أو أربط موقعاً بعلامتي التجارية؟',
+    answer: `To add or link locations to a brand, follow these steps in the **Owner Portal**:
+
+1. Go to the **Brands** section from the sidebar.
+2. Find the brand you want to update and click the **three dots** (actions) or open its dashboard.
+3. Click on **"Link Locations"**.
+4. Select the unlinked locations you want to add to this brand.
+5. Click **"Save"** or **"Link"** to confirm.
+
+**Note:** Only locations that are not already part of another brand will appear in the "Unlinked Locations" list.`,
+    answerAr: `لإضافة أو ربط مواقع بعلامة تجارية، اتبع الخطوات التالية في **بوابة المالك**:
+
+1. اذهب إلى قسم **العلامات التجارية** من القائمة الجانبية.
+2. ابحث عن العلامة التجارية المطلوبة واضغط على **النقاط الثلاث** (الإجراءات).
+3. اضغط على **"ربط المواقع" (Link Locations)**.
+4. اختر المواقع غير المرتبطة التي تريد إضافتها لهذه العلامة التجارية.
+5. اضغط **"حفظ"** أو **"ربط"** للتأكيد.
+
+**ملاحظة:** فقط المواقع التي ليست جزءاً من علامة تجارية أخرى ستظهر في قائمة "المواقع غير المرتبطة".`,
+    category: 'feature',
+    navigationPath: '/owner/brands',
+    relatedTopics: ['establishments', 'brands']
+  },
 
   // ========== HARDWARE ==========
   {
