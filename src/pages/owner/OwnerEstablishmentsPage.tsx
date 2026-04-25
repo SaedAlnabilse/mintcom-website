@@ -160,13 +160,6 @@ export function OwnerEstablishmentsPage() {
                         <Building2 size={18} className="text-purple-500" />
                         <span>{t('owner.overview.brands')}</span>
                     </button>
-                    <button
-                        onClick={handleAddEstablishment}
-                        className="px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm flex items-center gap-2"
-                    >
-                        <Plus size={18} />
-                        <span>{t('owner.overview.addLocation')}</span>
-                    </button>
                 </div>
             </div>
 
@@ -225,8 +218,19 @@ export function OwnerEstablishmentsPage() {
             {/* Filters Bar */}
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                    {/* Add Location Button */}
+                    <button
+                        onClick={handleAddEstablishment}
+                        className="flex items-center gap-2 px-6 rounded-2xl bg-paymint-green text-black font-black text-xs tracking-widest hover:bg-[#68B390] transition-all shadow-sm active:scale-95 h-[52px] flex-shrink-0 w-full lg:w-auto justify-center"
+                    >
+                        <Plus size={20} strokeWidth={3} />
+                        <span>{t('owner.overview.addLocation')}</span>
+                    </button>
+
+                    <div className="hidden lg:block w-px h-8 bg-gray-100 dark:bg-white/10 mx-2" />
+
                     {/* Search */}
-                    <div className="relative flex-1 min-w-[300px]">
+                    <div className="relative flex-1">
                         <Search
                             size={18}
                             className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"

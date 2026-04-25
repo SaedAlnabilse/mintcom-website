@@ -1,6 +1,8 @@
 ﻿import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import {
     Users,
@@ -831,71 +833,85 @@ export default function BrandTeamPage() {
             />
 
             {/* Delete Confirmation Modal */}
-            {deleteModalOpen && employeeToDelete && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl"
+            {deleteModalOpen && employeeToDelete && createPortal(
+                <div className="fixed inset-0 z-[10001] popup-surface flex items-center justify-center p-4 bg-black/40 dark:bg-black/80 backdrop-blur-sm transition-all duration-300">
+                    <motion.div 
+                       initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                       animate={{ opacity: 1, scale: 1, y: 0 }}
+                       className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2.5rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl shadow-black/20"
                     >
-                        <div className="p-8 pb-4">
-                            <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
-                                <AlertTriangle size={32} />
+                        <div className="p-10 pb-6 flex flex-col items-center text-center">
+                            <div className="w-20 h-20 rounded-3xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
+                                <AlertTriangle size={40} />
                             </div>
-                            <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.staff.removeStaff')}</h3>
-                            <p className="text-gray-500 text-sm leading-relaxed">
-                                {t('owner.staff.removeStaffConfirm')} <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span>? {t('owner.staff.undoneWarning')}
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3 leading-tight">{t('owner.staff.removeStaff')}</h3>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm font-bold leading-relaxed max-w-[320px]">
+                                {t('owner.staff.removeStaffConfirmPrefix')}
+                                <span className="text-gray-900 dark:text-white font-black mx-1">
+                                    {employeeToDelete.firstName} {employeeToDelete.lastName}
+                                </span>
+                                {t('owner.staff.removeStaffConfirmFrom')}
+                                <span className="text-gray-900 dark:text-white font-black mx-1">
+                                    {brandName}
+                                </span>
+                                <span className="text-gray-900 dark:text-white font-black uppercase tracking-tighter text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-md">
+                                    {t('owner.staff.brandLabel')}
+                                </span>.
+                                <br /><br />
+                                <span className="text-xs opacity-70 font-medium italic">{t('owner.staff.undoneWarning')}</span>
                             </p>
-                        </div>
-
-                        <div className="px-8 pb-6 space-y-4">
+                         </div>
+                        <div className="px-10 pb-8 space-y-5">
                             <div>
-                                <label className="dashboard-card-label mb-2 block">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2.5 block px-1">
                                     {t('common.password')}
                                 </label>
-                                <div className="relative">
+                                <div className="relative group">
                                     <input maxLength={255}
                                         type={showDeletePassword ? 'text' : 'password'}
                                         value={deletePassword}
                                         onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
                                         placeholder={t('owner.staff.enterPasswordPlaceholder')}
-                                        className={`w-full bg-gray-50 dark:bg-white/5 border ${deleteError ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-red-500 transition-colors`}
+                                        className={`w-full bg-gray-50 dark:bg-black/20 border ${deleteError ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/5'} rounded-2xl px-5 py-4 pr-12 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all shadow-sm`}
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowDeletePassword(!showDeletePassword)}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                                     >
                                         {showDeletePassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
-                                {deleteError && <p className="mt-2 text-xs font-bold text-red-500">{deleteError}</p>}
+                                {deleteError && <p className="mt-2.5 px-1 text-[11px] font-black text-red-500 flex items-center gap-1.5 animate-pulse"><AlertTriangle size={12} /> {deleteError}</p>}
                             </div>
                         </div>
 
-                        <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 bg-gray-50 dark:bg-white/[0.02]">
+                        <div className="p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-black/20">
                             <button
                                 onClick={closeDeleteModal}
-                                className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                className="flex-1 py-4 rounded-2xl border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest uppercase hover:bg-white dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all active:scale-95"
                             >
                                 {t('common.cancel')}
                             </button>
                             <button
                                 onClick={confirmDelete}
-                                disabled={isDeleting}
-                                className="flex-1 py-3.5 rounded-xl bg-red-500 text-white font-bold text-xs tracking-wider hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20"
+                                disabled={isDeleting || !deletePassword}
+                                className="flex-[1.5] py-4 rounded-2xl bg-red-500 text-white font-black text-xs tracking-widest uppercase hover:bg-red-600 transition-all disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-2 shadow-xl shadow-red-500/20 active:scale-95"
                             >
                                 {isDeleting ? (
-                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
                                 ) : (
                                     <>
-                                        <Trash2 size={16} />
+                                        <Trash2 size={18} strokeWidth={2.5} />
                                         {t('common.confirm')}
                                     </>
                                 )}
                             </button>
                         </div>
-                    </div>
-                </div>
-            )}
-        </div >
+                    </motion.div>
+                </div>,
+                document.body
+            )}        </div >
     );
 }
 

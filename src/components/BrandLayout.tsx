@@ -4,9 +4,9 @@ import { NavLink, Outlet, useNavigate, useLocation, useParams } from 'react-rout
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { DeletionRestorationBanner } from './DeletionRestorationBanner';
 import { useTranslation } from 'react-i18next';
-import { RealtimeStatusIndicator } from './RealtimeStatusIndicator';
 import {
     LayoutDashboard,
     Store,
@@ -18,9 +18,7 @@ import {
     Building2,
     Menu,
     X,
-    ChevronRight,
-    Smartphone,
-    Settings
+    Smartphone
 } from 'lucide-react';
 
 import api from '../config/api';
@@ -58,7 +56,6 @@ export function BrandLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [brand, setBrand] = useState<Brand | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -201,7 +198,6 @@ export function BrandLayout() {
                 `}
             >
                 {/* Logo Section */}
-                {/* Logo Section */}
                 <div className="h-20 flex items-center justify-between px-6 mb-2 relative shrink-0">
                     <AnimatePresence mode="wait">
                         {sidebarOpen ? (
@@ -267,44 +263,29 @@ export function BrandLayout() {
                     )}
                 </div>
 
-                {/* Combined Back & Brand Card */}
-                <div className={`px-2 ${sidebarOpen ? 'pb-2 pt-0' : 'flex justify-center mb-1.5'}`}>
+                {/* Simplified Back to Brands Section */}
+                <div className={`px-3 ${sidebarOpen ? 'mb-4 mt-2' : 'flex justify-center mb-1.5'}`}>
                     {sidebarOpen ? (
-                        <div
+                        <button
                             onClick={goBackToOwner}
-                            className="p-3.5 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer transition-all duration-300 hover:border-paymint-green/30"
+                            className="w-full flex items-center gap-3 p-3.5 rounded-xl text-gray-500 hover:text-paymint-green hover:bg-paymint-green/5 transition-all group border border-transparent hover:border-paymint-green/20"
                         >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 dark:bg-paymint-green/10 rounded-full blur-3xl pointer-events-none transition-transform duration-1000" />
-                            <div className="relative z-10">
-                                <div className="flex items-center gap-3 mb-2.5">
-                                    <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center flex-shrink-0 text-paymint-green">
-                                        <Building2 size={18} />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="label-strong font-outfit text-paymint-green mb-0.5">
-                                            {brand?.id === 'cmkek5eme0001vjjqvfm3wjwa' ? t('brand.dashboard.liveData') : t('brand.menu.activeBrand')}
-                                        </p>
-                                        <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
-                                            {brand?.name || t('common.loading')}
-                                        </h2>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-gray-100 dark:border-white/10">
-                                    <div className="flex items-center gap-1.5">
-                                        <RealtimeStatusIndicator />
-                                    </div>
-                                    <div className="flex items-center gap-1 text-xs font-bold text-gray-500 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                                        {t('brand.menu.switchBrand')} <ChevronRight size={10} className={`mt-0.5 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
-                                    </div>
-                                </div>
+                            <ArrowLeft size={18} className={`transition-transform ${isRtl ? 'rotate-180 group-hover:translate-x-1' : 'group-hover:-translate-x-1'}`} />
+                            <div className="flex-1 min-w-0 text-left rtl:text-right">
+                                <p className="text-[10px] font-black uppercase tracking-[0.15em] text-gray-400 group-hover:text-paymint-green/70 transition-colors leading-none mb-1.5">
+                                    {t('brand.menu.backToBrands')}
+                                </p>
+                                <h2 className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white truncate">
+                                    {brand?.name || t('common.loading')}
+                                </h2>
                             </div>
-                        </div>
+                        </button>
                     ) : (
                         <button
                             onClick={goBackToOwner}
                             className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all group relative"
                         >
-                            <ArrowLeft size={24} />
+                            <ArrowLeft size={24} className={isRtl ? 'rotate-180' : ''} />
                             <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                 {t('brand.menu.switchBrand')}
                             </div>
@@ -372,122 +353,98 @@ export function BrandLayout() {
                     </div>
                 )}
 
-                {sidebarOpen && (
-                    <div className="px-3 mt-auto mb-2 shrink-0">
-                        <button onClick={() => setMobileAppModalOpen(true)} className="w-full flex items-center gap-3 px-3 py-2.5 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
-                <Smartphone size={16} className="text-gray-400" />
-                <span className="text-sm font-bold">{t('owner.menu.getMobileApp')}</span>
-              </button>
-                    </div>
-                )}
-
                 {/* Footer User Profile */}
                 <div className="p-3 border-t border-gray-100 dark:border-white/5 relative shrink-0">
                     {sidebarOpen ? (
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20 outline outline-2 outline-white dark:outline-black">
-                                <span className="text-black font-bold text-xs">
+                        <div className="space-y-1">
+                            {/* Profile Header */}
+                            <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-xl">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
                                     {account?.firstName?.charAt(0).toUpperCase()}
-                                </span>
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                                        {account?.firstName} {account?.lastName}
+                                    </p>
+                                    <p className="text-xs text-gray-500 truncate">{t('brand.menu.brandAdmin')}</p>
+                                </div>
                             </div>
 
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs font-black text-gray-900 dark:text-white tracking-widest truncate">
-                                    {account?.firstName} {account?.lastName}
-                                </p>
-                                <p className="label-strong font-outfit truncate">{t('brand.menu.brandAdmin')}</p>
+                            {/* Menu Items */}
+                            <div className="flex justify-end">
+                                <LanguageSwitcher
+                                    dropdownDirection="up"
+                                    className="w-full"
+                                    buttonClassName="w-full justify-start gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:!bg-gray-100 dark:hover:!bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left !bg-transparent dark:!bg-transparent !border-transparent focus:outline-none focus:ring-0 focus:!bg-transparent focus:!border-transparent active:!bg-transparent active:!border-transparent"
+                                    menuClassName="w-full min-w-0"
+                                    iconSize={20}
+                                />
                             </div>
 
-                            <div className="flex items-center gap-1">
-                                <ThemeToggle dropdownDirection="up" className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white" />
-                                <button
-                                    onClick={handleLogout}
-                                    className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all"
-                                    title={t('dashboard.menu.logout')}
-                                >
-                                    <LogOut size={20} />
-                                </button>
-                            </div>
+                            <ThemeToggle
+                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
+                                showLabel={true}
+                                dropdownDirection="up"
+                                iconSize={20}
+                            />
+
+                            <button onClick={() => setMobileAppModalOpen(true)} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left">
+                                <Smartphone size={16} className="text-gray-400" />
+                                <span>{t('owner.menu.getMobileApp')}</span>
+                            </button>
+
+                            <button
+                                onClick={handleLogout}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all text-left"
+                            >
+                                <LogOut size={20} />
+                                <span>{t('dashboard.menu.logout')}</span>
+                            </button>
                         </div>
                     ) : (
-                        <div className="flex justify-center">
-                            {/* Settings Circle */}
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="relative group">
+                                <LanguageSwitcher
+                                    compact
+                                    showGlobeIcon={false}
+                                    dropdownDirection="right"
+                                    buttonClassName="w-12 h-12 rounded-xl !px-0 !py-0 flex items-center justify-center gap-0 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
+                                />
+                                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0 group-focus-within:translate-x-0">
+                                    {t('common.aria.changeLanguage')}
+                                </div>
+                            </div>
+
                             <button
-                                onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
-                                className={`w-12 h-12 flex items-center justify-center rounded-xl transition-all relative group ${settingsMenuOpen
-                                    ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
-                                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
-                                    }`}
+                                onClick={() => setMobileAppModalOpen(true)}
+                                className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all relative group"
                             >
-                                <Settings size={24} />
-                                {/* Tooltip */}
+                                <Smartphone size={24} />
                                 <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
-                                    {t('dashboard.menu.settings')}
+                                    {t('owner.menu.getMobileApp')}
                                 </div>
                             </button>
 
-                            {/* Popover Menu */}
-                            <AnimatePresence>
-                                {settingsMenuOpen && (
-                                    <>
-                                        {/* Backdrop to close */}
-                                        <div
-                                            className="fixed inset-0 z-[95]"
-                                            onClick={() => setSettingsMenuOpen(false)}
-                                        />
-                                        <motion.div
-                                            initial={{ opacity: 0, scale: 0.95, x: 20 }}
-                                            animate={{ opacity: 1, scale: 1, x: 0 }}
-                                            exit={{ opacity: 0, scale: 0.95, x: 20 }}
-                                            className="absolute left-full rtl:left-auto rtl:right-full bottom-10 ml-4 rtl:ml-0 rtl:mr-4 w-64 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[100] p-2"
-                                        >
-                                            {/* Header */}
-                                            <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-xl">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
-                                                    {account?.firstName?.charAt(0).toUpperCase()}
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
-                                                        {account?.firstName} {account?.lastName}
-                                                    </p>
-                                                    <p className="text-xs text-gray-500 truncate">{account?.email}</p>
-                                                </div>
-                                            </div>
+                            <div className="relative group">
+                                <ThemeToggle
+                                    dropdownDirection="right"
+                                    className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all"
+                                    iconSize={24}
+                                />
+                                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0 group-focus-within:translate-x-0">
+                                    {t('theme.switchTheme')}
+                                </div>
+                            </div>
 
-                                            {/* Menu Items */}
-                                            <div className="space-y-1">
-                                                <button
-                            onClick={() => {
-                              setSettingsMenuOpen(false);
-                              setMobileAppModalOpen(true);
-                            }}
-                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
-                          >
-                            <Smartphone size={18} />
-                            <span>{t('owner.menu.getMobileApp')}</span>
-                          </button>
-
-                                                <div className="relative">
-                                                    <ThemeToggle
-                                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
-                                                        showLabel={true}
-                                                        dropdownDirection="right"
-                                                        iconSize={18}
-                                                    />
-                                                </div>
-
-                                                <button
-                                                    onClick={handleLogout}
-                                                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all text-left"
-                                                >
-                                                    <LogOut size={18} />
-                                                    <span>{t('owner.menu.signOut')}</span>
-                                                </button>
-                                            </div>
-                                        </motion.div>
-                                    </>
-                                )}
-                            </AnimatePresence>
+                            <button
+                                onClick={handleLogout}
+                                className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all relative group"
+                            >
+                                <LogOut size={24} />
+                                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                                    {t('dashboard.menu.logout')}
+                                </div>
+                            </button>
                         </div>
                     )}
                 </div>
@@ -600,6 +557,15 @@ export function BrandLayout() {
 
                         {/* Footer */}
                         <div className="p-4 border-t border-gray-100 dark:border-white/5">
+                            <div className="flex items-center gap-2 mb-3">
+                                <LanguageSwitcher
+                                    compact
+                                    dropdownDirection="up"
+                                    buttonClassName="h-10 px-2.5"
+                                />
+                                <ThemeToggle dropdownDirection="up" />
+                            </div>
+
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center">
                                     <span className="text-black font-bold">{account?.firstName?.charAt(0).toUpperCase()}</span>

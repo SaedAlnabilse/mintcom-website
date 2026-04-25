@@ -400,18 +400,9 @@ export function BrandLocationsPage() {
                         </div>
                     </div>
 
-                    {/* Add Location Button */}
-                    <button
-                        onClick={() => setIsLinkModalOpen(true)}
-                        className="flex items-center gap-2 px-6 rounded-2xl bg-paymint-green text-black font-black text-xs tracking-widest hover:bg-[#68B390] transition-all shadow-sm active:scale-95 h-[52px] flex-shrink-0"
-                    >
-                        <Plus size={20} strokeWidth={3} />
-                        <span>{t('owner.overview.addLocation')}</span>
-                    </button>
                 </div>
             </div>
 
-            {/* Stats Grid */}
             {/* Stats Grid */}
             <div className={`grid grid-cols-2 lg:grid-cols-5 gap-4 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
                 {[
@@ -442,6 +433,17 @@ export function BrandLocationsPage() {
             {/* Filters Bar */}
             <div className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-85' : 'opacity-100'}`}>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                    {/* Add Location Button */}
+                    <button
+                        onClick={() => setIsLinkModalOpen(true)}
+                        className="flex items-center gap-2 px-6 rounded-2xl bg-paymint-green text-black font-black text-xs tracking-widest hover:bg-[#68B390] transition-all shadow-sm active:scale-95 h-[52px] flex-shrink-0 w-full lg:w-auto justify-center"
+                    >
+                        <Plus size={20} strokeWidth={3} />
+                        <span>{t('owner.overview.addLocation')}</span>
+                    </button>
+
+                    <div className="hidden lg:block w-px h-8 bg-gray-100 dark:bg-white/10 mx-2" />
+
                     {/* Search */}
                     <div className="relative flex-1">
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -465,7 +467,7 @@ export function BrandLocationsPage() {
                     </div>
 
                     {/* Filter Buttons */}
-                    <div className="flex items-center gap-3 flex-wrap">
+                    <div className="flex items-center gap-3 flex-wrap lg:ml-auto">
                         {/* Status Filter */}
                         <div className="w-40">
                             <CustomSelect

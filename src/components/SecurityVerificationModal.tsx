@@ -13,8 +13,7 @@ import {
     CreditCard,
     Building2,
     Eye,
-    EyeOff,
-    Trash2
+    EyeOff
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
@@ -307,7 +306,7 @@ export function SecurityVerificationModal({
             {isOpen && (
                 <div
                     dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                    className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-paymint-green selection:text-black"
+                    className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 font-sans selection:bg-paymint-green selection:text-black"
                 >
                     {/* Backdrop */}
                     <motion.div
@@ -315,46 +314,41 @@ export function SecurityVerificationModal({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/30 dark:bg-black/80 backdrop-blur-sm"
+                        className="fixed inset-0 bg-black/40 dark:bg-black/80 backdrop-blur-sm"
                     />
 
                     <motion.div
-                        initial={{ opacity: 0, y: 100 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 100 }}
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                        className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-colors duration-300"
+                        className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[2.5rem] border border-gray-200 dark:border-white/5 overflow-hidden flex flex-col max-h-[92vh] transition-colors duration-300 shadow-2xl shadow-black/20"
                     >
-                        {/* Mobile drag handle */}
-                        <div className="sm:hidden flex justify-center pt-3 pb-1">
-                            <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                        </div>
-
                         {/* Header */}
-                        <div className="px-6 sm:px-8 py-3 sm:py-4 border-b border-gray-100 dark:border-white/5 flex items-start justify-between bg-gray-50/50 dark:bg-white/[0.02]">
-                            <div className="flex items-center gap-4">
-                                <div className={`w-11 h-11 rounded-2xl ${config.bg} flex items-center justify-center ${config.color} shadow-sm`}>
-                                    {React.createElement(config.icon, { size: 22 })}
+                        <div className="px-8 py-6 border-b border-gray-100 dark:border-white/5 flex items-start justify-between bg-gray-50/50 dark:bg-black/20">
+                            <div className="flex items-center gap-5">
+                                <div className={`w-14 h-14 rounded-[1.25rem] ${config.bg} flex items-center justify-center ${config.color} shadow-sm`}>
+                                    {React.createElement(config.icon, { size: 28 })}
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
+                                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
                                         {config.title}
                                     </h2>
-                                    <p className="text-[10px] font-medium text-gray-500 mt-0.5">
+                                    <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">
                                         {t('security.highImpact')}
                                     </p>
                                 </div>
                             </div>
                             <button
                                 onClick={onClose}
-                                className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-all active:scale-90"
+                                className="p-2.5 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-2xl transition-all active:scale-90"
                             >
-                                <X size={18} />
+                                <X size={20} strokeWidth={2.5} />
                             </button>
                         </div>
 
-                        <div className="overflow-y-auto px-6 sm:px-8 py-6 custom-scrollbar flex-1 pb-safe">
-                            <form id="security-verify-form" onSubmit={handleSubmit} className="space-y-6">
+                        <div className="overflow-y-auto px-8 py-8 custom-scrollbar flex-1 pb-safe">
+                            <form id="security-verify-form" onSubmit={handleSubmit} className="space-y-8">
                                 {/* Error Banner */}
                                 <AnimatePresence>
                                     {Object.keys(errors).length > 0 && (
@@ -363,10 +357,10 @@ export function SecurityVerificationModal({
                                             initial={{ opacity: 0, height: 0 }}
                                             animate={{ opacity: 1, height: 'auto' }}
                                             exit={{ opacity: 0, height: 0 }}
-                                            className="p-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 flex items-center gap-3"
+                                            className="p-4 rounded-2xl bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 flex items-center gap-3.5"
                                         >
-                                            <ShieldAlert className="text-red-500 shrink-0" size={18} />
-                                            <p className="text-xs font-bold text-red-600 dark:text-red-400">
+                                            <ShieldAlert className="text-red-500 shrink-0" size={20} />
+                                            <p className="text-[13px] font-black text-red-600 dark:text-red-400">
                                                 {t('security.errorBanner')}
                                             </p>
                                         </motion.div>
@@ -374,23 +368,23 @@ export function SecurityVerificationModal({
                                 </AnimatePresence>
 
                                 {/* Warning Box */}
-                                <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-500/20">
-                                    <div className="flex gap-3">
-                                        <AlertTriangle className="text-amber-600 dark:text-amber-500 shrink-0" size={18} />
-                                        <p className="text-xs font-medium text-amber-700 dark:text-amber-400 leading-relaxed">
+                                <div className="p-5 rounded-2xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-500/20 shadow-sm">
+                                    <div className="flex gap-4">
+                                        <AlertTriangle className="text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" size={20} />
+                                        <p className="text-sm font-bold text-amber-700 dark:text-amber-400 leading-relaxed">
                                             {config.warning}
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="space-y-5">
+                                <div className="space-y-6">
                                     {/* Account Email */}
-                                    <div className="space-y-1.5">
-                                        <label className="text-xs font-bold text-gray-400 tracking-widest uppercase px-1 block">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase px-1 block">
                                             {t('security.identityLabel')}
                                         </label>
                                         <div className="relative group">
-                                            <Mail className={`absolute left-4 top-1/2 -translate-y-1/2 ${errors.email || errors.general?.toLowerCase().includes('email') ? 'text-paymint-red' : 'text-gray-400 group-focus-within:text-paymint-green'} transition-colors`} size={16} />
+                                            <Mail className={`absolute left-5 top-1/2 -translate-y-1/2 ${errors.email || errors.general?.toLowerCase().includes('email') ? 'text-paymint-red' : 'text-gray-400 group-focus-within:text-paymint-green'} transition-colors`} size={18} />
                                             <input maxLength={255}
                                                 type="email"
                                                 value={email}
@@ -399,29 +393,29 @@ export function SecurityVerificationModal({
                                                     if (errors.email || errors.general) setErrors({});
                                                 }}
                                                 placeholder={t('auth.login.emailPlaceholder')}
-                                                className={`w-full pl-11 pr-4 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.email || errors.general?.toLowerCase().includes('email') ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/5'} rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all`}
+                                                className={`w-full pl-12 pr-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email || errors.general?.toLowerCase().includes('email') ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/5'} rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all shadow-sm`}
                                                 disabled={isSubmitting}
                                             />
                                         </div>
                                         {(errors.email || (errors.general && errors.general.toLowerCase().includes('email'))) && (
-                                            <p className="ml-1 text-[10px] font-bold text-paymint-red flex items-center gap-1">
-                                                <X size={10} strokeWidth={3} />
+                                            <p className="px-1 text-[11px] font-black text-paymint-red flex items-center gap-1.5 animate-pulse">
+                                                <X size={12} strokeWidth={3} />
                                                 {errors.email || errors.general}
                                             </p>
                                         )}
                                     </div>
 
-                                    {/* Password Section with smaller gap to info box */}
-                                    <div className="space-y-3">
-                                        <div className="space-y-1.5">
+                                    {/* Password Section */}
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
                                             <div className="flex items-center gap-2 px-1">
-                                                <label className="text-xs font-bold text-gray-400 tracking-widest uppercase block">
+                                                <label className="text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase block">
                                                     {t('security.passwordLabel')}
                                                 </label>
                                                 <QuickInfo text={t('security.masterKeyInfo.description')} />
                                             </div>
                                             <div className="relative group">
-                                                <Lock className={`absolute left-4 top-1/2 -translate-y-1/2 ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'text-paymint-red' : 'text-gray-400 group-focus-within:text-paymint-green'} transition-colors`} size={16} />
+                                                <Lock className={`absolute left-5 top-1/2 -translate-y-1/2 ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'text-paymint-red' : 'text-gray-400 group-focus-within:text-paymint-green'} transition-colors`} size={18} />
                                                 <input maxLength={255}
                                                     type={showPassword ? 'text' : 'password'}
                                                     value={password}
@@ -431,35 +425,35 @@ export function SecurityVerificationModal({
                                                     }}
                                                     required
                                                     autoFocus
-                                                    className={`w-full pl-11 pr-12 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all`}
+                                                    className={`w-full pl-12 pr-12 py-4 bg-gray-50 dark:bg-black/20 border ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all shadow-sm`}
                                                     placeholder="********"
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowPassword(!showPassword)}
-                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                                                 >
-                                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                                 </button>
                                             </div>
                                             {(errors.password || (errors.general && !errors.general.toLowerCase().includes('email'))) && (
-                                                <p className="ml-1 text-[10px] font-bold text-paymint-red flex items-center gap-1">
-                                                    <X size={10} strokeWidth={3} />
+                                                <p className="px-1 text-[11px] font-black text-paymint-red flex items-center gap-1.5 animate-pulse">
+                                                    <X size={12} strokeWidth={3} />
                                                     {errors.password || errors.general}
                                                 </p>
                                             )}
                                         </div>
                                         
                                         {/* Master Key Info Box */}
-                                        <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 flex items-start gap-3">
-                                            <div className="w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
-                                                <span className="text-[9px] font-black">i</span>
+                                        <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-500/10 border border-blue-100/50 dark:border-blue-500/20 flex items-start gap-4">
+                                            <div className="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                                                <span className="text-[10px] font-black">i</span>
                                             </div>
-                                            <div className="space-y-0.5">
-                                                <p className="text-xs font-black text-blue-700 dark:text-blue-400 tracking-wider">
+                                            <div className="space-y-1">
+                                                <p className="text-[11px] font-black text-blue-700 dark:text-blue-400 tracking-wider uppercase">
                                                     {t('security.masterKeyInfo.title', 'What Is a Master Access Key?')}
                                                 </p>
-                                                <p className="text-xs leading-relaxed font-bold text-blue-600/80 dark:text-blue-400/70">
+                                                <p className="text-[13px] leading-relaxed font-bold text-blue-600/80 dark:text-blue-400/70">
                                                     {t('security.masterKeyInfo.description', 'This is your primary account password. You can reset it from your account management if you have forgotten it.')}
                                                 </p>
                                             </div>
@@ -470,11 +464,11 @@ export function SecurityVerificationModal({
                         </div>
 
                         {/* Footer */}
-                        <div className="p-5 sm:p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-black/20 sticky bottom-0 pb-safe">
+                        <div className="p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-5 bg-gray-50/50 dark:bg-black/20 sticky bottom-0 pb-safe">
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="flex-1 px-4 py-3.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
+                                className="flex-1 py-4 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-[11px] font-black text-gray-500 tracking-[0.15em] uppercase hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
                             >
                                 {t('common.cancel')}
                             </button>
@@ -482,13 +476,13 @@ export function SecurityVerificationModal({
                                 type="submit"
                                 form="security-verify-form"
                                 disabled={isSubmitting || !password}
-                                className={`flex-[2] px-4 py-3.5 rounded-xl text-white font-bold text-xs hover:brightness-110 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${config.color === 'text-paymint-red' ? 'bg-paymint-red shadow-red-500/20' : 'bg-paymint-green text-black shadow-paymint-green/20'}`}
+                                className={`flex-[1.5] py-4 rounded-2xl text-white font-black text-[11px] tracking-[0.15em] uppercase hover:brightness-110 transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 active:scale-95 ${config.color === 'text-paymint-red' ? 'bg-red-500 shadow-red-500/20' : 'bg-paymint-green text-black shadow-paymint-green/20'}`}
                             >
                                 {isSubmitting ? (
-                                    <Loader2 className="animate-spin" size={16} />
+                                    <Loader2 className="animate-spin" size={20} strokeWidth={3} />
                                 ) : (
                                     <>
-                                        <Trash2 size={16} />
+                                        <ShieldCheck size={20} strokeWidth={2.5} />
                                         {config.buttonText}
                                     </>
                                 )}
