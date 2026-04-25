@@ -1,4 +1,4 @@
-import { useAuth } from '../../context/AuthContext';
+﻿import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -368,7 +368,7 @@ export function AddonsPage() {
                 <stat.icon size={24} strokeWidth={2.5} />
               </div>
               <div>
-                <p className="dashboard-card-label mb-1.5">{stat.label}</p>
+                <p className="dashboard-stat-title mb-1.5">{stat.label}</p>
                 <div className="flex items-baseline gap-2">
                   <p className="dashboard-card-value">{stat.value.toLocaleString(t('common.locale'))}</p>
                 </div>
@@ -810,3 +810,4 @@ export function AddonsPage() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
@@ -522,7 +522,7 @@ export function OwnerBrandsPage() {
                                 <stat.icon size={20} />
                             </div>
                             <div>
-                                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                                <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
                                 <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{stat.value}</p>
                             </div>
                         </div>
@@ -904,7 +904,7 @@ export function OwnerBrandsPage() {
                                                         {t('owner.brands.selectLocationsToLink')}
                                                     </h3>
                                                     <p className="text-sm text-gray-500 font-sans font-medium">
-                                                        (These are the available locations to add, any locations not listed here are already included in other brand groups)
+                                                        (These are the unlinked locations to add, any locations not listed here are already included in other brand groups)
                                                     </p>
                                                 </div>
                                                 <span className="flex-shrink-0 text-[13px] font-sans font-bold text-paymint-green bg-paymint-green/10 px-3 py-1.5 rounded-full">
@@ -1144,4 +1144,5 @@ export function OwnerBrandsPage() {
         </div>
     );
 }
+
 

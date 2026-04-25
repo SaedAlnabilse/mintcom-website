@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+﻿import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -181,7 +181,7 @@ export function OwnerEstablishmentsPage() {
                             <Store size={24} />
                         </div>
                         <div>
-                            <p className="dashboard-card-label">{t('owner.locations.total')}</p>
+                            <p className="dashboard-stat-title">{t('owner.locations.total')}</p>
                             <p className="dashboard-card-value text-xl">{establishments.length}</p>
                         </div>
                     </div>
@@ -196,7 +196,7 @@ export function OwnerEstablishmentsPage() {
                             <Zap size={24} />
                         </div>
                         <div>
-                            <p className="dashboard-card-label">{t('owner.locations.active')}</p>
+                            <p className="dashboard-stat-title">{t('owner.locations.active')}</p>
                             <p className="dashboard-card-value text-xl">
                                 {establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
                             </p>
@@ -213,7 +213,7 @@ export function OwnerEstablishmentsPage() {
                             <Settings size={24} />
                         </div>
                         <div>
-                            <p className="dashboard-card-label">{t('owner.locations.trial')}</p>
+                            <p className="dashboard-stat-title">{t('owner.locations.trial')}</p>
                             <p className="dashboard-card-value text-xl">
                                 {establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
                             </p>
@@ -502,7 +502,7 @@ export function OwnerEstablishmentsPage() {
                     </div>
 
                     {/* Desktop Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 label-strong uppercase items-center">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 table-header-row items-center">
                         <div className="col-span-3 flex items-center gap-4">
                             <div className="w-10" />
                             <span>{t('owner.locations.title')}</span>
@@ -604,6 +604,8 @@ export function OwnerEstablishmentsPage() {
         </div>
     );
 }
+
+
 
 
 

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -218,7 +218,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
                 )}
               </div>
 
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 flex items-center gap-1 capitalize">
+              <p className="dashboard-stat-title mb-1 flex items-center gap-1">
                 {stat.label}
               </p>
 
@@ -242,4 +242,5 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     </div>
   );
 });
+
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Search,
@@ -200,7 +200,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                             <stat.icon size={20} />
                         </div>
                         <div>
-                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 truncate">{stat.label}</p>
+                            <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {typeof stat.value === 'number' ? stat.value.toLocaleString(t('common.locale')) : stat.value}
                             </p>
@@ -371,4 +371,5 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
         </div>
     );
 }
+
 

@@ -1,4 +1,4 @@
-import { Users, Activity, TrendingUp, ShoppingBag } from 'lucide-react';
+﻿import { Users, Activity, TrendingUp, ShoppingBag } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { Shift, ShiftOption } from '../../../../types';
 import { motion } from 'framer-motion';
@@ -146,35 +146,35 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {/* Total Hours */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 truncate">{t('orders.reports.staff.totalHours')}</p>
+            <p className="dashboard-stat-title mb-1 truncate">{t('orders.reports.staff.totalHours')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{totalHours.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
             <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerText}>{footerText}</p>
           </div>
 
           {/* Total Orders */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 truncate">{t('orders.reports.staff.totalOrders')}</p>
+            <p className="dashboard-stat-title mb-1 truncate">{t('orders.reports.staff.totalOrders')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{totalOrders.toLocaleString(t('common.locale'))}</p>
             <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerText}>{footerText}</p>
           </div>
 
           {/* Total Sales */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 truncate">{t('orders.reports.staff.totalSales')}</p>
+            <p className="dashboard-stat-title mb-1 truncate">{t('orders.reports.staff.totalSales')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{formatCurrency(totalSales)}</p>
             <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerText}>{footerText}</p>
           </div>
 
           {/* Total Discounts */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 truncate">{t('orders.reports.staff.totalDiscounts')}</p>
+            <p className="dashboard-stat-title mb-1 truncate">{t('orders.reports.staff.totalDiscounts')}</p>
             <p className="text-2xl font-bold text-orange-500 tracking-tight mb-1">{formatCurrency(totalDiscounts)}</p>
             <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerIssuedText}>{footerIssuedText}</p>
           </div>
 
           {/* Total Refunds */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 truncate">{t('orders.reports.staff.totalRefunds')}</p>
+            <p className="dashboard-stat-title mb-1 truncate">{t('orders.reports.staff.totalRefunds')}</p>
             <p className="text-2xl font-bold text-red-500 tracking-tight mb-1">{formatCurrency(totalRefunds)}</p>
             <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerText}>{footerText}</p>
           </div>
@@ -269,7 +269,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                       </div>
                       <div>
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-black tracking-widest text-white border border-white/20 mb-1 shadow-sm uppercase">
-                          <span className="text-yellow-300">★</span> {t('common.top')} #1
+                          <span className="text-yellow-300">â˜…</span> {t('common.top')} #1
                         </div>
                         <h3 className="text-xl font-black text-white drop-shadow-sm tracking-tight">{sortedEmployees[0].username}</h3>
                       </div>
@@ -384,4 +384,5 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
     </div>
   );
 });
+
 

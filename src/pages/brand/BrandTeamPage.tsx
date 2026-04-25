@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -391,7 +391,7 @@ export default function BrandTeamPage() {
                                     <stat.icon size={20} />
                                 </div>
                             </div>
-                            <p className="dashboard-card-label mb-1">{stat.label}</p>
+                            <p className="dashboard-stat-title mb-1">{stat.label}</p>
                             <p className="dashboard-card-value">{stat.value}</p>
                         </div>
                     </div>
@@ -717,7 +717,7 @@ export default function BrandTeamPage() {
                                         </div>
 
                                         {/* Desktop Table Header */}
-                                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-meta tracking-wide">
+                                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 table-header-row">
                                             <div className="col-span-4">{t('common.name')}</div>
                                             <div className="col-span-2 text-center">{t('common.status.label')}</div>
                                             <div className="col-span-2 text-center">{t('common.role')}</div>
@@ -898,6 +898,8 @@ export default function BrandTeamPage() {
         </div >
     );
 }
+
+
 
 
 

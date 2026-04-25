@@ -1,4 +1,4 @@
-import { Scale } from 'lucide-react';
+﻿import { Scale } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { SalesSummary } from '../../../../types';
 import React from 'react';
@@ -20,7 +20,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.taxes.totalTax')}</p>
+            <p className="dashboard-stat-title mb-1">{t('orders.reports.taxes.totalTax')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {formatCurrency(salesData.taxCollected || 0)}
             </p>
@@ -31,7 +31,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
 
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.taxes.taxableSales')}</p>
+            <p className="dashboard-stat-title mb-1">{t('orders.reports.taxes.taxableSales')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {formatCurrency(salesData.totalRevenue || 0)}
             </p>
@@ -42,7 +42,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
 
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.taxes.avgRate')}</p>
+            <p className="dashboard-stat-title mb-1">{t('orders.reports.taxes.avgRate')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {salesData.totalRevenue > 0
                 ? ((salesData.taxCollected / salesData.totalRevenue)).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
@@ -177,15 +177,15 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
               {/* Mock list of exemptions or actual data if available */}
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-gray-500">{t('orders.reports.taxes.resaleCertificates')}</span>
-                <span className="font-bold text-gray-900 dark:text-white">—</span>
+                <span className="font-bold text-gray-900 dark:text-white">â€”</span>
               </div>
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-gray-500">{t('orders.reports.taxes.nonProfit')}</span>
-                <span className="font-bold text-gray-900 dark:text-white">—</span>
+                <span className="font-bold text-gray-900 dark:text-white">â€”</span>
               </div>
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-gray-500">{t('orders.reports.taxes.govEntities')}</span>
-                <span className="font-bold text-gray-900 dark:text-white">—</span>
+                <span className="font-bold text-gray-900 dark:text-white">â€”</span>
               </div>
             </div>
           </div>
@@ -194,4 +194,5 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
     </div>
   );
 });
+
 

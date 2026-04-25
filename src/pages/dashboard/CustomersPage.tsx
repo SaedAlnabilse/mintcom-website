@@ -1,4 +1,4 @@
-import { useAuth } from '../../context/AuthContext';
+﻿import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -348,7 +348,7 @@ export function CustomersPage() {
                 <stat.icon size={20} className="sm:w-6 sm:h-6" />
               </div>
               <div>
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{stat.value.toLocaleString(t('common.locale'))}</p>
               </div>
             </div>
@@ -790,7 +790,7 @@ export function CustomersPage() {
                     { label: t('customers.details.points'), value: `${selectedCustomer.points.toLocaleString(t('common.locale'))} ${t('rewards.points')}`, icon: Award },
                   ].map((stat, i) => (
                     <div key={i} className="p-5 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-                      <p className="dashboard-card-label mb-3">{stat.label}</p>
+                      <p className="dashboard-stat-title mb-3">{stat.label}</p>
                       <p className="dashboard-card-value">{stat.value}</p>
                     </div>
                   ))}
@@ -882,4 +882,6 @@ export function CustomersPage() {
     </div>
   );
 }
+
+
 

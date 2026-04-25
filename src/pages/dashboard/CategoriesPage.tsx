@@ -1,4 +1,4 @@
-import { useAuth } from '../../context/AuthContext';
+﻿import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -394,7 +394,7 @@ export function CategoriesPage() {
                 <stat.icon size={20} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
                 <div className="flex flex-col">
                   <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight truncate">
                     {typeof stat.value === 'number' ? stat.value.toLocaleString(t('common.locale')) : stat.value}
@@ -814,4 +814,5 @@ export function CategoriesPage() {
     </div>
   );
 }
+
 

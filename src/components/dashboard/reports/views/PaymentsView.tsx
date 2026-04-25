@@ -1,4 +1,4 @@
-import { Wallet, CreditCard, PieChart as PieChartIcon, ChevronRight, Activity } from 'lucide-react';
+﻿import { Wallet, CreditCard, PieChart as PieChartIcon, ChevronRight, Activity } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { SalesSummary } from '../../../../types';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
@@ -27,7 +27,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
   const formatCurrency = (value: number) => formatAmount(value);
 
   const getMethodName = (name: any) => {
-    if (!name) return '—';
+    if (!name) return 'â€”';
     const nameStr = String(name);
     if (nameStr === 'CARD') return t('orders.payment.allCards');
     if (nameStr === 'CASH') return t('orders.payment.cash');
@@ -41,7 +41,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.payments.totalCollected')}</p>
+            <p className="dashboard-stat-title mb-1">{t('orders.reports.payments.totalCollected')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {(salesData.totalRevenue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               <span className="text-sm mx-1 text-gray-400 font-black"> {currencySymbol}</span>
@@ -53,7 +53,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
 
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.payments.topMethod')}</p>
+            <p className="dashboard-stat-title mb-1">{t('orders.reports.payments.topMethod')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight text-ellipsis overflow-hidden whitespace-nowrap">
               {getMethodName([...(salesData.paymentMethodBreakdown || [])].sort((a: any, b: any) => b.value - a.value)[0]?.name)}
             </p>
@@ -64,7 +64,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
 
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1">{t('orders.reports.payments.txnCount')}</p>
+            <p className="dashboard-stat-title mb-1">{t('orders.reports.payments.txnCount')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {(salesData.totalOrders || 0).toLocaleString(t('common.locale'))}
               <span className="text-sm mx-1 text-gray-400 font-black"> {t('dashboard.stats.orders')}</span>
@@ -267,4 +267,5 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
     </div>
   );
 });
+
 

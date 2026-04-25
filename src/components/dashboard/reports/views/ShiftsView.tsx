@@ -1,4 +1,4 @@
-import { Activity, Clock } from 'lucide-react';
+﻿import { Activity, Clock } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { Shift } from '../../../../types';
 import { motion } from 'framer-motion';
@@ -65,7 +65,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center">
               <Activity size={20} />
             </div>
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.shifts.cashVariance')}</p>
+            <p className="dashboard-stat-title">{t('orders.reports.shifts.cashVariance')}</p>
           </div>
           <p className={`text-2xl font-bold ${totalVariance < -0.01 ? 'text-red-500' : totalVariance > 0.01 ? 'text-amber-500' : 'text-paymint-green'} tracking-tight`}>
             {totalVariance > 0 ? '+' : ''}{totalVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -78,7 +78,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
             <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
               <Clock size={20} />
             </div>
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.menu.shiftsReports')}</p>
+            <p className="dashboard-stat-title">{t('dashboard.menu.shiftsReports')}</p>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{shifts.length.toLocaleString(t('common.locale'))}</p>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.shifts.activeShifts', { count: activeShiftsCount })}</p>
@@ -135,7 +135,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                       <span className="font-bold text-paymint-green">
                         {shift.closingBalance !== null && shift.closingBalance !== undefined
                           ? formatCurrency(shift.closingBalance)
-                          : '—'}
+                          : 'â€”'}
                       </span>
                     ) : (
                       <span className="label-strong font-outfit">{t('orders.reports.shifts.active')}</span>
@@ -158,7 +158,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                         </span>
                       </div>
                     ) : (
-                      <span className="label-strong font-outfit">—</span>
+                      <span className="label-strong font-outfit">â€”</span>
                     )}
                   </td>
                   <td className="px-5 py-5 text-center">
@@ -184,4 +184,5 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
     </div>
   );
 });
+
 

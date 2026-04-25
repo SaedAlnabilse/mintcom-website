@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+﻿import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { startOfDay, endOfDay, format } from 'date-fns';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -1197,7 +1197,7 @@ export function OrdersPage() {
                 <stat.icon size={18} className="sm:w-5 sm:h-5" />
               </div>
               <div>
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{stat.value}</p>
                 {stat.sub && (
                   <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize truncate">{stat.sub}</p>
@@ -1723,6 +1723,7 @@ export function OrdersPage() {
     </div>
   );
 }
+
 
 
 

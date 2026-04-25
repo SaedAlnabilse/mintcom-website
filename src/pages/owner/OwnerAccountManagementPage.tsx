@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -504,7 +504,7 @@ export function OwnerAccountManagementPage() {
                             <Store className="w-5 h-5 text-blue-500" />
                         </div>
                         <div>
-                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">
+                            <p className="dashboard-stat-title mb-1 truncate">
                                 {t('owner.account.stats.locations')}
                             </p>
                             <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -523,7 +523,7 @@ export function OwnerAccountManagementPage() {
                             <Building2 className="w-5 h-5 text-purple-500" />
                         </div>
                         <div>
-                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">
+                            <p className="dashboard-stat-title mb-1 truncate">
                                 {t('owner.account.stats.brands')}
                             </p>
                             <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -542,7 +542,7 @@ export function OwnerAccountManagementPage() {
                             <Users className="w-5 h-5 text-amber-500" />
                         </div>
                         <div>
-                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">
+                            <p className="dashboard-stat-title mb-1 truncate">
                                 {t('owner.account.stats.admins')}
                             </p>
                             <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -1458,6 +1458,7 @@ export function OwnerAccountManagementPage() {
         </div>
     );
 }
+
 
 
 

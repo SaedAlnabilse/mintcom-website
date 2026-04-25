@@ -1,4 +1,4 @@
-import {
+﻿import {
   TrendingUp,
   Wallet,
   DollarSign,
@@ -149,7 +149,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                   </div>
                 )}
               </div>
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 flex items-center gap-1">
+              <p className="dashboard-stat-title mb-1 flex items-center gap-1">
                 {stat.label}
               </p>
               {stat.customContent ? (
@@ -160,7 +160,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                     {stat.value}
                     {stat.suffix && <span className="text-sm ml-1 text-gray-400 font-black">{stat.suffix}</span>}
                   </p>
-                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="sentence-case-text text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
                     {stat.sub}
                   </p>
                 </>
@@ -187,7 +187,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             </div>
             <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
               <Activity size={12} className="text-paymint-green" />
-              <span className="text-xs font-bold text-gray-500 tracking-wide">{t('orders.reports.sales.realtime')}</span>
+              <span className="sentence-case-text text-xs font-bold text-gray-500 tracking-wide">{t('orders.reports.sales.realtime')}</span>
             </div>
           </div>
           <div className="h-[400px]">
@@ -268,7 +268,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                       <div className="flex flex-col items-center gap-2 text-center">
                         <Activity size={32} className="text-gray-300 dark:text-gray-600 mb-1" />
                         <div>
-                          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.sales.noRevenue')}</p>
+                          <p className="sentence-case-text text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.sales.noRevenue')}</p>
                           <p className="text-xs text-gray-400 mt-1">{t('orders.reports.sales.noRevenueDesc')}</p>
                         </div>
                       </div>
@@ -454,7 +454,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                     <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                        <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{item.name}</span>
+              <span className="sentence-case-text text-xs font-bold text-gray-700 dark:text-gray-300">{item.name}</span>
                       </div>
                       <span className="text-xs font-bold text-gray-900 dark:text-white">{formatCurrency(item.value)}</span>
                     </div>
@@ -465,7 +465,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
               <div className="flex flex-col items-center justify-center h-full text-gray-400">
                 <div className="flex flex-col items-center gap-2">
                   <CreditCard size={32} className="opacity-20" />
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.paymentMethods.noData')}</p>
+                  <p className="sentence-case-text text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.paymentMethods.noData')}</p>
                 </div>
               </div>
             )}
@@ -475,4 +475,5 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
     </div>
   );
 });
+
 

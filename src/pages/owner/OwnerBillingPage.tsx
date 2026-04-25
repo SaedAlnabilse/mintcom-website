@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+﻿import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, ArrowUpDown } from 'lucide-react';
@@ -436,7 +436,7 @@ export function OwnerBillingPage() {
                                 <stat.icon size={20} />
                             </div>
                             <div>
-                                <p className="dashboard-card-label mb-0.5">{stat.label}</p>
+                                <p className="dashboard-stat-title mb-0.5">{stat.label}</p>
                                 <p className="dashboard-card-value text-xl">{stat.value}</p>
                             </div>
                         </div>
@@ -560,7 +560,7 @@ export function OwnerBillingPage() {
 
                     <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
                         {/* Table Header */}
-                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-label items-center">
+                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 table-header-row items-center">
                             <div className="col-span-4 flex items-center gap-3">
                                 <div className="w-10" />
                                 <span>{toHeaderCase(t('owner.billing.service'))}</span>
@@ -648,7 +648,7 @@ export function OwnerBillingPage() {
                                                     {formatBillingDate(est.nextBillDate)}
                                                 </p>
                                             ) : (
-                                                <p className="text-xs font-bold text-gray-400 text-center">—</p>
+                                                <p className="text-xs font-bold text-gray-400 text-center">-</p>
                                             )}
                                         </div>
 
@@ -765,6 +765,8 @@ export function OwnerBillingPage() {
         </div>
     );
 };
+
+
 
 
 

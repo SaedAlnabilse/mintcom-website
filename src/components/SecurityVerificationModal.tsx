@@ -386,7 +386,7 @@ export function SecurityVerificationModal({
                                 <div className="space-y-5">
                                     {/* Account Email */}
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-bold text-gray-400 tracking-widest uppercase px-1 block">
+                                        <label className="text-xs font-bold text-gray-400 tracking-widest uppercase px-1 block">
                                             {t('security.identityLabel')}
                                         </label>
                                         <div className="relative group">
@@ -411,56 +411,58 @@ export function SecurityVerificationModal({
                                         )}
                                     </div>
 
-                                    {/* Password Input */}
-                                    <div className="space-y-1.5">
-                                        <div className="flex items-center gap-2 px-1">
-                                            <label className="text-[10px] font-bold text-gray-400 tracking-widest uppercase block">
-                                                {t('security.passwordLabel')}
-                                            </label>
-                                            <QuickInfo text={t('security.masterKeyInfo.description')} />
+                                    {/* Password Section with smaller gap to info box */}
+                                    <div className="space-y-3">
+                                        <div className="space-y-1.5">
+                                            <div className="flex items-center gap-2 px-1">
+                                                <label className="text-xs font-bold text-gray-400 tracking-widest uppercase block">
+                                                    {t('security.passwordLabel')}
+                                                </label>
+                                                <QuickInfo text={t('security.masterKeyInfo.description')} />
+                                            </div>
+                                            <div className="relative group">
+                                                <Lock className={`absolute left-4 top-1/2 -translate-y-1/2 ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'text-paymint-red' : 'text-gray-400 group-focus-within:text-paymint-green'} transition-colors`} size={16} />
+                                                <input maxLength={255}
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    value={password}
+                                                    onChange={(e) => {
+                                                        setPassword(e.target.value);
+                                                        if (errors.password || (errors.general && !errors.general.toLowerCase().includes('email'))) setErrors({});
+                                                    }}
+                                                    required
+                                                    autoFocus
+                                                    className={`w-full pl-11 pr-12 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all`}
+                                                    placeholder="********"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                                >
+                                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                                </button>
+                                            </div>
+                                            {(errors.password || (errors.general && !errors.general.toLowerCase().includes('email'))) && (
+                                                <p className="ml-1 text-[10px] font-bold text-paymint-red flex items-center gap-1">
+                                                    <X size={10} strokeWidth={3} />
+                                                    {errors.password || errors.general}
+                                                </p>
+                                            )}
                                         </div>
-                                        <div className="relative group">
-                                            <Lock className={`absolute left-4 top-1/2 -translate-y-1/2 ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'text-paymint-red' : 'text-gray-400 group-focus-within:text-paymint-green'} transition-colors`} size={16} />
-                                            <input maxLength={255}
-                                                type={showPassword ? 'text' : 'password'}
-                                                value={password}
-                                                onChange={(e) => {
-                                                    setPassword(e.target.value);
-                                                    if (errors.password || (errors.general && !errors.general.toLowerCase().includes('email'))) setErrors({});
-                                                }}
-                                                required
-                                                autoFocus
-                                                className={`w-full pl-11 pr-12 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all`}
-                                                placeholder="********"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                                            >
-                                                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                            </button>
-                                        </div>
-                                        {(errors.password || (errors.general && !errors.general.toLowerCase().includes('email'))) && (
-                                            <p className="ml-1 text-[10px] font-bold text-paymint-red flex items-center gap-1">
-                                                <X size={10} strokeWidth={3} />
-                                                {errors.password || errors.general}
-                                            </p>
-                                        )}
-                                    </div>
-                                    
-                                    {/* Master Key Info Box */}
-                                    <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 flex items-start gap-3">
-                                        <div className="w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
-                                            <span className="text-[9px] font-black">i</span>
-                                        </div>
-                                        <div className="space-y-0.5">
-                                            <p className="text-[10px] font-black text-blue-700 dark:text-blue-400 tracking-wider">
-                                                {t('security.masterKeyInfo.title', 'What Is a Master Access Key?')}
-                                            </p>
-                                            <p className="text-[10px] leading-relaxed font-bold text-blue-600/80 dark:text-blue-400/70">
-                                                {t('security.masterKeyInfo.description', 'This is your primary account password. You can reset it from your account management if you have forgotten it.')}
-                                            </p>
+                                        
+                                        {/* Master Key Info Box */}
+                                        <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 flex items-start gap-3">
+                                            <div className="w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                                                <span className="text-[9px] font-black">i</span>
+                                            </div>
+                                            <div className="space-y-0.5">
+                                                <p className="text-xs font-black text-blue-700 dark:text-blue-400 tracking-wider">
+                                                    {t('security.masterKeyInfo.title', 'What Is a Master Access Key?')}
+                                                </p>
+                                                <p className="text-xs leading-relaxed font-bold text-blue-600/80 dark:text-blue-400/70">
+                                                    {t('security.masterKeyInfo.description', 'This is your primary account password. You can reset it from your account management if you have forgotten it.')}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

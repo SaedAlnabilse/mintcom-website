@@ -1,4 +1,4 @@
-import { Percent, Tag } from 'lucide-react';
+﻿import { Percent, Tag } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { SalesSummary } from '../../../../types';
 import { motion } from 'framer-motion';
@@ -60,7 +60,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
             <Percent size={24} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.discounts.totalDiscounted')}</p>
+            <p className="dashboard-stat-title">{t('orders.reports.discounts.totalDiscounted')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {formatCurrency(salesData.totalDiscounts || 0)}
             </p>
@@ -71,7 +71,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
             <Tag size={24} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.discounts.timesApplied')}</p>
+            <p className="dashboard-stat-title">{t('orders.reports.discounts.timesApplied')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               {(salesData.totalDiscountCount || 0).toLocaleString(t('common.locale'))}
             </p>
@@ -155,4 +155,5 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
     </div>
   );
 });
+
 

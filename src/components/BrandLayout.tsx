@@ -319,7 +319,7 @@ export function BrandLayout() {
                 >
 
                     {sidebarOpen && (
-                        <p className="px-3 py-2 text-xs font-semibold text-gray-500 tracking-normal">{t('owner.menu.mainMenu')}</p>
+                        <p className="px-3 py-2 text-xs font-semibold text-gray-500 tracking-normal">{t('brand.menu.mainMenu')}</p>
                     )}
                     {menuItems.map((item) => {
                         const Icon = item.icon;

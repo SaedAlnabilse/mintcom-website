@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+﻿import { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -297,7 +297,7 @@ export function OwnerOverviewPage() {
                                 <stat.icon size={24} />
                             </div>
                             <div>
-                                <p className="dashboard-card-label">{stat.label}</p>
+                                <p className="dashboard-stat-title">{stat.label}</p>
                                 <p className="dashboard-card-value text-xl">{stat.value}</p>
                                 {stat.sub && (
                                     <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{stat.sub}</p>
@@ -470,4 +470,5 @@ export function OwnerOverviewPage() {
         </div>
     );
 }
+
 

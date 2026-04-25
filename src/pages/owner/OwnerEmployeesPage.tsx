@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
+﻿import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Search,
@@ -377,7 +377,7 @@ export function OwnerEmployeesPage() {
                                 </div>
                             </div>
                             <div>
-                                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 capitalize truncate">{stat.label}</p>
+                                <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
                                 <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-none mb-1">{stat.value.toLocaleString(t('common.locale'))}</p>
                                 <p className="hidden sm:block text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{stat.info}</p>
                             </div>
@@ -578,7 +578,7 @@ export function OwnerEmployeesPage() {
                         </div>
                     ) : (
                         <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                            <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-label items-center">
+                            <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 table-header-row items-center">
                                 <div
                                     className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
                                     onClick={() => handleSort('name')}
@@ -761,6 +761,8 @@ export function OwnerEmployeesPage() {
         </div>
     );
 }
+
+
 
 
 

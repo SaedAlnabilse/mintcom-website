@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+﻿import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -291,7 +291,7 @@ export function ProductsPage() {
         toast.success(t('products.messages.exportDownloaded'));
     };
 
-    // ─── CSV Import Configuration ──────────────────────────────
+    // â”€â”€â”€ CSV Import Configuration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const productCsvColumns: CsvColumn[] = [
         { key: 'name', label: 'Name', required: true, type: 'string' },
         { key: 'price', label: 'Price', required: true, type: 'number' },
@@ -315,7 +315,7 @@ export function ProductsPage() {
         const errors: string[] = [];
         const createdCategories: string[] = [];
 
-        // Build a mapping of category name → ID (case-insensitive)
+        // Build a mapping of category name â†’ ID (case-insensitive)
         // Refresh categories first to get latest state
         let categoryMap: Map<string, string>;
         try {
@@ -795,7 +795,7 @@ export function ProductsPage() {
                             <div className="p-2 sm:p-2.5 rounded-xl bg-blue-500/10 text-blue-500 transition-transform duration-300">
                                 <Package size={18} className="sm:w-5 sm:h-5" />
                             </div>
-                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate capitalize">{t('products.stats.total')}</p>
+                            <p className="dashboard-stat-title truncate">{t('products.stats.total')}</p>
                         </div>
                         <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-blue-500 transition-colors">
                             <ExternalLink size={14} />
@@ -822,7 +822,7 @@ export function ProductsPage() {
                             <div className="p-2 sm:p-2.5 rounded-xl bg-[#ffc107]/10 text-[#ffc107] transition-transform duration-300">
                                 <AlertCircle size={18} className="sm:w-5 sm:h-5" />
                             </div>
-                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate capitalize">{t('products.stats.low')}</p>
+                            <p className="dashboard-stat-title truncate">{t('products.stats.low')}</p>
                         </div>
                         <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-[#ffc107] transition-colors">
                             <ExternalLink size={14} />
@@ -849,7 +849,7 @@ export function ProductsPage() {
                             <div className="p-2 sm:p-2.5 rounded-xl bg-[#D55263]/10 text-[#D55263] transition-transform duration-300">
                                 <AlertCircle size={18} className="sm:w-5 sm:h-5" />
                             </div>
-                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate capitalize">{t('products.stats.critical')}</p>
+                            <p className="dashboard-stat-title truncate">{t('products.stats.critical')}</p>
                         </div>
                         <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-[#D55263] transition-colors">
                             <ExternalLink size={14} />
@@ -876,7 +876,7 @@ export function ProductsPage() {
                             <div className="p-2 sm:p-2.5 rounded-xl bg-slate-500/10 text-slate-500 transition-transform duration-300">
                                 <Package size={18} className="sm:w-5 sm:h-5" />
                             </div>
-                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide truncate capitalize">{t('products.stats.outOfStock')}</p>
+                            <p className="dashboard-stat-title truncate">{t('products.stats.outOfStock')}</p>
                         </div>
                         <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-slate-500 transition-colors">
                             <ExternalLink size={14} />
@@ -1126,5 +1126,6 @@ export function ProductsPage() {
 
     );
 }
+
 
 

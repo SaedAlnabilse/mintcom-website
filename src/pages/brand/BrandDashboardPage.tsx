@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+﻿import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -515,7 +515,7 @@ export function BrandDashboardPage() {
                                     </div>
                                 )}
                             </div>
-                            <p className="dashboard-card-label mb-1">{stat.label}</p>
+                            <p className="dashboard-stat-title mb-1">{stat.label}</p>
                             <p className="dashboard-card-value">{stat.value}</p>
                         </div>
                     </motion.div>
@@ -859,6 +859,7 @@ export function BrandDashboardPage() {
         </div>
     );
 }
+
 
 
 

@@ -4,13 +4,50 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import en from './locales/en.json';
 import ar from './locales/ar.json';
+import { toSentenceCase } from '../utils/textCase';
 
 const resources = {
   en: { translation: en },
   ar: { translation: ar },
 };
 
+const sentenceCaseTranslationKeys = new Set([
+  'common.search',
+  'common.searchArticles',
+  'common.searchPlaceholder',
+]);
+
+function shouldSentenceCaseTranslationKey(translationKey: string): boolean {
+  const keyName = translationKey.split('.').pop() || translationKey;
+
+  return (
+    /subtitle/i.test(keyName) ||
+    keyName === 'searchPlaceholder' ||
+    keyName === 'search_placeholder' ||
+    sentenceCaseTranslationKeys.has(translationKey)
+  );
+}
+
+const displayCasePostProcessor = {
+  name: 'displayCase',
+  type: 'postProcessor' as const,
+  process(value: string, key: string | string[]) {
+    const translationKey = Array.isArray(key) ? key[0] : key;
+
+    if (
+      typeof value !== 'string' ||
+      !translationKey ||
+      !shouldSentenceCaseTranslationKey(translationKey)
+    ) {
+      return value;
+    }
+
+    return toSentenceCase(value, i18n.resolvedLanguage || i18n.language || 'en');
+  },
+};
+
 i18n
+  .use(displayCasePostProcessor)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -20,6 +57,7 @@ i18n
     interpolation: {
       escapeValue: false,
     },
+    postProcess: ['displayCase'],
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],

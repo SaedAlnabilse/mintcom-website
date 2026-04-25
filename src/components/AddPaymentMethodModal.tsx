@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CreditCard, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '../config/api';
 import toast from 'react-hot-toast';
@@ -270,9 +271,19 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                     )}
                                 </button>
 
-                                <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400 tracking-wider">
-                                    <Lock size={10} />
-                                    <span>{t('paymentMethods.modal.encrypted')}</span>
+                                <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-gray-400 tracking-wider">
+                                    <div className="flex items-center gap-1.5">
+                                        <Lock size={10} />
+                                        <span>{t('paymentMethods.modal.encrypted')}</span>
+                                    </div>
+                                    <span className="text-gray-300">•</span>
+                                    <Link 
+                                        to="/legal/terms" 
+                                        target="_blank" 
+                                        className="text-paymint-green hover:underline decoration-paymint-green/30"
+                                    >
+                                        {t('paymentMethods.modal.termsAndConditions')}
+                                    </Link>
                                 </div>
                             </form>
                         </div>
