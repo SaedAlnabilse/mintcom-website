@@ -27,7 +27,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
   const formatCurrency = (value: number) => formatAmount(value);
 
   const getMethodName = (name: any) => {
-    if (!name) return 'â€”';
+    if (!name) return '—';
     const nameStr = String(name);
     if (nameStr === 'CARD') return t('orders.payment.allCards');
     if (nameStr === 'CASH') return t('orders.payment.cash');

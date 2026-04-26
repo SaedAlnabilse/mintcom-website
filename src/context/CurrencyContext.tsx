@@ -6,9 +6,9 @@ import { useAuth } from './AuthContext';
 // Supported currencies with their symbols
 export const CURRENCIES = [
   { code: 'JOD', name: 'Jordanian Dinar', symbol: 'JOD' },
-  { code: 'USD', name: 'US Dollar', symbol: '$' },
-  { code: 'EUR', name: 'Euro', symbol: '€' },
-  { code: 'GBP', name: 'British Pound', symbol: '£' },
+  { code: 'USD', name: 'US Dollar', symbol: 'USD' },
+  { code: 'EUR', name: 'Euro', symbol: 'EUR' },
+  { code: 'GBP', name: 'British Pound', symbol: 'GBP' },
   { code: 'SAR', name: 'Saudi Riyal', symbol: 'SAR' },
   { code: 'AED', name: 'UAE Dirham', symbol: 'AED' },
   { code: 'KWD', name: 'Kuwaiti Dinar', symbol: 'KWD' },

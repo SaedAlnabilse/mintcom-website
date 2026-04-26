@@ -15,6 +15,7 @@ import { usePermissionGuard, checkPermission } from '../../hooks/usePermissionGu
 import { useAuth } from '../../context/AuthContext';
 import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
+import { SectionLoader } from '../../components/LoadingState';
 
 interface ApiError {
   response?: {
@@ -654,15 +655,7 @@ export function SettingsPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
-        <div className="relative">
-          <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
-          <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
-        </div>
-        <p className="label-strong font-outfit">{t('settings.messages.loading')}</p>
-      </div>
-    );
+    return <SectionLoader message={t('settings.messages.loading')} />;
   }
 
   return (

@@ -90,6 +90,60 @@ export function PaymentMethodsPage() {
 
   const watchName = watch('name');
 
+  const getFallbackLogo = (name: string) => {
+    const lower = name.toLowerCase();
+    if (lower.includes('visa')) return 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg';
+    if (lower.includes('mastercard')) return 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg';
+    if (lower.includes('american express') || lower.includes('amex')) return 'https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg';
+    if (lower.includes('mada')) return 'https://upload.wikimedia.org/wikipedia/commons/8/84/Mada_Logo.svg';
+    if (lower.includes('discover')) return 'https://upload.wikimedia.org/wikipedia/commons/8/81/Discover_Card_logo.svg';
+    if (lower.includes('jcb')) return 'https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg';
+    if (lower.includes('apple pay')) return 'https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg';
+    if (lower.includes('google pay')) return 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg';
+    if (lower.includes('samsung pay')) return 'https://upload.wikimedia.org/wikipedia/commons/e/e1/Samsung_Pay_icon.svg';
+    if (lower.includes('paypal')) return 'https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg';
+    if (lower.includes('uber')) return 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Uber_Eats_2018_logo.svg';
+    if (lower.includes('talabat')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Talabat_logo.png/512px-Talabat_logo.png';
+    if (lower.includes('cash')) return 'https://cdn-icons-png.flaticon.com/512/2331/2331714.png';
+    return null;
+  };
+
+  const handleSeedDefaults = async () => {
+    setIsSubmitting(true);
+    try {
+      // Seed Payment Methods if empty
+      if (paymentMethods.length === 0) {
+        await Promise.all([
+          api.post('/app-settings/payment-methods', { name: 'Cash', isActive: true, imageUrl: getFallbackLogo('cash') }),
+          api.post('/app-settings/payment-methods', { name: 'Card', isActive: true }),
+          api.post('/app-settings/payment-methods', { name: 'Apple Pay', isActive: true, imageUrl: getFallbackLogo('apple pay') }),
+          api.post('/app-settings/payment-methods', { name: 'Google Pay', isActive: true, imageUrl: getFallbackLogo('google pay') }),
+          api.post('/app-settings/payment-methods', { name: 'Uber Eats', isActive: true, imageUrl: getFallbackLogo('uber') }),
+          api.post('/app-settings/payment-methods', { name: 'Talabat', isActive: true, imageUrl: getFallbackLogo('talabat') })
+        ]);
+      }
+
+      // Seed Card Brands if empty
+      if (cardTypes.length === 0) {
+        await Promise.all([
+          api.post('/card-types', { name: 'Visa', imageUrl: getFallbackLogo('visa') }),
+          api.post('/card-types', { name: 'Mastercard', imageUrl: getFallbackLogo('mastercard') }),
+          api.post('/card-types', { name: 'American Express', imageUrl: getFallbackLogo('amex') }),
+          api.post('/card-types', { name: 'Mada', imageUrl: getFallbackLogo('mada') })
+        ]);
+      }
+
+      toast.success(t('paymentMethods.messages.seedSuccess', { defaultValue: 'Default methods and brands added successfully!' }));
+      fetchPaymentMethods();
+      fetchCardTypes();
+    } catch (err) {
+      console.error('Failed to seed defaults:', err);
+      toast.error(t('paymentMethods.messages.seedFailed', { defaultValue: 'Failed to add defaults.' }));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const getImageUrl = (imagePath?: string) => {
     if (!imagePath) return null;
     if (imagePath.startsWith('http')) return imagePath;
@@ -327,8 +381,20 @@ export function PaymentMethodsPage() {
           <div className="w-14 h-14 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shrink-0 border border-paymint-green/20">
             <CreditCard size={28} />
           </div>
-          <div className="flex flex-col gap-1.5">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.cardBrands')}</h2>
+          <div className="flex flex-col gap-1.5 flex-1">
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.cardBrands')}</h2>
+              {cardTypes.length === 0 && !isLoading && (
+                <button
+                  onClick={handleSeedDefaults}
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest uppercase rounded-lg border border-paymint-green/20 hover:bg-paymint-green/20 transition-all flex items-center gap-2"
+                >
+                  <Star size={12} fill="currentColor" />
+                  {t('paymentMethods.setupDefaults', 'Setup Defaults')}
+                </button>
+              )}
+            </div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 max-w-2xl">{t('paymentMethods.cardBrandsSubtitle')}</p>
           </div>
         </div>
@@ -348,8 +414,8 @@ export function PaymentMethodsPage() {
                 {/* Image/Icon Container */}
                 <div className="aspect-[4/3] flex items-center justify-center p-8 bg-gray-50/50 dark:bg-black/20 relative group-hover:bg-white dark:group-hover:bg-black/40 transition-colors duration-500">
                   <div className="w-20 h-20 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
-                    {getImageUrl(card.imageUrl || card.logo) ? (
-                      <img src={getImageUrl(card.imageUrl || card.logo)!} alt={card.name} className="w-full h-full object-contain drop-shadow-sm" />
+                    {getImageUrl(card.imageUrl || card.logo) || getFallbackLogo(card.name) ? (
+                      <img src={getImageUrl(card.imageUrl || card.logo) || getFallbackLogo(card.name)!} alt={card.name} className="w-full h-full object-contain drop-shadow-sm" />
                     ) : (
                       <CreditCard size={40} className="text-gray-300 dark:text-gray-600" />
                     )}
@@ -363,15 +429,15 @@ export function PaymentMethodsPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => { setEditingCard(card); setNewCardName(card.name); setCardImagePreview(card.imageUrl || card.logo || null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
-                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-500 hover:text-paymint-green hover:bg-paymint-green/10 border border-gray-100 dark:border-white/5 transition-all font-bold text-xs"
+                      className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-500 hover:text-paymint-green hover:bg-paymint-green/10 border border-gray-100 dark:border-white/5 transition-all font-bold text-xs active:scale-95"
                     >
-                      <Edit2 size={14} /> {t('common.edit')}
+                      <Edit2 size={16} /> {t('common.edit')}
                     </button>
                     <button
                       onClick={() => handleDeleteCardType(card.id, card.name)}
-                      className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 border border-gray-100 dark:border-white/5 transition-all"
+                      className="p-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 border border-gray-100 dark:border-white/5 transition-all active:scale-90"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </div>
@@ -401,8 +467,20 @@ export function PaymentMethodsPage() {
           <div className="w-14 h-14 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shrink-0 border border-paymint-green/20">
             <Wallet size={28} />
           </div>
-          <div className="flex flex-col gap-1.5">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.paymentTypes')}</h2>
+          <div className="flex flex-col gap-1.5 flex-1">
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.paymentTypes')}</h2>
+              {paymentMethods.length === 0 && !isLoading && (
+                <button
+                  onClick={handleSeedDefaults}
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest uppercase rounded-lg border border-paymint-green/20 hover:bg-paymint-green/20 transition-all flex items-center gap-2"
+                >
+                  <Star size={12} fill="currentColor" />
+                  {t('paymentMethods.setupDefaults', 'Setup Defaults')}
+                </button>
+              )}
+            </div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 max-w-2xl">{t('paymentMethods.paymentTypesSubtitle')}</p>
           </div>
         </div>
@@ -427,8 +505,8 @@ export function PaymentMethodsPage() {
                 {/* Icon Container */}
                 <div className="aspect-[4/3] flex items-center justify-center p-8 bg-gray-50/50 dark:bg-black/20 relative group-hover:bg-white dark:group-hover:bg-black/40 transition-colors duration-500">
                   <div className="w-20 h-20 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
-                    {getImageUrl(method.imageUrl || method.logo) ? (
-                      <img src={getImageUrl(method.imageUrl || method.logo)!} alt={method.name} className="w-full h-full object-contain drop-shadow-sm" />
+                    {getImageUrl(method.imageUrl || method.logo) || getFallbackLogo(method.name) ? (
+                      <img src={getImageUrl(method.imageUrl || method.logo) || getFallbackLogo(method.name)!} alt={method.name} className="w-full h-full object-contain drop-shadow-sm" />
                     ) : (
                       <div className="text-gray-400 dark:text-gray-500">
                         {getMethodIcon(method.name, 48)}
@@ -490,7 +568,7 @@ export function PaymentMethodsPage() {
       </section>
 
       {/* Payment Method Modal */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {showModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
             <motion.div
@@ -504,7 +582,7 @@ export function PaymentMethodsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
+              className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5 z-10"
             >
               {/* Mobile Drag Handle */}
               <div className="h-1.5 w-12 bg-gray-200 dark:bg-white/10 rounded-full mx-auto mt-3 mb-1 sm:hidden" />
@@ -520,7 +598,7 @@ export function PaymentMethodsPage() {
                 </div>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90"
+                  className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90 active:scale-90"
                 >
                   <X size={20} />
                 </button>
@@ -548,17 +626,20 @@ export function PaymentMethodsPage() {
                       </div>
                     )}
                   </div>
+                  <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500 mt-2 text-center px-4">
+                    {t('common.imageRecommendation', { defaultValue: 'Recommended: 512x512px (Square) or 4:3. PNG or SVG for transparency.' })}
+                  </p>
                 </div>
 
                 <div className="space-y-6">
-                  <div>
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase mb-3 px-1 flex items-center gap-2">
+                  <div className="space-y-2">
+                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase px-1 flex items-center gap-2">
                       {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
                     </label>
                     <input maxLength={255}
                       type="text"
                       {...register('name')}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm`}
                       placeholder={t('paymentMethods.form.namePlaceholder')}
                     />
                     {errors.name && <p className="text-paymint-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{errors.name.message}</p>}
@@ -568,7 +649,7 @@ export function PaymentMethodsPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting || !watchName?.trim()}
-                  className={`w-full py-4 bg-paymint-green text-black font-bold rounded-xl hover:scale-[1.02] shadow-lg transition-all flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:grayscale disabled:scale-100 ${watchName?.trim() ? 'shadow-paymint-green/40' : 'shadow-black/5'}`}
+                  className={`w-full py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${watchName?.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
                 >
                   {isSubmitting ? (
                     <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
@@ -583,7 +664,7 @@ export function PaymentMethodsPage() {
       </AnimatePresence>
 
       {/* Card Type Modal */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {showCardModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
             <motion.div
@@ -597,7 +678,7 @@ export function PaymentMethodsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
+              className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5 z-10"
             >
               {/* Mobile Drag Handle */}
               <div className="h-1.5 w-12 bg-gray-200 dark:bg-white/10 rounded-full mx-auto mt-3 mb-1 sm:hidden" />
@@ -613,7 +694,7 @@ export function PaymentMethodsPage() {
                 </div>
                 <button
                   onClick={() => setShowCardModal(false)}
-                  className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90"
+                  className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90 active:scale-90"
                 >
                   <X size={20} />
                 </button>
@@ -641,11 +722,14 @@ export function PaymentMethodsPage() {
                       </div>
                     )}
                   </div>
+                  <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500 mt-2 text-center px-4">
+                    {t('common.imageRecommendation', { defaultValue: 'Recommended: 512x512px (Square) or 4:3. PNG or SVG for transparency.' })}
+                  </p>
                 </div>
 
                 <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                  <div className="space-y-2">
+                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase px-1 flex items-center gap-2">
                       {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
                     </label>
                     <input maxLength={255}
@@ -655,7 +739,7 @@ export function PaymentMethodsPage() {
                         setNewCardName(e.target.value);
                         if (cardErrors.cardName) setCardErrors({ ...cardErrors, cardName: '' });
                       }}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${cardErrors.cardName ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${cardErrors.cardName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm`}
                       placeholder={t('paymentMethods.form.brandPlaceholder')}
                     />
                     {cardErrors.cardName && <p className="text-paymint-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{cardErrors.cardName}</p>}
@@ -665,7 +749,7 @@ export function PaymentMethodsPage() {
                 <button
                   onClick={handleAddCardType}
                   disabled={isSubmitting || !newCardName.trim()}
-                  className={`w-full py-4 bg-paymint-green text-black font-bold rounded-xl hover:scale-[1.02] transition-all shadow-lg flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:grayscale disabled:scale-100 ${newCardName.trim() ? 'shadow-paymint-green/40' : 'shadow-black/5'}`}
+                  className={`w-full py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${newCardName.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
                 >
                   {isSubmitting ? (
                     <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />

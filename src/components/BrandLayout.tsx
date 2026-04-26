@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 
 import api from '../config/api';
+import { FullScreenLoader } from './LoadingState';
 
 // Paymint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
@@ -153,17 +154,7 @@ export function BrandLayout() {
     };
 
     if (isLoading) {
-        return (
-            <div className="min-h-screen bg-gray-50 dark:bg-paymint-dark flex items-center justify-center">
-                <div className="flex flex-col items-center space-y-4">
-                    <div className="relative">
-                        <div className="w-14 h-14 border-4 border-paymint-green/20 rounded-full" />
-                        <div className="w-14 h-14 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
-                    </div>
-                    <p className="text-sm font-bold text-gray-400 tracking-widest">{t('brand.dashboard.loading')}</p>
-                </div>
-            </div>
-        );
+        return <FullScreenLoader message={t('brand.dashboard.loading')} />;
     }
 
     return (

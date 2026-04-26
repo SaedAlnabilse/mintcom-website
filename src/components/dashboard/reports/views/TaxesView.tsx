@@ -177,15 +177,15 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
               {/* Mock list of exemptions or actual data if available */}
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-gray-500">{t('orders.reports.taxes.resaleCertificates')}</span>
-                <span className="font-bold text-gray-900 dark:text-white">â€”</span>
+                <span className="font-bold text-gray-900 dark:text-white">—</span>
               </div>
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-gray-500">{t('orders.reports.taxes.nonProfit')}</span>
-                <span className="font-bold text-gray-900 dark:text-white">â€”</span>
+                <span className="font-bold text-gray-900 dark:text-white">—</span>
               </div>
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-gray-500">{t('orders.reports.taxes.govEntities')}</span>
-                <span className="font-bold text-gray-900 dark:text-white">â€”</span>
+                <span className="font-bold text-gray-900 dark:text-white">—</span>
               </div>
             </div>
           </div>

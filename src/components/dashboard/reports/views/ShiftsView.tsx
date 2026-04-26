@@ -135,7 +135,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                       <span className="font-bold text-paymint-green">
                         {shift.closingBalance !== null && shift.closingBalance !== undefined
                           ? formatCurrency(shift.closingBalance)
-                          : 'â€”'}
+                          : '—'}
                       </span>
                     ) : (
                       <span className="label-strong font-outfit">{t('orders.reports.shifts.active')}</span>
@@ -158,7 +158,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                         </span>
                       </div>
                     ) : (
-                      <span className="label-strong font-outfit">â€”</span>
+                      <span className="label-strong font-outfit">—</span>
                     )}
                   </td>
                   <td className="px-5 py-5 text-center">

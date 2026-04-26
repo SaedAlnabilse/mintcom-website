@@ -1,7 +1,7 @@
-﻿{
+{
   "about": {
     "intro": {
-      "p1": "PayMint LLC is a technology solutions company specializing in Point of Sale (POS) systems and digital business management platforms. Our products are designed to simplify daily operationsâ€”from fast, reliable sales processing on digital devices to automated management tools that give businesses full operational visibility.",
+      "p1": "PayMint LLC is a technology solutions company specializing in Point of Sale (POS) systems and digital business management platforms. Our products are designed to simplify daily operations—from fast, reliable sales processing on digital devices to automated management tools that give businesses full operational visibility.",
       "p2": "At the core of PayMint is one clear goal: to give business owners accurate, real-time access to their data while enabling faster, smoother checkout experiences for their customers.",
       "p3": "The PayMint app is available on both iOS and Android and can be downloaded for free. Businesses can create a PayMint account and complete setup directly through the POS app or via the online management dashboard.",
       "p4": "PayMint also supports multi-branch operations. Owners and account managers can add, merge, or separate establishments as needed, all from a single universal dashboard. This allows centralized control over sales, staff, products, and performance across multiple locations, with discounted pricing for additional branches."
@@ -9,7 +9,7 @@
     "story": {
       "description": "PayMint was founded with a mission to simplify business operations for merchants everywhere.",
       "p1": "PayMint LLC is a Jordanian company operating globally. The platform officially launched in 2025, built on insights gathered from years of research into the POS and retail technology space.",
-      "p2": "Development spanned more than three years, with a strong focus on security, performance, and scalability. Every feature was designed to meet real-world business needs and compete confidently with leading global POS solutions. Today, PayMint stands as a modern, secure, and scalable system built to support businesses of all sizesâ€”anywhere in the world.",
+      "p2": "Development spanned more than three years, with a strong focus on security, performance, and scalability. Every feature was designed to meet real-world business needs and compete confidently with leading global POS solutions. Today, PayMint stands as a modern, secure, and scalable system built to support businesses of all sizes—anywhere in the world.",
       "title": "Our Story"
     },
     "title": "About PayMint",
@@ -19,7 +19,7 @@
       "title": "Our Value Proposition",
       "transparency": "Transparency",
       "v1": {
-        "description": "PayMint offers one of the most competitive POS solutions in the market when considering the full range of included services. Our pricing is transparent, with no hidden fees or unexpected costsâ€”just a complete, all-in-one system at an accessible monthly rate.",
+        "description": "PayMint offers one of the most competitive POS solutions in the market when considering the full range of included services. Our pricing is transparent, with no hidden fees or unexpected costs—just a complete, all-in-one system at an accessible monthly rate.",
         "title": "Affordable. Transparent. Complete."
       },
       "v2": {
@@ -707,7 +707,7 @@
       "usd": "US Dollar"
     },
     "currencyCode": "USD",
-    "currencySymbol": "$",
+    "currencySymbol": "USD",
     "date": "Date",
     "datePeriods": {
       "all": "All time",
@@ -1505,7 +1505,7 @@
     "badge": "All-in-One Point of Sale System",
     "cta": "Start Free Trial",
     "customers": "Customers",
-    "description": "PayMint is a complete 360Â° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operationsâ€”all from one simple system.",
+    "description": "PayMint is a complete 360Â° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
     "freeTrial": "14-Day Free Trial",
     "fromYesterday": "from yesterday",
     "growth": "Growth",
@@ -1588,7 +1588,7 @@
       "badge": "Owner App",
       "controlCenter": "Control Center",
       "dailyRevenue": "Daily Revenue",
-      "description": "With the PayMint Admin Mobile App, you can monitor and manage your business anytime, anywhereâ€”right from your phone.",
+      "description": "With the PayMint Admin Mobile App, you can monitor and manage your business anytime, anywhere—right from your phone.",
       "liveAlerts": "Live Alerts",
       "liveReports": "Live Sales & Performance Reports",
       "multiLocationManagement": "Multi-Location Management",
@@ -1663,15 +1663,15 @@
       "badge": "Features",
       "cards": {
         "complete": {
-          "description": "PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much moreâ€”all included in one fixed monthly plan.",
-          "title": "A Complete Solution â€” No Hidden Costs"
+          "description": "PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more—all included in one fixed monthly plan.",
+          "title": "A Complete Solution — No Hidden Costs"
         },
         "multiBranch": {
-          "description": "Run one store or manyâ€”PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel.",
+          "description": "Run one store or many—PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel.",
           "title": "Multi-Branch Management"
         },
         "realUsers": {
-          "description": "PayMint is built for business owners, cashiers, and managersâ€”not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes.",
+          "description": "PayMint is built for business owners, cashiers, and managers—not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes.",
           "title": "Designed For Real Users"
         },
         "security": {
@@ -1799,7 +1799,7 @@
       "badge": "All-in-One Point of Sale System",
       "cta": "Start Free Trial",
       "customers": "Customers",
-      "description": "PayMint is a complete 360Â° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operationsâ€”all from one simple system.",
+      "description": "PayMint is a complete 360Â° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
       "freeTrial": "",
       "fromYesterday": "from yesterday",
       "getStarted": "Get Started",
@@ -1904,9 +1904,9 @@
       "popular": "Most Popular",
       "save": "SAVE",
       "save20": "Save 20%",
-      "saveAmount": "SAVE ${{amount}}",
+      "saveAmount": "SAVE {{amount}} USD",
       "setupFee": "No setup fees or hidden charges. Cancel anytime.",
-      "standardPrice": "20$",
+      "standardPrice": "20 USD",
       "startFreeTrial": "Start Free Trial",
       "subtitle": "Your \"aha\" moment is just minutes away",
       "title": "Get Started",
@@ -1978,7 +1978,7 @@
       },
       "subtitle": "",
       "title": "What Do You Get For",
-      "titleHighlight": "$20/Month?"
+      "titleHighlight": "20 USD / Month?"
     }
   },
   "legal": {
@@ -2423,7 +2423,7 @@
       "expiry": "Expiry",
       "freeDays": "7 DAYS FREE",
       "monthly": "Monthly",
-      "priceMonth": "$20/MONTH",
+      "priceMonth": "20 USD / MONTH",
       "startTrialButton": "Start Free Trial",
       "totalDue": "Total Due Today",
       "trialDesc": "You won't be charged today. Cancel anytime before your trial ends.",
@@ -3876,7 +3876,7 @@
         "button": "Reactivate Now",
         "title": "Reactivate Subscription",
         "warning": "This action will resume your subscription for \"{{name}}\".",
-        "warningRestart": "This will charge your default card ${{price}} to start a new billing cycle for \"{{name}}\".",
+        "warningRestart": "This will charge your default card {{price}} USD to start a new billing cycle for \"{{name}}\".",
         "warningResume": "You are resuming your current subscription. No immediate charge will occur."
       },
       "reactivateAccount": {
@@ -4311,7 +4311,7 @@
         "p4": "Manage your team with flexible roles and detailed performance tracking.",
         "p5": "Make data-driven decisions with comprehensive analytics and reporting.",
         "p6": "Build lasting customer relationships with our built-in CRM and loyalty system.",
-        "type1_desc": "Your main sales interface â€” process orders, apply discounts, and complete transactions.",
+        "type1_desc": "Your main sales interface — process orders, apply discounts, and complete transactions.",
         "type1_label": "POS Terminal",
         "type2_desc": "Track raw materials, ingredients, and finished products across all locations.",
         "type2_label": "Recipe Operations System",
@@ -4363,7 +4363,7 @@
         "p2": "Start by creating your account and verifying your email address.",
         "p3": "Next, set up your first business location with all the essential details.",
         "p4": "Add your products, set prices, and organize them into categories.",
-        "p5": "Set up the payment methods you want to accept â€” cash, cards, and digital wallets.",
+        "p5": "Set up the payment methods you want to accept — cash, cards, and digital wallets.",
         "p6": "Invite your team members and assign them appropriate roles and permissions.",
         "p7": "Once everything is set up, download the POS app and start processing orders!"
       },

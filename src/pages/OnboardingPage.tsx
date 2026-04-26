@@ -449,6 +449,46 @@ export function OnboardingPage() {
         }
       });
 
+      // 3. Seed Defaults for Fresh Locations (Not Duplicating)
+      if (!formData.duplicateFromId) {
+        try {
+          const getFallbackLogo = (name: string) => {
+            const lower = name.toLowerCase();
+            if (lower.includes('visa')) return 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg';
+            if (lower.includes('mastercard')) return 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg';
+            if (lower.includes('amex')) return 'https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg';
+            if (lower.includes('mada')) return 'https://upload.wikimedia.org/wikipedia/commons/8/84/Mada_Logo.svg';
+            if (lower.includes('apple pay')) return 'https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg';
+            if (lower.includes('google pay')) return 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg';
+            if (lower.includes('uber')) return 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Uber_Eats_2018_logo.svg';
+            if (lower.includes('talabat')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Talabat_logo.png/512px-Talabat_logo.png';
+            if (lower.includes('cash')) return 'https://cdn-icons-png.flaticon.com/512/2331/2331714.png';
+            return null;
+          };
+
+          // Standard Payment Methods
+          await Promise.all([
+            api.post('/app-settings/payment-methods', { name: 'Cash', isActive: true, imageUrl: getFallbackLogo('cash') }, { headers: { 'X-Establishment-Id': estId } }),
+            api.post('/app-settings/payment-methods', { name: 'Card', isActive: true }, { headers: { 'X-Establishment-Id': estId } }),
+            api.post('/app-settings/payment-methods', { name: 'Apple Pay', isActive: true, imageUrl: getFallbackLogo('apple pay') }, { headers: { 'X-Establishment-Id': estId } }),
+            api.post('/app-settings/payment-methods', { name: 'Google Pay', isActive: true, imageUrl: getFallbackLogo('google pay') }, { headers: { 'X-Establishment-Id': estId } }),
+            api.post('/app-settings/payment-methods', { name: 'Uber Eats', isActive: true, imageUrl: getFallbackLogo('uber') }, { headers: { 'X-Establishment-Id': estId } }),
+            api.post('/app-settings/payment-methods', { name: 'Talabat', isActive: true, imageUrl: getFallbackLogo('talabat') }, { headers: { 'X-Establishment-Id': estId } })
+          ]);
+
+          // Standard Card Brands
+          await Promise.all([
+            api.post('/card-types', { name: 'Visa', imageUrl: getFallbackLogo('visa') }, { headers: { 'X-Establishment-Id': estId } }),
+            api.post('/card-types', { name: 'Mastercard', imageUrl: getFallbackLogo('mastercard') }, { headers: { 'X-Establishment-Id': estId } }),
+            api.post('/card-types', { name: 'American Express', imageUrl: getFallbackLogo('amex') }, { headers: { 'X-Establishment-Id': estId } }),
+            api.post('/card-types', { name: 'Mada', imageUrl: getFallbackLogo('mada') }, { headers: { 'X-Establishment-Id': estId } })
+          ]);
+        } catch (seedErr) {
+          console.warn('[Onboarding] Failed to seed default payment methods:', seedErr);
+          // Don't fail onboarding if seeding fails
+        }
+      }
+
       goToStep(5); // Success Step
       toast.success(t('onboarding.messages.complete'));
       await refreshEstablishments();

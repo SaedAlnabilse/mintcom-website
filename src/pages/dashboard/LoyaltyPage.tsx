@@ -11,6 +11,7 @@ import { RewardFormModal } from '../../components/forms/RewardFormModal';
 import { Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
+import { SectionLoader } from '../../components/LoadingState';
 
 interface ApiError {
     response?: {
@@ -345,15 +346,7 @@ export function LoyaltyPage() {
     }
 
     if (isLoading) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
-                <div className="relative">
-                    <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
-                    <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
-                </div>
-                <p className="text-sm font-bold text-gray-400 tracking-widest">{t('rewards.loading')}</p>
-            </div>
-        );
+        return <SectionLoader message={t('rewards.loading')} />;
     }
 
     return (

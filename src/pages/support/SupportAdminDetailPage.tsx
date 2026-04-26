@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
     ArrowLeft,
     Send,
@@ -26,6 +27,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
+import { FullScreenLoader, SectionLoader } from '../../components/LoadingState';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -87,6 +89,7 @@ function formatDate(dateStr: string): string {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export const SupportAdminDetailPage = () => {
+    const { t } = useTranslation();
     const { ticketId } = useParams<{ ticketId: string }>();
     const { isAuthenticated, isLoading: authLoading, account } = useAuth();
 
@@ -180,11 +183,7 @@ export const SupportAdminDetailPage = () => {
     // ─── Guards ──────────────────────────────────────────────────────────────────
 
     if (authLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0a0a0a]">
-                <Loader2 className="w-8 h-8 animate-spin text-paymint-green" />
-            </div>
-        );
+        return <FullScreenLoader />;
     }
 
     if (!isAuthenticated) {
@@ -199,9 +198,11 @@ export const SupportAdminDetailPage = () => {
         return (
             <>
                 <Navbar />
-                <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0a0a0a] pt-24">
-                    <Loader2 className="w-8 h-8 animate-spin text-paymint-green" />
-                </div>
+                <SectionLoader
+                    message={t('support.admin.loading', { defaultValue: 'Loading ticket...' })}
+                    className="bg-gray-50 dark:bg-[#0a0a0a] pt-24"
+                    minHeightClassName="min-h-screen"
+                />
             </>
         );
     }

@@ -37,6 +37,7 @@ import { useAuth } from '../../context/AuthContext';
 import { PasswordResetOtpModal } from '../../components/PasswordResetOtpModal';
 import toast from 'react-hot-toast';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
+import { SectionLoader } from '../../components/LoadingState';
 
 interface AccountDetails {
     id: string;
@@ -452,14 +453,7 @@ export function OwnerAccountManagementPage() {
     };
 
     if (isLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
-                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">{t('owner.account.loading')}</p>
-                </div>
-            </div>
-        );
+        return <SectionLoader message={t('owner.account.loading')} />;
     }
 
     const profileCompletion = getProfileCompletion();

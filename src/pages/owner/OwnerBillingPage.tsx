@@ -501,18 +501,22 @@ export function OwnerBillingPage() {
                                                     {t('owner.billing.primary')}
                                                 </div>
                                             )}
-                                            {card.brand === 'VISA' && (
-                                                <div className="w-12 h-12 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center">
-                                                    <span className="font-black italic text-sm text-gray-900 dark:text-white">Visa</span>
-                                                </div>
-                                            )}
+                                            <div className="w-12 h-12 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center">
+                                                {card.brand.toUpperCase() === 'VISA' ? (
+                                                    <span className="font-black italic text-sm text-blue-600">Visa</span>
+                                                ) : card.brand.toUpperCase() === 'MASTERCARD' ? (
+                                                    <span className="font-black italic text-sm text-orange-500">MC</span>
+                                                ) : (
+                                                    <CreditCard size={20} className="text-gray-400" />
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div className="relative z-10 flex justify-between items-end">
                                         <div className="space-y-1">
                                             <p className="dashboard-card-label">{t('categories.form.nameLabel')}</p>
-                                            <p className="font-bold tracking-wider text-xs text-gray-800 dark:text-gray-200">{card.cardholderName || 'User'}</p>
+                                            <p className="font-bold tracking-wider text-xs text-gray-800 dark:text-gray-200 truncate max-w-[120px]">{card.cardholderName || 'User'}</p>
                                         </div>
                                         <div className="text-right space-y-1">
                                             <p className="dashboard-card-label">{t('owner.billing.expires')}</p>
@@ -520,12 +524,12 @@ export function OwnerBillingPage() {
                                         </div>
                                     </div>
 
-                                    {/* Actions Overlay */}
-                                    <div className="absolute inset-0 bg-white/10 dark:bg-black/40 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-4 z-20">
+                                    {/* Actions Overlay - Visible on hover or when primary action button is clicked on mobile */}
+                                    <div className="absolute inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-4 z-20 pointer-events-none group-hover:pointer-events-auto">
                                         {!card.isDefault && (
                                             <button
-                                                onClick={() => handleSetDefaultCard(card.id)}
-                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-paymint-green hover:border-paymint-green/50 flex items-center justify-center transition-all shadow-xl hover:scale-110"
+                                                onClick={(e) => { e.stopPropagation(); handleSetDefaultCard(card.id); }}
+                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-paymint-green hover:border-paymint-green/50 flex items-center justify-center transition-all shadow-xl hover:scale-110 active:scale-95 pointer-events-auto"
                                                 title={t('owner.billing.setDefault')}
                                             >
                                                 <Star size={20} />
@@ -533,8 +537,8 @@ export function OwnerBillingPage() {
                                         )}
                                         {card.canDelete ? (
                                             <button
-                                                onClick={() => handleDeleteCard(card.id, card.last4)}
-                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-red-500 hover:border-red-500/50 flex items-center justify-center transition-all shadow-xl hover:scale-110"
+                                                onClick={(e) => { e.stopPropagation(); handleDeleteCard(card.id, card.last4); }}
+                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-red-500 hover:border-red-500/50 flex items-center justify-center transition-all shadow-xl hover:scale-110 active:scale-95 pointer-events-auto"
                                                 title={t('owner.billing.deleteCard')}
                                             >
                                                 <Trash2 size={20} />

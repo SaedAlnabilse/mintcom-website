@@ -28,6 +28,7 @@ import toast from 'react-hot-toast';
 import { Pagination } from '../../components/ui';
 import { CustomSelect } from '../../components/CustomSelect';
 import { PortalDropdown } from '../../components/PortalDropdown';
+import { SectionLoader } from '../../components/LoadingState';
 
 interface EmployeeAssignment {
     establishmentId: string;
@@ -465,10 +466,7 @@ export function OwnerEmployeesPage() {
 
             {/* Employee List */}
             {isLoading ? (
-                <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                    <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
-                    <p className="text-sm font-bold text-gray-400 tracking-widest">{t('owner.staff.loading')}</p>
-                </div>
+                <SectionLoader message={t('owner.staff.loading')} minHeightClassName="py-20" />
             ) : filteredEmployees.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />

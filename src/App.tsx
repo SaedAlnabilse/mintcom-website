@@ -111,7 +111,7 @@ const CustomRolesPage = lazy(() => import('./pages/dashboard/CustomRolesPage').t
 /** Wrapper for full-page lazy components */
 function PageSuspense({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense fallback={<LoadingFallback message="Loading..." />}>
+    <Suspense fallback={<LoadingFallback />}>
       {children}
     </Suspense>
   );
@@ -120,7 +120,7 @@ function PageSuspense({ children }: { children: React.ReactNode }) {
 /** Wrapper for layout components (shows loading while layout chunk loads) */
 function LayoutSuspense({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense fallback={<LoadingFallback message="Loading..." />}>
+    <Suspense fallback={<LoadingFallback />}>
       {children}
     </Suspense>
   );

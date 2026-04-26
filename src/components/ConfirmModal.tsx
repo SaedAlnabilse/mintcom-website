@@ -81,7 +81,7 @@ export function ConfirmModal({
   const Icon = theme.icon;
 
   return createPortal(
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {isOpen && (
         <div
           dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
@@ -102,7 +102,7 @@ export function ConfirmModal({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
             transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-            className={`relative w-full sm:max-w-md overflow-hidden rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 ${theme.glow} transition-colors duration-300`}
+            className={`relative w-full sm:max-w-md overflow-hidden rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 ${theme.glow} transition-colors duration-300 z-10`}
           >
 
             {/* Top Accent Bar */}

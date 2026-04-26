@@ -25,6 +25,7 @@ import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import api from '../../config/api';
+import { SurfaceLoader } from '../../components/LoadingState';
 import {
   getTicketById,
   updateTicket,
@@ -246,10 +247,7 @@ export const TicketDetailPage = () => {
         <Navbar />
         <main className="pt-28 pb-20">
           <div className="container mx-auto px-8 md:px-16 lg:px-24">
-            <div className="max-w-4xl mx-auto bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-12 text-center">
-              <Loader2 size={32} className="animate-spin mx-auto mb-4 text-paymint-green" />
-              <p className="text-gray-500 dark:text-gray-400 font-medium">Loading...</p>
-            </div>
+            <SurfaceLoader message={t('common.loading')} className="max-w-4xl mx-auto" />
           </div>
         </main>
         <Footer />
@@ -268,10 +266,10 @@ export const TicketDetailPage = () => {
         <Navbar />
         <main className="pt-28 pb-20">
           <div className="container mx-auto px-8 md:px-16 lg:px-24">
-            <div className="max-w-4xl mx-auto bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-12 text-center">
-              <Loader2 size={32} className="animate-spin mx-auto mb-4 text-paymint-green" />
-              <p className="text-gray-500 dark:text-gray-400 font-medium">Loading ticket...</p>
-            </div>
+            <SurfaceLoader
+              message={t('support.tickets.loadingDetail', { defaultValue: 'Loading ticket...' })}
+              className="max-w-4xl mx-auto"
+            />
           </div>
         </main>
         <Footer />

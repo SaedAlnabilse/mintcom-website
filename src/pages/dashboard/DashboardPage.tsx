@@ -38,6 +38,7 @@ import { PaymentMethodsBreakdown } from '../../components/dashboard/overview/Pay
 import { TopSellingProducts } from '../../components/dashboard/overview/TopSellingProducts';
 import { PeakHoursChart } from '../../components/dashboard/overview/PeakHoursChart';
 import { PayInPayOutLogModal } from '../../components/dashboard/reports/PayInPayOutLogModal';
+import { SectionLoader } from '../../components/LoadingState';
 
 // View mode types
 type ViewMode = 'current_shift' | 'previous_shift' | 'last_24_hours';
@@ -455,18 +456,8 @@ export const DashboardPage = () => {
     <>
       <AnimatePresence mode="wait">
         {isLoading && !stats ? (
-          <motion.div
-            key="loader"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col items-center justify-center min-h-[60vh] space-y-6"
-          >
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
-              <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
-            </div>
-            <p className="label-strong font-outfit">{t('dashboard.loading')}</p>
+          <motion.div key="loader" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <SectionLoader message={t('dashboard.loading')} />
           </motion.div>
         ) : (
           <motion.div

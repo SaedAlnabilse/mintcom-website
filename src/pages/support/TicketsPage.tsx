@@ -23,6 +23,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../config/api';
+import { SurfaceLoader } from '../../components/LoadingState';
 
 // ─── Types ──────────────────────────────────────────────────────────────────────────────────────────────────────
 export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
@@ -223,10 +224,7 @@ export const TicketsPage = () => {
         <Navbar />
         <main className="pt-28 pb-20">
           <div className="container mx-auto px-8 md:px-16 lg:px-24">
-            <div className="max-w-4xl mx-auto bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-12 text-center">
-              <Loader2 size={32} className="animate-spin mx-auto mb-4 text-paymint-green" />
-              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">Loading...</p>
-            </div>
+            <SurfaceLoader message={t('common.loading')} className="max-w-4xl mx-auto" />
           </div>
         </main>
         <Footer />
@@ -426,10 +424,10 @@ export const TicketsPage = () => {
           {/* ──── Tickets List ──── */}
           <div className="space-y-3">
             {loadingTickets ? (
-              <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-16 text-center">
-                <Loader2 size={32} className="animate-spin mx-auto mb-4 text-paymint-green" />
-                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">Loading tickets...</p>
-              </div>
+              <SurfaceLoader
+                message={t('support.tickets.loading', { defaultValue: 'Loading tickets...' })}
+                paddingClassName="p-16"
+              />
             ) : filteredTickets.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}

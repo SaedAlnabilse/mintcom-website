@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useState, type ReactNode } from 'react';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -22,38 +22,42 @@ const initialState: ThemeProviderState = {
 
 const ThemeContext = createContext<ThemeProviderState>(initialState);
 
+function getStoredTheme(storageKey: string, defaultTheme: Theme): Theme {
+  const storedTheme = localStorage.getItem(storageKey);
+  return storedTheme === 'light' || storedTheme === 'dark' || storedTheme === 'system'
+    ? storedTheme
+    : defaultTheme;
+}
+
+function resolveTheme(theme: Theme): 'light' | 'dark' {
+  if (theme === 'system') {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  return theme;
+}
+
 export function ThemeProvider({
   children,
   defaultTheme = 'system',
   storageKey = 'vite-ui-theme',
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
-    return (localStorage.getItem(storageKey) as Theme) || defaultTheme;
+    return getStoredTheme(storageKey, defaultTheme);
   });
 
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(() => resolveTheme(getStoredTheme(storageKey, defaultTheme)));
 
-  // Use useLayoutEffect to apply theme before paint, preventing flash
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = window.document.documentElement;
 
-    // Remove existing classes
+    const effectiveTheme = resolveTheme(theme);
+
     root.classList.remove('light', 'dark');
-
-    // Determine effective theme
-    let effectiveTheme = theme;
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
-      effectiveTheme = systemTheme;
-    }
-
-    // Apply class
     root.classList.add(effectiveTheme);
-    setResolvedTheme(effectiveTheme as 'light' | 'dark');
+    root.style.colorScheme = effectiveTheme;
+    setResolvedTheme(effectiveTheme);
 
-    // Save to storage
     localStorage.setItem(storageKey, theme);
   }, [theme, storageKey]);
 
@@ -63,9 +67,10 @@ export function ThemeProvider({
     const handleChange = () => {
       if (theme === 'system') {
         const root = window.document.documentElement;
-        const newTheme = mediaQuery.matches ? 'dark' : 'light';
+        const newTheme = resolveTheme('system');
         root.classList.remove('light', 'dark');
         root.classList.add(newTheme);
+        root.style.colorScheme = newTheme;
         setResolvedTheme(newTheme);
       }
     };

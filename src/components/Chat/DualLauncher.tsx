@@ -96,7 +96,7 @@ export function DualLauncher({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.95 }}
           transition={{ type: "spring", stiffness: 320, damping: 26 }}
-          className={`w-[min(${isDashboardRoute ? '440px' : '340px'},calc(100vw-20px))] flex items-center gap-2 p-1.5 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_10px_32px_rgba(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10`}
+          className={`w-[min(${isDashboardRoute ? '440px' : '340px'},calc(100vw-20px))] flex items-center gap-2 p-1.5 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-xl shadow-[0_10px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_10px_32px_rgba(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10`}
         >
           <div className={`grid ${isDashboardRoute ? 'grid-cols-3' : 'grid-cols-2'} gap-1 flex-1 p-1 rounded-xl bg-gray-100/80 dark:bg-white/5`}>
             {/* Ask AI Tab */}
@@ -165,7 +165,7 @@ export function DualLauncher({
 
   // Collapsed state - show separate buttons if on dashboard and tasks remain
   return (
-    <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900] flex flex-col items-end gap-3`} ref={containerRef} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900] flex flex-col items-end gap-2`} ref={containerRef} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* 1. Tasks Launcher (Separate) */}
       <AnimatePresence>
         {isDashboardRoute && tasksCount > 0 && (
@@ -177,7 +177,7 @@ export function DualLauncher({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onOpenTasks && onOpenTasks()}
-            className="group relative flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-[#7CC39F] to-[#5BA882] text-white shadow-lg shadow-[#7CC39F]/40 hover:shadow-[#7CC39F]/60 transition-all border border-white/20"
+            className="group relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#7CC39F] to-[#5BA882] text-white shadow-lg shadow-[#7CC39F]/40 hover:shadow-[#7CC39F]/60 transition-all border border-white/20"
           >
             <ClipboardCheck size={24} />
             
@@ -193,7 +193,7 @@ export function DualLauncher({
             </motion.div>
 
             {/* Tooltip for tasks - Fixed direction to show towards screen center */}
-            <div className={`absolute ${isRTL ? 'left-full ml-3' : 'right-full mr-3'} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 text-white text-[11px] font-bold rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-xl`}>
+            <div className={`absolute ${isRTL ? 'left-full ml-2' : 'right-full mr-2'} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 text-white text-[11px] font-bold rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-xl`}>
               {t('chat.tasks.title', 'Tasks')}
             </div>
           </motion.button>
@@ -207,21 +207,21 @@ export function DualLauncher({
           {showTooltip && (
             <motion.div
               initial={isDashboardRoute && tasksCount > 0 
-                ? { opacity: 0, x: isRTL ? -10 : 10, scale: 0.8 } 
+                ? { opacity: 0, x: isRTL ? -10 : 10, y: "-50%", scale: 0.8 } 
                 : { opacity: 0, y: 10, scale: 0.8 }
               }
               animate={isDashboardRoute && tasksCount > 0 
-                ? { opacity: 1, x: 0, scale: 1 } 
+                ? { opacity: 1, x: 0, y: "-50%", scale: 1 } 
                 : { opacity: 1, y: 0, scale: 1 }
               }
               exit={isDashboardRoute && tasksCount > 0 
-                ? { opacity: 0, x: isRTL ? -10 : 10, scale: 0.8 } 
+                ? { opacity: 0, x: isRTL ? -10 : 10, y: "-50%", scale: 0.8 } 
                 : { opacity: 0, y: 10, scale: 0.8 }
               }
-              className={`absolute flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-[#1E293B] text-gray-700 dark:text-gray-200 text-sm font-bold rounded-2xl shadow-xl border border-gray-200 dark:border-white/10 whitespace-nowrap z-50 ${
+              className={`absolute flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-[#1E293B] text-gray-700 dark:text-gray-200 text-sm font-bold rounded-xl shadow-xl border border-gray-200 dark:border-white/10 whitespace-nowrap z-50 ${
                 isDashboardRoute && tasksCount > 0
-                  ? `bottom-0 ${isRTL ? 'left-full ml-4' : 'right-full mr-4'}`
-                  : `bottom-16 ${isRTL ? 'left-0' : 'right-0'}`
+                  ? `top-1/2 ${isRTL ? 'left-full ml-3' : 'right-full mr-3'}`
+                  : `bottom-[60px] ${isRTL ? 'left-0' : 'right-0'}`
               }`}
             >
               <span>{t('chat.launcher.help_message', 'How can I help you?')} 👋</span>
@@ -255,7 +255,7 @@ export function DualLauncher({
           whileTap={{ scale: 0.95 }}
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-[#7CC39F] to-[#5BA882] text-white shadow-lg shadow-[#7CC39F]/40 hover:shadow-[#7CC39F]/60 transition-all"
+          className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#7CC39F] to-[#5BA882] text-white shadow-lg shadow-[#7CC39F]/40 hover:shadow-[#7CC39F]/60 transition-all"
         >
           <Sparkles size={22} className="animate-pulse" />
           
@@ -272,7 +272,7 @@ export function DualLauncher({
               initial={{ opacity: 0, scale: 0.9, x: isRTL ? 20 : -20 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.9, x: isRTL ? 20 : -20 }}
-              className={`absolute bottom-0 ${isRTL ? 'left-16' : 'right-16'} flex items-center gap-2 p-1 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/60 dark:border-white/10`}
+              className={`absolute bottom-0 ${isRTL ? 'left-16' : 'right-16'} flex items-center gap-2 p-1 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-200/60 dark:border-white/10`}
             >
               <div className={`flex items-center gap-1 p-1 rounded-xl bg-gray-100/80 dark:bg-white/5`}>
                 <button

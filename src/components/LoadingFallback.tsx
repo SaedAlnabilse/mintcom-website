@@ -1,8 +1,7 @@
-import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Spinner } from './ui/Spinner';
 import { startGlobalLoading, stopGlobalLoading } from '../config/api';
+import { FullScreenLoader, SectionLoader } from './LoadingState';
 
 interface LoadingFallbackProps {
   /** Optional message to display below the spinner */
@@ -27,35 +26,16 @@ export function LoadingFallback({
     return () => stopGlobalLoading();
   }, []);
 
-  const content = (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      className="flex flex-col items-center justify-center space-y-6"
-    >
-      <Spinner size={32} />
-
-      {/* Loading text */}
-      <p className="text-sm font-bold text-gray-500 tracking-widest">
-        {displayMessage}
-      </p>
-    </motion.div>
-  );
-
   if (fullScreen) {
-    return (
-      <div className="min-h-screen bg-white dark:bg-paymint-dark flex items-center justify-center">
-        {content}
-      </div>
-    );
+    return <FullScreenLoader message={displayMessage} />;
   }
 
   return (
-    <div className="flex items-center justify-center py-20">
-      {content}
-    </div>
+    <SectionLoader
+      message={displayMessage}
+      minHeightClassName="py-20"
+      className="w-full"
+    />
   );
 }
 

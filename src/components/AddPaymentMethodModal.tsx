@@ -140,10 +140,8 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
         }
     };
 
-    if (!isOpen) return null;
-
     return createPortal(
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
             {isOpen && (
                 <div
                     dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}

@@ -91,8 +91,8 @@ export function BillingPage() {
 
   // Mock invoices
   const invoices: Invoice[] = [
-    { id: '1', date: '2025-10-12', amount: `${currencySymbol} ${isYearly ? '210.000' : '20.000'}`, status: 'Paid' },
-    { id: '2', date: '2025-09-12', amount: `${currencySymbol} ${isYearly ? '210.000' : '20.000'}`, status: 'Paid' },
+    { id: '1', date: '2025-10-12', amount: `${isYearly ? '210.00' : '20.00'} ${currencySymbol}`, status: 'Paid' },
+    { id: '2', date: '2025-09-12', amount: `${isYearly ? '210.00' : '20.00'} ${currencySymbol}`, status: 'Paid' },
   ];
 
   const formatDate = (dateStr: string) => {
@@ -156,10 +156,10 @@ export function BillingPage() {
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
                 <p className="dashboard-card-label mb-2">{t('owner.billing.cost')}</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-bold text-paymint-green">{currencySymbol}</span>
                   <span className="text-4xl font-black text-white">
                     {(isYearly ? YEARLY_PRICE : totalMonthly || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
                   </span>
+                  <span className="text-sm font-bold text-paymint-green">{currencySymbol}</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
                   {isYearly ? t('common.yearly') : t('common.monthly')}

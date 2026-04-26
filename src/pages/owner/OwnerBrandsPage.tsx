@@ -34,6 +34,7 @@ import { useAuth } from '../../context/AuthContext';
 import { CustomSelect } from '../../components/CustomSelect';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { Pagination } from '../../components/ui';
+import { SectionLoader } from '../../components/LoadingState';
 
 interface Brand {
     id: string;
@@ -467,13 +468,10 @@ export function OwnerBrandsPage() {
 
     if (isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[300px] lg:min-h-[400px] space-y-6">
-                <div className="relative">
-                    <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
-                    <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
-                </div>
-                <p className="text-sm font-bold text-gray-400 tracking-widest">{t('owner.brands.loading')}</p>
-            </div>
+            <SectionLoader
+                message={t('owner.brands.loading')}
+                minHeightClassName="min-h-[300px] lg:min-h-[400px]"
+            />
         );
     }
 

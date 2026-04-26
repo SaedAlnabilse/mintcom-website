@@ -30,6 +30,7 @@ import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { useAuth } from '../../context/AuthContext';
 import { Pagination } from '../../components/ui';
 import { AppStrings } from '../../constants/AppStrings';
+import { SectionLoader } from '../../components/LoadingState';
 
 interface Employee {
     id: string;
@@ -337,15 +338,7 @@ export default function BrandTeamPage() {
     const hasFilters = roleFilter !== 'all' || locationFilter !== 'all';
 
     if (isLoading) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
-                <div className="relative">
-                    <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
-                    <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
-                </div>
-                <p className="text-sm font-bold text-gray-400 tracking-widest">{t('owner.staff.loading')}</p>
-            </div>
-        );
+        return <SectionLoader message={t('owner.staff.loading')} />;
     }
 
     return (
