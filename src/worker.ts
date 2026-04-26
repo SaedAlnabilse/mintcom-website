@@ -41,7 +41,24 @@ export default {
                 return await fetch(proxyRequest);
             }
 
-            // 2. Try to fetch the asset
+            // 2. Pollinations Proxy (Forward /external/pollinations requests to gen.pollinations.ai)
+            if (url.pathname.startsWith('/external/pollinations/')) {
+                const pollinationsUrl = new URL(url.pathname.replace('/external/pollinations/', '/'), 'https://gen.pollinations.ai');
+                pollinationsUrl.search = url.search;
+
+                const proxyRequest = new Request(pollinationsUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'image/*',
+                        'User-Agent': request.headers.get('User-Agent') || 'Mozilla/5.0'
+                    },
+                    redirect: 'follow'
+                });
+
+                return await fetch(proxyRequest);
+            }
+
+            // 3. Try to fetch the asset
             const response = await env.ASSETS.fetch(request);
 
             // 3. Spa Fallback

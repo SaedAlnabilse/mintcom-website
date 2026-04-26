@@ -104,7 +104,7 @@ describe('productImage helpers', () => {
 
     expect(seedA).toBe(seedB);
     expect(seedA).toBeGreaterThan(0);
-    expect(url).toContain('https://image.pollinations.ai/prompt/');
+    expect(url).toContain('https://gen.pollinations.ai/prompt/');
     expect(url).toContain(`seed=${seedA}`);
     expect(url).toContain('width=512');
     expect(url).toContain('height=512');

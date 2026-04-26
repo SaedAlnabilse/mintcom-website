@@ -15,7 +15,7 @@ const FREEGEN_WEBSOCKET_URL = 'wss://websocket-bridge.freegen.app/ws';
 const FREEGEN_RATIO_ID = '1:1';
 const FREEGEN_RESULT_TIMEOUT_MS = 45000;
 const POLLINATIONS_PROXY_IMAGE_URL = '/external/pollinations/prompt/';
-const POLLINATIONS_IMAGE_URL = 'https://image.pollinations.ai/prompt/';
+const POLLINATIONS_IMAGE_URL = 'https://gen.pollinations.ai/prompt/';
 const POLLINATIONS_IMAGE_SIZE = 512;
 const POLLINATIONS_CACHE_KEY = 'pollinations-product-image-cache-v1';
 const POLLINATIONS_IMAGE_TIMEOUT_MS = 60000;
@@ -465,7 +465,6 @@ export function buildPollinationsImageUrl(
     seed: String(seed),
     nologo: 'true',
     safe: 'true',
-    model: 'flux',
   });
 
   return `${baseUrl}${encodedPrompt}?${query.toString()}`;

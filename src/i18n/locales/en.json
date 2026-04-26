@@ -3521,6 +3521,10 @@
     "whatsIncluded": "What's included"
   },
   "products": {
+    "image": {
+      "nameRequired": "Enter a product name before generating an image. It may take from 1 to 200 seconds and you will not be able to leave this screen until the generation is complete.",
+      "pollinationsOnly": "The app generates a product image with Pollinations and falls back to a free placeholder if the request fails. It may take from 1 to 200 seconds and you will not be able to leave this screen until the generation is complete."
+    },
     "addProduct": "Add Product",
     "all": "All Categories",
     "delete": {

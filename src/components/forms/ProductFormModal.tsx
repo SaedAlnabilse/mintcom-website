@@ -663,7 +663,7 @@ export function ProductFormModal({
             ? t('products.image.preview', { defaultValue: 'Preview' })
             : null;
   const imageHelperMessage = !name.trim()
-    ? t('products.image.nameRequired', { defaultValue: 'Enter a product name before generating an image.' })
+    ? t('products.image.nameRequired', { defaultValue: 'Enter a product name before generating an image. It may take from 1 to 200 seconds and you will not be able to leave this screen until the generation is complete.' })
     : generatedImageNeedsRefresh
       ? t('products.image.outdated', { defaultValue: 'The current image no longer matches the latest product details.' })
       : imageSource === 'pollinations'
@@ -674,7 +674,7 @@ export function ProductFormModal({
             ? t('products.image.uploadReady', { defaultValue: 'Uploaded image is ready to save.' })
             : imageSource === 'existing'
               ? t('products.image.savedReady', { defaultValue: 'Saved image will be kept unless you replace it.' })
-              : t('products.image.pollinationsOnly', { defaultValue: 'The app generates a product image with Pollinations and falls back to a free placeholder if the request fails.' });
+              : t('products.image.pollinationsOnly', { defaultValue: 'The app generates a product image with Pollinations and falls back to a free placeholder if the request fails. It may take from 1 to 200 seconds and you will not be able to leave this screen until the generation is complete.' });
 
   if (!isOpen) return null;
 

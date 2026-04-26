@@ -165,7 +165,7 @@ export default defineConfig({
         secure: false,
       },
       '/external/pollinations': {
-        target: 'https://image.pollinations.ai',
+        target: 'https://gen.pollinations.ai',
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/external\/pollinations/, ''),
