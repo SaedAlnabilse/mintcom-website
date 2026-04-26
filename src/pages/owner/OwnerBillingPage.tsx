@@ -486,31 +486,20 @@ export function OwnerBillingPage() {
                                     {/* Gradient Blob */}
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                                    <div className="relative z-10 flex justify-between items-start">
-                                        <div className="space-y-1.5">
+                                    <div className="relative z-10">
+                                        <div className="flex justify-between items-start mb-1.5">
                                             <p className="dashboard-card-label">{t('owner.billing.addCard')}</p>
-                                            <p className="text-xl font-bold tracking-[0.15em] text-gray-900 dark:text-white">
-                                                <span className="opacity-30">••••</span> {card.last4}
-                                            </p>
-                                        </div>
-
-                                        <div className="flex flex-col items-end gap-2">
                                             {card.isDefault && (
-                                                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-paymint-green text-black text-[8px] font-black rounded-full tracking-widest shadow-lg shadow-paymint-green/20">
+                                                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-paymint-green text-black text-[8px] font-black rounded-[12px] tracking-widest shadow-lg shadow-paymint-green/20">
                                                     <div className="w-1 h-1 rounded-full bg-black animate-pulse" />
                                                     {t('owner.billing.primary')}
                                                 </div>
                                             )}
-                                            <div className="w-12 h-12 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center">
-                                                {card.brand.toUpperCase() === 'VISA' ? (
-                                                    <span className="font-black italic text-sm text-blue-600">Visa</span>
-                                                ) : card.brand.toUpperCase() === 'MASTERCARD' ? (
-                                                    <span className="font-black italic text-sm text-orange-500">MC</span>
-                                                ) : (
-                                                    <CreditCard size={20} className="text-gray-400" />
-                                                )}
-                                            </div>
                                         </div>
+                                        
+                                        <p className="text-xl font-bold tracking-[0.15em] text-gray-900 dark:text-white">
+                                            <span className="opacity-30">••••</span> {card.last4}
+                                        </p>
                                     </div>
 
                                     <div className="relative z-10 flex justify-between items-end">

@@ -116,6 +116,7 @@ export function ProductsPage() {
         isOpen: boolean;
         title: string;
         message: string;
+        productName?: string;
         onConfirm: () => void;
         type?: 'danger' | 'success' | 'warning';
     }>({
@@ -196,11 +197,12 @@ export function ProductsPage() {
         setShowModal(true);
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (id: string, name: string) => {
         setConfirmConfig({
             isOpen: true,
             title: t('products.delete.title'),
-            message: t('products.delete.message'),
+            message: '', // Calculated in JSX
+            productName: name,
             type: 'danger',
             onConfirm: async () => {
                 try {
@@ -931,29 +933,31 @@ export function ProductsPage() {
                                             )}
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-end justify-between p-3">
                                                 <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors shadow-sm"><Edit2 size={18} /></button>
-                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors shadow-sm"><Trash2 size={18} /></button>
+                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors shadow-sm"><Trash2 size={18} /></button>
                                             </div>
                                         </div>
                                         <div className="p-3 flex-1 flex flex-col min-h-0">
-                                            <div className="flex items-start justify-between mb-2 gap-2">
-                                                <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2 h-10">{p.name}</h3>
-                                                <span className="text-[10px] font-bold text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg whitespace-nowrap shrink-0 h-fit">
-                                                    {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
-                                                </span>
+                                            <div className="flex flex-col mb-2 gap-1.5">
+                                                <div className="flex items-start justify-between gap-2">
+                                                    <h3 title={p.name} className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2 break-words flex-1">{p.name}</h3>
+                                                    <span className="text-[9px] uppercase font-black text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md shrink-0 h-fit tracking-tighter">
+                                                        {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
+                                                    </span>
+                                                </div>
                                             </div>
                                             {p.description ? (
-                                                <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1 min-h-[2.5rem]">{p.description}</p>
+                                                <p className="text-[11px] leading-relaxed text-gray-500 line-clamp-2 mb-3 break-words">{p.description}</p>
                                             ) : (
-                                                <div className="flex-1 min-h-[2.5rem]" />
+                                                <div className="mb-3" />
                                             )}
-                                            <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto">
-                                                <div>
-                                                    <p className="text-[10px] font-bold text-gray-400 mb-0.5">{t('products.table.price')}</p>
-                                                    <p className="text-sm font-bold text-paymint-green">
+                                            <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto gap-2">
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="text-[10px] font-bold text-gray-400 mb-0.5 truncate">{t('products.table.price')}</p>
+                                                    <p className="text-sm font-bold text-paymint-green truncate">
                                                         {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                                                     </p>
                                                 </div>
-                                                <div className="text-right">
+                                                <div className="text-right shrink-0">
                                                     <p className="text-[10px] font-bold text-gray-400 mb-0.5">{t('products.table.stock')}</p>
                                                     {p.trackStock ? (
                                                         <div className={`text-xs font-bold flex items-center justify-end gap-1 ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow)}`}>
@@ -1041,7 +1045,7 @@ export function ProductsPage() {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <p className="text-sm font-bold text-gray-900 dark:text-white">{p.name}</p>
+                                                    <p title={p.name} className="text-sm font-bold text-gray-900 dark:text-white">{p.name}</p>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
                                                     <span className="inline-flex px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500">
@@ -1067,7 +1071,7 @@ export function ProductsPage() {
                                                 <td className="px-6 py-4 text-center">
                                                     <div className="flex items-center justify-center gap-1 sm:gap-2">
                                                         <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
-                                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
+                                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -1094,7 +1098,7 @@ export function ProductsPage() {
                 isOpen={showModal}
                 onClose={() => setShowModal(false)}
                 onSubmit={onSubmit}
-                onDelete={editingProduct ? () => handleDelete(editingProduct.id) : undefined}
+                onDelete={editingProduct ? () => handleDelete(editingProduct.id, editingProduct.name) : undefined}
                 initialData={editingProduct}
                 categories={categories}
                 isSubmitting={isSubmitting}
@@ -1107,7 +1111,7 @@ export function ProductsPage() {
                 onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
                 onConfirm={confirmConfig.onConfirm}
                 title={t('products.delete.title')}
-                message={t('products.delete.message')}
+                message={t('products.delete.message', { name: confirmConfig.productName })}
                 type={confirmConfig.type}
             />
 

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, HelpCircle, X, Sparkles, ClipboardCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -50,7 +50,6 @@ export function DualLauncher({
   // Final key includes user ID for per-user settings
   const storageKey = `paymint.chatbot.tooltip_dismissed.${account?.id || 'anon'}.${contextId}`;
 
-  const [isExpanded, setIsExpanded] = useState(false);
   const [showTooltip, setShowTooltip] = useState(() => {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem(storageKey) !== 'true';
@@ -64,9 +63,6 @@ export function DualLauncher({
     }
   }, [storageKey]);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Close tooltip when clicking launcher or dismissing
   const dismissTooltip = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     setShowTooltip(false);
@@ -75,21 +71,10 @@ export function DualLauncher({
     }
   };
 
-  // Close when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsExpanded(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   // If ANY panel is open, show the unified switcher bar
   if (isAnyOpen) {
     return (
-      <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900]`} ref={containerRef} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900]`} dir={isRTL ? 'rtl' : 'ltr'}>
         <motion.div
           id="paymint-launcher-switcher"
           initial={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -165,7 +150,7 @@ export function DualLauncher({
 
   // Collapsed state - show separate buttons if on dashboard and tasks remain
   return (
-    <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900] flex flex-col items-end gap-2`} ref={containerRef} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900] flex flex-col items-end gap-2`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* 1. Tasks Launcher (Separate) */}
       <AnimatePresence>
         {isDashboardRoute && tasksCount > 0 && (
@@ -248,7 +233,7 @@ export function DualLauncher({
           id="tour-chat-bot"
           layout
           onClick={() => {
-            setIsExpanded(!isExpanded);
+            onOpenChat();
             dismissTooltip();
           }}
           whileHover={{ scale: 1.05 }}
@@ -264,56 +249,6 @@ export function DualLauncher({
             <div className="absolute top-0 right-0 w-3.5 h-3.5 bg-paymint-green rounded-full border-2 border-white dark:border-[#0F172A] flex items-center justify-center shadow-sm" />
           )}
         </motion.button>
-
-        {/* Expanded menu when clicking the Chat button */}
-        <AnimatePresence>
-          {isExpanded && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, x: isRTL ? 20 : -20 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.9, x: isRTL ? 20 : -20 }}
-              className={`absolute bottom-0 ${isRTL ? 'left-16' : 'right-16'} flex items-center gap-2 p-1 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-200/60 dark:border-white/10`}
-            >
-              <div className={`flex items-center gap-1 p-1 rounded-xl bg-gray-100/80 dark:bg-white/5`}>
-                <button
-                  onClick={() => {
-                    setIsExpanded(false);
-                    onOpenChat();
-                  }}
-                  className="h-10 px-4 flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#7CC39F] to-[#5BA882] text-white font-bold text-xs shadow-sm"
-                >
-                  <Bot size={16} />
-                  <span>{t('chat.launcher.ask')}</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setIsExpanded(false);
-                    onOpenFAQ();
-                  }}
-                  className="h-10 px-4 flex items-center gap-2 rounded-lg bg-white dark:bg-white/5 text-gray-700 dark:text-gray-200 font-bold text-xs border border-gray-200 dark:border-white/10"
-                >
-                  <HelpCircle size={16} />
-                  <span>{t('chat.launcher.help')}</span>
-                </button>
-                {/* Always allow access here if on dashboard */}
-                {isDashboardRoute && (
-                  <button
-                    onClick={() => {
-                      setIsExpanded(false);
-                      if (onOpenTasks) onOpenTasks();
-                    }}
-                    className={`h-10 px-4 flex items-center gap-2 rounded-lg font-bold text-xs transition-all ${tasksCount > 0 
-                      ? 'bg-[#6FAE4A]/10 text-[#6FAE4A]' 
-                      : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10'}`}
-                  >
-                    <ClipboardCheck size={16} />
-                    <span>{t('chat.tasks.title', 'Tasks')}</span>
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </div>
   );

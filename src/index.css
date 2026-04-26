@@ -451,6 +451,11 @@
     text-transform: none;
   }
 
+  /* Allow explicit text color overrides for label-strong even inside popups */
+  .popup-surface .label-strong[class*="text-"] {
+    color: unset;
+  }
+
   .dark .popup-surface .label-strong {
     color: rgb(156 163 175); /* Gray-400 */
   }
