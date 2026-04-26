@@ -164,6 +164,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/external/pollinations': {
+        target: 'https://image.pollinations.ai',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/external\/pollinations/, ''),
+      },
       // WebSocket proxy for real-time sync
       '/socket.io': {
         target: 'http://localhost:3000',

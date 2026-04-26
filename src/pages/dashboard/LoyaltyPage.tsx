@@ -459,8 +459,8 @@ export function LoyaltyPage() {
                                     <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
                                     <h4 className="text-sm font-bold text-gray-900 dark:text-white px-1">{t('dashboard.menu.loyalty')}</h4>
                                 </div>
-                                <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl label-strong font-outfit hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
-                                    <Plus size={14} /> {t('rewards.addPattern')}
+                                <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl font-outfit hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
+                                    <Plus size={14} /> <span className="label-strong inline-block">{t('rewards.addPattern')}</span>
                                 </button>
                             </div>
                             {rewards.length === 0 ? (

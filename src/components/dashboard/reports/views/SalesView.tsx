@@ -417,7 +417,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           <div className="flex-1 flex flex-col justify-center">
             {salesData.paymentMethodBreakdown && salesData.paymentMethodBreakdown.length > 0 ? (
               <>
-                <div className="h-[160px] w-full">
+                <div className="h-[180px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -436,15 +436,17 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                       <Tooltip
                         contentStyle={{
                           backgroundColor: isDark ? '#0B1120' : '#fff',
-                          borderRadius: '16px',
+                          borderRadius: '12px',
                           border: 'none',
+                          boxShadow: '0 10px 40px -10px rgba(0,0,0,0.15)',
                           padding: '12px'
                         }}
                         itemStyle={{
                           color: isDark ? '#fff' : '#111',
-                          fontWeight: '800',
-                          fontSize: '10px'
+                          fontWeight: 'bold',
+                          fontSize: '11px'
                         }}
+                        position={{ y: -10 }}
                       />
                     </PieChart>
                   </ResponsiveContainer>

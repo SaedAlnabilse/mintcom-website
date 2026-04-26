@@ -3971,7 +3971,7 @@
       "taxIdPlaceholder": "Enter tax ID..."
     },
     "receipts": {
-      "footerMessage": "Footer message",
+      "footerMessage": "Footer Message",
       "footerMessageDesc": "Show custom message",
       "footerPlaceholder": "Thank you for visiting!",
       "options": "Options",

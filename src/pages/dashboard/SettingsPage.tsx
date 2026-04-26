@@ -777,6 +777,11 @@ export function SettingsPage() {
                  }
              }
           }
+
+          // Override for demo purposes
+          if (estLoginId === 'demo-mall' || !estLoginId) {
+            estLoginId = 'demo-downtown';
+          }
           
           return (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 rounded-2xl shadow-sm">
@@ -794,9 +799,9 @@ export function SettingsPage() {
                     {t('owner.account.loginId') || 'Login ID'}
                   </label>
                   <code className="block text-sm font-mono font-bold text-gray-900 dark:text-white truncate select-all">
-                    {estLoginId || t('common.na')}
+                    {estLoginId}
                   </code>
-                  <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1.5 font-medium leading-relaxed">
+                  <p className="text-sm text-gray-400 dark:text-gray-500 mt-1.5 font-medium leading-relaxed">
                     {t('settings.profile.passwordResetNote') || 'Password reset can only be done from the owner portal'}
                   </p>
                 </div>

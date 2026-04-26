@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,12 @@ import toast from 'react-hot-toast';
 import api from '../../config/api';
 import { QuickInfo } from '../QuickInfo';
 import { ConfirmModal } from '../ConfirmModal';
+import {
+  buildProductImageSignature,
+  createProductFallbackDataUrl,
+  createProductFallbackImageAsset,
+  generatePollinationsProductImage,
+} from '../../utils/productImage';
 
 import { AttributeFormModal } from './AttributeFormModal';
 
@@ -65,6 +71,8 @@ interface ProductFormModalProps {
   defaultCategoryId?: string;
 }
 
+type ProductImageSource = 'existing' | 'upload' | 'pollinations' | 'fallback' | null;
+
 export function ProductFormModal({
   isOpen,
   onClose,
@@ -94,15 +102,22 @@ export function ProductFormModal({
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const stockRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const imagePreviewRef = useRef<string | null>(null);
+  const imageRequestControllerRef = useRef<AbortController | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageSource, setImageSource] = useState<ProductImageSource>(null);
+  const [generatedImageSignature, setGeneratedImageSignature] = useState<string | null>(null);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [generationElapsedMs, setGenerationElapsedMs] = useState(0);
   const [isImageDeleted, setIsImageDeleted] = useState(false);
   const categoryRef = useRef<HTMLDivElement>(null);
   const addonsRef = useRef<HTMLDivElement>(null);
   const categoryTriggerRef = useRef<HTMLButtonElement>(null);
   const addonsTriggerRef = useRef<HTMLButtonElement>(null);
+  const imageGenerationStartedAtRef = useRef<number | null>(null);
 
   // New states for FE parity
   const [attributes, setAttributes] = useState<Attribute[]>([]);
@@ -213,41 +228,165 @@ export function ProductFormModal({
     if (formatted !== null) setCostPrice(formatted);
   };
 
+  const setPreviewUrl = (nextPreview: string | null) => {
+    setImagePreview((currentPreview) => {
+      if (currentPreview && currentPreview.startsWith('blob:') && currentPreview !== nextPreview) {
+        URL.revokeObjectURL(currentPreview);
+      }
+
+      imagePreviewRef.current = nextPreview;
+      return nextPreview;
+    });
+  };
+
+  const selectedCategoryName = useMemo(
+    () => localCategories.find((category) => category.id === categoryId)?.name || '',
+    [categoryId, localCategories]
+  );
+
+  const currentImageContext = useMemo(
+    () => ({
+      name,
+      description,
+      categoryName: selectedCategoryName,
+      type,
+    }),
+    [description, name, selectedCategoryName, type]
+  );
+
+  const currentImageSignature = useMemo(
+    () => buildProductImageSignature(currentImageContext),
+    [currentImageContext]
+  );
+
+  const draftImagePreview = useMemo(() => {
+    if (imagePreview || !name.trim()) {
+      return null;
+    }
+
+    return createProductFallbackDataUrl(currentImageContext);
+  }, [currentImageContext, imagePreview, name]);
+
+  const generatedImageNeedsRefresh = Boolean(
+    imagePreview &&
+    (imageSource === 'pollinations' || imageSource === 'fallback') &&
+    generatedImageSignature &&
+    generatedImageSignature !== currentImageSignature
+  );
+
+  useEffect(() => {
+    if (!isGeneratingImage) {
+      imageGenerationStartedAtRef.current = null;
+      setGenerationElapsedMs(0);
+      return;
+    }
+
+    imageGenerationStartedAtRef.current = Date.now();
+    setGenerationElapsedMs(0);
+
+    const intervalId = globalThis.setInterval(() => {
+      if (!imageGenerationStartedAtRef.current) {
+        return;
+      }
+
+      setGenerationElapsedMs(Date.now() - imageGenerationStartedAtRef.current);
+    }, 100);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [isGeneratingImage]);
+
+  const applyImageSelection = (
+    file: File,
+    previewUrl: string,
+    source: Exclude<ProductImageSource, 'existing' | null>,
+    signature?: string
+  ) => {
+    setSelectedImage(file);
+    setPreviewUrl(previewUrl);
+    setImageSource(source);
+    setGeneratedImageSignature(signature || null);
+    setIsImageDeleted(false);
+  };
+
+  const clearCurrentImage = () => {
+    setSelectedImage(null);
+    setPreviewUrl(null);
+    setImageSource(null);
+    setGeneratedImageSignature(null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+
+    if (initialData?.image) {
+      setIsImageDeleted(true);
+    }
+  };
+
   const handleGenerateImage = async () => {
     if (!name.trim()) {
       toast.error(t('products.messages.nameRequired'));
       return;
     }
 
+    const controller = new AbortController();
+
+    imageRequestControllerRef.current?.abort();
+    imageRequestControllerRef.current = controller;
     setIsGeneratingImage(true);
+
     try {
-      // Send only the clean name; backend handles complex prompt engineering and multi-provider fallback
-      const response = await api.post('/api/items/generate-image',
-        { prompt: name.trim() }
-      );
-
-      if (response.data.success && response.data.image) {
-        const dataUrl = response.data.image;
-
-        // Convert base64 to File object for upload on save
-        const fetchRes = await fetch(dataUrl);
-        const blob = await fetchRes.blob();
-
-        const safeName = name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'item';
-        const file = new File([blob], `${safeName}-ai.jpg`, { type: 'image/jpeg' });
-
-        setSelectedImage(file);
-        setImagePreview(dataUrl);
-        setIsImageDeleted(false);
-        toast.success(t('products.messages.imageGenerated'));
-      } else {
-        throw new Error(t('products.messages.invalidAiResponse'));
+      if (controller.signal.aborted) {
+        return;
       }
+
+      const generatedImage = await generatePollinationsProductImage(currentImageContext, controller.signal);
+
+      if (controller.signal.aborted) {
+        return;
+      }
+
+      applyImageSelection(generatedImage.file, generatedImage.previewUrl, 'pollinations', currentImageSignature);
+      toast.success(
+        t('products.messages.imageGenerated', {
+          defaultValue: 'Product image generated.',
+        })
+      );
     } catch (error: any) {
-      console.error('Failed to generate image:', error);
-      const message = error.response?.data?.message || t('products.messages.aiOverloaded');
-      toast.error(message);
+      if (error?.code === 'ERR_CANCELED' || error?.name === 'CanceledError') {
+        return;
+      }
+
+      if (error?.name === 'AbortError') {
+        return;
+      }
+
+      console.error('Failed to generate Pollinations image:', error);
+
+      try {
+        const fallbackAsset = await createProductFallbackImageAsset(currentImageContext);
+
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        applyImageSelection(fallbackAsset.file, fallbackAsset.dataUrl, 'fallback', currentImageSignature);
+        toast.success(
+          t('products.messages.imageFallbackUsed', {
+            defaultValue: 'Pollinations was unavailable, so a free product image was created.',
+          })
+        );
+      } catch (fallbackError) {
+        console.error('Failed to create fallback image:', fallbackError);
+        const message = error?.message || t('products.messages.aiOverloaded');
+        toast.error(message);
+      }
     } finally {
+      if (imageRequestControllerRef.current === controller) {
+        imageRequestControllerRef.current = null;
+      }
       setIsGeneratingImage(false);
     }
   };
@@ -309,11 +448,15 @@ export function ProductFormModal({
             : `${baseUrl}${cleanPath.startsWith('/') ? '' : '/'}${cleanPath}`;
 
           console.log('[ProductFormModal] Image URL:', imgUrl);
-          setImagePreview(imgUrl);
+          setPreviewUrl(imgUrl);
+          setImageSource('existing');
         } else {
-          setImagePreview(null);
+          setPreviewUrl(null);
+          setImageSource(null);
         }
         setSelectedImage(null);
+        setGeneratedImageSignature(null);
+        setIsImageDeleted(false);
 
         // Fetch item attributes if editing
         const fetchItemAttrs = async () => {
@@ -341,7 +484,9 @@ export function ProductFormModal({
         setLowStockYellow('5');
         setLowStockRed('2');
         setSelectedImage(null);
-        setImagePreview(null);
+        setPreviewUrl(null);
+        setImageSource(null);
+        setGeneratedImageSignature(null);
         setSelectedAttributeIds([]);
         setIsImageDeleted(false);
       }
@@ -353,16 +498,21 @@ export function ProductFormModal({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Revoke previous object URL to avoid memory leaks
-      if (imagePreview && imagePreview.startsWith('blob:')) {
-        URL.revokeObjectURL(imagePreview);
-      }
-      setSelectedImage(file);
-      // Use URL.createObjectURL for reliable preview (same as AI generation)
-      setImagePreview(URL.createObjectURL(file));
-      setIsImageDeleted(false);
+      applyImageSelection(file, URL.createObjectURL(file), 'upload');
     }
   };
+
+  useEffect(() => {
+    imagePreviewRef.current = imagePreview;
+  }, [imagePreview]);
+
+  useEffect(() => () => {
+    imageRequestControllerRef.current?.abort();
+
+    if (imagePreviewRef.current?.startsWith('blob:')) {
+      URL.revokeObjectURL(imagePreviewRef.current);
+    }
+  }, []);
 
   const errorBannerRef = useRef<HTMLDivElement>(null);
 
@@ -493,6 +643,38 @@ export function ProductFormModal({
   const netPrice = totalRetailPrice / (1 + effectiveTaxRate);
   const taxAmount = totalRetailPrice - netPrice;
   const popupLabelBaseClass = 'text-xs font-semibold text-gray-400 dark:text-gray-500 tracking-widest uppercase block mb-2';
+  const previewImage = imagePreview || draftImagePreview;
+  const hasDraftPreview = !imagePreview && Boolean(draftImagePreview);
+  const generationElapsedLabel = `${(generationElapsedMs / 1000).toFixed(2)}s`;
+  const generateButtonLabel = isGeneratingImage
+    ? t('products.image.generatingTimed', { defaultValue: `Generating... ${generationElapsedLabel}` })
+    : generatedImageNeedsRefresh
+      ? t('products.image.refresh', { defaultValue: 'Refresh image' })
+      : t('products.image.generate', { defaultValue: 'Generate image' });
+  const imageSourceLabel = imageSource === 'pollinations'
+    ? t('products.image.pollinations', { defaultValue: 'AI' })
+    : imageSource === 'fallback'
+      ? t('products.image.freeFallback', { defaultValue: 'Free fallback' })
+      : imageSource === 'upload'
+        ? t('products.image.uploaded', { defaultValue: 'Uploaded' })
+        : imageSource === 'existing'
+          ? t('products.image.saved', { defaultValue: 'Saved' })
+          : hasDraftPreview
+            ? t('products.image.preview', { defaultValue: 'Preview' })
+            : null;
+  const imageHelperMessage = !name.trim()
+    ? t('products.image.nameRequired', { defaultValue: 'Enter a product name before generating an image.' })
+    : generatedImageNeedsRefresh
+      ? t('products.image.outdated', { defaultValue: 'The current image no longer matches the latest product details.' })
+      : imageSource === 'pollinations'
+        ? t('products.image.pollinationsReady', { defaultValue: 'Pollinations image is ready to save.' })
+      : imageSource === 'fallback'
+        ? t('products.image.fallbackReady', { defaultValue: 'A free fallback image is ready to save.' })
+          : imageSource === 'upload'
+            ? t('products.image.uploadReady', { defaultValue: 'Uploaded image is ready to save.' })
+            : imageSource === 'existing'
+              ? t('products.image.savedReady', { defaultValue: 'Saved image will be kept unless you replace it.' })
+              : t('products.image.pollinationsOnly', { defaultValue: 'The app generates a product image with Pollinations and falls back to a free placeholder if the request fails.' });
 
   if (!isOpen) return null;
 
@@ -569,24 +751,28 @@ export function ProductFormModal({
                 </div>
 
                 {/* Image Picker */}
-                <div className="flex flex-col items-center justify-center py-4 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 shadow-inner mb-2">
-                  <div className="relative group">
-                    <div
-                      className="w-32 h-32 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-[#1E293B] cursor-pointer hover:border-paymint-green transition-all shadow-sm"
-                    >
-                      {imagePreview ? (
+                <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 shadow-inner p-4 sm:p-5 mb-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                    <div className="relative w-full max-w-[220px] aspect-square mx-auto sm:mx-0 rounded-3xl overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0F172A] shadow-sm">
+                      {previewImage ? (
                         <img
-                          src={imagePreview}
+                          src={previewImage}
                           alt={t('products.form.imagePreview')}
-                          className="w-full h-full object-cover"
+                          className={`w-full h-full ${hasDraftPreview ? 'object-contain p-4' : 'object-cover'}`}
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             console.error('Image failed to load:', target.src);
 
-                            // Don't retry Base64 or already failed fallbacks
                             if (target.src.startsWith('data:') || target.dataset.failed) return;
 
-                            // If it's a relative path and we're on localhost, try fallback to production backend explicitly
                             const prodUrl = 'https://grateful-liberation-production-d036.up.railway.app';
                             if (target.src.includes('/uploads/images/') && !target.src.includes(prodUrl)) {
                               console.log('Attempting fallback to production backend...');
@@ -597,54 +783,79 @@ export function ProductFormModal({
                           }}
                         />
                       ) : (
-                        <div className="flex flex-col items-center text-gray-400 group-hover:text-paymint-green transition-colors">
-                          <Upload size={24} strokeWidth={1.5} className="mb-1.5" />
-                          <span className="text-[10px] font-bold tracking-widest">{t('products.upload')}</span>
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="w-full h-full flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-paymint-green transition-colors"
+                        >
+                          <Upload size={28} strokeWidth={1.6} />
+                          <span className="text-[11px] font-bold tracking-widest">{t('products.upload')}</span>
+                        </button>
+                      )}
+
+                      {(imageSourceLabel || generatedImageNeedsRefresh) && (
+                        <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+                          {imageSourceLabel && (
+                            <span className="px-2.5 py-1 rounded-full bg-slate-900/80 text-white text-[10px] font-bold tracking-wide">
+                              {imageSourceLabel}
+                            </span>
+                          )}
+                          {generatedImageNeedsRefresh && (
+                            <span className="px-2.5 py-1 rounded-full bg-amber-500/90 text-white text-[10px] font-bold tracking-wide">
+                              {t('products.image.stale', { defaultValue: 'Needs refresh' })}
+                            </span>
+                          )}
                         </div>
                       )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="absolute inset-0 opacity-0 cursor-pointer"
-                      />
-                    </div>
-                    {imagePreview && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          // Revoke object URL to prevent memory leaks
-                          if (imagePreview && imagePreview.startsWith('blob:')) {
-                            URL.revokeObjectURL(imagePreview);
-                          }
-                          setSelectedImage(null);
-                          setImagePreview(null);
-                          // Mark as deleted so we know to call the delete endpoint on submit
-                          if (initialData?.image) {
-                            setIsImageDeleted(true);
-                          }
-                        }}
-                        className="absolute -top-2 -right-2 bg-white dark:bg-gray-800 rounded-full p-1.5 text-paymint-red hover:bg-red-50 border border-gray-200 dark:border-white/10 shadow-lg active:scale-90 transition-all"
-                      >
-                        <X size={14} />
-                      </button>
-                    )}
-                  </div>
 
-                  {/* AI Generation Button */}
-                  <button
-                    type="button"
-                    onClick={handleGenerateImage}
-                    disabled={isGeneratingImage || !name.trim()}
-                    className="mt-4 w-32 flex items-center justify-center gap-2 label-strong font-outfit text-paymint-green bg-paymint-green/10 py-2 rounded-[12px] hover:bg-paymint-green/20 transition-all border border-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
-                  >
-                    {isGeneratingImage ? (
-                      <div className="w-3.5 h-3.5 border-2 border-paymint-green/20 border-t-paymint-green rounded-full animate-spin" />
-                    ) : (
-                      <Wand2 size={14} />
-                    )}
-                    <span>{isGeneratingImage ? t('products.generating') : t('products.generateImage')}</span>
-                  </button>
+                      {imagePreview && (
+                        <button
+                          type="button"
+                          onClick={clearCurrentImage}
+                          className="absolute top-3 right-3 bg-white/95 dark:bg-slate-900/95 rounded-full p-2 text-paymint-red hover:bg-red-50 border border-gray-200 dark:border-white/10 shadow-lg active:scale-90 transition-all"
+                          aria-label={t('common.remove', { defaultValue: 'Remove image' })}
+                        >
+                          <X size={14} />
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex-1 space-y-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="h-11 flex items-center justify-center gap-2 rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-700 dark:text-gray-100 text-sm font-semibold hover:border-paymint-green hover:text-paymint-green transition-all"
+                        >
+                          <Upload size={16} />
+                          <span>{t('products.upload')}</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleGenerateImage}
+                          disabled={isGeneratingImage || !name.trim()}
+                          className="h-11 flex items-center justify-center gap-2 rounded-2xl border border-paymint-green/20 bg-paymint-green/10 text-paymint-green text-sm font-semibold hover:bg-paymint-green/15 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {isGeneratingImage ? (
+                            <div className="w-4 h-4 border-2 border-paymint-green/20 border-t-paymint-green rounded-full animate-spin" />
+                          ) : (
+                            <Wand2 size={16} />
+                          )}
+                          <span>{generateButtonLabel}</span>
+                        </button>
+                      </div>
+
+                      <div className={`flex items-start gap-2 rounded-2xl border px-3 py-3 text-sm ${
+                        generatedImageNeedsRefresh
+                          ? 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-400/30 dark:bg-amber-500/10 dark:text-amber-200'
+                          : 'border-gray-200 bg-white/80 text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300'
+                      }`}>
+                        <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
+                        <p className="leading-6">{imageHelperMessage}</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Prices Grid */}

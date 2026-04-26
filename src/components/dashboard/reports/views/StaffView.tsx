@@ -206,7 +206,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.staff.salesShare')}</h3>
                 <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')}</p>
               </div>
-              <div className="flex-1 min-h-[160px] relative" dir="ltr">
+              <div className="flex-1 min-h-[180px] relative" dir="ltr">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -225,8 +225,17 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                       ))}
                     </Pie>
                     <Tooltip
-                      formatter={(value) => formatCurrency(getNumericTooltipValue(value))}
-                      contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.15)', backgroundColor: '#fff', color: '#000', fontWeight: 'bold' }}
+                      formatter={(value: any) => formatCurrency(getNumericTooltipValue(value))}
+                      contentStyle={{ 
+                        borderRadius: '12px', 
+                        border: 'none', 
+                        boxShadow: '0 10px 40px -10px rgba(0,0,0,0.15)', 
+                        backgroundColor: '#fff', 
+                        color: '#000', 
+                        fontWeight: 'bold',
+                        fontSize: '11px'
+                      }}
+                      position={{ y: -20 }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
