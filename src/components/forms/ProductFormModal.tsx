@@ -667,14 +667,14 @@ export function ProductFormModal({
     : generatedImageNeedsRefresh
       ? t('products.image.outdated', { defaultValue: 'The current image no longer matches the latest product details.' })
       : imageSource === 'pollinations'
-        ? t('products.image.pollinationsReady', { defaultValue: 'Pollinations image is ready to save.' })
+        ? t('products.image.pollinationsReady', { defaultValue: 'Your generated image is ready.' })
       : imageSource === 'fallback'
         ? t('products.image.fallbackReady', { defaultValue: 'A free fallback image is ready to save.' })
           : imageSource === 'upload'
             ? t('products.image.uploadReady', { defaultValue: 'Uploaded image is ready to save.' })
             : imageSource === 'existing'
               ? t('products.image.savedReady', { defaultValue: 'Saved image will be kept unless you replace it.' })
-              : t('products.image.pollinationsOnly', { defaultValue: 'The app generates a product image with Pollinations and falls back to a free placeholder if the request fails. It may take from 1 to 200 seconds and you will not be able to leave this screen until the generation is complete.' });
+              : t('products.image.pollinationsOnly', { defaultValue: 'The app uses AI to generate a high-quality product image. If the generation fails, a default image will be provided. It may take from 1 to 200 seconds, and you will not be able to leave this screen until the process is complete.' });
 
   if (!isOpen) return null;
 
