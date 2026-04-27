@@ -1,5 +1,6 @@
 ﻿import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -571,8 +572,8 @@ export function CustomersPage() {
 
       {/* Modals */}
       <AnimatePresence>
-        {showModal && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
+        {showModal && createPortal(
+          <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
@@ -660,13 +661,14 @@ export function CustomersPage() {
                 </div>
               </form>
             </motion.div>
-          </div>
+          </div>,
+          document.body
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showPointsModal && selectedCustomer && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowPointsModal(false)}>
+        {showPointsModal && selectedCustomer && createPortal(
+          <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowPointsModal(false)}>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -756,13 +758,14 @@ export function CustomersPage() {
                 </div>
               </div>
             </motion.div>
-          </div>
+          </div>,
+          document.body
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showDetailModal && selectedCustomer && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
+        {showDetailModal && selectedCustomer && createPortal(
+          <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
             <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-xl border border-gray-200 dark:border-white/5 w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide shadow-2xl" onClick={e => e.stopPropagation()}>
               <div className="p-10 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-transparent">
                 <div className="flex justify-between items-start mb-10">
@@ -858,7 +861,8 @@ export function CustomersPage() {
                 </div>
               </div>
             </motion.div>
-          </div>
+          </div>,
+          document.body
         )}
       </AnimatePresence>
 

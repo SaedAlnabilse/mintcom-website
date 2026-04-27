@@ -10,6 +10,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -365,8 +366,8 @@ export function BillingPage() {
 
       {/* Upgrade to Yearly Modal */}
       <AnimatePresence>
-        {showUpgradeModal && (
-          <div className="fixed inset-0 z-50 popup-surface flex items-center justify-center p-4">
+        {showUpgradeModal && createPortal(
+          <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -428,7 +429,8 @@ export function BillingPage() {
                 </button>
               </div>
             </motion.div>
-          </div>
+          </div>,
+          document.body
         )}
       </AnimatePresence>
 

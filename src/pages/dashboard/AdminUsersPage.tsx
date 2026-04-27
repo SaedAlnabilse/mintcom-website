@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 
 import {
     Plus,
@@ -409,148 +410,149 @@ export function AdminUsersPage() {
             </div>
 
             {/* Modal */}
-            {showModal && (
+            {showModal && createPortal(
                 <div
-                    className="fixed inset-0 z-50 popup-surface flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+                    className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
                     onClick={() => setShowModal(false)}
                 >
                     <div
                         className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md max-h-[85vh] overflow-y-auto shadow-2xl relative"
                         onClick={(e) => e.stopPropagation()}
                     >
-                            <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between relative isolate">
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
-                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                                    {editingAdmin ? t('adminUsers.editAdmin') : t('adminUsers.addAdmin')}
-                                </h2>
-                                <button
-                                    onClick={() => setShowModal(false)}
-                                    className="p-2 rounded-xl text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
-                                >
-                                    <X size={20} />
-                                </button>
+                        <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between relative isolate">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                                {editingAdmin ? t('adminUsers.editAdmin') : t('adminUsers.addAdmin')}
+                            </h2>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="p-2 rounded-xl text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="block label-strong font-outfit px-1">
+                                        {t('adminUsers.form.firstName')} <span className="text-paymint-red">*</span>
+                                    </label>
+                                    <input maxLength={255}
+                                        type="text"
+                                        value={formData.firstName}
+                                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="block label-strong font-outfit px-1">
+                                        {t('adminUsers.form.lastName')} <span className="text-paymint-red">*</span>
+                                    </label>
+                                    <input maxLength={255}
+                                        type="text"
+                                        value={formData.lastName}
+                                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                                        required
+                                    />
+                                </div>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="p-8 space-y-6">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <label className="block label-strong font-outfit px-1">
-                                            {t('adminUsers.form.firstName')} <span className="text-paymint-red">*</span>
-                                        </label>
-                                        <input maxLength={255}
-                                            type="text"
-                                            value={formData.firstName}
-                                            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                                            className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="block label-strong font-outfit px-1">
-                                            {t('adminUsers.form.lastName')} <span className="text-paymint-red">*</span>
-                                        </label>
-                                        <input maxLength={255}
-                                            type="text"
-                                            value={formData.lastName}
-                                            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                                            className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
-                                            required
-                                        />
-                                    </div>
-                                </div>
+                            <div className="space-y-2">
+                                <label className="block label-strong font-outfit px-1">
+                                    {t('adminUsers.form.email')} <span className="text-paymint-red">*</span>
+                                </label>
+                                <input maxLength={255}
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50"
+                                    placeholder={t('adminUsers.form.emailPlaceholder')}
+                                    required
+                                    disabled={!!editingAdmin}
+                                />
+                            </div>
 
-                                    <div className="space-y-2">
-                                        <label className="block label-strong font-outfit px-1">
-                                            {t('adminUsers.form.email')} <span className="text-paymint-red">*</span>
-                                        </label>
-                                        <input maxLength={255}
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50"
-                                            placeholder={t('adminUsers.form.emailPlaceholder')}
-                                            required
-                                            disabled={!!editingAdmin}
-                                        />
-                                    </div>
-
-                                {!editingAdmin && (
-                                    <div className="space-y-2">
-                                        <label className="block label-strong font-outfit px-1">
-                                            {t('adminUsers.form.password')} <span className="text-paymint-red">*</span>
-                                        </label>
-                                        <div className="relative group">
-                                            <input maxLength={255}
-                                                type={showPassword ? 'text' : 'password'}
-                                                value={formData.password}
-                                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 pr-12 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
-                                                required
-                                                minLength={8}
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                                            >
-                                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                            </button>
-                                        </div>
-                                        <p className="text-xs font-bold text-gray-400 mt-1 px-1 tracking-tight">
-                                            {t('adminUsers.form.passwordHint')}
-                                        </p>
-                                    </div>
-                                )}
-
-                                <div className="space-y-3">
+                            {!editingAdmin && (
+                                <div className="space-y-2">
                                     <label className="block label-strong font-outfit px-1">
-                                        {t('adminUsers.form.locationAccess')}
+                                        {t('adminUsers.form.password')} <span className="text-paymint-red">*</span>
                                     </label>
-                                    <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
-                                        {establishments.map((est) => (
-                                            <label
-                                                key={est.id}
-                                                className={`flex items-center gap-3 p-4 rounded-xl border transition-all cursor-pointer ${formData.establishmentIds.includes(est.id)
-                                                    ? 'border-paymint-green bg-paymint-green/5'
-                                                    : 'border-gray-200 dark:border-white/5 bg-white dark:bg-[#1E293B] hover:border-gray-300 dark:hover:border-white/10'
-                                                    }`}
-                                            >
-                                                <input
-                                                    type="checkbox"
-                                                    checked={formData.establishmentIds.includes(est.id)}
-                                                    onChange={() => toggleEstablishment(est.id)}
-                                                    className="sr-only"
-                                                />
-                                                <div className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-all ${formData.establishmentIds.includes(est.id) ? 'bg-paymint-green border-paymint-green' : 'border-gray-300 dark:border-white/10'}`}>
-                                                    {formData.establishmentIds.includes(est.id) && <Check size={14} className="text-black" strokeWidth={3} />}
-                                                </div>
-                                                <span className={`font-bold text-sm ${formData.establishmentIds.includes(est.id) ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>{est.name}</span>
-                                            </label>
-                                        ))}
+                                    <div className="relative group">
+                                        <input maxLength={255}
+                                            type={showPassword ? 'text' : 'password'}
+                                            value={formData.password}
+                                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                            className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 pr-12 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                                            required
+                                            minLength={8}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                        >
+                                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
                                     </div>
+                                    <p className="text-xs font-bold text-gray-400 mt-1 px-1 tracking-tight">
+                                        {t('adminUsers.form.passwordHint')}
+                                    </p>
                                 </div>
+                            )}
 
-                                <div className="pt-6 flex gap-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowModal(false)}
-                                        className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-xs rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5"
-                                    >
-                                        {t('common.cancel')}
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="flex-1 py-4 bg-paymint-green text-black font-black tracking-[0.2em] text-xs rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
-                                    >
-                                        {isSubmitting && <Loader2 size={16} className="animate-spin" />}
-                                        {t('common.save')}
-                                    </button>
+                            <div className="space-y-3">
+                                <label className="block label-strong font-outfit px-1">
+                                    {t('adminUsers.form.locationAccess')}
+                                </label>
+                                <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                                    {establishments.map((est) => (
+                                        <label
+                                            key={est.id}
+                                            className={`flex items-center gap-3 p-4 rounded-xl border transition-all cursor-pointer ${formData.establishmentIds.includes(est.id)
+                                                ? 'border-paymint-green bg-paymint-green/5'
+                                                : 'border-gray-200 dark:border-white/5 bg-white dark:bg-[#1E293B] hover:border-gray-300 dark:hover:border-white/10'
+                                                }`}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                checked={formData.establishmentIds.includes(est.id)}
+                                                onChange={() => toggleEstablishment(est.id)}
+                                                className="sr-only"
+                                            />
+                                            <div className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-all ${formData.establishmentIds.includes(est.id) ? 'bg-paymint-green border-paymint-green' : 'border-gray-300 dark:border-white/10'}`}>
+                                                {formData.establishmentIds.includes(est.id) && <Check size={14} className="text-black" strokeWidth={3} />}
+                                            </div>
+                                            <span className={`font-bold text-sm ${formData.establishmentIds.includes(est.id) ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>{est.name}</span>
+                                        </label>
+                                    ))}
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+
+                            <div className="pt-6 flex gap-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowModal(false)}
+                                    className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-xs rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5"
+                                >
+                                    {t('common.cancel')}
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="flex-1 py-4 bg-paymint-green text-black font-black tracking-[0.2em] text-xs rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                                >
+                                    {isSubmitting && <Loader2 size={16} className="animate-spin" />}
+                                    {t('common.save')}
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                )}
+                </div>,
+                document.body
+            )}
 
             <ConfirmModal
                 isOpen={confirmConfig.isOpen}

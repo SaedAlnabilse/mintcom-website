@@ -427,6 +427,9 @@
 
   .popup-surface {
     @apply font-sans text-text-primary dark:text-paymint-text;
+    background-color: rgb(15 23 42 / 0.24);
+    -webkit-backdrop-filter: blur(14px) saturate(115%);
+    backdrop-filter: blur(14px) saturate(115%);
   }
 
   .popup-surface :where(input, textarea, select, option) {

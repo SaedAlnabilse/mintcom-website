@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { X, Shield, Lock, User, RefreshCw, AlertTriangle, ArrowRight } from 'lucide-react';
@@ -32,7 +33,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
 
     if (!isOpen) return null;
 
-    return (
+    return createPortal(
         <AnimatePresence>
             <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
                 <motion.div
@@ -206,6 +207,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                     </div>
                 </motion.div>
             </div>
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }

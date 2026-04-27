@@ -177,12 +177,12 @@ export const Contact = () => {
                       />
                     </div>
 
-                    <div className="flex items-start gap-3 py-2">
+                    <div className="flex items-center gap-3 py-2">
                       <input
                         required
                         id="terms"
                         type="checkbox"
-                        className="mt-1.5 w-4 h-4 rounded border-gray-300 dark:border-white/20 text-paymint-green focus:ring-paymint-green cursor-pointer"
+                        className="w-4 h-4 rounded border-gray-300 dark:border-white/20 text-paymint-green focus:ring-paymint-green cursor-pointer"
                       />
                       <label htmlFor="terms" className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                         {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline">{t('landing.contact.termsOfService')}</Link>.
@@ -192,9 +192,9 @@ export const Contact = () => {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full py-5 bg-paymint-green text-black font-black text-base rounded-xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
-                      {isSubmitting ? <Loader2 className="animate-spin" size={24} /> : <Send size={24} />}
+                      {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
                       {t('landing.contact.sendMessage')}
                     </button>
                   </motion.form>

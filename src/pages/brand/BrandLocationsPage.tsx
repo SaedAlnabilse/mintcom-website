@@ -691,7 +691,10 @@ export function BrandLocationsPage() {
                 isOpen={isLinkModalOpen}
                 onClose={() => setIsLinkModalOpen(false)}
                 brandId={brandId as string}
-                onSuccess={fetchLocations}
+                onSuccess={() => {
+                    fetchLocations();
+                    fetchBrands();
+                }}
                 existingBrands={allBrands}
             />
         </div >

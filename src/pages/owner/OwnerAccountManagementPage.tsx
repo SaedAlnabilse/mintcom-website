@@ -1,5 +1,6 @@
 ﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -1240,8 +1241,8 @@ export function OwnerAccountManagementPage() {
             />
 
             {/* Delete Account Confirmation Modal */}
-            {showDeleteConfirm && (
-                <div className="fixed inset-0 z-50 popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            {showDeleteConfirm && createPortal(
+                <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -1383,12 +1384,13 @@ export function OwnerAccountManagementPage() {
                             </div>
                         )}
                     </motion.div>
-                </div>
+                </div>,
+                document.body
             )}
             {/* Active Establishments Block Modal */}
             <AnimatePresence>
-                {showActiveEstBlockModal && (
-                    <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                {showActiveEstBlockModal && createPortal(
+                    <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -1446,7 +1448,8 @@ export function OwnerAccountManagementPage() {
                                 </div>
                             </div>
                         </motion.div>
-                    </div>
+                    </div>,
+                    document.body
                 )}
             </AnimatePresence>
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate , useParams } from 'react-router-dom';
 import {
   Plus,
@@ -596,67 +597,69 @@ export function RecipesPage() {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {showMaterialModal && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ type: "spring", duration: 0.4, bounce: 0.2 }} className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl max-h-[92vh] sm:max-h-[85vh] flex flex-col">
-              <div className="sm:hidden flex justify-center pt-3 pb-1"><div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" /></div>
-              <div className="p-4 sm:p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingMaterial ? t('inventory.editIngredient', {defaultValue: 'Edit Ingredient'}) : t('inventory.addIngredient', {defaultValue: 'Add Ingredient'})}</h2>
-                <button onClick={() => setShowMaterialModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={20} /></button>
-              </div>
-              <form onSubmit={handleMaterialSubmit} className="p-4 sm:p-8 space-y-6 overflow-y-auto flex-1">
-                <div>
-                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-paymint-red mx-1">*</span></label>
-                  <input  maxLength={255}type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
-                  {errors.name && <p className="mt-2 text-xs font-bold text-paymint-red px-1">{errors.name}</p>}
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
-                      {t('inventory.form.unit', {defaultValue: 'Unit'})}
-                      <QuickInfo text={t('inventory.tips.unit', {defaultValue: 'The primary unit used to measure this ingredient (e.g., Kg, Liters).'})} />
-                    </label>
-                    <CustomSelect value={materialForm.unit} onChange={(val) => setMaterialForm({ ...materialForm, unit: val as string })} options={units.map(u => ({ value: u, label: u }))} />
+      {createPortal(
+        <>
+          <AnimatePresence>
+            {showMaterialModal && (
+              <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
+                <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ type: "spring", duration: 0.4, bounce: 0.2 }} className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl max-h-[92vh] sm:max-h-[85vh] flex flex-col">
+                  <div className="sm:hidden flex justify-center pt-3 pb-1"><div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" /></div>
+                  <div className="p-4 sm:p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingMaterial ? t('inventory.editIngredient', {defaultValue: 'Edit Ingredient'}) : t('inventory.addIngredient', {defaultValue: 'Add Ingredient'})}</h2>
+                    <button onClick={() => setShowMaterialModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={20} /></button>
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
-                      {t('inventory.form.totalQuantity', {defaultValue: 'Total Quantity'})}
-                      <QuickInfo text={t('inventory.tips.quantity', {defaultValue: 'Current stock available for this ingredient.'})} />
-                    </label>
-                    <div className="relative">
-                      <input maxLength={255}
-                        type="text"
-                        inputMode="decimal"
-                        value={materialForm.quantity === 0 ? '' : materialForm.quantity.toFixed(2)}
-                        placeholder="0.00"
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/\D/g, '');
-                          if (val.length > 19) return;
-                          const numericValue = parseInt(val || '0', 10) / 100;
-                          setMaterialForm({ ...materialForm, quantity: numericValue });
-                        }}
-                        className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all"
-                      />
-                      <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
+                  <form onSubmit={handleMaterialSubmit} className="p-4 sm:p-8 space-y-6 overflow-y-auto flex-1">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-paymint-red mx-1">*</span></label>
+                      <input  maxLength={255}type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
+                      {errors.name && <p className="mt-2 text-xs font-bold text-paymint-red px-1">{errors.name}</p>}
                     </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                          {t('inventory.form.unit', {defaultValue: 'Unit'})}
+                          <QuickInfo text={t('inventory.tips.unit', {defaultValue: 'The primary unit used to measure this ingredient (e.g., Kg, Liters).'})} />
+                        </label>
+                        <CustomSelect value={materialForm.unit} onChange={(val) => setMaterialForm({ ...materialForm, unit: val as string })} options={units.map(u => ({ value: u, label: u }))} />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                          {t('inventory.form.totalQuantity', {defaultValue: 'Total Quantity'})}
+                          <QuickInfo text={t('inventory.tips.quantity', {defaultValue: 'Current stock available for this ingredient.'})} />
+                        </label>
+                        <div className="relative">
+                          <input maxLength={255}
+                            type="text"
+                            inputMode="decimal"
+                            value={materialForm.quantity === 0 ? '' : materialForm.quantity.toFixed(2)}
+                            placeholder="0.00"
+                            onChange={(e) => {
+                              const val = e.target.value.replace(/\D/g, '');
+                              if (val.length > 19) return;
+                              const numericValue = parseInt(val || '0', 10) / 100;
+                              setMaterialForm({ ...materialForm, quantity: numericValue });
+                            }}
+                            className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all"
+                          />
+                          <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                  <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02]">
+                    <button onClick={handleMaterialSubmit} disabled={isSubmitting} className="w-full px-5 py-3.5 bg-paymint-green hover:bg-[#68B390] text-black font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
+                      {isSubmitting ? <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : t('common.save', {defaultValue: 'Save'})}
+                    </button>
                   </div>
-                </div>
-              </form>
-              <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02]">
-                <button onClick={handleMaterialSubmit} disabled={isSubmitting} className="w-full px-5 py-3.5 bg-paymint-green hover:bg-[#68B390] text-black font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
-                  {isSubmitting ? <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : t('common.save', {defaultValue: 'Save'})}
-                </button>
+                </motion.div>
               </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+            )}
+          </AnimatePresence>
 
-      <AnimatePresence>
-        {showSubRecipeModal && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+          <AnimatePresence>
+            {showSubRecipeModal && (
+              <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
               <div className="p-5 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? t('manufacturing.formula.edit') : t('manufacturing.formula.new')}</h2>
                 <button onClick={() => setShowSubRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
@@ -813,7 +816,7 @@ export function RecipesPage() {
                     </AnimatePresence>
 
                     {subRecipeForm.ingredients.length === 0 && (
-                      <div className="py-8 text-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-2xl">
+                      <div className="py-8 px-6 text-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-2xl">
                         <Package size={24} className="mx-auto text-gray-300 mb-2 opacity-50" />
                         <p className="label-strong font-outfit">{t('manufacturing.formula.noIngredients')}</p>
                       </div>
@@ -856,13 +859,13 @@ export function RecipesPage() {
                 </button>
               </div>
             </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+              </div>
+            )}
+          </AnimatePresence>
 
-      <AnimatePresence>
-        {showFinalRecipeModal && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <AnimatePresence>
+            {showFinalRecipeModal && (
+              <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
               <div className="p-5 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? t('manufacturing.editLink', {defaultValue: 'Edit Link'}) : t('manufacturing.linkProduct', {defaultValue: 'Link Product'})}</h2>
@@ -1043,10 +1046,12 @@ export function RecipesPage() {
                     </AnimatePresence>
 
                     {finalRecipeForm.ingredients.length === 0 && (
-                      <div className="py-12 text-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-[2rem]">
-                        <Pizza size={32} className="mx-auto text-gray-300 mb-4 opacity-50" />
-                        <p className="text-sm font-bold text-gray-500">{t('manufacturing.formula.noIngredients')}</p>
-                        <p className="label-strong font-outfit mt-1">{t('manufacturing.messages.noSubFormulasDesc')}</p>
+                      <div className="py-12 px-10 text-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-[2rem]">
+                        <Pizza size={40} className="mx-auto text-gray-300 mb-6 opacity-50" />
+                        <div className="max-w-[300px] mx-auto space-y-2">
+                          <p className="text-sm font-bold text-gray-500">{t('manufacturing.formula.noIngredients')}</p>
+                          <p className="label-strong font-outfit text-gray-400 leading-relaxed">{t('manufacturing.messages.noSubFormulasDesc')}</p>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -1111,19 +1116,38 @@ export function RecipesPage() {
                 </button>
               </div>
             </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {showManufactureModal && manufactureRecipe && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
-              <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('manufacturing.runBatch')}</h2>
-                <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">{manufactureRecipe.name}</p>
               </div>
-              <div className="p-8 space-y-8">
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {showManufactureModal && manufactureRecipe && (
+              <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, y: 32, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.98 }}
+              transition={{ type: "spring", duration: 0.35, bounce: 0.12 }}
+              className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl max-h-[92vh] sm:max-h-[85vh] flex flex-col"
+            >
+              <div className="sm:hidden flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+              </div>
+              <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('manufacturing.runBatch')}</h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-1">{manufactureRecipe.name}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowManufactureModal(false)}
+                  className="shrink-0 w-11 h-11 rounded-2xl border border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                  aria-label={t('common.cancel', { defaultValue: 'Cancel' })}
+                >
+                  <X size={20} className="mx-auto" />
+                </button>
+              </div>
+              <div className="p-4 sm:p-6 space-y-6 overflow-y-auto flex-1">
                 <div>
                   <input
                     type="number"
@@ -1143,7 +1167,7 @@ export function RecipesPage() {
                         setNumBatches(1);
                       }
                     }}
-                    className="w-full bg-transparent text-center text-6xl font-black text-paymint-green focus:outline-none placeholder-gray-300"
+                    className="w-full bg-transparent text-center text-5xl sm:text-6xl font-black text-paymint-green focus:outline-none placeholder-gray-300"
                     autoFocus
                   />
                   <div className="flex items-center justify-center mt-4 gap-1">
@@ -1171,14 +1195,30 @@ export function RecipesPage() {
                     </span>
                   </div>
                 </div>
-                <button onClick={handleManufacture} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
+              </div>
+              <div className="p-4 sm:p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowManufactureModal(false)}
+                  className="w-full py-3.5 rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.03] text-gray-700 dark:text-gray-200 font-bold transition-all hover:bg-gray-50 dark:hover:bg-white/5"
+                >
+                  {t('common.cancel', { defaultValue: 'Cancel' })}
+                </button>
+                <button
+                  onClick={handleManufacture}
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20"
+                >
                   {t('manufacturing.confirmProduction')}
                 </button>
               </div>
             </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+              </div>
+            )}
+          </AnimatePresence>
+        </>,
+        document.body
+      )}
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}

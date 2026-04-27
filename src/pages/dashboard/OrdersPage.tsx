@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import { startOfDay, endOfDay, format } from 'date-fns';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
@@ -1662,7 +1663,7 @@ export function OrdersPage() {
         showCancel={confirmConfig.showCancel}
       />
 
-      {isRefundReasonModalOpen && (
+      {isRefundReasonModalOpen && createPortal(
         <div className="fixed inset-0 z-[10000] popup-surface flex items-center justify-center bg-black/50 p-4">
           <div
             className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 p-5 sm:p-6 shadow-2xl"
@@ -1718,7 +1719,8 @@ export function OrdersPage() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

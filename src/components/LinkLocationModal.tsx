@@ -185,19 +185,19 @@ export function LinkLocationModal({
                     className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-xl rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/5"
                 >
                     {/* Header */}
-                    <div className="px-6 py-4 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
-                                {step === 1 ? <Building2 size={20} /> : <Users size={20} />}
+                    <div className="px-8 pt-10 pb-6 flex items-start justify-between">
+                        <div className="flex items-center gap-5">
+                            <div className="w-16 h-16 rounded-[1.25rem] bg-[#F0FDF4] dark:bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
+                                {step === 1 ? <Building2 size={32} /> : <Users size={32} />}
                             </div>
                             <div>
-                                <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
-                                    {step === 1 ? t('owner.brands.wizard.step2') : t('owner.brands.wizard.step3')}
+                                <h2 className="text-2xl font-sans font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+                                    {step === 1 ? t('owner.brands.linkLocations') : t('owner.brands.wizard.step3')}
                                 </h2>
-                                <p className="text-[10px] font-black text-gray-400 tracking-widest uppercase mt-0.5">
+                                <p className="text-base font-sans font-medium text-gray-500 mt-1">
                                     {step === 1 
-                                        ? t('owner.brands.selectedCount', { count: selectedIds.length })
-                                        : t('owner.brands.wizard.locationsSelected', { count: selectedEmployeeIds.length })
+                                        ? t('owner.brands.selectLocationsToLink')
+                                        : t('owner.brands.wizard.finalStepDesc')
                                     }
                                 </p>
                             </div>
@@ -206,41 +206,64 @@ export function LinkLocationModal({
                             onClick={handleClose}
                             className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-all"
                         >
-                            <X size={20} />
+                            <X size={24} />
                         </button>
                     </div>
 
                     {/* Progress Bar */}
-                    <div className="h-1 bg-gray-100 dark:bg-white/5 overflow-hidden">
+                    <div className="h-1.5 bg-gray-100 dark:bg-white/5 overflow-hidden">
                         <motion.div 
                             initial={{ width: "50%" }}
                             animate={{ width: step === 1 ? "50%" : "100%" }}
-                            className="h-full bg-paymint-green"
+                            className="h-full bg-paymint-green transition-all duration-500"
                         />
                     </div>
 
                     {/* Content */}
-                    <div className="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+                    <div className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-6">
                         {step === 1 ? (
                             <>
                                 {/* Search */}
                                 <div className="relative group">
-                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={18} />
+                                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                                     <input
                                         type="text"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         placeholder={t('owner.locations.searchPlaceholder')}
-                                        className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/5 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all"
+                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
                                     />
                                 </div>
 
                                 {availableEstablishments.length === 0 ? (
-                                    <div className="py-12 text-center space-y-4">
-                                        <div className="w-16 h-16 rounded-3xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-300 dark:text-gray-700 mx-auto">
-                                            <Store size={32} />
+                                    <div className="py-8">
+                                        <div className="flex flex-col items-center text-center space-y-6">
+                                            <div className="w-20 h-20 rounded-[1.5rem] bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-sm">
+                                                <Store size={40} />
+                                            </div>
+                                            
+                                            <div className="space-y-2 px-4">
+                                                <h2 className="text-xl font-sans font-bold text-gray-900 dark:text-white tracking-tight">
+                                                    {t('owner.brands.disclaimerTitle')}
+                                                </h2>
+                                                <p className="text-[15px] font-sans font-medium text-gray-500">
+                                                    {t('owner.brands.disclaimerSubtitle')}
+                                                </p>
+                                            </div>
+
+                                            <div className="bg-gray-50 dark:bg-black/20 rounded-3xl p-6 border border-gray-100 dark:border-white/5">
+                                                <p className="text-[14px] font-sans font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
+                                                    {t('owner.brands.disclaimerDesc')}
+                                                </p>
+                                            </div>
+
+                                            <button
+                                                onClick={handleClose}
+                                                className="w-full py-4 rounded-2xl bg-paymint-green text-black font-sans font-bold text-sm tracking-tight hover:bg-paymint-green/90 transition-all shadow-lg shadow-paymint-green/20 active:scale-[0.98] mt-4"
+                                            >
+                                                {t('owner.brands.disclaimerAction')}
+                                            </button>
                                         </div>
-                                        <p className="text-sm font-bold text-gray-500">{t('owner.brands.allLocationsLinked')}</p>
                                     </div>
                                 ) : (
                                     <div className="grid grid-cols-1 gap-3">
@@ -329,38 +352,40 @@ export function LinkLocationModal({
                     </div>
 
                     {/* Footer */}
-                    <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-white/[0.02]">
-                        <button
-                            onClick={step === 1 ? handleClose : () => setStep(1)}
-                            className="flex-1 py-4 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2"
-                        >
-                            {step === 2 && <ChevronLeft size={16} />}
-                            {step === 1 ? t('common.cancel') : t('common.back')}
-                        </button>
-                        {step === 1 ? (
+                    {availableEstablishments.length > 0 && (
+                        <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-white/[0.02]">
                             <button
-                                onClick={handleNext}
-                                disabled={selectedIds.length === 0 || isLoadingEmployees}
-                                className="flex-[2] py-4 bg-paymint-green text-black rounded-2xl text-xs font-black shadow-lg shadow-paymint-green/20 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                onClick={step === 1 ? handleClose : () => setStep(1)}
+                                className="flex-1 py-4 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2"
                             >
-                                {isLoadingEmployees ? <Loader2 size={18} className="animate-spin" /> : <>
-                                    {t('common.next')}
-                                    <ChevronRight size={16} />
-                                </>}
+                                {step === 2 && <ChevronLeft size={16} />}
+                                {step === 1 ? t('common.cancel') : t('common.back')}
                             </button>
-                        ) : (
-                            <button
-                                onClick={handleLink}
-                                disabled={isSubmitting}
-                                className="flex-[2] py-4 bg-black dark:bg-white text-white dark:text-black rounded-2xl text-xs font-black shadow-lg transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
-                            >
-                                {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <>
-                                    <Building2 size={18} />
-                                    {t('owner.brands.linkLocations')}
-                                </>}
-                            </button>
-                        )}
-                    </div>
+                            {step === 1 ? (
+                                <button
+                                    onClick={handleNext}
+                                    disabled={selectedIds.length === 0 || isLoadingEmployees}
+                                    className="flex-[2] py-4 bg-paymint-green text-black rounded-2xl text-xs font-black shadow-lg shadow-paymint-green/20 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                >
+                                    {isLoadingEmployees ? <Loader2 size={18} className="animate-spin" /> : <>
+                                        {t('common.next')}
+                                        <ChevronRight size={16} />
+                                    </>}
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={handleLink}
+                                    disabled={isSubmitting}
+                                    className="flex-[2] py-4 bg-black dark:bg-white text-white dark:text-black rounded-2xl text-xs font-black shadow-lg transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                >
+                                    {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <>
+                                        <Building2 size={18} />
+                                        {t('owner.brands.linkLocations')}
+                                    </>}
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </motion.div>
             </div>
         </AnimatePresence>,

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { createPortal } from 'react-dom';
 import {
   Search,
   History,
@@ -561,8 +562,8 @@ export function ActivityLogsPage() {
         </div>
 
             {/* Detail Modal */}
-        {selectedLog && (
-          <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+        {selectedLog && createPortal(
+          <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <div
               className="bg-white dark:bg-[#1E293B] rounded-[2.5rem] border border-gray-200 dark:border-white/5 w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl"
             >
@@ -607,7 +608,8 @@ export function ActivityLogsPage() {
                 </button>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
     </div>
   );
