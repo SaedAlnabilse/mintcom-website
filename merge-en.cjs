@@ -340,7 +340,7 @@ const overrides = {
   'owner.account.resources.subtitle': 'Helpful resources and documentation',
   'owner.account.resources.termsOfUse.desc': 'Our terms and conditions',
   'owner.account.resources.termsOfUse.title': 'Terms of Use',
-  'owner.account.resources.title': 'Resources & Help',
+  'owner.account.resources.title': 'Useful Resources',
   'owner.account.resources.userManual.desc': 'Complete guide to using PayMint',
   'owner.account.resources.userManual.title': 'User Manual',
   'owner.account.resources.videoTutorial.desc': 'Watch how to get started',

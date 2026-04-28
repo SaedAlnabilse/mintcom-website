@@ -697,7 +697,7 @@ const properEnglish = {
           "desc": "Our terms and conditions",
           "title": "Terms of Use"
         },
-        "title": "Resources & Help",
+        "title": "Useful Resources",
         "userManual": {
           "desc": "Complete guide to using PayMint",
           "title": "User Manual"
