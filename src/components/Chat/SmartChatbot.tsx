@@ -2,9 +2,7 @@ import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Send,
-  Bot,
   User,
-  Sparkles,
   ArrowRight,
   Package,
   ClipboardList,
@@ -15,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import PaymintLeafIcon from '../../assets/small-logo.svg';
 import {
   PAYMINT_KNOWLEDGE,
   GREETINGS,
@@ -563,16 +562,9 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
 
             <div className="relative flex items-center gap-3">
               <div className="relative">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
-                  <Bot size={24} className="text-white" />
+                <div className="flex h-12 w-12 items-center justify-center">
+                  <img src={PaymintLeafIcon} alt="" className="w-10 h-10 object-contain drop-shadow-md scale-x-[-1]" />
                 </div>
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-400"
-                >
-                  <Sparkles size={10} className="text-yellow-800" />
-                </motion.div>
               </div>
               <div>
                 <h3 className="text-lg font-bold tracking-tight text-white">{t('chat.botName')}</h3>
@@ -591,14 +583,14 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
               >
                 <div className={`flex max-w-[85%] gap-2 ${message.type === 'user' ? 'flex-row-reverse' : ''}`}>
                   <div
-                    className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl ${
-                      message.type === 'user' ? 'bg-gray-100 dark:bg-white/10' : 'bg-[#7CC39F]/10'
-                    }`}
+                    className="flex h-8 w-8 flex-shrink-0 items-center justify-center"
                   >
                     {message.type === 'user' ? (
-                      <User size={16} className="text-gray-600 dark:text-gray-300" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 dark:bg-white/10">
+                        <User size={16} className="text-gray-600 dark:text-gray-300" />
+                      </div>
                     ) : (
-                      <Bot size={16} className="text-[#7CC39F]" />
+                      <img src={PaymintLeafIcon} alt="" className="w-7 h-7 object-contain scale-x-[-1]" />
                     )}
                   </div>
 
@@ -649,8 +641,8 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
             {isTyping && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-start">
                 <div className="flex gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#7CC39F]/10">
-                    <Bot size={16} className="text-[#7CC39F]" />
+                  <div className="flex h-8 w-8 items-center justify-center">
+                    <img src={PaymintLeafIcon} alt="" className="w-7 h-7 object-contain scale-x-[-1]" />
                   </div>
                   <div className="rounded-2xl rounded-tl-sm bg-gray-100 px-4 py-3 dark:bg-white/5">
                     <div className="flex gap-1">

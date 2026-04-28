@@ -14,11 +14,27 @@ interface ShiftsViewProps {
 
 export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewProps) {
   const { t } = useTranslation();
-  const { formatAmount, currencySymbol } = useCurrency();
+  const { currencySymbol } = useCurrency();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const formatCurrency = (value: number) => formatAmount(value);
+  const formatCurrency = (value: number) => (
+    <span className="inline-flex items-baseline gap-1">
+      <span className="font-bold tracking-tight">
+        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
+
+  const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => (
+    <span className={`inline-flex items-baseline gap-1 ${className}`}>
+      <span className={`${size} font-bold ${color} tracking-tight`}>
+        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
 
   // Sort shifts: Active (OPEN) first, then by startTime newest to oldest
   const sortedShifts = React.useMemo(() => {
@@ -67,10 +83,13 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
             </div>
             <p className="dashboard-stat-title">{t('orders.reports.shifts.cashVariance')}</p>
           </div>
-          <p className={`text-2xl font-bold ${totalVariance < -0.01 ? 'text-red-500' : totalVariance > 0.01 ? 'text-amber-500' : 'text-paymint-green'} tracking-tight`}>
-            {totalVariance > 0 ? '+' : ''}{totalVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            <span className="text-sm mx-1 text-gray-400 font-black"> {currencySymbol}</span>
-          </p>
+          <div className="flex items-baseline gap-1">
+            {totalVariance > 0 && <span className={`text-2xl font-bold text-amber-500 tracking-tight`}>+</span>}
+            <CurrencyAmount 
+              amount={totalVariance} 
+              color={totalVariance < -0.01 ? 'text-red-500' : totalVariance > 0.01 ? 'text-amber-500' : 'text-paymint-green'} 
+            />
+          </div>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.shifts.totalOverShort')}</p>
         </div>
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
@@ -144,17 +163,21 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                   <td className="px-5 py-5 text-center">
                     {shift.status === 'CLOSED' && shift.discrepancy !== null && shift.discrepancy !== undefined ? (
                       <div className="flex flex-col items-center">
-                        <span className={`px-2.5 py-1 rounded-lg label-strong font-outfit border ${shift.discrepancy > 0.001
+                        <span className={`px-2.5 py-1 rounded-lg flex items-center gap-1 label-strong font-outfit border ${shift.discrepancy > 0.001
                           ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
                           : shift.discrepancy < -0.001
                             ? 'bg-red-500/10 text-red-500 border-red-500/20'
                             : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
                           }`}>
-                          {shift.discrepancy > 0.001
-                            ? `+${shift.discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t('orders.reports.shifts.over')}`
-                            : shift.discrepancy < -0.001
-                              ? `${shift.discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t('orders.reports.shifts.short')}`
-                              : (0).toLocaleString(t('common.locale'))}
+                          {shift.discrepancy > 0.001 ? '+' : ''}
+                          <CurrencyAmount 
+                            amount={shift.discrepancy} 
+                            size="text-[10px]" 
+                            color={shift.discrepancy > 0.001 ? 'text-amber-500' : shift.discrepancy < -0.001 ? 'text-red-500' : 'text-blue-600 dark:text-blue-400'} 
+                          />
+                          <span className="ml-1">
+                            {shift.discrepancy > 0.001 ? t('orders.reports.shifts.over') : shift.discrepancy < -0.001 ? t('orders.reports.shifts.short') : ''}
+                          </span>
                         </span>
                       </div>
                     ) : (

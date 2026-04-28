@@ -243,6 +243,10 @@
   .dropdown-description::first-letter {
     text-transform: uppercase;
   }
+
+  .capitalize-none {
+    text-transform: none !important;
+  }
   /* Card Labels - Used for stat card labels */
   .card-label {
     @apply text-xs text-gray-500 dark:text-gray-400 font-medium tracking-normal;

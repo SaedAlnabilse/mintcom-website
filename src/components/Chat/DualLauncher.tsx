@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, HelpCircle, X, Sparkles, ClipboardCheck } from 'lucide-react';
+import { HelpCircle, X, ClipboardCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import PaymintLeafIcon from '../../assets/small-logo.svg';
 
 interface DualLauncherProps {
   onOpenChat: () => void;
@@ -36,6 +37,32 @@ export function DualLauncher({
   const isOwnerRoute = /^\/owner/.test(location.pathname);
   const isRTL = t('common.locale') === 'ar';
   const isAnyOpen = isChatOpen || isFAQOpen || isTasksOpen;
+
+  // Smart Visibility State
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Always show at the very top or if any panel is open
+      if (currentScrollY < 50 || isAnyOpen) {
+        setIsVisible(true);
+      } else {
+        // Hide on scroll down, show on scroll up
+        if (currentScrollY > lastScrollY && currentScrollY > 200) {
+          setIsVisible(false);
+        } else if (currentScrollY < lastScrollY) {
+          setIsVisible(true);
+        }
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY, isAnyOpen]);
 
   // Determine the unique key for this "website" context
   let contextId = 'public';
@@ -96,7 +123,7 @@ export function DualLauncher({
                   : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10'
                 }`}
             >
-              <Bot size={18} />
+              <img src={PaymintLeafIcon} alt="" className={`w-5 h-5 object-contain scale-x-[-1] ${isChatOpen ? 'brightness-0 invert' : ''}`} />
               <span>{t('chat.launcher.ask')}</span>
             </button>
 
@@ -153,7 +180,7 @@ export function DualLauncher({
     <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900] flex flex-col items-end gap-2`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* 1. Tasks Launcher (Separate) */}
       <AnimatePresence>
-        {isDashboardRoute && tasksCount > 0 && (
+        {isDashboardRoute && tasksCount > 0 && isVisible && (
           <motion.button
             key="tasks-launcher"
             initial={{ opacity: 0, scale: 0.5, y: 20 }}
@@ -186,70 +213,77 @@ export function DualLauncher({
       </AnimatePresence>
 
       {/* 2. Chat Launcher (Separate) */}
-      <div className="relative flex items-center">
-        {/* Tooltip message - Smart positioning to avoid overlap */}
-        <AnimatePresence>
-          {showTooltip && (
-            <motion.div
-              initial={isDashboardRoute && tasksCount > 0 
-                ? { opacity: 0, x: isRTL ? -10 : 10, y: "-50%", scale: 0.8 } 
-                : { opacity: 0, y: 10, scale: 0.8 }
-              }
-              animate={isDashboardRoute && tasksCount > 0 
-                ? { opacity: 1, x: 0, y: "-50%", scale: 1 } 
-                : { opacity: 1, y: 0, scale: 1 }
-              }
-              exit={isDashboardRoute && tasksCount > 0 
-                ? { opacity: 0, x: isRTL ? -10 : 10, y: "-50%", scale: 0.8 } 
-                : { opacity: 0, y: 10, scale: 0.8 }
-              }
-              className={`absolute flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-[#1E293B] text-gray-700 dark:text-gray-200 text-sm font-bold rounded-xl shadow-xl border border-gray-200 dark:border-white/10 whitespace-nowrap z-50 ${
-                isDashboardRoute && tasksCount > 0
-                  ? `top-1/2 ${isRTL ? 'left-full ml-3' : 'right-full mr-3'}`
-                  : `bottom-[60px] ${isRTL ? 'left-0' : 'right-0'}`
-              }`}
-            >
-              <span>{t('chat.launcher.help_message', 'How can I help you?')} 👋</span>
-              <button
-                onClick={dismissTooltip}
-                className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400"
-              >
-                <X size={14} />
-              </button>
-              
-              {/* Arrow positioning based on tooltip location */}
-              {isDashboardRoute && tasksCount > 0 ? (
-                /* Side Arrow */
-                <div className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? '-left-1.5' : '-right-1.5'} w-3 h-3 bg-white dark:bg-[#1E293B] ${isRTL ? 'border-b border-l' : 'border-t border-r'} border-gray-200 dark:border-white/10 rotate-45`} />
-              ) : (
-                /* Bottom Arrow (centered over button) */
-                <div className={`absolute -bottom-1.5 ${isRTL ? 'left-[18px]' : 'right-[18px]'} w-3 h-3 bg-white dark:bg-[#1E293B] border-b border-r border-gray-200 dark:border-white/10 rotate-45`} />
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.5, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.5, y: 20 }}
+            className="relative flex items-center"
+          >
+            {/* Tooltip message - Smart positioning to avoid overlap */}
+            <AnimatePresence>
+              {showTooltip && (
+                <motion.div
+                  initial={isDashboardRoute && tasksCount > 0 
+                    ? { opacity: 0, x: isRTL ? -10 : 10, y: "-50%", scale: 0.8 } 
+                    : { opacity: 0, y: 10, scale: 0.8 }
+                  }
+                  animate={isDashboardRoute && tasksCount > 0 
+                    ? { opacity: 1, x: 0, y: "-50%", scale: 1 } 
+                    : { opacity: 1, y: 0, scale: 1 }
+                  }
+                  exit={isDashboardRoute && tasksCount > 0 
+                    ? { opacity: 0, x: isRTL ? -10 : 10, y: "-50%", scale: 0.8 } 
+                    : { opacity: 0, y: 10, scale: 0.8 }
+                  }
+                  className={`absolute flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-[#1E293B] text-gray-700 dark:text-gray-200 text-sm font-bold rounded-xl shadow-xl border border-gray-200 dark:border-white/10 whitespace-nowrap z-50 ${
+                    isDashboardRoute && tasksCount > 0
+                      ? `top-1/2 ${isRTL ? 'left-full ml-3' : 'right-full mr-3'}`
+                      : `bottom-[60px] ${isRTL ? 'left-0' : 'right-0'}`
+                  }`}
+                >
+                  <span>{t('chat.launcher.help_message', 'How can I help you?')} 👋</span>
+                  <button
+                    onClick={dismissTooltip}
+                    className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400"
+                  >
+                    <X size={14} />
+                  </button>
+                  
+                  {/* Arrow positioning based on tooltip location */}
+                  {isDashboardRoute && tasksCount > 0 ? (
+                    /* Side Arrow */
+                    <div className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? '-left-1.5' : '-right-1.5'} w-3 h-3 bg-white dark:bg-[#1E293B] ${isRTL ? 'border-b border-l' : 'border-t border-r'} border-gray-200 dark:border-white/10 rotate-45`} />
+                  ) : (
+                    /* Bottom Arrow (centered over button) */
+                    <div className={`absolute -bottom-1.5 ${isRTL ? 'left-[18px]' : 'right-[18px]'} w-3 h-3 bg-white dark:bg-[#1E293B] border-b border-r border-gray-200 dark:border-white/10 rotate-45`} />
+                  )}
+                </motion.div>
               )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </AnimatePresence>
 
-        <motion.button
-          id="tour-chat-bot"
-          layout
-          onClick={() => {
-            onOpenChat();
-            dismissTooltip();
-          }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#7CC39F] to-[#5BA882] text-white shadow-lg shadow-[#7CC39F]/40 hover:shadow-[#7CC39F]/60 transition-all"
-        >
-          <Sparkles size={22} className="animate-pulse" />
-          
-          {/* Notification dot if tasks completed */}
-          {isDashboardRoute && tasksCount === 0 && (
-            <div className="absolute top-0 right-0 w-3.5 h-3.5 bg-paymint-green rounded-full border-2 border-white dark:border-[#0F172A] flex items-center justify-center shadow-sm" />
-          )}
-        </motion.button>
-      </div>
+            <motion.button
+              id="tour-chat-bot"
+              layout
+              onClick={() => {
+                onOpenChat();
+                dismissTooltip();
+              }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="relative flex items-center justify-center w-14 h-14 transition-all"
+            >
+              <img src={PaymintLeafIcon} alt="" className="w-full h-full object-contain drop-shadow-lg animate-pulse scale-x-[-1]" />
+              
+              {/* Notification dot if tasks completed */}
+              {isDashboardRoute && tasksCount === 0 && (
+                <div className="absolute top-1 right-1 w-3.5 h-3.5 bg-paymint-green rounded-full border-2 border-white dark:border-[#0F172A] flex items-center justify-center shadow-sm" />
+              )}
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

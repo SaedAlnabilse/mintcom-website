@@ -10,9 +10,16 @@ interface TaxesViewProps {
 
 export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewProps) {
   const { t } = useTranslation();
-  const { formatAmount } = useCurrency();
+  const { currencySymbol } = useCurrency();
 
-  const formatCurrency = (value: number) => formatAmount(value);
+  const formatCurrency = (value: number) => (
+    <span className="inline-flex items-baseline gap-1">
+      <span className="font-bold tracking-tight">
+        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
 
   return (
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>

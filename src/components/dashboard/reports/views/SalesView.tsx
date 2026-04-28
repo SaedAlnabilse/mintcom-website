@@ -33,12 +33,28 @@ interface SalesViewProps {
 export const SalesView = React.memo(function SalesView({ salesData, selectedDateRange, setShowPayInOutModal }: SalesViewProps) {
   const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
-  const { formatAmount } = useCurrency();
+  const { currencySymbol } = useCurrency();
   const isDark = resolvedTheme === 'dark';
   const navigate = useNavigate();
   const { locationSlug } = useParams();
 
-  const formatCurrency = (value: number) => formatAmount(value);
+  const formatCurrency = (value: number) => (
+    <span className="inline-flex items-baseline gap-1">
+      <span className="font-bold tracking-tight">
+        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
+
+  const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => (
+    <span className={`inline-flex items-baseline gap-1 ${className}`}>
+      <span className={`${size} font-bold ${color} tracking-tight`}>
+        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
 
   return (
     <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -46,7 +62,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
         {[
           {
             label: t('orders.reports.sales.totalSales'),
-            value: ((salesData.totalRevenue || 0) + (salesData.taxCollected || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+            amount: (salesData.totalRevenue || 0) + (salesData.taxCollected || 0),
+            isCurrency: true,
             icon: Wallet,
             color: 'text-paymint-green',
             bg: 'bg-paymint-green/10',
@@ -54,7 +71,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           },
           {
             label: t('orders.reports.sales.netSales'),
-            value: (salesData.totalRevenue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+            amount: (salesData.totalRevenue || 0),
+            isCurrency: true,
             icon: TrendingUp,
             color: 'text-paymint-green',
             bg: 'bg-paymint-green/10',
@@ -62,7 +80,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           },
           {
             label: t('orders.reports.sales.profit'),
-            value: (salesData.grossProfit || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+            amount: (salesData.grossProfit || 0),
+            isCurrency: true,
             icon: DollarSign,
             color: (salesData.grossProfit || 0) >= 0 ? 'text-paymint-green' : 'text-red-500',
             bg: (salesData.grossProfit || 0) >= 0 ? 'bg-paymint-green/10' : 'bg-red-500/10',
@@ -70,7 +89,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           },
           {
             label: t('orders.reports.sales.totalTax'),
-            value: (salesData.taxCollected || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+            amount: (salesData.taxCollected || 0),
+            isCurrency: true,
             icon: Percent,
             color: 'text-paymint-green',
             bg: 'bg-paymint-green/10',
@@ -87,7 +107,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           },
           {
             label: t('orders.reports.sales.refunds'),
-            value: (salesData.totalRefunds || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+            amount: (salesData.totalRefunds || 0),
+            isCurrency: true,
             icon: ArrowDownRight,
             color: 'text-red-500',
             bg: 'bg-red-500/10',
@@ -117,12 +138,12 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
               <div className="w-full mt-6 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-400">{t('orders.reports.sales.payIn')}</span>
-                  <span className="text-sm font-bold text-paymint-green tracking-tight">+{ (salesData.totalPayIn || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
+                  <CurrencyAmount amount={salesData.totalPayIn || 0} size="text-sm" color="text-paymint-green" />
                 </div>
                 <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-400">{t('orders.reports.sales.payOut')}</span>
-                  <span className="text-sm font-bold text-red-500 tracking-tight">-{ (salesData.totalPayOut || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
+                  <CurrencyAmount amount={salesData.totalPayOut || 0} size="text-sm" color="text-red-500" />
                 </div>
               </div>
             ),
@@ -156,9 +177,15 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                 stat.customContent
               ) : (
                 <>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                    {stat.value}
-                    {stat.suffix && <span className="text-sm ml-1 text-gray-400 font-black">{stat.suffix}</span>}
+                  <p className="flex flex-col">
+                    {stat.isCurrency ? (
+                      <CurrencyAmount amount={stat.amount || 0} color={stat.color.startsWith('text-paymint-green') ? "text-gray-900 dark:text-white" : stat.color} />
+                    ) : (
+                      <span className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                        {stat.value}
+                        {stat.suffix && <span className="text-sm ml-1 text-gray-400 font-black">{stat.suffix}</span>}
+                      </span>
+                    )}
                   </p>
                   <p className="sentence-case-text text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
                     {stat.sub}
@@ -335,7 +362,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                             <YAxis hide domain={[0, maxY]} />
                             <Tooltip
                               cursor={chartData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
-                              formatter={(val: any) => [Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }), t('dashboard.revenueChart.revenue')]}
+                              formatter={(val: any) => [`${Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencySymbol}`, t('dashboard.revenueChart.revenue')]}
                               contentStyle={{
                                 backgroundColor: isDark ? '#0B1120' : '#fff',
                                 borderRadius: '16px',

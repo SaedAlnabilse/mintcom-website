@@ -617,9 +617,9 @@ export function OwnerAccountManagementPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="label-strong flex items-center gap-2">
+                                    <label className="label-strong capitalize-none flex items-center gap-2">
                                         <User size={12} />
-                                        Full Name
+                                        {t('owner.account.fullName')}
                                     </label>
                                     {isEditing ? (
                                         <div className="flex gap-2">
@@ -627,14 +627,14 @@ export function OwnerAccountManagementPage() {
                                                 type="text"
                                                 value={editForm.firstName}
                                                 onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
-                                                placeholder="First Name"
+                                                placeholder={t('owner.account.firstName')}
                                                 className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                                             />
                                             <input maxLength={255}
                                                 type="text"
                                                 value={editForm.lastName}
                                                 onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
-                                                placeholder="Last Name"
+                                                placeholder={t('owner.account.lastName')}
                                                 className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                                             />
                                         </div>
@@ -646,16 +646,16 @@ export function OwnerAccountManagementPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="label-strong flex items-center gap-2">
+                                    <label className="label-strong capitalize-none flex items-center gap-2">
                                         <Mail size={12} />
-                                        Email
+                                        {t('owner.account.email')}
                                     </label>
                                     {isEditing ? (
                                         <input maxLength={255}
                                             type="email"
                                             value={editForm.email}
                                             onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                                            placeholder="Email Address"
+                                            placeholder={t('owner.account.email')}
                                             className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                                         />
                                     ) : (
@@ -666,7 +666,7 @@ export function OwnerAccountManagementPage() {
                                             {accountDetails?.emailVerified && (
                                                 <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-paymint-green/ border border-paymint-green/ rounded-md text-xs font-bold tracking-widest text-paymint-green">
                                                     <Shield size={10} />
-                                                    Verified
+                                                    {t('owner.account.verified')}
                                                 </span>
                                             )}
                                         </div>
@@ -674,9 +674,9 @@ export function OwnerAccountManagementPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="label-strong flex items-center gap-2">
+                                    <label className="label-strong capitalize-none flex items-center gap-2">
                                         <Calendar size={12} />
-                                        Joined
+                                        {t('owner.account.joined')}
                                     </label>
                                     <p className="text-sm font-bold text-gray-900 dark:text-white">
                                         {formatDate(accountDetails?.createdAt || '')}

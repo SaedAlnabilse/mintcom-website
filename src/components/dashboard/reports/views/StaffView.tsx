@@ -1,4 +1,4 @@
-﻿import { Users, Activity, TrendingUp, ShoppingBag } from 'lucide-react';
+﻿import { Users, Activity, TrendingUp, ShoppingBag, Star } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { Shift, ShiftOption } from '../../../../types';
 import { motion } from 'framer-motion';
@@ -27,7 +27,23 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
   const [staffPage, setStaffPage] = useState(1);
   const itemsPerPage = 10;
 
-  const formatCurrency = (value: number) => formatAmount(value);
+  const formatCurrency = (value: number) => (
+    <span className="inline-flex items-baseline gap-1">
+      <span className="font-bold tracking-tight">
+        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
+
+  const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => (
+    <span className={`inline-flex items-baseline gap-1 ${className}`}>
+      <span className={`${size} font-bold ${color} tracking-tight`}>
+        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
   const getNumericTooltipValue = (value: number | string | ReadonlyArray<number | string> | undefined) => {
     const normalizedValue = Array.isArray(value) ? value[0] : value;
     return typeof normalizedValue === 'number' ? normalizedValue : Number(normalizedValue ?? 0);
@@ -225,7 +241,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                       ))}
                     </Pie>
                     <Tooltip
-                      formatter={(value: any) => formatCurrency(getNumericTooltipValue(value))}
+                      formatter={(value: any) => `${formatAmount(getNumericTooltipValue(value))}`}
                       contentStyle={{ 
                         borderRadius: '12px', 
                         border: 'none', 
@@ -278,7 +294,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                       </div>
                       <div>
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-black tracking-widest text-white border border-white/20 mb-1 shadow-sm uppercase">
-                          <span className="text-yellow-300">â˜…</span> {t('common.top')} #1
+                          <Star size={10} className="text-yellow-300 fill-yellow-300" /> {t('common.top')} #1
                         </div>
                         <h3 className="text-xl font-black text-white drop-shadow-sm tracking-tight">{sortedEmployees[0].username}</h3>
                       </div>
@@ -293,8 +309,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                       </div>
                       <p className="text-[10px] font-black tracking-widest mb-1 text-white/70 uppercase">{t('orders.reports.staff.revenue')}</p>
                       <div className="flex items-baseline gap-1">
-                        <p className="text-2xl font-black text-white tracking-tight">{sortedEmployees[0].totalSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                        <span className="text-xs font-bold text-white/80">{currencySymbol}</span>
+                        <CurrencyAmount amount={sortedEmployees[0].totalSales} size="text-2xl" color="text-white" />
                       </div>
                     </div>
                     <div className="bg-black/10 backdrop-blur-sm rounded-xl p-4 border border-white/10 relative overflow-hidden group hover:bg-black/20 transition-colors">
@@ -303,10 +318,11 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                       </div>
                       <p className="text-[10px] font-black tracking-widest mb-1 text-white/70 uppercase">{t('orders.reports.staff.avgTicket')}</p>
                       <div className="flex items-baseline gap-1">
-                        <p className="text-2xl font-black text-white tracking-tight">
-                          {(sortedEmployees[0].totalSales / (sortedEmployees[0].transactionCount || 1)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </p>
-                        <span className="text-xs font-bold text-white/80">{currencySymbol}</span>
+                        <CurrencyAmount 
+                          amount={sortedEmployees[0].totalSales / (sortedEmployees[0].transactionCount || 1)} 
+                          size="text-2xl" 
+                          color="text-white" 
+                        />
                       </div>
                     </div>
                   </div>
@@ -369,11 +385,11 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                           </div>
                         </td>
                         <td className="px-6 py-4 text-end font-bold text-gray-900 dark:text-white">
-                          {avgTicket.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          <CurrencyAmount amount={avgTicket} size="text-sm" />
                         </td>
                         <td className="px-6 py-4 text-end">
-                          <span className="text-xs font-bold text-gray-500">
-                            {efficiency.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {t('orders.reports.staff.perHour')}
+                          <span className="text-xs font-bold text-gray-500 inline-flex items-center gap-1 justify-end w-full">
+                            <CurrencyAmount amount={efficiency} size="text-xs" color="text-gray-500" /> <span>/ {t('orders.reports.staff.perHour')}</span>
                           </span>
                         </td>
                       </tr>

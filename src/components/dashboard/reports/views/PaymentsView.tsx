@@ -17,14 +17,30 @@ interface PaymentsViewProps {
 
 export const PaymentsView = React.memo(function PaymentsView({ salesData, effectiveDateRange, selectedDateRange }: PaymentsViewProps) {
   const { t } = useTranslation();
-  const { formatAmount, currencySymbol } = useCurrency();
+  const { currencySymbol } = useCurrency();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
   const navigate = useNavigate();
   const { locationSlug } = useParams();
   const [expandedPaymentMethod, setExpandedPaymentMethod] = useState<string | null>(null);
 
-  const formatCurrency = (value: number) => formatAmount(value);
+  const formatCurrency = (value: number) => (
+    <span className="inline-flex items-baseline gap-1">
+      <span className="font-bold tracking-tight">
+        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
+
+  const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => (
+    <span className={`inline-flex items-baseline gap-1 ${className}`}>
+      <span className={`${size} font-bold ${color} tracking-tight`}>
+        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
 
   const getMethodName = (name: any) => {
     if (!name) return '—';
@@ -42,10 +58,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.payments.totalCollected')}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {(salesData.totalRevenue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              <span className="text-sm mx-1 text-gray-400 font-black"> {currencySymbol}</span>
-            </p>
+            <CurrencyAmount amount={salesData.totalRevenue || 0} />
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.payments.totalCollectedDesc')}</p>
           </div>
           <div className="absolute right-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />

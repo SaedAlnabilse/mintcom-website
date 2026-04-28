@@ -33,7 +33,7 @@ export const ItemsView = React.memo(function ItemsView({
   selectedEmployeeId
 }: ItemsViewProps) {
   const { t } = useTranslation();
-  const { formatAmount } = useCurrency();
+  const { currencySymbol } = useCurrency();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
@@ -45,7 +45,14 @@ export const ItemsView = React.memo(function ItemsView({
   const [isFetchingBreakdown, setIsFetchingBreakdown] = useState(false);
   const [breakdownSearchQuery, setBreakdownSearchQuery] = useState('');
 
-  const formatCurrency = (value: number) => formatAmount(value);
+  const formatCurrency = (value: number) => (
+    <span className="inline-flex items-baseline gap-1">
+      <span className="font-bold tracking-tight">
+        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
 
   const requestSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
