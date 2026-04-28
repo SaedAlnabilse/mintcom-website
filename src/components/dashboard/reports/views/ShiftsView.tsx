@@ -8,26 +8,10 @@ import { useTranslation } from 'react-i18next';
 import { getDateLocale } from '../../../../utils/dateLocale';
 import { Pagination } from '../../../ui';
 
-interface ShiftsViewProps {
-  shifts: Shift[];
-}
-
-export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewProps) {
+const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
   const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-
-  const formatCurrency = (value: number) => (
-    <span className="inline-flex items-baseline gap-1">
-      <span className="font-bold tracking-tight">
-        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
-  );
-
-  const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => (
+  return (
     <span className={`inline-flex items-baseline gap-1 ${className}`}>
       <span className={`${size} font-bold ${color} tracking-tight`}>
         {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -35,6 +19,29 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
       <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
     </span>
   );
+};
+
+const FormatCurrency = ({ value }: { value: number }) => {
+  const { t } = useTranslation();
+  const { currencySymbol } = useCurrency();
+  return (
+    <span className="inline-flex items-baseline gap-1">
+      <span className="font-bold tracking-tight">
+        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
+};
+
+interface ShiftsViewProps {
+  shifts: Shift[];
+}
+
+export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewProps) {
+  const { t } = useTranslation();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // Sort shifts: Active (OPEN) first, then by startTime newest to oldest
   const sortedShifts = React.useMemo(() => {
@@ -144,16 +151,16 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                     </div>
                   </td>
                   <td className="px-5 py-5 text-end font-medium text-gray-500">
-                    {formatCurrency(shift.openingBalance)}
+                    <FormatCurrency value={shift.openingBalance} />
                   </td>
                   <td className="px-5 py-5 text-end font-bold text-paymint-green">
-                    {formatCurrency(shift.totalSales)}
+                    <FormatCurrency value={shift.totalSales} />
                   </td>
                   <td className="px-5 py-5 text-end">
                     {shift.status === 'CLOSED' ? (
                       <span className="font-bold text-paymint-green">
                         {shift.closingBalance !== null && shift.closingBalance !== undefined
-                          ? formatCurrency(shift.closingBalance)
+                          ? <FormatCurrency value={shift.closingBalance} />
                           : '—'}
                       </span>
                     ) : (

@@ -9,6 +9,32 @@ import { useTranslation } from 'react-i18next';
 
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
+const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
+  const { t } = useTranslation();
+  const { currencySymbol } = useCurrency();
+  return (
+    <span className={`inline-flex items-baseline gap-1 ${className}`}>
+      <span className={`${size} font-bold ${color} tracking-tight`}>
+        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
+};
+
+const FormatCurrency = ({ value }: { value: number }) => {
+  const { t } = useTranslation();
+  const { currencySymbol } = useCurrency();
+  return (
+    <span className="inline-flex items-baseline gap-1">
+      <span className="font-bold tracking-tight">
+        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
+};
+
 interface PaymentsViewProps {
   salesData: SalesSummary;
   effectiveDateRange: { start: string; end: string };
@@ -23,24 +49,6 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
   const navigate = useNavigate();
   const { locationSlug } = useParams();
   const [expandedPaymentMethod, setExpandedPaymentMethod] = useState<string | null>(null);
-
-  const formatCurrency = (value: number) => (
-    <span className="inline-flex items-baseline gap-1">
-      <span className="font-bold tracking-tight">
-        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
-  );
-
-  const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => (
-    <span className={`inline-flex items-baseline gap-1 ${className}`}>
-      <span className={`${size} font-bold ${color} tracking-tight`}>
-        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
-  );
 
   const getMethodName = (name: any) => {
     if (!name) return '—';
@@ -130,7 +138,14 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                       fontWeight: '800',
                       fontSize: '12px'
                     }}
-                    formatter={(val: any) => formatCurrency(val)}
+                    formatter={(val: any) => (
+                      <span className="inline-flex items-baseline gap-1">
+                        <span className="font-bold tracking-tight">
+                          {Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
+                        <span className="text-[10px] font-black opacity-60 uppercase tracking-widest">{currencySymbol}</span>
+                      </span>
+                    )}
                     labelFormatter={(name: any) => getMethodName(name)}
                   />
                 </PieChart>
@@ -228,7 +243,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                           </div>
                         </td>
                         <td className="px-6 py-4 text-end font-black text-gray-900 dark:text-white">
-                          {formatCurrency(item.value)}
+                          <FormatCurrency value={item.value} />
                         </td>
                         <td className="px-6 py-4 text-end">
                           <div className="flex items-center justify-end gap-2">
@@ -247,7 +262,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                             <span className="text-xs font-bold text-gray-500">{card.name}</span>
                           </td>
                           <td className="px-6 py-3 text-end text-xs font-bold text-gray-700 dark:text-gray-300">
-                            {formatCurrency(card.value)}
+                            <FormatCurrency value={card.value} />
                           </td>
                           <td className="px-6 py-3 text-end text-xs font-medium text-gray-400">
                             {(card.value / item.value).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
@@ -262,7 +277,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                             <span className="text-xs font-bold text-gray-500">{op.name}</span>
                           </td>
                           <td className="px-6 py-3 text-end text-xs font-bold text-gray-700 dark:text-gray-300">
-                            {formatCurrency(op.value)}
+                            <FormatCurrency value={op.value} />
                           </td>
                           <td className="px-6 py-3 text-end text-xs font-medium text-gray-400">
                             {(op.value / item.value).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}

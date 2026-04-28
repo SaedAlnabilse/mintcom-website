@@ -9,6 +9,32 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
+const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
+  const { t } = useTranslation();
+  const { currencySymbol } = useCurrency();
+  return (
+    <span className={`inline-flex items-baseline gap-1 ${className}`}>
+      <span className={`${size} font-bold ${color} tracking-tight`}>
+        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
+};
+
+const FormatCurrency = ({ value }: { value: number }) => {
+  const { t } = useTranslation();
+  const { currencySymbol } = useCurrency();
+  return (
+    <span className="inline-flex items-baseline gap-1">
+      <span className="font-bold tracking-tight">
+        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
+};
+
 interface StaffViewProps {
   shifts: Shift[];
   selectedEmployeeId: string | null;
@@ -23,27 +49,10 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
   const navigate = useNavigate();
   const { locationSlug, slug } = useParams();
   const activeSlug = locationSlug || slug;
-  const { formatAmount, currencySymbol } = useCurrency();
+  const { formatAmount } = useCurrency();
   const [staffPage, setStaffPage] = useState(1);
   const itemsPerPage = 10;
 
-  const formatCurrency = (value: number) => (
-    <span className="inline-flex items-baseline gap-1">
-      <span className="font-bold tracking-tight">
-        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
-  );
-
-  const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => (
-    <span className={`inline-flex items-baseline gap-1 ${className}`}>
-      <span className={`${size} font-bold ${color} tracking-tight`}>
-        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
-  );
   const getNumericTooltipValue = (value: number | string | ReadonlyArray<number | string> | undefined) => {
     const normalizedValue = Array.isArray(value) ? value[0] : value;
     return typeof normalizedValue === 'number' ? normalizedValue : Number(normalizedValue ?? 0);
@@ -177,21 +186,21 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
           {/* Total Sales */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
             <p className="dashboard-stat-title mb-1 truncate">{t('orders.reports.staff.totalSales')}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">{formatCurrency(totalSales)}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-1"><FormatCurrency value={totalSales} /></p>
             <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerText}>{footerText}</p>
           </div>
 
           {/* Total Discounts */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
             <p className="dashboard-stat-title mb-1 truncate">{t('orders.reports.staff.totalDiscounts')}</p>
-            <p className="text-2xl font-bold text-orange-500 tracking-tight mb-1">{formatCurrency(totalDiscounts)}</p>
+            <p className="text-2xl font-bold text-orange-500 tracking-tight mb-1"><FormatCurrency value={totalDiscounts} /></p>
             <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerIssuedText}>{footerIssuedText}</p>
           </div>
 
           {/* Total Refunds */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden">
             <p className="dashboard-stat-title mb-1 truncate">{t('orders.reports.staff.totalRefunds')}</p>
-            <p className="text-2xl font-bold text-red-500 tracking-tight mb-1">{formatCurrency(totalRefunds)}</p>
+            <p className="text-2xl font-bold text-red-500 tracking-tight mb-1"><FormatCurrency value={totalRefunds} /></p>
             <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-auto truncate" title={footerText}>{footerText}</p>
           </div>
 
@@ -372,7 +381,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                           <span className="font-bold text-gray-900 dark:text-white text-sm" title={emp.username}>{emp.username}</span>
                         </td>
                         <td className="px-6 py-4 text-end font-black text-gray-900 dark:text-white">
-                          {formatCurrency(emp.totalSales)}
+                          <FormatCurrency value={emp.totalSales} />
                         </td>
                         <td className="px-6 py-4 text-end">
                           <div className="flex items-center justify-end gap-2">

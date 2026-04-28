@@ -24,6 +24,32 @@ import React from 'react';
 
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
+const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
+  const { t } = useTranslation();
+  const { currencySymbol } = useCurrency();
+  return (
+    <span className={`inline-flex items-baseline gap-1 ${className}`}>
+      <span className={`${size} font-bold ${color} tracking-tight`}>
+        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
+};
+
+const FormatCurrency = ({ value }: { value: number }) => {
+  const { t } = useTranslation();
+  const { currencySymbol } = useCurrency();
+  return (
+    <span className="inline-flex items-baseline gap-1">
+      <span className="font-bold tracking-tight">
+        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
+    </span>
+  );
+};
+
 interface SalesViewProps {
   salesData: SalesSummary;
   selectedDateRange: string;
@@ -32,29 +58,11 @@ interface SalesViewProps {
 
 export const SalesView = React.memo(function SalesView({ salesData, selectedDateRange, setShowPayInOutModal }: SalesViewProps) {
   const { t } = useTranslation();
-  const { resolvedTheme } = useTheme();
   const { currencySymbol } = useCurrency();
+  const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
   const navigate = useNavigate();
   const { locationSlug } = useParams();
-
-  const formatCurrency = (value: number) => (
-    <span className="inline-flex items-baseline gap-1">
-      <span className="font-bold tracking-tight">
-        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
-  );
-
-  const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => (
-    <span className={`inline-flex items-baseline gap-1 ${className}`}>
-      <span className={`${size} font-bold ${color} tracking-tight`}>
-        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
-  );
 
   return (
     <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -485,7 +493,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
               <span className="sentence-case-text text-xs font-bold text-gray-700 dark:text-gray-300">{item.name}</span>
                       </div>
-                      <span className="text-xs font-bold text-gray-900 dark:text-white">{formatCurrency(item.value)}</span>
+                      <span className="text-xs font-bold text-gray-900 dark:text-white"><FormatCurrency value={item.value} /></span>
                     </div>
                   ))}
                 </div>
