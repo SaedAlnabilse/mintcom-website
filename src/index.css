@@ -164,11 +164,13 @@
   textarea,
   select {
     @apply font-sans text-body text-text-primary dark:text-paymint-text;
+    font-weight: 400 !important;
   }
 
   input::placeholder,
   textarea::placeholder {
     @apply text-text-placeholder dark:text-paymint-gray;
+    font-weight: 400 !important;
   }
 }
 
@@ -190,7 +192,7 @@
   /* Standardized Label Strong - Replaces "text-xs font-black tracking-widest" */
   .label-strong {
     font-size: var(--label-font-size);
-    @apply font-sans text-sm text-gray-400 dark:text-gray-500 font-medium tracking-normal;
+    @apply font-sans text-sm text-gray-400 dark:text-gray-500 font-normal tracking-normal;
     letter-spacing: normal !important;
     text-transform: none !important;
   }
@@ -223,7 +225,6 @@
   .modal-subtitle,
   .dashboard-card-label,
   .card-label,
-  .label-strong,
   .table-header,
   .empty-description,
   .dropdown-description {
@@ -237,7 +238,6 @@
   .modal-subtitle::first-letter,
   .dashboard-card-label::first-letter,
   .card-label::first-letter,
-  .label-strong::first-letter,
   .table-header::first-letter,
   .empty-description::first-letter,
   .dropdown-description::first-letter {
@@ -296,43 +296,43 @@
   }
 
   html[dir='ltr'] body.dashboard-font-unified :where(
-    p[class*="text-gray-400"][class*="tracking-widest"],
-    p[class*="text-gray-400"][class*="tracking-wider"],
-    p[class*="text-gray-500"][class*="tracking-widest"],
-    p[class*="text-gray-500"][class*="tracking-wider"],
-    span[class*="text-gray-400"][class*="tracking-widest"],
-    span[class*="text-gray-400"][class*="tracking-wider"],
-    span[class*="text-gray-500"][class*="tracking-widest"],
-    span[class*="text-gray-500"][class*="tracking-wider"],
-    label[class*="text-gray-400"][class*="tracking-widest"],
-    label[class*="text-gray-400"][class*="tracking-wider"],
-    label[class*="text-gray-500"][class*="tracking-widest"],
-    label[class*="text-gray-500"][class*="tracking-wider"],
-    h3[class*="text-gray-400"][class*="tracking-"],
-    h3[class*="text-gray-500"][class*="tracking-"],
-    h4[class*="text-gray-400"][class*="tracking-"],
-    h4[class*="text-gray-500"][class*="tracking-"]
+    p[class*="text-gray-400"][class*="tracking-widest"]:not([class*="uppercase"]),
+    p[class*="text-gray-400"][class*="tracking-wider"]:not([class*="uppercase"]),
+    p[class*="text-gray-500"][class*="tracking-widest"]:not([class*="uppercase"]),
+    p[class*="text-gray-500"][class*="tracking-wider"]:not([class*="uppercase"]),
+    span[class*="text-gray-400"][class*="tracking-widest"]:not([class*="uppercase"]),
+    span[class*="text-gray-400"][class*="tracking-wider"]:not([class*="uppercase"]),
+    span[class*="text-gray-500"][class*="tracking-widest"]:not([class*="uppercase"]),
+    span[class*="text-gray-500"][class*="tracking-wider"]:not([class*="uppercase"]),
+    label[class*="text-gray-400"][class*="tracking-widest"]:not([class*="uppercase"]),
+    label[class*="text-gray-400"][class*="tracking-wider"]:not([class*="uppercase"]),
+    label[class*="text-gray-500"][class*="tracking-widest"]:not([class*="uppercase"]),
+    label[class*="text-gray-500"][class*="tracking-wider"]:not([class*="uppercase"]),
+    h3[class*="text-gray-400"][class*="tracking-"]:not([class*="uppercase"]),
+    h3[class*="text-gray-500"][class*="tracking-"]:not([class*="uppercase"]),
+    h4[class*="text-gray-400"][class*="tracking-"]:not([class*="uppercase"]),
+    h4[class*="text-gray-500"][class*="tracking-"]:not([class*="uppercase"])
   ) {
     text-transform: lowercase !important;
   }
 
   html[dir='ltr'] body.dashboard-font-unified :where(
-    p[class*="text-gray-400"][class*="tracking-widest"],
-    p[class*="text-gray-400"][class*="tracking-wider"],
-    p[class*="text-gray-500"][class*="tracking-widest"],
-    p[class*="text-gray-500"][class*="tracking-wider"],
-    span[class*="text-gray-400"][class*="tracking-widest"],
-    span[class*="text-gray-400"][class*="tracking-wider"],
-    span[class*="text-gray-500"][class*="tracking-widest"],
-    span[class*="text-gray-500"][class*="tracking-wider"],
-    label[class*="text-gray-400"][class*="tracking-widest"],
-    label[class*="text-gray-400"][class*="tracking-wider"],
-    label[class*="text-gray-500"][class*="tracking-widest"],
-    label[class*="text-gray-500"][class*="tracking-wider"],
-    h3[class*="text-gray-400"][class*="tracking-"],
-    h3[class*="text-gray-500"][class*="tracking-"],
-    h4[class*="text-gray-400"][class*="tracking-"],
-    h4[class*="text-gray-500"][class*="tracking-"]
+    p[class*="text-gray-400"][class*="tracking-widest"]:not([class*="uppercase"]),
+    p[class*="text-gray-400"][class*="tracking-wider"]:not([class*="uppercase"]),
+    p[class*="text-gray-500"][class*="tracking-widest"]:not([class*="uppercase"]),
+    p[class*="text-gray-500"][class*="tracking-wider"]:not([class*="uppercase"]),
+    span[class*="text-gray-400"][class*="tracking-widest"]:not([class*="uppercase"]),
+    span[class*="text-gray-400"][class*="tracking-wider"]:not([class*="uppercase"]),
+    span[class*="text-gray-500"][class*="tracking-widest"]:not([class*="uppercase"]),
+    span[class*="text-gray-500"][class*="tracking-wider"]:not([class*="uppercase"]),
+    label[class*="text-gray-400"][class*="tracking-widest"]:not([class*="uppercase"]),
+    label[class*="text-gray-400"][class*="tracking-wider"]:not([class*="uppercase"]),
+    label[class*="text-gray-500"][class*="tracking-widest"]:not([class*="uppercase"]),
+    label[class*="text-gray-500"][class*="tracking-wider"]:not([class*="uppercase"]),
+    h3[class*="text-gray-400"][class*="tracking-"]:not([class*="uppercase"]),
+    h3[class*="text-gray-500"][class*="tracking-"]:not([class*="uppercase"]),
+    h4[class*="text-gray-400"][class*="tracking-"]:not([class*="uppercase"]),
+    h4[class*="text-gray-500"][class*="tracking-"]:not([class*="uppercase"])
   )::first-letter {
     text-transform: uppercase;
   }
@@ -452,7 +452,7 @@
   /* Ensure popup field titles using legacy label-strong match New Employee modal style */
   .popup-surface .label-strong {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 400;
     color: rgb(107 114 128); /* Gray-500 instead of black */
     letter-spacing: -0.01em;
     text-transform: none;
@@ -468,12 +468,12 @@
   }
 
   .popup-surface :where(input, textarea, select) {
-    @apply text-sm font-medium text-gray-900 dark:text-white;
+    @apply text-sm font-normal text-gray-900 dark:text-white;
   }
 
   .popup-surface :where(input, textarea)::placeholder {
     @apply text-gray-400 dark:text-gray-600;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: normal;
   }
 

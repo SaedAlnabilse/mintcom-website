@@ -12,6 +12,7 @@ import { Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
 import { SectionLoader } from '../../components/LoadingState';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface ApiError {
     response?: {
@@ -410,8 +411,8 @@ export function LoyaltyPage() {
                                                 type="text"
                                                 value={currencyPerPointDisplay}
                                                 onChange={handleCurrencyPerPointChange}
-                                                className="flex-1 w-full bg-transparent font-bold text-3xl text-gray-900 dark:text-white focus:outline-none transition-all px-6 py-4"
-                                                placeholder="0.00"
+                                                className="flex-1 w-full bg-transparent font-normal text-3xl text-gray-900 dark:text-white focus:outline-none transition-all px-6 py-4"
+                                                placeholder={formatInputPlaceholder("0.00", t('common.locale'))}
                                             />
                                         </div>
                                     </div>
@@ -434,8 +435,8 @@ export function LoyaltyPage() {
                                                 type="text"
                                                 value={pointsPerCurrencyDisplay}
                                                 onChange={handlePointsPerCurrencyChange}
-                                                className="flex-1 w-full bg-transparent font-bold text-3xl text-paymint-green focus:outline-none transition-all px-6 py-4"
-                                                placeholder="0"
+                                                className="flex-1 w-full bg-transparent font-normal text-3xl text-paymint-green focus:outline-none transition-all px-6 py-4"
+                                                placeholder={formatInputPlaceholder("0", t('common.locale'))}
                                             />
                                         </div>
                                     </div>

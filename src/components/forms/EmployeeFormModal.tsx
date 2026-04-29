@@ -11,6 +11,7 @@ import {
 } from '../../config/permissions';
 import { useAuth } from '../../context/AuthContext';
 import { useScrollLock } from '../../hooks/useScrollLock';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface StaffMember {
   id: string;
@@ -847,14 +848,14 @@ export function EmployeeFormModal({
 
               {/* Name */}
               <div className="space-y-2">
-                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.nameLabel')} <span className="text-paymint-red">*</span>
                 </label>
                 <input maxLength={255}
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                  placeholder={t('staff.form.namePlaceholder')}
+                  placeholder={formatInputPlaceholder(t('staff.form.namePlaceholder'), t('common.locale'))}
                   className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                 />
                 {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
@@ -862,14 +863,14 @@ export function EmployeeFormModal({
 
               {/* Username */}
               <div className="space-y-2">
-                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.usernameLabel')} <span className="text-paymint-red">*</span>
                 </label>
                 <input maxLength={255}
                   type="text"
                   value={username}
                   onChange={(e) => { setUsername(e.target.value); if (errors.username) setErrors({ ...errors, username: '' }); }}
-                  placeholder={t('staff.form.usernamePlaceholder')}
+                  placeholder={formatInputPlaceholder(t('staff.form.usernamePlaceholder'), t('common.locale'))}
                   className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                 />
                 {errors.username && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.username}</p>}
@@ -877,14 +878,14 @@ export function EmployeeFormModal({
 
               {/* Email */}
               <div className="space-y-2">
-                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.emailLabel')} {role === 'ADMIN' ? <span className="text-paymint-red">*</span> : t('staff.form.emailOptional')}
                 </label>
                 <input maxLength={255}
                   type="email"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors({ ...errors, email: '' }); }}
-                  placeholder={t('staff.form.emailPlaceholder')}
+                  placeholder={formatInputPlaceholder(t('staff.form.emailPlaceholder'), t('common.locale'))}
                   className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                 />
                 {errors.email && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.email}</p>}
@@ -892,14 +893,14 @@ export function EmployeeFormModal({
 
               {/* Phone */}
               <div className="space-y-2">
-                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.phoneLabel')} {t('staff.form.phoneOptional')}
                 </label>
                 <input maxLength={255}
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder={t('staff.form.phonePlaceholder')}
+                  placeholder={formatInputPlaceholder(t('staff.form.phonePlaceholder'), t('common.locale'))}
                   className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors"
                 />
               </div>
@@ -907,7 +908,7 @@ export function EmployeeFormModal({
               {/* Establishment Selection (Only if establishments prop is provided) */}
               {establishments && (
                 <div className="relative space-y-2">
-                  <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                  <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                     {t('staff.form.accessLabel')} <span className="text-paymint-red">*</span>
                   </label>
                   <button
@@ -940,7 +941,7 @@ export function EmployeeFormModal({
                         <div className="relative p-3 border-b border-gray-100 dark:border-white/5 shrink-0">
                           <input maxLength={255}
                             type="text"
-                            placeholder={t('common.search')}
+                            placeholder={formatInputPlaceholder(t('common.search'), t('common.locale'))}
                             value={establishmentSearch}
                             onChange={(e) => setEstablishmentSearch(e.target.value)}
                             className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-lg pl-3 pr-11 py-2 text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:ring-0"
@@ -1005,7 +1006,7 @@ export function EmployeeFormModal({
 
               {/* Role Selection - Now uses Role Template dropdown */}
               <div className="relative space-y-2">
-                <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 flex items-center justify-between tracking-normal">
+                <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 flex items-center justify-between tracking-normal">
                   <span className="flex items-center gap-1">{t('staff.form.roleLabel')} <span className="text-paymint-red">*</span></span>
                   {isModifiedFromTemplate() && (
                     <span className="text-paymint-red lowercase font-bold tracking-normal">{t('staff.form.modified')}</span>
@@ -1221,7 +1222,7 @@ export function EmployeeFormModal({
 
               {/* Password wrapper start (to match existing indentation/structure) */}
               <div className="pt-4 border-t border-gray-100 dark:border-white/5 space-y-2">
-                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {initialData ? t('staff.form.newPasswordOptional') : t('staff.form.passwordLabel')} {(!initialData) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">
@@ -1229,7 +1230,7 @@ export function EmployeeFormModal({
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors({ ...errors, password: '' }); }}
-                    placeholder={initialData ? t('staff.form.leaveBlank') : t('staff.form.passwordPlaceholder')}
+                    placeholder={formatInputPlaceholder(initialData ? t('staff.form.leaveBlank') : t('staff.form.passwordPlaceholder'), t('common.locale'))}
                     className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                   />
                   <button
@@ -1244,7 +1245,7 @@ export function EmployeeFormModal({
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
                   {t('staff.form.confirmPasswordLabel')} {(!initialData || password) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">
@@ -1252,7 +1253,7 @@ export function EmployeeFormModal({
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => { setConfirmPassword(e.target.value); if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: '' }); }}
-                    placeholder={t('staff.form.confirmPasswordPlaceholder')}
+                    placeholder={formatInputPlaceholder(t('staff.form.confirmPasswordPlaceholder'), t('common.locale'))}
                     className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.confirmPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                   />
                   <button

@@ -23,6 +23,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 export const CommunityPage = () => {
   const { t } = useTranslation();
@@ -123,7 +124,7 @@ export const CommunityPage = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('community.hub.search_placeholder', 'Search discussions, ideas, or guides...')}
+                placeholder={formatInputPlaceholder(t('community.hub.search_placeholder', 'Search discussions, ideas, or guides...'), t('common.locale'))}
                 className="w-full pl-16 pr-14 py-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all"
               />
               {searchQuery && (

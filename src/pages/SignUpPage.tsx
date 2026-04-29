@@ -15,6 +15,7 @@ import { Spinner } from '../components/ui/Spinner';
 // PayMint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
+import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 export function SignUpPage() {
   const { t } = useTranslation();
@@ -255,7 +256,7 @@ export function SignUpPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="firstName" className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
+                  <label htmlFor="firstName" className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
                     {t('auth.signup.firstNameLabel')}<span className="text-accent ml-1">*</span>
                   </label>
                   <div className="relative">
@@ -268,8 +269,8 @@ export function SignUpPage() {
                       aria-describedby={errors.firstName ? 'firstName-error' : undefined}
                       autoComplete="given-name"
                       className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.firstName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                        } rounded-xl py-3 ps-10 pe-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                      placeholder={t('auth.signup.firstNamePlaceholder')}
+                        } rounded-xl py-3 ps-10 pe-4 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                      placeholder={formatInputPlaceholder(t('auth.signup.firstNamePlaceholder'), t('common.locale'))}
                     />
                   </div>
                   {errors.firstName?.message && (
@@ -277,7 +278,7 @@ export function SignUpPage() {
                   )}
                 </div>
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
+                  <label htmlFor="lastName" className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
                     {t('auth.signup.lastNameLabel')}<span className="text-accent ml-1">*</span>
                   </label>
                   <input maxLength={255}
@@ -288,8 +289,8 @@ export function SignUpPage() {
                     aria-describedby={errors.lastName ? 'lastName-error' : undefined}
                     autoComplete="family-name"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.lastName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-xl py-3 px-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                    placeholder={t('auth.signup.lastNamePlaceholder')}
+                      } rounded-xl py-3 px-4 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    placeholder={formatInputPlaceholder(t('auth.signup.lastNamePlaceholder'), t('common.locale'))}
                   />
                   {errors.lastName?.message && (
                     <p id="lastName-error" role="alert" className="text-accent text-xs font-bold mt-1">{errors.lastName.message}</p>
@@ -298,7 +299,7 @@ export function SignUpPage() {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
+                <label htmlFor="email" className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
                   {t('auth.signup.emailLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
@@ -312,7 +313,7 @@ export function SignUpPage() {
                     autoComplete="email"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
                       } rounded-xl py-3 ps-10 pe-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                    placeholder={t('auth.signup.emailPlaceholder')}
+                    placeholder={formatInputPlaceholder(t('auth.signup.emailPlaceholder'), t('common.locale'))}
                   />
                 </div>
                 {errors.email?.message && (
@@ -321,7 +322,7 @@ export function SignUpPage() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
+                <label htmlFor="password" className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
                   {t('auth.signup.passwordLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
@@ -335,7 +336,7 @@ export function SignUpPage() {
                     autoComplete="new-password"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
                       } rounded-xl py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                    placeholder={t('auth.signup.passwordPlaceholder')}
+                    placeholder={formatInputPlaceholder(t('auth.signup.passwordPlaceholder'), t('common.locale'))}
                   />
                   <button
                     type="button"
@@ -352,7 +353,7 @@ export function SignUpPage() {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
+                <label htmlFor="confirmPassword" className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
                   {t('auth.signup.confirmPasswordLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
@@ -366,7 +367,7 @@ export function SignUpPage() {
                     autoComplete="new-password"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.confirmPassword ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
                       } rounded-xl py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                    placeholder={t('auth.signup.confirmPasswordPlaceholder')}
+                    placeholder={formatInputPlaceholder(t('auth.signup.confirmPasswordPlaceholder'), t('common.locale'))}
                   />
                   <button
                     type="button"
@@ -422,7 +423,7 @@ export function SignUpPage() {
                     className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
                   />
                   <label htmlFor="subscribeToNews" className="text-xs text-gray-600 dark:text-gray-400 leading-tight cursor-pointer pt-0.5">
-                    {t('auth.signup.subscribeToNews')}
+                    {formatInputLabel(t('auth.signup.subscribeToNews'), t('common.locale'))}
                   </label>
                 </div>
               </div>

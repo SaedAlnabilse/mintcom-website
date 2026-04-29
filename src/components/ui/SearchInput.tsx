@@ -1,6 +1,7 @@
 import React from 'react';
 import { Search, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   value: string;
@@ -19,7 +20,7 @@ export function SearchInput({
   ...props
 }: SearchInputProps) {
   const { t } = useTranslation();
-  const defaultPlaceholder = placeholder || t('common.search');
+  const defaultPlaceholder = formatInputPlaceholder(placeholder || t('common.search'), t('common.locale'));
 
   return (
     <div className={`relative group ${className}`}>
@@ -30,8 +31,8 @@ export function SearchInput({
         type="text"
         value={value}
         onChange={onChange}
-        placeholder={defaultPlaceholder}
-        className="w-full h-12 pl-11 pr-10 py-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none transition-all shadow-sm"
+        placeholder={formatInputPlaceholder(defaultPlaceholder, t('common.locale'))}
+        className="w-full h-12 pl-11 pr-10 py-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none transition-all shadow-sm"
         {...props}
       />
       {value && onClear && (

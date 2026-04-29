@@ -48,17 +48,27 @@ import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { QuickInfo } from '../components/QuickInfo';
+import { formatCurrencyCode } from '../utils/currency';
 
 // PayMint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 import AppStoreBadge from '../assets/App_Store_(iOS)-Badge-Logo.wine.svg';
 import GooglePlayBadge from '../assets/Google_Play-Badge-Logo.wine.svg';
+import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 
 export function OnboardingPage() {
   const { t } = useTranslation();
   const isRTL = t('common.locale') === 'ar';
+  const formatUsd = (amount: number) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  const formatWholeUsd = (amount: number) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
   const navigate = useNavigate();
   const { step: stepParam } = useParams<{ step?: string }>();
 
@@ -581,8 +591,8 @@ export function OnboardingPage() {
                         <input maxLength={255}
                           type="text"
                           {...form1.register('name')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                          placeholder={t('onboarding.step1.locationNamePlaceholder')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          placeholder={formatInputPlaceholder(t('onboarding.step1.locationNamePlaceholder'), t('common.locale'))}
                         />
                       </div>
                       {form1.formState.errors.name && <p className="text-paymint-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.name.message as string}</p>}
@@ -590,7 +600,7 @@ export function OnboardingPage() {
 
                     <div className="space-y-3">
                       <label className="text-xs font-sans text-gray-400 mx-1 flex items-center">
-                        {t('onboarding.step1.businessType')}
+                        {formatInputLabel(t('onboarding.step1.businessType'), t('common.locale'))}
                       </label>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {businessTypes.map((type) => (
@@ -686,8 +696,8 @@ export function OnboardingPage() {
                         <input maxLength={255}
                           type="text"
                           {...form1.register('address')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                          placeholder={t('onboarding.step1.addressPlaceholder')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          placeholder={formatInputPlaceholder(t('onboarding.step1.addressPlaceholder'), t('common.locale'))}
                         />
                       </div>
                       {form1.formState.errors.address && <p className="text-paymint-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.address.message as string}</p>}
@@ -857,8 +867,8 @@ export function OnboardingPage() {
                       <input maxLength={255}
                         type="text"
                         {...form2.register('establishmentLoginId')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentLoginId ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder={t('onboarding.step3.locationIdPlaceholder')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentLoginId ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        placeholder={formatInputPlaceholder(t('onboarding.step3.locationIdPlaceholder'), t('common.locale'))}
                       />
                     </div>
                     {form2.formState.errors.establishmentLoginId && <p className="text-paymint-red text-xs font-sans text-gray-500 mt-1 ml-1">{form2.formState.errors.establishmentLoginId.message as string}</p>}
@@ -873,8 +883,8 @@ export function OnboardingPage() {
                       <input maxLength={255}
                         type={showEstablishmentPassword ? "text" : "password"}
                         {...form2.register('establishmentPassword')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder={t('onboarding.step3.passwordPlaceholder')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        placeholder={formatInputPlaceholder(t('onboarding.step3.passwordPlaceholder'), t('common.locale'))}
                       />
                       <button
                         type="button"
@@ -943,8 +953,8 @@ export function OnboardingPage() {
                         <input maxLength={255}
                           type="text"
                           {...form3.register('firstName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.firstName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                          placeholder={t('onboarding.step4.firstNamePlaceholder')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.firstName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          placeholder={formatInputPlaceholder(t('onboarding.step4.firstNamePlaceholder'), t('common.locale'))}
                         />
                       </div>
                       {form3.formState.errors.firstName && <p className="text-paymint-red text-xs font-sans text-gray-500 mt-1 ml-1">{form3.formState.errors.firstName.message as string}</p>}
@@ -958,8 +968,8 @@ export function OnboardingPage() {
                         <input maxLength={255}
                           type="text"
                           {...form3.register('lastName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.lastName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                          placeholder={t('onboarding.step4.lastNamePlaceholder')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.lastName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          placeholder={formatInputPlaceholder(t('onboarding.step4.lastNamePlaceholder'), t('common.locale'))}
                         />
                       </div>
                       {form3.formState.errors.lastName && <p className="text-paymint-red text-xs font-sans text-gray-500 mt-1 ml-1">{form3.formState.errors.lastName.message as string}</p>}
@@ -976,8 +986,8 @@ export function OnboardingPage() {
                       <input maxLength={255}
                         type="text"
                         {...form3.register('username')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder={t('onboarding.step4.usernamePlaceholder')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        placeholder={formatInputPlaceholder(t('onboarding.step4.usernamePlaceholder'), t('common.locale'))}
                       />
                     </div>
                     {form3.formState.errors.username && <p className="text-paymint-red text-xs font-sans text-gray-500 mt-1 ml-1">{form3.formState.errors.username.message as string}</p>}
@@ -993,8 +1003,8 @@ export function OnboardingPage() {
                       <input maxLength={255}
                         type={showAdminPassword ? "text" : "password"}
                         {...form3.register('password')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder={t('onboarding.step4.passwordPlaceholder')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        placeholder={formatInputPlaceholder(t('onboarding.step4.passwordPlaceholder'), t('common.locale'))}
                       />
                       <button
                         type="button"
@@ -1057,7 +1067,7 @@ export function OnboardingPage() {
                         <span className="bg-yellow-400 text-black text-xs font-sans font-bold px-2 py-0.5 rounded">{t('onboarding.step2.freeDays')}</span>
                       ) : (
                         <span className="bg-paymint-green text-black text-xs font-sans font-bold px-2 py-0.5 rounded">
-                          {billingCycle === 'yearly' ? `$${currentYearlyPrice}${t('onboarding.step2.yearly')}` : `$${currentMonthlyPrice}${t('onboarding.step2.monthly')}`}
+                          {billingCycle === 'yearly' ? `${formatWholeUsd(currentYearlyPrice)}${t('onboarding.step2.yearly')}` : `${formatWholeUsd(currentMonthlyPrice)}${t('onboarding.step2.monthly')}`}
                         </span>
                       )}
                     </div>
@@ -1065,7 +1075,7 @@ export function OnboardingPage() {
                   <p className="text-sm font-sans text-gray-600 dark:text-gray-300">
                     {isTrialFlow
                       ? t('onboarding.step2.trialDesc')
-                      : t('onboarding.step2.activateDesc', { amount: `$${displayPrice.toFixed(2)}` })
+                      : t('onboarding.step2.activateDesc', { amount: formatUsd(displayPrice) })
                     }
                   </p>
                   {isAdditionalLocation && !isTrialFlow && (
@@ -1113,8 +1123,8 @@ export function OnboardingPage() {
                       <span className="text-xs text-gray-400">{t('onboarding.step2.totalDue')}</span>
                       <span className="text-xl font-sans font-bold text-gray-900 dark:text-white">
                         {isTrialFlow
-                          ? (0).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD' })
-                          : `$${displayPrice.toFixed(2)}`
+                          ? formatUsd(0)
+                          : formatUsd(displayPrice)
                         }
                       </span>
                     </div>
@@ -1122,17 +1132,17 @@ export function OnboardingPage() {
                       <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : (billingCycle === 'yearly' ? t('onboarding.step2.yearly') : t('onboarding.step2.monthly'))}</span>
                       <span>
                         {billingCycle === 'yearly' 
-                          ? `$${currentYearlyPrice}${t('onboarding.step2.yearly')}` 
-                          : `$${currentMonthlyPrice.toFixed(2)}${t('onboarding.step2.monthly')}`}
+                          ? `${formatWholeUsd(currentYearlyPrice)}${t('onboarding.step2.yearly')}` 
+                          : `${formatUsd(currentMonthlyPrice)}${t('onboarding.step2.monthly')}`}
                       </span>
                     </div>
                     {billingCycle === 'yearly' && !isTrialFlow && (
                       <div className="mt-3 flex items-center justify-center gap-2">
                         <Sparkles size={12} className="text-paymint-green" />
                         <span className="text-xs font-bold text-paymint-green tracking-wider uppercase">
-                          SAVE ${yearlySavings}/{t('onboarding.step2.yearly')}
+                          SAVE {formatWholeUsd(yearlySavings)}/{t('onboarding.step2.yearly')}
                         </span>
-                        <span className="text-xs text-gray-400 line-through">${(currentMonthlyPrice * 12)}{t('onboarding.step2.yearly')}</span>
+                        <span className="text-xs text-gray-400 line-through">{formatWholeUsd(currentMonthlyPrice * 12)}{t('onboarding.step2.yearly')}</span>
                       </div>
                     )}
                   </div>
@@ -1190,7 +1200,7 @@ export function OnboardingPage() {
                   {(!hasSavedCard || !useSavedCard) && (
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-sans text-gray-400 ml-1">{t('onboarding.step2.cardNumber')}</label>
+                        <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel(t('onboarding.step2.cardNumber'), t('common.locale'))}</label>
                         <div className="relative group">
                           <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                           <input
@@ -1201,7 +1211,7 @@ export function OnboardingPage() {
                               form4.setValue('cardNumber', formatted);
                             }}
                             maxLength={19}
-                            placeholder="0000 0000 0000 0000"
+                            placeholder={formatInputPlaceholder("0000 0000 0000 0000", t('common.locale'))}
                             className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.cardNumber ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
                           />
                         </div>
@@ -1210,7 +1220,7 @@ export function OnboardingPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-xs font-sans text-gray-400 ml-1">{t('onboarding.step2.expiry')}</label>
+                          <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel(t('onboarding.step2.expiry'), t('common.locale'))}</label>
                           <input
                             type="text"
                             {...form4.register('expiryDate')}
@@ -1219,12 +1229,12 @@ export function OnboardingPage() {
                               form4.setValue('expiryDate', formatted);
                             }}
                             maxLength={5}
-                            placeholder="MM/YY"
+                            placeholder={formatInputPlaceholder("MM/YY", t('common.locale'))}
                             className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.expiryDate ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-sans text-gray-400 ml-1">{t('onboarding.step2.cvc')}</label>
+                          <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel(t('onboarding.step2.cvc'), t('common.locale'))}</label>
                           <input
                             type="text"
                             {...form4.register('cvc')}
@@ -1233,18 +1243,18 @@ export function OnboardingPage() {
                               form4.setValue('cvc', formatted);
                             }}
                             maxLength={4}
-                            placeholder="123"
+                            placeholder={formatInputPlaceholder("123", t('common.locale'))}
                             className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.cvc ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
                           />
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-sans text-gray-400 ml-1">{t('onboarding.step2.cardName')}</label>
+                        <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel(t('onboarding.step2.cardName'), t('common.locale'))}</label>
                         <input maxLength={255}
                           type="text"
                           {...form4.register('cardName')}
-                          className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.cardName ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
+                          className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.cardName ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
                         />
                       </div>
                     </div>

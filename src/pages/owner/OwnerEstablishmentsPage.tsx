@@ -21,6 +21,7 @@ import { useAuth } from '../../context/AuthContext';
 import { CustomSelect } from '../../components/CustomSelect';
 import { Pagination } from '../../components/ui';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 type ViewMode = 'grid' | 'list';
 const ITEMS_PER_PAGE = 10;
@@ -234,7 +235,7 @@ export function OwnerEstablishmentsPage() {
                         />
                         <input maxLength={255}
                             type="text"
-                            placeholder={t('owner.locations.searchPlaceholder')}
+                            placeholder={formatInputPlaceholder(t('owner.locations.searchPlaceholder'), t('common.locale'))}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
@@ -337,7 +338,7 @@ export function OwnerEstablishmentsPage() {
                                                     <div className="flex items-center gap-2 mt-1">
                                                         <span className="text-xs font-bold text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}</span>
                                                         <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                        <span className="text-xs font-bold text-gray-500">{est.currency || 'JOD'}</span>
+                                                        <span className="text-xs font-bold text-gray-500">{est.currency?.toUpperCase() || 'JOD'}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -397,7 +398,7 @@ export function OwnerEstablishmentsPage() {
                                                     <DollarSign size={12} />
                                                     <p className="text-xs font-bold tracking-wide">{t('owner.locations.currency')}</p>
                                                 </div>
-                                                <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</p>
+                                                <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency?.toUpperCase() || 'JOD'}</p>
                                             </div>
                                             <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
                                                 <div className="flex items-center gap-2 mb-1 text-gray-400">
@@ -492,7 +493,7 @@ export function OwnerEstablishmentsPage() {
                                             <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                             {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
                                         </span>
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{est.currency?.toUpperCase() || 'JOD'}</span>
                                     </div>
                                     <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
                                         {t('owner.brands.created')}: <span className="font-semibold text-gray-700 dark:text-gray-200">{formatCreatedDate(est.createdAt)}</span>
@@ -565,7 +566,7 @@ export function OwnerEstablishmentsPage() {
                                     {/* Currency */}
                                     <div className="col-span-1 flex items-center justify-center text-center">
                                         <span className="text-sm font-bold text-gray-900 dark:text-white text-center">
-                                            {est.currency || 'JOD'}
+                                            {est.currency?.toUpperCase() || 'JOD'}
                                         </span>
                                     </div>
 

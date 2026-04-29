@@ -23,6 +23,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { useAuth } from '../../context/AuthContext';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 const paymentMethodSchema = z.object({
   name: z.string().min(1, 'common.required'),
@@ -633,14 +634,14 @@ export function PaymentMethodsPage() {
 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase px-1 flex items-center gap-2">
+                    <label className="block text-[10px] font-normal text-gray-400 tracking-[0.2em]  px-1 flex items-center gap-2">
                       {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
                     </label>
                     <input maxLength={255}
                       type="text"
                       {...register('name')}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm`}
-                      placeholder={t('paymentMethods.form.namePlaceholder')}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm`}
+                      placeholder={formatInputPlaceholder(t('paymentMethods.form.namePlaceholder'), t('common.locale'))}
                     />
                     {errors.name && <p className="text-paymint-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{errors.name.message}</p>}
                   </div>
@@ -729,7 +730,7 @@ export function PaymentMethodsPage() {
 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase px-1 flex items-center gap-2">
+                    <label className="block text-[10px] font-normal text-gray-400 tracking-[0.2em]  px-1 flex items-center gap-2">
                       {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
                     </label>
                     <input maxLength={255}
@@ -740,7 +741,7 @@ export function PaymentMethodsPage() {
                         if (cardErrors.cardName) setCardErrors({ ...cardErrors, cardName: '' });
                       }}
                       className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${cardErrors.cardName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm`}
-                      placeholder={t('paymentMethods.form.brandPlaceholder')}
+                      placeholder={formatInputPlaceholder(t('paymentMethods.form.brandPlaceholder'), t('common.locale'))}
                     />
                     {cardErrors.cardName && <p className="text-paymint-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{cardErrors.cardName}</p>}
                   </div>

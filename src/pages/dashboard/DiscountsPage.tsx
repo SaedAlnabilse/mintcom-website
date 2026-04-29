@@ -9,6 +9,7 @@ import { DiscountFormModal } from '../../components/forms/DiscountFormModal';
 import { SearchInput, Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface ApiError {
   response?: {
@@ -254,7 +255,7 @@ export function DiscountsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onClear={() => setSearchQuery('')}
-            placeholder={t('discounts.searchPlaceholder', 'Search discounts')}
+            placeholder={formatInputPlaceholder(t('discounts.searchPlaceholder', 'Search discounts'), t('common.locale'))}
           />        </div>
 
         {/* View Mode Toggle */}

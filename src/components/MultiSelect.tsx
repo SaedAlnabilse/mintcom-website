@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { ChevronDown, Check, X, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { formatInputLabel, formatInputPlaceholder } from '../utils/textCase';
 
 interface Option {
     label: string;
@@ -34,7 +35,7 @@ export function MultiSelect({
     const dropdownRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
 
-    const effectivePlaceholder = placeholder || t('common.select');
+    const effectivePlaceholder = formatInputPlaceholder(placeholder || t('common.select'), t('common.locale'));
 
     const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
 
@@ -144,8 +145,8 @@ export function MultiSelect({
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder={t('common.searchPlaceholder')}
-                                className="w-full pl-9 pr-9 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-sm font-bold text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none transition-all"
+                                placeholder={formatInputPlaceholder(t('common.searchPlaceholder'), t('common.locale'))}
+                                className="w-full pl-9 pr-9 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-sm font-normal text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none transition-all"
                                 />
                             {searchQuery && (
                                 <button
@@ -162,7 +163,7 @@ export function MultiSelect({
 
                     <div className="flex-1 overflow-y-auto custom-scrollbar">
                         {filteredOptions.length === 0 ? (
-                            <div className="px-5 py-8 text-sm font-bold text-gray-500 italic text-center">
+                            <div className="px-5 py-8 text-sm font-normal text-gray-500 italic text-center">
                                 {searchQuery ? t('common.noResults') : t('common.noOptions')}
                             </div>
                         ) : (
@@ -176,7 +177,7 @@ export function MultiSelect({
                                         className={`w-full px-4 py-3 text-start flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${isSelected ? 'bg-paymint-green/5' : ''
                                             }`}
                                     >
-                                        <span className={`text-xs ${isSelected ? 'font-black text-paymint-green' : 'font-bold text-gray-700 dark:text-gray-300'}`}>{opt.label}</span>
+                                        <span className={`text-xs ${isSelected ? 'font-normal text-paymint-green' : 'font-normal text-gray-700 dark:text-gray-300'}`}>{opt.label}</span>
                                         {isSelected && <Check size={14} className="text-paymint-green" />}
                                     </button>
                                 );
@@ -192,7 +193,7 @@ export function MultiSelect({
         <div className={`relative ${className}`} ref={containerRef} dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             {label && (
                 <label className="block label-strong font-outfit mb-2 px-1">
-                    {label}
+                    {formatInputLabel(label, t('common.locale'))}
                 </label>
             )}
 
@@ -204,7 +205,7 @@ export function MultiSelect({
                     }`}
             >
                 <div className="flex items-center gap-2 overflow-hidden">
-                    <span className={`font-bold text-xs truncate ${value.length > 0 ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+                    <span className={`font-normal text-xs truncate ${value.length > 0 ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
                         {getDisplayValue()}
                     </span>
                     {value.length > 0 && (
@@ -230,4 +231,5 @@ export function MultiSelect({
         </div>
     );
 }
+
 

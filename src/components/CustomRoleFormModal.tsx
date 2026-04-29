@@ -12,6 +12,7 @@ import {
 import { useScrollLock } from '../hooks/useScrollLock';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
+import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 interface CustomRole {
   id: string;
@@ -537,12 +538,12 @@ export function CustomRoleFormModal({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {/* Name Input */}
                 <div className="relative space-y-2">
-                  <label className="label-strong block">{t('roles.form.roleNameLabel')}</label>
+                  <label className="label-strong block">{formatInputLabel(t('roles.form.roleNameLabel'), t('common.locale'))}</label>
                   <input maxLength={255}
                     type="text"
                     value={name}
                     onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                    placeholder={t('roles.form.roleNamePlaceholder')}
+                    placeholder={formatInputPlaceholder(t('roles.form.roleNamePlaceholder'), t('common.locale'))}
                     className={`w-full bg-transparent border-b-2 ${errors.name ? 'border-paymint-red' : 'border-gray-200 dark:border-gray-700'} py-2 text-lg font-bold text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:border-paymint-green transition-colors`}
                   />
                   {errors.name && <p className="absolute -bottom-5 left-0 text-xs font-bold text-paymint-red">{errors.name}</p>}
@@ -550,7 +551,7 @@ export function CustomRoleFormModal({
 
                 {/* Base Role Selection */}
                 <div className="relative space-y-2">
-                  <label className="label-strong block">{t('roles.form.baseRoleLabel')}</label>
+                  <label className="label-strong block">{formatInputLabel(t('roles.form.baseRoleLabel'), t('common.locale'))}</label>
                   <select
                     value={baseRole}
                     onChange={(e) => setBaseRole(e.target.value as CustomRole['baseRole'])}

@@ -21,6 +21,7 @@ import { AttributeFormModal } from './AttributeFormModal';
 
 import { CategoryFormModal } from './CategoryFormModal';
 import { useScrollLock } from '../../hooks/useScrollLock';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 
 
@@ -400,7 +401,7 @@ export function ProductFormModal({
         ]);
         setAttributes(attrRes.data || []);
         setTaxRate(toFiniteNumber(settingsRes.data?.taxRate, 0));
-        setCurrencySymbol(settingsRes.data?.currency || 'JOD');
+        setCurrencySymbol(settingsRes.data?.currency?.toUpperCase() || 'JOD');
       } catch (error) {
         console.error('Failed to fetch settings/addons:', error);
       }
@@ -742,7 +743,7 @@ export function ProductFormModal({
                         setErrors(newErrors);
                       }
                     }}
-                    placeholder={t('products.form.namePlaceholder')}
+                    placeholder={formatInputPlaceholder(t('products.form.namePlaceholder'), t('common.locale'))}
                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                   />
                   {errors.name && (
@@ -760,8 +761,8 @@ export function ProductFormModal({
                     className="hidden"
                   />
 
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                    <div className="relative w-full max-w-[220px] aspect-square mx-auto sm:mx-0 rounded-3xl overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0F172A] shadow-sm">
+                  <div className="flex flex-col gap-6">
+                    <div className="relative w-full max-w-[280px] aspect-square mx-auto rounded-3xl overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0F172A] shadow-sm">
                       {previewImage ? (
                         <img
                           src={previewImage}
@@ -879,8 +880,8 @@ export function ProductFormModal({
                               type="text"
                               value={costPrice}
                               onChange={handleCostPriceChange}
-                              placeholder={t('common.zero')}
-                              className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50"
+                              placeholder={formatInputPlaceholder(t('common.zero'), t('common.locale'))}
+                              className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-5 py-4 text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50"
                             />
                           </div>
                           <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
@@ -912,7 +913,7 @@ export function ProductFormModal({
                                 setErrors(newErrors);
                               }
                             }}
-                            placeholder={t('common.zero')}
+                            placeholder={formatInputPlaceholder(t('common.zero'), t('common.locale'))}
                             className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.price ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pl-16 pr-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50`}
                           />
                         </div>
@@ -998,7 +999,7 @@ export function ProductFormModal({
                   <textarea maxLength={2000}
                     value={description}
                     onChange={(e) => setDescription(e.target.value.slice(0, 30))}
-                    placeholder={t('products.form.descriptionPlaceholder')}
+                    placeholder={formatInputPlaceholder(t('products.form.descriptionPlaceholder'), t('common.locale'))}
                     rows={2}
                     className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none shadow-sm group-hover:border-paymint-green/50"
                   />
@@ -1042,7 +1043,7 @@ export function ProductFormModal({
                               type="text"
                               value={categorySearchQuery}
                               onChange={(e) => setCategorySearchQuery(e.target.value)}
-                              placeholder={t('products.form.filterCategories')}
+                              placeholder={formatInputPlaceholder(t('products.form.filterCategories'), t('common.locale'))}
                               className="w-full pl-9 pr-11 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
@@ -1184,7 +1185,7 @@ export function ProductFormModal({
                               type="text"
                               value={addonsSearchQuery}
                               onChange={(e) => setAddonsSearchQuery(e.target.value)}
-                              placeholder={t('products.form.searchAddons')}
+                              placeholder={formatInputPlaceholder(t('products.form.searchAddons'), t('common.locale'))}
                               className="w-full pl-9 pr-11 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
@@ -1319,7 +1320,7 @@ export function ProductFormModal({
                       </div>
 
                       <div className="space-y-2">
-                        <label className={`text-sm font-bold text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
+                        <label className={`text-sm font-normal text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
                           <span className="text-paymint-green text-sm">&bull;</span> {t('products.form.inventory.quantity')}
                         </label>
                         <input
@@ -1349,7 +1350,7 @@ export function ProductFormModal({
                               }
                             }
                           }}
-                          placeholder={(0).toLocaleString(t('common.locale'))}
+                          placeholder={formatInputPlaceholder((0).toLocaleString(t('common.locale')), t('common.locale'))}
                           className={`w-full bg-white dark:bg-black/20 border ${errors.stock ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                         />
                         {errors.stock && (
@@ -1359,7 +1360,7 @@ export function ProductFormModal({
 
                       <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className={`text-sm font-bold text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
+                          <label className={`text-sm font-normal text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
                             <span className="text-yellow-500 text-sm">&bull;</span> {t('products.form.inventory.low')}
                           </label>
                           <input
@@ -1389,7 +1390,7 @@ export function ProductFormModal({
                                 }
                               }
                             }}
-                            placeholder={(5).toLocaleString(t('common.locale'))}
+                            placeholder={formatInputPlaceholder((5).toLocaleString(t('common.locale')), t('common.locale'))}
                             className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockYellow ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                           />
                           {errors.lowStockYellow && (
@@ -1397,7 +1398,7 @@ export function ProductFormModal({
                           )}
                         </div>
                         <div className="space-y-2">
-                          <label className={`text-sm font-bold text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
+                          <label className={`text-sm font-normal text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
                             <span className="text-paymint-red text-sm">&bull;</span> {t('products.form.inventory.veryLow')}
                           </label>
                           <input
@@ -1427,7 +1428,7 @@ export function ProductFormModal({
                                 }
                               }
                             }}
-                            placeholder={(2).toLocaleString(t('common.locale'))}
+                            placeholder={formatInputPlaceholder((2).toLocaleString(t('common.locale')), t('common.locale'))}
                             className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockRed ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                           />
                           {errors.lowStockRed && (

@@ -26,6 +26,7 @@ import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import api from '../../config/api';
 import { SurfaceLoader } from '../../components/LoadingState';
+import { formatInputPlaceholder } from '../../utils/textCase';
 import {
   getTicketById,
   updateTicket,
@@ -494,7 +495,7 @@ export const TicketDetailPage = () => {
                       ref={textareaRef}
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder={t('support.tickets.replyPlaceholder')}
+                      placeholder={formatInputPlaceholder(t('support.tickets.replyPlaceholder'), t('common.locale'))}
                       rows={4}
                       className="w-full p-4 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none"
                       onKeyDown={(e) => {

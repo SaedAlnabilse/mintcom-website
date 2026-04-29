@@ -21,6 +21,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 type IdeaStatus = 'under_review' | 'planned' | 'in_progress' | 'completed' | 'declined';
 
@@ -287,7 +288,7 @@ export const IdeasPage = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={t('community.ideas.search_placeholder', 'Search ideas...')}
+                  placeholder={formatInputPlaceholder(t('community.ideas.search_placeholder', 'Search ideas...'), t('common.locale'))}
                   className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all"
                 />
                 {searchQuery && (

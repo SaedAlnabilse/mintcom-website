@@ -19,6 +19,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { AnimatePresence, motion } from 'framer-motion';
+import { formatCurrencyCode } from '../../utils/currency';
 
 interface Invoice {
   id: string;
@@ -89,6 +90,10 @@ export function BillingPage() {
   const totalMonthly = billingInfo?.monthlyPrice || MONTHLY_PRICE;
   const effectiveMonthlyRate = isYearly ? Math.round((YEARLY_PRICE / 12) * 100) / 100 : totalMonthly;
   const yearlySavings = (MONTHLY_PRICE * 12) - YEARLY_PRICE;
+  const formatUsd = (amount: number, fractionDigits = 2) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  });
 
   // Mock invoices
   const invoices: Invoice[] = [
@@ -180,8 +185,8 @@ export function BillingPage() {
                 <div className="flex items-center gap-3">
                   <Sparkles size={18} className="text-paymint-green" />
                   <div>
-                    <p className="text-sm font-bold text-white">Switch to Yearly & Save ${yearlySavings}/yr</p>
-                    <p className="text-xs text-gray-400">Pay $210/year instead of $240 - that's $17.50/mo</p>
+                    <p className="text-sm font-bold text-white">Switch to Yearly & Save {formatUsd(yearlySavings, 0)}/yr</p>
+                    <p className="text-xs text-gray-400">Pay {formatUsd(210, 0)}/year instead of {formatUsd(240, 0)} - that's {formatUsd(17.5)}/mo</p>
                   </div>
                 </div>
                 <button
@@ -298,7 +303,7 @@ export function BillingPage() {
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-xs font-black text-gray-600 dark:text-gray-300">First Location</span>
                   <span className="text-xs font-black text-paymint-green">
-                    ${isYearly ? YEARLY_PRICE : MONTHLY_PRICE}{isYearly ? '/yr' : '/mo'}
+                    {formatUsd(isYearly ? YEARLY_PRICE : MONTHLY_PRICE, 0)}{isYearly ? '/yr' : '/mo'}
                   </span>
                 </div>
                 <p className="text-[10px] text-gray-400">Full access to all features</p>
@@ -308,18 +313,18 @@ export function BillingPage() {
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-xs font-black text-gray-600 dark:text-gray-300">Each Extra Location</span>
                   <span className="text-xs font-black text-blue-500">
-                    ${isYearly ? YEARLY_ADDITIONAL : MONTHLY_ADDITIONAL}{isYearly ? '/yr' : '/mo'}
+                    {formatUsd(isYearly ? YEARLY_ADDITIONAL : MONTHLY_ADDITIONAL, 0)}{isYearly ? '/yr' : '/mo'}
                   </span>
                 </div>
                 <p className="text-[10px] text-gray-400">
-                  {isYearly ? `Save $${(MONTHLY_ADDITIONAL * 12) - YEARLY_ADDITIONAL}/yr vs monthly` : `Save $${MONTHLY_PRICE - MONTHLY_ADDITIONAL}/mo vs first location`}
+                  {isYearly ? `Save ${formatUsd((MONTHLY_ADDITIONAL * 12) - YEARLY_ADDITIONAL, 0)}/yr vs monthly` : `Save ${formatUsd(MONTHLY_PRICE - MONTHLY_ADDITIONAL, 0)}/mo vs first location`}
                 </p>
               </div>
 
               {isYearly && (
                 <div className="p-2 rounded-lg bg-paymint-green/10 flex items-center gap-2">
                   <Sparkles size={12} className="text-paymint-green" />
-                  <span className="text-[10px] font-bold text-paymint-green">Yearly plan active - saving ${yearlySavings}/yr</span>
+                  <span className="text-[10px] font-bold text-paymint-green">Yearly plan active - saving {formatUsd(yearlySavings, 0)}/yr</span>
                 </div>
               )}
             </div>
@@ -387,7 +392,7 @@ export function BillingPage() {
                 </div>
                 <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Switch to Yearly</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 font-bold">
-                  Save ${yearlySavings} per year on your subscription
+                  Save {formatUsd(yearlySavings, 0)} per year on your subscription
                 </p>
               </div>
 
@@ -397,7 +402,7 @@ export function BillingPage() {
                     <p className="text-sm font-bold text-gray-700 dark:text-gray-300">Monthly (current)</p>
                     <p className="text-xs text-gray-400">Billed every month</p>
                   </div>
-                  <span className="text-lg font-black text-gray-400 line-through">${MONTHLY_PRICE * 12}/yr</span>
+                  <span className="text-lg font-black text-gray-400 line-through">{formatUsd(MONTHLY_PRICE * 12, 0)}/yr</span>
                 </div>
                 <div className="flex justify-between items-center p-4 rounded-xl bg-paymint-green/5 border-2 border-paymint-green/30">
                   <div>
@@ -405,9 +410,9 @@ export function BillingPage() {
                       Yearly
                       <span className="px-2 py-0.5 bg-paymint-green text-black rounded text-[9px] font-black">RECOMMENDED</span>
                     </p>
-                    <p className="text-xs text-paymint-green font-bold">~${(YEARLY_PRICE / 12).toFixed(2)}/mo effective rate</p>
+                    <p className="text-xs text-paymint-green font-bold">~{formatUsd(YEARLY_PRICE / 12)}/mo effective rate</p>
                   </div>
-                  <span className="text-lg font-black text-paymint-green">${YEARLY_PRICE}/yr</span>
+                  <span className="text-lg font-black text-paymint-green">{formatUsd(YEARLY_PRICE, 0)}/yr</span>
                 </div>
               </div>
 

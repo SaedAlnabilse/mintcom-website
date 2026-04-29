@@ -31,6 +31,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Pagination } from '../../components/ui';
 import { AppStrings } from '../../constants/AppStrings';
 import { SectionLoader } from '../../components/LoadingState';
+import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
 interface Employee {
     id: string;
@@ -401,7 +402,7 @@ export default function BrandTeamPage() {
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input maxLength={255}
                             type="text"
-                            placeholder={t('owner.staff.searchPlaceholder')}
+                            placeholder={formatInputPlaceholder(t('owner.staff.searchPlaceholder'), t('common.locale'))}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
@@ -856,15 +857,15 @@ export default function BrandTeamPage() {
                          </div>
                         <div className="px-10 pb-8 space-y-5">
                             <div>
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2.5 block px-1">
-                                    {t('common.password')}
+                                <label className="text-[10px] font-normal  tracking-[0.2em] text-gray-400 mb-2.5 block px-1">
+                                    {formatInputLabel(t('common.password'), t('common.locale'))}
                                 </label>
                                 <div className="relative group">
                                     <input maxLength={255}
                                         type={showDeletePassword ? 'text' : 'password'}
                                         value={deletePassword}
                                         onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
-                                        placeholder={t('owner.staff.enterPasswordPlaceholder')}
+                                        placeholder={formatInputPlaceholder(t('owner.staff.enterPasswordPlaceholder'), t('common.locale'))}
                                         className={`w-full bg-gray-50 dark:bg-black/20 border ${deleteError ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/5'} rounded-2xl px-5 py-4 pr-12 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all shadow-sm`}
                                     />
                                     <button

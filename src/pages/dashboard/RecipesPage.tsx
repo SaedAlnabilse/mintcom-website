@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useNavigate , useParams } from 'react-router-dom';
 import {
   Plus,
+  Minus,
   Package,
   Pizza,
   Edit2,
@@ -20,6 +21,7 @@ import { QuickInfo } from '../../components/QuickInfo';
 import { SearchInput, Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
+import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
 const UNIT_CONVERSIONS: Record<string, { type: 'mass' | 'volume' | 'count'; factor: number }> = {
   Kg: { type: 'mass', factor: 1000 }, // Base: g
@@ -415,7 +417,7 @@ export function RecipesPage() {
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
             onClear={() => { setSearchQuery(''); setPage(1); }}
-            placeholder={t('manufacturing.search')}
+            placeholder={formatInputPlaceholder(t('manufacturing.search'), t('common.locale'))}
             className="w-full"
           />
         </div>
@@ -438,7 +440,7 @@ export function RecipesPage() {
               <Pizza size={32} className="text-gray-300" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{searchQuery.trim() ? t('common.noResults') : t('manufacturing.noRecipes')}</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'recipes', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('manufacturing.noRecipesDesc')}</p>
+            <p className="text-sm font-medium text-gray-500 max-w-xs">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'recipes', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('manufacturing.noRecipesDesc')}</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -610,20 +612,20 @@ export function RecipesPage() {
                   </div>
                   <form onSubmit={handleMaterialSubmit} className="p-4 sm:p-8 space-y-6 overflow-y-auto flex-1">
                     <div>
-                      <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-paymint-red mx-1">*</span></label>
+                      <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-paymint-red mx-1">*</span></label>
                       <input  maxLength={255}type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
                       {errors.name && <p className="mt-2 text-xs font-bold text-paymint-red px-1">{errors.name}</p>}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                        <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                           {t('inventory.form.unit', {defaultValue: 'Unit'})}
                           <QuickInfo text={t('inventory.tips.unit', {defaultValue: 'The primary unit used to measure this ingredient (e.g., Kg, Liters).'})} />
                         </label>
                         <CustomSelect value={materialForm.unit} onChange={(val) => setMaterialForm({ ...materialForm, unit: val as string })} options={units.map(u => ({ value: u, label: u }))} />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                        <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                           {t('inventory.form.totalQuantity', {defaultValue: 'Total Quantity'})}
                           <QuickInfo text={t('inventory.tips.quantity', {defaultValue: 'Current stock available for this ingredient.'})} />
                         </label>
@@ -632,7 +634,7 @@ export function RecipesPage() {
                             type="text"
                             inputMode="decimal"
                             value={materialForm.quantity === 0 ? '' : materialForm.quantity.toFixed(2)}
-                            placeholder="0.00"
+                            placeholder={formatInputPlaceholder("0.00", t('common.locale'))}
                             onChange={(e) => {
                               const val = e.target.value.replace(/\D/g, '');
                               if (val.length > 19) return;
@@ -666,7 +668,7 @@ export function RecipesPage() {
               </div>
               <div className="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
                 <div>
-                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                  <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                     {t('manufacturing.formula.name')} <span className="text-paymint-red mx-1">*</span>
                   </label>
                   <input maxLength={255}
@@ -677,13 +679,13 @@ export function RecipesPage() {
                       if (errors.name) setErrors({ ...errors, name: '' });
                     }}
                     className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all`}
-                    placeholder={t('manufacturing.formula.namePlaceholder')}
+                    placeholder={formatInputPlaceholder(t('manufacturing.formula.namePlaceholder'), t('common.locale'))}
                   />
                   {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col">
-                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                    <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                       {t('manufacturing.formula.yield')}
                       <QuickInfo text={t('manufacturing.tips.yield', {defaultValue: 'How much of the Prep this recipe makes (e.g., 5 Liters of sauce).'})} />
                     </label>
@@ -709,8 +711,8 @@ export function RecipesPage() {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
-                      {t('manufacturing.formula.unit')}
+                    <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                      {formatInputLabel(t('manufacturing.formula.unit'), t('common.locale'))}
                     </label>
                     <CustomSelect
                       value={subRecipeForm.yieldUnit}
@@ -722,7 +724,7 @@ export function RecipesPage() {
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
-                    <label className="text-sm font-bold text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
+                    <label className="text-sm font-normal text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
                     <span className="label-strong font-outfit bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
                   </div>
 
@@ -755,7 +757,7 @@ export function RecipesPage() {
                                 setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
                               }}
                               options={rawMaterials.map(m => ({ label: `${m.name} (${m.unit})`, value: m.id }))}
-                              placeholder={t('manufacturing.formula.selectItem')}
+                              placeholder={formatInputPlaceholder(t('manufacturing.formula.selectItem'), t('common.locale'))}
                               className="flex-[2]"
                             />
 
@@ -784,7 +786,7 @@ export function RecipesPage() {
                                   }
                                 }}
                                 className="w-16 flex-1 px-3 py-3.5 bg-transparent text-right font-black text-paymint-green focus:outline-none text-sm"
-                                placeholder="0"
+                                placeholder={formatInputPlaceholder("0", t('common.locale'))}
                               />
                               <div className="border-l border-gray-300 dark:border-white/10">
                                 <select
@@ -873,7 +875,7 @@ export function RecipesPage() {
               </div>
               <div className="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
                 <div>
-                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                  <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
                     {t('manufacturing.formula.targetItem', {defaultValue: 'Target Menu Item'})} <span className="text-paymint-red mx-1">*</span>
                     <QuickInfo text={t('manufacturing.tips.targetItem', {defaultValue: 'The product on your menu that users order (e.g., Pepperoni Pizza).'})} />
                   </label>
@@ -884,13 +886,13 @@ export function RecipesPage() {
                       if (errors.itemId) setErrors({ ...errors, itemId: '' });
                     }}
                     options={products.map(p => ({ label: p.name, value: p.id }))}
-                    placeholder={t('manufacturing.formula.selectItem')}
+                    placeholder={formatInputPlaceholder(t('manufacturing.formula.selectItem'), t('common.locale'))}
                   />
                   {errors.itemId && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.itemId}</p>}
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
-                    <label className="text-sm font-bold text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
+                    <label className="text-sm font-normal text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
                     <span className="label-strong font-outfit bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
                   </div>
 
@@ -941,7 +943,7 @@ export function RecipesPage() {
                                   setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                                 }}
                                 options={validMaterialOptions}
-                                placeholder={t('manufacturing.formula.addMaterial')}
+                                placeholder={formatInputPlaceholder(t('manufacturing.formula.addMaterial'), t('common.locale'))}
                                 className="w-[240px] text-sm shrink-0"
                               />
                               ) : (
@@ -957,7 +959,7 @@ export function RecipesPage() {
                                   setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                                 }}
                                 options={validSubRecipeOptions}
-                                placeholder={t('manufacturing.prep')}
+                                placeholder={formatInputPlaceholder(t('manufacturing.prep'), t('common.locale'))}
                                 className="w-[240px] text-sm shrink-0"
                               />
                               )}
@@ -988,7 +990,7 @@ export function RecipesPage() {
                                     }
                                   }}
                                   className="flex-1 w-full pl-5 pr-3 py-4 bg-transparent text-right font-bold text-gray-900 dark:text-white focus:outline-none placeholder-gray-500/30 touch-manipulation settings-no-spin rounded-l-2xl"
-                                  placeholder="0"
+                                  placeholder={formatInputPlaceholder("0", t('common.locale'))}
                                 />
                                 <div className="relative border-l border-gray-300 dark:border-white/10 rounded-r-2xl w-[80px] shrink-0">
                                   <button
@@ -1122,66 +1124,86 @@ export function RecipesPage() {
 
           <AnimatePresence>
             {showManufactureModal && manufactureRecipe && (
-              <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
+              <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
             <motion.div
-              initial={{ opacity: 0, y: 32, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.98 }}
-              transition={{ type: "spring", duration: 0.35, bounce: 0.12 }}
-              className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl max-h-[92vh] sm:max-h-[85vh] flex flex-col"
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 100 }}
+              transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+              className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col"
             >
               <div className="sm:hidden flex justify-center pt-3 pb-1">
                 <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
               </div>
-              <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-start justify-between gap-4">
+              <div className="px-6 sm:px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('manufacturing.runBatch')}</h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-1">{manufactureRecipe.name}</p>
+                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">{t('manufacturing.runBatch')}</h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 font-normal mt-1 truncate max-w-[260px]">{manufactureRecipe.name}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowManufactureModal(false)}
-                  className="shrink-0 w-11 h-11 rounded-2xl border border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
                   aria-label={t('common.cancel', { defaultValue: 'Cancel' })}
                 >
-                  <X size={20} className="mx-auto" />
+                  <X size={24} />
                 </button>
               </div>
-              <div className="p-4 sm:p-6 space-y-6 overflow-y-auto flex-1">
-                <div>
-                  <input
-                    type="number"
-                    min="1"
-                    onKeyDown={(e) => {
-                      if (e.key === '-' || e.key === 'e') {
-                        e.preventDefault();
-                      }
-                    }}
-                    value={numBatches}
-                    onChange={(e) => {
-                      if (e.target.value.length > 19) return;
-                      const val = parseInt(e.target.value);
-                      if (!isNaN(val) && val >= 1) {
-                        setNumBatches(val);
-                      } else if (e.target.value === '') {
-                        setNumBatches(1);
-                      }
-                    }}
-                    className="w-full bg-transparent text-center text-5xl sm:text-6xl font-black text-paymint-green focus:outline-none placeholder-gray-300"
-                    autoFocus
-                  />
-                  <div className="flex items-center justify-center mt-4 gap-1">
-                    <p className="label-strong font-outfit">{t('manufacturing.numBatches')}</p>
+              <div className="px-6 sm:px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+                <div className="space-y-2">
+                  <label className="label-strong block px-1">
+                    {t('manufacturing.numBatches')}
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setNumBatches((value) => Math.max(1, value - 1))}
+                      disabled={numBatches <= 1}
+                      className="h-12 w-12 shrink-0 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-paymint-green/40 hover:text-paymint-green disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-600 transition-all flex items-center justify-center"
+                      aria-label={t('common.decrease', { defaultValue: 'Decrease' })}
+                    >
+                      <Minus size={18} />
+                    </button>
+                    <div className="relative flex-1">
+                      <input
+                        maxLength={6}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        value={numBatches.toString()}
+                        onChange={(e) => {
+                          const digits = e.target.value.replace(/\D/g, '');
+                          if (digits.length > 6) return;
+                          const value = parseInt(digits || '1', 10);
+                          setNumBatches(Math.max(1, value));
+                        }}
+                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 pr-24 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
+                        placeholder={formatInputPlaceholder('1', t('common.locale'))}
+                        autoFocus
+                      />
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
+                        <span className="text-paymint-green text-xs font-black">{t('manufacturing.batches', { defaultValue: 'Batches' })}</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setNumBatches((value) => Math.min(999999, value + 1))}
+                      className="h-12 w-12 shrink-0 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-paymint-green/40 hover:text-paymint-green transition-all flex items-center justify-center"
+                      aria-label={t('common.increase', { defaultValue: 'Increase' })}
+                    >
+                      <Plus size={18} />
+                    </button>
                   </div>
                 </div>
-                <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-black text-gray-500 tracking-widest">{t('manufacturing.totalOutput')}</span>
-                    <span className="text-sm font-black text-gray-900 dark:text-white">{(numBatches * manufactureRecipe.yield).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {manufactureRecipe.yieldUnit}</span>
+                <div className="p-5 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 space-y-4 shadow-sm">
+                  <div className="flex justify-between items-center gap-4">
+                    <span className="text-sm font-normal text-gray-500 dark:text-gray-400">{t('manufacturing.totalOutput')}</span>
+                    <span className="text-sm font-bold text-gray-900 dark:text-white text-right">{(numBatches * manufactureRecipe.yield).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {manufactureRecipe.yieldUnit}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-black text-gray-500 tracking-widest">{t('manufacturing.materialCost')}</span>
-                    <span className="text-sm font-black text-gray-900 dark:text-white">
+                  <div className="h-px bg-gray-200 dark:bg-white/5" />
+                  <div className="flex justify-between items-center gap-4">
+                    <span className="text-sm font-normal text-gray-500 dark:text-gray-400">{t('manufacturing.materialCost')}</span>
+                    <span className="text-sm font-bold text-gray-900 dark:text-white text-right">
                       {(() => {
                         let totalCost = 0;
                         manufactureRecipe.ingredients?.forEach((ing: any) => {
@@ -1196,7 +1218,7 @@ export function RecipesPage() {
                   </div>
                 </div>
               </div>
-              <div className="p-4 sm:p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="p-4 sm:px-8 sm:py-6 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setShowManufactureModal(false)}

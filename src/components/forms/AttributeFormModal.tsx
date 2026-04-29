@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, MousePointerClick, CheckSquare, AlertCircle } from 'lucide-react';
 import { QuickInfo } from '../QuickInfo';
 import { useScrollLock } from '../../hooks/useScrollLock';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface Attribute {
     id: string;
@@ -137,7 +138,7 @@ export function AttributeFormModal({
                                     type="text"
                                     value={name}
                                     onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                                    placeholder={t('attributes.form.namePlaceholder')}
+                                    placeholder={formatInputPlaceholder(t('attributes.form.namePlaceholder'), t('common.locale'))}
                                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                                 />
                                 {errors.name && <p className="mt-1.5 px-1 text-xs font-medium text-paymint-red">{errors.name}</p>}

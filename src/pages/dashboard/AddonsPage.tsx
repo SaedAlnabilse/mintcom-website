@@ -26,6 +26,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { QuickInfo } from '../../components/QuickInfo';
+import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
 interface SubAttribute {
   id: string;
@@ -198,7 +199,7 @@ export function AddonsPage() {
     setIsSubmitting(true);
     try {
       if (editingAttribute) {
-        await api.put(`/api/attributes/${editingAttribute.id}`, attributeForm);
+        await api.patch(`/api/attributes/${editingAttribute.id}`, attributeForm);
         toast.success(t('attributes.messages.groupUpdated'));
       } else {
         await api.post('/api/attributes', attributeForm);
@@ -207,10 +208,11 @@ export function AddonsPage() {
       setShowAttributeModal(false);
       fetchAttributes();
     } catch (error: any) {
-      if (error.response?.data?.message?.toLowerCase().includes('already exists')) {
-        setErrors({ groupName: error.response.data.message });
+      const message = error.response?.data?.message || error.response?.data?.error;
+      if (message?.toLowerCase().includes('already exists')) {
+        setErrors({ groupName: message });
       } else {
-        toast.error(t('attributes.errors.errorSaving'));
+        toast.error(message || t('attributes.errors.errorSaving'));
       }
     } finally {
       setIsSubmitting(false);
@@ -227,7 +229,7 @@ export function AddonsPage() {
     setIsSubmitting(true);
     try {
       if (editingSubAttribute) {
-        await api.put(`/api/attributes/${parentAttributeId}/sub-attributes/${editingSubAttribute.id}`, subAttributeForm);
+        await api.patch(`/api/attributes/sub-attributes/${editingSubAttribute.id}`, subAttributeForm);
         toast.success(t('attributes.messages.optionUpdated'));
       } else {
         await api.post(`/api/attributes/${parentAttributeId}/sub-attributes`, subAttributeForm);
@@ -235,8 +237,9 @@ export function AddonsPage() {
       }
       setShowSubAttributeModal(false);
       fetchAttributes();
-    } catch {
-      toast.error(t('attributes.errors.errorSaving'));
+    } catch (error: any) {
+      const message = error.response?.data?.message || error.response?.data?.error;
+      toast.error(message || t('attributes.errors.errorSavingOption'));
     } finally {
       setIsSubmitting(false);
     }
@@ -387,7 +390,7 @@ export function AddonsPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            placeholder={t('attributes.filters.searchPlaceholder')}
+            placeholder={formatInputPlaceholder(t('attributes.filters.searchPlaceholder'), t('common.locale'))}
             className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-12 pr-10 py-3.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 transition-all font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green"
           />
           {searchQuery && (
@@ -494,7 +497,8 @@ export function AddonsPage() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div
-                  className="flex items-center justify-between p-6 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group"
+                  onClick={() => setExpandedId(expandedId === attr.id ? null : attr.id)}
+                  className="flex items-center justify-between p-6 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer"
                 >
                   <div className="flex items-center gap-5">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black border ${attr.isRequired ? 'bg-paymint-green text-black border-paymint-green' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10'}`}>
@@ -507,7 +511,7 @@ export function AddonsPage() {
                           <span className="label-strong font-outfit px-2 py-0.5 bg-paymint-green/10 text-paymint-green rounded-md border border-paymint-green/20">{t('attributes.list.mandatory')}</span>
                         )}
                       </div>
-                      <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">
+                      <p className="text-xs font-medium text-gray-400 tracking-widest mt-1 uppercase capitalize-none">
                         {attr.inputType === 'SINGLE_SELECT' ? t('attributes.list.singleChoice') : t('attributes.list.multipleChoice')} &bull; {attr.subAttributes?.length || 0}
                       </p>
                     </div>
@@ -534,7 +538,10 @@ export function AddonsPage() {
                       </button>
                     </div>
                     <button
-                      onClick={() => setExpandedId(expandedId === attr.id ? null : attr.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandedId(expandedId === attr.id ? null : attr.id);
+                      }}
                       className={`p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-all ${expandedId === attr.id ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-300'}`}
                     >
                       <ChevronDown className={`w-5 h-5 transition-transform duration-500 ${expandedId === attr.id ? 'rotate-180' : ''}`} />
@@ -545,7 +552,7 @@ export function AddonsPage() {
                 {expandedId === attr.id && (
                   <div className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <h4 className="text-xs font-black text-gray-400 dark:text-gray-500 tracking-widest capitalize border-b-2 border-paymint-green/30 pb-1 inline-block">
+                      <h4 className="text-xs font-medium text-gray-400 dark:text-gray-500 tracking-widest uppercase capitalize-none border-b-2 border-paymint-green/30 pb-1 inline-block">
                         {t('attributes.list.optionsTitle', 'Group Options')}
                       </h4>
                       <button
@@ -625,7 +632,7 @@ export function AddonsPage() {
                 </div>
                 <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
                   <div>
-                    <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">
+                    <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">
                       {t('attributes.form.groupNameLabel')} <span className="text-paymint-red">*</span>
                     </label>
                     <input maxLength={255}
@@ -636,7 +643,7 @@ export function AddonsPage() {
                         if (errors.groupName) setErrors({ ...errors, groupName: '' });
                       }}
                       className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.groupName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                      placeholder={t('attributes.form.groupNamePlaceholder')}
+                      placeholder={formatInputPlaceholder(t('attributes.form.groupNamePlaceholder'), t('common.locale'))}
                     />
                     {errors.groupName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.groupName}</p>}
                   </div>
@@ -654,7 +661,7 @@ export function AddonsPage() {
                         <MousePointerClick size={20} strokeWidth={2.5} />
                       </div>
                       <div>
-                        <p className={`text-sm font-bold ${attributeForm.inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
+                        <p className={`text-sm font-medium ${attributeForm.inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
                         <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.singleDesc')}</p>
                       </div>
                       {attributeForm.inputType === 'SINGLE_SELECT' && (
@@ -676,7 +683,7 @@ export function AddonsPage() {
                         <CheckSquare size={20} strokeWidth={2.5} />
                       </div>
                       <div>
-                        <p className={`text-sm font-bold ${attributeForm.inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
+                        <p className={`text-sm font-medium ${attributeForm.inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
                         <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.multipleDesc')}</p>
                       </div>
                       {attributeForm.inputType === 'MULTI_SELECT' && (
@@ -736,7 +743,7 @@ export function AddonsPage() {
                 </div>
                 <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
                   <div>
-                    <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">
+                    <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">
                       {t('attributes.form.optionNameLabel')} <span className="text-paymint-red">*</span>
                     </label>
                     <input maxLength={255}
@@ -747,13 +754,13 @@ export function AddonsPage() {
                         if (errors.optionName) setErrors({ ...errors, optionName: '' });
                       }}
                       className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.optionName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                      placeholder={t('attributes.form.optionNamePlaceholder')}
+                      placeholder={formatInputPlaceholder(t('attributes.form.optionNamePlaceholder'), t('common.locale'))}
                     />
                     {errors.optionName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.optionName}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-gray-400 tracking-widest mb-3 px-1 lowercase">{t('attributes.form.priceLabel')}</label>
+                    <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">{formatInputLabel(t('attributes.form.priceLabel'), t('common.locale'))}</label>
                     <div className="relative group">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg">
                         <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
@@ -762,7 +769,7 @@ export function AddonsPage() {
                         type="text"
                         inputMode="decimal"
                         value={subAttributeForm.price === 0 ? '' : subAttributeForm.price.toFixed(2)}
-                        placeholder="0.00"
+                        placeholder={formatInputPlaceholder("0.00", t('common.locale'))}
                         onChange={(e) => {
                           const val = e.target.value.replace(/\D/g, '');
                           if (val.length > 19) return;

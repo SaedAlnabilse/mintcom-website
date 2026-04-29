@@ -24,6 +24,7 @@ import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../config/api';
 import { SurfaceLoader } from '../../components/LoadingState';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 // ─── Types ──────────────────────────────────────────────────────────────────────────────────────────────────────
 export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
@@ -306,7 +307,7 @@ export const TicketsPage = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={t('support.tickets.searchPlaceholder')}
+                  placeholder={formatInputPlaceholder(t('support.tickets.searchPlaceholder'), t('common.locale'))}
                   className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                 />
                 {searchQuery && (

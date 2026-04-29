@@ -33,6 +33,7 @@ import { exportToCSV } from '../../utils/export';
 import { SearchInput, Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useCurrency } from '../../context/CurrencyContext';
+import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
 interface ApiError {
   response?: {
@@ -364,7 +365,7 @@ export function CustomersPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onClear={() => setSearchQuery('')}
-            placeholder={t('customers.searchPlaceholder')}
+            placeholder={formatInputPlaceholder(t('customers.searchPlaceholder'), t('common.locale'))}
             className="w-full"
           />
         </div>
@@ -593,7 +594,7 @@ export function CustomersPage() {
               </div>
               <form onSubmit={handleSubmit(handleSaveCustomer)} className="p-8 space-y-8">
                 <div className="space-y-3">
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
+                  <label className="block text-xs font-normal text-gray-400 tracking-[0.2em] px-1 flex items-center">
                     {t('customers.form.name')} <span className="text-paymint-red mx-1">*</span>
                   </label>
                   <div className="relative group">
@@ -601,8 +602,8 @@ export function CustomersPage() {
                     <input maxLength={255}
                       type="text"
                       {...register('name')}
-                      placeholder={t('customers.form.namePlaceholder')}
-                      className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                      placeholder={formatInputPlaceholder(t('customers.form.namePlaceholder'), t('common.locale'))}
+                      className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
                   </div>
                   {errors.name && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.name.message}</p>}
@@ -610,36 +611,36 @@ export function CustomersPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-3">
-                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">
+                    <label className="block text-xs font-normal text-gray-400 tracking-[0.2em] px-1">
                       {t('customers.form.phone')} (optional)
                     </label>
                     <input maxLength={255}
                       type="tel"
                       {...register('phone')}
-                      placeholder={t('customers.form.phonePlaceholder')}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                      placeholder={formatInputPlaceholder(t('customers.form.phonePlaceholder'), t('common.locale'))}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
                     {errors.phone && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.phone.message}</p>}
                   </div>
                   <div className="space-y-3">
-                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">{t('customers.form.email')} (optional)</label>
+                    <label className="block text-xs font-normal text-gray-400 tracking-[0.2em] px-1">{t('customers.form.email')} (optional)</label>
                     <input maxLength={255}
                       type="email"
                       {...register('email')}
-                      placeholder={t('customers.form.emailPlaceholder')}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                      placeholder={formatInputPlaceholder(t('customers.form.emailPlaceholder'), t('common.locale'))}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
                     {errors.email && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.email.message}</p>}
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">{t('customers.form.address')} (optional)</label>
+                  <label className="block text-xs font-normal text-gray-400 tracking-[0.2em] px-1">{t('customers.form.address')} (optional)</label>
                   <input maxLength={255}
                     type="text"
                     {...register('address')}
-                    placeholder={t('customers.form.addressPlaceholder')}
-                    className="w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
+                    placeholder={formatInputPlaceholder(t('customers.form.addressPlaceholder'), t('common.locale'))}
+                    className="w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-normal focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
                   />
                 </div>
 
@@ -718,7 +719,7 @@ export function CustomersPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('customers.details.points')}</label>
+                  <label className="text-xs font-normal text-gray-400  tracking-normal">{formatInputLabel(t('customers.details.points'), t('common.locale'))}</label>
                   <div className="relative">
                     <input maxLength={255}
                       type="text"
@@ -732,7 +733,7 @@ export function CustomersPage() {
                         setPointsError(null);
                       }}
                       className={`w-full px-4 py-3 bg-gray-50 dark:bg-black/20 border ${pointsError ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-lg font-bold focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all outline-none`}
-                      placeholder="0"
+                      placeholder={formatInputPlaceholder("0", t('common.locale'))}
                     />
                   </div>
                   <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>                  {pointsError && (                    <p className="text-[10px] font-bold text-paymint-red uppercase tracking-wider">

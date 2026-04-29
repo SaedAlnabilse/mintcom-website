@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { X, Shield, Lock, User, RefreshCw, AlertTriangle, ArrowRight } from 'lucide-react';
+import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 interface RestoreLocationModalProps {
     isOpen: boolean;
@@ -85,8 +86,8 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2 ml-1">
-                                            {t('security.restore.ownerEmail')}
+                                        <label className="block text-xs font-normal text-gray-500 dark:text-gray-400  tracking-normal mb-2 ml-1">
+                                            {formatInputLabel(t('security.restore.ownerEmail'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
                                             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors">
@@ -97,15 +98,15 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                                 type="email"
                                                 value={formData.accountEmail}
                                                 onChange={(e) => setFormData({ ...formData, accountEmail: e.target.value })}
-                                                placeholder="owner@example.com"
+                                                placeholder={formatInputPlaceholder("owner@example.com", t('common.locale'))}
                                                 className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                                             />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2 ml-1">
-                                            {t('security.restore.ownerPassword')}
+                                        <label className="block text-xs font-normal text-gray-500 dark:text-gray-400  tracking-normal mb-2 ml-1">
+                                            {formatInputLabel(t('security.restore.ownerPassword'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
                                             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors">
@@ -116,7 +117,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                                 type="password"
                                                 value={formData.password}
                                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                                placeholder="••••••••"
+                                                placeholder={formatInputPlaceholder("••••••••", t('common.locale'))}
                                                 className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                                             />
                                         </div>
@@ -144,8 +145,8 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2 ml-1">
-                                            {t('security.restore.newLoginId')}
+                                        <label className="block text-xs font-normal text-gray-500 dark:text-gray-400  tracking-normal mb-2 ml-1">
+                                            {formatInputLabel(t('security.restore.newLoginId'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
                                             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors">
@@ -156,15 +157,15 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                                 type="text"
                                                 value={formData.newLocationLoginId}
                                                 onChange={(e) => setFormData({ ...formData, newLocationLoginId: e.target.value })}
-                                                placeholder="E.g. shop_01"
+                                                placeholder={formatInputPlaceholder("E.g. shop_01", t('common.locale'))}
                                                 className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                                             />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2 ml-1">
-                                            {t('security.restore.newPassword')}
+                                        <label className="block text-xs font-normal text-gray-500 dark:text-gray-400  tracking-normal mb-2 ml-1">
+                                            {formatInputLabel(t('security.restore.newPassword'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
                                             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors">
@@ -175,7 +176,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                                 type="password"
                                                 value={formData.newLocationPassword}
                                                 onChange={(e) => setFormData({ ...formData, newLocationPassword: e.target.value })}
-                                                placeholder="••••••••"
+                                                placeholder={formatInputPlaceholder("••••••••", t('common.locale'))}
                                                 className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                                             />
                                         </div>

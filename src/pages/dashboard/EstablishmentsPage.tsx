@@ -15,6 +15,7 @@ import { useAuth } from '../../context/AuthContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { SearchInput, Pagination } from '../../components/ui';
 import { useTranslation } from 'react-i18next';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface Establishment {
   id: string;
@@ -144,7 +145,7 @@ export function EstablishmentsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onClear={() => setSearchQuery('')}
-            placeholder={t('establishments.searchPlaceholder')}
+            placeholder={formatInputPlaceholder(t('establishments.searchPlaceholder'), t('common.locale'))}
           />
         </div>
       </div>

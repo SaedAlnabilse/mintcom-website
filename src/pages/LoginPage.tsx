@@ -15,6 +15,7 @@ import { LanguageSwitcher } from '../components/LanguageSwitcher';
 // PayMint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
+import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 export function LoginPage() {
   const { t } = useTranslation();
@@ -172,8 +173,8 @@ export function LoginPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <label className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
-                {t('auth.login.emailLabel')}
+              <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
+                {formatInputLabel(t('auth.login.emailLabel'), t('common.locale'))}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -185,8 +186,8 @@ export function LoginPage() {
                   aria-describedby={errors.email ? 'email-error' : undefined}
                   autoComplete="email"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-xl py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder={t('auth.login.emailPlaceholder')}
+                    } rounded-xl py-3 pl-10 pr-4 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                  placeholder={formatInputPlaceholder(t('auth.login.emailPlaceholder'), t('common.locale'))}
                 />
               </div>
               {errors.email?.message && (
@@ -195,8 +196,8 @@ export function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-900 dark:text-white tracking-tight mb-2">
-                {t('auth.login.passwordLabel')}
+              <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
+                {formatInputLabel(t('auth.login.passwordLabel'), t('common.locale'))}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -208,8 +209,8 @@ export function LoginPage() {
                   aria-describedby={errors.password ? 'password-error' : undefined}
                   autoComplete="current-password"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-xl py-3 pl-10 pr-12 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder={t('auth.login.passwordPlaceholder')}
+                    } rounded-xl py-3 pl-10 pr-12 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                  placeholder={formatInputPlaceholder(t('auth.login.passwordPlaceholder'), t('common.locale'))}
                 />
                 <button
                   type="button"

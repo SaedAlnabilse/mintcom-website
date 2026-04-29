@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { formatInputLabel, formatInputPlaceholder } from '../utils/textCase';
 
 interface Option {
     label: string;
@@ -41,7 +42,7 @@ export function CustomSelect({
 
     // Default placeholder from translation
     const defaultPlaceholder = t('common.select');
-    const displayPlaceholder = placeholder || defaultPlaceholder;
+    const displayPlaceholder = formatInputPlaceholder(placeholder || defaultPlaceholder, t('common.locale'));
     const containerRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
@@ -148,7 +149,7 @@ export function CustomSelect({
                     className={`bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5`}
                 >
                     {formattedOptions.length === 0 ? (
-                        <div className="px-5 py-4 text-sm font-bold text-gray-500 italic text-center">{t('common.noOptions')}</div>
+                        <div className="px-5 py-4 text-sm font-normal text-gray-500 italic text-center">{t('common.noOptions')}</div>
                     ) : (
                         formattedOptions.map((opt) => (
                             <button
@@ -162,7 +163,7 @@ export function CustomSelect({
                                 className={`w-full px-5 py-3.5 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${value === opt.value ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-900 dark:text-gray-200'
                                     }`}
                             >
-                                <span className={`text-sm ${value === opt.value ? 'font-black' : 'font-bold'}`}>{opt.label}</span>
+                                <span className={`text-sm ${value === opt.value ? 'font-normal' : 'font-normal'}`}>{opt.label}</span>
                                 {value === opt.value && (
                                     <motion.div
                                         initial={{ scale: 0.5, opacity: 0 }}
@@ -183,7 +184,7 @@ export function CustomSelect({
         <div className={`relative ${className}`} ref={containerRef}>
             {label && (
                 <label className="block label-strong font-outfit mb-3 px-1">
-                    {label} {required && <span className="text-paymint-red">*</span>}
+                    {formatInputLabel(label, t('common.locale'))} {required && <span className="text-paymint-red">*</span>}
                 </label>
             )}
 
@@ -199,7 +200,7 @@ export function CustomSelect({
                     ${error ? 'ring-2 ring-paymint-red border-paymint-red' : isOpen ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-gray-50 dark:bg-white/[0.08]' : ''
                     }`}
             >
-                <span className={`text-sm font-bold truncate pr-2 ${selectedOption ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+                <span className={`text-sm font-normal truncate pr-2 ${selectedOption ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
                     {selectedOption ? selectedOption.label : displayPlaceholder}
                 </span>
                 <ChevronDown
@@ -211,7 +212,7 @@ export function CustomSelect({
             {/* Portal the dropdown to body to escape overflow:hidden containers */}
             {typeof document !== 'undefined' && createPortal(dropdownContent, document.body)}
 
-            {error && <p className="mt-1 text-xs font-bold text-paymint-red px-1">{error}</p>}
+            {error && <p className="mt-1 text-xs font-normal text-paymint-red px-1">{error}</p>}
         </div>
     );
 }

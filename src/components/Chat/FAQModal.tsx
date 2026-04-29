@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FAQ_DATA } from '../../data/faq';
 import type { FAQItem } from '../../data/faq';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface FAQModalProps {
   isOpen: boolean;
@@ -98,7 +99,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
               <Search size={16} className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 text-gray-400`} />
               <input maxLength={255}
                 type="text"
-                placeholder={t('support.qa.searchPlaceholder')}
+                placeholder={formatInputPlaceholder(t('support.qa.searchPlaceholder'), t('common.locale'))}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className={`w-full ${isRTL ? 'pr-10 pl-11' : 'pl-10 pr-11'} py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm focus:outline-none transition-all`}

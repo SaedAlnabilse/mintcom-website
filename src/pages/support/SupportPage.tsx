@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 export const SupportPage = () => {
   const { t } = useTranslation();
@@ -166,7 +167,7 @@ export const SupportPage = () => {
                 value={searchQuery}
                 onFocus={() => setIsSearchFocused(true)}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('support.hero.searchPlaceholder')}
+                placeholder={formatInputPlaceholder(t('support.hero.searchPlaceholder'), t('common.locale'))}
                 className="w-full pl-16 pr-14 py-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all"
               />
               {searchQuery && (

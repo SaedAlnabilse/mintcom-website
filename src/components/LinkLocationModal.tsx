@@ -20,6 +20,7 @@ import { useScrollLock } from '../hooks/useScrollLock';
 import { getBusinessTypeIcon } from '../utils/businessTypeIcons';
 import api from '../config/api';
 import toast from 'react-hot-toast';
+import { formatInputPlaceholder } from '../utils/textCase';
 
 interface EmployeeForMerging {
     id: string;
@@ -224,19 +225,21 @@ export function LinkLocationModal({
                         {step === 1 ? (
                             <>
                                 {/* Search */}
-                                <div className="relative group">
-                                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
-                                    <input
-                                        type="text"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        placeholder={t('owner.locations.searchPlaceholder')}
-                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
-                                    />
-                                </div>
+                                {availableEstablishments.length > 0 && (
+                                    <div className="relative group">
+                                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                                        <input
+                                            type="text"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            placeholder={formatInputPlaceholder(t('owner.locations.searchPlaceholder'), t('common.locale'))}
+                                            className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
+                                        />
+                                    </div>
+                                )}
 
                                 {availableEstablishments.length === 0 ? (
-                                    <div className="py-8">
+                                    <div className="pt-4 pb-0">
                                         <div className="flex flex-col items-center text-center space-y-6">
                                             <div className="w-20 h-20 rounded-[1.5rem] bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-sm">
                                                 <Store size={40} />
@@ -318,31 +321,38 @@ export function LinkLocationModal({
                                                         {group.establishmentName}
                                                     </h3>
                                                 </div>
-                                                <div className="grid grid-cols-1 gap-2">
-                                                    {group.employees.map((emp) => {
-                                                        const isSelected = selectedEmployeeIds.includes(emp.employeeId);
-                                                        return (
-                                                            <button
-                                                                key={emp.employeeId}
-                                                                onClick={() => toggleEmployee(emp.employeeId)}
-                                                                className={`flex items-center gap-4 p-4 rounded-2xl border transition-all text-left group ${
-                                                                    isSelected ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-black/10'
-                                                                }`}
-                                                            >
-                                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green text-black' : 'bg-white dark:bg-white/5 text-gray-400'}`}>
-                                                                    <CheckCircle2 size={20} />
-                                                                </div>
-                                                                <div className="flex-1 min-w-0">
-                                                                    <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate">{emp.firstName} {emp.lastName}</h4>
-                                                                    <p className="text-[10px] font-medium text-gray-500 truncate">{emp.email}</p>
-                                                                </div>
-                                                                <span className={`px-2 py-1 rounded-lg border text-[10px] font-black tracking-widest ${getRoleBadgeColor(emp.role)}`}>
-                                                                    {emp.role}
-                                                                </span>
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
+                                                    {group.employees.length === 0 ? (
+                                                        <div className="p-6 bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/10 flex flex-col items-center justify-center gap-3">
+                                                            <Users className="text-gray-300 dark:text-gray-600" size={24} />
+                                                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('owner.staff.noStaff')}</p>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="grid grid-cols-1 gap-2">
+                                                            {group.employees.map((emp) => {
+                                                                const isSelected = selectedEmployeeIds.includes(emp.employeeId);
+                                                                return (
+                                                                    <button
+                                                                        key={emp.employeeId}
+                                                                        onClick={() => toggleEmployee(emp.employeeId)}
+                                                                        className={`flex items-center gap-4 p-4 rounded-2xl border transition-all text-left group ${
+                                                                            isSelected ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-black/10'
+                                                                        }`}
+                                                                    >
+                                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green text-black' : 'bg-white dark:bg-white/5 text-gray-400'}`}>
+                                                                            <CheckCircle2 size={20} />
+                                                                        </div>
+                                                                        <div className="flex-1 min-w-0">
+                                                                            <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate">{emp.firstName} {emp.lastName}</h4>
+                                                                            <p className="text-[10px] font-medium text-gray-500 truncate">{emp.email}</p>
+                                                                        </div>
+                                                                        <span className={`px-2 py-1 rounded-lg border text-[10px] font-black tracking-widest ${getRoleBadgeColor(emp.role)}`}>
+                                                                            {emp.role}
+                                                                        </span>
+                                                                    </button>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    )}
                                             </div>
                                         ))}
                                     </div>

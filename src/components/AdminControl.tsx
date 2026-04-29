@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Smartphone, Laptop, BarChart2, ShoppingCart, Users, TrendingUp, Bell, User } from 'lucide-react';
 import WhiteLogo from '../assets/white-green-full-logo.svg';
 import GreenLogo from '../assets/green-full-logo.svg';
+import { formatCurrencyCode } from '../utils/currency';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -71,7 +72,7 @@ export const AdminControl = () => {
                     </div>
                   </div>
                   <div className="text-white font-black text-xl tracking-tight relative z-10">
-                    {(2450).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD', minimumFractionDigits: 0 })}
+                    {formatCurrencyCode(2450, 'JOD', t('common.locale'), { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </div>
                 </div>
 
@@ -147,7 +148,7 @@ export const AdminControl = () => {
                     <span className="text-paymint-green text-[9px] font-bold bg-paymint-green/10 border border-paymint-green/20 px-2 py-0.5 rounded-full">+14.2%</span>
                   </div>
                   <div className="text-white font-black text-2xl tracking-tight relative z-10">
-                    {(2450).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD', minimumFractionDigits: 0 })}
+                    {formatCurrencyCode(2450, 'JOD', t('common.locale'), { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </div>
                 </motion.div>
 

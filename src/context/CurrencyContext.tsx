@@ -2,8 +2,9 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import type { ReactNode } from 'react';
 import api from '../config/api';
 import { useAuth } from './AuthContext';
+import { formatCurrencyCode, normalizeCurrencyCode } from '../utils/currency';
 
-// Supported currencies with their symbols
+// Supported currencies. Display uses ISO currency codes, not symbols.
 export const CURRENCIES = [
   { code: 'JOD', name: 'Jordanian Dinar', symbol: 'JOD' },
   { code: 'USD', name: 'US Dollar', symbol: 'USD' },
@@ -38,8 +39,8 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
   const [currency, setCurrency] = useState<string>('JOD');
   const [loading, setLoading] = useState(true);
 
-  // Get the current currency symbol
-  const currencySymbol = CURRENCIES.find(c => c.code === currency)?.symbol || currency;
+  // Kept as currencySymbol for existing consumers, but it intentionally stores the ISO code.
+  const currencySymbol = normalizeCurrencyCode(CURRENCIES.find(c => c.code === currency)?.symbol || currency);
 
   // Refresh currency from backend
   const refreshCurrency = useCallback(async () => {
@@ -78,20 +79,7 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
   // Format amount with currency (symbol after amount for consistency)
   const formatAmount = (amount: number | string | null | undefined): string => {
     const locale = localStorage.getItem('i18nextLng') || 'en';
-    if (amount === null || amount === undefined) {
-      return `0.00 ${currencySymbol}`;
-    }
-    const numAmount = typeof amount === 'number' ? amount : parseFloat(amount);
-    if (isNaN(numAmount)) {
-      return `0.00 ${currencySymbol}`;
-    }
-
-    const formatted = numAmount.toLocaleString(locale, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-
-    return `${formatted} ${currencySymbol}`;
+    return formatCurrencyCode(amount, currencySymbol, locale);
   };
 
   return (

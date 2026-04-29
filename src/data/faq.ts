@@ -94,16 +94,16 @@ export const FAQ_DATA: FAQItem[] = [
     category: 'billing',
     question: 'How do I change my subscription plan?',
     questionAr: 'كيف أغير اشتراكي؟',
-    answer: 'Manage your plan in Owner Portal > Billing. Here you can switch between monthly ($20/mo) and yearly ($210/yr) billing, download invoices, and update your payment methods at any time.',
-    answerAr: 'اذهب إلى بوابة المالك > الفوترة لعرض خطتك الحالية أو التبديل بين الفوترة الشهرية (20$/شهر) والسنوية (210$/سنة) أو إدارة اشتراكك. يمكنك أيضاً تحميل الفواتير وتحديث طرق الدفع.'
+    answer: 'Manage your plan in Owner Portal > Billing. Here you can switch between monthly (20 USD/mo) and yearly (210 USD/yr) billing, download invoices, and update your payment methods at any time.',
+    answerAr: 'اذهب إلى بوابة المالك > الفوترة لعرض خطتك الحالية أو التبديل بين الفوترة الشهرية (20 USD/شهر) والسنوية (210 USD/سنة) أو إدارة اشتراكك. يمكنك أيضاً تحميل الفواتير وتحديث طرق الدفع.'
   },
   {
     id: 'pricing-plans',
     category: 'billing',
     question: 'What are the pricing plans?',
     questionAr: 'ما هي خطط الأسعار؟',
-    answer: 'Our standard plan starts at $20/month or $210/year for your first location. Each additional location is only $17/month or $180/year. All plans include every feature, with a 7-day free trial for new users.',
-    answerAr: 'الموقع الأول: 20$/شهر أو 210$/سنة (وفّر 30$/سنة). المواقع الإضافية: 17$/شهر أو 180$/سنة لكل موقع (وفّر 24$/سنة لكل موقع). جميع الخطط تتضمن وصول كامل لجميع الميزات. المستخدمون الجدد يحصلون على تجربة مجانية 7 أيام!'
+    answer: 'Our standard plan starts at 20 USD/month or 210 USD/year for your first location. Each additional location is only 17 USD/month or 180 USD/year. All plans include every feature, with a 7-day free trial for new users.',
+    answerAr: 'الموقع الأول: 20 USD/شهر أو 210 USD/سنة (وفّر 30 USD/سنة). المواقع الإضافية: 17 USD/شهر أو 180 USD/سنة لكل موقع (وفّر 24 USD/سنة لكل موقع). جميع الخطط تتضمن وصول كامل لجميع الميزات. المستخدمون الجدد يحصلون على تجربة مجانية 7 أيام!'
   },
   {
     id: 'accept-payments',

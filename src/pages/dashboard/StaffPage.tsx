@@ -28,6 +28,7 @@ import { exportToCSV } from '../../utils/export';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { PortalDropdown } from '../../components/PortalDropdown';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface Staff {
   id: string;
@@ -407,7 +408,7 @@ export function StaffPage() {
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             onClear={() => setSearchQuery('')}
-            placeholder={t('staff.searchPlaceholder')}
+            placeholder={formatInputPlaceholder(t('staff.searchPlaceholder'), t('common.locale'))}
             className="w-full"
           />
         </div>
@@ -424,7 +425,7 @@ export function StaffPage() {
               { label: t('staff.roles.user'), value: 'USER' },
             ]}
             allOptionLabel={t('owner.employees.allRoles')}
-            placeholder={t('owner.employees.allRoles')}
+            placeholder={formatInputPlaceholder(t('owner.employees.allRoles'), t('common.locale'))}
           />
         </div>
       </div>

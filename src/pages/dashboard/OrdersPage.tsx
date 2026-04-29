@@ -36,6 +36,7 @@ import { SearchInput, SelectInput, Pagination } from '../../components/ui';
 import { SingleSelect } from '../../components/SingleSelect';
 import { checkPermission, usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { PortalDropdown } from '../../components/PortalDropdown';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface ApiError {
   response?: {
@@ -1006,7 +1007,7 @@ export function OrdersPage() {
                     subtitle: t('dashboard.shiftStatus.lastCompleted')
                   }] : [])
                 ]}
-                placeholder={t('orders.checkShift')}
+                placeholder={formatInputPlaceholder(t('orders.checkShift'), t('common.locale'))}
                 showAllOption={false}
                 buttonClassName="!bg-white dark:!bg-white/5 !text-gray-900 dark:!text-white !border-gray-200 dark:!border-white/10 hover:!bg-gray-50 dark:hover:!bg-white/10 !h-auto !py-2.5 sm:!py-3 !rounded-xl"
               />
@@ -1037,7 +1038,7 @@ export function OrdersPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onClear={() => { setSearchQuery(''); setDebouncedSearchQuery(''); setPage(1); }}
               onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
-              placeholder={t('orders.searchPlaceholder')}
+              placeholder={formatInputPlaceholder(t('orders.searchPlaceholder'), t('common.locale'))}
               className="w-full h-full"
             />
           </div>
@@ -1049,7 +1050,7 @@ export function OrdersPage() {
               onChange={(val) => setQuickDate(val || 'today')}
               options={getDateRangeOptions()}
               showAllOption={false}
-              placeholder={t('orders.period') || 'Period'}
+              placeholder={formatInputPlaceholder(t('orders.period') || 'Period', t('common.locale'))}
               className="w-full h-full"
             />
           </div>
@@ -1095,7 +1096,7 @@ export function OrdersPage() {
                 ]}
                 showAllOption={true}
                 allOptionLabel={t('orders.status.all')}
-                placeholder={t('orders.table.status') || 'Status'}
+                placeholder={formatInputPlaceholder(t('orders.table.status') || 'Status', t('common.locale'))}
                 className="w-full h-full"
               />
             </div>
@@ -1106,7 +1107,7 @@ export function OrdersPage() {
                 value={paymentFilter === 'all' ? null : paymentFilter}
                 onChange={(val) => { setPaymentFilter(val || 'all'); setPage(1); }}
                 disabled={statusFilter === 'HELD'}
-                placeholder={t('orders.table.payment') || 'Payment'}
+                placeholder={formatInputPlaceholder(t('orders.table.payment') || 'Payment', t('common.locale'))}
                 options={paymentOptions}
                 showAllOption={true}
                 allOptionLabel={t('orders.payment.all')}
@@ -1677,7 +1678,7 @@ export function OrdersPage() {
             </p>
 
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-800 dark:text-gray-100 mb-2">
+              <label className="block text-sm font-normal text-gray-800 dark:text-gray-100 mb-2">
                 Refund reason
               </label>
               <textarea maxLength={2000}
@@ -1688,7 +1689,7 @@ export function OrdersPage() {
                     setRefundReasonError('');
                   }
                 }}
-                placeholder="Enter refund reason"
+                placeholder={formatInputPlaceholder("Enter refund reason", t('common.locale'))}
                 rows={4}
                 className="w-full rounded-xl border border-gray-300 dark:border-white/15 bg-white dark:bg-[#0F172A] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-paymint-green/40"
               />

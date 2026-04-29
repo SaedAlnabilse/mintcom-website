@@ -20,6 +20,7 @@ import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface Comment {
     id: number;
@@ -231,7 +232,7 @@ export const DiscussionDetailPage = () => {
                                             <textarea maxLength={2000}
                                                 value={commentText}
                                                 onChange={(e) => setCommentText(e.target.value)}
-                                                placeholder={isAuthenticated ? t('community.discussions.replyPlaceholder', 'What are your thoughts?') : t('community.discussions.loginToReply', 'Sign in to reply...')}
+                                                placeholder={formatInputPlaceholder(isAuthenticated ? t('community.discussions.replyPlaceholder', 'What are your thoughts?') : t('community.discussions.loginToReply', 'Sign in to reply...'), t('common.locale'))}
                                                 className="w-full bg-transparent p-4 text-gray-600 dark:text-gray-300 font-medium focus:outline-none resize-none min-h-[120px]"
                                                 readOnly={!isAuthenticated}
                                                 onClick={() => !isAuthenticated && navigate('/login')}

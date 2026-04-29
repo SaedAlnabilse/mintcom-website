@@ -35,6 +35,7 @@ import { CustomSelect } from '../../components/CustomSelect';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { Pagination } from '../../components/ui';
 import { SectionLoader } from '../../components/LoadingState';
+import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
 interface Brand {
     id: string;
@@ -539,7 +540,7 @@ export function OwnerBrandsPage() {
                         />
                         <input maxLength={255}
                             type="text"
-                            placeholder={t('owner.brands.searchPlaceholder')}
+                            placeholder={formatInputPlaceholder(t('owner.brands.searchPlaceholder'), t('common.locale'))}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
@@ -831,26 +832,26 @@ export function OwnerBrandsPage() {
                                         {wizardStep === 1 && (
                                         <div className="space-y-6 py-2">
                                             <div className="space-y-2">
-                                                <label className="text-[15px] font-sans font-medium text-gray-500 ml-1">{t('owner.brands.brandName')}</label>
+                                                <label className="text-[15px] font-sans font-normal text-gray-500 ml-1">{formatInputLabel(t('owner.brands.brandName'), t('common.locale'))}</label>
                                                 <div className="relative group">
                                                     <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                                                     <input maxLength={255}
                                                         {...register('name')}
-                                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
-                                                        placeholder={t('owner.brands.brandNamePlaceholder')}
+                                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
+                                                        placeholder={formatInputPlaceholder(t('owner.brands.brandNamePlaceholder'), t('common.locale'))}
                                                     />
                                                 </div>
                                                 {errors.name && <p className="text-[#ef4444] text-[12px] mt-1 font-bold ml-1">{errors.name.message}</p>}
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-[15px] font-sans font-medium text-gray-500 ml-1">{t('owner.brands.adminLoginId')}</label>
+                                                <label className="text-[15px] font-sans font-normal text-gray-500 ml-1">{formatInputLabel(t('owner.brands.adminLoginId'), t('common.locale'))}</label>
                                                 <div className="relative group">
                                                     <Hash className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                                                     <input maxLength={255}
                                                         {...establishmentLoginIdField}
-                                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
-                                                        placeholder={t('owner.brands.adminLoginIdPlaceholder')}
+                                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
+                                                        placeholder={formatInputPlaceholder(t('owner.brands.adminLoginIdPlaceholder'), t('common.locale'))}
                                                     />
                                                 </div>
                                                 <p className="text-[12px] font-sans font-medium text-gray-400 mt-2 ml-1 leading-relaxed opacity-80">
@@ -872,14 +873,14 @@ export function OwnerBrandsPage() {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-[15px] font-sans font-medium text-gray-500 ml-1">{t('owner.brands.adminPassword')}</label>
+                                                <label className="text-[15px] font-sans font-normal text-gray-500 ml-1">{formatInputLabel(t('owner.brands.adminPassword'), t('common.locale'))}</label>
                                                 <div className="relative group">
                                                     <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                                                     <input maxLength={255}
                                                         {...register('establishmentPassword')}
                                                         type={showPassword ? "text" : "password"}
-                                                        className="w-full pl-14 pr-14 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
-                                                        placeholder="********"
+                                                        className="w-full pl-14 pr-14 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
+                                                        placeholder={formatInputPlaceholder("********", t('common.locale'))}
                                                     />
                                                     <button
                                                         type="button"

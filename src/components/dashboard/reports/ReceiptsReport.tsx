@@ -19,6 +19,7 @@ import { exportToCSV } from '../../../utils/export';
 import { format } from 'date-fns';
 import { useAuth } from '../../../context/AuthContext';
 import { checkPermission } from '../../../hooks/usePermissionGuard';
+import { formatInputPlaceholder } from '../../../utils/textCase';
 
 
 interface ReceiptsReportProps {
@@ -218,7 +219,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
-                        placeholder={t('orders.reports.receipts.searchReceiptPlaceholder')}
+                        placeholder={formatInputPlaceholder(t('orders.reports.receipts.searchReceiptPlaceholder'), t('common.locale'))}
                         className="w-full pl-10 pr-11 py-2.5 bg-transparent border-none text-sm font-medium text-gray-900 dark:text-white focus:ring-0"
                     />
                     {searchQuery && (

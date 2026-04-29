@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { ChevronDown, Check, X, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { formatInputLabel, formatInputPlaceholder } from '../utils/textCase';
 
 interface Option {
     label: string;
@@ -48,8 +49,8 @@ export function SingleSelect({
     const dropdownRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
 
-    const effectivePlaceholder = placeholder || t('common.all');
-    const effectiveAllLabel = allOptionLabel || t('common.all');
+    const effectivePlaceholder = formatInputPlaceholder(placeholder || t('common.all'), t('common.locale'));
+    const effectiveAllLabel = formatInputLabel(allOptionLabel || t('common.all'), t('common.locale'));
 
     const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({
         opacity: 0,
@@ -171,8 +172,8 @@ export function SingleSelect({
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder={t('common.searchPlaceholder')}
-                                className="w-full pl-9 pr-9 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-sm font-bold text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none transition-all"
+                                placeholder={formatInputPlaceholder(t('common.searchPlaceholder'), t('common.locale'))}
+                                className="w-full pl-9 pr-9 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-sm font-normal text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none transition-all"
                             />
                             {searchQuery && (
                                 <button
@@ -196,7 +197,7 @@ export function SingleSelect({
                                 className={`w-full px-5 py-3.5 text-start flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${!value ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-900 dark:text-gray-200'
                                     }`}
                             >
-                                <span className={`text-sm ${!value ? 'font-black' : 'font-bold'}`}>
+                                <span className={`text-sm ${!value ? 'font-normal' : 'font-normal'}`}>
                                     {effectiveAllLabel}
                                 </span>
                                 {!value && <Check size={16} className="text-paymint-green" />}
@@ -204,7 +205,7 @@ export function SingleSelect({
                         )}
 
                         {filteredOptions.length === 0 ? (
-                            <div className="px-5 py-8 text-sm font-bold text-gray-500 italic text-center">
+                            <div className="px-5 py-8 text-sm font-normal text-gray-500 italic text-center">
                                 {searchQuery ? t('common.noResults') : t('common.noOptions')}
                             </div>
                         ) : (
@@ -225,7 +226,7 @@ export function SingleSelect({
                                                 </div>
                                             )}
                                             <div className="flex flex-col">
-                                                <span className={`text-sm ${isSelected ? 'font-black' : 'font-bold'}`}>{opt.label}</span>
+                                                <span className={`text-sm ${isSelected ? 'font-normal' : 'font-normal'}`}>{opt.label}</span>
                                                 {opt.subtitle && (
                                                     <span className={`text-xs mt-0.5 ${isSelected ? 'text-paymint-green/80' : 'text-gray-500 dark:text-gray-400'}`}>{opt.subtitle}</span>
                                                 )}
@@ -265,7 +266,7 @@ export function SingleSelect({
                              {selectedOption.icon}
                          </div>
                     )}
-                    <span className={`font-bold text-sm truncate ${value ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+                    <span className={`font-normal text-sm truncate ${value ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
                         {selectedOption?.label || effectivePlaceholder}
                     </span>
                     {value && allowClear && (

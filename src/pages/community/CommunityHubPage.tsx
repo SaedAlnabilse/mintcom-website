@@ -24,6 +24,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Logo } from '../../components/Logo';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 export const CommunityHubPage = () => {
     const { t } = useTranslation();
@@ -194,7 +195,7 @@ export const CommunityHubPage = () => {
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                             <input maxLength={255}
                                 type="text"
-                                placeholder="Search topics, posts, or users..."
+                                placeholder={formatInputPlaceholder("Search topics, posts, or users...", t('common.locale'))}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full bg-gray-100 dark:bg-white/5 border-none rounded-xl py-2.5 pl-11 pr-12 font-medium focus:ring-2 focus:ring-PayMint-green/50 transition-all"

@@ -21,6 +21,7 @@ import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import api from '../../config/api';
+import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
 interface Attachment {
   name: string;
@@ -244,7 +245,7 @@ export const NewTicketPage = () => {
             <form onSubmit={handleSubmit}>
               {/* Category Selection */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
-                <label className="block text-sm font-bold text-gray-900 dark:text-white mb-4">
+                <label className="block text-sm font-normal text-gray-900 dark:text-white mb-4">
                   {t('support.newTicket.categoryLabel')} <span className="text-red-500">*</span>
                 </label>
 
@@ -286,8 +287,8 @@ export const NewTicketPage = () => {
 
               {/* Priority Selection */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
-                <label className="block text-sm font-bold text-gray-900 dark:text-white mb-4">
-                  {t('support.newTicket.priorityLabel')}
+                <label className="block text-sm font-normal text-gray-900 dark:text-white mb-4">
+                  {formatInputLabel(t('support.newTicket.priorityLabel'), t('common.locale'))}
                 </label>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -310,7 +311,7 @@ export const NewTicketPage = () => {
 
               {/* Subject */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
-                <label className="block text-sm font-bold text-gray-900 dark:text-white mb-3">
+                <label className="block text-sm font-normal text-gray-900 dark:text-white mb-3">
                   {t('support.newTicket.subjectLabel')} <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -320,7 +321,7 @@ export const NewTicketPage = () => {
                     setFormData({ ...formData, subject: e.target.value });
                     setErrors({ ...errors, subject: '' });
                   }}
-                  placeholder={t('support.newTicket.subjectPlaceholder')}
+                  placeholder={formatInputPlaceholder(t('support.newTicket.subjectPlaceholder'), t('common.locale'))}
                   className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green/50 ${errors.subject ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                     }`}
                   maxLength={100}
@@ -340,7 +341,7 @@ export const NewTicketPage = () => {
 
               {/* Description */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
-                <label className="block text-sm font-bold text-gray-900 dark:text-white mb-3">
+                <label className="block text-sm font-normal text-gray-900 dark:text-white mb-3">
                   {t('support.newTicket.descriptionLabel')} <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -349,7 +350,7 @@ export const NewTicketPage = () => {
                     setFormData({ ...formData, description: e.target.value });
                     setErrors({ ...errors, description: '' });
                   }}
-                  placeholder={t('support.newTicket.descriptionPlaceholder')}
+                  placeholder={formatInputPlaceholder(t('support.newTicket.descriptionPlaceholder'), t('common.locale'))}
                   rows={6}
                   className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green/50 resize-none ${errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                     }`}
@@ -366,7 +367,7 @@ export const NewTicketPage = () => {
                 <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/10">
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{t('support.tickets.attachments')}</p>
-                    <label className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-bold cursor-pointer hover:bg-gray-200 dark:hover:bg-white/20 transition-colors">
+                    <label className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-normal cursor-pointer hover:bg-gray-200 dark:hover:bg-white/20 transition-colors">
                       <Upload size={16} />
                       {t('support.newTicket.addFiles')}
                       <input

@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface Guide {
   id: number;
@@ -315,7 +316,7 @@ export const GuidesPage = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={t('community.guides.search_placeholder', 'Search guides...')}
+                  placeholder={formatInputPlaceholder(t('community.guides.search_placeholder', 'Search guides...'), t('common.locale'))}
                   className="w-full pl-12 pr-11 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all"
                 />
                 {searchQuery && (

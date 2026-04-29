@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useScrollLock } from '../hooks/useScrollLock';
+import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 interface ApiError {
     response?: {
@@ -193,14 +194,14 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
                                 {/* Card Number */}
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.cardNumber')}</label>
+                                    <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight block pl-1">{formatInputLabel(t('paymentMethods.modal.cardNumber'), t('common.locale'))}</label>
                                     <div className="relative group">
                                         <input maxLength={255}
                                             type="text"
                                             value={cardNumber}
                                             onChange={handleCardNumberChange}
-                                            placeholder="0000 0000 0000 0000"
-                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cardNumber ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-12 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
+                                            placeholder={formatInputPlaceholder("0000 0000 0000 0000", t('common.locale'))}
+                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cardNumber ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-12 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
                                         />
                                         <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                                         <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -217,25 +218,25 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                 {/* Expiry & Cvc */}
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.expiry')}</label>
+                                        <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight block pl-1">{formatInputLabel(t('paymentMethods.modal.expiry'), t('common.locale'))}</label>
                                         <input
                                             type="text"
                                             value={expiry}
                                             onChange={handleExpiryChange}
-                                            placeholder={t('paymentMethods.modal.expiryPlaceholder') || "MM/YY"}
+                                            placeholder={formatInputPlaceholder(t('paymentMethods.modal.expiryPlaceholder') || "MM/YY", t('common.locale'))}
                                             maxLength={5}
-                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.expiry ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all text-center`}
+                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.expiry ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all text-center`}
                                         />
                                         {errors.expiry && <p className="text-xs font-bold text-red-500 pl-1">{errors.expiry}</p>}
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.cvc')}</label>
+                                        <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight block pl-1">{formatInputLabel(t('paymentMethods.modal.cvc'), t('common.locale'))}</label>
                                         <div className="relative group">
                                             <input
                                                 type="password"
                                                 value={cvc}
                                                 onChange={(e) => { setCvc(e.target.value.replace(/\D/g, '').slice(0, 4)); if (errors.cvc) setErrors({ ...errors, cvc: '' }); }}
-                                                placeholder="123"
+                                                placeholder={formatInputPlaceholder("123", t('common.locale'))}
                                                 maxLength={4}
                                                 className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cvc ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-10 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
                                             />
@@ -247,7 +248,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
                                 {/* Cardholder Name */}
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight block pl-1">{t('paymentMethods.modal.cardholder')}</label>
+                                    <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight block pl-1">{formatInputLabel(t('paymentMethods.modal.cardholder'), t('common.locale'))}</label>
                                     <input maxLength={255}
                                         type="text"
                                         value={name}

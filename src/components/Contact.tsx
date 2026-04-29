@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Send, Mail, Phone, CheckCircle2, Loader2 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
+import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -126,54 +127,54 @@ export const Contact = () => {
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.fullName')}</label>
+                        <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight ml-1">{formatInputLabel(t('landing.contact.fullName'), t('common.locale'))}</label>
                         <input maxLength={255}
                           required
                           type="text"
                           name="fullName"
                           value={formData.fullName}
                           onChange={handleInputChange}
-                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
-                          placeholder={t('landing.contact.placeholder.name')}
+                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                          placeholder={formatInputPlaceholder(t('landing.contact.placeholder.name'), t('common.locale'))}
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.businessName')}</label>
+                        <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight ml-1">{formatInputLabel(t('landing.contact.businessName'), t('common.locale'))}</label>
                         <input maxLength={255}
                           required
                           type="text"
                           name="businessName"
                           value={formData.businessName}
                           onChange={handleInputChange}
-                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
-                          placeholder={t('landing.contact.placeholder.business')}
+                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                          placeholder={formatInputPlaceholder(t('landing.contact.placeholder.business'), t('common.locale'))}
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.emailAddress')}</label>
+                      <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight ml-1">{formatInputLabel(t('landing.contact.emailAddress'), t('common.locale'))}</label>
                       <input maxLength={255}
                         required
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
-                        placeholder={t('landing.contact.placeholder.email')}
+                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                        placeholder={formatInputPlaceholder(t('landing.contact.placeholder.email'), t('common.locale'))}
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.yourMessage')}</label>
+                      <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight ml-1">{formatInputLabel(t('landing.contact.yourMessage'), t('common.locale'))}</label>
                       <textarea maxLength={2000}
                         required
                         name="message"
                         value={formData.message}
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none"
-                        placeholder={t('landing.contact.placeholder.message')}
+                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none"
+                        placeholder={formatInputPlaceholder(t('landing.contact.placeholder.message'), t('common.locale'))}
                       />
                     </div>
 

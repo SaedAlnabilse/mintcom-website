@@ -8,6 +8,7 @@ import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { useCurrency } from '../context/CurrencyContext';
+import { formatInputPlaceholder } from '../utils/textCase';
 
 interface ApiError {
     response?: {
@@ -380,7 +381,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                 {t('orders.details.refundConfirmMessage')}
                             </p>
                             <div className="mt-4">
-                                <label className="block text-sm font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                                <label className="block text-sm font-normal text-gray-800 dark:text-gray-100 mb-2">
                                     Refund reason
                                 </label>
                                 <textarea maxLength={2000}
@@ -391,7 +392,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                             setRefundReasonError('');
                                         }
                                     }}
-                                    placeholder="Enter refund reason"
+                                    placeholder={formatInputPlaceholder("Enter refund reason", t('common.locale'))}
                                     rows={4}
                                     className="w-full rounded-xl border border-gray-300 dark:border-white/15 bg-white dark:bg-[#0F172A] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-paymint-green/40"
                                 />

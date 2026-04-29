@@ -19,6 +19,7 @@ import { CustomRoleFormModal } from '../../components/CustomRoleFormModal';
 import { Pagination, SearchInput } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { getLocalizedRoleName } from '../../utils/roleNames';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface CustomRole {
   id: string;
@@ -278,7 +279,7 @@ export function CustomRolesPage() {
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             onClear={() => { setSearchQuery(''); setCurrentPage(1); }}
-            placeholder={t('dashboard.roles.searchPlaceholder')}
+            placeholder={formatInputPlaceholder(t('dashboard.roles.searchPlaceholder'), t('common.locale'))}
           />
         </div>
         {/* View Mode Toggle */}

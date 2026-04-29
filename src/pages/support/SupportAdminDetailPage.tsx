@@ -28,6 +28,7 @@ import { Footer } from '../../components/Footer';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { FullScreenLoader, SectionLoader } from '../../components/LoadingState';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -415,7 +416,7 @@ export const SupportAdminDetailPage = () => {
                                     <textarea maxLength={2000}
                                         value={replyText}
                                         onChange={(e) => setReplyText(e.target.value)}
-                                        placeholder="Type your support reply..."
+                                        placeholder={formatInputPlaceholder("Type your support reply...", t('common.locale'))}
                                         rows={3}
                                         className="flex-1 resize-none bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30"
                                         onKeyDown={(e) => {

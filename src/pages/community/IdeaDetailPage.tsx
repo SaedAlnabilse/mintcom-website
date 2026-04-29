@@ -22,6 +22,7 @@ import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 type IdeaStatus = 'under_review' | 'planned' | 'in_progress' | 'completed' | 'declined';
 
@@ -265,7 +266,7 @@ export const IdeaDetailPage = () => {
                                             <textarea maxLength={2000}
                                                 value={commentText}
                                                 onChange={(e) => setCommentText(e.target.value)}
-                                                placeholder={isAuthenticated ? t('community.labels.writeComment', 'Add a comment...') : t('community.labels.loginToComment', 'Join the discussion...')}
+                                                placeholder={formatInputPlaceholder(isAuthenticated ? t('community.labels.writeComment', 'Add a comment...') : t('community.labels.loginToComment', 'Join the discussion...'), t('common.locale'))}
                                                 className="w-full bg-transparent p-4 text-gray-600 dark:text-gray-300 font-medium focus:outline-none resize-none min-h-[100px]"
                                                 readOnly={!isAuthenticated}
                                                 onClick={() => !isAuthenticated && navigate('/login')}

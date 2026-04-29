@@ -29,6 +29,8 @@ import { DateRangePicker } from '../../components/DateRangePicker';
 import { CustomTimePicker } from '../../components/CustomTimePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput, getDatePeriodLabel } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
+import { formatInputPlaceholder } from '../../utils/textCase';
+import { formatCurrencyCode } from '../../utils/currency';
 
 interface OverviewStats {
     totalRevenue: number;
@@ -135,11 +137,10 @@ export function OwnerOverviewPage() {
 
     const formatCurrency = (amount: number) => {
         const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
-        const formatted = amount.toLocaleString(locale, {
+        return formatCurrencyCode(amount, establishments?.[0]?.currency || 'JOD', locale, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
         });
-        return `${formatted} ${establishments?.[0]?.currency || 'JOD'}`;
     };
 
     return (
@@ -167,7 +168,7 @@ export function OwnerOverviewPage() {
                                     onChange={(val) => setQuickDate(val || 'today')}
                                     options={DATE_PERIOD_OPTIONS}
                                     showAllOption={false}
-                                    placeholder={t('owner.overview.selectPeriod')}
+                                    placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                                     className="w-full"
                                     buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold !justify-center xl:!justify-between ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
                                 />
@@ -349,7 +350,7 @@ export function OwnerOverviewPage() {
                                         axisLine={false}
                                         tickLine={false}
                                         tick={{ fill: '#9CA3AF', fontSize: 11 }}
-                                        tickFormatter={(value) => `${value.toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')} ${establishments?.[0]?.currency || 'JOD'}`}
+                                        tickFormatter={(value) => formatCurrencyCode(value, establishments?.[0]?.currency || 'JOD', t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                                         width={80}
                                         dx={-5}
                                     />

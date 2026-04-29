@@ -491,9 +491,9 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                     <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-              <span className="sentence-case-text text-xs font-bold text-gray-700 dark:text-gray-300">{item.name}</span>
+                        <span className="sentence-case-text text-sm font-bold text-gray-700 dark:text-gray-300">{item.name}</span>
                       </div>
-                      <span className="text-xs font-bold text-gray-900 dark:text-white"><FormatCurrency value={item.value} /></span>
+                      <span className="text-sm font-bold text-gray-900 dark:text-white"><FormatCurrency value={item.value} /></span>
                     </div>
                   ))}
                 </div>

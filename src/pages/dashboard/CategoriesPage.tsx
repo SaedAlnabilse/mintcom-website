@@ -28,6 +28,7 @@ import { CategoryFormModal, ICON_MAP } from '../../components/forms/CategoryForm
 import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
 import { SearchInput, Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface Category {
   id: string;
@@ -415,7 +416,7 @@ export function CategoriesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onClear={() => setSearchQuery('')}
-            placeholder={t('categories.searchPlaceholder')}
+            placeholder={formatInputPlaceholder(t('categories.searchPlaceholder'), t('common.locale'))}
           />
         </div>
 

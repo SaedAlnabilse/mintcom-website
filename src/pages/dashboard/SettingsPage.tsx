@@ -16,6 +16,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
 import { SectionLoader } from '../../components/LoadingState';
+import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
 interface ApiError {
   response?: {
@@ -794,7 +795,7 @@ export function SettingsPage() {
               {/* Login ID Section */}
               <div className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 group-hover:border-blue-500/20 transition-colors">
                 <div>
-                  <label className="text-[10px] font-bold text-gray-400 tracking-widest flex items-center gap-1.5 mb-1">
+                  <label className="text-[10px] font-normal text-gray-400 tracking-normal flex items-center gap-1.5 mb-1">
                     <Key size={12} className="text-gray-400" />
                     {t('owner.account.loginId') || 'Login ID'}
                   </label>
@@ -826,7 +827,7 @@ export function SettingsPage() {
 
             <div className="space-y-6">
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-black text-gray-900 dark:text-white tracking-widest uppercase">{t('settings.profile.logo')}</label>
+                <label className="text-sm font-normal text-gray-900 dark:text-white tracking-normal ">{formatInputLabel(t('settings.profile.logo'), t('common.locale'))}</label>
                 <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{t('settings.profile.logoGuidelines')}</p>
               </div>
               <div className="flex items-center gap-8">
@@ -834,7 +835,7 @@ export function SettingsPage() {
                   {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <label className="px-5 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.03] rounded-xl text-gray-900 dark:text-white font-bold text-sm shadow-sm transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-black/40 hover:scale-[1.02] active:scale-[0.98] hover:border-paymint-green/30">
+                  <label className="px-5 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.03] rounded-xl text-gray-900 dark:text-white font-normal text-sm shadow-sm transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-black/40 hover:scale-[1.02] active:scale-[0.98] hover:border-paymint-green/30">
                     {t('settings.profile.changeLogo')}
                     <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
                   </label>
@@ -851,25 +852,25 @@ export function SettingsPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <label className="label-strong font-outfit uppercase block">{t('settings.profile.name')}</label>
-              <input type="text" {...register('restaurantName')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
+              <label className="label-strong font-outfit  block">{formatInputLabel(t('settings.profile.name'), t('common.locale'))}</label>
+              <input type="text" {...register('restaurantName')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
             </div>
             <div className="space-y-2">
-              <label className="label-strong font-outfit uppercase block">{t('settings.profile.about')}</label>
-              <textarea {...register('restaurantDescription')} rows={3} maxLength={2000} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium resize-none" />
+              <label className="label-strong font-outfit  block">{formatInputLabel(t('settings.profile.about'), t('common.locale'))}</label>
+              <textarea {...register('restaurantDescription')} rows={3} maxLength={2000} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal resize-none" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
-                <label className="label-strong font-outfit uppercase block">{t('settings.profile.address')}</label>
-                <input type="text" {...register('restaurantAddress')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
+                <label className="label-strong font-outfit  block">{formatInputLabel(t('settings.profile.address'), t('common.locale'))}</label>
+                <input type="text" {...register('restaurantAddress')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
               </div>
               <div className="space-y-2">
-                <label className="label-strong font-outfit uppercase block">{t('settings.profile.email')}</label>
-                <input type="email" {...register('email')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
+                <label className="label-strong font-outfit  block">{formatInputLabel(t('settings.profile.email'), t('common.locale'))}</label>
+                <input type="email" {...register('email')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
               </div>
               <div className="space-y-2">
-                <label className="label-strong font-outfit uppercase block">{t('settings.profile.taxId')}</label>
-                <input type="text" {...register('taxIdNumber')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
+                <label className="label-strong font-outfit  block">{formatInputLabel(t('settings.profile.taxId'), t('common.locale'))}</label>
+                <input type="text" {...register('taxIdNumber')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
               </div>
             </div>
           </motion.div>
@@ -1013,7 +1014,7 @@ export function SettingsPage() {
                         },
                       })}
                       className={`w-full h-14 bg-white dark:bg-white/[0.03] border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-5 font-semibold text-2xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.holdOrderTableCount ? 'focus:ring-red-500/20' : 'focus:ring-indigo-500/20'} transition-all group-hover:border-indigo-500/50 shadow-sm`}
-                      placeholder={t('settings.sales.holdOrderTableCountPlaceholder')}
+                      placeholder={formatInputPlaceholder(t('settings.sales.holdOrderTableCountPlaceholder'), t('common.locale'))}
                     />
                   </div>
                   {errors.holdOrderTableCount && (
@@ -1072,8 +1073,8 @@ export function SettingsPage() {
                           {...register('restaurantName')}
                           disabled={!showRestaurantName}
                           maxLength={255}
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                          placeholder={t('settings.profile.namePlaceholder')}
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                          placeholder={formatInputPlaceholder(t('settings.profile.namePlaceholder'), t('common.locale'))}
                         />
                       </div>
                       {/* Description / Tagline */}
@@ -1093,8 +1094,8 @@ export function SettingsPage() {
                           {...register('restaurantDescription')}
                           disabled={!showDescription}
                           maxLength={255}
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                          placeholder={t('settings.profile.aboutPlaceholder')}
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                          placeholder={formatInputPlaceholder(t('settings.profile.aboutPlaceholder'), t('common.locale'))}
                         />
                       </div>
                     </div>
@@ -1143,8 +1144,8 @@ export function SettingsPage() {
                       {...register('restaurantAddress')}
                       disabled={!showAddress}
                       maxLength={255}
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder={t('settings.profile.addressPlaceholder')}
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                      placeholder={formatInputPlaceholder(t('settings.profile.addressPlaceholder'), t('common.locale'))}
                     />
                   </div>
 
@@ -1165,8 +1166,8 @@ export function SettingsPage() {
                       {...register('taxIdNumber')}
                       disabled={!showTaxId}
                       maxLength={255}
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder={t('settings.profile.taxIdPlaceholder')}
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                      placeholder={formatInputPlaceholder(t('settings.profile.taxIdPlaceholder'), t('common.locale'))}
                     />
                   </div>
 
@@ -1187,8 +1188,8 @@ export function SettingsPage() {
                       rows={2}
                       disabled={!showFarewellMessage}
                       maxLength={2000}
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder={t('settings.receipts.footerPlaceholder')}
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                      placeholder={formatInputPlaceholder(t('settings.receipts.footerPlaceholder'), t('common.locale'))}
                     />
                   </div>
                 </div>

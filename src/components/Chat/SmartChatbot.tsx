@@ -22,6 +22,7 @@ import {
   FALLBACK_RESPONSES_AR,
 } from '../../data/chatbotKnowledge';
 import type { KnowledgeEntry } from '../../data/chatbotKnowledge';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface Message {
   id: string;
@@ -696,7 +697,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={t('chat.inputPlaceholder')}
+                  placeholder={formatInputPlaceholder(t('chat.inputPlaceholder'), t('common.locale'))}
                   disabled={isTyping}
                   className={`w-full rounded-2xl border border-gray-200 bg-white py-3 text-sm text-gray-900 transition-all placeholder:text-gray-400 focus:border-[#7CC39F] focus:outline-none focus:ring-2 focus:ring-[#7CC39F]/30 disabled:opacity-50 dark:border-white/10 dark:bg-[#1E293B] dark:text-white ${
                     isRTL ? 'pl-10 pr-4 text-right' : 'pl-4 pr-10 text-left'

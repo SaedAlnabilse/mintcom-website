@@ -21,6 +21,7 @@ import { useAuth } from '../context/AuthContext';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { QuickInfo } from './QuickInfo';
 import { PasswordResetOtpModal } from './PasswordResetOtpModal';
+import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 interface ApiError {
     response?: {
@@ -355,8 +356,8 @@ export function SecurityVerificationModal({
                                     <div className="space-y-6">
                                         {/* Account Email */}
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase px-1 block">
-                                                {t('security.identityLabel')}
+                                            <label className="text-[10px] font-normal text-gray-400 tracking-[0.2em]  px-1 block">
+                                                {formatInputLabel(t('security.identityLabel'), t('common.locale'))}
                                             </label>
                                             <div className="relative group">
                                                 <Mail className={`absolute left-5 top-1/2 -translate-y-1/2 ${errors.email || errors.general?.toLowerCase().includes('email') ? 'text-paymint-red' : 'text-gray-400 group-focus-within:text-paymint-green'} transition-colors`} size={18} />
@@ -367,7 +368,7 @@ export function SecurityVerificationModal({
                                                         setEmail(e.target.value);
                                                         if (errors.email || errors.general) setErrors({});
                                                     }}
-                                                    placeholder={t('auth.login.emailPlaceholder')}
+                                                    placeholder={formatInputPlaceholder(t('auth.login.emailPlaceholder'), t('common.locale'))}
                                                     className={`w-full pl-12 pr-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email || errors.general?.toLowerCase().includes('email') ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/5'} rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all shadow-sm`}
                                                     disabled={isSubmitting}
                                                 />
@@ -384,8 +385,8 @@ export function SecurityVerificationModal({
                                         <div className="space-y-4">
                                             <div className="space-y-2">
                                                 <div className="flex items-center gap-2 px-1">
-                                                    <label className="text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase block">
-                                                        {t('security.passwordLabel')}
+                                                    <label className="text-[10px] font-normal text-gray-400 tracking-[0.2em]  block">
+                                                        {formatInputLabel(t('security.passwordLabel'), t('common.locale'))}
                                                     </label>
                                                     <QuickInfo text={t('security.masterKeyInfo.description')} />
                                                 </div>
@@ -402,7 +403,7 @@ export function SecurityVerificationModal({
                                                         autoFocus
                                                         disabled={isSubmitting}
                                                         className={`w-full pl-12 pr-12 py-4 bg-gray-50 dark:bg-black/20 border ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all shadow-sm`}
-                                                        placeholder="********"
+                                                        placeholder={formatInputPlaceholder("********", t('common.locale'))}
                                                     />
                                                     <button
                                                         type="button"

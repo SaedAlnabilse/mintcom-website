@@ -1,13 +1,14 @@
 ﻿import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, ArrowUpDown } from 'lucide-react';
+import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, ArrowUpDown, RotateCcw } from 'lucide-react';
 import api from '../../config/api';
 import { AddPaymentMethodModal } from '../../components/AddPaymentMethodModal';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Pagination } from '../../components/ui';
+import { formatCurrencyCode } from '../../utils/currency';
 
 interface SavedCard {
     id: string;
@@ -69,6 +70,10 @@ export function OwnerBillingPage() {
     const [nextBillSortOrder, setNextBillSortOrder] = useState<'asc' | 'desc'>('asc');
 
     const { refreshEstablishments } = useAuth();
+    const formatUsd = (amount: number, fractionDigits = 2) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits,
+    });
 
     const fetchBillingInfo = useCallback(async (silent = false) => {
         try {
@@ -273,8 +278,8 @@ export function OwnerBillingPage() {
     };
 
 
-    // Apply correct pricing: first location = $20/mo, additional = $17/mo
-    // The backend may return flat $20 for all, so we override client-side
+    // Apply correct pricing: first location = 20 USD/mo, additional = 17 USD/mo.
+    // The backend may return flat 20 USD for all, so we override client-side.
     const FIRST_LOCATION_PRICE = 20;
     const ADDITIONAL_LOCATION_PRICE = 17;
 
@@ -301,7 +306,7 @@ export function OwnerBillingPage() {
         if (est.billingCycle === 'yearly') {
             return est.yearlyPrice || (index === 0 ? 210 : 180);
         }
-        // Monthly: first location = $20, additional = $17
+        // Monthly: first location = 20 USD, additional = 17 USD.
         return index === 0 ? FIRST_LOCATION_PRICE : ADDITIONAL_LOCATION_PRICE;
     };
 
@@ -379,7 +384,7 @@ export function OwnerBillingPage() {
                             {t('owner.billing.monthly')}
                         </p>
                         <div className="flex items-baseline justify-end">
-                            <span className="dashboard-card-value text-xl">${totalMonthlyCost.toFixed(2)}</span>
+                            <span className="dashboard-card-value text-xl">{formatUsd(totalMonthlyCost)}</span>
                             <span className="text-xs font-bold text-gray-400 ml-0.5">{t('common.monthly')}</span>
                         </div>
                     </div>
@@ -391,7 +396,7 @@ export function OwnerBillingPage() {
                                     {t('owner.billing.yearly')}
                                 </p>
                                 <div className="flex items-baseline justify-end">
-                                    <span className="dashboard-card-value text-xl text-paymint-green">${totalYearlyCost.toFixed(2)}</span>
+                                    <span className="dashboard-card-value text-xl text-paymint-green">{formatUsd(totalYearlyCost)}</span>
                                     <span className="text-xs font-bold text-gray-400 ml-0.5">{t('common.yearly')}</span>
                                 </div>
                             </div>
@@ -623,7 +628,7 @@ export function OwnerBillingPage() {
                                                     <div className="flex flex-col items-center">
                                                         <div className="flex items-baseline">
                                                             <span className="font-bold text-gray-900 dark:text-white text-sm">
-                                                                ${price}
+                                                                {formatUsd(price, 0)}
                                                             </span>
                                                             <span className="text-xs text-gray-400 ml-0.5">
                                                                 {isYearly ? t('common.yearly') : t('common.monthly')}
@@ -701,8 +706,9 @@ export function OwnerBillingPage() {
                                                         {(est.cancelAtPeriodEnd || est.subscriptionStatus === 'CANCELED') && (
                                                             <button
                                                                 onClick={() => handleResumeSubscription(est.id, est.name, est.cancelAtPeriodEnd)}
-                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-paymint-green hover:bg-paymint-green/10 tracking-wide transition-colors"
+                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-paymint-green hover:bg-paymint-green/10 tracking-wide transition-colors flex items-center gap-2"
                                                             >
+                                                                <RotateCcw size={14} />
                                                                 {est.subscriptionStatus === 'CANCELED' ? t('owner.billing.reactivate') : t('owner.billing.resume')}
                                                             </button>
                                                         )}

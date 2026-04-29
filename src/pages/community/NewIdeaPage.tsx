@@ -20,6 +20,7 @@ import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 export const NewIdeaPage = () => {
     const { t } = useTranslation();
@@ -141,7 +142,7 @@ export const NewIdeaPage = () => {
                             <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-8 mb-6 shadow-sm overflow-hidden relative">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-PayMint-green/5 rounded-full -mr-16 -mt-16 blur-2xl pointer-events-none" />
 
-                                <label className="block text-sm font-bold mb-6 text-gray-500 uppercase tracking-widest">
+                                <label className="block text-sm font-normal mb-6 text-gray-500  tracking-normal">
                                     {t('community.ideas.categoryLabel', 'Select Category')} <span className="text-red-500">*</span>
                                 </label>
 
@@ -185,7 +186,7 @@ export const NewIdeaPage = () => {
                             <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-8 mb-8 shadow-sm">
                                 <div className="space-y-6">
                                     <div>
-                                        <label className="block text-sm font-bold mb-3 text-gray-500 uppercase tracking-widest">
+                                        <label className="block text-sm font-normal mb-3 text-gray-500  tracking-normal">
                                             {t('community.ideas.titleLabel', 'Idea Summary')} <span className="text-red-500">*</span>
                                         </label>
                                         <input
@@ -195,7 +196,7 @@ export const NewIdeaPage = () => {
                                                 setFormData({ ...formData, title: e.target.value });
                                                 setErrors({ ...errors, title: '' });
                                             }}
-                                            placeholder={t('community.ideas.titlePlaceholder', 'e.g. Dark mode for the merchant portal')}
+                                            placeholder={formatInputPlaceholder(t('community.ideas.titlePlaceholder', 'e.g. Dark mode for the merchant portal'), t('common.locale'))}
                                             className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-2xl font-bold text-lg focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all ${errors.title ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                                                 }`}
                                             maxLength={100}
@@ -212,7 +213,7 @@ export const NewIdeaPage = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-bold mb-3 text-gray-500 uppercase tracking-widest">
+                                        <label className="block text-sm font-normal mb-3 text-gray-500  tracking-normal">
                                             {t('community.ideas.descriptionLabel', 'Details & Context')} <span className="text-red-500">*</span>
                                         </label>
                                         <textarea maxLength={2000}
@@ -221,7 +222,7 @@ export const NewIdeaPage = () => {
                                                 setFormData({ ...formData, description: e.target.value });
                                                 setErrors({ ...errors, description: '' });
                                             }}
-                                            placeholder={t('community.ideas.descriptionPlaceholder', 'Describe the problem this solves and how you envision it working...')}
+                                            placeholder={formatInputPlaceholder(t('community.ideas.descriptionPlaceholder', 'Describe the problem this solves and how you envision it working...'), t('common.locale'))}
                                             rows={8}
                                             className={`w-full p-5 bg-gray-50 dark:bg-white/5 border rounded-2xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all resize-none ${errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                                                 }`}

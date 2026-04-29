@@ -6,6 +6,7 @@ import { ArrowLeft, GitMerge, Store, Check, X, Loader2, Sparkles, Building2, Zap
 import { useAuth } from '../../context/AuthContext';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
+import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
 export function OwnerMergePage() {
     const { t } = useTranslation();
@@ -229,7 +230,7 @@ export function OwnerMergePage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-gray-400 tracking-[0.2em] px-2 block">{t('owner.merge.brandName')}</label>
+                                <label className="text-xs font-normal text-gray-400 tracking-[0.2em] px-2 block">{formatInputLabel(t('owner.merge.brandName'), t('common.locale'))}</label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-6 flex items-center text-gray-400 group-hover:text-paymint-green transition-colors">
                                         <Building2 size={20} />
@@ -238,7 +239,7 @@ export function OwnerMergePage() {
                                         type="text"
                                         value={brandName}
                                         onChange={(e) => setBrandName(e.target.value)}
-                                        placeholder={t('owner.merge.brandNamePlaceholder')}
+                                        placeholder={formatInputPlaceholder(t('owner.merge.brandNamePlaceholder'), t('common.locale'))}
                                         className="w-full pl-16 pr-8 py-6 bg-gray-50 dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-3xl font-black text-lg text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/30 transition-all tracking-tight"
                                     />
                                 </div>

@@ -39,6 +39,7 @@ import { PasswordResetOtpModal } from '../../components/PasswordResetOtpModal';
 import toast from 'react-hot-toast';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { SectionLoader } from '../../components/LoadingState';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface AccountDetails {
     id: string;
@@ -627,14 +628,14 @@ export function OwnerAccountManagementPage() {
                                                 type="text"
                                                 value={editForm.firstName}
                                                 onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
-                                                placeholder={t('owner.account.firstName')}
+                                                placeholder={formatInputPlaceholder(t('owner.account.firstName'), t('common.locale'))}
                                                 className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                                             />
                                             <input maxLength={255}
                                                 type="text"
                                                 value={editForm.lastName}
                                                 onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
-                                                placeholder={t('owner.account.lastName')}
+                                                placeholder={formatInputPlaceholder(t('owner.account.lastName'), t('common.locale'))}
                                                 className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                                             />
                                         </div>
@@ -655,7 +656,7 @@ export function OwnerAccountManagementPage() {
                                             type="email"
                                             value={editForm.email}
                                             onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                                            placeholder={t('owner.account.email')}
+                                            placeholder={formatInputPlaceholder(t('owner.account.email'), t('common.locale'))}
                                             className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                                         />
                                     ) : (
@@ -754,7 +755,7 @@ export function OwnerAccountManagementPage() {
                                                             <div className="flex items-center flex-wrap gap-x-2 gap-y-1 mt-1.5">
                                                                 {getStatusBadge(est.subscriptionStatus)}
                                                                 <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-white/[0.05] border border-gray-200 dark:border-white/[0.05] text-[10px] uppercase font-bold text-gray-500 dark:text-gray-400">
-                                                                    {est.currency}
+                                                                    {est.currency?.toUpperCase() || 'JOD'}
                                                                 </span>
                                                                 {est.createdAt && (
                                                                     <>
@@ -782,7 +783,7 @@ export function OwnerAccountManagementPage() {
                                                 <div className="mt-auto">
                                                     <div className="p-3 bg-gray-50 dark:bg-[#0F172A] rounded-xl border border-gray-100 dark:border-white/[0.05] group-hover:border-blue-500/20 transition-colors">
                                                         <div className="flex items-center justify-between gap-2 mb-1">
-                                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                                                            <label className="text-[10px] font-normal text-gray-400  tracking-normal flex items-center gap-1">
                                                                 <Key size={10} />
                                                                 {t('owner.account.loginId')}
                                                             </label>
@@ -1314,7 +1315,7 @@ export function OwnerAccountManagementPage() {
                                     </p>
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                    <label className="text-sm font-normal text-gray-700 dark:text-gray-300">
                                         {t('owner.account.deleteAccountModal.confirmDeletePrompt', { keyword: t('common.delete') })}
                                     </label>
                                     <input maxLength={255}
@@ -1346,7 +1347,7 @@ export function OwnerAccountManagementPage() {
                         {deleteStep === 3 && (
                             <div className="space-y-6">
                                 <div className="space-y-3">
-                                    <label className="text-sm font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                    <label className="text-sm font-normal text-gray-700 dark:text-gray-300 flex items-center gap-2">
                                         <Lock size={14} />
                                         {t('owner.account.deleteAccountModal.confirmPassword')}
                                     </label>
@@ -1354,7 +1355,7 @@ export function OwnerAccountManagementPage() {
                                         type="password"
                                         value={deletePassword}
                                         onChange={(e) => setDeletePassword(e.target.value)}
-                                        placeholder={t('owner.account.deleteAccountModal.passwordPlaceholder')}
+                                        placeholder={formatInputPlaceholder(t('owner.account.deleteAccountModal.passwordPlaceholder'), t('common.locale'))}
                                         className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500/50"
                                     />
                                 </div>

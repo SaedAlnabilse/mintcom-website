@@ -38,6 +38,8 @@ import toast from 'react-hot-toast';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 import { SectionLoader } from '../../components/LoadingState';
+import { formatInputPlaceholder } from '../../utils/textCase';
+import { formatCompactCurrencyCode, formatCurrencyCode } from '../../utils/currency';
 
 interface BrandStats {
     totalRevenue: number;
@@ -175,7 +177,7 @@ export function BrandDashboardPage() {
                 orders: loc.orders || 0,
                 growth: 0, // Backend doesn't provide growth yet
                 employees: loc.employees || 0,
-                currency: loc.currency || 'USD',
+                currency: loc.currency?.toUpperCase() || 'USD',
                 originalRevenue: loc.originalRevenue ?? loc.revenue ?? 0,
             }));
 
@@ -292,21 +294,17 @@ export function BrandDashboardPage() {
         }));
     }, [categoryBreakdown]);
     const formatCurrency = (value: number) => {
-        const symbol = '$';
         const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
-
-        if (value >= 1000000) {
-            return `${symbol}${(value / 1000000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
-        } else if (value >= 1000) {
-            return `${symbol}${(value / 1000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}K`;
-        }
-        return `${symbol}${value.toLocaleString(locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+        return formatCompactCurrencyCode(value, 'USD', locale);
     };
 
     // Format in a location's original (local) currency
     const formatLocalCurrency = (value: number, currencyCode: string) => {
         const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
-        return `${value.toLocaleString(locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} ${currencyCode}`;
+        return formatCurrencyCode(value, currencyCode, locale, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        });
     };
 
     const formatNumber = (value: number) => {
@@ -377,7 +375,7 @@ export function BrandDashboardPage() {
                                     onChange={(val) => setQuickDate(val as DateRangePreset || 'today')}
                                     options={DATE_PERIOD_OPTIONS}
                                     showAllOption={false}
-                                    placeholder={t('owner.overview.selectPeriod')}
+                                    placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                                     className="w-full"
                                     buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
                                 />
@@ -466,7 +464,7 @@ export function BrandDashboardPage() {
                     },
                     {
                         label: t('brand.dashboard.avgOrderValue'),
-                        value: `$${(stats?.avgOrderValue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                        value: formatCurrencyCode(stats?.avgOrderValue || 0, 'USD', t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
                         change: null,
                         icon: Target,
                         color: 'text-purple-500',

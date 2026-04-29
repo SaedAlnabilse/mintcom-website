@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../config/api';
 import { useAuth } from '../context/AuthContext';
+import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 export const FeedbackWidget = () => {
     const { t } = useTranslation();
@@ -164,7 +165,7 @@ export const FeedbackWidget = () => {
                                 ) : (
                                     <form onSubmit={handleSubmit} className="space-y-6">
                                         <div>
-                                            <label className="block text-xs font-sans font-bold text-gray-500 mb-3">{t('feedback.rateExperience')}</label>
+                                            <label className="block text-xs font-sans font-normal text-gray-500 mb-3">{formatInputLabel(t('feedback.rateExperience'), t('common.locale'))}</label>
                                             <div className="flex justify-between gap-2">
                                                 {[1, 2, 3, 4, 5].map((s) => (
                                                     <button
@@ -183,14 +184,14 @@ export const FeedbackWidget = () => {
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-sans font-bold text-gray-500 mb-3">{t('feedback.comments')}</label>
+                                            <label className="block text-xs font-sans font-normal text-gray-500 mb-3">{formatInputLabel(t('feedback.comments'), t('common.locale'))}</label>
                                             <textarea maxLength={2000}
                                                 required
                                                 value={comment}
                                                 onChange={(e) => setComment(e.target.value)}
                                                 rows={6}
                                                 className="w-full px-4 py-4 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none placeholder:text-gray-400 placeholder:font-sans placeholder:font-bold"
-                                                placeholder={t('feedback.placeholder')}
+                                                placeholder={formatInputPlaceholder(t('feedback.placeholder'), t('common.locale'))}
                                             />
                                         </div>
 

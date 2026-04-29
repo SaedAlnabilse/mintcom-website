@@ -18,6 +18,7 @@ import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 export const NewDiscussionPage = () => {
     const { t } = useTranslation();
@@ -133,7 +134,7 @@ export const NewDiscussionPage = () => {
                         <form onSubmit={handleSubmit}>
                             {/* Category */}
                             <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-8 mb-6 shadow-sm">
-                                <label className="block text-sm font-bold mb-6 text-gray-500 uppercase tracking-widest">
+                                <label className="block text-sm font-normal mb-6 text-gray-500  tracking-normal">
                                     {t('community.discussions.categoryLabel', 'Discussion Topic')} <span className="text-red-500">*</span>
                                 </label>
 
@@ -177,7 +178,7 @@ export const NewDiscussionPage = () => {
                             <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-8 mb-8 shadow-sm">
                                 <div className="space-y-6">
                                     <div>
-                                        <label className="block text-sm font-bold mb-3 text-gray-500 uppercase tracking-widest">
+                                        <label className="block text-sm font-normal mb-3 text-gray-500  tracking-normal">
                                             {t('community.discussions.titleLabel', 'Discussion Title')} <span className="text-red-500">*</span>
                                         </label>
                                         <input maxLength={255}
@@ -187,7 +188,7 @@ export const NewDiscussionPage = () => {
                                                 setFormData({ ...formData, title: e.target.value });
                                                 setErrors({ ...errors, title: '' });
                                             }}
-                                            placeholder={t('community.discussions.titlePlaceholder', 'e.g. How do you handle rush hour staff scheduling?')}
+                                            placeholder={formatInputPlaceholder(t('community.discussions.titlePlaceholder', 'e.g. How do you handle rush hour staff scheduling?'), t('common.locale'))}
                                             className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-2xl font-bold text-lg focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all ${errors.title ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                                                 }`}
                                         />
@@ -200,7 +201,7 @@ export const NewDiscussionPage = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-bold mb-3 text-gray-500 uppercase tracking-widest">
+                                        <label className="block text-sm font-normal mb-3 text-gray-500  tracking-normal">
                                             {t('community.discussions.descriptionLabel', 'Details')} <span className="text-red-500">*</span>
                                         </label>
                                         <textarea maxLength={2000}
@@ -209,7 +210,7 @@ export const NewDiscussionPage = () => {
                                                 setFormData({ ...formData, description: e.target.value });
                                                 setErrors({ ...errors, description: '' });
                                             }}
-                                            placeholder={t('community.discussions.descriptionPlaceholder', 'Tell the community more about your topic...')}
+                                            placeholder={formatInputPlaceholder(t('community.discussions.descriptionPlaceholder', 'Tell the community more about your topic...'), t('common.locale'))}
                                             rows={8}
                                             className={`w-full p-5 bg-gray-50 dark:bg-white/5 border rounded-2xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all resize-none ${errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                                                 }`}

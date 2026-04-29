@@ -20,6 +20,7 @@ import type { DatePeriod } from '../../utils/datePeriods';
 import { Pagination } from '../../components/ui';
 import { usePermissionGuard, checkPermission } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface ActivityLog {
   id: string;
@@ -281,7 +282,7 @@ export function ActivityLogsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-              placeholder={t('activity.searchPlaceholder')}
+              placeholder={formatInputPlaceholder(t('activity.searchPlaceholder'), t('common.locale'))}
               className="w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
             />
             {searchQuery && (
@@ -326,7 +327,7 @@ export function ActivityLogsPage() {
                   { label: t('activity.actions.deletePayment'), value: 'Deleted payment method' },
                 ]}
                 allOptionLabel={t('activity.allActions')}
-                placeholder={t('activity.allActions')}
+                placeholder={formatInputPlaceholder(t('activity.allActions'), t('common.locale'))}
               />
             </div>
 
@@ -340,7 +341,7 @@ export function ActivityLogsPage() {
                     if (val) handlePresetChange(val);
                   }}
                   options={DATE_PERIOD_OPTIONS}
-                  placeholder={t('activity.customRange')}
+                  placeholder={formatInputPlaceholder(t('activity.customRange'), t('common.locale'))}
                   showAllOption={false}
                   allowClear={false}
                 />

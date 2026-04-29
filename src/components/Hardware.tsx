@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tablet, Printer, X, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { formatCurrencyCode } from '../utils/currency';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -24,6 +25,10 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
 export const Hardware = () => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
+  const formatUsdPrice = (amount: number) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
 
   const hardwareItems = [
     {
@@ -35,43 +40,43 @@ export const Hardware = () => {
         {
           name: t('landing.hardware.products.samsungTab.name'),
           specs: t('landing.hardware.products.samsungTab.specs'),
-          price: (180).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(180),
           link: 'https://www.amazon.com/s?k=samsung+galaxy+tab+a8'
         },
         {
           name: t('landing.hardware.products.ipad.name'),
           specs: t('landing.hardware.products.ipad.specs'),
-          price: (350).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(350),
           link: 'https://www.amazon.com/s?k=ipad+10th+generation'
         },
         {
           name: t('landing.hardware.products.lenovo.name'),
           specs: t('landing.hardware.products.lenovo.specs'),
-          price: (150).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(150),
           link: 'https://www.amazon.com/s?k=lenovo+tab+m10+plus'
         },
         {
           name: t('landing.hardware.products.ipadAir.name'),
           specs: t('landing.hardware.products.ipadAir.specs'),
-          price: (599).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(599),
           link: 'https://www.amazon.com/s?k=ipad+air+m2'
         },
         {
           name: t('landing.hardware.products.ipadPro.name'),
           specs: t('landing.hardware.products.ipadPro.specs'),
-          price: (999).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(999),
           link: 'https://www.amazon.com/s?k=ipad+pro+m4'
         },
         {
           name: t('landing.hardware.products.samsungTabS9FE.name'),
           specs: t('landing.hardware.products.samsungTabS9FE.specs'),
-          price: (350).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(350),
           link: 'https://www.amazon.com/s?k=samsung+galaxy+tab+s9+fe'
         },
         {
           name: t('landing.hardware.products.surfaceGo.name'),
           specs: t('landing.hardware.products.surfaceGo.specs'),
-          price: (550).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(550),
           link: 'https://www.amazon.com/s?k=microsoft+surface+go+4'
         }
       ],
@@ -86,55 +91,55 @@ export const Hardware = () => {
         {
           name: t('landing.hardware.products.munbyn.name'),
           specs: t('landing.hardware.products.munbyn.specs'),
-          price: (100).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(100),
           link: 'https://www.amazon.com/s?k=munbyn+thermal+receipt+printer+80mm'
         },
         {
           name: t('landing.hardware.products.epson.name'),
           specs: t('landing.hardware.products.epson.specs'),
-          price: (180).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(180),
           link: 'https://www.amazon.com/s?k=epson+tm-t20iii'
         },
         {
           name: t('landing.hardware.products.star.name'),
           specs: t('landing.hardware.products.star.specs'),
-          price: (250).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(250),
           link: 'https://www.amazon.com/s?k=star+micronics+tsp143'
         },
         {
           name: t('landing.hardware.products.epsonM30.name'),
           specs: t('landing.hardware.products.epsonM30.specs'),
-          price: (280).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(280),
           link: 'https://www.amazon.com/s?k=epson+tm-m30ii'
         },
         {
           name: t('landing.hardware.products.starMC.name'),
           specs: t('landing.hardware.products.starMC.specs'),
-          price: (320).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(320),
           link: 'https://www.amazon.com/s?k=star+micronics+mc-print3'
         },
         {
           name: t('landing.hardware.products.starTSP654.name'),
           specs: t('landing.hardware.products.starTSP654.specs'),
-          price: (240).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(240),
           link: 'https://www.amazon.com/s?k=star+micronics+tsp654ii'
         },
         {
           name: t('landing.hardware.products.bixolon.name'),
           specs: t('landing.hardware.products.bixolon.specs'),
-          price: (220).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(220),
           link: 'https://www.amazon.com/s?k=bixolon+srp-350plusiii'
         },
         {
           name: t('landing.hardware.products.citizen.name'),
           specs: t('landing.hardware.products.citizen.specs'),
-          price: (190).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(190),
           link: 'https://www.amazon.com/s?k=citizen+ct-e351'
         },
         {
           name: t('landing.hardware.products.starMC2.name'),
           specs: t('landing.hardware.products.starMC2.specs'),
-          price: (260).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }),
+          price: formatUsdPrice(260),
           link: 'https://www.amazon.com/s?k=star+micronics+mc-print2'
         }
       ],

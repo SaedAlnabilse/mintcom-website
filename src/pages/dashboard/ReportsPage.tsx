@@ -36,6 +36,7 @@ import { DiscountsView } from '../../components/dashboard/reports/views/Discount
 import { TaxesView } from '../../components/dashboard/reports/views/TaxesView';
 import { CashDiscrepancyView } from '../../components/dashboard/reports/views/CashDiscrepancyView';
 import { PayInPayOutLogModal } from '../../components/dashboard/reports/PayInPayOutLogModal';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 type ReportType = 'sales' | 'top-items' | 'top-categories' | 'top-modifiers' | 'peak-hours' | 'shifts' | 'staff-sales' | 'payments' | 'discounts' | 'taxes' | 'receipts' | 'cash-discrepancy';
 
@@ -541,7 +542,7 @@ export function ReportsPage() {
                 onChange={(val) => setQuickDate(val || 'today')}
                 options={localizedDateOptions}
                 showAllOption={false}
-                placeholder={t('owner.overview.selectPeriod')}
+                placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                 className="w-full h-full"
                 buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
                   ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
@@ -610,7 +611,7 @@ export function ReportsPage() {
                   setSelectedShiftId(null);
                 }}
                 options={employees}
-                placeholder={t('common.allStaff')}
+                placeholder={formatInputPlaceholder(t('common.allStaff'), t('common.locale'))}
                 className="w-full h-full"
                 buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedEmployeeId
                   ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
@@ -625,7 +626,7 @@ export function ReportsPage() {
                 value={selectedShiftId}
                 onChange={setSelectedShiftId}
                 options={employeeShifts}
-                placeholder={t('common.selectShift')}
+                placeholder={formatInputPlaceholder(t('common.selectShift'), t('common.locale'))}
                 className="w-full h-full"
                 buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedShiftId
                   ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'

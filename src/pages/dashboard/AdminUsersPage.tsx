@@ -20,6 +20,7 @@ import { useAuth } from '../../context/AuthContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { SearchInput, Pagination } from '../../components/ui';
 import { useTranslation } from 'react-i18next';
+import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
 interface ApiError {
     response?: {
@@ -245,7 +246,7 @@ export function AdminUsersPage() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onClear={() => setSearchQuery('')}
-                        placeholder={t('adminUsers.searchPlaceholder')}
+                        placeholder={formatInputPlaceholder(t('adminUsers.searchPlaceholder'), t('common.locale'))}
                     />
                 </div>
             </div>
@@ -469,7 +470,7 @@ export function AdminUsersPage() {
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50"
-                                    placeholder={t('adminUsers.form.emailPlaceholder')}
+                                    placeholder={formatInputPlaceholder(t('adminUsers.form.emailPlaceholder'), t('common.locale'))}
                                     required
                                     disabled={!!editingAdmin}
                                 />
@@ -505,7 +506,7 @@ export function AdminUsersPage() {
 
                             <div className="space-y-3">
                                 <label className="block label-strong font-outfit px-1">
-                                    {t('adminUsers.form.locationAccess')}
+                                    {formatInputLabel(t('adminUsers.form.locationAccess'), t('common.locale'))}
                                 </label>
                                 <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
                                     {establishments.map((est) => (

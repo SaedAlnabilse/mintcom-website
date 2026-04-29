@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Award, Check } from 'lucide-react';
 import { CustomSelect } from '../CustomSelect';
+import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
 interface Category {
   id: string;
@@ -161,7 +162,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
 
             {/* Reward Type */}
             <div className="space-y-2">
-              <label className="label-strong block">{t('rewards.form.typeLabel')}</label>
+              <label className="label-strong block">{formatInputLabel(t('rewards.form.typeLabel'), t('common.locale'))}</label>
               <div className="flex p-1 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5 relative isolate">
                 <button
                   type="button"
@@ -190,7 +191,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
 
             {/* Points Required */}
             <div className="space-y-2">
-              <label className="label-strong block">{t('rewards.form.pointsCostLabel')}</label>
+              <label className="label-strong block">{formatInputLabel(t('rewards.form.pointsCostLabel'), t('common.locale'))}</label>
               <div className="relative group">
                 <input
                   type="number"
@@ -209,7 +210,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                     }
                   }}
                   className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all group-hover:border-paymint-green/50 shadow-sm`}
-                  placeholder={t('rewards.form.pointsCostPlaceholder')}
+                  placeholder={formatInputPlaceholder(t('rewards.form.pointsCostPlaceholder'), t('common.locale'))}
                 />
                 <div className="absolute right-5 top-1/2 -translate-y-1/2 text-paymint-green">
                   <Award size={20} strokeWidth={2.5} />
@@ -222,7 +223,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             <div className="min-h-[90px]">
               {type === 'DISCOUNT' ? (
                 <motion.div key="discount" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
-                  <label className="label-strong block">{t('rewards.form.discountPercentageLabel')}</label>
+                  <label className="label-strong block">{formatInputLabel(t('rewards.form.discountPercentageLabel'), t('common.locale'))}</label>
                   <div className="relative group">
                     <input maxLength={255}
                       type="text"
@@ -236,7 +237,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                         }
                       }}
                       className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all group-hover:border-paymint-green/50 shadow-sm`}
-                      placeholder={t('common.zero')}
+                      placeholder={formatInputPlaceholder(t('common.zero'), t('common.locale'))}
                     />
                     <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg group-focus-within:text-paymint-green transition-colors">{t('common.percent')}</div>
                   </div>
@@ -263,7 +264,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                         { label: t('rewards.form.selectCategory'), value: '' },
                         ...categories.map(c => ({ label: c.name, value: c.id }))
                       ]}
-                      placeholder={t('rewards.form.selectCategory')}
+                      placeholder={formatInputPlaceholder(t('rewards.form.selectCategory'), t('common.locale'))}
                       direction="up"
                     />
                   </div>

@@ -977,20 +977,20 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
     questionAr: 'كيف تعمل الفوترة؟',
     answer: `**Trial:** 7-day free trial with full access.
 
-**Monthly Plan:** $20/month for your first location with full access to all features.
+**Monthly Plan:** 20 USD/month for your first location with full access to all features.
 
-**Yearly Plan:** $210/year (instead of $240) — save $30! You can switch between monthly and yearly anytime.
+**Yearly Plan:** 210 USD/year (instead of 240 USD) — save 30 USD! You can switch between monthly and yearly anytime.
 
-**Additional Locations:** Each extra location after the first is $17/month or $180/year (instead of $204). That's a discounted rate for multi-branch businesses!
+**Additional Locations:** Each extra location after the first is 17 USD/month or 180 USD/year (instead of 204 USD). That's a discounted rate for multi-branch businesses!
 
 **Manage:** Go to **Owner > Billing** to view plans, switch billing cycles, update payment methods, and download invoices.`,
     answerAr: `**التجربة:** تجربة مجانية 7 أيام مع وصول كامل.
 
-**الخطة الشهرية:** 20$/شهر للموقع الأول مع وصول كامل لجميع الميزات.
+**الخطة الشهرية:** 20 USD/شهر للموقع الأول مع وصول كامل لجميع الميزات.
 
-**الخطة السنوية:** 210$/سنة (بدلاً من 240$) — وفّر 30$! يمكنك التبديل بين الشهري والسنوي في أي وقت.
+**الخطة السنوية:** 210 USD/سنة (بدلاً من 240 USD) — وفّر 30 USD! يمكنك التبديل بين الشهري والسنوي في أي وقت.
 
-**المواقع الإضافية:** كل موقع إضافي بعد الأول بـ 17$/شهر أو 180$/سنة (بدلاً من 204$). سعر مخفض للأعمال متعددة الفروع!
+**المواقع الإضافية:** كل موقع إضافي بعد الأول بـ 17 USD/شهر أو 180 USD/سنة (بدلاً من 204 USD). سعر مخفض للأعمال متعددة الفروع!
 
 **الإدارة:** اذهب إلى **المالك > الفوترة** لعرض الخطط، تبديل دورة الفوترة، تحديث طرق الدفع، وتحميل الفواتير.`,
     category: 'billing',

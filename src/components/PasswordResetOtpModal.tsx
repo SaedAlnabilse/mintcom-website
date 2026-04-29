@@ -6,6 +6,7 @@ import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { useTranslation } from 'react-i18next';
+import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 interface ApiError {
     response?: {
@@ -376,14 +377,14 @@ export function PasswordResetOtpModal({
                                 <div className="space-y-4">
                                     <div className="relative">
                                         <label className="label-strong font-outfit mb-2 block">
-                                            {t('passwordReset.form.newPassword')}
+                                            {formatInputLabel(t('passwordReset.form.newPassword'), t('common.locale'))}
                                         </label>
                                         <input maxLength={255}
                                             type={showPassword ? 'text' : 'password'}
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
                                             className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
-                                            placeholder={t('passwordReset.form.passwordPlaceholder')}
+                                            placeholder={formatInputPlaceholder(t('passwordReset.form.passwordPlaceholder'), t('common.locale'))}
                                         />
                                         <button
                                             type="button"
@@ -396,14 +397,14 @@ export function PasswordResetOtpModal({
 
                                     <div className="relative">
                                         <label className="label-strong font-outfit mb-2 block">
-                                            {t('passwordReset.form.confirmPassword')}
+                                            {formatInputLabel(t('passwordReset.form.confirmPassword'), t('common.locale'))}
                                         </label>
                                         <input maxLength={255}
                                             type={showConfirmPassword ? 'text' : 'password'}
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
                                             className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
-                                            placeholder={t('passwordReset.form.confirmPlaceholder')}
+                                            placeholder={formatInputPlaceholder(t('passwordReset.form.confirmPlaceholder'), t('common.locale'))}
                                         />
                                         <button
                                             type="button"

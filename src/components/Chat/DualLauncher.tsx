@@ -119,11 +119,11 @@ export function DualLauncher({
               }}
               aria-pressed={isChatOpen}
               className={`h-11 w-full flex items-center justify-center gap-2 px-3 rounded-xl font-bold text-sm transition-all ${isChatOpen
-                  ? 'bg-gradient-to-r from-[#7CC39F] to-[#5BA882] text-white shadow-md shadow-[#7CC39F]/30'
+                  ? 'bg-[#E6F4EA] text-[#3C8E4C] shadow-sm border border-[#7CC39F]/20'
                   : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10'
                 }`}
             >
-              <img src={PaymintLeafIcon} alt="" className={`w-5 h-5 object-contain scale-x-[-1] ${isChatOpen ? 'brightness-0 invert' : ''}`} />
+              <img src={PaymintLeafIcon} alt="" className={`w-5 h-5 object-contain scale-x-[-1] ${isChatOpen ? '' : 'brightness-0 invert opacity-60'}`} />
               <span>{t('chat.launcher.ask')}</span>
             </button>
 
@@ -152,7 +152,7 @@ export function DualLauncher({
                 }}
                 aria-pressed={isTasksOpen}
                 className={`h-11 w-full flex items-center justify-center gap-2 px-3 rounded-xl font-bold text-sm transition-all ${isTasksOpen
-                    ? 'bg-gradient-to-r from-[#7CC39F] to-[#5BA882] text-white shadow-md shadow-[#7CC39F]/30'
+                    ? 'bg-[#E6F4EA] text-[#3C8E4C] shadow-sm border border-[#7CC39F]/20'
                     : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10'
                   }`}
               >
@@ -189,7 +189,7 @@ export function DualLauncher({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onOpenTasks && onOpenTasks()}
-            className="group relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#7CC39F] to-[#5BA882] text-white shadow-lg shadow-[#7CC39F]/40 hover:shadow-[#7CC39F]/60 transition-all border border-white/20"
+            className="group relative flex items-center justify-center w-12 h-12 rounded-xl bg-[#E6F4EA] dark:bg-[#7CC39F]/10 text-[#3C8E4C] shadow-lg shadow-[#7CC39F]/20 hover:shadow-[#7CC39F]/40 transition-all border border-[#7CC39F]/20"
           >
             <ClipboardCheck size={24} />
             
@@ -272,13 +272,22 @@ export function DualLauncher({
               }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="relative flex items-center justify-center w-14 h-14 transition-all"
+              className="group relative flex items-center justify-center w-12 h-12 rounded-xl bg-[#E6F4EA] dark:bg-[#7CC39F]/10 shadow-lg shadow-[#7CC39F]/20 hover:shadow-[#7CC39F]/40 transition-all border border-[#7CC39F]/20"
             >
-              <img src={PaymintLeafIcon} alt="" className="w-full h-full object-contain drop-shadow-lg animate-pulse scale-x-[-1]" />
+              <img 
+                src={PaymintLeafIcon} 
+                alt="" 
+                className="w-8 h-8 object-contain scale-x-[-1] drop-shadow-sm" 
+              />
+
+              {/* Tooltip for Chat - matching tasks style */}
+              <div className={`absolute ${isRTL ? 'left-full ml-2' : 'right-full mr-2'} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 text-white text-[11px] font-bold rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-xl`}>
+                {t('chat.launcher.ask', 'Ask AI')}
+              </div>
               
               {/* Notification dot if tasks completed */}
               {isDashboardRoute && tasksCount === 0 && (
-                <div className="absolute top-1 right-1 w-3.5 h-3.5 bg-paymint-green rounded-full border-2 border-white dark:border-[#0F172A] flex items-center justify-center shadow-sm" />
+                <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-paymint-green rounded-full border-2 border-white dark:border-[#0F172A] flex items-center justify-center shadow-sm" />
               )}
             </motion.button>
           </motion.div>

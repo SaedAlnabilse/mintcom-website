@@ -99,18 +99,18 @@ describe('ProductFormModal image generation', () => {
       />
     );
 
-    fireEvent.change(screen.getByPlaceholderText('products.form.namePlaceholder'), {
+    fireEvent.change(screen.getByPlaceholderText(/products\.form\.namePlaceholder/i), {
       target: { value: 'Espresso' },
     });
 
-    fireEvent.change(screen.getByPlaceholderText('common.zero'), {
+    fireEvent.change(screen.getByPlaceholderText(/common\.zero/i), {
       target: { value: '350' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Generate image' }));
+    fireEvent.click(screen.getByRole('button', { name: /Generate image/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('Pollinations image is ready to save.')).toBeInTheDocument();
+      expect(screen.getByText('Your generated image is ready.')).toBeInTheDocument();
     });
 
     expect(api.post).not.toHaveBeenCalled();
@@ -147,15 +147,15 @@ describe('ProductFormModal image generation', () => {
       />
     );
 
-    fireEvent.change(screen.getByPlaceholderText('products.form.namePlaceholder'), {
+    fireEvent.change(screen.getByPlaceholderText(/products\.form\.namePlaceholder/i), {
       target: { value: 'Organic Espresso' },
     });
 
-    fireEvent.change(screen.getByPlaceholderText('common.zero'), {
+    fireEvent.change(screen.getByPlaceholderText(/common\.zero/i), {
       target: { value: '350' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Generate image' }));
+    fireEvent.click(screen.getByRole('button', { name: /Generate image/i }));
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /Generating\.\.\. 0\.\d{2}s/ })).toBeInTheDocument();
@@ -165,7 +165,7 @@ describe('ProductFormModal image generation', () => {
       expect(screen.getByText('Free fallback')).toBeInTheDocument();
     });
 
-    fireEvent.change(screen.getByPlaceholderText('products.form.namePlaceholder'), {
+    fireEvent.change(screen.getByPlaceholderText(/products\.form\.namePlaceholder/i), {
       target: { value: 'Organic Latte' },
     });
 

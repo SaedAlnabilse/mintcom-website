@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import toast from 'react-hot-toast';
+import { formatCurrencyCode } from '../utils/currency';
 
 // Backend URL for WebSocket connection
 // Always connect directly to the backend for WebSocket (Vite proxy has issues with socket.io)
@@ -550,10 +551,7 @@ class RealtimeService {
    * Format currency
    */
   private formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
+    return formatCurrencyCode(amount, 'USD', 'en-US');
   }
 
   /**

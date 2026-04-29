@@ -30,6 +30,7 @@ import { SearchInput, Pagination } from '../../components/ui';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 import { checkPermission, usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 
 interface Category {
@@ -666,7 +667,7 @@ export function ProductsPage() {
                 {/* Search */}
                 <div className="relative flex-1">
                     <SearchInput
-                        placeholder={t('products.searchPlaceholder')}
+                        placeholder={formatInputPlaceholder(t('products.searchPlaceholder'), t('common.locale'))}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onClear={() => setSearchQuery('')}
@@ -706,7 +707,7 @@ export function ProductsPage() {
                                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={12} />
                                             <input maxLength={255}
                                                 type="text"
-                                                placeholder={t('common.search')}
+                                                placeholder={formatInputPlaceholder(t('common.search'), t('common.locale'))}
                                                 value={categorySearchQuery}
                                                 onChange={(e) => setCategorySearchQuery(e.target.value)}
                                                 onClick={(e) => e.stopPropagation()}

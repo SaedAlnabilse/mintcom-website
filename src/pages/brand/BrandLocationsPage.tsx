@@ -29,6 +29,8 @@ import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../
 import type { DatePeriod } from '../../utils/datePeriods';
 import { LinkLocationModal } from '../../components/LinkLocationModal';
 import { SectionLoader } from '../../components/LoadingState';
+import { formatInputPlaceholder } from '../../utils/textCase';
+import { formatCurrencyCode } from '../../utils/currency';
 
 interface LocationStats {
     id: string;
@@ -284,12 +286,10 @@ export function BrandLocationsPage() {
     };
 
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', {
-            style: 'currency',
-            currency: 'USD',
+        return formatCurrencyCode(value, 'USD', t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
-        }).format(value);
+        });
     };
 
     const clearFilters = () => {
@@ -332,7 +332,7 @@ export function BrandLocationsPage() {
                                     onChange={(val) => setQuickDate(val as DateRangePreset || 'today')}
                                     options={DATE_PERIOD_OPTIONS}
                                     showAllOption={false}
-                                    placeholder={t('owner.overview.selectPeriod')}
+                                    placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                                     className="w-full"
                                     buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
                                 />
@@ -442,7 +442,7 @@ export function BrandLocationsPage() {
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input maxLength={255}
                             type="text"
-                            placeholder={t('owner.locations.searchPlaceholder')}
+                            placeholder={formatInputPlaceholder(t('owner.locations.searchPlaceholder'), t('common.locale'))}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"

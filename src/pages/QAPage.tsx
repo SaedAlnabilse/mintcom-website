@@ -8,6 +8,7 @@ import { Search, Plus, Minus, MessageCircle, CreditCard, Wrench, Settings, HelpC
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { FAQ_DATA } from '../data/faq';
+import { formatInputPlaceholder } from '../utils/textCase';
 
 export const QAPage = () => {
     const { t } = useTranslation();
@@ -63,7 +64,7 @@ export const QAPage = () => {
                     >
                         <input maxLength={255}
                             type="text"
-                            placeholder={t('support.qa.search_placeholder', 'Search For Answers...')}
+                            placeholder={formatInputPlaceholder(t('support.qa.search_placeholder', 'Search For Answers...'), t('common.locale'))}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-11 py-4 bg-gray-100 dark:bg-black/20 border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none transition-all"
