@@ -1286,7 +1286,7 @@ export function ProductFormModal({
                       <h4 className="text-gray-900 dark:text-white font-bold text-sm tracking-tight flex items-center gap-2">
                         {t('products.form.inventory.title')}
                       </h4>
-                      <p className="text-xs font-bold text-gray-500 mt-1">{t('products.form.inventory.subtitle')}</p>
+                      <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-0.5">{t('products.form.inventory.subtitle')}</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -1306,7 +1306,7 @@ export function ProductFormModal({
                           <h4 className="text-gray-900 dark:text-white font-bold text-sm tracking-tight flex items-center gap-1">
                             {t('products.form.inventory.overselling')}
                           </h4>
-                          <p className="text-gray-500 text-xs font-bold mt-1">{t('products.form.inventory.oversellingDesc')}</p>
+                          <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-0.5">{t('products.form.inventory.oversellingDesc')}</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input

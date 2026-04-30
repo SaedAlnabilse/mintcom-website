@@ -73,11 +73,29 @@ export function BrandLocationsPage() {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [typeFilter, setTypeFilter] = useState<string>('all');
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
     const [securityModal, setSecurityModal] = useState({
         isOpen: false,
         targetId: '',
         targetName: ''
     });
+
+    // Handle click outside for active menu
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setActiveMenu(null);
+            }
+        };
+
+        if (activeMenu) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [activeMenu]);
 
     // Link Location Modal state
     const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
@@ -631,7 +649,9 @@ export function BrandLocationsPage() {
                                             </button>
 
                                             {activeMenu === loc.id && (
-                                                <div className="absolute right-8 top-1/2 -translate-y-1/2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                <div 
+                                                    ref={menuRef}
+                                                    className="absolute right-8 top-1/2 -translate-y-1/2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
                                                 >
                                                     <button
                                                         onClick={(e) => {

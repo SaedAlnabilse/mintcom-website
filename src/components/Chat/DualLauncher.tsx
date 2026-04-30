@@ -123,7 +123,7 @@ export function DualLauncher({
                   : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10'
                 }`}
             >
-              <img src={PaymintLeafIcon} alt="" className={`w-5 h-5 object-contain scale-x-[-1] ${isChatOpen ? '' : 'brightness-0 invert opacity-60'}`} />
+              <img src={PaymintLeafIcon} alt="" className={`w-5 h-5 object-contain scale-x-[-1] ${isChatOpen ? '' : 'brightness-0 dark:invert opacity-50'}`} />
               <span>{t('chat.launcher.ask')}</span>
             </button>
 

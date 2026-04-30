@@ -54,7 +54,10 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
         <div className={`relative ${className}`} ref={containerRef} dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             <button
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setIsOpen(!isOpen);
+                }}
                 className={`
           flex items-center gap-2 w-full bg-transparent p-0 text-sm font-bold border-none focus:ring-0 cursor-pointer transition-colors
           ${(isOpen || isActive) ? 'text-[#7CC39F]' : 'text-gray-600 dark:text-white/60'}
@@ -75,6 +78,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.1 }}
                         style={{ opacity: 1 }}
+                        onClick={(e) => e.stopPropagation()}
                         className={`absolute top-full ${align === 'right' ? 'right-0' : 'left-0'} mt-2 z-[9999] !bg-white dark:!bg-[#0F172A] !bg-opacity-100 !opacity-100 !backdrop-blur-none border border-gray-100 dark:border-white/10 rounded-2xl shadow-2xl w-[200px] p-2 flex gap-1 h-[200px] overflow-hidden`}
                     >
                         {/* Hours */}
@@ -83,7 +87,10 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                             {hours.map(h => (
                                 <div
                                     key={h}
-                                    onClick={() => updateTime(h, minute, period)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        updateTime(h, minute, period);
+                                    }}
                                     className={`
                     text-center py-1.5 text-sm cursor-pointer rounded-md transition-colors
                     ${h === hour ? 'bg-[#7CC39F] text-white font-bold' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'}
@@ -100,7 +107,10 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                             {minutes.map(m => (
                                 <div
                                     key={m}
-                                    onClick={() => updateTime(hour, m, period)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        updateTime(hour, m, period);
+                                    }}
                                     className={`
                     text-center py-1.5 text-sm cursor-pointer rounded-md transition-colors
                     ${m === minute ? 'bg-[#7CC39F] text-white font-bold' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'}
@@ -116,7 +126,10 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                             {['AM', 'PM'].map(p => (
                                 <div
                                     key={p}
-                                    onClick={() => updateTime(hour, minute, p)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        updateTime(hour, minute, p);
+                                    }}
                                     className={`
                      text-center py-2 text-xs font-bold cursor-pointer rounded-md transition-colors
                      ${p === period ? 'bg-[#7CC39F] text-white' : 'bg-gray-50 dark:bg-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10'}
