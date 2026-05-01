@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import api from '../../config/api';
+import api, { extractErrorMessage } from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomSelect } from '../../components/CustomSelect';
@@ -352,8 +352,8 @@ export function RecipesPage() {
           await api.delete(`/api/manufacturing/${type === 'sub' ? 'sub-recipes' : 'final-recipes'}/${id}`);
           toast.success(t('manufacturing.messages.removed'));
           fetchData();
-        } catch {
-          toast.error(t('common.error'));
+        } catch (error) {
+          toast.error(extractErrorMessage(error) || t('common.error'));
         }
       }
     });
