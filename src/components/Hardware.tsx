@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Tablet, Printer, X, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Tablet, Printer, X, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 import { formatCurrencyCode } from '../utils/currency';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -25,6 +26,37 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
 export const Hardware = () => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
+  const [showTopIndicator, setShowTopIndicator] = useState(false);
+  const [showBottomIndicator, setShowBottomIndicator] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useScrollLock(showModal);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = el;
+    setShowTopIndicator(scrollTop > 20);
+    setShowBottomIndicator(scrollTop + clientHeight < scrollHeight - 20);
+  }, []);
+
+  useEffect(() => {
+    if (showModal) {
+      // Small delay to allow modal animation to complete and DOM to be ready
+      const timer = setTimeout(checkScroll, 300);
+      window.addEventListener('resize', checkScroll);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('resize', checkScroll);
+      };
+    }
+  }, [showModal, checkScroll]);
+
+  const handleScroll = () => {
+    checkScroll();
+  };
+
   const formatUsdPrice = (amount: number) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
@@ -148,8 +180,6 @@ export const Hardware = () => {
   ];
 
   const [selectedHardware, setSelectedHardware] = useState(hardwareItems[0]);
-  const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 3;
 
 
   return (
@@ -209,7 +239,6 @@ export const Hardware = () => {
                 <button
                    onClick={() => {
                     setSelectedHardware(item);
-                    setItemOffset(0);
                     setShowModal(true);
                   }}
                   className="w-full py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white font-bold rounded-xl hover:bg-paymint-green hover:text-black transition-all"
@@ -270,68 +299,71 @@ export const Hardware = () => {
                 </button>
               </div>
 
-              {/* Content */}
-              <div className="p-6 overflow-y-auto max-h-[60vh]">
+              {/* Content Container */}
+              <div className="relative flex-1 min-h-0">
+                {/* Top Shadow/Indicator */}
+                <AnimatePresence>
+                  {showTopIndicator && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-white dark:from-[#1a1a1a] to-transparent z-10 pointer-events-none flex items-start justify-center pt-2"
+                    >
+                      <ChevronUp size={20} className="text-paymint-green animate-bounce" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-                 {/* Products List */}
-                <div className="space-y-3 mb-6">
-                  {selectedHardware.products.slice(itemOffset, itemOffset + itemsPerPage).map((product, idx) => (
-                    <a
-                      key={idx}
-                      href={product.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group border border-transparent hover:border-paymint-green/30"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center group-hover:bg-paymint-green transition-colors">
-                          <CheckCircle2 size={18} className="text-paymint-green group-hover:text-white transition-colors" />
+                <div
+                  ref={scrollRef}
+                  onScroll={handleScroll}
+                  className="p-6 overflow-y-auto overscroll-contain max-h-[60vh] custom-scrollbar"
+                >
+                  {/* Products List */}
+                  <div className="space-y-3 mb-6">
+                    {selectedHardware.products.map((product, idx) => (
+                      <a
+                        key={idx}
+                        href={product.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group border border-transparent hover:border-paymint-green/30"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center group-hover:bg-paymint-green transition-colors">
+                            <CheckCircle2 size={18} className="text-paymint-green group-hover:text-white transition-colors" />
+                          </div>
+                          <div>
+                            <p className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{product.name}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">{product.specs}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{product.name}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{product.specs}</p>
-                        </div>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-
-                {/* Item Pagination */}
-                {selectedHardware.products.length > itemsPerPage && (
-                  <div className="flex items-center justify-center gap-4 mb-6">
-                    <button
-                      disabled={itemOffset === 0}
-                      onClick={() => setItemOffset(prev => Math.max(0, prev - itemsPerPage))}
-                      className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-paymint-green disabled:opacity-50 disabled:hover:text-gray-500 transition-colors"
-                    >
-                      <ChevronLeft size={24} />
-                    </button>
-                    <div className="flex gap-1.5">
-                      {Array.from({ length: Math.ceil(selectedHardware.products.length / itemsPerPage) }).map((_, i) => (
-                        <div
-                          key={i}
-                          className={`w-2 h-2 rounded-full transition-all ${Math.floor(itemOffset / itemsPerPage) === i ? 'bg-paymint-green w-4' : 'bg-gray-300 dark:bg-white/10'}`}
-                        />
-                      ))}
-                    </div>
-                    <button
-                      disabled={itemOffset + itemsPerPage >= selectedHardware.products.length}
-                      onClick={() => setItemOffset(prev => prev + itemsPerPage)}
-                      className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-paymint-green disabled:opacity-50 disabled:hover:text-gray-500 transition-colors"
-                    >
-                      <ChevronRight size={24} />
-                    </button>
+                      </a>
+                    ))}
                   </div>
-                )}
 
-
-
-                {/* Note */}
-                <div className="p-4 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-200 dark:border-blue-500/20">
-                  <p className="text-sm text-blue-700 dark:text-blue-400 text-center">
-                    <span className="font-bold">💡 {t('common.tip')}:</span> {selectedHardware.note}
-                  </p>
+                  {/* Note */}
+                  <div className="p-4 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-200 dark:border-blue-500/20">
+                    <p className="text-sm text-blue-700 dark:text-blue-400 text-center">
+                      <span className="font-bold">💡 {t('common.tip')}:</span> {selectedHardware.note}
+                    </p>
+                  </div>
                 </div>
+
+                {/* Bottom Shadow/Indicator */}
+                <AnimatePresence>
+                  {showBottomIndicator && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white dark:from-[#1a1a1a] to-transparent z-10 pointer-events-none flex items-end justify-center pb-2"
+                    >
+                      <ChevronDown size={20} className="text-paymint-green animate-bounce" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.div>
           </motion.div>

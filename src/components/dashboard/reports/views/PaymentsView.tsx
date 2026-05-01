@@ -49,6 +49,13 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
   const navigate = useNavigate();
   const { locationSlug } = useParams();
   const [expandedPaymentMethod, setExpandedPaymentMethod] = useState<string | null>(null);
+  const paymentMethodBreakdown = (salesData.paymentMethodBreakdown || [])
+    .map((item: any) => ({
+      ...item,
+      value: Number(item.value) || 0
+    }))
+    .filter((item: any) => item.value > 0);
+  const paymentTotal = paymentMethodBreakdown.reduce((sum: number, item: any) => sum + item.value, 0);
 
   const getMethodName = (name: any) => {
     if (!name) return '—';
@@ -76,7 +83,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.payments.topMethod')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight text-ellipsis overflow-hidden whitespace-nowrap">
-              {getMethodName([...(salesData.paymentMethodBreakdown || [])].sort((a: any, b: any) => b.value - a.value)[0]?.name)}
+              {getMethodName([...paymentMethodBreakdown].sort((a: any, b: any) => b.value - a.value)[0]?.name)}
             </p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.payments.topMethodDesc')}</p>
           </div>
@@ -108,11 +115,11 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
             </h3>
           </div>
           <div className="h-[300px] w-full relative">
-            {salesData.paymentMethodBreakdown && salesData.paymentMethodBreakdown.length > 0 ? (
+            {paymentMethodBreakdown.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={salesData.paymentMethodBreakdown}
+                    data={paymentMethodBreakdown}
                     innerRadius={80}
                     outerRadius={120}
                     paddingAngle={4}
@@ -121,7 +128,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                     stroke="none"
                     nameKey="name"
                   >
-                    {salesData.paymentMethodBreakdown.map((_: any, index: number) => (
+                    {paymentMethodBreakdown.map((_: any, index: number) => (
                       <Cell key={index} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -157,10 +164,10 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
               </div>
             )}
             {/* Center Stats */}
-            {salesData.paymentMethodBreakdown && salesData.paymentMethodBreakdown.length > 0 && (
+            {paymentMethodBreakdown.length > 0 && (
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" dir="ltr">
                 <span className="text-3xl font-black text-gray-900 dark:text-white">
-                  {salesData.paymentMethodBreakdown.length.toLocaleString(t('common.locale'))}
+                  {paymentMethodBreakdown.length.toLocaleString(t('common.locale'))}
                 </span>
                 <span className="text-xs font-bold text-gray-500 tracking-widest">{t('orders.reports.payments.methods')}</span>
               </div>
@@ -206,8 +213,8 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                {salesData.paymentMethodBreakdown?.map((item: any, i: number) => {
-                  const total = salesData.totalRevenue || 1;
+                {paymentMethodBreakdown.map((item: any, i: number) => {
+                  const total = paymentTotal || 1;
                   const percentage = (item.value / total);
 
                   // Check if this method has breakdown details

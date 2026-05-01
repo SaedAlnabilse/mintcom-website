@@ -1,4 +1,4 @@
-name: Paymint Frontend CI
+name: PayMint Frontend CI
 
 on:
   push:

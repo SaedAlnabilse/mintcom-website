@@ -127,7 +127,7 @@ export const PricingDownload = () => {
                                         <div className="mb-12 relative">
                                             <div className="flex items-baseline justify-center lg:justify-start gap-2 mb-2">
                                                 <span className="text-7xl lg:text-8xl font-bold text-gray-900 dark:text-white tracking-tighter transition-all duration-300">
-                                                    {currentPrice} <span className="text-4xl lg:text-5xl ml-2">USD</span>
+                                                    {currentPrice}<span className="text-4xl lg:text-5xl">USD</span>
                                                 </span>
                                                 <span className="text-gray-400 font-medium text-2xl uppercase tracking-widest">
                                                     {currentPeriod}
@@ -159,7 +159,7 @@ export const PricingDownload = () => {
                                                     defaults="Additional locations receive a <1>DISCOUNT</1> for "
                                                     components={{ 1: <span className="font-black text-gray-900 dark:text-white uppercase" /> }}
                                                 />
-                                                <span className="text-gray-900 dark:text-white font-black">{currentAdditionalPrice} USD {currentPeriod}</span>
+                                                <span className="text-gray-900 dark:text-white font-black whitespace-nowrap">{currentAdditionalPrice} USD{currentPeriod}</span>
                                             </span>
                                         </div>
                                     </div>

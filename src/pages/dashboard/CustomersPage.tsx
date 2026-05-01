@@ -419,10 +419,7 @@ export function CustomersPage() {
                   className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04]"
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm">
-                        {customer.name.charAt(0).toUpperCase()}
-                      </div>
+                    <div>
                       <div>
                         <p className="font-bold text-gray-900 dark:text-white text-sm">{customer.name}</p>
                         <p className="text-xs text-gray-500">{customer.totalVisits} {t('customers.details.visits')}</p>
@@ -498,10 +495,7 @@ export function CustomersPage() {
                       onClick={() => { setSelectedCustomer(customer); setShowDetailModal(true); }}
                     >
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
-                            {customer.name.charAt(0).toUpperCase()}
-                          </div>
+                        <div>
                           <div>
                             <p className="font-bold text-gray-900 dark:text-white text-sm">{customer.name}</p>
                             <p className="dashboard-card-label">{customer.totalVisits} {t('customers.details.visits')}</p>
@@ -771,8 +765,8 @@ export function CustomersPage() {
               <div className="p-10 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-transparent">
                 <div className="flex justify-between items-start mb-10">
                   <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center text-3xl font-black">
-                      {selectedCustomer.name.charAt(0).toUpperCase()}
+                    <div className="w-20 h-20 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
+                      <User size={28} />
                     </div>
                     <div>
                       <h2 className="dashboard-card-value">{selectedCustomer.name}</h2>

@@ -135,6 +135,8 @@ export function CustomSelect({
     );
 
     const selectedOption = formattedOptions.find(opt => opt.value === value);
+    const hasAllOption = formattedOptions.some((opt) => String(opt.value).toLowerCase() === 'all');
+    const isFilterActive = hasAllOption && String(value).toLowerCase() !== 'all';
 
     const dropdownContent = (
         <AnimatePresence>
@@ -197,7 +199,11 @@ export function CustomSelect({
                     ${disabled
                         ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-white/[0.01]'
                         : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
-                    ${error ? 'ring-2 ring-paymint-red border-paymint-red' : isOpen ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-gray-50 dark:bg-white/[0.08]' : ''
+                    ${error
+                        ? 'ring-2 ring-paymint-red border-paymint-red'
+                        : isOpen || isFilterActive
+                            ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-paymint-green/5 dark:bg-paymint-green/10 !ring-[3px] !ring-paymint-green/10 !border-paymint-green !bg-paymint-green/5 dark:!bg-paymint-green/10'
+                            : ''
                     }`}
             >
                 <span className={`text-sm font-normal truncate pr-2 ${selectedOption ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
@@ -205,7 +211,7 @@ export function CustomSelect({
                 </span>
                 <ChevronDown
                     size={18}
-                    className={`text-gray-400 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''} ${isOpen || isFilterActive ? 'text-paymint-green' : 'text-gray-400'}`}
                 />
             </button>
 

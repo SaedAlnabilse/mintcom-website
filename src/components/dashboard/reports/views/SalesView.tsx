@@ -63,6 +63,12 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
   const isDark = resolvedTheme === 'dark';
   const navigate = useNavigate();
   const { locationSlug } = useParams();
+  const paymentMethodBreakdown = (salesData.paymentMethodBreakdown || [])
+    .map((item: any) => ({
+      ...item,
+      value: Number(item.value) || 0
+    }))
+    .filter((item: any) => item.value > 0);
 
   return (
     <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -450,13 +456,13 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             </button>
           </div>
           <div className="flex-1 flex flex-col justify-center">
-            {salesData.paymentMethodBreakdown && salesData.paymentMethodBreakdown.length > 0 ? (
+            {paymentMethodBreakdown.length > 0 ? (
               <>
                 <div className="h-[180px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={salesData.paymentMethodBreakdown}
+                        data={paymentMethodBreakdown}
                         innerRadius={50}
                         outerRadius={80}
                         paddingAngle={4}
@@ -464,7 +470,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                         animationDuration={1500}
                         stroke="none"
                       >
-                        {salesData.paymentMethodBreakdown.map((_: any, index: number) => (
+                        {paymentMethodBreakdown.map((_: any, index: number) => (
                           <Cell key={index} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
@@ -481,13 +487,21 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                           fontWeight: 'bold',
                           fontSize: '11px'
                         }}
+                        formatter={(val: any) => (
+                          <span className="inline-flex items-baseline gap-1">
+                            <span className="font-bold tracking-tight">
+                              {Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </span>
+                            <span className="text-[10px] font-black opacity-60 uppercase tracking-widest">{currencySymbol}</span>
+                          </span>
+                        )}
                         position={{ y: -10 }}
                       />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
                 <div className="space-y-2 mt-4">
-                  {salesData.paymentMethodBreakdown.slice(0, 3).map((item, i) => (
+                  {paymentMethodBreakdown.slice(0, 3).map((item, i) => (
                     <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />

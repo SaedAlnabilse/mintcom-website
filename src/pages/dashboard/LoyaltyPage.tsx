@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBlocker } from 'react-router-dom';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -45,6 +45,14 @@ interface LoyaltyReward {
     freeCategoryId?: string;
     freeCategoryName?: string;
 }
+
+const getRewardPatternKey = (reward: Partial<LoyaltyReward>) => {
+    if (reward.type === 'DISCOUNT') {
+        return `DISCOUNT:${Number(reward.discountPercentage || 0).toFixed(2)}`;
+    }
+
+    return `FREE_ITEM:${reward.freeCategoryId || ''}`;
+};
 
 export function LoyaltyPage() {
     const { t } = useTranslation();
@@ -224,10 +232,9 @@ export function LoyaltyPage() {
                     setConfirmConfig({
                         isOpen: true,
                         title: t('rewards.messages.rewardDeleted'),
-                        message: t('loyalty.messages.rewardDeletedMessage', 'Loyalty pattern deleted successfully'),
+                        message: t('loyalty.messages.rewardDeletedMessage', 'Loyalty Pattern Deleted Successfully'),
                         type: 'success',
-                        confirmText: t('common.done'),
-                        showCancel: false,
+                        confirmText: t('common.done'),                        showCancel: false,
                         onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
                     });
                 } catch (err) {
@@ -240,11 +247,44 @@ export function LoyaltyPage() {
 
     const handleSaveReward = async (rewardData: Record<string, any>) => {
         if (!loyaltyConfig) return;
+
+        const candidateReward: Partial<LoyaltyReward> = {
+            type: rewardData.type,
+            discountPercentage: rewardData.type === 'DISCOUNT' ? parseFloat(rewardData.discountPercentage) : undefined,
+            freeCategoryId: rewardData.type === 'FREE_ITEM' ? rewardData.freeCategoryId : undefined,
+        };
+
+        const hasDuplicatePattern = rewards.some((reward) => {
+            if (editingReward && reward.id === editingReward.id) {
+                return false;
+            }
+
+            return getRewardPatternKey(reward) === getRewardPatternKey(candidateReward);
+        });
+
+        if (hasDuplicatePattern) {
+            setConfirmConfig({
+                isOpen: true,
+                title: t('common.warning'),
+                message: t('rewards.messages.duplicate'),
+                type: 'warning',
+                confirmText: t('common.ok'),
+                showCancel: false,
+                onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+            });
+            return;
+        }
+
         const newReward: LoyaltyReward = {
             id: editingReward?.id || `reward_${Date.now()}`,
             type: rewardData.type,
             name: rewardData.type === 'DISCOUNT'
-                ? `${t('dashboard.menu.discounts')} ${rewardData.discountPercentage}%`
+                ? t('rewards.items.discount', {
+                    percentage: Number(rewardData.discountPercentage || 0).toLocaleString(t('common.locale'), {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                    }),
+                })
                 : t('rewards.form.freeItem'),
             pointsRequired: parseInt(rewardData.pointsRequired, 10),
             discountPercentage: rewardData.type === 'DISCOUNT' ? parseFloat(rewardData.discountPercentage) : undefined,
@@ -272,7 +312,7 @@ export function LoyaltyPage() {
             setConfirmConfig({
                 isOpen: true,
                 title: editingReward ? t('rewards.messages.rewardUpdated') : t('rewards.messages.rewardAdded'),
-                message: editingReward ? t('loyalty.messages.rewardUpdatedMessage', 'Loyalty pattern updated successfully') : t('loyalty.messages.rewardAddedMessage', 'Loyalty pattern added successfully'),
+                message: editingReward ? t('loyalty.messages.rewardUpdatedMessage', 'Loyalty Pattern Updated Successfully') : t('loyalty.messages.rewardAddedMessage', 'Loyalty Pattern Added Successfully'),
                 type: 'success',
                 confirmText: t('common.done'),
                 showCancel: false,
@@ -490,15 +530,28 @@ export function LoyaltyPage() {
                                                         {reward.type === 'DISCOUNT' ? <Percent size={22} /> : <Gift size={22} />}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">{reward.name.includes('Discount') ? reward.name.replace('Discount', t('discounts.title')) : reward.name.includes('Free Item') ? reward.name.replace('Free Item', t('rewards.form.freeItem')) : reward.name}</p>
+                                                        <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">
+                                                            {reward.type === 'DISCOUNT'
+                                                                ? t('rewards.items.discount', {
+                                                                    percentage: (reward.discountPercentage || 0).toLocaleString(t('common.locale'), {
+                                                                        minimumFractionDigits: 0,
+                                                                        maximumFractionDigits: 2,
+                                                                    }),
+                                                                })
+                                                                : reward.freeCategoryName
+                                                                    ? t('rewards.freeFrom', { category: reward.freeCategoryName })
+                                                                    : t('rewards.form.freeItem')}
+                                                        </p>
                                                         <div className="flex items-center gap-1.5 mt-0.5">
                                                             <span className="text-xs text-gray-400 font-black tracking-widest">{reward.pointsRequired.toLocaleString(t('common.locale'))} {t('rewards.pointsUnit')}</span>
-                                                            <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
-                                                            <span className="text-xs text-paymint-green font-black tracking-widest">
-                                                                {reward.type === 'DISCOUNT'
-                                                                    ? `${(reward.discountPercentage || 0).toLocaleString(t('common.locale'))}% ${t('rewards.off')}`
-                                                                    : reward.freeCategoryName ? t('rewards.freeFrom', { category: reward.freeCategoryName }) : t('rewards.freeProduct')}
-                                                            </span>
+                                                            {reward.type !== 'DISCOUNT' && (
+                                                                <>
+                                                                    <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
+                                                                    <span className="text-xs text-paymint-green font-black tracking-widest">
+                                                                        {reward.freeCategoryName ? t('rewards.freeFrom', { category: reward.freeCategoryName }) : t('rewards.freeProduct')}
+                                                                    </span>
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -550,6 +603,7 @@ export function LoyaltyPage() {
         </div>
     );
 }
+
 
 
 

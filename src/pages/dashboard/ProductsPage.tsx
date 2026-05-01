@@ -557,6 +557,7 @@ export function ProductsPage() {
 
     const hasAnyProducts = (Array.isArray(products) ? products : []).length > 0;
     const selectedCategoryName = (Array.isArray(categories) ? categories : []).find(c => c.id === selectedCategoryId)?.name || '';
+    const isCategoryFilterActive = selectedCategoryId !== 'all';
     const activeStockFilterLabel =
         stockFilter === 'yellow'
             ? t('products.stats.low')
@@ -680,7 +681,11 @@ export function ProductsPage() {
                     <div className="relative flex-1 sm:flex-initial sm:min-w-[200px]" ref={categoryDropdownRef}>
                         <button
                             onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                            className="w-full bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-sm font-bold rounded-xl px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
+                            className={`w-full text-sm font-bold rounded-xl px-4 py-3 flex items-center justify-between focus:outline-none transition-all shadow-sm ${
+                                isCategoryFilterActive || showCategoryDropdown
+                                    ? 'bg-paymint-green/5 dark:bg-paymint-green/10 border border-paymint-green text-gray-900 dark:text-white ring-2 ring-paymint-green/10'
+                                    : 'bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green'
+                            }`}
                         >
                             <span>
                                 {selectedCategoryId === 'all'
@@ -689,7 +694,7 @@ export function ProductsPage() {
                             </span>
                             <ChevronDown
                                 size={16}
-                                className={`text-gray-400 transition-transform duration-200 ${showCategoryDropdown ? 'rotate-180' : ''}`}
+                                className={`transition-transform duration-200 ${showCategoryDropdown ? 'rotate-180' : ''} ${isCategoryFilterActive ? 'text-paymint-green' : 'text-gray-400'}`}
                             />
                         </button>
 

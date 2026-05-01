@@ -10,7 +10,7 @@ export function toSentenceCase(value: string, locale = 'en'): string {
     return value;
   }
 
-  return characters
+  const result = characters
     .map((character, index) => {
       if (!/[A-Za-z]/.test(character)) {
         return character;
@@ -19,6 +19,9 @@ export function toSentenceCase(value: string, locale = 'en'): string {
       return index === firstLetterIndex ? character.toUpperCase() : character.toLowerCase();
     })
     .join('');
+
+  // Always preserve PayMint capitalization
+  return result.replace(/paymint/gi, 'PayMint');
 }
 
 
@@ -31,7 +34,8 @@ const TITLE_CASE_SMALL_WORDS = new Set([
 ]);
 
 function capitalizeWord(word: string): string {
-  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  const capitalized = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  return capitalized.replace(/paymint/gi, 'PayMint');
 }
 
 export function toTitleCase(value: string | null | undefined, locale = 'en'): string {
@@ -41,7 +45,7 @@ export function toTitleCase(value: string | null | undefined, locale = 'en'): st
 
   const words = value.trim().split(/\s+/);
 
-  return words
+  const result = words
     .map((word, index) => {
       const lower = word.toLowerCase();
       const isAcronym = word.length > 1 && word === word.toUpperCase() && /[A-Z]/.test(word);
@@ -57,6 +61,9 @@ export function toTitleCase(value: string | null | undefined, locale = 'en'): st
       return capitalizeWord(lower);
     })
     .join(' ');
+
+  // Double check the whole string for any missed occurrences (though capitalizeWord should handle it)
+  return result.replace(/paymint/gi, 'PayMint');
 }
 
 export function formatInputLabel(value: string | null | undefined, locale = 'en'): string {

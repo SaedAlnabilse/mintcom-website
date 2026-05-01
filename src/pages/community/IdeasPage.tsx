@@ -307,7 +307,11 @@ export const IdeasPage = () => {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-4 py-2 bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-PayMint-green/50"
+                  className={`px-4 py-2 rounded-lg text-sm font-bold focus:outline-none transition-all ${
+                    selectedCategory !== 'all'
+                      ? 'bg-paymint-green/5 dark:bg-paymint-green/10 border border-paymint-green text-paymint-green ring-2 ring-paymint-green/10'
+                      : 'bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-paymint-green/50'
+                  }`}
                 >
                   {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.label}</option>
@@ -317,7 +321,11 @@ export const IdeasPage = () => {
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="px-4 py-2 bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-PayMint-green/50"
+                  className={`px-4 py-2 rounded-lg text-sm font-bold focus:outline-none transition-all ${
+                    selectedStatus !== 'all'
+                      ? 'bg-paymint-green/5 dark:bg-paymint-green/10 border border-paymint-green text-paymint-green ring-2 ring-paymint-green/10'
+                      : 'bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-paymint-green/50'
+                  }`}
                 >
                   {statusFilters.map(status => (
                     <option key={status.id} value={status.id}>{status.label}</option>

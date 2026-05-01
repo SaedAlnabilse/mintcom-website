@@ -1,7 +1,7 @@
-{
+﻿{
   "about": {
     "intro": {
-      "p1": "PayMint LLC is a technology solutions company specializing in Point of Sale (POS) systems and digital business management platforms. Our products are designed to simplify daily operations—from fast, reliable sales processing on digital devices to automated management tools that give businesses full operational visibility.",
+      "p1": "PayMint LLC is a technology solutions company specializing in Point of Sale (POS) systems and digital business management platforms. Our products are designed to simplify daily operationsâ€”from fast, reliable sales processing on digital devices to automated management tools that give businesses full operational visibility.",
       "p2": "At the core of PayMint is one clear goal: to give business owners accurate, real-time access to their data while enabling faster, smoother checkout experiences for their customers.",
       "p3": "The PayMint app is available on both iOS and Android and can be downloaded for free. Businesses can create a PayMint account and complete setup directly through the POS app or via the online management dashboard.",
       "p4": "PayMint also supports multi-branch operations. Owners and account managers can add, merge, or separate establishments as needed, all from a single universal dashboard. This allows centralized control over sales, staff, products, and performance across multiple locations, with discounted pricing for additional branches."
@@ -9,7 +9,7 @@
     "story": {
       "description": "PayMint was founded with a mission to simplify business operations for merchants everywhere.",
       "p1": "PayMint LLC is a Jordanian company operating globally. The platform officially launched in 2025, built on insights gathered from years of research into the POS and retail technology space.",
-      "p2": "Development spanned more than three years, with a strong focus on security, performance, and scalability. Every feature was designed to meet real-world business needs and compete confidently with leading global POS solutions. Today, PayMint stands as a modern, secure, and scalable system built to support businesses of all sizes—anywhere in the world.",
+      "p2": "Development spanned more than three years, with a strong focus on security, performance, and scalability. Every feature was designed to meet real-world business needs and compete confidently with leading global POS solutions. Today, PayMint stands as a modern, secure, and scalable system built to support businesses of all sizesâ€”anywhere in the world.",
       "title": "Our Story"
     },
     "title": "About PayMint",
@@ -19,7 +19,7 @@
       "title": "Our Value Proposition",
       "transparency": "Transparency",
       "v1": {
-        "description": "PayMint offers one of the most competitive POS solutions in the market when considering the full range of included services. Our pricing is transparent, with no hidden fees or unexpected costs—just a complete, all-in-one system at an accessible monthly rate.",
+        "description": "PayMint offers one of the most competitive POS solutions in the market when considering the full range of included services. Our pricing is transparent, with no hidden fees or unexpected costsâ€”just a complete, all-in-one system at an accessible monthly rate.",
         "title": "Affordable. Transparent. Complete."
       },
       "v2": {
@@ -110,7 +110,7 @@
     },
     "editAdmin": "Edit Admin",
     "form": {
-      "email": "Email / login ID",
+      "email": "Email / Login ID",
       "emailPlaceholder": "email@enterprise.com",
       "firstName": "First name",
       "lastName": "Last name",
@@ -420,7 +420,7 @@
     }
   },
   "brand": {
-    "copyright": "Â© 2025 PayMint LLC. All rights reserved.",
+    "copyright": "Ã‚Â© 2025 PayMint LLC. All rights reserved.",
     "dashboard": {
       "addLocationsDesc": "Start by adding your first location to see performance data.",
       "adjustFilters": "Adjust Filters",
@@ -464,7 +464,7 @@
       "viewAllLocations": "View All Locations",
       "viewDashboard": "View Dashboard"
     },
-    "description": "The ultimate 360Â° point-of-sale solution designed for modern growing businesses.",
+    "description": "The ultimate 360° point-of-sale solution designed for modern growing businesses.",
     "menu": {
       "activeBrand": "Active Brand",
       "backToBrands": "Back to Brands",
@@ -607,7 +607,7 @@
     "tasks": {
       "aboutMinutes": "About {{minutes}} minutes",
       "allDoneSubtitle": "Your location is fully set up and ready to go",
-      "allDoneTitle": "All Done! ðŸŽ‰",
+      "allDoneTitle": "All Done! Ã°Å¸Å½â€°",
       "categories": {
         "action": "New Category",
         "description": "Add a clear category like Drinks, Food, or Services before adding products.",
@@ -638,7 +638,7 @@
       "progressText": "{{done}} of {{total}} completed",
       "receipt": {
         "action": "Receipt Settings",
-        "description": "Set logo, header, address, tax ID, and footer message exactly how customers should see it.",
+        "description": "Set logo, header, address, Tax ID, and footer message exactly how customers should see it.",
         "title": "Configure Receipt Layout"
       },
       "setupGuideSubtitle": "Set up your location step by step, then run your first test sale with confidence",
@@ -646,7 +646,7 @@
       "staff": {
         "action": "Add Staff",
         "description": "Create at least one staff account with the right role so operations can start safely.",
-        "title": "Add Cashier Or Staff Account"
+        "title": "Add Cashier or Staff Account"
       },
       "stepsCount": "{{count}} steps",
       "taxes": {
@@ -685,8 +685,8 @@
     "confirm": "Confirm",
     "confirmDelete": "Are you sure you want to delete?",
     "confirmLogout": "Are you sure you want to log out? You will need to sign in again to access your business dashboard.",
-    "confirmLogoutTitle": "Ready To Log Out?",
-    "congratulations": "Congratulations! ðŸŽ‰",
+    "confirmLogoutTitle": "Ready to Log Out?",
+    "congratulations": "Congratulations! Ã°Å¸Å½â€°",
     "connecting": "Connecting...",
     "continue": "Continue",
     "copied": "Copied to clipboard",
@@ -762,7 +762,7 @@
     "home": "Home",
     "language": "Language",
     "languages": {
-      "ar": "العربية",
+      "ar": "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©",
       "en": "English"
     },
     "live": "LIVE",
@@ -797,7 +797,7 @@
     "optional": "Optional",
     "or": "or",
     "others": "Others",
-    "page": "page",
+    "page": "Page",
     "password": "Password",
     "passwordRequired": "Password is required",
     "percent": "%",
@@ -869,6 +869,7 @@
     "view": "View",
     "viewAll": "View All",
     "viewDetails": "View Details",
+    "warning": "Warning",
     "website": "Website",
     "welcome": "Welcome!",
     "welcomeBack": "Welcome Back!",
@@ -1410,6 +1411,7 @@
     "messages": {
       "created": "Discount Created Successfully",
       "deleted": "Discount Deleted Successfully",
+      "duplicate": "The selected discount is already in use. Please choose a different one.",
       "emptySubtitle": "Create your first discount to start offering special deals to your customers",
       "emptyTitle": "No Discounts Created Yet",
       "loadFailed": "Failed To Load Discounts",
@@ -1508,7 +1510,7 @@
     "badge": "All-in-One Point of Sale System",
     "cta": "Start Free Trial",
     "customers": "Customers",
-    "description": "PayMint is a complete 360Â° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
+    "description": "PayMint is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
     "freeTrial": "14-Day Free Trial",
     "fromYesterday": "from yesterday",
     "growth": "Growth",
@@ -1591,7 +1593,7 @@
       "badge": "Owner App",
       "controlCenter": "Control Center",
       "dailyRevenue": "Daily Revenue",
-      "description": "With the PayMint Admin Mobile App, you can monitor and manage your business anytime, anywhere—right from your phone.",
+      "description": "With the PayMint Admin Mobile App, you can monitor and manage your business anytime, anywhereâ€”right from your phone.",
       "liveAlerts": "Live Alerts",
       "liveReports": "Live Sales & Performance Reports",
       "multiLocationManagement": "Multi-Location Management",
@@ -1666,15 +1668,15 @@
       "badge": "Features",
       "cards": {
         "complete": {
-          "description": "PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more—all included in one fixed monthly plan.",
-          "title": "A Complete Solution — No Hidden Costs"
+          "description": "PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much moreâ€”all included in one fixed monthly plan.",
+          "title": "A Complete Solution â€” No Hidden Costs"
         },
         "multiBranch": {
-          "description": "Run one store or many—PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel.",
+          "description": "Run one store or manyâ€”PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel.",
           "title": "Multi-Branch Management"
         },
         "realUsers": {
-          "description": "PayMint is built for business owners, cashiers, and managers—not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes.",
+          "description": "PayMint is built for business owners, cashiers, and managersâ€”not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes.",
           "title": "Designed For Real Users"
         },
         "security": {
@@ -1784,7 +1786,7 @@
           "specs": "10.5\" Touchscreen, Intel N200"
         }
       },
-      "subtitle": "Paymint works with most standard tablets and thermal printers. here are some models we recommend",
+      "subtitle": "PayMint works with most standard tablets and thermal printers. here are some models we recommend",
       "tablets": {
         "description": "Powerful handheld and desktop devices for your staff",
         "name": "Tablets & Terminals",
@@ -1802,7 +1804,7 @@
       "badge": "All-in-One Point of Sale System",
       "cta": "Start Free Trial",
       "customers": "Customers",
-      "description": "PayMint is a complete 360Â° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
+      "description": "PayMint is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
       "freeTrial": "",
       "fromYesterday": "from yesterday",
       "getStarted": "Get Started",
@@ -1848,7 +1850,7 @@
         "advancedReporting": "Advanced Reporting",
         "dashboard": "Online dashboard & management system",
         "inventory": "Recipe Operations",
-        "pointOfSale": "Point of Sale",
+        "pointOfSale": "Point of sale",
         "pos": "POS for tablets and mobile devices",
         "production": "Production & Recipes",
         "reports": "Advanced reports & analytics",
@@ -1981,7 +1983,7 @@
       },
       "subtitle": "",
       "title": "What Do You Get For",
-      "titleHighlight": "20 USD / Month?"
+      "titleHighlight": "20 USD/Month?"
     }
   },
   "legal": {
@@ -2064,9 +2066,9 @@
     "privacy": {
       "agreement": "By using PayMint, you agree to the collection and use of information in accordance with this Privacy Policy.",
       "branch": {
-        "b1": "Amman, Jordan â€“ Headquarters",
-        "b2": "Dubai, UAE â€“ Regional Office",
-        "b3": "Riyadh, Saudi Arabia â€“ Regional Office"
+        "b1": "Amman, Jordan Ã¢â‚¬â€œ Headquarters",
+        "b2": "Dubai, UAE Ã¢â‚¬â€œ Regional Office",
+        "b3": "Riyadh, Saudi Arabia Ã¢â‚¬â€œ Regional Office"
       },
       "changes": {
         "desc": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date."
@@ -2133,7 +2135,7 @@
         "s1_4": "1.4 Technical & Usage Data",
         "s1_4_desc": "We collect transaction data processed through our point-of-sale system to provide our services.",
         "s1_desc": "We collect several types of information to provide and improve our services.",
-        "s10": "10. Childrenâ€™s Privacy",
+        "s10": "10. ChildrenÃ¢â‚¬â„¢s Privacy",
         "s11": "11. Changes to This Policy",
         "s12": "12. Contact Us",
         "s2": "2. How We Use Your Information",
@@ -2426,7 +2428,7 @@
       "expiry": "Expiry",
       "freeDays": "7 DAYS FREE",
       "monthly": "Monthly",
-      "priceMonth": "20 USD / MONTH",
+      "priceMonth": "20 USD/MONTH",
       "startTrialButton": "Start Free Trial",
       "totalDue": "Total Due Today",
       "trialDesc": "You won't be charged today. Cancel anytime before your trial ends.",
@@ -2445,7 +2447,7 @@
       "locationIdPlaceholder": "my-restaurant",
       "locationIdTip": "Unique ID for POS login.",
       "password": "Location Password",
-      "passwordPlaceholder": "â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢",
+      "passwordPlaceholder": "••••••••",
       "passwordTip": "Password for this location.",
       "subtitle": "This is the ID used to access the POS application",
       "title": "Create Location Login",
@@ -2466,7 +2468,7 @@
       "lastName": "Last Name",
       "lastNamePlaceholder": "Doe",
       "password": "Personal Password",
-      "passwordPlaceholder": "â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢",
+      "passwordPlaceholder": "••••••••",
       "passwordTip": "Your unique password.",
       "step2Note": "This is step 2 of the POS login.",
       "subtitle": "Create your personal account",
@@ -2655,6 +2657,7 @@
         "byAttributes": "By Attributes (Groups)",
         "byCategory": "By Category",
         "byProducts": "By Products",
+        "categoryBreakdown": "View category products sales",
         "categoryName": "Category Name",
         "grossRevenue": "Gross Revenue",
         "noData": "No transactional data identified for this period",
@@ -3070,7 +3073,7 @@
       "noBrandsFound": "No Brands Found",
       "openDashboard": "Open Dashboard",
       "searchFilter": "Search & Filter",
-      "searchPlaceholder": "Search Brands by Name Or Login ID...",
+      "searchPlaceholder": "Search Brands by Name or Login ID...",
       "selectedCount": "{{count}} Selected",
       "selectLocationsToLink": "Select locations to link to this brand",
       "subtitle": "Manage Multiple Locations Under One Brand",
@@ -3212,7 +3215,7 @@
       "addLocation": "Add Location",
       "badge": "Enterprise overview",
       "brands": "Brands",
-      "growBusiness": "Grow your business",
+      "growBusiness": "Grow Your Business",
       "growBusinessDesc": "Expand your reach by adding more locations or managing multiple brands.",
       "liveSystem": "Live System",
       "manageBrands": "Manage Brands",
@@ -3450,7 +3453,7 @@
     "newType": "New Type",
     "noCardBrands": "No card brands added yet.",
     "paymentTypes": "Digital Wallets & Apps",
-    "paymentTypesSubtitle": "Manage non-card payments such as apple pay, uber, and talabat",
+    "paymentTypesSubtitle": "Manage non-card payments such as Apple Pay, Uber, and Talabat",
     "showLogo": "Show Logo",
     "subtitle": "Manage How You Accept Payments",
     "system": "System",
@@ -3636,7 +3639,7 @@
       "unlimited": "Unlimited"
     },
     "title": "Products",
-    "upload": "Upload",
+    "upload": "Upload Image",
     "validation": {
       "categoryRequired": "Please select a category",
       "nameRequired": "Item name is required",
@@ -3650,7 +3653,7 @@
   },
   "rewards": {
     "activeRule": "Active rule: customers earn {{points}} points for every {{amount}} {{currency}} spent",
-    "addPattern": "Add pattern",
+    "addPattern": "Add Pattern",
     "badge": "Loyalty program",
     "catalogEmpty": "Catalog empty",
     "configuration": "Configuration",
@@ -3692,11 +3695,12 @@
       "configSaved": "Loyalty configuration saved",
       "deleteMsg": "Are you sure you want to permanently remove this reward from the loyalty catalog? This action cannot be reversed.",
       "deleteTitle": "Delete Reward",
-      "rewardAdded": "Reward added",
-      "rewardDeleted": "Reward deleted",
-      "rewardUpdated": "Reward updated"
+      "duplicate": "The selected pattern is already in use. Please choose a different one.",
+      "rewardAdded": "Reward Added",
+      "rewardDeleted": "Reward Deleted",
+      "rewardUpdated": "Reward Updated"
     },
-    "newReward": "Add pattern",
+    "newReward": "Add Pattern",
     "off": "Off",
     "points": "Pts",
     "pointsUnit": "Points",
@@ -3974,7 +3978,7 @@
       "selectDay": "Select a day to edit",
       "setServiceTimes": "Set service times",
       "taxId": "Tax ID / TRN",
-      "taxIdPlaceholder": "Enter tax ID..."
+      "taxIdPlaceholder": "Enter Tax ID..."
     },
     "receipts": {
       "footerMessage": "Footer Message",
@@ -3990,7 +3994,7 @@
       "showTagline": "Tagline",
       "showTaglineDesc": "Show secondary text",
       "showTaxId": "Tax ID",
-      "showTaxIdDesc": "Show tax ID on footer",
+      "showTaxIdDesc": "Show Tax ID on footer",
       "subtitle": "Edit Receipt Look",
       "title": "Receipts",
       "uploadLogo": "Upload logo"
@@ -4211,7 +4215,7 @@
   "support": {
     "admin": {
       "accessDenied": "Access Denied",
-      "accessDeniedDesc": "This area is restricted to the Paymint support team. If you believe this is an error, please contact the administrator.",
+      "accessDeniedDesc": "This area is restricted to the PayMint support team. If you believe this is an error, please contact the administrator.",
       "adjustSearch": "Try adjusting your search or filters.",
       "all": "All",
       "closed": "Closed",
@@ -4315,13 +4319,13 @@
         "li7": "Manage ingredients and recipes for prepared items",
         "li8": "Import and export product catalogs easily",
         "li9": "Define roles with granular POS and back-office permissions",
-        "p1": "PayMint is a complete 360Â° point-of-sale solution built for modern businesses. This guide covers all the features available to you.",
+        "p1": "PayMint is a complete 360° point-of-sale solution built for modern businesses. This guide covers all the features available to you.",
         "p2": "The POS system is designed to be fast, reliable, and easy for your staff to learn.",
         "p3": "Keep track of every item in your inventory with real-time updates.",
         "p4": "Manage your team with flexible roles and detailed performance tracking.",
         "p5": "Make data-driven decisions with comprehensive analytics and reporting.",
         "p6": "Build lasting customer relationships with our built-in CRM and loyalty system.",
-        "type1_desc": "Your main sales interface — process orders, apply discounts, and complete transactions.",
+        "type1_desc": "Your main sales interface â€” process orders, apply discounts, and complete transactions.",
         "type1_label": "POS Terminal",
         "type2_desc": "Track raw materials, ingredients, and finished products across all locations.",
         "type2_label": "Recipe Operations System",
@@ -4367,13 +4371,13 @@
         "li2_label": "Verify Email",
         "li3_desc": "Enter your business name, type, address, and preferred currency.",
         "li3_label": "Business Details",
-        "li4_desc": "Create a unique login ID and password for your POS terminal.",
+        "li4_desc": "Create a unique Login ID and password for your POS terminal.",
         "li4_label": "POS Credentials",
         "p1": "Welcome to PayMint! This guide will walk you through everything you need to get your business up and running.",
         "p2": "Start by creating your account and verifying your email address.",
         "p3": "Next, set up your first business location with all the essential details.",
         "p4": "Add your products, set prices, and organize them into categories.",
-        "p5": "Set up the payment methods you want to accept — cash, cards, and digital wallets.",
+        "p5": "Set up the payment methods you want to accept â€” cash, cards, and digital wallets.",
         "p6": "Invite your team members and assign them appropriate roles and permissions.",
         "p7": "Once everything is set up, download the POS app and start processing orders!"
       },
@@ -4744,3 +4748,5 @@
     "passwordUppercase": "Password must contain at least one uppercase letter"
   }
 }
+
+

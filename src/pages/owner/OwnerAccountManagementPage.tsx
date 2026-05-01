@@ -29,7 +29,7 @@ import {
     PlayCircle,
     ExternalLink,
     Scale,
-    Coins,
+    Landmark,
     CreditCard,
 } from 'lucide-react';
 import api from '../../config/api';
@@ -256,8 +256,18 @@ export function OwnerAccountManagementPage() {
         try {
             setIsLoading(true);
 
-            const response = await api.get('/api/accounts/profile');
-            const data = response.data;
+            // Fetch both profile and employees to get accurate stats
+            const [profileRes, employeesRes] = await Promise.all([
+                api.get('/api/accounts/profile'),
+                api.get('/api/accounts/all-employees').catch(err => {
+                    console.error('Failed to fetch employees for admin count:', err);
+                    return { data: [] };
+                })
+            ]);
+
+            const data = profileRes.data;
+            const employees = employeesRes.data || [];
+            const adminsFromEmployees = employees.filter((e: any) => e.role === 'ADMIN');
 
             setAccountDetails({
                 id: data.id,
@@ -279,7 +289,13 @@ export function OwnerAccountManagementPage() {
             }
 
             setBrands(data.brands || []);
-            setAdminUsers(data.adminUsers || []);
+            
+            // Sync adminUsers with the employees list to ensure consistency with the Staff page
+            if (adminsFromEmployees.length > 0) {
+                setAdminUsers(adminsFromEmployees);
+            } else {
+                setAdminUsers(data.adminUsers || []);
+            }
         } catch (err) {
             console.error('Failed to fetch account data:', err);
             // Use context data as fallback
@@ -728,11 +744,7 @@ export function OwnerAccountManagementPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {locationLoginEstablishments.map((est: any) => {
-                                    const estLoginId =
-                                        est.establishmentLoginId ||
-                                        est.loginId ||
-                                        est.locationLoginId ||
-                                        '';
+                                    const slug = (est.establishmentLoginId || est.loginId || est.locationLoginId || est.id || '').trim();
                                     const Icon = getBusinessTypeIcon(est.type);
                                     return (
                                         <div
@@ -771,7 +783,7 @@ export function OwnerAccountManagementPage() {
                                                     </div>
 
                                                     <button
-                                                        onClick={() => window.open(`/dashboard`, '_blank')}
+                                                        onClick={() => window.open(`/dashboard/${slug}`, '_blank')}
                                                         className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all ml-auto shrink-0"
                                                         title="View Dashboard"
                                                     >
@@ -788,8 +800,8 @@ export function OwnerAccountManagementPage() {
                                                                 {t('owner.account.loginId')}
                                                             </label>
                                                             <button
-                                                                onClick={() => copyToClipboard(estLoginId, `est-login-${est.id}`)}
-                                                                disabled={!estLoginId}
+                                                                onClick={() => copyToClipboard(slug, `est-login-${est.id}`)}
+                                                                disabled={!slug}
                                                                 className="text-xs font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1"
                                                             >
                                                                 {copiedId === `est-login-${est.id}` ? (
@@ -800,7 +812,7 @@ export function OwnerAccountManagementPage() {
                                                             </button>
                                                         </div>
                                                         <code className="block text-xs font-mono font-bold text-gray-900 dark:text-white truncate select-all">
-                                                            {estLoginId || t('common.na')}
+                                                            {slug || t('common.na')}
                                                         </code>
                                                     </div>
 
@@ -938,7 +950,7 @@ export function OwnerAccountManagementPage() {
                         <div className="relative z-10">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
-                                    <Coins className="w-5 h-5 text-amber-500" />
+                                    <Landmark className="w-5 h-5 text-amber-500" />
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">System Currency</h2>

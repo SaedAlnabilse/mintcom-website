@@ -310,6 +310,7 @@ export function SettingsPage() {
       const formData = {
         ...data,
         taxRate: data.taxRate ? Math.round(data.taxRate * 100 * 100) / 100 : 0,
+        showTaxId: Boolean(data.showTaxId),
         holdOrderTableCount: Number.isFinite(data.holdOrderTableCount)
           ? Math.min(300, Math.max(0, Math.floor(Number(data.holdOrderTableCount))))
           : 20,
@@ -450,7 +451,7 @@ export function SettingsPage() {
         title: t('common.saveChanges'),
         message: t('settings.messages.saveSuccess'),
         type: 'success',
-        confirmText: t('common.yes'),
+        confirmText: t('common.confirm'),
         showCancel: false,
         onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
       });
@@ -538,7 +539,7 @@ export function SettingsPage() {
               title: t('settings.confirm.taxUpdatedTitle'),
               message: t('settings.confirm.taxUpdatedMessage'),
               type: 'success',
-              confirmText: t('common.yes'),
+              confirmText: t('common.confirm'),
               showCancel: false,
               onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
             });
@@ -891,7 +892,7 @@ export function SettingsPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
+                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <p className="text-xs font-black text-paymint-green tracking-[0.2em] mb-1">{t('settings.sales.taxLabel')}</p>
@@ -927,16 +928,16 @@ export function SettingsPage() {
                       </div>
                     </motion.div>
                   )}
-                  <p className="text-xs font-medium text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
+                  <p className="text-xs font-medium text-gray-400 mt-auto pt-6 leading-relaxed tracking-tight flex items-start gap-2">
                     <span className="text-paymint-green">•</span>
                     {t('settings.sales.taxWarning')}
                   </p>
                 </div>
 
-                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all group/card relative overflow-hidden">
+                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col shadow-lg backdrop-blur-sm transition-all group/card relative overflow-hidden">
                   <div className="mb-6">
                     <p className="text-xs font-black text-blue-500 tracking-[0.2em] mb-1">{t('settings.sales.currencyLabel')}</p>
-                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white">{t('settings.sales.currency')}</h4>
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{t('settings.sales.currency')}</h4>
                   </div>
                   <div className="relative">
                     <input type="hidden" {...register('currency')} />
@@ -960,7 +961,7 @@ export function SettingsPage() {
                       ]}
                     />
                   </div>
-                  <div className="mt-6 space-y-3">
+                  <div className="mt-auto pt-6 space-y-3">
                     <p className="text-xs font-medium text-gray-400 leading-relaxed tracking-tight flex items-start gap-2">
                       <span className="text-blue-500">•</span>
                       {t('settings.sales.currencyDesc')}
@@ -980,10 +981,10 @@ export function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-indigo-500/20 group/card">
+                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col shadow-lg backdrop-blur-sm transition-all hover:border-indigo-500/20 group/card">
                   <div className="mb-6">
                     <p className="text-xs font-black text-indigo-500 tracking-[0.2em] mb-1">{t('settings.sales.holdOrderTableCountLabel')}</p>
-                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white">{t('settings.sales.holdOrderTableCountTitle')}</h4>
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{t('settings.sales.holdOrderTableCountTitle')}</h4>
                   </div>
                   <div className="relative group transition-all">
                     <input
@@ -1013,7 +1014,7 @@ export function SettingsPage() {
                           return Math.min(300, Math.max(0, Math.floor(parsed)));
                         },
                       })}
-                      className={`w-full h-14 bg-white dark:bg-white/[0.03] border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-5 font-semibold text-2xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.holdOrderTableCount ? 'focus:ring-red-500/20' : 'focus:ring-indigo-500/20'} transition-all group-hover:border-indigo-500/50 shadow-sm`}
+                      className={`w-full h-16 bg-white dark:bg-white/[0.03] border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-6 font-semibold text-3xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.holdOrderTableCount ? 'focus:ring-red-500/20' : 'focus:ring-indigo-500/20'} transition-all group-hover:border-indigo-500/50 shadow-sm`}
                       placeholder={formatInputPlaceholder(t('settings.sales.holdOrderTableCountPlaceholder'), t('common.locale'))}
                     />
                   </div>
@@ -1028,7 +1029,7 @@ export function SettingsPage() {
                       </div>
                     </motion.div>
                   )}
-                  <p className="text-xs font-medium text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
+                  <p className="text-xs font-medium text-gray-400 mt-auto pt-6 leading-relaxed tracking-tight flex items-start gap-2">
                     <span className="text-indigo-500">•</span>
                     {t('settings.sales.holdOrderTableCountDesc')}
                   </p>

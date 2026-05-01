@@ -38,31 +38,7 @@ export function DualLauncher({
   const isRTL = t('common.locale') === 'ar';
   const isAnyOpen = isChatOpen || isFAQOpen || isTasksOpen;
 
-  // Smart Visibility State
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Always show at the very top or if any panel is open
-      if (currentScrollY < 50 || isAnyOpen) {
-        setIsVisible(true);
-      } else {
-        // Hide on scroll down, show on scroll up
-        if (currentScrollY > lastScrollY && currentScrollY > 200) {
-          setIsVisible(false);
-        } else if (currentScrollY < lastScrollY) {
-          setIsVisible(true);
-        }
-      }
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY, isAnyOpen]);
+  const isVisible = true;
 
   // Determine the unique key for this "website" context
   let contextId = 'public';

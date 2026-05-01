@@ -7,7 +7,7 @@
 
 ## Part 1: The Introduction & Landing Page
 **Visual:** Upbeat background music starts. Fade in from black to the vibrant PayMint landing page (`/`). The camera slowly scrolls down the page, highlighting the core value propositions: Simplicity, Flexibility, and Offline Resilience.
-**Voiceover (VO):** "Welcome to Paymint—the state-of-the-art, cloud-native Point of Sale and business management platform designed for the modern hospitality and retail sectors. Whether you're running a single cozy cafe or a nationwide franchise, PayMint is your all-in-one digital headquarters."
+**Voiceover (VO):** "Welcome to PayMint—the state-of-the-art, cloud-native Point of Sale and business management platform designed for the modern hospitality and retail sectors. Whether you're running a single cozy cafe or a nationwide franchise, PayMint is your all-in-one digital headquarters."
 
 **Visual:** Quick montage of the system running smoothly on an iPad, an Android tablet, and a desktop browser.
 **VO:** "Unlike legacy systems that lock you into clunky, proprietary hardware, PayMint takes a software-first approach. It runs beautifully on standard consumer tablets, giving you enterprise-grade power right at your fingertips."

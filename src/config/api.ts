@@ -192,4 +192,27 @@ api.interceptors.response.use(
   }
 );
 
+export const extractErrorMessage = (error: any): string => {
+  const responseData = error?.response?.data;
+
+  if (typeof responseData === 'string') {
+    return responseData;
+  }
+
+  const message = responseData?.message;
+  if (Array.isArray(message)) {
+    return message.join('\n');
+  }
+
+  if (typeof message === 'string') {
+    return message;
+  }
+
+  if (typeof responseData?.error === 'string') {
+    return responseData.error;
+  }
+
+  return error?.message || '';
+};
+
 export default api;

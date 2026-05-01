@@ -684,12 +684,67 @@ export function EmployeeFormModal({
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [usernameAvailabilityError, setUsernameAvailabilityError] = useState('');
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => setErrors({}), 0);
+      setUsernameAvailabilityError('');
+      setIsCheckingUsername(false);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const normalizedUsername = username.trim().toLowerCase();
+    const initialUsername = initialData?.username?.trim().toLowerCase();
+
+    if (!normalizedUsername || normalizedUsername.length < 3 || normalizedUsername === initialUsername) {
+      setUsernameAvailabilityError('');
+      setIsCheckingUsername(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(async () => {
+      setIsCheckingUsername(true);
+      try {
+        const response = await api.get('/api/accounts/employees/availability/username', {
+          params: {
+            username: normalizedUsername,
+            excludeEmployeeId: initialData?.id,
+          },
+          signal: controller.signal,
+        });
+
+        if (response.data?.available === false) {
+          setUsernameAvailabilityError(
+            response.data.message ||
+              t('staff.errors.usernameTaken', {
+                defaultValue: 'This username is already used in this account.',
+              }),
+          );
+        } else {
+          setUsernameAvailabilityError('');
+        }
+      } catch (error: any) {
+        if (error.name !== 'CanceledError' && error.code !== 'ERR_CANCELED') {
+          console.warn('[EmployeeFormModal] Username availability check failed:', error);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsCheckingUsername(false);
+        }
+      }
+    }, 350);
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timeoutId);
+    };
+  }, [initialData?.id, initialData?.username, isOpen, t, username]);
 
   const errorBannerRef = useRef<HTMLDivElement>(null);
 
@@ -700,6 +755,7 @@ export function EmployeeFormModal({
     const newErrors: Record<string, string> = {};
     if (!name.trim()) newErrors.name = t('staff.errors.nameRequired');
     if (!username.trim()) newErrors.username = t('staff.errors.usernameRequired');
+    if (usernameAvailabilityError) newErrors.username = usernameAvailabilityError;
     if ((role === 'ADMIN' || backofficeAccess) && !email.trim()) {
       newErrors.email = t('staff.errors.emailRequired');
     }
@@ -869,11 +925,24 @@ export function EmployeeFormModal({
                 <input maxLength={255}
                   type="text"
                   value={username}
-                  onChange={(e) => { setUsername(e.target.value); if (errors.username) setErrors({ ...errors, username: '' }); }}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setUsernameAvailabilityError('');
+                    if (errors.username) setErrors({ ...errors, username: '' });
+                  }}
                   placeholder={formatInputPlaceholder(t('staff.form.usernamePlaceholder'), t('common.locale'))}
-                  className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
+                  className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.username || usernameAvailabilityError ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                 />
-                {errors.username && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.username}</p>}
+                {(errors.username || usernameAvailabilityError) && (
+                  <p className="mt-1 text-xs font-bold text-paymint-red">
+                    {errors.username || usernameAvailabilityError}
+                  </p>
+                )}
+                {isCheckingUsername && !errors.username && !usernameAvailabilityError && (
+                  <p className="mt-1 text-xs font-bold text-gray-400">
+                    {t('staff.form.checkingUsername', { defaultValue: 'Checking username...' })}
+                  </p>
+                )}
               </div>
 
               {/* Email */}

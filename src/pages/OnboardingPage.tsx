@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -111,7 +111,15 @@ export function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<any>(() => {
+    const saved = sessionStorage.getItem('onboardingFormData');
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('onboardingFormData', JSON.stringify(formData));
+  }, [formData]);
+
   const [useSavedCard, setUseSavedCard] = useState(true); // Default to using saved card if available
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
@@ -150,10 +158,16 @@ export function OnboardingPage() {
     const normalizedStep = Number.isInteger(parsedStep) && parsedStep >= 1 && parsedStep <= 5 ? parsedStep : 1;
     setStep(normalizedStep);
 
+    // Redirect to step 1 if data is missing on later steps (2, 3, 4)
+    if (normalizedStep > 1 && normalizedStep < 5 && !formData.name) {
+      navigate('/onboarding/step/1', { replace: true });
+      return;
+    }
+
     if (stepParam !== String(normalizedStep)) {
       navigate(`/onboarding/step/${normalizedStep}`, { replace: true });
     }
-  }, [navigate, stepParam]);
+  }, [navigate, stepParam, formData.name]);
 
   const launchCenterTourSteps: TourStep[] = [
     {
@@ -501,9 +515,22 @@ export function OnboardingPage() {
 
       goToStep(5); // Success Step
       toast.success(t('onboarding.messages.complete'));
+      // Clear onboarding data upon successful completion
+      sessionStorage.removeItem('onboardingFormData');
       await refreshEstablishments();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || t('onboarding.errors.failedToComplete'));
+      const errorData = err.response?.data?.message;
+      const errorMessage = Array.isArray(errorData)
+        ? errorData.join('\n')
+        : errorData || t('onboarding.errors.failedToComplete');
+
+      toast.error(errorMessage, {
+        duration: errorMessage.length > 50 ? 6000 : 4000,
+        style: {
+          maxWidth: '400px',
+          whiteSpace: 'pre-line'
+        }
+      });
     } finally {
       setIsLoading(false);
     }
@@ -521,39 +548,37 @@ export function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-      {/* Navbar - Hidden on Step 5 (Launch Center) */}
-      {step !== 5 && (
-        <div className="sticky top-0 z-50 p-6 flex justify-between items-center border-b border-gray-200 dark:border-white/5 bg-white dark:bg-[#050505] shadow-sm">
-          <div className="flex items-center">
-            <img
-              src={PaymintLogoGreen}
-              alt="PayMint"
-              className="h-8 w-auto object-contain dark:hidden"
-            />
-            <img
-              src={PaymintLogoWhite}
-              alt="PayMint"
-              className="h-8 w-auto object-contain hidden dark:block"
-            />
-          </div>
+      {/* Navbar - Shown on All Steps */}
+      <div className="sticky top-0 z-50 p-6 flex justify-between items-center border-b border-gray-200 dark:border-white/5 bg-white dark:bg-[#050505] shadow-sm">
+        <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
+          <img
+            src={PaymintLogoGreen}
+            alt="PayMint"
+            className="h-8 w-auto object-contain dark:hidden"
+          />
+          <img
+            src={PaymintLogoWhite}
+            alt="PayMint"
+            className="h-8 w-auto object-contain hidden dark:block"
+          />
+        </Link>
 
-          {step <= totalSteps && (
-            <div className="flex items-center gap-4">
-              {isRTL && <span className="text-xs font-bold text-gray-400">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
-              <div className="flex gap-1.5">
-                {[1, 2, 3, 4].map((s) => (
-                  <div
-                    key={s}
-                    className={`h-1.5 rounded-full transition-all duration-500 ${step >= s ? 'w-8 bg-paymint-green' : 'w-4 bg-gray-200 dark:bg-white/10'
-                      }`}
-                  />
-                ))}
-              </div>
-              {!isRTL && <span className="text-xs font-bold text-gray-400">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
+        {step <= totalSteps && (
+          <div className="flex items-center gap-4">
+            {isRTL && <span className="text-xs font-bold text-gray-400">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
+            <div className="flex gap-1.5">
+              {[1, 2, 3, 4].map((s) => (
+                <div
+                  key={s}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${step >= s ? 'w-8 bg-paymint-green' : 'w-4 bg-gray-200 dark:bg-white/10'
+                    }`}
+                />
+              ))}
             </div>
-          )}
-        </div>
-      )}
+            {!isRTL && <span className="text-xs font-bold text-gray-400">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
+          </div>
+        )}
+      </div>
 
       <div className="flex-1 flex items-center justify-center p-6">
         <AnimatePresence mode="wait">

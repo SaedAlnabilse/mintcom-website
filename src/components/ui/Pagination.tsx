@@ -84,7 +84,7 @@ export function Pagination({
         <div className={`${baseStyles} ${className}`}>
             <div className="flex items-center gap-3">
                 <p className="text-sm text-gray-400 flex items-center font-normal">
-                    <span className="lowercase mr-1.5">{t('common.page')}</span>
+                    <span className="mr-1.5">{t('common.page')}</span>
                     <span className="text-gray-700 dark:text-gray-200">{currentPage.toLocaleString(t('common.locale'))}</span>
                     <span className="lowercase mx-1.5 text-[10px] opacity-70">{t('common.of')}</span>
                     <span className="text-gray-700 dark:text-gray-200">{totalPages.toLocaleString(t('common.locale'))}</span>

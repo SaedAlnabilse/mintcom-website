@@ -160,6 +160,26 @@ export function DiscountsPage() {
   };
 
   const onSubmit = async (name: string, percentage: number, adminOnly: boolean) => {
+    // Check for duplicates (same name or same percentage)
+    const normalizedName = name.trim().toLowerCase();
+    const isDuplicate = discounts.some(d => {
+      if (editingDiscount && d.id === editingDiscount.id) return false;
+      return d.name.toLowerCase() === normalizedName || d.percentage === percentage;
+    });
+
+    if (isDuplicate) {
+      setConfirmConfig({
+        isOpen: true,
+        title: t('common.warning'),
+        message: t('discounts.messages.duplicate'),
+        type: 'warning',
+        confirmText: t('common.ok'),
+        showCancel: false,
+        onConfirm: () => { },
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
 
@@ -182,7 +202,7 @@ export function DiscountsPage() {
     } catch (err) {
       toast.error((err as ApiError).response?.data?.message || t('common.error'));
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -414,7 +434,7 @@ export function DiscountsPage() {
                         onClick={() => handleSort('name')}
                       >
                         <div className="flex items-center gap-1">
-                          {t('common.search')}
+                          {t('common.name')}
                           {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                       </th>
