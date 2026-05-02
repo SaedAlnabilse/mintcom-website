@@ -80,7 +80,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div id="paymint-tour-guide-active" className="fixed inset-0 z-[9999] overflow-hidden font-sans backdrop-blur-sm">
+        <div id="paymint-tour-guide-active" className="fixed inset-0 z-[9999] overflow-hidden font-sans">
           {/* Backdrop with cutout using SVG mask */}
           <div className="absolute inset-0 w-full h-full pointer-events-none">
             {targetRect && (
