@@ -1,4 +1,4 @@
-import { Search, ArrowUpDown, X, LayoutGrid, ShoppingBag, ChevronRight, History, Info, Calendar, User } from 'lucide-react';
+import { Search, ArrowUpDown, X, LayoutGrid, ShoppingBag, ChevronRight, History, Info, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../../../context/CurrencyContext';
@@ -42,8 +42,8 @@ export const ItemsView = React.memo(function ItemsView({
 
   // Price History State
   const [priceHistory, setPriceHistory] = useState<ItemPriceHistory[]>([]);
-  const [isFetchingPriceHistory, setIsFetchingPriceHistory] = useState(false);
-  const [selectedHistoryItem, setSelectedHistoryItem] = useState<{ id: string, name: string } | null>(null);
+  const [, setIsFetchingPriceHistory] = useState(false);
+  const [selectedHistoryItem, setSelectedHistoryItem] = useState<{ id: string, name: string, type: 'ITEM' | 'ADDON' } | null>(null);
 
   // Breakdown Modal State
   const [isBreakdownModalOpen, setIsBreakdownModalOpen] = useState(false);
@@ -322,7 +322,11 @@ export const ItemsView = React.memo(function ItemsView({
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    setSelectedHistoryItem({ id: item.itemId || item.id, name: item.itemName || item.name });
+                                    setSelectedHistoryItem({ 
+                                      id: itemReportTab === 'items' ? (item.itemId || item.id) : (item.modifierId || item.id), 
+                                      name: item.itemName || item.name,
+                                      type: itemReportTab === 'modifiers' ? 'ADDON' : 'ITEM'
+                                    });
                                   }}
                                   className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:bg-amber-500/20 transition-all animate-pulse"
                                   title={t('reports.priceHistory.priceChanged', 'Price changed during this period')}
@@ -412,7 +416,7 @@ export const ItemsView = React.memo(function ItemsView({
                 {/* Content */}
                 <div className="p-6 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
                   <div className="space-y-4">
-                    {getItemPriceHistory(selectedHistoryItem.id).map((history, idx) => (
+                    {getItemPriceHistory(selectedHistoryItem.id, selectedHistoryItem.type).map((history) => (
                       <div
                         key={history.id}
                         className="p-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex flex-col gap-3"
