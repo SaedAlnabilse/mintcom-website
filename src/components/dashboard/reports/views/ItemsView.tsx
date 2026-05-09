@@ -1,13 +1,15 @@
-import { Search, ArrowUpDown, X, LayoutGrid, ShoppingBag, ChevronRight } from 'lucide-react';
+import { Search, ArrowUpDown, X, LayoutGrid, ShoppingBag, ChevronRight, History, Info, Calendar, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../../../context/CurrencyContext';
-import type { ItemReportData, ItemReportBreakdown } from '../../../../types';
+import type { ItemReportData, ItemReportBreakdown, ItemPriceHistory } from '../../../../types';
 import { Pagination } from '../../../ui';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import React from 'react';
 import api from '../../../../config/api';
 import { createPortal } from 'react-dom';
+import { format } from 'date-fns';
+import { getDateLocale } from '../../../../utils/dateLocale';
 
 interface ItemsViewProps {
   itemReportData: ItemReportData;
@@ -38,12 +40,39 @@ export const ItemsView = React.memo(function ItemsView({
   const itemsPerPage = 10;
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
+  // Price History State
+  const [priceHistory, setPriceHistory] = useState<ItemPriceHistory[]>([]);
+  const [isFetchingPriceHistory, setIsFetchingPriceHistory] = useState(false);
+  const [selectedHistoryItem, setSelectedHistoryItem] = useState<{ id: string, name: string } | null>(null);
+
   // Breakdown Modal State
   const [isBreakdownModalOpen, setIsBreakdownModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<{ id: string, name: string } | null>(null);
   const [categoryBreakdown, setCategoryBreakdown] = useState<ItemReportBreakdown[]>([]);
   const [isFetchingBreakdown, setIsFetchingBreakdown] = useState(false);
   const [breakdownSearchQuery, setBreakdownSearchQuery] = useState('');
+
+  // Fetch Price History when dates change
+  useEffect(() => {
+    const fetchPriceHistory = async () => {
+      if (!startDate || !endDate) return;
+      setIsFetchingPriceHistory(true);
+      try {
+        const res = await api.get('/reports/price-history', {
+          params: { startDate, endDate }
+        });
+        setPriceHistory(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch price history:', err);
+      } finally {
+        setIsFetchingPriceHistory(false);
+      }
+    };
+
+    if (itemReportTab === 'items' || itemReportTab === 'modifiers') {
+      fetchPriceHistory();
+    }
+  }, [startDate, endDate, itemReportTab]);
 
   const formatCurrency = (value: number) => (
     <span className="inline-flex items-baseline gap-1">
@@ -136,6 +165,12 @@ export const ItemsView = React.memo(function ItemsView({
       (item.itemName || item.name || '').toLowerCase().includes(query)
     );
   }, [categoryBreakdown, breakdownSearchQuery]);
+
+  const getItemPriceHistory = (id: string, type: 'ITEM' | 'ADDON') => {
+    return priceHistory.filter(h => 
+      h.type === type && (h.itemId === id || h.subAttributeId === id)
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -250,44 +285,64 @@ export const ItemsView = React.memo(function ItemsView({
               {sortedItems.length > 0 ? (
                 sortedItems
                   .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                  .map((item: any, idx: number) => (
-                    <motion.tr
-                      key={idx}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: isFetching ? 0.5 : 1 }}
-                      transition={{ delay: idx * 0.05 }}
-                      onClick={() => {
-                        if (itemReportTab === 'categories') {
-                          const categoryId = item.id || item.categoryId;
-                          const categoryName = item.itemName || item.name || t('common.unknown');
-                          if (categoryId) {
-                            fetchCategoryBreakdown(categoryId, categoryName);
+                  .map((item: any, idx: number) => {
+                    const itemHist = itemReportTab === 'items' 
+                      ? getItemPriceHistory(item.itemId || item.id, 'ITEM') 
+                      : (itemReportTab === 'modifiers' ? getItemPriceHistory(item.modifierId || item.id, 'ADDON') : []);
+                    const hasPriceChange = itemHist.length > 0;
+
+                    return (
+                      <motion.tr
+                        key={idx}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: isFetching ? 0.5 : 1 }}
+                        transition={{ delay: idx * 0.05 }}
+                        onClick={() => {
+                          if (itemReportTab === 'categories') {
+                            const categoryId = item.id || item.categoryId;
+                            const categoryName = item.itemName || item.name || t('common.unknown');
+                            if (categoryId) {
+                              fetchCategoryBreakdown(categoryId, categoryName);
+                            }
                           }
-                        }
-                      }}
-                      className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${itemReportTab === 'categories' ? 'cursor-pointer select-none active:scale-[0.995]' : ''}`}
-                    >
-                      <td className="px-8 py-5">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center font-black text-xs text-gray-500 border border-gray-200 dark:border-white/5 shadow-sm">
-                            {((currentPage - 1) * itemsPerPage + idx + 1).toLocaleString(t('common.locale'))}
+                        }}
+                        className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${itemReportTab === 'categories' ? 'cursor-pointer select-none active:scale-[0.995]' : ''}`}
+                      >
+                        <td className="px-8 py-5">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center font-black text-xs text-gray-500 border border-gray-200 dark:border-white/5 shadow-sm">
+                              {((currentPage - 1) * itemsPerPage + idx + 1).toLocaleString(t('common.locale'))}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name || t('common.unknown')}</span>
+                              {itemReportTab === 'categories' && (
+                                <ChevronRight size={14} className="text-gray-300 dark:text-white/10 opacity-40 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
+                              )}
+                              {hasPriceChange && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedHistoryItem({ id: item.itemId || item.id, name: item.itemName || item.name });
+                                  }}
+                                  className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:bg-amber-500/20 transition-all animate-pulse"
+                                  title={t('reports.priceHistory.priceChanged', 'Price changed during this period')}
+                                >
+                                  <History size={12} strokeWidth={2.5} />
+                                  <span className="text-[10px] font-black uppercase tracking-wider">{t('reports.priceHistory.auditBadge', 'AUDIT')}</span>
+                                </button>
+                              )}
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name || t('common.unknown')}</span>
-                            {itemReportTab === 'categories' && (
-                              <ChevronRight size={14} className="text-gray-300 dark:text-white/10 opacity-40 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-5 text-end font-bold text-gray-700 dark:text-gray-300">
-                        {item.quantity.toLocaleString(t('common.locale'))}
-                      </td>
-                      <td className="px-8 py-5 text-end font-bold text-paymint-green">
-                        {formatCurrency((item.totalSales || item.revenue) || 0)}
-                      </td>
-                    </motion.tr>
-                  ))
+                        </td>
+                        <td className="px-8 py-5 text-end font-bold text-gray-700 dark:text-gray-300">
+                          {item.quantity.toLocaleString(t('common.locale'))}
+                        </td>
+                        <td className="px-8 py-5 text-end font-bold text-paymint-green">
+                          {formatCurrency((item.totalSales || item.revenue) || 0)}
+                        </td>
+                      </motion.tr>
+                    );
+                  })
               ) : (
                 <tr>
                   <td colSpan={3} className="py-32 text-center">
@@ -312,6 +367,112 @@ export const ItemsView = React.memo(function ItemsView({
           onPageChange={(p) => setCurrentPage(p)}
         />
       </div>
+
+      {/* Price History Modal */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {selectedHistoryItem && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedHistoryItem(null)}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
+              >
+                {/* Header */}
+                <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                      <History size={20} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
+                        {selectedHistoryItem.name}
+                      </h3>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {t('reports.priceHistory.auditTitle', 'Price Audit Trail')}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelectedHistoryItem(null)}
+                    className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
+                  <div className="space-y-4">
+                    {getItemPriceHistory(selectedHistoryItem.id).map((history, idx) => (
+                      <div
+                        key={history.id}
+                        className="p-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex flex-col gap-3"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
+                            <Calendar size={12} />
+                            {format(new Date(history.createdAt), 'PPpp', { locale: getDateLocale(t('common.locale')) })}
+                          </div>
+                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-wider">
+                            <Info size={10} />
+                            {t('reports.priceHistory.updatedLabel', 'Updated')}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-center gap-4 py-2">
+                          <div className="text-center">
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t('reports.priceHistory.from', 'From')}</p>
+                            <p className="text-lg font-bold text-gray-500 line-through decoration-paymint-red/40">
+                              {history.oldPrice.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 })} {currencySymbol}
+                            </p>
+                          </div>
+                          <ChevronRight className="text-gray-300" />
+                          <div className="text-center">
+                            <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">{t('reports.priceHistory.to', 'To')}</p>
+                            <p className="text-xl font-black text-gray-900 dark:text-white">
+                              {history.newPrice.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 })} {currencySymbol}
+                            </p>
+                          </div>
+                        </div>
+
+                        {history.reason && (
+                          <div className="mt-2 p-3 rounded-xl bg-white dark:bg-black/20 border border-gray-100 dark:border-white/5">
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t('reports.priceHistory.reason', 'Reason')}</p>
+                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 italic">"{history.reason}"</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
+                  <p className="text-xs font-bold text-gray-500 max-w-[280px]">
+                    {t('reports.priceHistory.disclaimer', 'This audit trail helps track pricing fluctuations for financial accuracy.')}
+                  </p>
+                  <button
+                    onClick={() => setSelectedHistoryItem(null)}
+                    className="px-6 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-black font-bold text-sm hover:scale-105 transition-all"
+                  >
+                    {t('common.close', 'Got it')}
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* Category Breakdown Modal */}
       {typeof document !== 'undefined' && createPortal(

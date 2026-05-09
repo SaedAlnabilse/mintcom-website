@@ -265,3 +265,18 @@ export interface TopSellingItem {
   revenue: number;
 }
 
+export interface ItemPriceHistory {
+  id: string;
+  itemId?: string;
+  subAttributeId?: string;
+  type: 'ITEM' | 'ADDON';
+  name: string;
+  establishmentId?: string;
+  itemNameSnapshot?: string;
+  oldPrice: number;
+  newPrice: number;
+  changedById?: string;
+  reason?: string;
+  createdAt: string;
+}
+
