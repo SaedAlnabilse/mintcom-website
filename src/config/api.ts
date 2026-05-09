@@ -64,6 +64,22 @@ const getApiErrorMessage = (error: any): string => {
   return '';
 };
 
+const getBillingRedirectPath = (): string => {
+  const currentEstablishment = sessionStorage.getItem('currentEstablishment');
+
+  if (!currentEstablishment) {
+    return '/select-establishment';
+  }
+
+  try {
+    const establishment = JSON.parse(currentEstablishment);
+    const slug = establishment?.establishmentLoginId || establishment?.id;
+    return slug ? `/dashboard/${slug}/billing` : '/select-establishment';
+  } catch {
+    return '/select-establishment';
+  }
+};
+
 const normalizeEstablishmentHeaderError = (error: any) => {
   const message = getApiErrorMessage(error).trim();
 
@@ -150,6 +166,8 @@ api.interceptors.response.use(
     const isLoginRequest = error.config?.url?.includes('/api/accounts/login');
     const isLogoutRequest = error.config?.url?.includes('/api/accounts/logout');
     const isLoginPage = window.location.pathname.includes('/login');
+    const isBillingPage = window.location.pathname.includes('/billing');
+    const isBillingRequest = error.config?.url?.includes('/billing');
     const skipAuthRedirect = Boolean((error.config as any)?.skipAuthRedirect);
     
     // Log all 401 errors for debugging
@@ -174,6 +192,22 @@ api.interceptors.response.use(
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('currentEstablishment');
       window.location.href = '/login';
+    }
+
+    if (
+      (error.response?.status === 402 || error.response?.status === 423) &&
+      !isLoginPage &&
+      !isBillingPage &&
+      !isBillingRequest
+    ) {
+      const errorMessage =
+        error.response?.data?.message ||
+        'Subscription is required to continue using Paymint.';
+
+      window.dispatchEvent(new CustomEvent('subscription-required', {
+        detail: { message: errorMessage }
+      }));
+      window.location.href = getBillingRedirectPath();
     }
 
     // Handle 403 Forbidden - Permission denied

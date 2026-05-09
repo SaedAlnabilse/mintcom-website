@@ -1,7 +1,6 @@
 import {
   CreditCard,
   DollarSign,
-  Download,
   CheckCircle2,
   AlertCircle,
   Zap,
@@ -35,6 +34,35 @@ interface EstablishmentBilling {
   cancelAtPeriodEnd: boolean;
   monthlyPrice: number;
   billingCycle?: 'monthly' | 'yearly';
+  nextBillDate?: string | null;
+}
+
+interface BillingHistoryEntry {
+  id: string;
+  amount: number | string;
+  currency: string;
+  status: string;
+  description?: string;
+  createdAt: string;
+  paidAt?: string | null;
+}
+
+interface BillingCard {
+  id: string;
+  brand: string;
+  last4: string;
+  expMonth: number;
+  expYear: number;
+  isDefault?: boolean;
+}
+
+interface AccountBillingResponse {
+  defaultCard: BillingCard | null;
+  establishments: Array<EstablishmentBilling>;
+}
+
+interface BillingHistoryResponse {
+  history: BillingHistoryEntry[];
 }
 
 // Pricing constants
@@ -50,6 +78,8 @@ export function BillingPage() {
   const { currentEstablishment, refreshEstablishments } = useAuth();
   const { currencySymbol } = useCurrency();
   const [billingInfo, setBillingInfo] = useState<EstablishmentBilling | null>(null);
+  const [defaultCard, setDefaultCard] = useState<BillingCard | null>(null);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -63,18 +93,48 @@ export function BillingPage() {
   const fetchBillingInfo = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get(`/api/accounts/billing/establishment/${currentEstablishment?.id}`);
-      setBillingInfo(response.data);
+      const [billingResponse, historyResponse] = await Promise.all([
+        api.get<AccountBillingResponse>('/api/accounts/billing'),
+        api.get<BillingHistoryResponse>('/api/billing/history', {
+          params: { page: 1, limit: 10 },
+        }),
+      ]);
+
+      const matchedEstablishment = billingResponse.data.establishments.find(
+        (establishment) => establishment.id === currentEstablishment?.id,
+      );
+
+      setBillingInfo(
+        matchedEstablishment
+          ? {
+              ...matchedEstablishment,
+              monthlyPrice: Number(matchedEstablishment.monthlyPrice || 0),
+            }
+          : null,
+      );
+      setDefaultCard(billingResponse.data.defaultCard || null);
+      setInvoices(
+        (historyResponse.data.history || []).map((entry) => ({
+          id: entry.id,
+          date: entry.paidAt || entry.createdAt,
+          amount: formatCurrencyCode(Number(entry.amount || 0), entry.currency || 'USD', t('common.locale'), {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
+          status:
+            entry.status === 'PAID'
+              ? 'Paid'
+              : entry.status === 'PENDING'
+                ? 'Pending'
+                : 'Failed',
+        })),
+      );
     } catch (err) {
       console.error('Failed to fetch establishment billing info:', err);
-      setBillingInfo({
-        id: currentEstablishment?.id || '',
-        name: currentEstablishment?.name || '',
-        subscriptionStatus: currentEstablishment?.subscriptionStatus || 'UNKNOWN',
-        cancelAtPeriodEnd: false,
-        monthlyPrice: 20,
-        billingCycle: 'monthly'
-      });
+      toast.error(t('owner.billing.loadFailed', { defaultValue: 'Failed to load billing information' }));
+      setBillingInfo(null);
+      setDefaultCard(null);
+      setInvoices([]);
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +147,7 @@ export function BillingPage() {
   };
 
   const isYearly = billingInfo?.billingCycle === 'yearly';
-  const totalMonthly = billingInfo?.monthlyPrice || MONTHLY_PRICE;
+  const totalMonthly = billingInfo?.monthlyPrice ?? 0;
   const effectiveMonthlyRate = isYearly ? Math.round((YEARLY_PRICE / 12) * 100) / 100 : totalMonthly;
   const yearlySavings = (MONTHLY_PRICE * 12) - YEARLY_PRICE;
   const formatUsd = (amount: number, fractionDigits = 2) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
@@ -95,11 +155,18 @@ export function BillingPage() {
     maximumFractionDigits: fractionDigits,
   });
 
-  // Mock invoices
-  const invoices: Invoice[] = [
-    { id: '1', date: '2025-10-12', amount: `${isYearly ? '210.00' : '20.00'} ${currencySymbol}`, status: 'Paid' },
-    { id: '2', date: '2025-09-12', amount: `${isYearly ? '210.00' : '20.00'} ${currencySymbol}`, status: 'Paid' },
-  ];
+  const statusLabel = billingInfo?.subscriptionStatus
+    ? t(`owner.billing.subscriptionStatus.${billingInfo.subscriptionStatus.toLowerCase()}`, {
+        defaultValue: billingInfo.subscriptionStatus.replace(/_/g, ' '),
+      })
+    : t('common.noData');
+  const statusTone = billingInfo?.subscriptionStatus === 'ACTIVE'
+    ? 'bg-paymint-green/20 border-paymint-green/30 text-paymint-green'
+    : billingInfo?.subscriptionStatus === 'TRIAL'
+      ? 'bg-blue-500/15 border-blue-500/30 text-blue-400'
+      : billingInfo?.subscriptionStatus === 'PAST_DUE' || billingInfo?.subscriptionStatus === 'SUSPENDED'
+        ? 'bg-red-500/15 border-red-500/30 text-red-400'
+        : 'bg-yellow-500/15 border-yellow-500/30 text-yellow-300';
 
   const formatDate = (dateStr: string) => {
     try {
@@ -152,9 +219,9 @@ export function BillingPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-paymint-green/20 border border-paymint-green/30 backdrop-blur-sm">
-                <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
-                <span className="text-xs font-black text-paymint-green tracking-[0.2em]">{t('owner.billing.active')}</span>
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-sm border ${statusTone}`}>
+                <div className="w-2 h-2 rounded-full bg-current" />
+                <span className="text-xs font-black tracking-[0.2em]">{statusLabel}</span>
               </div>
             </div>
 
@@ -163,24 +230,28 @@ export function BillingPage() {
                 <p className="dashboard-card-label mb-2">{t('owner.billing.cost')}</p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl font-black text-white">
-                    {(isYearly ? YEARLY_PRICE : totalMonthly || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+                    {(billingInfo ? (isYearly ? YEARLY_PRICE : totalMonthly) : 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
                   </span>
                   <span className="text-sm font-bold text-paymint-green">{currencySymbol}</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  {isYearly ? t('common.yearly') : t('common.monthly')}
-                  {isYearly && ` &bull; ~${effectiveMonthlyRate.toFixed(2)}${t('common.monthly')}`}
+                  {billingInfo ? (isYearly ? t('common.yearly') : t('common.monthly')) : t('common.noData')}
+                  {billingInfo && isYearly && ` &bull; ~${effectiveMonthlyRate.toFixed(2)}${t('common.monthly')}`}
                 </p>
               </div>
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
                 <p className="dashboard-card-label mb-2">{t('owner.billing.location')}</p>
-                <p className="text-xl font-bold text-white truncate max-w-[200px]">{currentEstablishment?.name}</p>
-                <p className="card-subtitle">{t('owner.billing.main')}</p>
+                <p className="text-xl font-bold text-white truncate max-w-[200px]">{billingInfo?.name || currentEstablishment?.name || t('common.noData')}</p>
+                <p className="card-subtitle">
+                  {billingInfo?.nextBillDate
+                    ? `${t('owner.billing.nextBill', { defaultValue: 'Next bill' })}: ${formatDate(billingInfo.nextBillDate)}`
+                    : t('owner.billing.main')}
+                </p>
               </div>
             </div>
 
             {/* Upgrade to yearly banner (show only if monthly) */}
-            {!isYearly && (
+            {billingInfo && !isYearly && (
               <div className="relative z-10 mb-6 p-4 rounded-2xl bg-paymint-green/10 border border-paymint-green/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <Sparkles size={18} className="text-paymint-green" />
@@ -200,7 +271,7 @@ export function BillingPage() {
             )}
 
             <div className="flex flex-col sm:flex-row gap-4 relative z-10">
-              {!isYearly && (
+              {billingInfo && !isYearly && (
                 <button
                   onClick={() => setShowUpgradeModal(true)}
                   className="flex-1 px-8 py-4 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 tracking-widest flex items-center justify-center gap-2"
@@ -229,7 +300,7 @@ export function BillingPage() {
 
             {/* Mobile Card View */}
             <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-              {invoices.map((invoice) => (
+              {invoices.length > 0 ? invoices.map((invoice) => (
                 <div key={invoice.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -244,14 +315,12 @@ export function BillingPage() {
                       {invoice.status === 'Paid' ? t('owner.billing.invoiceStatus.paid') : t('owner.billing.invoiceStatus.failed')}
                     </span>
                   </div>
-                  <div className="flex justify-end">
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 text-xs font-bold hover:text-paymint-green transition-colors">
-                      <Download size={14} />
-                      {t('security.deletion.steps.export')}
-                    </button>
-                  </div>
                 </div>
-              ))}
+              )) : (
+                <div className="p-6 text-sm font-bold text-gray-500 dark:text-gray-400">
+                  {t('common.noData')}
+                </div>
+              )}
             </div>
 
             {/* Desktop Table View */}
@@ -266,7 +335,7 @@ export function BillingPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                  {invoices.map((invoice) => (
+                  {invoices.length > 0 ? invoices.map((invoice) => (
                     <tr key={invoice.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group">
                       <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 font-bold">{formatDate(invoice.date)}</td>
                       <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-black">{invoice.amount}</td>
@@ -279,13 +348,15 @@ export function BillingPage() {
                           {invoice.status === 'Paid' ? t('owner.billing.invoiceStatus.paid') : t('owner.billing.invoiceStatus.failed')}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right">
-                        <button className="p-2 rounded-lg text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors">
-                          <Download size={16} />
-                        </button>
+                      <td className="px-6 py-4 text-right" />
+                    </tr>
+                  )) : (
+                    <tr>
+                      <td colSpan={4} className="px-6 py-8 text-sm font-bold text-gray-500 dark:text-gray-400">
+                        {t('common.noData')}
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -340,11 +411,17 @@ export function BillingPage() {
                     <CreditCard className="w-5 h-5 text-gray-400" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">&bull;&bull;&bull;&bull; 4242</p>
-                    <p className="text--[10px] font-bold text-gray-500 dark:text-gray-400 tracking-wide">{t('owner.billing.expires')} 12/26</p>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">
+                      {defaultCard ? `${defaultCard.brand.toUpperCase()} •••• ${defaultCard.last4}` : t('common.noData')}
+                    </p>
+                    <p className="text--[10px] font-bold text-gray-500 dark:text-gray-400 tracking-wide">
+                      {defaultCard ? `${t('owner.billing.expires')} ${String(defaultCard.expMonth).padStart(2, '0')}/${String(defaultCard.expYear).slice(-2)}` : t('owner.billing.noPaymentMethod', { defaultValue: 'No saved payment method' })}
+                    </p>
                   </div>
                 </div>
-                <button className="label-strong font-outfit text-paymint-green opacity-0 group-hover:opacity-100 transition-opacity hover:underline">{t('common.edit')}</button>
+                {defaultCard && (
+                  <button className="label-strong font-outfit text-paymint-green opacity-0 group-hover:opacity-100 transition-opacity hover:underline">{t('common.edit')}</button>
+                )}
               </div>
 
               <button className="w-full flex flex-col items-center gap-2 p-6 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all group">

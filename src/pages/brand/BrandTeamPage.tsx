@@ -148,10 +148,19 @@ export default function BrandTeamPage() {
         }
     };
 
-    const handleEditEmployee = (emp: Employee) => {
-        setEditingEmployee(emp);
-        setIsFormModalOpen(true);
-        setActiveMenu(null);
+    const handleEditEmployee = async (emp: Employee) => {
+        try {
+            const response = await api.get('/api/accounts/all-employees');
+            const allEmployees = Array.isArray(response.data) ? response.data : [];
+            const fullEmployee = allEmployees.find((entry: any) => entry.id === emp.id || entry.username === emp.username);
+            setEditingEmployee((fullEmployee || emp) as Employee);
+            setIsFormModalOpen(true);
+        } catch (error) {
+            console.error('Failed to load full employee record for editing:', error);
+            toast.error(t('owner.staff.syncError'));
+        } finally {
+            setActiveMenu(null);
+        }
     };
 
     const handleAddEmployee = () => {
@@ -192,11 +201,11 @@ export default function BrandTeamPage() {
         setDeleteError('');
 
         try {
-            await api.delete(`/api/accounts/employees/${employeeToDelete.id}`, {
+            await api.delete(`/api/brands/${brandId}/employees/${employeeToDelete.id}/brand-access`, {
                 data: { email: account.email, password: deletePassword },
                 headers: { 'X-Skip-Auth-Redirect': 'true' }
             });
-            toast.success(t('owner.staff.staffRemoved'));
+            toast.success(t('brand.team.removeAccessSuccess', 'Brand access removed'));
             closeDeleteModal();
             fetchEmployees();
         } catch (error: any) {
@@ -575,7 +584,7 @@ export default function BrandTeamPage() {
                                                                     className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
                                                                 >
                                                                     <Trash2 size={16} />
-                                                                    {t('common.remove')}
+                                                                    {t('brand.team.removeAccessAction', 'Remove brand access')}
                                                                 </button>
                                                             </div>
                                                         )}
@@ -838,13 +847,15 @@ export default function BrandTeamPage() {
                             <div className="w-20 h-20 rounded-3xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
                                 <AlertTriangle size={40} />
                             </div>
-                            <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3 leading-tight">{t('owner.staff.removeStaff')}</h3>
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3 leading-tight">
+                                {t('brand.team.removeAccessTitle', 'Remove Brand Access')}
+                            </h3>
                             <p className="text-gray-500 dark:text-gray-400 text-sm font-bold leading-relaxed max-w-[320px]">
-                                {t('owner.staff.removeStaffConfirmPrefix')}
+                                {t('brand.team.removeAccessPrefix', 'Remove brand-wide access for')}
                                 <span className="text-gray-900 dark:text-white font-black mx-1">
                                     {employeeToDelete.firstName} {employeeToDelete.lastName}
                                 </span>
-                                {t('owner.staff.removeStaffConfirmFrom')}
+                                {t('brand.team.removeAccessFrom', 'from')}
                                 <span className="text-gray-900 dark:text-white font-black mx-1">
                                     {brandName}
                                 </span>
@@ -852,7 +863,9 @@ export default function BrandTeamPage() {
                                     {t('owner.staff.brandLabel')}
                                 </span>.
                                 <br /><br />
-                                <span className="text-xs opacity-70 font-medium italic">{t('owner.staff.undoneWarning')}</span>
+                                <span className="text-xs opacity-70 font-medium italic">
+                                    {t('brand.team.removeAccessWarning', 'This only removes shared brand access. Direct location assignments stay active.')}
+                                </span>
                             </p>
                          </div>
                         <div className="px-10 pb-8 space-y-5">
@@ -897,7 +910,7 @@ export default function BrandTeamPage() {
                                 ) : (
                                     <>
                                         <Trash2 size={18} strokeWidth={2.5} />
-                                        {t('common.confirm')}
+                                        {t('brand.team.removeAccessConfirm', 'Remove access')}
                                     </>
                                 )}
                             </button>

@@ -39,6 +39,8 @@ interface ApiError {
   response?: {
     data?: {
       message?: string;
+      code?: string;
+      allowedAction?: string;
     };
   };
 }
@@ -64,6 +66,12 @@ interface Customer {
   totalVisits: number;
   address?: string;
   notes?: string;
+}
+
+interface CustomerStats {
+  totalCustomers: number;
+  totalPoints: number;
+  totalSpent: number;
 }
 
 interface TableActionMenuProps {
@@ -117,7 +125,7 @@ function TableActionMenu({ customer, onViewProfile, onDelete }: TableActionMenuP
             className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
           >
             <Trash2 size={14} />
-            {t('customers.messages.deleteCustomer')}
+            {t('customers.messages.removeCustomer')}
           </button>
         </div>
       </PortalDropdown>
@@ -145,6 +153,11 @@ export function CustomersPage() {
   const [pointsError, setPointsError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [stats, setStats] = useState<CustomerStats>({
+    totalCustomers: 0,
+    totalPoints: 0,
+    totalSpent: 0,
+  });
   const [showSecurityModal, setShowSecurityModal] = useState(false);
 
   const [confirmConfig, setConfirmConfig] = useState<{
@@ -153,6 +166,8 @@ export function CustomersPage() {
     message: string;
     onConfirm: () => void;
     type?: 'danger' | 'success' | 'warning';
+    confirmText?: string;
+    showCancel?: boolean;
   }>({
     isOpen: false,
     title: '',
@@ -167,15 +182,24 @@ export function CustomersPage() {
   const fetchCustomers = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get('/customers', {
-        params: {
-          page,
-          limit: 10,
-          search: searchQuery,
-        },
+      const [customersResponse, statsResponse] = await Promise.all([
+        api.get('/customers', {
+          params: {
+            page,
+            limit: 10,
+            search: searchQuery,
+          },
+        }),
+        api.get('/customers/stats'),
+      ]);
+
+      setCustomers(customersResponse.data.customers || []);
+      setTotalPages(customersResponse.data.pagination?.totalPages || 1);
+      setStats({
+        totalCustomers: customersResponse.data.pagination?.total || statsResponse.data.totalCustomers || 0,
+        totalPoints: Number(statsResponse.data.totalPoints || 0),
+        totalSpent: Number(statsResponse.data.totalSpent || 0),
       });
-      setCustomers(response.data.customers || []);
-      setTotalPages(response.data.totalPages || 1);
     } catch {
       toast.error(t('customers.messages.loadFailed'));
     } finally {
@@ -185,7 +209,15 @@ export function CustomersPage() {
 
   useEffect(() => {
     fetchCustomers();
-  }, [page, searchQuery]);
+  }, [page]);
+
+  useEffect(() => {
+    if (page === 1) {
+      fetchCustomers();
+      return;
+    }
+    setPage(1);
+  }, [searchQuery]);
 
   const handleSaveCustomer = async (data: CustomerFormData) => {
     setIsSubmitting(true);
@@ -210,9 +242,10 @@ export function CustomersPage() {
     setSelectedCustomer(customer);
     setConfirmConfig({
       isOpen: true,
-      title: t('customers.messages.deleteCustomer'),
+      title: t('customers.messages.removeCustomer'),
       message: t('customers.messages.deleteConfirm'),
       type: 'danger',
+      confirmText: t('common.continue'),
       onConfirm: () => {
         setShowSecurityModal(true);
       }
@@ -222,6 +255,39 @@ export function CustomersPage() {
   const onSecurityVerify = async () => {
     setShowSecurityModal(false);
     fetchCustomers();
+  };
+
+  const handleAnonymizeCustomer = async () => {
+    if (!selectedCustomer) return;
+
+    try {
+      await api.post(`/customers/${selectedCustomer.id}/anonymize`, {
+        reason: 'Customer removed from management UI',
+      });
+      toast.success(t('customers.messages.anonymized'));
+      setShowDetailModal(false);
+      fetchCustomers();
+    } catch (err) {
+      toast.error((err as ApiError).response?.data?.message || t('customers.messages.anonymizeFailed'));
+    }
+  };
+
+  const handleSecurityError = (error: ApiError) => {
+    const data = error.response?.data;
+    if (data?.code !== 'RECORD_HAS_HISTORY' && data?.allowedAction !== 'anonymize_customer') {
+      return false;
+    }
+
+    setShowSecurityModal(false);
+    setConfirmConfig({
+      isOpen: true,
+      title: t('customers.messages.anonymizeCustomer'),
+      message: t('customers.messages.anonymizeConfirm', { name: selectedCustomer?.name || '' }),
+      type: 'warning',
+      confirmText: t('common.anonymize'),
+      onConfirm: handleAnonymizeCustomer,
+    });
+    return true;
   };
 
   const handlePointsUpdate = async () => {
@@ -333,9 +399,9 @@ export function CustomersPage() {
 
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
-          { label: t('customers.stats.total'), value: customers.length, icon: User, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
-          { label: t('customers.stats.points'), value: customers.reduce((acc, curr) => acc + (curr.points || 0), 0), icon: Award, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: t('customers.stats.spent'), value: formatAmount(customers.reduce((acc, curr) => acc + (Number(curr.totalSpent) || 0), 0)), icon: ShoppingBag, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+          { label: t('customers.stats.total'), value: stats.totalCustomers, icon: User, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+          { label: t('customers.stats.points'), value: stats.totalPoints, icon: Award, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: t('customers.stats.spent'), value: formatAmount(stats.totalSpent), icon: ShoppingBag, color: 'text-purple-500', bg: 'bg-purple-500/10' },
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -465,7 +531,7 @@ export function CustomersPage() {
                       className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
                     >
                       <Trash2 size={14} />
-                      {t('common.delete')}
+                      {t('common.remove')}
                     </button>
                   </div>
                 </motion.div>
@@ -868,6 +934,8 @@ export function CustomersPage() {
         title={confirmConfig.title}
         message={confirmConfig.message}
         type={confirmConfig.type}
+        confirmText={confirmConfig.confirmText}
+        showCancel={confirmConfig.showCancel}
       />
 
       <SecurityVerificationModal
@@ -877,6 +945,7 @@ export function CustomersPage() {
         targetId={selectedCustomer?.id || ''}
         targetName={selectedCustomer?.name || ''}
         mode="delete-customer"
+        onError={handleSecurityError}
       />
     </div>
   );

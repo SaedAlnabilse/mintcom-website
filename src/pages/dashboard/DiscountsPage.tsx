@@ -6,7 +6,7 @@ import { useCurrency } from '../../context/CurrencyContext';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { DiscountFormModal } from '../../components/forms/DiscountFormModal';
-import { SearchInput, Pagination } from '../../components/ui';
+import { SearchInput, SelectInput, Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -31,7 +31,8 @@ interface Discount {
 }
 
 type ViewMode = 'grid' | 'list';
-type SortKey = 'name' | 'value' | 'type' | 'adminOnly';
+type SortKey = 'name' | 'value' | 'type' | 'adminOnly' | 'status';
+type StatusFilterValue = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
 export function DiscountsPage() {
   const { t } = useTranslation();
@@ -43,6 +44,7 @@ export function DiscountsPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingDiscount, setEditingDiscount] = useState<Discount | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState<StatusFilterValue>('ACTIVE');
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>(null);
@@ -68,12 +70,14 @@ export function DiscountsPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, sortConfig]);
+  }, [searchQuery, sortConfig, filterStatus]);
 
   const fetchDiscounts = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get('/app-settings/discounts');
+      const response = await api.get('/app-settings/discounts', {
+        params: { includeInactive: true },
+      });
       const mappedDiscounts = (response.data || []).map((d: Record<string, any>) => ({
         id: d.id,
         name: d.name,
@@ -81,7 +85,7 @@ export function DiscountsPage() {
         value: d.percentage * 100,
         percentage: d.percentage,
         adminOnly: d.adminOnly,
-        isActive: true,
+        isActive: d.isActive !== false,
         createdAt: d.createdAt,
       }));
       setDiscounts(mappedDiscounts);
@@ -104,6 +108,11 @@ export function DiscountsPage() {
 
   const filteredDiscounts = useMemo(() => {
     const result = (Array.isArray(discounts) ? discounts : []).filter(discount => {
+      const matchesStatus =
+        filterStatus === 'ALL' ||
+        (filterStatus === 'ACTIVE' ? discount.isActive : !discount.isActive);
+
+      if (!matchesStatus) return false;
       if (!normalizedSearchQuery) return true;
       return discount.name.toLowerCase().includes(normalizedSearchQuery);
     });
@@ -111,8 +120,8 @@ export function DiscountsPage() {
     // Sorting
     if (sortConfig) {
       result.sort((a, b) => {
-        const aValue = a[sortConfig.key];
-        const bValue = b[sortConfig.key];
+        const aValue = sortConfig.key === 'status' ? (a.isActive ? 1 : 0) : a[sortConfig.key];
+        const bValue = sortConfig.key === 'status' ? (b.isActive ? 1 : 0) : b[sortConfig.key];
 
         // Handle string comparison
         if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -141,7 +150,7 @@ export function DiscountsPage() {
     }
 
     return result;
-  }, [discounts, normalizedSearchQuery, sortConfig]);
+  }, [discounts, normalizedSearchQuery, sortConfig, filterStatus]);
   const totalPages = Math.ceil((Array.isArray(filteredDiscounts) ? filteredDiscounts : []).length / ITEMS_PER_PAGE);
 
   const paginatedDiscounts = useMemo(() => {
@@ -214,6 +223,7 @@ export function DiscountsPage() {
       title: t('discounts.confirm.deleteTitle'),
       message: t('discounts.confirm.deleteMessage', { name }),
       type: 'danger',
+      confirmText: t('common.deactivate'),
       onConfirm: async () => {
         try {
           await api.delete(`/app-settings/discounts/${discountId}`);
@@ -278,22 +288,37 @@ export function DiscountsPage() {
             placeholder={formatInputPlaceholder(t('discounts.searchPlaceholder', 'Search discounts'), t('common.locale'))}
           />        </div>
 
-        {/* View Mode Toggle */}
-        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[44px]">
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-            title={t('common.view')}
-          >
-            <Grid3X3 size={18} />
-          </button>
-          <button
-            onClick={() => setViewMode('list')}
-            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-            title={t('common.view')}
-          >
-            <List size={18} />
-          </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="w-full sm:w-40">
+            <SelectInput
+              value={filterStatus === 'ALL' ? null : filterStatus}
+              onChange={(value) => setFilterStatus((value as StatusFilterValue) || 'ALL')}
+              options={[
+                { label: t('common.active', 'Active'), value: 'ACTIVE' },
+                { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
+              ]}
+              allOptionLabel={t('common.allStatuses', 'All Statuses')}
+              placeholder={t('common.allStatuses', 'All Statuses')}
+            />
+          </div>
+
+          {/* View Mode Toggle */}
+          <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[44px]">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              title={t('common.view')}
+            >
+              <Grid3X3 size={18} />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              title={t('common.view')}
+            >
+              <List size={18} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -396,7 +421,16 @@ export function DiscountsPage() {
 
                     <div className="relative z-10">
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
-                      <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 tracking-widest ml-1">{t('common.active')}</span></p>
+                      <div className="flex items-center justify-between gap-3 mb-4">
+                        <p className="text-3xl font-black text-paymint-green tracking-tight">{formatValue(discount)}</p>
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
+                          discount.isActive
+                            ? 'bg-paymint-green/10 text-paymint-green'
+                            : 'bg-paymint-red/10 text-paymint-red'
+                        }`}>
+                          {discount.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
+                        </span>
+                      </div>
 
                       <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
                         {discount.adminOnly ? (
@@ -449,6 +483,15 @@ export function DiscountsPage() {
                       </th>
                       <th
                         className="px-6 py-4 text-center label-strong font-outfit cursor-pointer hover:text-paymint-green transition-colors"
+                        onClick={() => handleSort('status')}
+                      >
+                        <div className="flex items-center justify-center gap-1">
+                          {t('common.status.label', 'Status')}
+                          {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
+                      </th>
+                      <th
+                        className="px-6 py-4 text-center label-strong font-outfit cursor-pointer hover:text-paymint-green transition-colors"
                         onClick={() => handleSort('adminOnly')}
                       >
                         <div className="flex items-center justify-center gap-1">
@@ -479,6 +522,15 @@ export function DiscountsPage() {
                             <span className="text-lg font-black text-paymint-green">{formatValue(discount)}</span>
                           </td>
                           <td className="px-6 py-4 text-center">
+                            <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
+                              discount.isActive
+                                ? 'bg-paymint-green/10 text-paymint-green'
+                                : 'bg-paymint-red/10 text-paymint-red'
+                            }`}>
+                              {discount.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-center">
                             {discount.adminOnly ? (
                               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-xs text-amber-700 dark:text-yellow-500 font-bold tracking-wide">
                                 <ShieldAlert size={10} />
@@ -502,7 +554,7 @@ export function DiscountsPage() {
                               <button
                                 onClick={() => handleDelete(discount.id, discount.name)}
                                 className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-red/60 hover:text-paymint-red hover:bg-paymint-red/5 transition-all shadow-sm active:scale-90"
-                                title={t('common.delete')}
+                                title={t('common.deactivate')}
                               >
                                 <Trash2 size={16} />
                               </button>

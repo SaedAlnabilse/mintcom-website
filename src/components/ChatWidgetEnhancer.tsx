@@ -7,15 +7,16 @@ import { TasksModal } from './Chat/TasksModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PartyPopper, X, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
-const STORAGE_KEY = 'paymint.widget.tasks.v1';
-const POPUP_SEEN_KEY = 'paymint.widget.tasks.popup.seen';
 const TOTAL_TASKS = 8; // Match the number of tasks in TasksWidget
+const getTasksStorageKey = (contextId: string) => `paymint.widget.tasks.v1.${contextId}`;
+const getPopupSeenKey = (contextId: string) => `paymint.widget.tasks.popup.seen.${contextId}`;
 
-const checkAllCompleted = () => {
+const checkAllCompleted = (storageKey: string) => {
     if (typeof window === 'undefined') return false;
     try {
-        const raw = window.localStorage.getItem(STORAGE_KEY);
+        const raw = window.localStorage.getItem(storageKey);
         if (!raw) return false;
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object') {
@@ -30,21 +31,25 @@ const checkAllCompleted = () => {
 
 export const ChatWidgetEnhancer = () => {
     const { t, i18n } = useTranslation();
+    const { locationSlug } = useParams();
     const isRTL = i18n.language === 'ar';
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [isFAQOpen, setIsFAQOpen] = useState(false);
     const [isTasksOpen, setIsTasksOpen] = useState(false);
     const [tasksCount, setTasksCount] = useState(0);
     const [showCongratsPopup, setShowCongratsPopup] = useState(false);
+    const storageContextId = locationSlug ? `dashboard-${locationSlug}` : 'global';
+    const storageKey = getTasksStorageKey(storageContextId);
+    const popupSeenKey = getPopupSeenKey(storageContextId);
 
     useEffect(() => {
         const handleTasksUpdate = () => {
-            const completed = checkAllCompleted();
+            const completed = checkAllCompleted(storageKey);
 
             // Calculate pending count
             if (typeof window !== 'undefined') {
                 try {
-                    const raw = window.localStorage.getItem(STORAGE_KEY);
+                    const raw = window.localStorage.getItem(storageKey);
                     const completedCount = raw ? Object.values(JSON.parse(raw)).filter(Boolean).length : 0;
                     setTasksCount(TOTAL_TASKS - completedCount);
                 } catch {
@@ -54,10 +59,10 @@ export const ChatWidgetEnhancer = () => {
 
             // If completed and we haven't shown the popup yet, show it
             if (completed && typeof window !== 'undefined') {
-                const seen = window.localStorage.getItem(POPUP_SEEN_KEY);
+                const seen = window.localStorage.getItem(popupSeenKey);
                 if (!seen) {
                     setShowCongratsPopup(true);
-                    window.localStorage.setItem(POPUP_SEEN_KEY, 'true');
+                    window.localStorage.setItem(popupSeenKey, 'true');
                 }
             }
         };
@@ -67,7 +72,7 @@ export const ChatWidgetEnhancer = () => {
 
         window.addEventListener('paymint-tasks-updated', handleTasksUpdate);
         return () => window.removeEventListener('paymint-tasks-updated', handleTasksUpdate);
-    }, []);
+    }, [popupSeenKey, storageKey]);
 
     const handleOpenChat = () => {
         setIsChatOpen(true);
@@ -121,23 +126,30 @@ export const ChatWidgetEnhancer = () => {
             {/* Congratulations Popup */}
             <AnimatePresence>
                 {showCongratsPopup && createPortal(
-                    <div className="fixed inset-0 z-[9999999] flex items-center justify-center p-4 isolate">
+                    <div 
+                        dir={isRTL ? 'rtl' : 'ltr'}
+                        className="fixed inset-0 z-[9999999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 isolate"
+                    >
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setShowCongratsPopup(false)}
-                            className="absolute inset-0 bg-gray-900/60 backdrop-blur-md"
+                            className="fixed inset-0 bg-black/30 dark:bg-black/80 backdrop-blur-sm"
                         />
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                            dir={isRTL ? 'rtl' : 'ltr'}
-                            className="relative w-full max-w-sm bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 overflow-hidden"
+                            initial={{ opacity: 0, y: 100 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 100 }}
+                            transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+                            className="relative w-full sm:max-w-sm bg-white dark:bg-[#0F172A] rounded-t-3xl sm:rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 overflow-hidden z-10"
                         >
-                            <div className="px-6 pt-8 pb-6 flex flex-col items-center text-center">
+                            {/* Mobile drag handle */}
+                            <div className="sm:hidden flex justify-center pt-3 pb-1">
+                                <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+                            </div>
+
+                            <div className="px-6 pt-8 pb-8 flex flex-col items-center text-center">
                                 <div className="w-16 h-16 mb-4 rounded-full bg-[#7CC39F]/10 flex items-center justify-center relative">
                                     <PartyPopper size={32} className="text-[#7CC39F]" />
                                     <motion.div 
@@ -169,7 +181,7 @@ export const ChatWidgetEnhancer = () => {
                             
                             <button
                                 onClick={() => setShowCongratsPopup(false)}
-                                className={`absolute top-4 ${isRTL ? 'left-4' : 'right-4'} p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors`}
+                                className="absolute top-4 right-4 rtl:left-4 rtl:right-auto p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors"
                             >
                                 <X size={16} />
                             </button>

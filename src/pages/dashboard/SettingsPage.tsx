@@ -84,7 +84,14 @@ interface EstablishmentInfo {
 export function SettingsPage() {
   const { t } = useTranslation();
   const location = useLocation();
-  const { account, currentEstablishment, establishments, setCurrentEstablishment, refreshEstablishments } = useAuth();
+  const {
+    account,
+    currentEstablishment,
+    establishments,
+    setCurrentEstablishment,
+    refreshEstablishments,
+    isLoading: isAuthLoading,
+  } = useAuth();
   usePermissionGuard([
     'manage_settings',
     'manage_taxes_backoffice',
@@ -226,6 +233,8 @@ export function SettingsPage() {
 
   // Combined dirty state
   const hasUnsavedChanges = hasFormChanges || !!selectedLogo || !!selectedReceiptLogo || removeLogo;
+  const hasValidatedCurrentEstablishment = !!currentEstablishment?.id &&
+    establishments.some((est) => est.id === currentEstablishment.id);
 
   // Navigation blocker with proper dependency tracking
   const blocker = useBlocker(
@@ -259,8 +268,10 @@ export function SettingsPage() {
 
 
   useEffect(() => {
-    fetchSettings();
-  }, []);
+    if (!isAuthLoading && hasValidatedCurrentEstablishment) {
+      fetchSettings();
+    }
+  }, [isAuthLoading, hasValidatedCurrentEstablishment, currentEstablishment?.id]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -563,18 +574,22 @@ export function SettingsPage() {
   const [showRestoreModal, setShowRestoreModal] = useState(false);
 
   useEffect(() => {
-    fetchEstablishmentInfo();
-  }, []);
+    if (!isAuthLoading && hasValidatedCurrentEstablishment) {
+      fetchEstablishmentInfo();
+    }
+  }, [isAuthLoading, hasValidatedCurrentEstablishment, currentEstablishment?.id]);
 
   const fetchEstablishmentInfo = async () => {
     try {
-      const currentEstablishment = sessionStorage.getItem('currentEstablishment');
-      if (currentEstablishment) {
-        const parsed = JSON.parse(currentEstablishment);
-        setEstablishmentInfo({ id: parsed.id, name: parsed.name });
-        const response = await api.get(`/api/establishments/${parsed.id}/deletion-status`);
-        setDeletionStatus(response.data);
-      }
+      if (!currentEstablishment?.id) return;
+      setEstablishmentInfo({
+        id: currentEstablishment.id,
+        name: currentEstablishment.name,
+      });
+      const response = await api.get(
+        `/api/establishments/${currentEstablishment.id}/deletion-status`,
+      );
+      setDeletionStatus(response.data);
     } catch (err) {
       console.error('Failed to fetch establishment info:', err);
     }
@@ -833,7 +848,7 @@ export function SettingsPage() {
               </div>
               <div className="flex items-center gap-8">
                 <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
-                  {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
+                  {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" loading="lazy" decoding="async" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <label className="px-5 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.03] rounded-xl text-gray-900 dark:text-white font-normal text-sm shadow-sm transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-black/40 hover:scale-[1.02] active:scale-[0.98] hover:border-paymint-green/30">
@@ -1118,7 +1133,7 @@ export function SettingsPage() {
                     <div className={`overflow-hidden transition-all duration-300 ${watch('showLogoOnReceipt') ? 'opacity-100' : 'opacity-50 pointer-events-none grayscale'}`}>
                       <div className="flex items-center gap-6 p-2">
                         <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
-                          {receiptLogoPreview ? <img src={receiptLogoPreview} alt="Receipt Logo" className="w-full h-full object-cover" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
+                          {receiptLogoPreview ? <img src={receiptLogoPreview} alt="Receipt Logo" className="w-full h-full object-cover" loading="lazy" decoding="async" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
                         </div>
                         <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer label-strong font-outfit transition-all hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
                           {t('settings.receipts.uploadLogo')}

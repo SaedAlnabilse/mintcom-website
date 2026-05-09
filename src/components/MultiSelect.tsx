@@ -33,6 +33,7 @@ export function MultiSelect({
     const containerRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const optionsListRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
 
     const effectivePlaceholder = formatInputPlaceholder(placeholder || t('common.select'), t('common.locale'));
@@ -124,6 +125,17 @@ export function MultiSelect({
         opt.label.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const frameId = window.requestAnimationFrame(() => {
+            const selectedOptionElement = optionsListRef.current?.querySelector<HTMLElement>('[data-selected="true"]');
+            selectedOptionElement?.scrollIntoView({ block: 'nearest' });
+        });
+
+        return () => window.cancelAnimationFrame(frameId);
+    }, [isOpen, value, searchQuery, filteredOptions.length]);
+
     const dropdownContent = (
         <AnimatePresence>
             {isOpen && (
@@ -161,7 +173,7 @@ export function MultiSelect({
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                    <div ref={optionsListRef} className="flex-1 overflow-y-auto custom-scrollbar">
                         {filteredOptions.length === 0 ? (
                             <div className="px-5 py-8 text-sm font-normal text-gray-500 italic text-center">
                                 {searchQuery ? t('common.noResults') : t('common.noOptions')}
@@ -174,6 +186,7 @@ export function MultiSelect({
                                         key={opt.value}
                                         type="button"
                                         onClick={() => handleSelect(opt.value)}
+                                        data-selected={isSelected}
                                         className={`w-full px-4 py-3 text-start flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${isSelected ? 'bg-paymint-green/5' : ''
                                             }`}
                                     >

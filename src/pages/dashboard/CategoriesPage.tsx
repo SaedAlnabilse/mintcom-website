@@ -26,7 +26,8 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CategoryFormModal, ICON_MAP } from '../../components/forms/CategoryFormModal';
 import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
-import { SearchInput, Pagination } from '../../components/ui';
+import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { ThumbnailImage } from '../../components/OptimizedImage';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { formatInputPlaceholder } from '../../utils/textCase';
 
@@ -37,6 +38,9 @@ interface Category {
   sortOrder: number;
   icon?: string;
   color?: string;
+  isActive?: boolean;
+  deletedAt?: string | null;
+  deactivatedAt?: string | null;
   _count?: { items: number };
 }
 
@@ -49,6 +53,8 @@ interface Product {
   availableStock?: number;
   description?: string;
 }
+
+type StatusFilterValue = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
 export function CategoriesPage() {
   const { t } = useTranslation();
@@ -70,6 +76,7 @@ export function CategoriesPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [deleteBlockedCategory, setDeleteBlockedCategory] = useState<Category | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState<StatusFilterValue>('ACTIVE');
   const [currentPage, setCurrentPage] = useState(1);
   const [showCsvImport, setShowCsvImport] = useState(false);
   const ITEMS_PER_PAGE = 12;
@@ -86,6 +93,9 @@ export function CategoriesPage() {
     message: '',
     onConfirm: () => { },
   });
+
+  const isCategoryActive = (category: Category) =>
+    category.isActive !== false && !category.deletedAt && !category.deactivatedAt;
 
   useEffect(() => {
     const state = location.state as { openCreateModal?: boolean };
@@ -104,7 +114,7 @@ export function CategoriesPage() {
     try {
       if (!silent) setIsLoading(true);
       const [catsRes, prodsRes] = await Promise.all([
-        api.get('/api/categories'),
+        api.get('/api/categories', { params: { includeInactive: true } }),
         api.get('/api/items')
       ]);
       setCategories(catsRes.data || []);
@@ -173,7 +183,7 @@ export function CategoriesPage() {
     let existingNames: Set<string>;
     let nextSortOrder: number;
     try {
-      const res = await api.get('/api/categories');
+      const res = await api.get('/api/categories', { params: { includeInactive: true } });
       const existing = Array.isArray(res.data) ? res.data : [];
       existingNames = new Set(existing.map((c: Category) => c.name.toLowerCase().trim()));
       const maxSort = existing.reduce((max: number, c: Category) => Math.max(max, c.sortOrder || 0), 0);
@@ -229,11 +239,17 @@ export function CategoriesPage() {
 
   const filteredCategories = useMemo(() => {
     return (Array.isArray(categories) ? categories : []).filter(cat => {
-      if (!normalizedSearchQuery) return true;
-      return cat.name.toLowerCase().includes(normalizedSearchQuery) ||
-        cat.description?.toLowerCase().includes(normalizedSearchQuery);
+      const matchesStatus =
+        filterStatus === 'ALL' ||
+        (filterStatus === 'ACTIVE' ? isCategoryActive(cat) : !isCategoryActive(cat));
+
+      if (!normalizedSearchQuery) return matchesStatus;
+      return matchesStatus && (
+        cat.name.toLowerCase().includes(normalizedSearchQuery) ||
+        cat.description?.toLowerCase().includes(normalizedSearchQuery)
+      );
     });
-  }, [categories, normalizedSearchQuery]);
+  }, [categories, normalizedSearchQuery, filterStatus]);
 
   const totalPages = Math.ceil((Array.isArray(filteredCategories) ? filteredCategories : []).length / ITEMS_PER_PAGE);
 
@@ -244,7 +260,7 @@ export function CategoriesPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery]);
+  }, [searchQuery, filterStatus]);
 
   const openEditModal = (e: React.MouseEvent, category: Category) => {
     e.stopPropagation();
@@ -281,7 +297,7 @@ export function CategoriesPage() {
   const handleDelete = async (categoryId: string) => {
     try {
       const [catsRes, prodsRes] = await Promise.all([
-        api.get('/api/categories'),
+        api.get('/api/categories', { params: { includeInactive: true } }),
         api.get('/api/items')
       ]);
 
@@ -420,7 +436,21 @@ export function CategoriesPage() {
           />
         </div>
 
-        <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/5 shrink-0">
+        <div className="flex flex-wrap items-center gap-3 shrink-0">
+          <div className="w-full sm:w-40">
+            <SelectInput
+              value={filterStatus === 'ALL' ? null : filterStatus}
+              onChange={(value) => setFilterStatus((value as StatusFilterValue) || 'ALL')}
+              options={[
+                { label: t('common.active', 'Active'), value: 'ACTIVE' },
+                { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
+              ]}
+              allOptionLabel={t('common.allStatuses', 'All Statuses')}
+              placeholder={t('common.allStatuses', 'All Statuses')}
+            />
+          </div>
+
+          <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/5 shrink-0">
           <button
             onClick={() => setViewMode('grid')}
             className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
@@ -433,6 +463,7 @@ export function CategoriesPage() {
           >
             <List size={18} />
           </button>
+          </div>
         </div>
       </div>
 
@@ -496,6 +527,16 @@ export function CategoriesPage() {
                         {category.name}
                       </h3>
 
+                      <div className="mt-3 relative z-10">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
+                          isCategoryActive(category)
+                            ? 'bg-paymint-green/10 text-paymint-green'
+                            : 'bg-paymint-red/10 text-paymint-red'
+                        }`}>
+                          {isCategoryActive(category) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
+                        </span>
+                      </div>
+
                       <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
                         <div className="flex items-center gap-2">
                           <Package size={14} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
@@ -524,6 +565,7 @@ export function CategoriesPage() {
                     <tr>
                       <th className="px-6 py-4 text-center dashboard-card-label w-16">{t('categories.table.icon')}</th>
                       <th className="px-6 py-4 text-left dashboard-card-label">{t('categories.table.name')}</th>
+                      <th className="px-6 py-4 text-center dashboard-card-label">{t('common.status.label', 'Status')}</th>
                       <th className="px-6 py-4 text-center dashboard-card-label">{t('categories.table.items')}</th>
                       <th className="px-6 py-4 text-center dashboard-card-label w-32">{t('owner.locations.actions')}</th>
                     </tr>
@@ -544,6 +586,15 @@ export function CategoriesPage() {
                           </td>
                           <td className="px-6 py-4 text-left">
                             <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{category.name}</p>
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
+                              isCategoryActive(category)
+                                ? 'bg-paymint-green/10 text-paymint-green'
+                                : 'bg-paymint-red/10 text-paymint-red'
+                            }`}>
+                              {isCategoryActive(category) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
+                            </span>
                           </td>
                           <td className="px-6 py-4 text-center">
                             <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 dashboard-card-meta">
@@ -667,11 +718,12 @@ export function CategoriesPage() {
                           className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-paymint-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
                         >
                           <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">
-                            {p.image ? (
-                              <img src={p.image} alt="" className="w-full h-full object-cover" />
-                            ) : (
-                              <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover" />
-                            )}
+                            <ThumbnailImage
+                              src={p.image || '/default_product.png'}
+                              alt={p.name || 'Default Product'}
+                              size={48}
+                              className="rounded-lg"
+                            />
                           </div>
                           <div className="min-w-0">
                             <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
@@ -722,6 +774,7 @@ export function CategoriesPage() {
         title={t('categories.delete.title')}
         message={t('categories.delete.message')}
         type={confirmConfig.type}
+        confirmText={t('common.archive')}
       />
 
       <CsvImportModal
@@ -790,11 +843,12 @@ export function CategoriesPage() {
                         className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-paymint-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
                       >
                         <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">
-                          {p.image ? (
-                            <img src={p.image} alt="" className="w-full h-full object-cover" />
-                          ) : (
-                            <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover" />
-                          )}
+                          <ThumbnailImage
+                            src={p.image || '/default_product.png'}
+                            alt={p.name || 'Default Product'}
+                            size={48}
+                            className="rounded-lg"
+                          />
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>

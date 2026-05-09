@@ -26,7 +26,8 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { ProductFormModal } from '../../components/forms/ProductFormModal';
 import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
 import { LoadingFallback } from '../../components/LoadingFallback';
-import { SearchInput, Pagination } from '../../components/ui';
+import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { OptimizedImage, ThumbnailImage } from '../../components/OptimizedImage';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 import { checkPermission, usePermissionGuard } from '../../hooks/usePermissionGuard';
@@ -55,7 +56,12 @@ interface Product {
     lowStockThresholdYellow?: number;
     lowStockThresholdRed?: number;
     type?: 'ITEM' | 'ADDON';
+    deletedAt?: string | null;
+    deactivatedAt?: string | null;
 }
+
+type ProductSortKey = keyof Product | 'category' | 'status';
+type StatusFilterValue = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
 export function ProductsPage() {
     const { t } = useTranslation();
@@ -72,9 +78,10 @@ export function ProductsPage() {
     const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
     const [categorySearchQuery, setCategorySearchQuery] = useState('');
     const categoryDropdownRef = useRef<HTMLDivElement>(null);
-    const [sortConfig, setSortConfig] = useState<{ key: keyof Product | 'category'; direction: 'asc' | 'desc' } | null>(null);
+    const [sortConfig, setSortConfig] = useState<{ key: ProductSortKey; direction: 'asc' | 'desc' } | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [stockFilter, setStockFilter] = useState<'all' | 'yellow' | 'red' | 'out'>('all');
+    const [filterStatus, setFilterStatus] = useState<StatusFilterValue>('ACTIVE');
     const [showCsvImport, setShowCsvImport] = useState(false);
     const ITEMS_PER_PAGE = 10;
     const topRef = useRef<HTMLDivElement>(null);
@@ -112,6 +119,8 @@ export function ProductsPage() {
         return isList ? 'text-gray-600 dark:text-gray-300' : 'text-gray-900 dark:text-white';
     };
 
+    const isProductActive = (product: Product) => !product.deletedAt && !product.deactivatedAt;
+
     // Confirmation Modal
     const [confirmConfig, setConfirmConfig] = useState<{
         isOpen: boolean;
@@ -135,8 +144,8 @@ export function ProductsPage() {
         try {
             if (!silent) setIsLoading(true);
             const [productsRes, categoriesRes] = await Promise.all([
-                api.get('/api/items'),
-                api.get('/api/categories')
+                api.get('/api/items', { params: { includeInactive: true } }),
+                api.get('/api/categories', { params: { includeInactive: true } })
             ]);
             // Backend returns { items: [...], total, limit, offset } for paginated response
             // or an array directly for backwards compatibility
@@ -212,7 +221,7 @@ export function ProductsPage() {
                     fetchData(); // Refresh list
                     setShowModal(false); // Close modal if open
                 } catch (err) {
-                    console.error('Delete error', err);
+                    console.error('Archive error', err);
                     toast.error(t('products.messages.deleteFailed'));
                 } finally {
                     setConfirmConfig(prev => ({ ...prev, isOpen: false }));
@@ -322,7 +331,7 @@ export function ProductsPage() {
         // Refresh categories first to get latest state
         let categoryMap: Map<string, string>;
         try {
-            const res = await api.get('/api/categories');
+            const res = await api.get('/api/categories', { params: { includeInactive: true } });
             const cats = Array.isArray(res.data) ? res.data : [];
             categoryMap = new Map(cats.map((c: Category) => [c.name.toLowerCase().trim(), c.id]));
         } catch {
@@ -333,7 +342,7 @@ export function ProductsPage() {
         // Key: "productName|categoryId" (lowercase) to detect duplicates per category
         const existingProducts: Set<string> = new Set();
         try {
-            const prodRes = await api.get('/api/items');
+            const prodRes = await api.get('/api/items', { params: { includeInactive: true } });
             const prods = prodRes.data?.items ?? prodRes.data;
             if (Array.isArray(prods)) {
                 prods.forEach((p: Product) => {
@@ -460,7 +469,7 @@ export function ProductsPage() {
         return { success, failed, errors, createdCategories };
     }, [categories, products, fetchData]);
 
-    const handleSort = (key: keyof Product | 'category') => {
+    const handleSort = (key: ProductSortKey) => {
         let direction: 'asc' | 'desc' = 'asc';
         if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
             direction = 'desc';
@@ -483,6 +492,14 @@ export function ProductsPage() {
             result = result.filter(p =>
                 p.name.toLowerCase().includes(query) ||
                 (p.description && p.description.toLowerCase().includes(query))
+            );
+        }
+
+        if (filterStatus !== 'ALL') {
+            result = result.filter((product) =>
+                filterStatus === 'ACTIVE'
+                    ? isProductActive(product)
+                    : !isProductActive(product),
             );
         }
         // Filter by Stock Status
@@ -517,6 +534,9 @@ export function ProductsPage() {
                     const cats = Array.isArray(categories) ? categories : [];
                     aValue = cats.find(c => c.id === a.categoryId)?.name || '';
                     bValue = cats.find(c => c.id === b.categoryId)?.name || '';
+                } else if (sortConfig.key === 'status') {
+                    aValue = isProductActive(a) ? '1' : '0';
+                    bValue = isProductActive(b) ? '1' : '0';
                 } else {
                     const valA = a[sortConfig.key as keyof Product];
                     const valB = b[sortConfig.key as keyof Product];
@@ -545,7 +565,7 @@ export function ProductsPage() {
         }
 
         return result;
-    }, [products, selectedCategoryId, searchQuery, sortConfig, stockFilter, categories]);
+    }, [products, selectedCategoryId, searchQuery, sortConfig, stockFilter, categories, filterStatus]);
 
     const totalPages = Math.ceil((Array.isArray(filteredProducts) ? filteredProducts : []).length / ITEMS_PER_PAGE);
     const paginatedProducts = useMemo(() => {
@@ -554,6 +574,10 @@ export function ProductsPage() {
             currentPage * ITEMS_PER_PAGE
         );
     }, [filteredProducts, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, selectedCategoryId, stockFilter, filterStatus, sortConfig]);
 
     const hasAnyProducts = (Array.isArray(products) ? products : []).length > 0;
     const selectedCategoryName = (Array.isArray(categories) ? categories : []).find(c => c.id === selectedCategoryId)?.name || '';
@@ -677,8 +701,20 @@ export function ProductsPage() {
                 </div>
 
                 {/* Category Filter and View Toggle */}
-                <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                    <div className="relative flex-1 sm:flex-initial sm:min-w-[200px]" ref={categoryDropdownRef}>
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
+                    <div className="w-full sm:w-40">
+                        <SelectInput
+                            value={filterStatus === 'ALL' ? null : filterStatus}
+                            onChange={(value) => setFilterStatus((value as StatusFilterValue) || 'ALL')}
+                            options={[
+                                { label: t('common.active', 'Active'), value: 'ACTIVE' },
+                                { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
+                            ]}
+                            allOptionLabel={t('common.allStatuses', 'All Statuses')}
+                            placeholder={t('common.allStatuses', 'All Statuses')}
+                        />
+                    </div>
+                    <div className="relative w-full sm:w-auto sm:flex-initial sm:min-w-[200px]" ref={categoryDropdownRef}>
                         <button
                             onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
                             className={`w-full text-sm font-bold rounded-xl px-4 py-3 flex items-center justify-between focus:outline-none transition-all shadow-sm ${
@@ -746,9 +782,9 @@ export function ProductsPage() {
                                             {selectedCategoryId === 'all' && <Check size={14} />}
                                         </button>
 
-                                        {categories
-                                            .filter(cat => cat.name.toLowerCase().includes(categorySearchQuery.toLowerCase()))
-                                            .map((cat) => (
+                                            {categories
+                                                .filter(cat => cat.name.toLowerCase().includes(categorySearchQuery.toLowerCase()))
+                                                .map((cat) => (
                                                 <button
                                                     key={cat.id || `cat-${Math.random()}`}
                                                     onClick={() => {
@@ -901,7 +937,7 @@ export function ProductsPage() {
 
 
             {/* Content */}
-            {filteredProducts.length === 0 ? (
+                            {filteredProducts.length === 0 ? (
                 <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
                     <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
                         <Package className="w-10 h-10 text-gray-300" />
@@ -928,15 +964,20 @@ export function ProductsPage() {
                                 {paginatedProducts.map((p) => (
                                     <div
                                         key={p.id || `prod-${p.name}`}
-                                        className="group bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer h-full"
+                                        className={`group bg-white dark:bg-[#1E293B] rounded-2xl border transition-all overflow-hidden flex flex-col cursor-pointer h-full ${
+                                            isProductActive(p)
+                                                ? 'border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl'
+                                                : 'border-gray-200 dark:border-white/5 opacity-70'
+                                        }`}
                                         onClick={() => handleEdit(p)}
                                     >
                                         <div className="aspect-[4/3] bg-gray-50 dark:bg-black/20 relative overflow-hidden shrink-0">
-                                            {p.image ? (
-                                                <img src={getProductImageUrl(p.image)!} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                            ) : (
-                                                <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                            )}
+                                            <OptimizedImage
+                                                src={p.image ? getProductImageUrl(p.image)! : '/default_product.png'}
+                                                alt={p.name || 'Default Product'}
+                                                className="w-full h-full group-hover:scale-110 transition-transform duration-500"
+                                                objectFit="cover"
+                                            />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-end justify-between p-3">
                                                 <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors shadow-sm"><Edit2 size={18} /></button>
                                                 <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors shadow-sm"><Trash2 size={18} /></button>
@@ -946,9 +987,18 @@ export function ProductsPage() {
                                             <div className="flex flex-col mb-2 gap-1.5">
                                                 <div className="flex items-start justify-between gap-2">
                                                     <h3 title={p.name} className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2 break-words flex-1">{p.name}</h3>
-                                                    <span className="text-[9px] uppercase font-black text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md shrink-0 h-fit tracking-tighter">
-                                                        {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
-                                                    </span>
+                                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                                        <span className="text-[9px] uppercase font-black text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md h-fit tracking-tighter">
+                                                            {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
+                                                        </span>
+                                                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                                                            isProductActive(p)
+                                                                ? 'bg-paymint-green/10 text-paymint-green'
+                                                                : 'bg-paymint-red/10 text-paymint-red'
+                                                        }`}>
+                                                            {isProductActive(p) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                             {p.description ? (
@@ -1017,6 +1067,15 @@ export function ProductsPage() {
                                             </th>
                                             <th
                                                 className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                onClick={() => handleSort('status')}
+                                            >
+                                                <div className="flex items-center justify-center gap-1">
+                                                    {t('common.status.label', 'Status')}
+                                                    {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                                </div>
+                                            </th>
+                                            <th
+                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
                                                 onClick={() => handleSort('availableStock')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -1042,11 +1101,12 @@ export function ProductsPage() {
                                                 <td className="px-6 py-4">
                                                     <div className="flex justify-center">
                                                         <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden">
-                                                            {p.image ? (
-                                                                <img src={getProductImageUrl(p.image)!} alt="" className="w-full h-full object-cover" />
-                                                            ) : (
-                                                                <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover" />
-                                                            )}
+                                                            <ThumbnailImage
+                                                                src={p.image ? getProductImageUrl(p.image)! : '/default_product.png'}
+                                                                alt={p.name || 'Default Product'}
+                                                                size={40}
+                                                                className="rounded-lg"
+                                                            />
                                                         </div>
                                                     </div>
                                                 </td>
@@ -1056,6 +1116,15 @@ export function ProductsPage() {
                                                 <td className="px-6 py-4 text-center">
                                                     <span className="inline-flex px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500">
                                                         {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-center">
+                                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
+                                                        isProductActive(p)
+                                                            ? 'bg-paymint-green/10 text-paymint-green'
+                                                            : 'bg-paymint-red/10 text-paymint-red'
+                                                    }`}>
+                                                        {isProductActive(p) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
@@ -1119,6 +1188,7 @@ export function ProductsPage() {
                 title={t('products.delete.title')}
                 message={t('products.delete.message', { name: confirmConfig.productName })}
                 type={confirmConfig.type}
+                confirmText={t('common.archive')}
             />
 
             <CsvImportModal

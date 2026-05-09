@@ -36,13 +36,13 @@ interface TaskItem {
 /*  LocalStorage helpers                                               */
 /* ------------------------------------------------------------------ */
 
-const STORAGE_KEY = 'paymint.widget.tasks.v1';
-const DISMISSED_KEY = 'paymint.widget.tasks.dismissed';
+const getTasksStorageKey = (contextId: string) => `paymint.widget.tasks.v1.${contextId}`;
+const getDismissedKey = (contextId: string) => `paymint.widget.tasks.dismissed.${contextId}`;
 
-function readCompletedState(): Record<string, boolean> {
+function readCompletedState(storageKey: string): Record<string, boolean> {
     if (typeof window === 'undefined') return {};
     try {
-        const raw = window.localStorage.getItem(STORAGE_KEY);
+        const raw = window.localStorage.getItem(storageKey);
         if (!raw) return {};
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object') return parsed as Record<string, boolean>;
@@ -52,9 +52,9 @@ function readCompletedState(): Record<string, boolean> {
     return {};
 }
 
-function readDismissedState(): boolean {
+function readDismissedState(dismissedKey: string): boolean {
     if (typeof window === 'undefined') return false;
-    return window.localStorage.getItem(DISMISSED_KEY) === 'true';
+    return window.localStorage.getItem(dismissedKey) === 'true';
 }
 
 /* ------------------------------------------------------------------ */
@@ -66,11 +66,17 @@ export function TasksWidget() {
     const isRTL = i18n.language === 'ar';
     const navigate = useNavigate();
     const location = useLocation();
-
-    const [completedById, setCompletedById] = useState<Record<string, boolean>>(readCompletedState);
+    const dashboardSlug = useMemo(() => {
+        const match = location.pathname.match(/^\/dashboard\/([^/]+)/);
+        return match ? match[1] : null;
+    }, [location.pathname]);
+    const storageContextId = dashboardSlug ? `dashboard-${dashboardSlug}` : 'global';
+    const storageKey = useMemo(() => getTasksStorageKey(storageContextId), [storageContextId]);
+    const dismissedKey = useMemo(() => getDismissedKey(storageContextId), [storageContextId]);
+    const [completedById, setCompletedById] = useState<Record<string, boolean>>(() => readCompletedState(storageKey));
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [isPanelOpen, setIsPanelOpen] = useState(false);
-    const [isDismissed, setIsDismissed] = useState(readDismissedState);
+    const [isDismissed, setIsDismissed] = useState(() => readDismissedState(dismissedKey));
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const widgetRef = useRef<HTMLDivElement>(null);
@@ -112,11 +118,6 @@ export function TasksWidget() {
 
     /* ---- only show on dashboard routes ---- */
     const isDashboardRoute = /^\/dashboard\/[^/]+/.test(location.pathname);
-
-    const dashboardSlug = useMemo(() => {
-        const match = location.pathname.match(/^\/dashboard\/([^/]+)/);
-        return match ? match[1] : null;
-    }, [location.pathname]);
 
     const dashboardRoute = useCallback(
         (suffix: string, fallback: string) =>
@@ -239,26 +240,27 @@ export function TasksWidget() {
 
     /* ---- persistence ---- */
     useEffect(() => {
-        setCompletedById(readCompletedState());
-    }, []);
+        setCompletedById(readCompletedState(storageKey));
+        setIsDismissed(readDismissedState(dismissedKey));
+    }, [dismissedKey, storageKey]);
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
         try {
-            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(completedById));
+            window.localStorage.setItem(storageKey, JSON.stringify(completedById));
             window.dispatchEvent(new Event('paymint-tasks-updated'));
         } catch {
             /* no-op */
         }
-    }, [completedById]);
+    }, [completedById, storageKey]);
 
     /* ---- auto-dismiss when all complete ---- */
     useEffect(() => {
         if (allCompleted && !isPanelOpen) {
             setIsDismissed(true);
-            window.localStorage.setItem(DISMISSED_KEY, 'true');
+            window.localStorage.setItem(dismissedKey, 'true');
         }
-    }, [allCompleted, isPanelOpen]);
+    }, [allCompleted, dismissedKey, isPanelOpen]);
 
     /* ---- when panel opens, we intentionally leave the currently expanded task alone ---- */
     useEffect(() => {
@@ -299,7 +301,7 @@ export function TasksWidget() {
     const openPanel = () => {
         setIsPanelOpen(true);
         setIsDismissed(false);
-        window.localStorage.removeItem(DISMISSED_KEY);
+        window.localStorage.removeItem(dismissedKey);
     };
 
     const closePanel = () => {
@@ -309,8 +311,8 @@ export function TasksWidget() {
     const handleResetTasks = () => {
         setCompletedById({});
         setIsDismissed(false);
-        window.localStorage.removeItem(DISMISSED_KEY);
-        window.localStorage.removeItem(STORAGE_KEY);
+        window.localStorage.removeItem(dismissedKey);
+        window.localStorage.removeItem(storageKey);
     };
 
     useEffect(() => {

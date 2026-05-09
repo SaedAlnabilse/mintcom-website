@@ -703,13 +703,13 @@ export function OwnerBillingPage() {
                                                                 {t('owner.billing.cancelSub')}
                                                             </button>
                                                         )}
-                                                        {(est.cancelAtPeriodEnd || est.subscriptionStatus === 'CANCELED') && (
+                                                        {(est.cancelAtPeriodEnd || ['CANCELED', 'PAST_DUE', 'SUSPENDED'].includes(est.subscriptionStatus?.toUpperCase())) && (
                                                             <button
                                                                 onClick={() => handleResumeSubscription(est.id, est.name, est.cancelAtPeriodEnd)}
                                                                 className="w-full px-4 py-3 text-left text-xs font-bold text-paymint-green hover:bg-paymint-green/10 tracking-wide transition-colors flex items-center gap-2"
                                                             >
                                                                 <RotateCcw size={14} />
-                                                                {est.subscriptionStatus === 'CANCELED' ? t('owner.billing.reactivate') : t('owner.billing.resume')}
+                                                                {['CANCELED', 'PAST_DUE', 'SUSPENDED'].includes(est.subscriptionStatus?.toUpperCase()) ? t('owner.billing.reactivate') : t('owner.billing.resume')}
                                                             </button>
                                                         )}
                                                     </motion.div>

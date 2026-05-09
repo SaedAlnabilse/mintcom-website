@@ -1345,6 +1345,7 @@ export function EmployeeFormModal({
               <button
                 type="button"
                 onClick={() => onDelete(initialData.id)}
+                title={t('common.deactivate')}
                 className="w-14 h-14 flex items-center justify-center bg-paymint-red/10 text-paymint-red rounded-xl hover:bg-paymint-red/20 transition-colors border border-paymint-red/20"
               >
                 <Trash2 size={20} />

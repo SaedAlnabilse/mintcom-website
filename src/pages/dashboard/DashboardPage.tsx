@@ -79,21 +79,84 @@ export const DashboardPage = () => {
   // Modals
   const [showPayInOutModal, setShowPayInOutModal] = useState(false);
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+  const [showDebugPopup, setShowDebugPopup] = useState(false);
   const [showTasksTour, setShowTasksTour] = useState(false);
+  const locationContextKey = useMemo(
+    () => locationSlug || currentEstablishment?.establishmentLoginId || currentEstablishment?.id || null,
+    [currentEstablishment?.establishmentLoginId, currentEstablishment?.id, locationSlug],
+  );
+  const isLocalDebugEnvironment = useMemo(() => {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    const host = window.location.hostname;
+    return host === 'localhost' || host === '127.0.0.1';
+  }, []);
+  const isFreshLocation = useMemo(() => {
+    const createdAt = currentEstablishment?.createdAt;
+    if (!createdAt) {
+      return false;
+    }
+
+    const createdAtMs = new Date(createdAt).getTime();
+    if (Number.isNaN(createdAtMs)) {
+      return false;
+    }
+
+    return Date.now() - createdAtMs <= 1000 * 60 * 60;
+  }, [currentEstablishment?.createdAt]);
 
   // Check if first visit to this location's dashboard
   useEffect(() => {
-    if (locationSlug) {
-      const visitedKey = `paymint.dashboard.visited.${locationSlug}`;
-      if (!localStorage.getItem(visitedKey)) {
+    // Only show the welcome popup once the dashboard initial loading is done.
+    // We don't wait for 'stats' to handle local/offline environments where stats might fail.
+    if (locationContextKey && !isLoading) {
+      try {
+        const visitedKey = `paymint.dashboard.visited.${locationContextKey}`;
+        const pendingKey = `paymint.dashboard.welcome.pending.${locationContextKey}`;
+        const tasksKey = `paymint.widget.tasks.v1.dashboard-${locationContextKey}`;
+        const hasPendingWelcome = localStorage.getItem(pendingKey) === 'true';
+        const hasVisitedDashboard = localStorage.getItem(visitedKey) === 'true';
+        const hasTaskState = Boolean(localStorage.getItem(tasksKey));
+        const shouldForceFreshLocationWelcome = isFreshLocation && !hasTaskState;
+
+        if (hasPendingWelcome || !hasVisitedDashboard || shouldForceFreshLocationWelcome) {
+          // Delay slightly so it appears smoothly over the loaded dashboard
+          const timer = setTimeout(() => {
+            setShowWelcomePopup(true);
+          }, 600);
+          return () => clearTimeout(timer);
+        }
+      } catch (e) {
+        console.warn('Failed to access localStorage for welcome popup:', e);
         setShowWelcomePopup(true);
-        localStorage.setItem(visitedKey, 'true');
       }
     }
-  }, [locationSlug]);
+  }, [isFreshLocation, isLoading, locationContextKey]);
+
+  useEffect(() => {
+    if (!isLoading && isLocalDebugEnvironment && locationContextKey) {
+      const timer = setTimeout(() => {
+        setShowDebugPopup(true);
+      }, 350);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, isLocalDebugEnvironment, locationContextKey]);
+
+  const handleCloseWelcome = useCallback(() => {
+    setShowWelcomePopup(false);
+    if (locationContextKey) {
+      const visitedKey = `paymint.dashboard.visited.${locationContextKey}`;
+      const pendingKey = `paymint.dashboard.welcome.pending.${locationContextKey}`;
+      localStorage.setItem(visitedKey, 'true');
+      localStorage.removeItem(pendingKey);
+    }
+  }, [locationContextKey]);
 
   const handleStartTasks = () => {
-    setShowWelcomePopup(false);
+    handleCloseWelcome();
     window.dispatchEvent(new Event('paymint-open-tasks'));
     setTimeout(() => {
       setShowTasksTour(true);
@@ -633,26 +696,29 @@ export const DashboardPage = () => {
       {/* Welcome Popup */}
       <AnimatePresence>
         {showWelcomePopup && createPortal(
-          <div className="fixed inset-0 z-[9999999] flex items-center justify-center p-4 isolate">
+          <div 
+            dir={isRTL ? 'rtl' : 'ltr'}
+            className="fixed inset-0 z-[9999999] popup-surface flex items-center justify-center p-4 isolate"
+          >
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setShowWelcomePopup(false)}
-              className="absolute inset-0 bg-gray-900/60 backdrop-blur-md"
+              onClick={handleCloseWelcome}
+              className="fixed inset-0 bg-black/30 dark:bg-black/80 backdrop-blur-sm"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className="relative w-full max-w-sm bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 overflow-hidden"
+              initial={{ opacity: 0, y: 24, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.97 }}
+              transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+              className="relative w-full max-w-sm bg-white dark:bg-[#0F172A] rounded-[2rem] shadow-2xl border border-gray-200/50 dark:border-white/10 overflow-hidden z-10"
             >
-              <div className="px-6 pt-8 pb-6 flex flex-col items-center text-center">
+              <div className="px-6 pt-8 pb-8 flex flex-col items-center text-center">
                 <div className="w-16 h-16 mb-4 rounded-full bg-[#7CC39F]/10 flex items-center justify-center">
                   <PartyPopper size={32} className="text-[#7CC39F]" />
                 </div>
-                
+
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                   {t('common.congratulations')}
                 </h3>
@@ -669,9 +735,9 @@ export const DashboardPage = () => {
                   {t('dashboard.welcome.startGuide')}
                 </button>
               </div>
-              
+
               <button
-                onClick={() => setShowWelcomePopup(false)}
+                onClick={handleCloseWelcome}
                 className="absolute top-4 right-4 rtl:left-4 rtl:right-auto p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors"
               >
                 <X size={16} />
@@ -681,7 +747,58 @@ export const DashboardPage = () => {
           document.body
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {showDebugPopup && createPortal(
+          <div
+            dir={isRTL ? 'rtl' : 'ltr'}
+            className="fixed inset-0 z-[10000000] popup-surface flex items-center justify-center p-4 isolate"
+          >
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowDebugPopup(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.97 }}
+              transition={{ type: 'spring', duration: 0.35, bounce: 0.18 }}
+              className="relative w-full max-w-sm rounded-[2rem] border border-orange-200/60 bg-white shadow-2xl overflow-hidden z-10"
+            >
+              <div className="px-6 pt-8 pb-8 flex flex-col items-center text-center">
+                <div className="w-16 h-16 mb-4 rounded-full bg-orange-100 flex items-center justify-center">
+                  <PartyPopper size={30} className="text-orange-500" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  Debug Popup Test
+                </h3>
+                <p className="text-gray-600 leading-relaxed mb-2">
+                  This popup is forced on local dashboard loads for testing.
+                </p>
+                <p className="text-sm text-gray-500 mb-6">
+                  Location: {currentEstablishment?.name || locationContextKey || 'Unknown'}
+                </p>
+                <button
+                  onClick={() => setShowDebugPopup(false)}
+                  className="w-full py-3.5 px-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-all active:scale-[0.98]"
+                >
+                  Close Debug Popup
+                </button>
+              </div>
 
+              <button
+                onClick={() => setShowDebugPopup(false)}
+                className="absolute top-4 right-4 rtl:left-4 rtl:right-auto p-2 rounded-full hover:bg-gray-100 text-gray-400 transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </motion.div>
+          </div>,
+          document.body
+        )}
+      </AnimatePresence>
       <TourGuide
         isOpen={showTasksTour}
         onClose={() => setShowTasksTour(false)}

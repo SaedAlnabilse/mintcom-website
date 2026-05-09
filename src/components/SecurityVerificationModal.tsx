@@ -27,6 +27,8 @@ interface ApiError {
     response?: {
         data?: {
             message?: string;
+            code?: string;
+            allowedAction?: string;
         };
     };
 }
@@ -40,6 +42,7 @@ interface SecurityVerificationModalProps {
     mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'delete-employee' | 'dissolve-establishment' | 'reactivate' | 'delete-customer' | 'reactivate-account';
     price?: number;
     isResuming?: boolean;
+    onError?: (error: ApiError) => boolean | void;
 }
 
 export function SecurityVerificationModal({
@@ -50,7 +53,8 @@ export function SecurityVerificationModal({
     targetName,
     mode,
     price,
-    isResuming
+    isResuming,
+    onError
 }: SecurityVerificationModalProps) {
     const { t } = useTranslation();
     const { account } = useAuth();
@@ -222,7 +226,11 @@ export function SecurityVerificationModal({
             setEmail('');
             setPassword('');
         } catch (err) {
-            const msg = (err as ApiError).response?.data?.message || t('security.verificationFailed');
+            const apiError = err as ApiError;
+            if (onError?.(apiError)) {
+                return;
+            }
+            const msg = apiError.response?.data?.message || t('security.verificationFailed');
             setErrors({ general: msg });
             setTimeout(() => {
                 errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });

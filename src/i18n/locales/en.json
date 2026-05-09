@@ -137,16 +137,16 @@
   },
   "attributes": {
     "confirm": {
-      "deleteGroupMessage": "Are you sure you want to permanently remove the \"{{name}}\" group? This action cannot be undone.",
-      "deleteGroupTitle": "Delete Add-on Group",
-      "deleteOptionMessage": "Are you sure you want to remove the \"{{name}}\" option?",
-      "deleteOptionTitle": "Delete Option"
+      "deleteGroupMessage": "Archive the \"{{name}}\" group and its active options? They will be hidden from new sales, while historical orders keep their original add-on names and prices.",
+      "deleteGroupTitle": "Archive Add-on Group",
+      "deleteOptionMessage": "Archive the \"{{name}}\" option? It will be hidden from new sales, while previous orders keep the original option name and price.",
+      "deleteOptionTitle": "Archive Option"
     },
     "editAttribute": "Edit Add-on",
     "errors": {
-      "deleteFailed": "Failed to delete attribute",
-      "deletionBlocked": "Deletion blocked",
-      "deletionBlockedMsg": "The group \"{{name}}\" contains {{count}} active options. You must delete all options within this group before you can remove the group itself.",
+      "deleteFailed": "Failed to archive attribute",
+      "deletionBlocked": "Archive blocked",
+      "deletionBlockedMsg": "The group \"{{name}}\" contains {{count}} active options. Archiving will hide the group and its options from new sales while preserving history.",
       "errorSaving": "Error saving group",
       "errorSavingOption": "Failed to save option",
       "failedToLoad": "Failed to load attributes",
@@ -207,10 +207,10 @@
     },
     "messages": {
       "groupCreated": "Group created",
-      "groupDeleted": "Group removed",
+      "groupDeleted": "Group archived",
       "groupUpdated": "Group updated",
       "optionCreated": "Option created",
-      "optionDeleted": "Option removed",
+      "optionDeleted": "Option archived",
       "optionUpdated": "Option updated"
     },
     "newAttribute": "New Add-on",
@@ -484,9 +484,9 @@
   },
   "categories": {
     "delete": {
-      "blocked": "Category contains archived items with sales history. These must be kept for records.",
-      "message": "Are you sure you want to delete this category? Archived items that have never been sold will be permanently deleted.",
-      "title": "Delete Category"
+      "blocked": "This category has active products. Move or archive those products first; historical reports will stay protected.",
+      "message": "Archive this empty category? It will be hidden from new setup screens, while past order category snapshots stay unchanged.",
+      "title": "Archive Category"
     },
     "editCategory": "Edit Category",
     "errors": {
@@ -504,9 +504,9 @@
     "itemsCount": "{{count}} items",
     "messages": {
       "created": "Category created",
-      "deleteBlocked": "This category cannot be deleted because it contains active products. Please move or delete the products first.",
-      "deleted": "Category deleted",
-      "deleteFailed": "Failed to delete category",
+      "deleteBlocked": "This category cannot be archived because it contains active products. Move or archive those products first.",
+      "deleted": "Category archived",
+      "deleteFailed": "Failed to archive category",
       "exists": "A category with this name already exists in this location.",
       "loadFailed": "Failed to load data",
       "loading": "Loading data...",
@@ -663,9 +663,11 @@
     "add": "Add",
     "all": "All",
     "allStaff": "All Staff",
+    "anonymize": "Anonymize",
     "and": "and",
     "app": "App",
     "arabic": "Arabic",
+    "archive": "Archive",
     "aria": {
       "changeLanguage": "Change Language",
       "closeMenu": "Close navigation menu",
@@ -693,6 +695,7 @@
     "copy": "Copy",
     "copyFailed": "Failed to copy to clipboard",
     "creating": "Creating...",
+    "deactivate": "Deactivate",
     "currencies": {
       "aed": "UAE Dirham",
       "bhd": "Bahraini Dinar",
@@ -809,6 +812,7 @@
     "refresh": "Refresh",
     "reloadPage": "Reload page",
     "required": "Required",
+    "remove": "Remove",
     "restoring": "Restoring...",
     "retry": "Retry",
     "role": "Role",
@@ -1152,8 +1156,12 @@
     },
     "messages": {
       "created": "Customer Created",
-      "deleteConfirm": "Are you sure you want to delete this customer from database? This action can't be undone",
-      "deleteCustomer": "Delete Customer",
+      "anonymizeConfirm": "\"{{name}}\" has order history. We can remove personal details and keep anonymous sales history for reports and receipts.",
+      "anonymizeCustomer": "Anonymize Customer",
+      "anonymized": "Customer anonymized",
+      "anonymizeFailed": "Failed to anonymize customer",
+      "deleteConfirm": "Remove this customer from active customer management? If they have order history, you will be asked to anonymize personal details instead of deleting sales records.",
+      "deleteCustomer": "Remove Customer",
       "errorSaving": "Error Saving Customer",
       "exportComplete": "Export Complete",
       "exportFailed": "Failed To Export Customers",
@@ -1164,7 +1172,8 @@
       "noCustomers": "No Customers Found",
       "noCustomersDesc": "Start by adding your first customer to the database.",
       "pointsAdjusted": "Loyalty Points Adjusted",
-      "removed": "Customer Removed",
+      "removeCustomer": "Remove Customer",
+      "removed": "Customer removed",
       "updated": "Customer Updated",
       "viewProfile": "View Profile"
     },
@@ -1389,8 +1398,8 @@
   "discounts": {
     "allDiscounts": "All Discounts",
     "confirm": {
-      "deleteMessage": "Are you sure you want to delete \"{{name}}\"? This action can't be undone",
-      "deleteTitle": "Delete Discount"
+      "deleteMessage": "Deactivate \"{{name}}\"? It will no longer be available for new sales, while previous orders and reports keep the original discount snapshot.",
+      "deleteTitle": "Deactivate Discount"
     },
     "editDiscount": "Edit Discount",
     "errors": {
@@ -1410,7 +1419,7 @@
     },
     "messages": {
       "created": "Discount Created Successfully",
-      "deleted": "Discount Deleted Successfully",
+      "deleted": "Discount deactivated successfully",
       "duplicate": "The selected discount is already in use. Please choose a different one.",
       "emptySubtitle": "Create your first discount to start offering special deals to your customers",
       "emptyTitle": "No Discounts Created Yet",
@@ -3400,10 +3409,10 @@
     "cardBrands": "Card Brands",
     "cardBrandsSubtitle": "Manage accepted card logos",
     "confirm": {
-      "deleteCardMessage": "Are you sure you want to delete \"{{name}}\"? It will no longer be available for future orders but will remain in your historical reports.",
-      "deleteCardTitle": "Delete Card Type",
-      "removeMessage": "Are you sure you want to delete \"{{name}}\"? It will no longer be available for future orders but will remain in your historical reports.",
-      "removeTitle": "Remove Payment Method"
+      "deleteCardMessage": "Deactivate \"{{name}}\"? It will no longer be available for future card payments, while historical reports keep the original card brand.",
+      "deleteCardTitle": "Deactivate Card Brand",
+      "removeMessage": "Deactivate \"{{name}}\"? It will no longer be available for future orders, while historical reports keep the original payment method.",
+      "removeTitle": "Deactivate Payment Method"
     },
     "editBrand": "Edit Brand",
     "editPayment": "Edit Payment",
@@ -3422,16 +3431,16 @@
       "added": "Payment method added",
       "brandAdded": "Brand added",
       "brandUpdated": "Brand updated",
-      "cardTypeRemoved": "Card type removed",
+      "cardTypeRemoved": "Card brand deactivated",
       "created": "Payment method created",
       "failedToAdd": "Failed to add card",
-      "failedToDelete": "Failed to delete",
+      "failedToDelete": "Failed to deactivate",
       "failedToLoad": "Failed to load methods",
-      "failedToRemove": "Failed to remove method",
+      "failedToRemove": "Failed to deactivate method",
       "failedToSave": "Failed to save payment method",
       "failedToSaveBrand": "Failed to save brand",
       "notActive": "This payment method is not active",
-      "removed": "Payment method removed",
+      "removed": "Payment method deactivated",
       "updated": "Payment method updated"
     },
     "modal": {
@@ -3533,8 +3542,8 @@
     "addProduct": "Add Product",
     "all": "All Categories",
     "delete": {
-      "message": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
-      "title": "Delete Product"
+      "message": "Archive \"{{name}}\"? It will be hidden from new sales, but past orders, receipts, and reports will keep the original item details.",
+      "title": "Archive Product"
     },
     "editProduct": "Edit Product",
     "form": {
@@ -3580,10 +3589,10 @@
       "aiOverloaded": "AI services are currently overloaded. Please try again in a few seconds.",
       "created": "Product created",
       "createHere": "Create here",
-      "deleted": "Product deleted",
-      "deleteFailed": "Failed to delete product",
-      "deleteMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
-      "deleteTitle": "Delete Product",
+      "deleted": "Product archived",
+      "deleteFailed": "Failed to archive product",
+      "deleteMessage": "Archive \"{{name}}\"? It will be hidden from new sales, but past orders, receipts, and reports will keep the original item details.",
+      "deleteTitle": "Archive Product",
       "discardConfirm": "Continue & discard",
       "discardMessage": "Navigating to the add-ons section will discard your current product details.",
       "discardTitle": "Discard Unsaved Product?",
@@ -3867,14 +3876,14 @@
         "warning": "Removing card ending in \"{{name}}\". Past reports remain unaffected."
       },
       "deleteCustomer": {
-        "button": "Delete Customer",
-        "title": "Delete Customer",
-        "warning": "Are you sure you want to delete this customer? This action is permanent and cannot be undone."
+        "button": "Remove Customer",
+        "title": "Remove Customer",
+        "warning": "This removes the customer from active customer management. If order history exists, personal details must be anonymized so financial records stay accurate."
       },
       "deleteEmployee": {
-        "button": "Delete Member",
-        "title": "Delete Team Member",
-        "warning": "You are about to permanently remove \"{{name}}\" from the team. This will revoke all their access permissions immediately."
+        "button": "Deactivate Member",
+        "title": "Deactivate Team Member",
+        "warning": "You are about to deactivate \"{{name}}\". They will lose POS and backoffice access, while their past orders, shifts, and reports remain linked for business records."
       },
       "dissolveBrand": {
         "button": "Delete Brand",

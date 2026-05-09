@@ -214,7 +214,7 @@ export function DiscountFormModal({
                 className="flex-1 h-14 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-widest rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2"
               >
                 <Trash2 size={16} />
-                <span>{t('common.delete')}</span>
+                <span>{t('common.deactivate')}</span>
               </button>
             )}
             <button

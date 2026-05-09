@@ -453,6 +453,21 @@ export function OnboardingPage() {
         establishmentLoginId: formData.establishmentLoginId,
       } as any);
 
+      try {
+        const welcomeTargets = new Set<string>([
+          estId,
+          estRes.data.establishment?.establishmentLoginId,
+          formData.establishmentLoginId,
+        ].filter(Boolean) as string[]);
+
+        welcomeTargets.forEach((target) => {
+          localStorage.removeItem(`paymint.dashboard.visited.${target}`);
+          localStorage.setItem(`paymint.dashboard.welcome.pending.${target}`, 'true');
+        });
+      } catch (storageError) {
+        console.warn('[Onboarding] Failed to persist welcome popup trigger:', storageError);
+      }
+
       // Save the establishment ID for navigation
       setFormData((prev: any) => ({ ...prev, establishmentId: estId }));
 

@@ -768,6 +768,8 @@ export function ProductFormModal({
                           src={previewImage}
                           alt={t('products.form.imagePreview')}
                           className={`w-full h-full ${hasDraftPreview ? 'object-contain p-4' : 'object-cover'}`}
+                          loading="lazy"
+                          decoding="async"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             console.error('Image failed to load:', target.src);
@@ -1452,7 +1454,7 @@ export function ProductFormModal({
                   className="flex-1 h-12 sm:h-14 border border-paymint-red/20 text-paymint-red font-bold text-sm rounded-xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 shadow-sm"
                 >
                   <Trash2 size={18} />
-                  <span>{t('common.delete')}</span>
+                  <span>{t('common.archive')}</span>
                 </button>
               )}
 
@@ -1507,7 +1509,7 @@ export function ProductFormModal({
             }}
             title={t('products.messages.deleteTitle')}
             message={t('products.messages.deleteMessage', { name: initialData.name })}
-            confirmText={t('common.delete')}
+            confirmText={t('common.archive')}
             type="danger"
           />
         )}

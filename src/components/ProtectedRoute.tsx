@@ -2,6 +2,12 @@ import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FullScreenLoader } from './LoadingState';
 
+const LOCKED_SUBSCRIPTION_STATUSES = new Set([
+  'CANCELED',
+  'SUSPENDED',
+  'TRIAL_EXPIRED',
+]);
+
 export function ProtectedRoute() {
   const { isAuthenticated, isLoading, needsOnboarding, account, establishments } = useAuth();
   const location = useLocation();
@@ -55,10 +61,13 @@ export function EstablishmentRequiredRoute() {
     return <Navigate to={`/dashboard/${locationSlug}/establishments`} replace />;
   }
 
-  // Lock access if subscription is canceled
+  // Lock normal dashboard access when billing has suspended the location.
   // Except for the billing page so they can reactivate
   const isBillingPage = location.pathname.includes('/billing');
-  if (currentEstablishment.subscriptionStatus === 'CANCELED' && !isBillingPage) {
+  if (
+    LOCKED_SUBSCRIPTION_STATUSES.has(currentEstablishment.subscriptionStatus) &&
+    !isBillingPage
+  ) {
     return <Navigate to={`/dashboard/${locationSlug}/billing`} replace />;
   }
 

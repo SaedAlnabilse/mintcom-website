@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -24,6 +24,8 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { useAuth } from '../../context/AuthContext';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { SelectInput } from '../../components/ui';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const paymentMethodSchema = z.object({
   name: z.string().min(1, 'common.required'),
@@ -48,7 +50,10 @@ interface CardType {
   imageUrl?: string;
   imageKey?: string;
   logo?: string;
+  isActive?: boolean;
 }
+
+type StatusFilterValue = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
 export function PaymentMethodsPage() {
   const { t } = useTranslation();
@@ -57,6 +62,8 @@ export function PaymentMethodsPage() {
   const { currentEstablishment } = useAuth();
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [cardTypes, setCardTypes] = useState<CardType[]>([]);
+  const [paymentMethodStatusFilter, setPaymentMethodStatusFilter] = useState<StatusFilterValue>('ACTIVE');
+  const [cardTypeStatusFilter, setCardTypeStatusFilter] = useState<StatusFilterValue>('ACTIVE');
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showCardModal, setShowCardModal] = useState(false);
@@ -107,6 +114,11 @@ export function PaymentMethodsPage() {
     if (lower.includes('talabat')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Talabat_logo.png/512px-Talabat_logo.png';
     if (lower.includes('cash')) return 'https://cdn-icons-png.flaticon.com/512/2331/2331714.png';
     return null;
+  };
+
+  const matchesStatusFilter = (isActive: boolean | undefined, filter: StatusFilterValue) => {
+    if (filter === 'ALL') return true;
+    return filter === 'ACTIVE' ? isActive !== false : isActive === false;
   };
 
   const handleSeedDefaults = async () => {
@@ -171,7 +183,9 @@ export function PaymentMethodsPage() {
   const fetchPaymentMethods = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get('/app-settings/payment-methods');
+      const response = await api.get('/app-settings/payment-methods', {
+        params: { includeInactive: true },
+      });
       setPaymentMethods(Array.isArray(response.data) ? response.data : []);
     } catch {
       toast.error(t('paymentMethods.messages.failedToLoad'));
@@ -183,7 +197,9 @@ export function PaymentMethodsPage() {
 
   const fetchCardTypes = async () => {
     try {
-      const response = await api.get('/card-types');
+      const response = await api.get('/card-types', {
+        params: { includeInactive: true },
+      });
       setCardTypes(Array.isArray(response.data) ? response.data : []);
     } catch {
       console.error('Failed to load card types');
@@ -277,6 +293,7 @@ export function PaymentMethodsPage() {
       title: t('paymentMethods.confirm.removeTitle'),
       message: t('paymentMethods.confirm.removeMessage', { name }),
       type: 'danger',
+      confirmText: t('common.deactivate'),
       onConfirm: async () => {
         try {
           await api.delete(`/app-settings/payment-methods/${methodId}`);
@@ -336,6 +353,7 @@ export function PaymentMethodsPage() {
       title: t('paymentMethods.confirm.deleteCardTitle'),
       message: t('paymentMethods.confirm.deleteCardMessage', { name }),
       type: 'danger',
+      confirmText: t('common.deactivate'),
       onConfirm: async () => {
         try {
           await api.delete(`/card-types/${cardId}`);
@@ -356,6 +374,22 @@ export function PaymentMethodsPage() {
     if (lower.includes('online')) return <Globe size={size} />;
     return <Wallet size={size} />;
   };
+
+  const visibleCardTypes = useMemo(
+    () =>
+      (Array.isArray(cardTypes) ? cardTypes : []).filter((card) =>
+        matchesStatusFilter(card.isActive, cardTypeStatusFilter),
+      ),
+    [cardTypes, cardTypeStatusFilter],
+  );
+
+  const visiblePaymentMethods = useMemo(
+    () =>
+      (Array.isArray(paymentMethods) ? paymentMethods : []).filter((method) =>
+        matchesStatusFilter(method.isActive, paymentMethodStatusFilter),
+      ),
+    [paymentMethods, paymentMethodStatusFilter],
+  );
 
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-16" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -385,16 +419,30 @@ export function PaymentMethodsPage() {
           <div className="flex flex-col gap-1.5 flex-1">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.cardBrands')}</h2>
-              {cardTypes.length === 0 && !isLoading && (
-                <button
-                  onClick={handleSeedDefaults}
-                  disabled={isSubmitting}
-                  className="px-4 py-2 bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest uppercase rounded-lg border border-paymint-green/20 hover:bg-paymint-green/20 transition-all flex items-center gap-2"
-                >
-                  <Star size={12} fill="currentColor" />
-                  {t('paymentMethods.setupDefaults', 'Setup Defaults')}
-                </button>
-              )}
+              <div className="flex flex-wrap items-center justify-end gap-3">
+                <div className="w-full sm:w-40">
+                  <SelectInput
+                    value={cardTypeStatusFilter === 'ALL' ? null : cardTypeStatusFilter}
+                    onChange={(value) => setCardTypeStatusFilter((value as StatusFilterValue) || 'ALL')}
+                    options={[
+                      { label: t('common.active', 'Active'), value: 'ACTIVE' },
+                      { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
+                    ]}
+                    allOptionLabel={t('common.allStatuses', 'All Statuses')}
+                    placeholder={t('common.allStatuses', 'All Statuses')}
+                  />
+                </div>
+                {cardTypes.length === 0 && !isLoading && (
+                  <button
+                    onClick={handleSeedDefaults}
+                    disabled={isSubmitting}
+                    className="px-4 py-2 bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest uppercase rounded-lg border border-paymint-green/20 hover:bg-paymint-green/20 transition-all flex items-center gap-2"
+                  >
+                    <Star size={12} fill="currentColor" />
+                    {t('paymentMethods.setupDefaults', 'Setup Defaults')}
+                  </button>
+                )}
+              </div>
             </div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 max-w-2xl">{t('paymentMethods.cardBrandsSubtitle')}</p>
           </div>
@@ -405,18 +453,29 @@ export function PaymentMethodsPage() {
             <div className="col-span-full py-20 text-center bg-gray-50/50 dark:bg-white/[0.01] rounded-[24px] border border-dashed border-gray-200 dark:border-white/5">
               <p className="text-gray-400 font-black tracking-[0.2em] text-xs uppercase">{t('paymentMethods.noCardBrands')}</p>
             </div>
+          ) : visibleCardTypes.length === 0 ? (
+            <div className="col-span-full py-20 text-center bg-gray-50/50 dark:bg-white/[0.01] rounded-[24px] border border-dashed border-gray-200 dark:border-white/5">
+              <p className="text-gray-400 font-black tracking-[0.2em] text-xs uppercase">{t('common.noResults', 'No results')}</p>
+            </div>
           ) : (
-            Array.isArray(cardTypes) && cardTypes.map((card) => (
+            visibleCardTypes.map((card) => (
               <motion.div
                 layout
                 key={card.id}
-                className="group relative bg-white dark:bg-white/[0.02] rounded-[24px] border border-gray-100 dark:border-white/5 transition-all duration-500 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 flex flex-col overflow-hidden"
+                className={`group relative bg-white dark:bg-white/[0.02] rounded-[24px] border border-gray-100 dark:border-white/5 transition-all duration-500 flex flex-col overflow-hidden ${
+                  card.isActive === false ? 'opacity-60' : 'hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1'
+                }`}
               >
                 {/* Image/Icon Container */}
                 <div className="aspect-[4/3] flex items-center justify-center p-8 bg-gray-50/50 dark:bg-black/20 relative group-hover:bg-white dark:group-hover:bg-black/40 transition-colors duration-500">
                   <div className="w-20 h-20 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
                     {getImageUrl(card.imageUrl || card.logo) || getFallbackLogo(card.name) ? (
-                      <img src={getImageUrl(card.imageUrl || card.logo) || getFallbackLogo(card.name)!} alt={card.name} className="w-full h-full object-contain drop-shadow-sm" />
+                      <OptimizedImage
+                        src={getImageUrl(card.imageUrl || card.logo) || getFallbackLogo(card.name)!}
+                        alt={card.name}
+                        className="w-full h-full drop-shadow-sm"
+                        objectFit="contain"
+                      />
                     ) : (
                       <CreditCard size={40} className="text-gray-300 dark:text-gray-600" />
                     )}
@@ -425,7 +484,16 @@ export function PaymentMethodsPage() {
 
                 {/* Info & Actions */}
                 <div className="p-5 flex flex-col gap-4 border-t border-gray-100 dark:border-white/5">
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white truncate px-1">{card.name}</h3>
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-base font-bold text-gray-900 dark:text-white truncate px-1">{card.name}</h3>
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide ${
+                      card.isActive === false
+                        ? 'bg-paymint-red/10 text-paymint-red'
+                        : 'bg-paymint-green/10 text-paymint-green'
+                    }`}>
+                      {card.isActive === false ? t('common.inactive', 'Inactive') : t('common.active', 'Active')}
+                    </span>
+                  </div>
                   
                   <div className="flex items-center gap-2">
                     <button
@@ -471,16 +539,30 @@ export function PaymentMethodsPage() {
           <div className="flex flex-col gap-1.5 flex-1">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.paymentTypes')}</h2>
-              {paymentMethods.length === 0 && !isLoading && (
-                <button
-                  onClick={handleSeedDefaults}
-                  disabled={isSubmitting}
-                  className="px-4 py-2 bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest uppercase rounded-lg border border-paymint-green/20 hover:bg-paymint-green/20 transition-all flex items-center gap-2"
-                >
-                  <Star size={12} fill="currentColor" />
-                  {t('paymentMethods.setupDefaults', 'Setup Defaults')}
-                </button>
-              )}
+              <div className="flex flex-wrap items-center justify-end gap-3">
+                <div className="w-full sm:w-40">
+                  <SelectInput
+                    value={paymentMethodStatusFilter === 'ALL' ? null : paymentMethodStatusFilter}
+                    onChange={(value) => setPaymentMethodStatusFilter((value as StatusFilterValue) || 'ALL')}
+                    options={[
+                      { label: t('common.active', 'Active'), value: 'ACTIVE' },
+                      { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
+                    ]}
+                    allOptionLabel={t('common.allStatuses', 'All Statuses')}
+                    placeholder={t('common.allStatuses', 'All Statuses')}
+                  />
+                </div>
+                {paymentMethods.length === 0 && !isLoading && (
+                  <button
+                    onClick={handleSeedDefaults}
+                    disabled={isSubmitting}
+                    className="px-4 py-2 bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest uppercase rounded-lg border border-paymint-green/20 hover:bg-paymint-green/20 transition-all flex items-center gap-2"
+                  >
+                    <Star size={12} fill="currentColor" />
+                    {t('paymentMethods.setupDefaults', 'Setup Defaults')}
+                  </button>
+                )}
+              </div>
             </div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 max-w-2xl">{t('paymentMethods.paymentTypesSubtitle')}</p>
           </div>
@@ -494,7 +576,11 @@ export function PaymentMethodsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
-            {Array.isArray(paymentMethods) && paymentMethods.map((method) => (
+            {visiblePaymentMethods.length === 0 ? (
+              <div className="col-span-full py-20 text-center bg-gray-50/50 dark:bg-white/[0.01] rounded-[24px] border border-dashed border-gray-200 dark:border-white/5">
+                <p className="text-gray-400 font-black tracking-[0.2em] text-xs uppercase">{t('common.noResults', 'No results')}</p>
+              </div>
+            ) : visiblePaymentMethods.map((method) => (
               <motion.div
                 layout
                 key={method.id}
@@ -507,7 +593,12 @@ export function PaymentMethodsPage() {
                 <div className="aspect-[4/3] flex items-center justify-center p-8 bg-gray-50/50 dark:bg-black/20 relative group-hover:bg-white dark:group-hover:bg-black/40 transition-colors duration-500">
                   <div className="w-20 h-20 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
                     {getImageUrl(method.imageUrl || method.logo) || getFallbackLogo(method.name) ? (
-                      <img src={getImageUrl(method.imageUrl || method.logo) || getFallbackLogo(method.name)!} alt={method.name} className="w-full h-full object-contain drop-shadow-sm" />
+                      <OptimizedImage
+                        src={getImageUrl(method.imageUrl || method.logo) || getFallbackLogo(method.name)!}
+                        alt={method.name}
+                        className="w-full h-full drop-shadow-sm"
+                        objectFit="contain"
+                      />
                     ) : (
                       <div className="text-gray-400 dark:text-gray-500">
                         {getMethodIcon(method.name, 48)}
@@ -525,7 +616,16 @@ export function PaymentMethodsPage() {
 
                 {/* Info & Actions */}
                 <div className="p-5 flex flex-col gap-4 border-t border-gray-100 dark:border-white/5">
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white truncate px-1">{method.name}</h3>
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-base font-bold text-gray-900 dark:text-white truncate px-1">{method.name}</h3>
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide ${
+                      method.isActive
+                        ? 'bg-paymint-green/10 text-paymint-green'
+                        : 'bg-paymint-red/10 text-paymint-red'
+                    }`}>
+                      {method.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
+                    </span>
+                  </div>
                   
                   <div className="flex items-center gap-2">
                     {!method.isDefault ? (
@@ -610,7 +710,7 @@ export function PaymentMethodsPage() {
                   <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all hover:border-paymint-green/50">
                     {imagePreview ? (
                       <>
-                        <img src={imagePreview} alt="Preview" className="w-full h-full object-contain p-4" />
+                        <img src={imagePreview} alt="Preview" className="w-full h-full object-contain p-4" loading="lazy" decoding="async" />
                         <button
                           type="button"
                           onClick={(e) => { e.stopPropagation(); handleRemoveImage(); }}
@@ -706,7 +806,7 @@ export function PaymentMethodsPage() {
                   <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all hover:border-paymint-green/50">
                     {cardImagePreview ? (
                       <>
-                        <img src={cardImagePreview} alt="Preview" className="w-full h-full object-contain p-4" />
+                        <img src={cardImagePreview} alt="Preview" className="w-full h-full object-contain p-4" loading="lazy" decoding="async" />
                         <button
                           type="button"
                           onClick={(e) => { e.stopPropagation(); handleRemoveCardImage(); }}

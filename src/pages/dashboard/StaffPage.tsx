@@ -11,7 +11,6 @@ import {
   Shield,
   Edit2,
   Trash2,
-  XCircle,
   MoreVertical,
   Download,
   Key,
@@ -52,6 +51,9 @@ interface Discount {
   adminOnly: boolean;
 }
 
+const getDisplayInitial = (name?: string, username?: string) =>
+  (name?.trim()?.charAt(0) || username?.trim()?.charAt(0) || '?').toUpperCase();
+
 const MAX_EMPLOYEES_PER_ACCOUNT = 50;
 const EMPLOYEE_LIMIT_POPUP_MESSAGE =
   `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
@@ -70,6 +72,7 @@ export function StaffPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
   const [filterRole, setFilterRole] = useState<'ALL' | 'ADMIN' | 'USER'>('ALL');
+  const [filterStatus, setFilterStatus] = useState<'ALL' | 'ACTIVE' | 'INACTIVE'>('ACTIVE');
   const [searchQuery, setSearchQuery] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmConfig, setConfirmConfig] = useState<{
@@ -163,10 +166,11 @@ export function StaffPage() {
   const filteredStaff = useMemo(() => {
     const result = (Array.isArray(staff) ? staff : []).filter(s => {
       const matchesRole = filterRole === 'ALL' || (filterRole === 'USER' ? s.role !== 'ADMIN' : s.role === filterRole);
-      const matchesSearch = s.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (s.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+      const matchesStatus = filterStatus === 'ALL' || (filterStatus === 'ACTIVE' ? s.isActive : !s.isActive);
+      const matchesSearch = (s.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+        s.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (s.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
-      return matchesRole && matchesSearch;
+      return matchesRole && matchesStatus && matchesSearch;
     });
 
     // Sorting
@@ -179,10 +183,15 @@ export function StaffPage() {
           aValue = `${a.isActive ? '1' : '0'}${a.isClockedIn ? '1' : '0'}`;
           bValue = `${b.isActive ? '1' : '0'}${b.isClockedIn ? '1' : '0'}`;
         } else {
-          const valA = a[sortConfig.key as keyof Staff];
-          const valB = b[sortConfig.key as keyof Staff];
-          aValue = (typeof valA === 'string' || typeof valA === 'number') ? valA : String(valA || '');
-          bValue = (typeof valB === 'string' || typeof valB === 'number') ? valB : String(valB || '');
+          if (sortConfig.key === 'username') {
+            aValue = a.name || a.username;
+            bValue = b.name || b.username;
+          } else {
+            const valA = a[sortConfig.key as keyof Staff];
+            const valB = b[sortConfig.key as keyof Staff];
+            aValue = (typeof valA === 'string' || typeof valA === 'number') ? valA : String(valA || '');
+            bValue = (typeof valB === 'string' || typeof valB === 'number') ? valB : String(valB || '');
+          }
         }
 
         // Handle string comparison
@@ -206,7 +215,7 @@ export function StaffPage() {
     }
 
     return result;
-  }, [staff, filterRole, searchQuery, sortConfig]);
+  }, [staff, filterRole, filterStatus, searchQuery, sortConfig]);
 
   // Pagination Logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -413,25 +422,42 @@ export function StaffPage() {
           />
         </div>
 
-        <div className="w-full sm:w-48">
-          <SelectInput
-            value={filterRole === 'ALL' ? null : filterRole}
-            onChange={(val) => {
-              setFilterRole((val as 'ALL' | 'ADMIN' | 'USER') || 'ALL');
-              setCurrentPage(1);
-            }}
-            options={[
-              { label: t('staff.roles.admin'), value: 'ADMIN' },
-              { label: t('staff.roles.user'), value: 'USER' },
-            ]}
-            allOptionLabel={t('owner.employees.allRoles')}
-            placeholder={formatInputPlaceholder(t('owner.employees.allRoles'), t('common.locale'))}
-          />
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <div className="w-full sm:w-40">
+            <SelectInput
+              value={filterStatus === 'ALL' ? null : filterStatus}
+              onChange={(val) => {
+                setFilterStatus((val as 'ALL' | 'ACTIVE' | 'INACTIVE') || 'ALL');
+                setCurrentPage(1);
+              }}
+              options={[
+                { label: t('common.active', 'Active'), value: 'ACTIVE' },
+                { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
+              ]}
+              allOptionLabel={t('common.allStatuses', 'All Statuses')}
+              placeholder={t('common.allStatuses', 'All Statuses')}
+            />
+          </div>
+          <div className="w-full sm:w-48">
+            <SelectInput
+              value={filterRole === 'ALL' ? null : filterRole}
+              onChange={(val) => {
+                setFilterRole((val as 'ALL' | 'ADMIN' | 'USER') || 'ALL');
+                setCurrentPage(1);
+              }}
+              options={[
+                { label: t('staff.roles.admin'), value: 'ADMIN' },
+                { label: t('staff.roles.user'), value: 'USER' },
+              ]}
+              allOptionLabel={t('owner.employees.allRoles')}
+              placeholder={formatInputPlaceholder(t('owner.employees.allRoles'), t('common.locale'))}
+            />
+          </div>
         </div>
       </div>
 
       {/* Main List */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
@@ -459,11 +485,11 @@ export function StaffPage() {
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm">
-                        {member.username.charAt(0).toUpperCase()}
+                        {getDisplayInitial(member.name, member.username)}
                       </div>
                       <div>
-                        <p className="font-bold text-gray-900 dark:text-white text-sm">{member.username}</p>
-                        <p className="text-xs text-gray-500">{member.name}</p>
+                        <p className="font-bold text-gray-900 dark:text-white text-sm">{member.name}</p>
+                        <p className="text-xs text-gray-500">{member.username}</p>
                       </div>
                     </div>
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
@@ -484,19 +510,17 @@ export function StaffPage() {
                       </div>
                     </div>
                     <div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('common.status.label', 'Status')}</p>
+                      <div className="flex items-center gap-1.5 text-xs font-bold">
+                         <span className={`px-2 py-0.5 rounded-md ${member.isActive ? 'bg-paymint-green/10 text-paymint-green' : 'bg-paymint-red/10 text-paymint-red'}`}>
+                           {member.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
+                         </span>
+                      </div>
+                    </div>
+                    <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.table.status')}</p>
-                      <div className={`flex items-center gap-2 font-bold text-xs ${!member.isActive
-                        ? 'text-paymint-red'
-                        : member.isClockedIn
-                          ? 'text-paymint-green'
-                          : 'text-gray-400'
-                        }`}>
-                        {!member.isActive ? (
-                          <>
-                            <XCircle size={12} />
-                            <span>{t('staff.status.suspended')}</span>
-                          </>
-                        ) : member.isClockedIn ? (
+                      <div className={`flex items-center gap-2 font-bold text-xs ${member.isClockedIn ? 'text-paymint-green' : 'text-gray-400'}`}>
+                        {member.isClockedIn ? (
                           <>
                             <div className="relative flex h-2 w-2">
                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
@@ -528,7 +552,7 @@ export function StaffPage() {
                       className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
                     >
                       <Trash2 size={14} />
-                      {t('common.delete')}
+                      {t('common.deactivate')}
                     </button>
                   </div>
                 </div>
@@ -559,6 +583,7 @@ export function StaffPage() {
                       </div>
                     </th>
                     <th className="px-6 py-4 text-center dashboard-card-label">{t('staff.table.contact')}</th>
+                    <th className="px-6 py-4 text-center dashboard-card-label">{t('common.status.label', 'Status')}</th>
                     <th
                       className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('status')}
@@ -581,11 +606,11 @@ export function StaffPage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
-                            {member.username.charAt(0).toUpperCase()}
+                            {getDisplayInitial(member.name, member.username)}
                           </div>
                           <div>
-                            <p className="font-bold text-gray-900 dark:text-white text-sm">{member.username}</p>
-                            <p className="text-xs text-gray-500">{member.name}</p>
+                            <p className="font-bold text-gray-900 dark:text-white text-sm">{member.name}</p>
+                            <p className="text-xs text-gray-500">{member.username}</p>
                           </div>
                         </div>
                       </td>
@@ -610,18 +635,13 @@ export function StaffPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <div className={`flex items-center justify-center gap-2 font-medium text-xs tracking-wide ${!member.isActive
-                          ? 'text-paymint-red'
-                          : member.isClockedIn
-                            ? 'text-paymint-green'
-                            : 'text-gray-400'
-                          }`}>
-                          {!member.isActive ? (
-                            <>
-                              <XCircle size={14} />
-                              <span>{t('staff.status.suspended')}</span>
-                            </>
-                          ) : member.isClockedIn ? (
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${member.isActive ? 'bg-paymint-green/10 text-paymint-green' : 'bg-paymint-red/10 text-paymint-red'}`}>
+                          {member.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <div className={`flex items-center justify-center gap-2 font-medium text-xs tracking-wide ${member.isClockedIn ? 'text-paymint-green' : 'text-gray-400'}`}>
+                          {member.isClockedIn ? (
                             <>
                               <div className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
@@ -679,7 +699,7 @@ export function StaffPage() {
                                 className="w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
                               >
                                 <Trash2 size={14} />
-                                <span>{t('common.delete')}</span>
+                                <span>{t('common.deactivate')}</span>
                               </button>
                             </PortalDropdown>
                           </div>

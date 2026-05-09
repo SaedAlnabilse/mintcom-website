@@ -43,16 +43,22 @@ const actionColors: Record<string, string> = {
   'Added product': 'bg-paymint-green/ text-paymint-green border-paymint-green/',
   'Updated product': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   'Deleted product': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Archived product': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
   'Removed product image': 'bg-orange-500/10 text-orange-500 border-orange-500/20',
   'Deleted all products': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Archived all products': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
   'Added category': 'bg-paymint-green/ text-paymint-green border-paymint-green/',
   'Updated category': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   'Deleted category': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Archived category': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Archived attribute group': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Archived sub-attribute': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
 
   // Staff
   'Added employee': 'bg-purple-500/10 text-purple-500 border-purple-500/20',
   'Updated employee': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   'Deleted employee': 'bg-gray-500/10 text-gray-500 border-gray-500/20',
+  'Deactivated employee': 'bg-gray-500/10 text-gray-500 border-gray-500/20',
 
   // Settings
   'Updated restaurant name': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
@@ -66,9 +72,11 @@ const actionColors: Record<string, string> = {
   'Added discount': 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
   'Updated discount': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   'Deleted discount': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Deactivated discount': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
   'Added payment method': 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
   'Updated payment method': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   'Deleted payment method': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Deactivated payment method': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
 };
 
 export function ActivityLogsPage() {
@@ -181,14 +189,20 @@ export function ActivityLogsPage() {
       'Added product': 'addProduct',
       'Updated product': 'updateProduct',
       'Deleted product': 'deleteProduct',
+      'Archived product': 'archiveProduct',
       'Removed product image': 'removeProductImage',
       'Deleted all products': 'deleteProduct', // fallback
+      'Archived all products': 'archiveAllProducts',
       'Added category': 'addCategory',
       'Updated category': 'updateCategory',
       'Deleted category': 'deleteCategory',
+      'Archived category': 'archiveCategory',
+      'Archived attribute group': 'archiveAttributeGroup',
+      'Archived sub-attribute': 'archiveSubAttribute',
       'Added employee': 'addEmployee',
       'Updated employee': 'updateEmployee',
       'Deleted employee': 'deleteEmployee',
+      'Deactivated employee': 'deactivateEmployee',
       'Updated restaurant name': 'updateName',
       'Updated working hours': 'updateHours',
       'Updated farewell message': 'updateMessage',
@@ -198,15 +212,22 @@ export function ActivityLogsPage() {
       'Added discount': 'addDiscount',
       'Updated discount': 'updateDiscount',
       'Deleted discount': 'deleteDiscount',
+      'Deactivated discount': 'deactivateDiscount',
       'Added payment method': 'addPayment',
       'Updated payment method': 'updatePayment',
-      'Deleted payment method': 'deletePayment'
+      'Deleted payment method': 'deletePayment',
+      'Deactivated payment method': 'deactivatePayment',
     };
     return map[action] || action.toLowerCase().replace(/ /g, '_');
   };
 
   const getActionColor = (action: string) => {
     return actionColors[action] || 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+  };
+
+  const getActionLabel = (action: string) => {
+    const translation = t(`activity.actions.${getActionKey(action)}`);
+    return translation.includes('activity.actions.') ? action : translation;
   };
 
   const getActorName = (log: ActivityLog) => {
@@ -304,27 +325,37 @@ export function ActivityLogsPage() {
                 value={actionFilter === 'all' ? null : actionFilter}
                 onChange={(val) => { setActionFilter(val || 'all'); setPage(1); }}
                 options={[
-                  { label: t('activity.actions.addProduct'), value: 'Added product' },
-                  { label: t('activity.actions.updateProduct'), value: 'Updated product' },
-                  { label: t('activity.actions.deleteProduct'), value: 'Deleted product' },
-                  { label: t('activity.actions.removeProductImage'), value: 'Removed product image' },
-                  { label: t('activity.actions.addCategory'), value: 'Added category' },
-                  { label: t('activity.actions.updateCategory'), value: 'Updated category' },
-                  { label: t('activity.actions.deleteCategory'), value: 'Deleted category' },
-                  { label: t('activity.actions.addEmployee'), value: 'Added employee' },
-                  { label: t('activity.actions.deleteEmployee'), value: 'Deleted employee' },
-                  { label: t('activity.actions.updateName'), value: 'Updated restaurant name' },
-                  { label: t('activity.actions.updateHours'), value: 'Updated working hours' },
-                  { label: t('activity.actions.updateMessage'), value: 'Updated farewell message' },
-                  { label: t('activity.actions.updateLogo'), value: 'Updated restaurant logo' },
-                  { label: t('activity.actions.updateTax'), value: 'Updated tax rate' },
-                  { label: t('activity.actions.updateLoyalty'), value: 'Updated loyalty program' },
-                  { label: t('activity.actions.addDiscount'), value: 'Added discount' },
-                  { label: t('activity.actions.updateDiscount'), value: 'Updated discount' },
-                  { label: t('activity.actions.deleteDiscount'), value: 'Deleted discount' },
-                  { label: t('activity.actions.addPayment'), value: 'Added payment method' },
-                  { label: t('activity.actions.updatePayment'), value: 'Updated payment method' },
-                  { label: t('activity.actions.deletePayment'), value: 'Deleted payment method' },
+                  { label: getActionLabel('Added product'), value: 'Added product' },
+                  { label: getActionLabel('Updated product'), value: 'Updated product' },
+                  { label: getActionLabel('Deleted product'), value: 'Deleted product' },
+                  { label: getActionLabel('Archived product'), value: 'Archived product' },
+                  { label: getActionLabel('Removed product image'), value: 'Removed product image' },
+                  { label: getActionLabel('Deleted all products'), value: 'Deleted all products' },
+                  { label: getActionLabel('Archived all products'), value: 'Archived all products' },
+                  { label: getActionLabel('Added category'), value: 'Added category' },
+                  { label: getActionLabel('Updated category'), value: 'Updated category' },
+                  { label: getActionLabel('Deleted category'), value: 'Deleted category' },
+                  { label: getActionLabel('Archived category'), value: 'Archived category' },
+                  { label: getActionLabel('Archived attribute group'), value: 'Archived attribute group' },
+                  { label: getActionLabel('Archived sub-attribute'), value: 'Archived sub-attribute' },
+                  { label: getActionLabel('Added employee'), value: 'Added employee' },
+                  { label: getActionLabel('Updated employee'), value: 'Updated employee' },
+                  { label: getActionLabel('Deleted employee'), value: 'Deleted employee' },
+                  { label: getActionLabel('Deactivated employee'), value: 'Deactivated employee' },
+                  { label: getActionLabel('Updated restaurant name'), value: 'Updated restaurant name' },
+                  { label: getActionLabel('Updated working hours'), value: 'Updated working hours' },
+                  { label: getActionLabel('Updated farewell message'), value: 'Updated farewell message' },
+                  { label: getActionLabel('Updated restaurant logo'), value: 'Updated restaurant logo' },
+                  { label: getActionLabel('Updated tax rate'), value: 'Updated tax rate' },
+                  { label: getActionLabel('Updated loyalty program'), value: 'Updated loyalty program' },
+                  { label: getActionLabel('Added discount'), value: 'Added discount' },
+                  { label: getActionLabel('Updated discount'), value: 'Updated discount' },
+                  { label: getActionLabel('Deleted discount'), value: 'Deleted discount' },
+                  { label: getActionLabel('Deactivated discount'), value: 'Deactivated discount' },
+                  { label: getActionLabel('Added payment method'), value: 'Added payment method' },
+                  { label: getActionLabel('Updated payment method'), value: 'Updated payment method' },
+                  { label: getActionLabel('Deleted payment method'), value: 'Deleted payment method' },
+                  { label: getActionLabel('Deactivated payment method'), value: 'Deactivated payment method' },
                 ]}
                 allOptionLabel={t('activity.allActions')}
                 placeholder={formatInputPlaceholder(t('activity.allActions'), t('common.locale'))}
@@ -334,7 +365,7 @@ export function ActivityLogsPage() {
             {/* Date Filters Container - Split for visual feedback */}
             <div className="flex items-center gap-3">
               {/* Presets Dropdown */}
-              <div className={`w-40 rounded-2xl transition-all ${activePreset !== 'custom' ? 'ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : ''}`}>
+              <div className="w-40 rounded-2xl transition-all">
                 <SingleSelect
                   value={activePreset === 'custom' ? null : activePreset}
                   onChange={(val) => {
@@ -417,7 +448,7 @@ export function ActivityLogsPage() {
                       </div>
                     </div>
                     <span className={`inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black tracking-widest border ${getActionColor(log.action)}`}>
-                      {(translation => translation.includes('activity.actions.') ? log.action : translation)(t(`activity.actions.${getActionKey(log.action)}`))}
+                      {getActionLabel(log.action)}
                     </span>
                   </div>
 
@@ -523,7 +554,7 @@ export function ActivityLogsPage() {
                       </td>
                       <td className="px-8 py-4 text-center">
                         <span className={`inline-flex px-2 py-0.5 rounded-lg label-strong font-outfit border ${getActionColor(log.action)}`}>
-                          {(translation => translation.includes('activity.actions.') ? log.action : translation)(t(`activity.actions.${getActionKey(log.action)}`))}
+                          {getActionLabel(log.action)}
                         </span>
                       </td>
                       <td className="px-8 py-4 text-center">
@@ -575,7 +606,7 @@ export function ActivityLogsPage() {
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('activity.logDetails')}</h2>
-                    <p className="label-strong font-outfit text-paymint-green">{selectedLog.action ? ((translation => translation.includes('activity.actions.') ? selectedLog.action : translation)(t(`activity.actions.${getActionKey(selectedLog.action)}`))) : ''}</p>
+                    <p className="label-strong font-outfit text-paymint-green">{selectedLog.action ? getActionLabel(selectedLog.action) : ''}</p>
                   </div>
                 </div>
                 <button onClick={() => setSelectedLog(null)} className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-black dark:hover:text-white transition-colors">

@@ -47,6 +47,7 @@ export function SingleSelect({
     const containerRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const optionsListRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
 
     const effectivePlaceholder = formatInputPlaceholder(placeholder || t('common.all'), t('common.locale'));
@@ -152,6 +153,17 @@ export function SingleSelect({
         opt.label.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const frameId = window.requestAnimationFrame(() => {
+            const selectedOptionElement = optionsListRef.current?.querySelector<HTMLElement>('[data-selected="true"]');
+            selectedOptionElement?.scrollIntoView({ block: 'nearest' });
+        });
+
+        return () => window.cancelAnimationFrame(frameId);
+    }, [isOpen, value, searchQuery, filteredOptions.length]);
+
     const dropdownContent = (
         <AnimatePresence>
             {isOpen && (
@@ -189,12 +201,13 @@ export function SingleSelect({
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                    <div ref={optionsListRef} className="flex-1 overflow-y-auto custom-scrollbar">
                         {/* "All" Option */}
                         {showAllOption && !searchQuery && (
                             <button
                                 type="button"
                                 onClick={() => handleSelect(null)}
+                                data-selected={!value}
                                 className={`w-full px-5 py-3.5 text-start flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${!value ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-900 dark:text-gray-200'
                                     }`}
                             >
@@ -217,6 +230,7 @@ export function SingleSelect({
                                         key={opt.value}
                                         type="button"
                                         onClick={() => handleSelect(opt.value)}
+                                        data-selected={isSelected}
                                         className={`w-full px-5 py-3.5 text-start flex items-start justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${isSelected ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-900 dark:text-gray-200'
                                             }`}
                                     >

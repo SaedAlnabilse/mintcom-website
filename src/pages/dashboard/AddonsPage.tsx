@@ -23,7 +23,7 @@ import toast from 'react-hot-toast';
 import api from '../../config/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
-import { Pagination } from '../../components/ui';
+import { Pagination, SelectInput } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { QuickInfo } from '../../components/QuickInfo';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
@@ -33,6 +33,8 @@ interface SubAttribute {
   name: string;
   price: number;
   isAvailable: boolean;
+  isActive?: boolean;
+  deletedAt?: string | null;
   attributeId: string;
 }
 
@@ -41,8 +43,13 @@ interface Attribute {
   name: string;
   inputType: 'SINGLE_SELECT' | 'MULTI_SELECT';
   isRequired: boolean;
+  isActive?: boolean;
+  deletedAt?: string | null;
+  deactivatedAt?: string | null;
   subAttributes: SubAttribute[];
 }
+
+type StatusFilterValue = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
 export function AddonsPage() {
   const { t } = useTranslation();
@@ -68,6 +75,7 @@ export function AddonsPage() {
   const [filterSelection, setFilterSelection] = useState<string>('ALL');
   const [filterRequirement, setFilterRequirement] = useState<string>('ALL');
   const [filterPricing, setFilterPricing] = useState<string>('ALL');
+  const [filterStatus, setFilterStatus] = useState<StatusFilterValue>('ACTIVE');
 
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -97,6 +105,12 @@ export function AddonsPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const isAttributeActive = (attribute: Attribute) =>
+    attribute.isActive !== false && !attribute.deletedAt && !attribute.deactivatedAt;
+
+  const isSubAttributeActive = (subAttribute: SubAttribute) =>
+    subAttribute.isActive !== false && !subAttribute.deletedAt;
+
   useEffect(() => {
     fetchAttributes();
   }, []);
@@ -104,7 +118,9 @@ export function AddonsPage() {
   const fetchAttributes = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get('/api/attributes');
+      const response = await api.get('/api/attributes', {
+        params: { includeInactive: true },
+      });
       setAttributes(response.data || []);
     } catch {
       toast.error(t('attributes.errors.failedToLoad'));
@@ -126,15 +142,18 @@ export function AddonsPage() {
       const matchesSearch = attr.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesSelection = filterSelection === 'ALL' || attr.inputType === filterSelection;
       const matchesRequirement = filterRequirement === 'ALL' || (filterRequirement === 'MANDATORY' ? attr.isRequired : !attr.isRequired);
+      const matchesStatus =
+        filterStatus === 'ALL' ||
+        (filterStatus === 'ACTIVE' ? isAttributeActive(attr) : !isAttributeActive(attr));
       
       const subAttributes = Array.isArray(attr.subAttributes) ? attr.subAttributes : [];
       const hasPaid = subAttributes.some(sub => Number(sub.price) > 0);
       const hasFree = subAttributes.some(sub => Number(sub.price) === 0);
       const matchesPricing = filterPricing === 'ALL' || (filterPricing === 'PAID' ? hasPaid : hasFree);
 
-      return matchesSearch && matchesSelection && matchesRequirement && matchesPricing;
+      return matchesSearch && matchesSelection && matchesRequirement && matchesPricing && matchesStatus;
     });
-  }, [attributes, searchQuery, filterSelection, filterRequirement, filterPricing]);
+  }, [attributes, searchQuery, filterSelection, filterRequirement, filterPricing, filterStatus]);
 
   const totalPages = Math.ceil(filteredAttributes.length / itemsPerPage);
   const paginatedAttributes = useMemo(() => {
@@ -246,26 +265,11 @@ export function AddonsPage() {
   };
 
   const handleDeleteAttribute = (attribute: Attribute) => {
-    const subCount = attribute.subAttributes?.length || 0;
-
-    if (subCount > 0) {
-      setConfirmConfig({
-        isOpen: true,
-        title: t('attributes.errors.deletionBlocked'),
-        message: t('attributes.errors.deletionBlockedMsg', { name: attribute.name, count: subCount }),
-        confirmText: t('common.ok'),
-        showCancel: false,
-        type: 'warning',
-        onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false })),
-      });
-      return;
-    }
-
     setConfirmConfig({
       isOpen: true,
       title: t('attributes.confirm.deleteGroupTitle'),
       message: t('attributes.confirm.deleteGroupMessage', { name: attribute.name }),
-      confirmText: t('common.delete'),
+      confirmText: t('common.archive'),
       type: 'danger',
       onConfirm: async () => {
         try {
@@ -285,7 +289,7 @@ export function AddonsPage() {
       isOpen: true,
       title: t('attributes.confirm.deleteOptionTitle'),
       message: t('attributes.confirm.deleteOptionMessage', { name: sub.name }),
-      confirmText: t('common.delete'),
+      confirmText: t('common.archive'),
       type: 'danger',
       onConfirm: async () => {
         try {
@@ -404,7 +408,24 @@ export function AddonsPage() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-gray-400 dark:text-gray-500 tracking-widest px-1">{t('common.status.label', 'Status')}</p>
+            <SelectInput
+              value={filterStatus === 'ALL' ? null : filterStatus}
+              onChange={(value) => {
+                setFilterStatus((value as StatusFilterValue) || 'ALL');
+                setPage(1);
+              }}
+              options={[
+                { label: t('common.active', 'Active'), value: 'ACTIVE' },
+                { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
+              ]}
+              allOptionLabel={t('common.allStatuses', 'All Statuses')}
+              placeholder={t('common.allStatuses', 'All Statuses')}
+            />
+          </div>
+
           {/* Selection Filter */}
           <div className="space-y-2">
             <p className="text-xs font-medium text-gray-400 dark:text-gray-500 tracking-widest px-1">{t('attributes.filters.selection')}</p>
@@ -461,6 +482,7 @@ export function AddonsPage() {
               setFilterSelection('ALL');
               setFilterRequirement('ALL');
               setFilterPricing('ALL');
+              setFilterStatus('ACTIVE');
               setSearchQuery('');
               setPage(1);
             }}
@@ -492,7 +514,9 @@ export function AddonsPage() {
               <div
                 key={attr.id}
                 id={`group-${attr.id}`}
-                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden hover:shadow-sm transition-all duration-300"
+                className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden transition-all duration-300 ${
+                  isAttributeActive(attr) ? 'hover:shadow-sm' : 'opacity-75'
+                }`}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -510,6 +534,13 @@ export function AddonsPage() {
                         {attr.isRequired && (
                           <span className="label-strong font-outfit px-2 py-0.5 bg-paymint-green/10 text-paymint-green rounded-md border border-paymint-green/20">{t('attributes.list.mandatory')}</span>
                         )}
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
+                          isAttributeActive(attr)
+                            ? 'bg-paymint-green/10 text-paymint-green'
+                            : 'bg-paymint-red/10 text-paymint-red'
+                        }`}>
+                          {isAttributeActive(attr) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
+                        </span>
                       </div>
                       <p className="text-xs font-medium text-gray-400 tracking-widest mt-1 uppercase capitalize-none">
                         {attr.inputType === 'SINGLE_SELECT' ? t('attributes.list.singleChoice') : t('attributes.list.multipleChoice')} &bull; {attr.subAttributes?.length || 0}
@@ -533,7 +564,7 @@ export function AddonsPage() {
                       <button onClick={(e) => { e.stopPropagation(); openAttributeModal(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-colors" title={t('common.edit')}>
                         <Edit2 size={16} />
                       </button>
-                      <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-red hover:border-paymint-red/30 transition-colors" title={t('common.delete')}>
+                      <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-red hover:border-paymint-red/30 transition-colors" title={t('common.archive')}>
                         <Trash2 size={16} />
                       </button>
                     </div>
@@ -573,7 +604,16 @@ export function AddonsPage() {
                         .map((sub) => (
                           <div key={sub.id} className="flex items-center justify-between p-4 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 group/sub hover:border-paymint-green/30 transition-all shadow-sm">
                             <div>
-                              <p className="font-bold text-gray-900 dark:text-white text-base">{sub.name}</p>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <p className="font-bold text-gray-900 dark:text-white text-base">{sub.name}</p>
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                                  isSubAttributeActive(sub)
+                                    ? 'bg-paymint-green/10 text-paymint-green'
+                                    : 'bg-paymint-red/10 text-paymint-red'
+                                }`}>
+                                  {isSubAttributeActive(sub) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
+                                </span>
+                              </div>
                               <p className="text-xs font-medium text-paymint-green mt-1">
                                 {Number(sub.price) > 0 ? `+${formatAmount(Number(sub.price))}` : t('attributes.list.complimentary')}
                               </p>
@@ -582,7 +622,7 @@ export function AddonsPage() {
                               <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10" title={t('common.edit')}>
                                 <Edit2 size={14} />
                               </button>
-                              <button onClick={() => handleDeleteSubAttribute(sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10" title={t('common.delete')}>
+                              <button onClick={() => handleDeleteSubAttribute(sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10" title={t('common.archive')}>
                                 <Trash2 size={14} />
                               </button>
                             </div>

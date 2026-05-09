@@ -18,20 +18,27 @@ interface TourGuideProps {
   onComplete: () => void;
 }
 
+const TOOLTIP_TARGET_WIDTH = 420;
+const TOOLTIP_PADDING = 20;
+const HIGHLIGHT_PADDING = 12;
+
 export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps) => {
   const { t } = useTranslation();
   const isRTL = t('common.locale') === 'ar';
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const [tooltipHeight, setTooltipHeight] = useState(200);
+  const [tooltipWidth, setTooltipWidth] = useState(TOOLTIP_TARGET_WIDTH);
 
   const currentStep = steps[currentStepIndex];
   const isLastStep = currentStepIndex === steps.length - 1;
 
-  // Ref to measure tooltip height
+  // Ref to measure tooltip dimensions
   const tooltipRef = useCallback((node: HTMLDivElement | null) => {
     if (node !== null) {
-      setTooltipHeight(node.getBoundingClientRect().height);
+      const rect = node.getBoundingClientRect();
+      setTooltipHeight(rect.height);
+      setTooltipWidth(rect.width);
     }
   }, []);
 
@@ -89,11 +96,11 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                   <mask id="tour-mask" x="0" y="0" width="100%" height="100%">
                     <rect x="0" y="0" width="100%" height="100%" fill="white" />
                     <rect
-                      x={targetRect.left - 8}
-                      y={targetRect.top - 8}
-                      width={targetRect.width + 16}
-                      height={targetRect.height + 16}
-                      rx="12"
+                      x={targetRect.left - HIGHLIGHT_PADDING}
+                      y={targetRect.top - HIGHLIGHT_PADDING}
+                      width={targetRect.width + (HIGHLIGHT_PADDING * 2)}
+                      height={targetRect.height + (HIGHLIGHT_PADDING * 2)}
+                      rx="20"
                       fill="black"
                     />
                   </mask>
@@ -108,11 +115,11 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                 />
                 {/* Highlight Border */}
                 <rect
-                  x={targetRect.left - 8}
-                  y={targetRect.top - 8}
-                  width={targetRect.width + 16}
-                  height={targetRect.height + 16}
-                  rx="12"
+                  x={targetRect.left - HIGHLIGHT_PADDING}
+                  y={targetRect.top - HIGHLIGHT_PADDING}
+                  width={targetRect.width + (HIGHLIGHT_PADDING * 2)}
+                  height={targetRect.height + (HIGHLIGHT_PADDING * 2)}
+                  rx="20"
                   fill="none"
                   stroke="#00D084" // paymint-green
                   strokeWidth="2"
@@ -131,36 +138,36 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
               animate={{ opacity: 1, y: 0, scale: 1 }}
               key={currentStepIndex}
               dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-              className="absolute z-[10000] w-80 bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-5"
+              className="absolute z-[10000] w-[420px] max-w-[calc(100vw-40px)] bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-5"
               style={{
                 // Enhanced positioning logic
                 top: (() => {
                   if (currentStep.position === 'left' || currentStep.position === 'right') {
-                    return Math.min(Math.max(20, targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2)), window.innerHeight - tooltipHeight - 20);
+                    return Math.min(Math.max(TOOLTIP_PADDING, targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2)), window.innerHeight - tooltipHeight - TOOLTIP_PADDING);
                   }
                   
                   const pos = currentStep.position as string;
-                  const targetBottom = targetRect.bottom + tooltipHeight + 20;
+                  const targetBottom = targetRect.bottom + tooltipHeight + TOOLTIP_PADDING + HIGHLIGHT_PADDING;
                   const showAtTop = pos === 'top' || 
                                    (pos !== 'left' && 
                                     pos !== 'right' && 
                                     !(targetBottom < window.innerHeight));
                   
                   if (showAtTop) {
-                    return Math.max(20, targetRect.top - tooltipHeight - 12);
+                    return Math.max(TOOLTIP_PADDING, targetRect.top - tooltipHeight - HIGHLIGHT_PADDING - 12);
                   }
                   
-                  return targetRect.bottom + 12;
+                  return targetRect.bottom + HIGHLIGHT_PADDING + 12;
                 })(),
                 left: (() => {
                   if (currentStep.position === 'left') {
-                    return targetRect.left - 340;
+                    return Math.max(TOOLTIP_PADDING, targetRect.left - tooltipWidth - HIGHLIGHT_PADDING - 20);
                   }
                   if (currentStep.position === 'right') {
-                    return targetRect.right + 20;
+                    return Math.min(window.innerWidth - tooltipWidth - TOOLTIP_PADDING, targetRect.right + HIGHLIGHT_PADDING + 20);
                   }
                   // Default, 'top', or 'bottom'
-                  return Math.min(Math.max(20, targetRect.left + (targetRect.width / 2) - 160), window.innerWidth - 340);
+                  return Math.min(Math.max(TOOLTIP_PADDING, targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2)), window.innerWidth - tooltipWidth - TOOLTIP_PADDING);
                 })()
               }}
             >

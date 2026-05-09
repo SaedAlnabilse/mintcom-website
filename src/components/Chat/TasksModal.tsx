@@ -23,15 +23,15 @@ interface TaskItem {
   estimateMinutes: number;
 }
 
-const STORAGE_KEY = 'paymint.widget.tasks.v1';
+const getTasksStorageKey = (contextId: string) => `paymint.widget.tasks.v1.${contextId}`;
 
-function readCompletedState(): Record<string, boolean> {
+function readCompletedState(storageKey: string): Record<string, boolean> {
   if (typeof window === 'undefined') {
     return {};
   }
 
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(storageKey);
     if (!raw) {
       return {};
     }
@@ -76,6 +76,10 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
     const match = location.pathname.match(/^\/dashboard\/([^/]+)/);
     return match ? match[1] : null;
   }, [location.pathname]);
+  const storageKey = useMemo(
+    () => getTasksStorageKey(dashboardSlug ? `dashboard-${dashboardSlug}` : 'global'),
+    [dashboardSlug],
+  );
 
   const dashboardRoute = useCallback((suffix: string, fallback: string) =>
     dashboardSlug ? `/dashboard/${dashboardSlug}${suffix}` : fallback,
@@ -170,8 +174,8 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
   ], [t, dashboardRoute]);
 
   useEffect(() => {
-    setCompletedById(readCompletedState());
-  }, []);
+    setCompletedById(readCompletedState(storageKey));
+  }, [storageKey]);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -179,12 +183,12 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
     }
 
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(completedById));
+      window.localStorage.setItem(storageKey, JSON.stringify(completedById));
       window.dispatchEvent(new Event('paymint-tasks-updated'));
     } catch {
       // No-op if storage is unavailable.
     }
-  }, [completedById]);
+  }, [completedById, storageKey]);
 
   useEffect(() => {
     if (!isOpen || tasks.length === 0) {

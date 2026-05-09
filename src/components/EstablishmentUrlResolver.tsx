@@ -3,6 +3,12 @@ import { useParams, useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext';
 import { LoadingFallback } from './LoadingFallback';
 
+const LOCKED_SUBSCRIPTION_STATUSES = new Set([
+    'CANCELED',
+    'SUSPENDED',
+    'TRIAL_EXPIRED',
+]);
+
 export function EstablishmentUrlResolver({ children }: { children: React.ReactNode }) {
     const {
         establishments,
@@ -106,7 +112,10 @@ export function EstablishmentUrlResolver({ children }: { children: React.ReactNo
     }
 
     const isBillingPage = location.pathname.includes('/billing');
-    if (currentEstablishment.subscriptionStatus === 'CANCELED' && !isBillingPage) {
+    if (
+        LOCKED_SUBSCRIPTION_STATUSES.has(currentEstablishment.subscriptionStatus) &&
+        !isBillingPage
+    ) {
         const basePath = `/dashboard/${locationSlug}`;
         return <Navigate to={`${basePath}/billing`} replace />;
     }
