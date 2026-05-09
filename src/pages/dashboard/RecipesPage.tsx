@@ -9,7 +9,8 @@ import {
   Edit2,
   Trash2,
   X,
-  ChevronDown
+  ChevronDown,
+  RefreshCcw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -62,6 +63,8 @@ interface RawMaterial {
   quantity: number;
   costPerUnit: number;
   lowStockThreshold?: number;
+  isActive?: boolean;
+  deactivatedAt?: string | null;
 }
 
 interface SubRecipeIngredient {
@@ -78,6 +81,8 @@ interface SubRecipe {
   yieldUnit: string;
   quantity: number;
   ingredients: SubRecipeIngredient[];
+  isActive?: boolean;
+  deactivatedAt?: string | null;
 }
 
 interface FinalRecipeIngredient {
@@ -90,15 +95,53 @@ interface FinalRecipeIngredient {
 
 interface FinalRecipe {
   id: string;
-  itemId: string;
+  itemId?: string;
+  subAttributeId?: string;
   item?: { name: string };
+  subAttribute?: { name: string; attribute?: { name: string } };
   ingredients: FinalRecipeIngredient[];
+  version?: number;
+  isActive?: boolean;
+  deactivatedAt?: string | null;
 }
 
 interface MenuItem {
   id: string;
   name: string;
+  type: 'product' | 'addon';
+  groupName?: string;
+  isActive?: boolean;
+  isAvailable?: boolean;
+  deactivatedAt?: string | null;
 }
+
+interface AttributeGroup {
+  id: string;
+  name: string;
+  isActive?: boolean;
+  deactivatedAt?: string | null;
+  subAttributes?: Array<{
+    id: string;
+    name: string;
+    price?: number;
+    isActive?: boolean;
+    isAvailable?: boolean;
+    deactivatedAt?: string | null;
+  }>;
+}
+
+type StatusFilter = 'ALL' | 'ACTIVE' | 'INACTIVE';
+
+const isEntityActive = (entity: { isActive?: boolean; deactivatedAt?: string | null }) =>
+  entity.isActive !== false && !entity.deactivatedAt;
+
+const getFinalRecipeTargetId = (recipe: FinalRecipe) =>
+  recipe.itemId || recipe.subAttributeId || '';
+
+const getFinalRecipeTargetName = (recipe: FinalRecipe) =>
+  recipe.item?.name ||
+  recipe.subAttribute?.name ||
+  'Unknown target';
 
 export function RecipesPage() {
   const { t } = useTranslation();
@@ -113,6 +156,7 @@ export function RecipesPage() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
   const [page, setPage] = useState(1);
   const itemsPerPage = 9;
 
@@ -167,16 +211,44 @@ export function RecipesPage() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const [subRes, finalRes, materialsRes, itemsRes] = await Promise.all([
-        api.get('/api/manufacturing/sub-recipes'),
-        api.get('/api/manufacturing/final-recipes'),
-        api.get('/api/manufacturing/raw-materials'),
+      const [subRes, finalRes, materialsRes, itemsRes, attributesRes] = await Promise.all([
+        api.get('/api/manufacturing/sub-recipes', { params: { includeInactive: true } }),
+        api.get('/api/manufacturing/final-recipes', { params: { includeInactive: true } }),
+        api.get('/api/manufacturing/raw-materials', { params: { includeInactive: true } }),
         api.get('/api/items'),
+        api.get('/api/attributes', { params: { includeInactive: true } }),
       ]);
+      const itemsData = Array.isArray(itemsRes.data) ? itemsRes.data : itemsRes.data?.items || [];
+      const attributesData: AttributeGroup[] = Array.isArray(attributesRes.data)
+        ? attributesRes.data
+        : attributesRes.data?.items || [];
+      const productTargets = itemsData.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        type: 'product' as const,
+        groupName: item.category?.name,
+        isActive: item.isAvailable ?? item.isActive,
+        isAvailable: item.isAvailable ?? item.isActive,
+        deactivatedAt: item.deactivatedAt,
+      }));
+      const addonTargets = attributesData.flatMap((attribute) =>
+        (attribute.subAttributes || []).map((option) => ({
+          id: option.id,
+          name: option.name,
+          type: 'addon' as const,
+          groupName: attribute.name,
+          isActive:
+            option.isActive !== false &&
+            option.isAvailable !== false &&
+            attribute.isActive !== false,
+          isAvailable: option.isAvailable,
+          deactivatedAt: option.deactivatedAt || attribute.deactivatedAt,
+        })),
+      );
       setSubRecipes(subRes.data || []);
       setFinalRecipes(finalRes.data || []);
       setRawMaterials(materialsRes.data || []);
-      setMenuItems(itemsRes.data || []);
+      setMenuItems([...productTargets, ...addonTargets]);
     } catch {
       toast.error(t('manufacturing.messages.syncFailed'));
     } finally {
@@ -184,9 +256,18 @@ export function RecipesPage() {
     }
   };
 
-  const filteredMaterials = useMemo(() => (Array.isArray(rawMaterials) ? rawMaterials : []).filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase())), [rawMaterials, searchQuery]);
-  const filteredSub = useMemo(() => (Array.isArray(subRecipes) ? subRecipes : []).filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase())), [subRecipes, searchQuery]);
-  const filteredFinal = useMemo(() => (Array.isArray(finalRecipes) ? finalRecipes : []).filter(r => r.item?.name?.toLowerCase().includes(searchQuery.toLowerCase())), [finalRecipes, searchQuery]);
+  const matchesStatus = (entity: { isActive?: boolean; deactivatedAt?: string | null }) => {
+    if (statusFilter === 'ALL') return true;
+    const active = isEntityActive(entity);
+    return statusFilter === 'ACTIVE' ? active : !active;
+  };
+
+  const activeRawMaterials = useMemo(() => (Array.isArray(rawMaterials) ? rawMaterials : []).filter(isEntityActive), [rawMaterials]);
+  const activeSubRecipes = useMemo(() => (Array.isArray(subRecipes) ? subRecipes : []).filter(isEntityActive), [subRecipes]);
+
+  const filteredMaterials = useMemo(() => (Array.isArray(rawMaterials) ? rawMaterials : []).filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase()) && matchesStatus(r)), [rawMaterials, searchQuery, statusFilter]);
+  const filteredSub = useMemo(() => (Array.isArray(subRecipes) ? subRecipes : []).filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase()) && matchesStatus(r)), [subRecipes, searchQuery, statusFilter]);
+  const filteredFinal = useMemo(() => (Array.isArray(finalRecipes) ? finalRecipes : []).filter(r => getFinalRecipeTargetName(r).toLowerCase().includes(searchQuery.toLowerCase()) && matchesStatus(r)), [finalRecipes, searchQuery, statusFilter]);
 
   const totalPages = Math.ceil(((activeTab === 'materials' ? filteredMaterials : activeTab === 'final' ? filteredFinal : filteredSub) || []).length / itemsPerPage);
   const paginatedItems = useMemo(() => {
@@ -195,7 +276,14 @@ export function RecipesPage() {
     return (Array.isArray(items) ? items : []).slice(start, start + itemsPerPage);
   }, [activeTab, filteredMaterials, filteredFinal, filteredSub, page]);
 
-  const products = (Array.isArray(menuItems) ? menuItems : []).filter(p => !(Array.isArray(finalRecipes) ? finalRecipes : []).some(r => r.itemId === p.id) || (editingRecipe as Record<string, any>)?.itemId === p.id);
+  const editingFinalTargetId = editingRecipe && ('itemId' in editingRecipe || 'subAttributeId' in editingRecipe)
+    ? getFinalRecipeTargetId(editingRecipe as FinalRecipe)
+    : '';
+  const products = (Array.isArray(menuItems) ? menuItems : []).filter((p) =>
+    isEntityActive(p) &&
+    (!(Array.isArray(finalRecipes) ? finalRecipes : []).some((r) => getFinalRecipeTargetId(r) === p.id && isEntityActive(r)) ||
+      editingFinalTargetId === p.id)
+  );
 
   const handleMaterialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -219,11 +307,24 @@ export function RecipesPage() {
 
   const handleDeleteMaterial = async (id: string, name: string) => {
     setConfirmConfig({
-      isOpen: true, title: t('inventory.messages.removeTitle', {defaultValue: 'Remove Ingredient'}), message: t('inventory.messages.deleteConfirm', { name, defaultValue: `Delete ${name}?` }), type: 'danger',
+      isOpen: true,
+      title: t('inventory.messages.removeTitle', {defaultValue: 'Archive Ingredient'}),
+      message: t('inventory.messages.deleteConfirm', { name, defaultValue: `Archive ${name}? If it has recipe or stock history, it will become inactive instead of being deleted.` }),
+      type: 'warning',
       onConfirm: async () => {
-        try { await api.delete(`/api/manufacturing/raw-materials/${id}`); toast.success(t('inventory.messages.removed', {defaultValue: 'Removed successfully'})); fetchData(); } catch { toast.error(t('inventory.messages.deleteFailed', {defaultValue: 'Failed to delete'})); }
+        try { await api.delete(`/api/manufacturing/raw-materials/${id}`); toast.success(t('inventory.messages.removed', {defaultValue: 'Archived successfully'})); fetchData(); } catch { toast.error(t('inventory.messages.deleteFailed', {defaultValue: 'Failed to archive'})); }
       }
     });
+  };
+
+  const handleReactivateMaterial = async (id: string) => {
+    try {
+      await api.post(`/api/manufacturing/raw-materials/${id}/reactivate`);
+      toast.success(t('common.active', { defaultValue: 'Active' }));
+      fetchData();
+    } catch {
+      toast.error(t('common.error'));
+    }
   };
 
   const openEditSubRecipe = (recipe: SubRecipe) => {
@@ -254,7 +355,7 @@ export function RecipesPage() {
   const openEditFinalRecipe = (recipe: FinalRecipe) => {
     setEditingRecipe(recipe);
     setFinalRecipeForm({
-      itemId: recipe.itemId,
+      itemId: getFinalRecipeTargetId(recipe),
       ingredients: recipe.ingredients.map(ing => {
         const baseUnit = ing.rawMaterialId ? ing.rawMaterial?.unit : ing.subRecipe?.yieldUnit;
         let unit = baseUnit || 'Units';
@@ -314,8 +415,30 @@ export function RecipesPage() {
     }
     setIsSubmitting(true);
     try {
-      if (editingRecipe) await api.put(`/api/manufacturing/final-recipes/${editingRecipe.id}`, finalRecipeForm);
-      else await api.post('/api/manufacturing/final-recipes', finalRecipeForm);
+      const selectedTarget = menuItems.find((item) => item.id === finalRecipeForm.itemId);
+      const ingredients = finalRecipeForm.ingredients.map((ing) => ({
+        rawMaterialId: ing.rawMaterialId || undefined,
+        subRecipeId: ing.subRecipeId || undefined,
+        quantity: ing.quantity,
+      }));
+
+      if (editingRecipe) {
+        await api.put(`/api/manufacturing/final-recipes/${editingRecipe.id}`, {
+          ingredients,
+        });
+      } else {
+        if (!selectedTarget) {
+          setErrors({ itemId: t('common.required') });
+          return;
+        }
+        const targetPayload = selectedTarget?.type === 'addon'
+          ? { subAttributeId: finalRecipeForm.itemId }
+          : { itemId: finalRecipeForm.itemId };
+        await api.post('/api/manufacturing/final-recipes', {
+          ...targetPayload,
+          ingredients,
+        });
+      }
       toast.success(t('manufacturing.messages.saveSuccess'));
       setShowFinalRecipeModal(false);
       fetchData();
@@ -344,9 +467,9 @@ export function RecipesPage() {
   const handleDeleteRecipe = async (id: string, type: 'sub' | 'final') => {
     setConfirmConfig({
       isOpen: true,
-      title: t('common.delete'),
-      message: t('manufacturing.messages.deleteConfirm'),
-      type: 'danger',
+      title: t('common.archive', { defaultValue: 'Archive' }),
+      message: t('manufacturing.messages.deleteConfirm', { defaultValue: 'Archive this recipe operation? If it has sales, stock, or recipe history, it will become inactive instead of being deleted.' }),
+      type: 'warning',
       onConfirm: async () => {
         try {
           await api.delete(`/api/manufacturing/${type === 'sub' ? 'sub-recipes' : 'final-recipes'}/${id}`);
@@ -357,6 +480,16 @@ export function RecipesPage() {
         }
       }
     });
+  };
+
+  const handleReactivateRecipe = async (id: string, type: 'sub' | 'final') => {
+    try {
+      await api.post(`/api/manufacturing/${type === 'sub' ? 'sub-recipes' : 'final-recipes'}/${id}/reactivate`);
+      toast.success(t('common.active', { defaultValue: 'Active' }));
+      fetchData();
+    } catch (error) {
+      toast.error(extractErrorMessage(error) || t('common.error'));
+    }
   };
 
   return (
@@ -421,6 +554,17 @@ export function RecipesPage() {
             className="w-full"
           />
         </div>
+        <div className="w-full md:w-52">
+          <CustomSelect
+            value={statusFilter}
+            onChange={(value) => { setStatusFilter(value as StatusFilter); setPage(1); }}
+            options={[
+              { label: t('common.allStatuses', { defaultValue: 'All statuses' }), value: 'ALL' },
+              { label: t('common.active', { defaultValue: 'Active' }), value: 'ACTIVE' },
+              { label: t('common.inactive', { defaultValue: 'Inactive' }), value: 'INACTIVE' },
+            ]}
+          />
+        </div>
         <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl overflow-x-auto hide-scrollbar">
           <button onClick={() => { setActiveTab('materials'); setPage(1); }} className={`px-4 py-2 rounded-lg label-strong font-outfit transition-all whitespace-nowrap ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('inventory.materials', {defaultValue: 'Ingredients'})}</button>
           <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg label-strong font-outfit transition-all whitespace-nowrap ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.prep', {defaultValue: 'Prep'})}</button>
@@ -448,10 +592,11 @@ export function RecipesPage() {
               <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                 <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
                   {paginatedItems.map((item) => {
-                    const m = item as RawMaterial;
-                    const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
-                    return (
-                      <div key={m.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                        const m = item as RawMaterial;
+                        const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
+                        const active = isEntityActive(m);
+                        return (
+                          <div key={m.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="flex items-center gap-3 min-w-0">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border flex-shrink-0 ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
@@ -459,11 +604,20 @@ export function RecipesPage() {
                             </div>
                             <div className="min-w-0">
                               <p className="font-bold text-gray-900 dark:text-white text-sm truncate">{m.name}</p>
+                              <span className={`inline-flex mt-1 px-2 py-0.5 rounded-full text-[10px] font-black ${active ? 'bg-paymint-green/10 text-paymint-green' : 'bg-paymint-red/10 text-paymint-red'}`}>
+                                {active ? t('common.active', { defaultValue: 'Active' }) : t('common.inactive', { defaultValue: 'Inactive' })}
+                              </span>
                             </div>
                           </div>
                           <div className="flex gap-1 flex-shrink-0">
-                            <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors"><Edit2 size={14} /></button>
-                            <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors"><Trash2 size={14} /></button>
+                            {active ? (
+                              <>
+                                <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors"><Edit2 size={14} /></button>
+                                <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={14} /></button>
+                              </>
+                            ) : (
+                              <button onClick={() => handleReactivateMaterial(m.id)} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={14} /></button>
+                            )}
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-3 text-sm">
@@ -482,6 +636,7 @@ export function RecipesPage() {
                       <tr className="border-b border-gray-200 dark:border-white/5">
                         <th className="px-6 py-4 text-left label-strong font-outfit">{t('inventory.form.name', {defaultValue: 'NAME'})}</th>
                         <th className="px-6 py-4 text-center label-strong font-outfit">{t('inventory.quantity', {defaultValue: 'QUANTITY'})}</th>
+                        <th className="px-6 py-4 text-center label-strong font-outfit">{t('common.status', {defaultValue: 'STATUS'})}</th>
                         <th className="px-6 py-4 text-center label-strong font-outfit">{t('orders.table.actions', {defaultValue: 'ACTIONS'})}</th>
                       </tr>
                     </thead>
@@ -489,6 +644,7 @@ export function RecipesPage() {
                       {paginatedItems.map((item) => {
                         const m = item as RawMaterial;
                         const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
+                        const active = isEntityActive(m);
                         return (
                           <tr key={m.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                             <td className="px-6 py-4 text-left">
@@ -504,9 +660,20 @@ export function RecipesPage() {
                               <span className="ml-1 text-xs font-medium text-gray-500">{m.unit}</span>
                             </td>
                             <td className="px-6 py-4 text-center">
+                              <span className={`inline-flex px-3 py-1 rounded-full text-xs font-black ${active ? 'bg-paymint-green/10 text-paymint-green' : 'bg-paymint-red/10 text-paymint-red'}`}>
+                                {active ? t('common.active', { defaultValue: 'Active' }) : t('common.inactive', { defaultValue: 'Inactive' })}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-center">
                               <div className="flex items-center justify-center gap-2 transition-opacity">
-                                <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors"><Edit2 size={14} /></button>
-                                <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors"><Trash2 size={14} /></button>
+                                {active ? (
+                                  <>
+                                    <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors"><Edit2 size={14} /></button>
+                                    <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={14} /></button>
+                                  </>
+                                ) : (
+                                  <button onClick={() => handleReactivateMaterial(m.id)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={14} /></button>
+                                )}
                               </div>
                             </td>
                           </tr>
@@ -527,11 +694,13 @@ export function RecipesPage() {
             ) : (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {paginatedItems.map((recipe) => (
+                  {paginatedItems.map((recipe) => {
+                    const active = isEntityActive(recipe as any);
+                    return (
                     <motion.div
                       layout
                       key={recipe.id}
-                      className="group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                      className={`group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden ${active ? '' : 'opacity-75'}`}
                     >
                       <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                       <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -544,14 +713,30 @@ export function RecipesPage() {
                             </div>
                             <div>
                               <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
-                                {activeTab === 'final' ? (recipe as FinalRecipe).item?.name : (recipe as SubRecipe).name}
+                                {activeTab === 'final' ? getFinalRecipeTargetName(recipe as FinalRecipe) : (recipe as SubRecipe).name}
                               </h3>
                               <p className="label-strong font-outfit">{((recipe as any).ingredients || []).length} {t('manufacturing.ingredients')}</p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-black ${active ? 'bg-paymint-green/10 text-paymint-green' : 'bg-paymint-red/10 text-paymint-red'}`}>
+                                  {active ? t('common.active', { defaultValue: 'Active' }) : t('common.inactive', { defaultValue: 'Inactive' })}
+                                </span>
+                                {activeTab === 'final' && (recipe as FinalRecipe).version && (
+                                  <span className="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-black bg-gray-100 dark:bg-white/5 text-gray-500">
+                                    v{(recipe as FinalRecipe).version}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                           <div className="flex gap-1 transition-all">
-                            <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors" title={t('common.edit')}><Edit2 size={16} /></button>
-                            <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors" title={t('common.delete')}><Trash2 size={16} /></button>
+                            {active ? (
+                              <>
+                                <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors" title={t('common.edit')}><Edit2 size={16} /></button>
+                                <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={16} /></button>
+                              </>
+                            ) : (
+                              <button onClick={() => handleReactivateRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={16} /></button>
+                            )}
                           </div>
                         </div>
                         <div className="space-y-3 mb-6 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5">
@@ -577,13 +762,14 @@ export function RecipesPage() {
                         </div>
 
                         {activeTab === 'sub' && (
-                          <button onClick={() => openManufactureModal(recipe as SubRecipe)} className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-[#68B390] text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
+                          <button disabled={!active} onClick={() => openManufactureModal(recipe as SubRecipe)} className={`w-full py-3 font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm ${active ? 'bg-paymint-green text-black hover:bg-[#68B390]' : 'bg-gray-100 dark:bg-white/5 text-gray-400 cursor-not-allowed'}`}>
                             {t('manufacturing.produceBatch')}
                           </button>
                         )}
                       </div>
                     </motion.div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <Pagination
                   currentPage={page}
@@ -756,7 +942,7 @@ export function RecipesPage() {
                                 updated[index].quantity = 0;
                                 setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
                               }}
-                              options={rawMaterials.map(m => ({ label: `${m.name} (${m.unit})`, value: m.id }))}
+                              options={(material && !isEntityActive(material) ? [material, ...activeRawMaterials] : activeRawMaterials).map(m => ({ label: `${m.name} (${m.unit})`, value: m.id }))}
                               placeholder={formatInputPlaceholder(t('manufacturing.formula.selectItem'), t('common.locale'))}
                               className="flex-[2]"
                             />
@@ -828,7 +1014,7 @@ export function RecipesPage() {
                   <div className="pt-2">
                     <button
                       onClick={() => {
-                        if (rawMaterials.length === 0 && !isLoading) {
+                if (activeRawMaterials.length === 0 && !isLoading) {
                           setConfirmConfig({
                             isOpen: true,
                             title: t('manufacturing.messages.noMaterials'),
@@ -885,7 +1071,10 @@ export function RecipesPage() {
                       setFinalRecipeForm({ ...finalRecipeForm, itemId: String(val) });
                       if (errors.itemId) setErrors({ ...errors, itemId: '' });
                     }}
-                    options={products.map(p => ({ label: p.name, value: p.id }))}
+                    options={products.map(p => ({
+                      label: `${p.type === 'addon' ? 'Add-on' : 'Product'}: ${p.name}${p.groupName ? ` (${p.groupName})` : ''}`,
+                      value: p.id,
+                    }))}
                     placeholder={formatInputPlaceholder(t('manufacturing.formula.selectItem'), t('common.locale'))}
                   />
                   {errors.itemId && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.itemId}</p>}
@@ -913,12 +1102,16 @@ export function RecipesPage() {
                         const availableUnits = getCompatibleUnits(baseUnit);
                         const currentUnit = ing.selectedUnit || baseUnit;
                         const displayValue = convertToDisplay(ing.quantity, baseUnit, currentUnit);
+                        const currentMaterial = ing.rawMaterialId ? rawMaterials.find(m => m.id === ing.rawMaterialId) : undefined;
+                        const materialOptionsSource = currentMaterial && !isEntityActive(currentMaterial) ? [currentMaterial, ...activeRawMaterials] : activeRawMaterials;
+                        const currentSubRecipe = ing.subRecipeId ? subRecipes.find(r => r.id === ing.subRecipeId) : undefined;
+                        const subRecipeOptionsSource = currentSubRecipe && !isEntityActive(currentSubRecipe) ? [currentSubRecipe, ...activeSubRecipes] : activeSubRecipes;
 
-                        const validMaterialOptions = (Array.isArray(rawMaterials) ? rawMaterials : [])
+                        const validMaterialOptions = materialOptionsSource
                           .filter(m => !(Array.isArray(finalRecipeForm.ingredients) ? finalRecipeForm.ingredients : []).some((other, i) => i !== index && other.type === 'raw' && other.rawMaterialId === m.id))
                           .map(m => ({ label: `${m.name} (${m.unit})`, value: m.id }));
 
-                        const validSubRecipeOptions = (Array.isArray(subRecipes) ? subRecipes : [])
+                        const validSubRecipeOptions = subRecipeOptionsSource
                           .filter(r => !(Array.isArray(finalRecipeForm.ingredients) ? finalRecipeForm.ingredients : []).some((other, i) => i !== index && other.type === 'sub' && other.subRecipeId === r.id))
                           .map(r => ({ label: `${r.name} (${r.yieldUnit})`, value: r.id }));
 
@@ -1061,7 +1254,7 @@ export function RecipesPage() {
                   <div className="grid grid-cols-2 gap-4 pt-4">
                     <button
                       onClick={() => {
-                        if (rawMaterials.length === 0) {
+                        if (activeRawMaterials.length === 0) {
                           setConfirmConfig({
                             isOpen: true,
                             title: t('manufacturing.messages.noMaterials'),
@@ -1087,7 +1280,7 @@ export function RecipesPage() {
                     </button>
                     <button
                       onClick={() => {
-                        if (subRecipes.length === 0) {
+                        if (activeSubRecipes.length === 0) {
                           setConfirmConfig({
                             isOpen: true,
                             title: t('manufacturing.messages.noSubFormulas'),
