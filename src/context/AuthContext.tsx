@@ -222,6 +222,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Short delay so the user at least sees the spinner if the error is instant
       await new Promise(resolve => setTimeout(resolve, 500));
       setIsLoggingIn(false);
+      if (!error.response) {
+        return {
+          success: false,
+          error: 'Cannot reach the PayMint server from this website domain. Please try again, or contact support if it continues.',
+        };
+      }
       return {
         success: false,
         error: error.response?.data?.message || 'Invalid email or password',
