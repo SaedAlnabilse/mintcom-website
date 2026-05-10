@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2 } from 'lucide-react';
+import { X, Trash2, RotateCcw } from 'lucide-react';
 import { QuickInfo } from '../QuickInfo';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -12,6 +12,7 @@ interface Discount {
   name: string;
   percentage: number;
   adminOnly: boolean;
+  isActive?: boolean;
 }
 
 interface DiscountFormModalProps {
@@ -19,6 +20,7 @@ interface DiscountFormModalProps {
   onClose: () => void;
   onSubmit: (name: string, percentage: number, adminOnly: boolean) => Promise<void>;
   onDelete?: (id: string) => void;
+  onReactivate?: (id: string) => void | Promise<void>;
   initialData?: Discount | null;
   isSubmitting?: boolean;
 }
@@ -28,6 +30,7 @@ export function DiscountFormModal({
   onClose,
   onSubmit,
   onDelete,
+  onReactivate,
   initialData,
   isSubmitting = false,
 }: DiscountFormModalProps) {
@@ -215,6 +218,16 @@ export function DiscountFormModal({
               >
                 <Trash2 size={16} />
                 <span>{t('common.deactivate')}</span>
+              </button>
+            )}
+            {initialData && onReactivate && (
+              <button
+                type="button"
+                onClick={() => onReactivate(initialData.id)}
+                className="flex-1 h-14 border border-paymint-green/30 text-paymint-green font-black text-xs tracking-widest rounded-2xl hover:bg-paymint-green/10 transition-all flex items-center justify-center gap-2"
+              >
+                <RotateCcw size={16} />
+                <span>{t('common.reactivate', { defaultValue: 'Reactivate' })}</span>
               </button>
             )}
             <button

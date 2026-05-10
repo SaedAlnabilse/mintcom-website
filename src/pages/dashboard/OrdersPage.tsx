@@ -767,11 +767,9 @@ export function OrdersPage() {
 
 
 
-  // Real-time updates - pass auth token for proper WebSocket authentication
-  const accessToken = localStorage.getItem('accessToken');
+  // Real-time updates authenticate with the HttpOnly session cookie.
   const { onRefresh } = useRealtime({
     establishmentId: currentEstablishment?.id || null,
-    authToken: accessToken || undefined,
   });
   const scheduleOrdersRefresh = useCallback((delayMs = 120) => {
     if (realtimeRefreshTimeoutRef.current) {

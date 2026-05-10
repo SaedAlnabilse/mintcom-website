@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, Trash2, ChevronDown, Check, Wand2, Plus, Search, AlertCircle } from 'lucide-react';
+import { X, Upload, Trash2, ChevronDown, Check, Wand2, Plus, Search, AlertCircle, RotateCcw } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import api from '../../config/api';
@@ -34,6 +34,8 @@ interface Product {
   categoryId?: string;
   image?: string;
   isAvailable: boolean;
+  deletedAt?: string | null;
+  deactivatedAt?: string | null;
   availableStock?: number;
   trackStock?: boolean;
   allowNegativeStock?: boolean;
@@ -65,6 +67,7 @@ interface ProductFormModalProps {
   onClose: () => void;
   onSubmit: (formData: FormData) => Promise<void>;
   onDelete?: (id: string) => void;
+  onReactivate?: (id: string) => void | Promise<void>;
   initialData?: Product | null;
   categories: Category[];
   isSubmitting?: boolean;
@@ -79,6 +82,7 @@ export function ProductFormModal({
   onClose,
   onSubmit,
   onDelete,
+  onReactivate,
   initialData,
   categories,
   isSubmitting = false,
@@ -133,6 +137,7 @@ export function ProductFormModal({
   const [isCategorySubmitting, setIsCategorySubmitting] = useState(false);
   const [categoryError, setCategoryError] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showReactivateConfirm, setShowReactivateConfirm] = useState(false);
   const isInitialLoad = useRef(true);
 
   useScrollLock(isOpen);
@@ -462,7 +467,9 @@ export function ProductFormModal({
         // Fetch item attributes if editing
         const fetchItemAttrs = async () => {
           try {
-            const res = await api.get(`/api/items/${initialData.id}`);
+            const res = await api.get(`/api/items/${initialData.id}`, {
+              params: { includeInactive: true },
+            });
             if (res.data?.itemAttributes) {
               setSelectedAttributeIds(res.data.itemAttributes.map((ia: { attributeId: string }) => ia.attributeId));
             }
@@ -1457,6 +1464,16 @@ export function ProductFormModal({
                   <span>{t('common.archive')}</span>
                 </button>
               )}
+              {initialData?.id && onReactivate && (
+                <button
+                  type="button"
+                  onClick={() => setShowReactivateConfirm(true)}
+                  className="flex-1 h-12 sm:h-14 border border-paymint-green/30 text-paymint-green font-bold text-sm rounded-xl hover:bg-paymint-green/10 transition-all flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <RotateCcw size={18} />
+                  <span>{t('common.reactivate', { defaultValue: 'Reactivate' })}</span>
+                </button>
+              )}
 
               <button
                 type="button"
@@ -1511,6 +1528,25 @@ export function ProductFormModal({
             message={t('products.messages.deleteMessage', { name: initialData.name })}
             confirmText={t('common.archive')}
             type="danger"
+          />
+        )}
+
+        {initialData?.id && onReactivate && (
+          <ConfirmModal
+            key="product-reactivate-confirmation"
+            isOpen={showReactivateConfirm}
+            onClose={() => setShowReactivateConfirm(false)}
+            onConfirm={() => {
+              onReactivate(initialData.id!);
+              onClose();
+            }}
+            title={t('common.reactivate', { defaultValue: 'Reactivate' })}
+            message={t('products.reactivate.message', {
+              name: initialData.name,
+              defaultValue: `Reactivate "${initialData.name}" so it can be used in new sales again? Historical receipts keep their original snapshots.`,
+            })}
+            confirmText={t('common.reactivate', { defaultValue: 'Reactivate' })}
+            type="success"
           />
         )}
       </AnimatePresence >

@@ -58,6 +58,9 @@ i18n
       escapeValue: false,
     },
     postProcess: ['displayCase'],
+    supportedLngs: ['en', 'ar'],
+    nonExplicitSupportedLngs: true,
+    load: 'languageOnly',
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],

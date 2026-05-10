@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Percent, DollarSign, Trash2, Edit2, Tag, ShieldAlert, Award, Grid3X3, List, ArrowUpDown } from 'lucide-react';
+import { Plus, Percent, DollarSign, Trash2, Edit2, Tag, ShieldAlert, Award, Grid3X3, List, ArrowUpDown, RotateCcw } from 'lucide-react';
 import api from '../../config/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import toast from 'react-hot-toast';
@@ -236,6 +236,33 @@ export function DiscountsPage() {
     });
   };
 
+  const reactivateDiscount = async (discountId: string) => {
+    try {
+      await api.put(`/app-settings/discounts/${discountId}`, { isActive: true });
+      toast.success(t('discounts.messages.reactivated', { defaultValue: 'Discount reactivated' }));
+      setShowModal(false);
+      fetchDiscounts();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || t('common.error'));
+    }
+  };
+
+  const handleReactivate = (discount: Discount) => {
+    setConfirmConfig({
+      isOpen: true,
+      title: t('common.reactivate', { defaultValue: 'Reactivate' }),
+      message: t('discounts.confirm.reactivateMessage', {
+        name: discount.name,
+        defaultValue: `Reactivate "${discount.name}" so it can be used in new sales again? Historical discounts on old receipts stay unchanged.`,
+      }),
+      type: 'success',
+      confirmText: t('common.reactivate', { defaultValue: 'Reactivate' }),
+      onConfirm: async () => {
+        await reactivateDiscount(discount.id);
+      },
+    });
+  };
+
   const formatValue = (discount: Discount) => {
     if (discount.type === 'percentage') {
       return `${discount.value.toLocaleString(t('common.locale'))}%`;
@@ -410,12 +437,23 @@ export function DiscountsPage() {
                         >
                           <Edit2 size={16} />
                         </button>
-                        <button
-                          onClick={() => handleDelete(discount.id, discount.name)}
-                          className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-paymint-red/10 hover:text-paymint-red rounded-lg transition-colors text-gray-600 dark:text-white"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        {discount.isActive ? (
+                          <button
+                            onClick={() => handleDelete(discount.id, discount.name)}
+                            className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-paymint-red/10 hover:text-paymint-red rounded-lg transition-colors text-gray-600 dark:text-white"
+                            title={t('common.deactivate')}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleReactivate(discount)}
+                            className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-paymint-green/10 hover:text-paymint-green rounded-lg transition-colors text-gray-600 dark:text-white"
+                            title={t('common.reactivate', { defaultValue: 'Reactivate' })}
+                          >
+                            <RotateCcw size={16} />
+                          </button>
+                        )}
                       </div>
                     </div>
 
@@ -551,13 +589,23 @@ export function DiscountsPage() {
                               >
                                 <Edit2 size={16} />
                               </button>
-                              <button
-                                onClick={() => handleDelete(discount.id, discount.name)}
-                                className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-red/60 hover:text-paymint-red hover:bg-paymint-red/5 transition-all shadow-sm active:scale-90"
-                                title={t('common.deactivate')}
-                              >
-                                <Trash2 size={16} />
-                              </button>
+                              {discount.isActive ? (
+                                <button
+                                  onClick={() => handleDelete(discount.id, discount.name)}
+                                  className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-red/60 hover:text-paymint-red hover:bg-paymint-red/5 transition-all shadow-sm active:scale-90"
+                                  title={t('common.deactivate')}
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleReactivate(discount)}
+                                  className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-green/70 hover:text-paymint-green hover:bg-paymint-green/10 transition-all shadow-sm active:scale-90"
+                                  title={t('common.reactivate', { defaultValue: 'Reactivate' })}
+                                >
+                                  <RotateCcw size={16} />
+                                </button>
+                              )}
                             </div>
                           </td>
                       </tr>
@@ -583,7 +631,8 @@ export function DiscountsPage() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onSubmit={onSubmit}
-        onDelete={editingDiscount ? () => handleDelete(editingDiscount.id, editingDiscount.name) : undefined}
+        onDelete={editingDiscount?.isActive ? () => handleDelete(editingDiscount.id, editingDiscount.name) : undefined}
+        onReactivate={editingDiscount && !editingDiscount.isActive ? reactivateDiscount : undefined}
         initialData={editingDiscount}
         isSubmitting={isSubmitting}
       />

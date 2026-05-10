@@ -15,7 +15,8 @@ import {
   Globe,
   DollarSign,
   Wallet,
-  Star
+  Star,
+  RotateCcw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api, { API_BASE_URL } from '../../config/api';
@@ -306,6 +307,17 @@ export function PaymentMethodsPage() {
     });
   };
 
+  const reactivatePaymentMethod = async (methodId: string) => {
+    try {
+      await api.put(`/app-settings/payment-methods/${methodId}`, { isActive: true });
+      toast.success(t('paymentMethods.messages.reactivated', { defaultValue: 'Payment method reactivated' }));
+      setShowModal(false);
+      fetchPaymentMethods();
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || t('paymentMethods.messages.failedToSave'));
+    }
+  };
+
   const handleAddCardType = async () => {
     setCardErrors({});
     if (!newCardName.trim()) {
@@ -364,6 +376,17 @@ export function PaymentMethodsPage() {
         }
       }
     });
+  };
+
+  const reactivateCardType = async (cardId: string) => {
+    try {
+      await api.patch(`/card-types/${cardId}`, { isActive: true });
+      toast.success(t('paymentMethods.messages.brandReactivated', { defaultValue: 'Card brand reactivated' }));
+      setShowCardModal(false);
+      fetchCardTypes();
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || t('paymentMethods.messages.failedToSaveBrand'));
+    }
   };
 
   const getMethodIcon = (name: string, size: number = 24) => {
@@ -502,12 +525,23 @@ export function PaymentMethodsPage() {
                     >
                       <Edit2 size={16} /> {t('common.edit')}
                     </button>
-                    <button
-                      onClick={() => handleDeleteCardType(card.id, card.name)}
-                      className="p-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 border border-gray-100 dark:border-white/5 transition-all active:scale-90"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    {card.isActive === false ? (
+                      <button
+                        onClick={() => reactivateCardType(card.id)}
+                        className="p-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 border border-gray-100 dark:border-white/5 transition-all active:scale-90"
+                        title={t('common.reactivate', { defaultValue: 'Reactivate' })}
+                      >
+                        <RotateCcw size={18} />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleDeleteCardType(card.id, card.name)}
+                        className="p-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 border border-gray-100 dark:border-white/5 transition-all active:scale-90"
+                        title={t('common.deactivate')}
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -636,12 +670,23 @@ export function PaymentMethodsPage() {
                         >
                           <Edit2 size={14} /> {t('common.edit')}
                         </button>
-                        <button
-                          onClick={() => handleDelete(method.id, method.name)}
-                          className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 border border-gray-100 dark:border-white/5 transition-all"
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                        {method.isActive ? (
+                          <button
+                            onClick={() => handleDelete(method.id, method.name)}
+                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 border border-gray-100 dark:border-white/5 transition-all"
+                            title={t('common.deactivate')}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => reactivatePaymentMethod(method.id)}
+                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 border border-gray-100 dark:border-white/5 transition-all"
+                            title={t('common.reactivate', { defaultValue: 'Reactivate' })}
+                          >
+                            <RotateCcw size={14} />
+                          </button>
+                        )}
                       </>
                     ) : (
                       <div className="flex-1 py-2.5 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5">
@@ -747,17 +792,44 @@ export function PaymentMethodsPage() {
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting || !watchName?.trim()}
-                  className={`w-full py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${watchName?.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
-                >
-                  {isSubmitting ? (
-                    <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                  ) : (
-                    editingMethod ? t('common.save') : t('common.add')
+                <div className="flex items-center gap-3">
+                  {editingMethod && !editingMethod.isDefault && editingMethod.isActive && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowModal(false);
+                        handleDelete(editingMethod.id, editingMethod.name);
+                      }}
+                      disabled={isSubmitting}
+                      className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      <Trash2 size={16} />
+                      {t('common.deactivate')}
+                    </button>
                   )}
-                </button>
+                  {editingMethod && !editingMethod.isDefault && !editingMethod.isActive && (
+                    <button
+                      type="button"
+                      onClick={() => reactivatePaymentMethod(editingMethod.id)}
+                      disabled={isSubmitting}
+                      className="flex-1 py-4 border border-paymint-green/30 text-paymint-green font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-green/10 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      <RotateCcw size={16} />
+                      {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                    </button>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !watchName?.trim()}
+                    className={`flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${watchName?.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
+                  >
+                    {isSubmitting ? (
+                      <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                    ) : (
+                      editingMethod ? t('common.save') : t('common.add')
+                    )}
+                  </button>
+                </div>
               </form>
             </motion.div>
           </div>
@@ -847,17 +919,44 @@ export function PaymentMethodsPage() {
                   </div>
                 </div>
 
-                <button
-                  onClick={handleAddCardType}
-                  disabled={isSubmitting || !newCardName.trim()}
-                  className={`w-full py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${newCardName.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
-                >
-                  {isSubmitting ? (
-                    <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                  ) : (
-                    editingCard ? t('common.save') : t('common.add')
+                <div className="flex items-center gap-3">
+                  {editingCard && editingCard.isActive !== false && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowCardModal(false);
+                        handleDeleteCardType(editingCard.id, editingCard.name);
+                      }}
+                      disabled={isSubmitting}
+                      className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      <Trash2 size={16} />
+                      {t('common.deactivate')}
+                    </button>
                   )}
-                </button>
+                  {editingCard && editingCard.isActive === false && (
+                    <button
+                      type="button"
+                      onClick={() => reactivateCardType(editingCard.id)}
+                      disabled={isSubmitting}
+                      className="flex-1 py-4 border border-paymint-green/30 text-paymint-green font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-green/10 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      <RotateCcw size={16} />
+                      {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                    </button>
+                  )}
+                  <button
+                    onClick={handleAddCardType}
+                    disabled={isSubmitting || !newCardName.trim()}
+                    className={`flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${newCardName.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
+                  >
+                    {isSubmitting ? (
+                      <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                    ) : (
+                      editingCard ? t('common.save') : t('common.add')
+                    )}
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>

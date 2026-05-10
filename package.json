@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run validate:locales && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "validate:locales": "node scripts/check-locale-encoding.cjs",
     "test": "vitest --passWithNoTests",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",

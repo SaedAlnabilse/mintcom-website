@@ -7,26 +7,35 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'paymint-logo.svg', 'paymint-logo.png'],
+      registerType: 'prompt',
+      includeAssets: ['favicon.ico', 'paymint-logo.svg', 'paymint-logo.png', 'pwa-icon-192.png', 'pwa-icon-512.png'],
+      manifestFilename: 'manifest.webmanifest',
+      workbox: {
+        navigateFallback: '/index.html',
+        cleanupOutdatedCaches: true,
+      },
       manifest: {
         name: 'PayMint POS',
         short_name: 'PayMint',
         description: 'All-in-One Cloud POS & Business Management',
         theme_color: '#7CC39F',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
+        scope: '/',
         icons: [
           {
-            src: 'paymint-logo.png',
+            src: 'pwa-icon-192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: 'paymint-logo.png',
+            src: 'pwa-icon-512.png',
             sizes: '512x512',
             type: 'image/png'
           },
           {
-            src: 'paymint-logo.png',
+            src: 'pwa-icon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'

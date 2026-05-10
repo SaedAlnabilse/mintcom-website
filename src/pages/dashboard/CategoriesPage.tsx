@@ -19,7 +19,8 @@ import {
   AlertTriangle,
   Grid,
   List,
-  Upload
+  Upload,
+  RotateCcw
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -87,6 +88,7 @@ export function CategoriesPage() {
     message: string;
     onConfirm: () => void;
     type?: 'danger' | 'success' | 'warning';
+    confirmText?: string;
   }>({
     isOpen: false,
     title: '',
@@ -319,6 +321,7 @@ export function CategoriesPage() {
         title: t('categories.delete.title'),
         message: t('categories.delete.message'),
         type: 'danger',
+        confirmText: t('common.archive'),
         onConfirm: async () => {
           try {
             await api.delete(`/api/categories/${categoryId}`);
@@ -337,6 +340,38 @@ export function CategoriesPage() {
     } catch (error) {
       toast.error(t('categories.messages.verifyFailed'));
     }
+  };
+
+  const reactivateCategory = async (categoryId: string) => {
+    try {
+      await api.post(`/api/categories/${categoryId}/reactivate`);
+      toast.success(t('categories.messages.reactivated', { defaultValue: 'Category reactivated' }));
+      setViewingCategory((current) =>
+        current?.id === categoryId
+          ? { ...current, isActive: true, deletedAt: null, deactivatedAt: null }
+          : current,
+      );
+      setShowModal(false);
+      fetchData();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || t('categories.messages.reactivateFailed', { defaultValue: 'Failed to reactivate category' }));
+    }
+  };
+
+  const handleReactivate = (category: Category) => {
+    setConfirmConfig({
+      isOpen: true,
+      title: t('common.reactivate', { defaultValue: 'Reactivate' }),
+      message: t('categories.reactivate.message', {
+        name: category.name,
+        defaultValue: `Reactivate "${category.name}" so it can be used for new products again? Historical receipts keep their original category snapshots.`,
+      }),
+      type: 'success',
+      confirmText: t('common.reactivate', { defaultValue: 'Reactivate' }),
+      onConfirm: async () => {
+        await reactivateCategory(category.id);
+      },
+    });
   };
 
   const stats = useMemo(() => {
@@ -514,12 +549,23 @@ export function CategoriesPage() {
                           >
                             <Edit2 size={16} />
                           </button>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-red transition-colors"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          {isCategoryActive(category) ? (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
+                              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-red transition-colors"
+                              title={t('common.archive')}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleReactivate(category); }}
+                              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-green transition-colors"
+                              title={t('common.reactivate', { defaultValue: 'Reactivate' })}
+                            >
+                              <RotateCcw size={16} />
+                            </button>
+                          )}
                         </div>
                       </div>
 
@@ -610,12 +656,23 @@ export function CategoriesPage() {
                               >
                                 <Edit2 size={16} />
                               </button>
-                              <button
-                                onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
-                                className="p-2 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"
-                              >
-                                <Trash2 size={16} />
-                              </button>
+                              {isCategoryActive(category) ? (
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
+                                  className="p-2 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"
+                                  title={t('common.archive')}
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handleReactivate(category); }}
+                                  className="p-2 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"
+                                  title={t('common.reactivate', { defaultValue: 'Reactivate' })}
+                                >
+                                  <RotateCcw size={16} />
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -676,12 +733,23 @@ export function CategoriesPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                      className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-paymint-green transition-colors"
-                    >
-                      <Plus size={20} />
-                    </button>
+                    {isCategoryActive(viewingCategory) ? (
+                      <button
+                        onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                        className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-paymint-green transition-colors"
+                        title={t('common.add')}
+                      >
+                        <Plus size={20} />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleReactivate(viewingCategory)}
+                        className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-paymint-green transition-colors"
+                        title={t('common.reactivate', { defaultValue: 'Reactivate' })}
+                      >
+                        <RotateCcw size={20} />
+                      </button>
+                    )}
                     <button
                       onClick={() => setViewingCategory(null)}
                       className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -699,13 +767,23 @@ export function CategoriesPage() {
                       </div>
                       <h3 className="dashboard-card-value mb-2">{t('products.messages.noProducts')}</h3>
                       <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-6">{t('products.messages.noProductsDesc')}</p>
-                      <button
-                        onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                        className="px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-colors flex items-center gap-2 shadow-sm"
-                      >
-                        <Plus size={18} />
-                        {t('common.add')}
-                      </button>
+                      {isCategoryActive(viewingCategory) ? (
+                        <button
+                          onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                          className="px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-colors flex items-center gap-2 shadow-sm"
+                        >
+                          <Plus size={18} />
+                          {t('common.add')}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleReactivate(viewingCategory)}
+                          className="px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-colors flex items-center gap-2 shadow-sm"
+                        >
+                          <RotateCcw size={18} />
+                          {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                        </button>
+                      )}
                     </div>
                   ) : (
                     <div className={`grid grid-cols-1 ${
@@ -733,20 +811,22 @@ export function CategoriesPage() {
                           </div>
                         </div>
                       ))}
-                      <div
-                        onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                        className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-dashed border-gray-300 dark:border-white/20 rounded-xl group hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4 shadow-sm"
-                      >
-                        <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center shrink-0">
-                           <Plus size={20} className="text-gray-400 group-hover:text-paymint-green group-hover:scale-110 transition-all" />
+                      {isCategoryActive(viewingCategory) && (
+                        <div
+                          onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                          className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-dashed border-gray-300 dark:border-white/20 rounded-xl group hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4 shadow-sm"
+                        >
+                          <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center shrink-0">
+                             <Plus size={20} className="text-gray-400 group-hover:text-paymint-green group-hover:scale-110 transition-all" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-sm text-gray-600 dark:text-gray-300 group-hover:text-paymint-green transition-colors truncate">{t('common.add')}</p>
+                            <p className="text-xs font-medium text-gray-400 dark:text-white/40 mt-0.5">
+                              New Product
+                            </p>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <p className="font-bold text-sm text-gray-600 dark:text-gray-300 group-hover:text-paymint-green transition-colors truncate">{t('common.add')}</p>
-                          <p className="text-xs font-medium text-gray-400 dark:text-white/40 mt-0.5">
-                            New Product
-                          </p>
-                        </div>
-                      </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -761,7 +841,8 @@ export function CategoriesPage() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onSubmit={onSubmit}
-        onDelete={editingCategory ? () => handleDelete(editingCategory.id) : undefined}
+        onDelete={editingCategory && isCategoryActive(editingCategory) ? () => handleDelete(editingCategory.id) : undefined}
+        onReactivate={editingCategory && !isCategoryActive(editingCategory) ? reactivateCategory : undefined}
         initialData={editingCategory}
         isSubmitting={isSubmitting}
         externalError={formError}
@@ -771,10 +852,10 @@ export function CategoriesPage() {
         isOpen={confirmConfig.isOpen}
         onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
         onConfirm={confirmConfig.onConfirm}
-        title={t('categories.delete.title')}
-        message={t('categories.delete.message')}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
         type={confirmConfig.type}
-        confirmText={t('common.archive')}
+        confirmText={confirmConfig.confirmText}
       />
 
       <CsvImportModal

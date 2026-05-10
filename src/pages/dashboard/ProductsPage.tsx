@@ -18,7 +18,8 @@ import {
     AlertCircle,
     Search,
     X,
-    ExternalLink
+    ExternalLink,
+    RotateCcw
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -129,6 +130,7 @@ export function ProductsPage() {
         productName?: string;
         onConfirm: () => void;
         type?: 'danger' | 'success' | 'warning';
+        confirmText?: string;
     }>({
         isOpen: false,
         title: '',
@@ -211,9 +213,10 @@ export function ProductsPage() {
         setConfirmConfig({
             isOpen: true,
             title: t('products.delete.title'),
-            message: '', // Calculated in JSX
+            message: t('products.delete.message', { name }),
             productName: name,
             type: 'danger',
+            confirmText: t('common.archive'),
             onConfirm: async () => {
                 try {
                     await api.delete(`/api/items/${id}`);
@@ -227,6 +230,35 @@ export function ProductsPage() {
                     setConfirmConfig(prev => ({ ...prev, isOpen: false }));
                 }
             }
+        });
+    };
+
+    const reactivateProduct = async (id: string) => {
+        try {
+            await api.post(`/api/items/${id}/reactivate`);
+            toast.success(t('common.reactivate', { defaultValue: 'Reactivated' }));
+            setShowModal(false);
+            fetchData(true);
+        } catch (err: any) {
+            console.error('Reactivate error', err);
+            toast.error(err?.response?.data?.message || t('common.error'));
+        }
+    };
+
+    const handleReactivate = (id: string, name: string) => {
+        setConfirmConfig({
+            isOpen: true,
+            title: t('common.reactivate', { defaultValue: 'Reactivate' }),
+            message: t('products.reactivate.message', {
+                name,
+                defaultValue: `Reactivate "${name}" so it can be used in new sales again? Historical receipts and reports keep their original snapshots.`,
+            }),
+            productName: name,
+            type: 'success',
+            confirmText: t('common.reactivate', { defaultValue: 'Reactivate' }),
+            onConfirm: async () => {
+                await reactivateProduct(id);
+            },
         });
     };
 
@@ -980,7 +1012,11 @@ export function ProductsPage() {
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-end justify-between p-3">
                                                 <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors shadow-sm"><Edit2 size={18} /></button>
-                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors shadow-sm"><Trash2 size={18} /></button>
+                                                {isProductActive(p) ? (
+                                                    <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors shadow-sm"><Trash2 size={18} /></button>
+                                                ) : (
+                                                    <button onClick={(e) => { e.stopPropagation(); handleReactivate(p.id, p.name); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-green hover:bg-paymint-green hover:text-black transition-colors shadow-sm"><RotateCcw size={18} /></button>
+                                                )}
                                             </div>
                                         </div>
                                         <div className="p-3 flex-1 flex flex-col min-h-0">
@@ -1146,7 +1182,11 @@ export function ProductsPage() {
                                                 <td className="px-6 py-4 text-center">
                                                     <div className="flex items-center justify-center gap-1 sm:gap-2">
                                                         <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
-                                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
+                                                        {isProductActive(p) ? (
+                                                            <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
+                                                        ) : (
+                                                            <button onClick={(e) => { e.stopPropagation(); handleReactivate(p.id, p.name); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><RotateCcw size={18} /></button>
+                                                        )}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -1173,7 +1213,8 @@ export function ProductsPage() {
                 isOpen={showModal}
                 onClose={() => setShowModal(false)}
                 onSubmit={onSubmit}
-                onDelete={editingProduct ? () => handleDelete(editingProduct.id, editingProduct.name) : undefined}
+                onDelete={editingProduct && isProductActive(editingProduct) ? () => handleDelete(editingProduct.id, editingProduct.name) : undefined}
+                onReactivate={editingProduct && !isProductActive(editingProduct) ? reactivateProduct : undefined}
                 initialData={editingProduct}
                 categories={categories}
                 isSubmitting={isSubmitting}
@@ -1185,10 +1226,10 @@ export function ProductsPage() {
                 isOpen={confirmConfig.isOpen}
                 onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
                 onConfirm={confirmConfig.onConfirm}
-                title={t('products.delete.title')}
-                message={t('products.delete.message', { name: confirmConfig.productName })}
+                title={confirmConfig.title}
+                message={confirmConfig.message}
                 type={confirmConfig.type}
-                confirmText={t('common.archive')}
+                confirmText={confirmConfig.confirmText}
             />
 
             <CsvImportModal

@@ -861,7 +861,7 @@ async function loadRemoteImageToDataUrl(imageUrl: string, signal?: AbortSignal) 
 }
 
 async function resolvePollinationsDataUrl(imageUrl: string, signal?: AbortSignal) {
-  // Try fetch first — this works reliably through the Vite/Vercel proxy
+  // Try fetch first; this works reliably through the Vite dev proxy and Cloudflare worker proxy.
   // and avoids CORS issues that plague the Image element approach.
   try {
     const response = await fetch(imageUrl, {

@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://paymint.app/sitemap.xml
+Sitemap: https://paymintpos.net/sitemap.xml
 
 # Allow all crawlers
 User-agent: Googlebot

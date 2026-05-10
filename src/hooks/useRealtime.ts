@@ -16,7 +16,7 @@ interface UseRealtimeOptions {
  * function DashboardPage() {
  *   const { isConnected, onRefresh } = useRealtime({
  *     establishmentId: currentEstablishment?.id,
- *     authToken: accessToken, // Optional - pass JWT for authenticated connections
+ *     // Website sessions authenticate with the HttpOnly cookie.
  *   });
  *
  *   // Auto-refresh when data changes

@@ -103,10 +103,8 @@ export function SettingsPage() {
     'delete_establishment',
   ]);
   const { refreshCurrency } = useCurrency();
-  const accessToken = localStorage.getItem('accessToken');
   const { onRefresh } = useRealtime({
     establishmentId: currentEstablishment?.id || null,
-    authToken: accessToken || undefined,
     enabled: !!currentEstablishment?.id,
   });
 

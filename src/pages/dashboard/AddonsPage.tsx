@@ -35,6 +35,7 @@ interface SubAttribute {
   isAvailable: boolean;
   isActive?: boolean;
   deletedAt?: string | null;
+  deactivatedAt?: string | null;
   attributeId: string;
 }
 
@@ -109,7 +110,7 @@ export function AddonsPage() {
     attribute.isActive !== false && !attribute.deletedAt && !attribute.deactivatedAt;
 
   const isSubAttributeActive = (subAttribute: SubAttribute) =>
-    subAttribute.isActive !== false && !subAttribute.deletedAt;
+    subAttribute.isActive !== false && !subAttribute.deletedAt && !subAttribute.deactivatedAt;
 
   useEffect(() => {
     fetchAttributes();
@@ -298,6 +299,54 @@ export function AddonsPage() {
           fetchAttributes();
         } catch {
           toast.error(t('attributes.errors.errorDeleting'));
+        }
+        setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+      },
+    });
+  };
+
+  const handleReactivateAttribute = (attribute: Attribute) => {
+    setConfirmConfig({
+      isOpen: true,
+      title: t('common.reactivate', { defaultValue: 'Reactivate' }),
+      message: t('attributes.confirm.reactivateGroupMessage', {
+        name: attribute.name,
+        defaultValue: `Reactivate "${attribute.name}" and restore the options archived with this group? Historical order option snapshots stay unchanged.`,
+      }),
+      confirmText: t('common.reactivate', { defaultValue: 'Reactivate' }),
+      type: 'success',
+      onConfirm: async () => {
+        try {
+          await api.post(`/api/attributes/${attribute.id}/reactivate`);
+          toast.success(t('attributes.messages.groupReactivated', { defaultValue: 'Add-on group reactivated' }));
+          setShowAttributeModal(false);
+          fetchAttributes();
+        } catch (error: any) {
+          toast.error(error.response?.data?.message || t('attributes.errors.errorSaving'));
+        }
+        setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+      },
+    });
+  };
+
+  const handleReactivateSubAttribute = (sub: SubAttribute) => {
+    setConfirmConfig({
+      isOpen: true,
+      title: t('common.reactivate', { defaultValue: 'Reactivate' }),
+      message: t('attributes.confirm.reactivateOptionMessage', {
+        name: sub.name,
+        defaultValue: `Reactivate "${sub.name}" so it can be selected in new sales again? Historical order option snapshots stay unchanged.`,
+      }),
+      confirmText: t('common.reactivate', { defaultValue: 'Reactivate' }),
+      type: 'success',
+      onConfirm: async () => {
+        try {
+          await api.post(`/api/attributes/sub-attributes/${sub.id}/reactivate`);
+          toast.success(t('attributes.messages.optionReactivated', { defaultValue: 'Add-on option reactivated' }));
+          setShowSubAttributeModal(false);
+          fetchAttributes();
+        } catch (error: any) {
+          toast.error(error.response?.data?.message || t('attributes.errors.errorSavingOption'));
         }
         setConfirmConfig(prev => ({ ...prev, isOpen: false }));
       },
@@ -549,24 +598,32 @@ export function AddonsPage() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="flex gap-3">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSubAttributeForm({ name: '', price: 0, isAvailable: true });
-                          setParentAttributeId(attr.id);
-                          setShowSubAttributeModal(true);
-                        }}
-                        className="w-10 h-10 flex items-center justify-center bg-paymint-green text-black rounded-xl hover:bg-[#68B390] transition-all shadow-lg shadow-paymint-green/20 group active:scale-90"
-                        title={t('attributes.addOption')}
-                      >
-                        <Plus size={20} strokeWidth={3} className="transition-transform group-hover:rotate-90" />
-                      </button>
+                      {isAttributeActive(attr) && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSubAttributeForm({ name: '', price: 0, isAvailable: true });
+                            setParentAttributeId(attr.id);
+                            setShowSubAttributeModal(true);
+                          }}
+                          className="w-10 h-10 flex items-center justify-center bg-paymint-green text-black rounded-xl hover:bg-[#68B390] transition-all shadow-lg shadow-paymint-green/20 group active:scale-90"
+                          title={t('attributes.addOption')}
+                        >
+                          <Plus size={20} strokeWidth={3} className="transition-transform group-hover:rotate-90" />
+                        </button>
+                      )}
                       <button onClick={(e) => { e.stopPropagation(); openAttributeModal(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-colors" title={t('common.edit')}>
                         <Edit2 size={16} />
                       </button>
-                      <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-red hover:border-paymint-red/30 transition-colors" title={t('common.archive')}>
-                        <Trash2 size={16} />
-                      </button>
+                      {isAttributeActive(attr) ? (
+                        <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-red hover:border-paymint-red/30 transition-colors" title={t('common.archive')}>
+                          <Trash2 size={16} />
+                        </button>
+                      ) : (
+                        <button onClick={(e) => { e.stopPropagation(); handleReactivateAttribute(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}>
+                          <RotateCcw size={16} />
+                        </button>
+                      )}
                     </div>
                     <button
                       onClick={(e) => {
@@ -586,13 +643,15 @@ export function AddonsPage() {
                       <h4 className="text-xs font-medium text-gray-400 dark:text-gray-500 tracking-widest uppercase capitalize-none border-b-2 border-paymint-green/30 pb-1 inline-block">
                         {t('attributes.list.optionsTitle', 'Group Options')}
                       </h4>
-                      <button
-                        onClick={() => openSubAttributeModal(attr.id)}
-                        className="w-8 h-8 flex items-center justify-center bg-paymint-green text-black rounded-lg hover:bg-[#68B390] transition-all shadow-md shadow-paymint-green/10 group active:scale-90"
-                        title={t('attributes.addOption')}
-                      >
-                        <Plus size={16} strokeWidth={3} className="transition-transform group-hover:rotate-90" />
-                      </button>
+                      {isAttributeActive(attr) && (
+                        <button
+                          onClick={() => openSubAttributeModal(attr.id)}
+                          className="w-8 h-8 flex items-center justify-center bg-paymint-green text-black rounded-lg hover:bg-[#68B390] transition-all shadow-md shadow-paymint-green/10 group active:scale-90"
+                          title={t('attributes.addOption')}
+                        >
+                          <Plus size={16} strokeWidth={3} className="transition-transform group-hover:rotate-90" />
+                        </button>
+                      )}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                       {(attr.subAttributes || [])
@@ -622,9 +681,15 @@ export function AddonsPage() {
                               <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10" title={t('common.edit')}>
                                 <Edit2 size={14} />
                               </button>
-                              <button onClick={() => handleDeleteSubAttribute(sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10" title={t('common.archive')}>
-                                <Trash2 size={14} />
-                              </button>
+                              {isSubAttributeActive(sub) ? (
+                                <button onClick={() => handleDeleteSubAttribute(sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10" title={t('common.archive')}>
+                                  <Trash2 size={14} />
+                                </button>
+                              ) : (
+                                <button onClick={() => handleReactivateSubAttribute(sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10" title={t('common.reactivate', { defaultValue: 'Reactivate' })}>
+                                  <RotateCcw size={14} />
+                                </button>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -745,9 +810,34 @@ export function AddonsPage() {
                     </label>
                   </div>
 
-                  <button onClick={handleSaveAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
-                    {t('common.save')}
-                  </button>
+                  <div className="flex items-center gap-3">
+                    {editingAttribute && isAttributeActive(editingAttribute) && (
+                      <button
+                        onClick={() => {
+                          setShowAttributeModal(false);
+                          handleDeleteAttribute(editingAttribute);
+                        }}
+                        disabled={isSubmitting}
+                        className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs flex items-center justify-center gap-2"
+                      >
+                        <Trash2 size={16} />
+                        {t('common.archive')}
+                      </button>
+                    )}
+                    {editingAttribute && !isAttributeActive(editingAttribute) && (
+                      <button
+                        onClick={() => handleReactivateAttribute(editingAttribute)}
+                        disabled={isSubmitting}
+                        className="flex-1 py-4 border border-paymint-green/30 text-paymint-green font-black rounded-2xl hover:bg-paymint-green/10 tracking-widest text-xs flex items-center justify-center gap-2"
+                      >
+                        <RotateCcw size={16} />
+                        {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                      </button>
+                    )}
+                    <button onClick={handleSaveAttribute} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
+                      {t('common.save')}
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             </div>
@@ -832,9 +922,34 @@ export function AddonsPage() {
                     </label>
                   </div>
 
-                  <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
-                    {t('common.save')}
-                  </button>
+                  <div className="flex items-center gap-3">
+                    {editingSubAttribute && isSubAttributeActive(editingSubAttribute) && (
+                      <button
+                        onClick={() => {
+                          setShowSubAttributeModal(false);
+                          handleDeleteSubAttribute(editingSubAttribute);
+                        }}
+                        disabled={isSubmitting}
+                        className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs transition-all flex items-center justify-center gap-2"
+                      >
+                        <Trash2 size={16} />
+                        {t('common.archive')}
+                      </button>
+                    )}
+                    {editingSubAttribute && !isSubAttributeActive(editingSubAttribute) && (
+                      <button
+                        onClick={() => handleReactivateSubAttribute(editingSubAttribute)}
+                        disabled={isSubmitting}
+                        className="flex-1 py-4 border border-paymint-green/30 text-paymint-green font-black rounded-2xl hover:bg-paymint-green/10 tracking-widest text-xs transition-all flex items-center justify-center gap-2"
+                      >
+                        <RotateCcw size={16} />
+                        {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                      </button>
+                    )}
+                    <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
+                      {t('common.save')}
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             </div>

@@ -399,11 +399,9 @@ export const DashboardPage = () => {
     return () => clearInterval(interval);
   }, [fetchShiftStatus, fetchDashboardData]);
 
-  // Real-time updates - pass auth token for proper WebSocket authentication
-  const accessToken = localStorage.getItem('accessToken');
+  // Real-time updates authenticate with the HttpOnly session cookie.
   const { onRefresh, isConnected, status } = useRealtime({
     establishmentId: currentEstablishment?.id || null,
-    authToken: accessToken || undefined,
   });
 
   // Log connection status changes

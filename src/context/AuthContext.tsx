@@ -188,13 +188,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Wait for success animation to play
         await new Promise(resolve => setTimeout(resolve, 1500));
 
-        const { account: accountData, establishments: estList, token } = response.data;
+        const { account: accountData, establishments: estList } = response.data;
 
-        // Save account data and token to localStorage
+        // Save non-sensitive account data only. The server stores auth in an HttpOnly cookie.
         localStorage.setItem('account', JSON.stringify(accountData));
-        if (token) {
-          localStorage.setItem('accessToken', token);
-        }
 
         setAccount(accountData);
         setEstablishments(estList || []);
@@ -247,13 +244,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Wait for success animation to play
         await new Promise(resolve => setTimeout(resolve, 1500));
 
-        const { account: accountData, establishments: estList, token } = response.data;
+        const { account: accountData, establishments: estList } = response.data;
 
-        // Save account data and token to localStorage
+        // Save non-sensitive account data only. The server stores auth in an HttpOnly cookie.
         localStorage.setItem('account', JSON.stringify(accountData));
-        if (token) {
-          localStorage.setItem('accessToken', token);
-        }
 
         setAccount(accountData);
         setEstablishments(estList || []);

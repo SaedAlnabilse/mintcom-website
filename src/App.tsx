@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { createBrowserRouter, RouterProvider, Outlet, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, Navigate, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { EstablishmentUrlResolver } from './components/EstablishmentUrlResolver';
 import { Toaster, toast } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
@@ -9,6 +10,9 @@ import { LoadingFallback } from './components/LoadingFallback';
 import { CookieConsent } from './components/CookieConsent';
 import { FeedbackWidget } from './components/FeedbackWidget';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { PwaUpdatePrompt } from './components/PwaUpdatePrompt';
+import { env } from './config/env';
+import { usePreventNumberInputScroll } from './hooks/usePreventNumberInputScroll';
 
 // ============================================================================
 // Eager Imports (Critical path - always needed)
@@ -126,6 +130,42 @@ function LayoutSuspense({ children }: { children: React.ReactNode }) {
   );
 }
 
+const routeSeo = [
+  { path: '/', title: 'PayMint POS | Cloud POS & Business Management', description: 'Run sales, inventory, staff, reports, loyalty, and multi-location operations from PayMint.' },
+  { path: '/login', title: 'Login | PayMint POS', description: 'Sign in securely to your PayMint account.' },
+  { path: '/signup', title: 'Create Account | PayMint POS', description: 'Create a PayMint account for your business.' },
+  { path: '/support', title: 'Support | PayMint POS', description: 'Find PayMint help articles and support tickets.' },
+  { path: '/about', title: 'About PayMint', description: 'Learn about PayMint POS and business management.' },
+  { path: '/dashboard', title: 'Dashboard | PayMint POS', description: 'Manage your PayMint business dashboard.' },
+  { path: '/owner', title: 'Owner Portal | PayMint POS', description: 'Manage PayMint account ownership, billing, brands, and establishments.' },
+  { path: '/brand', title: 'Brand Portal | PayMint POS', description: 'Manage PayMint brand locations and teams.' },
+];
+
+const siteUrl = env.VITE_SITE_URL.replace(/\/$/, '');
+
+function RouteSeo() {
+  const { pathname } = useLocation();
+  const exact = routeSeo.find((entry) => entry.path === pathname);
+  const prefix = [...routeSeo]
+    .sort((a, b) => b.path.length - a.path.length)
+    .find((entry) => entry.path !== '/' && pathname.startsWith(entry.path));
+  const seo = exact || prefix || routeSeo[0];
+  const canonicalPath = pathname === '/' ? '' : pathname;
+
+  return (
+    <Helmet>
+      <title>{seo.title}</title>
+      <meta name="description" content={seo.description} />
+      <link rel="canonical" href={`${siteUrl}${canonicalPath}`} />
+      <meta property="og:title" content={seo.title} />
+      <meta property="og:description" content={seo.description} />
+      <meta property="og:url" content={`${siteUrl}${canonicalPath}`} />
+      <meta name="twitter:title" content={seo.title} />
+      <meta name="twitter:description" content={seo.description} />
+    </Helmet>
+  );
+}
+
 // ============================================================================
 // Router Configuration
 // ============================================================================
@@ -135,6 +175,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <ScrollToTop />
+        <RouteSeo />
         <Outlet />
         <CookieConsent />
         <FeedbackWidget />
@@ -637,6 +678,8 @@ const router = createBrowserRouter([
 // App Component
 // ============================================================================
 function App() {
+  usePreventNumberInputScroll();
+
   // Listen for permission-denied events from API interceptor
   useEffect(() => {
     const handlePermissionDenied = (event: CustomEvent<{ message: string }>) => {
@@ -659,6 +702,7 @@ function App() {
           <CurrencyProvider>
             <div id="global-blocking-overlay" />
             <RouterProvider router={router} />
+            <PwaUpdatePrompt />
             <Toaster
               position="top-right"
               toastOptions={{

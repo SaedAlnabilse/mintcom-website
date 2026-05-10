@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, Trash2, Tag, Coffee, IceCream, Pizza, ShoppingBag, Gift, Star, Heart,
   Utensils, CupSoda, Martini, UtensilsCrossed, Cake, Croissant, Cookie,
-  Sandwich, Drumstick, Fish, Apple, Carrot
+  Sandwich, Drumstick, Fish, Apple, Carrot, RotateCcw
 } from 'lucide-react';
 import { QuickInfo } from '../QuickInfo';
 import { useScrollLock } from '../../hooks/useScrollLock';
@@ -43,6 +43,9 @@ interface Category {
   description?: string;
   icon?: string;
   sortOrder: number;
+  isActive?: boolean;
+  deletedAt?: string | null;
+  deactivatedAt?: string | null;
 }
 
 interface CategoryFormModalProps {
@@ -50,6 +53,7 @@ interface CategoryFormModalProps {
   onClose: () => void;
   onSubmit: (name: string, icon: string, sortOrder: number) => Promise<void>;
   onDelete?: (id: string) => void;
+  onReactivate?: (id: string) => void | Promise<void>;
   initialData?: Category | null;
   isSubmitting?: boolean;
   externalError?: string | null;
@@ -60,6 +64,7 @@ export function CategoryFormModal({
   onClose,
   onSubmit,
   onDelete,
+  onReactivate,
   initialData,
   isSubmitting = false,
   externalError,
@@ -216,6 +221,16 @@ export function CategoryFormModal({
                 className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90"
               >
                 <Trash2 size={24} className="group-hover:scale-110 transition-transform" />
+              </button>
+            )}
+            {initialData && onReactivate && (
+              <button
+                type="button"
+                onClick={() => onReactivate(initialData.id)}
+                title={t('common.reactivate', { defaultValue: 'Reactivate' })}
+                className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-paymint-green hover:bg-paymint-green hover:text-black rounded-xl border border-paymint-green/30 transition-all shadow-sm group active:scale-90"
+              >
+                <RotateCcw size={24} className="group-hover:scale-110 transition-transform" />
               </button>
             )}
             <button

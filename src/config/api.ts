@@ -137,12 +137,6 @@ api.interceptors.request.use(
       }
     }
 
-    // Add Authorization header from localStorage if available (fallback for cross-origin cookies)
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers.set('Authorization', `Bearer ${token}`);
-    }
-
     return config;
   },
   (error) => {

@@ -5,7 +5,7 @@ When deploying to production, users are immediately redirected back to the login
 
 ## Root Cause
 This is a **cross-origin cookie issue**. Your frontend and backend are on different domains:
-- Frontend: `your-domain.vercel.app` (or Cloudflare Pages)
+- Frontend: `paymint.app` on Cloudflare
 - Backend: `grateful-liberation-production-d036.up.railway.app`
 
 Browsers block third-party cookies by default in cross-origin scenarios. The `HttpOnly` cookie set by your backend during login is not being sent with subsequent API requests.
@@ -40,7 +40,7 @@ The frontend fixes alone won't solve the issue. Your backend MUST be configured 
 ```javascript
 // Express.js example
 app.use(cors({
-  origin: 'https://your-frontend-domain.vercel.app', // Your actual frontend URL
+  origin: 'https://paymint.app', // Your actual Cloudflare frontend URL
   credentials: true, // REQUIRED: Allow cookies to be sent
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Establishment-Id'],
@@ -81,7 +81,7 @@ app.post('/api/accounts/login', async (req, res) => {
     maxAge: 24 * 60 * 60 * 1000,
   });
   
-  // Return account data (frontend stores this in localStorage)
+  // Return account data; authentication remains in the HttpOnly cookie.
   res.json({
     success: true,
     account: userAccount,
@@ -132,15 +132,6 @@ To test cross-origin locally:
    sameSite: 'none',  // For cross-origin testing
    secure: false,     // For HTTP local testing (browsers may warn)
    ```
-
-## Alternative Solution (If cookies can't be fixed)
-
-If you can't modify the backend, consider switching to **token-based auth**:
-1. Store JWT in localStorage (less secure, but works cross-origin)
-2. Send token in Authorization header instead of cookies
-3. This requires significant backend changes
-
----
 
 ## Next Steps
 

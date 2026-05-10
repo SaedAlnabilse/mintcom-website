@@ -1,15 +1,18 @@
-// @ts-ignore
+interface Env {
+    ASSETS: { fetch: (request: Request) => Promise<Response> };
+    API_TARGET?: string;
+}
+
 export default {
-    // @ts-ignore
-    async fetch(request, env) {
+    async fetch(request: Request, env: Env) {
         try {
             const url = new URL(request.url);
 
             if (!env.ASSETS) {
-                return new Response("Internal Error: env.ASSETS is broken/missing. Please define assets in wrangler.jsonc", { status: 500 });
+                console.error('Cloudflare assets binding is missing');
+                return new Response('Internal server error', { status: 500 });
             }
 
-            // @ts-ignore
             const targetBase = env.API_TARGET || 'https://grateful-liberation-production-d036.up.railway.app';
 
             // 0. WebSocket Proxy (Forward /realtime WebSocket requests to Railway)
@@ -81,8 +84,9 @@ export default {
             }
 
             return response;
-        } catch (e: any) {
-            return new Response(`Worker Exception: ${e.message}\n${e.stack}`, { status: 500 });
+        } catch (error) {
+            console.error('Cloudflare worker request failed', error);
+            return new Response('Internal server error', { status: 500 });
         }
     }
 };
