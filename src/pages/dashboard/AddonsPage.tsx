@@ -211,6 +211,10 @@ export function AddonsPage() {
   };
 
   const handleSaveAttribute = async () => {
+    if (editingAttribute && !isAttributeActive(editingAttribute)) {
+      return;
+    }
+
     setErrors({});
     if (!attributeForm.name.trim()) {
       setErrors({ groupName: t('attributes.errors.groupNameRequired') });
@@ -240,6 +244,10 @@ export function AddonsPage() {
   };
 
   const handleSaveSubAttribute = async () => {
+    if (editingSubAttribute && !isSubAttributeActive(editingSubAttribute)) {
+      return;
+    }
+
     if (!subAttributeForm.name.trim()) {
       setErrors({ optionName: t('attributes.errors.optionNameRequired') });
       return;
@@ -811,32 +819,46 @@ export function AddonsPage() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    {editingAttribute && isAttributeActive(editingAttribute) && (
-                      <button
-                        onClick={() => {
-                          setShowAttributeModal(false);
-                          handleDeleteAttribute(editingAttribute);
-                        }}
-                        disabled={isSubmitting}
-                        className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs flex items-center justify-center gap-2"
-                      >
-                        <Trash2 size={16} />
-                        {t('common.archive')}
-                      </button>
+                    {editingAttribute && !isAttributeActive(editingAttribute) ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setShowAttributeModal(false)}
+                          disabled={isSubmitting}
+                          className="flex-1 py-4 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black rounded-2xl border border-gray-200 dark:border-white/10 hover:text-gray-900 dark:hover:text-white tracking-widest text-xs transition-all flex items-center justify-center gap-2"
+                        >
+                          {t('common.cancel')}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleReactivateAttribute(editingAttribute)}
+                          disabled={isSubmitting}
+                          className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20 transition-all"
+                        >
+                          <RotateCcw size={16} />
+                          {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {editingAttribute && isAttributeActive(editingAttribute) && (
+                          <button
+                            onClick={() => {
+                              setShowAttributeModal(false);
+                              handleDeleteAttribute(editingAttribute);
+                            }}
+                            disabled={isSubmitting}
+                            className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs flex items-center justify-center gap-2"
+                          >
+                            <Trash2 size={16} />
+                            {t('common.archive')}
+                          </button>
+                        )}
+                        <button onClick={handleSaveAttribute} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
+                          {t('common.save')}
+                        </button>
+                      </>
                     )}
-                    {editingAttribute && !isAttributeActive(editingAttribute) && (
-                      <button
-                        onClick={() => handleReactivateAttribute(editingAttribute)}
-                        disabled={isSubmitting}
-                        className="flex-1 py-4 border border-paymint-green/30 text-paymint-green font-black rounded-2xl hover:bg-paymint-green/10 tracking-widest text-xs flex items-center justify-center gap-2"
-                      >
-                        <RotateCcw size={16} />
-                        {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                      </button>
-                    )}
-                    <button onClick={handleSaveAttribute} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
-                      {t('common.save')}
-                    </button>
                   </div>
                 </div>
               </motion.div>
@@ -923,32 +945,46 @@ export function AddonsPage() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    {editingSubAttribute && isSubAttributeActive(editingSubAttribute) && (
-                      <button
-                        onClick={() => {
-                          setShowSubAttributeModal(false);
-                          handleDeleteSubAttribute(editingSubAttribute);
-                        }}
-                        disabled={isSubmitting}
-                        className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs transition-all flex items-center justify-center gap-2"
-                      >
-                        <Trash2 size={16} />
-                        {t('common.archive')}
-                      </button>
+                    {editingSubAttribute && !isSubAttributeActive(editingSubAttribute) ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setShowSubAttributeModal(false)}
+                          disabled={isSubmitting}
+                          className="flex-1 py-4 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black rounded-2xl border border-gray-200 dark:border-white/10 hover:text-gray-900 dark:hover:text-white tracking-widest text-xs transition-all flex items-center justify-center gap-2"
+                        >
+                          {t('common.cancel')}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleReactivateSubAttribute(editingSubAttribute)}
+                          disabled={isSubmitting}
+                          className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                        >
+                          <RotateCcw size={16} />
+                          {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {editingSubAttribute && isSubAttributeActive(editingSubAttribute) && (
+                          <button
+                            onClick={() => {
+                              setShowSubAttributeModal(false);
+                              handleDeleteSubAttribute(editingSubAttribute);
+                            }}
+                            disabled={isSubmitting}
+                            className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs transition-all flex items-center justify-center gap-2"
+                          >
+                            <Trash2 size={16} />
+                            {t('common.archive')}
+                          </button>
+                        )}
+                        <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
+                          {t('common.save')}
+                        </button>
+                      </>
                     )}
-                    {editingSubAttribute && !isSubAttributeActive(editingSubAttribute) && (
-                      <button
-                        onClick={() => handleReactivateSubAttribute(editingSubAttribute)}
-                        disabled={isSubmitting}
-                        className="flex-1 py-4 border border-paymint-green/30 text-paymint-green font-black rounded-2xl hover:bg-paymint-green/10 tracking-widest text-xs transition-all flex items-center justify-center gap-2"
-                      >
-                        <RotateCcw size={16} />
-                        {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                      </button>
-                    )}
-                    <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
-                      {t('common.save')}
-                    </button>
                   </div>
                 </div>
               </motion.div>

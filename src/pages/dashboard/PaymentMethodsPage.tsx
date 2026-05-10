@@ -98,6 +98,8 @@ export function PaymentMethodsPage() {
   });
 
   const watchName = watch('name');
+  const isEditingInactiveMethod = !!editingMethod && !editingMethod.isDefault && !editingMethod.isActive;
+  const isEditingInactiveCard = !!editingCard && editingCard.isActive === false;
 
   const getFallbackLogo = (name: string) => {
     const lower = name.toLowerCase();
@@ -248,6 +250,10 @@ export function PaymentMethodsPage() {
   };
 
   const onSubmit = async (data: PaymentMethodFormData) => {
+    if (isEditingInactiveMethod) {
+      return;
+    }
+
     try {
       setIsSubmitting(true);
 
@@ -319,6 +325,10 @@ export function PaymentMethodsPage() {
   };
 
   const handleAddCardType = async () => {
+    if (isEditingInactiveCard) {
+      return;
+    }
+
     setCardErrors({});
     if (!newCardName.trim()) {
       setCardErrors({ cardName: t('common.required') });
@@ -793,42 +803,55 @@ export function PaymentMethodsPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  {editingMethod && !editingMethod.isDefault && editingMethod.isActive && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowModal(false);
-                        handleDelete(editingMethod.id, editingMethod.name);
-                      }}
-                      disabled={isSubmitting}
-                      className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                    >
-                      <Trash2 size={16} />
-                      {t('common.deactivate')}
-                    </button>
+                  {isEditingInactiveMethod ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setShowModal(false)}
+                        disabled={isSubmitting}
+                        className="flex-1 py-4 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-xs tracking-[0.2em] uppercase rounded-2xl border border-gray-200 dark:border-white/10 hover:text-gray-900 dark:hover:text-white transition-all disabled:opacity-50"
+                      >
+                        {t('common.cancel')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => reactivatePaymentMethod(editingMethod.id)}
+                        disabled={isSubmitting}
+                        className="flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg shadow-paymint-green/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100"
+                      >
+                        <RotateCcw size={16} />
+                        {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {editingMethod && !editingMethod.isDefault && editingMethod.isActive && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowModal(false);
+                            handleDelete(editingMethod.id, editingMethod.name);
+                          }}
+                          disabled={isSubmitting}
+                          className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                        >
+                          <Trash2 size={16} />
+                          {t('common.deactivate')}
+                        </button>
+                      )}
+                      <button
+                        type="submit"
+                        disabled={isSubmitting || !watchName?.trim()}
+                        className={`flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${watchName?.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
+                      >
+                        {isSubmitting ? (
+                          <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                        ) : (
+                          editingMethod ? t('common.save') : t('common.add')
+                        )}
+                      </button>
+                    </>
                   )}
-                  {editingMethod && !editingMethod.isDefault && !editingMethod.isActive && (
-                    <button
-                      type="button"
-                      onClick={() => reactivatePaymentMethod(editingMethod.id)}
-                      disabled={isSubmitting}
-                      className="flex-1 py-4 border border-paymint-green/30 text-paymint-green font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-green/10 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                    >
-                      <RotateCcw size={16} />
-                      {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                    </button>
-                  )}
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || !watchName?.trim()}
-                    className={`flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${watchName?.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
-                  >
-                    {isSubmitting ? (
-                      <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                    ) : (
-                      editingMethod ? t('common.save') : t('common.add')
-                    )}
-                  </button>
                 </div>
               </form>
             </motion.div>
@@ -920,42 +943,55 @@ export function PaymentMethodsPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  {editingCard && editingCard.isActive !== false && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowCardModal(false);
-                        handleDeleteCardType(editingCard.id, editingCard.name);
-                      }}
-                      disabled={isSubmitting}
-                      className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                    >
-                      <Trash2 size={16} />
-                      {t('common.deactivate')}
-                    </button>
+                  {isEditingInactiveCard ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setShowCardModal(false)}
+                        disabled={isSubmitting}
+                        className="flex-1 py-4 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-xs tracking-[0.2em] uppercase rounded-2xl border border-gray-200 dark:border-white/10 hover:text-gray-900 dark:hover:text-white transition-all disabled:opacity-50"
+                      >
+                        {t('common.cancel')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => reactivateCardType(editingCard.id)}
+                        disabled={isSubmitting}
+                        className="flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100"
+                      >
+                        <RotateCcw size={16} />
+                        {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {editingCard && editingCard.isActive !== false && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowCardModal(false);
+                            handleDeleteCardType(editingCard.id, editingCard.name);
+                          }}
+                          disabled={isSubmitting}
+                          className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                        >
+                          <Trash2 size={16} />
+                          {t('common.deactivate')}
+                        </button>
+                      )}
+                      <button
+                        onClick={handleAddCardType}
+                        disabled={isSubmitting || !newCardName.trim()}
+                        className={`flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${newCardName.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
+                      >
+                        {isSubmitting ? (
+                          <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                        ) : (
+                          editingCard ? t('common.save') : t('common.add')
+                        )}
+                      </button>
+                    </>
                   )}
-                  {editingCard && editingCard.isActive === false && (
-                    <button
-                      type="button"
-                      onClick={() => reactivateCardType(editingCard.id)}
-                      disabled={isSubmitting}
-                      className="flex-1 py-4 border border-paymint-green/30 text-paymint-green font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-green/10 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                    >
-                      <RotateCcw size={16} />
-                      {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                    </button>
-                  )}
-                  <button
-                    onClick={handleAddCardType}
-                    disabled={isSubmitting || !newCardName.trim()}
-                    className={`flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${newCardName.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
-                  >
-                    {isSubmitting ? (
-                      <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                    ) : (
-                      editingCard ? t('common.save') : t('common.add')
-                    )}
-                  </button>
                 </div>
               </div>
             </motion.div>

@@ -92,6 +92,7 @@ export function ProductFormModal({
   const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
+  const isReactivationMode = Boolean(initialData?.id && onReactivate);
   const [name, setName] = useState('');
   const [price, setPrice] = useState<string>('');
   const [costPrice, setCostPrice] = useState<string>('');
@@ -526,6 +527,11 @@ export function ProductFormModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isReactivationMode) {
+      return;
+    }
+
     setErrors({});
 
     const newErrors: Record<string, string> = {};
@@ -1454,48 +1460,62 @@ export function ProductFormModal({
 
             {/* Footer */}
             <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-gray-50 dark:bg-black/20 transition-colors sticky bottom-0 pb-safe">
-              {initialData?.id && onDelete && (
-                <button
-                  type="button"
-                  onClick={() => setShowDeleteConfirm(true)}
-                  className="flex-1 h-12 sm:h-14 border border-paymint-red/20 text-paymint-red font-bold text-sm rounded-xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 shadow-sm"
-                >
-                  <Trash2 size={18} />
-                  <span>{t('common.archive')}</span>
-                </button>
-              )}
-              {initialData?.id && onReactivate && (
-                <button
-                  type="button"
-                  onClick={() => setShowReactivateConfirm(true)}
-                  className="flex-1 h-12 sm:h-14 border border-paymint-green/30 text-paymint-green font-bold text-sm rounded-xl hover:bg-paymint-green/10 transition-all flex items-center justify-center gap-2 shadow-sm"
-                >
-                  <RotateCcw size={18} />
-                  <span>{t('common.reactivate', { defaultValue: 'Reactivate' })}</span>
-                </button>
-              )}
+              {isReactivationMode ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    disabled={isSubmitting || isGeneratingImage}
+                    className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-barlow font-bold text-sm rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
+                  >
+                    {t('common.cancel')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowReactivateConfirm(true)}
+                    disabled={isSubmitting || isGeneratingImage}
+                    className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-barlow font-bold text-sm rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                  >
+                    <RotateCcw size={18} />
+                    <span>{t('common.reactivate', { defaultValue: 'Reactivate' })}</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  {initialData?.id && onDelete && (
+                    <button
+                      type="button"
+                      onClick={() => setShowDeleteConfirm(true)}
+                      className="flex-1 h-12 sm:h-14 border border-paymint-red/20 text-paymint-red font-bold text-sm rounded-xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 shadow-sm"
+                    >
+                      <Trash2 size={18} />
+                      <span>{t('common.archive')}</span>
+                    </button>
+                  )}
 
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isSubmitting || isGeneratingImage}
-                className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-barlow font-bold text-sm rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
-              >
-                {t('common.cancel')}
-              </button>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    disabled={isSubmitting || isGeneratingImage}
+                    className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-barlow font-bold text-sm rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
+                  >
+                    {t('common.cancel')}
+                  </button>
 
-              <button
-                type="submit"
-                form="product-form"
-                disabled={isSubmitting || isGeneratingImage}
-                className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-barlow font-bold text-sm rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
-              >
-                {isSubmitting ? (
-                  <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                ) : (
-                  initialData?.id ? t('common.save') : t('common.add')
-                )}
-              </button>
+                  <button
+                    type="submit"
+                    form="product-form"
+                    disabled={isSubmitting || isGeneratingImage}
+                    className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-barlow font-bold text-sm rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                  >
+                    {isSubmitting ? (
+                      <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                    ) : (
+                      initialData?.id ? t('common.save') : t('common.add')
+                    )}
+                  </button>
+                </>
+              )}
             </div >
           </motion.div >
         </div >

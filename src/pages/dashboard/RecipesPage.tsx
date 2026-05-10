@@ -287,6 +287,11 @@ export function RecipesPage() {
 
   const handleMaterialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (editingMaterial && !isEntityActive(editingMaterial)) {
+      return;
+    }
+
     setErrors({});
     if (!materialForm.name.trim()) { setErrors({ name: t('common.required') }); return; }
     setIsSubmitting(true);
@@ -384,6 +389,10 @@ export function RecipesPage() {
   };
 
   const handleSaveSubRecipe = async () => {
+    if (editingRecipe && !isEntityActive(editingRecipe)) {
+      return;
+    }
+
     setErrors({});
     const newErrors: Record<string, string> = {};
     if (!subRecipeForm.name.trim()) newErrors.name = t('common.required');
@@ -409,6 +418,10 @@ export function RecipesPage() {
   };
 
   const handleSaveFinalRecipe = async () => {
+    if (editingRecipe && !isEntityActive(editingRecipe)) {
+      return;
+    }
+
     setErrors({});
     if (!finalRecipeForm.itemId) {
       setErrors({ itemId: t('common.required') });
@@ -838,34 +851,47 @@ export function RecipesPage() {
                     </div>
                   </form>
                   <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] flex items-center gap-3">
-                    {editingMaterial && isEntityActive(editingMaterial) && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowMaterialModal(false);
-                          handleDeleteMaterial(editingMaterial.id, editingMaterial.name);
-                        }}
-                        disabled={isSubmitting}
-                        className="flex-1 px-5 py-3.5 border border-paymint-red/20 text-paymint-red font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2 hover:bg-paymint-red/5"
-                      >
-                        <Trash2 size={16} />
-                        {t('common.archive', { defaultValue: 'Archive' })}
-                      </button>
+                    {editingMaterial && !isEntityActive(editingMaterial) ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setShowMaterialModal(false)}
+                          disabled={isSubmitting}
+                          className="flex-1 px-5 py-3.5 bg-white dark:bg-white/[0.03] text-gray-700 dark:text-gray-200 font-bold rounded-2xl border border-gray-200 dark:border-white/10 transition-all shadow-sm hover:bg-gray-50 dark:hover:bg-white/5"
+                        >
+                          {t('common.cancel', { defaultValue: 'Cancel' })}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleReactivateMaterial(editingMaterial.id)}
+                          disabled={isSubmitting}
+                          className="flex-1 px-5 py-3.5 bg-paymint-green text-black font-bold rounded-2xl transition-all shadow-lg shadow-paymint-green/20 flex items-center justify-center gap-2 hover:bg-[#68B390]"
+                        >
+                          <RefreshCcw size={16} />
+                          {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {editingMaterial && isEntityActive(editingMaterial) && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowMaterialModal(false);
+                              handleDeleteMaterial(editingMaterial.id, editingMaterial.name);
+                            }}
+                            disabled={isSubmitting}
+                            className="flex-1 px-5 py-3.5 border border-paymint-red/20 text-paymint-red font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2 hover:bg-paymint-red/5"
+                          >
+                            <Trash2 size={16} />
+                            {t('common.archive', { defaultValue: 'Archive' })}
+                          </button>
+                        )}
+                        <button onClick={handleMaterialSubmit} disabled={isSubmitting} className="flex-1 px-5 py-3.5 bg-paymint-green hover:bg-[#68B390] text-black font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
+                          {isSubmitting ? <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : t('common.save', {defaultValue: 'Save'})}
+                        </button>
+                      </>
                     )}
-                    {editingMaterial && !isEntityActive(editingMaterial) && (
-                      <button
-                        type="button"
-                        onClick={() => handleReactivateMaterial(editingMaterial.id)}
-                        disabled={isSubmitting}
-                        className="flex-1 px-5 py-3.5 border border-paymint-green/30 text-paymint-green font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2 hover:bg-paymint-green/10"
-                      >
-                        <RefreshCcw size={16} />
-                        {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                      </button>
-                    )}
-                    <button onClick={handleMaterialSubmit} disabled={isSubmitting} className="flex-1 px-5 py-3.5 bg-paymint-green hover:bg-[#68B390] text-black font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
-                      {isSubmitting ? <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : t('common.save', {defaultValue: 'Save'})}
-                    </button>
                   </div>
                 </motion.div>
               </div>
@@ -1070,34 +1096,47 @@ export function RecipesPage() {
                 </div>
               </div>
               <div className="p-5 sm:p-6 border-t border-gray-200 dark:border-white/5 flex items-center gap-3">
-                {editingRecipe && isEntityActive(editingRecipe) && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowSubRecipeModal(false);
-                      handleDeleteRecipe(editingRecipe.id, 'sub');
-                    }}
-                    disabled={isSubmitting}
-                    className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs flex items-center justify-center gap-2 transition-all"
-                  >
-                    <Trash2 size={16} />
-                    {t('common.archive', { defaultValue: 'Archive' })}
-                  </button>
+                {editingRecipe && !isEntityActive(editingRecipe) ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setShowSubRecipeModal(false)}
+                      disabled={isSubmitting}
+                      className="flex-1 py-4 bg-white dark:bg-white/[0.03] text-gray-700 dark:text-gray-200 font-black rounded-2xl border border-gray-200 dark:border-white/10 transition-all hover:bg-gray-50 dark:hover:bg-white/5"
+                    >
+                      {t('common.cancel', { defaultValue: 'Cancel' })}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleReactivateRecipe(editingRecipe.id, 'sub')}
+                      disabled={isSubmitting}
+                      className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20"
+                    >
+                      <RefreshCcw size={16} />
+                      {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {editingRecipe && isEntityActive(editingRecipe) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowSubRecipeModal(false);
+                          handleDeleteRecipe(editingRecipe.id, 'sub');
+                        }}
+                        disabled={isSubmitting}
+                        className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs flex items-center justify-center gap-2 transition-all"
+                      >
+                        <Trash2 size={16} />
+                        {t('common.archive', { defaultValue: 'Archive' })}
+                      </button>
+                    )}
+                    <button onClick={handleSaveSubRecipe} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
+                      {t('manufacturing.formula.saveFormula')}
+                    </button>
+                  </>
                 )}
-                {editingRecipe && !isEntityActive(editingRecipe) && (
-                  <button
-                    type="button"
-                    onClick={() => handleReactivateRecipe(editingRecipe.id, 'sub')}
-                    disabled={isSubmitting}
-                    className="flex-1 py-4 border border-paymint-green/30 text-paymint-green font-black rounded-2xl hover:bg-paymint-green/10 tracking-widest text-xs flex items-center justify-center gap-2 transition-all"
-                  >
-                    <RefreshCcw size={16} />
-                    {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                  </button>
-                )}
-                <button onClick={handleSaveSubRecipe} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
-                  {t('manufacturing.formula.saveFormula')}
-                </button>
               </div>
             </motion.div>
               </div>
@@ -1359,34 +1398,47 @@ export function RecipesPage() {
                 </div>
               </div>
               <div className="p-5 sm:p-6 border-t border-gray-200 dark:border-white/5 flex items-center gap-3">
-                {editingRecipe && isEntityActive(editingRecipe) && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowFinalRecipeModal(false);
-                      handleDeleteRecipe(editingRecipe.id, 'final');
-                    }}
-                    disabled={isSubmitting}
-                    className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs flex items-center justify-center gap-2 transition-all"
-                  >
-                    <Trash2 size={16} />
-                    {t('common.archive', { defaultValue: 'Archive' })}
-                  </button>
+                {editingRecipe && !isEntityActive(editingRecipe) ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setShowFinalRecipeModal(false)}
+                      disabled={isSubmitting}
+                      className="flex-1 py-4 bg-white dark:bg-white/[0.03] text-gray-700 dark:text-gray-200 font-black rounded-2xl border border-gray-200 dark:border-white/10 transition-all hover:bg-gray-50 dark:hover:bg-white/5"
+                    >
+                      {t('common.cancel', { defaultValue: 'Cancel' })}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleReactivateRecipe(editingRecipe.id, 'final')}
+                      disabled={isSubmitting}
+                      className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20"
+                    >
+                      <RefreshCcw size={16} />
+                      {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {editingRecipe && isEntityActive(editingRecipe) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowFinalRecipeModal(false);
+                          handleDeleteRecipe(editingRecipe.id, 'final');
+                        }}
+                        disabled={isSubmitting}
+                        className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs flex items-center justify-center gap-2 transition-all"
+                      >
+                        <Trash2 size={16} />
+                        {t('common.archive', { defaultValue: 'Archive' })}
+                      </button>
+                    )}
+                    <button onClick={handleSaveFinalRecipe} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
+                      {t('manufacturing.formula.registerRecipe')}
+                    </button>
+                  </>
                 )}
-                {editingRecipe && !isEntityActive(editingRecipe) && (
-                  <button
-                    type="button"
-                    onClick={() => handleReactivateRecipe(editingRecipe.id, 'final')}
-                    disabled={isSubmitting}
-                    className="flex-1 py-4 border border-paymint-green/30 text-paymint-green font-black rounded-2xl hover:bg-paymint-green/10 tracking-widest text-xs flex items-center justify-center gap-2 transition-all"
-                  >
-                    <RefreshCcw size={16} />
-                    {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                  </button>
-                )}
-                <button onClick={handleSaveFinalRecipe} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
-                  {t('manufacturing.formula.registerRecipe')}
-                </button>
               </div>
             </motion.div>
               </div>
