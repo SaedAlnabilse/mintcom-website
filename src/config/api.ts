@@ -6,14 +6,15 @@ const SKIP_ESTABLISHMENT_HEADER = 'X-Skip-Establishment-Header';
 const SKIP_AUTH_REDIRECT_HEADER = 'X-Skip-Auth-Redirect';
 const MISSING_ESTABLISHMENT_HEADER_MESSAGE = 'X-Establishment-Id header is required for this endpoint';
 
-// Api Base Url - In development, use empty string to leverage Vite proxy
-// In production, use the validated VITE_API_URL or fallback
-export const API_BASE_URL = env.DEV ? '' : env.VITE_API_URL;
+// Use relative URLs in both development and production so the browser talks to the
+// current origin. In production, Cloudflare proxies /api requests to Railway,
+// which keeps auth cookies first-party and avoids Incognito/privacy-mode failures.
+export const API_BASE_URL = '';
 
-// Debug logging for production cross-origin issues
+// Debug logging for production request routing
 if (env.PROD) {
-  console.log(`[API] Production mode - API Base URL: ${API_BASE_URL}`);
-  console.log('[API] withCredentials enabled for cross-origin cookie support');
+  console.log('[API] Production mode - using same-origin API proxy');
+  console.log('[API] withCredentials enabled for first-party cookie support');
 }
 
 // Create axios instance with default config

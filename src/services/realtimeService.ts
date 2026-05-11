@@ -1,11 +1,13 @@
 import { io, Socket } from 'socket.io-client';
 import toast from 'react-hot-toast';
 import { formatCurrencyCode } from '../utils/currency';
+import { env } from '../config/env';
 
-// Backend URL for WebSocket connection
-// Always connect directly to the backend for WebSocket (Vite proxy has issues with socket.io)
-// Uses VITE_API_URL from environment, falls back to production URL
-const BACKEND_WS_URL = import.meta.env.VITE_API_URL || 'https://grateful-liberation-production-d036.up.railway.app';
+// Use the same-origin proxy in production so realtime auth stays first-party.
+// In development, connect directly to the backend because the Vite dev proxy is separate.
+const BACKEND_WS_URL = env.PROD
+  ? window.location.origin
+  : import.meta.env.VITE_API_URL || 'https://grateful-liberation-production-d036.up.railway.app';
 
 /**
  * Real-time Event Types
@@ -154,7 +156,6 @@ class RealtimeService {
 
     this.setConnectionStatus('connecting');
 
-    // Always connect directly to the backend for WebSocket
     const wsUrl = BACKEND_WS_URL;
 
     console.log(`[Realtime] 🔌 Connecting to ${wsUrl}/realtime...`);

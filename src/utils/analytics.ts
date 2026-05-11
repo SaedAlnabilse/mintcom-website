@@ -1,6 +1,17 @@
-// Placeholder IDs - Replace these with your actual keys
-const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // Google Analytics 4
-const META_PIXEL_ID = 'XXXXXXXXXXXXXXX'; // Facebook/Meta Pixel
+import { env } from '../config/env';
+
+const GA_MEASUREMENT_ID = env.VITE_GA_MEASUREMENT_ID?.trim();
+const META_PIXEL_ID = env.VITE_META_PIXEL_ID?.trim();
+
+const isConfiguredValue = (value?: string) => {
+  if (!value) return false;
+
+  const normalized = value.trim();
+  if (!normalized) return false;
+
+  const upper = normalized.toUpperCase();
+  return upper !== 'NULL' && !/^G-?X+$/.test(upper) && !/^X+$/.test(upper);
+};
 
 declare global {
   interface Window {
@@ -14,6 +25,11 @@ declare global {
  * Initialize Google Analytics (GA4)
  */
 const loadGoogleAnalytics = () => {
+  if (!isConfiguredValue(GA_MEASUREMENT_ID)) {
+    console.info('[Analytics] Google Analytics is disabled - no measurement ID configured.');
+    return;
+  }
+
   if (document.getElementById('ga-script')) return; // Already loaded
 
   console.log('📊 Initializing Google Analytics...');
@@ -38,6 +54,11 @@ const loadGoogleAnalytics = () => {
  * Initialize Meta/Facebook Pixel
  */
 const loadMarketingPixel = () => {
+  if (!isConfiguredValue(META_PIXEL_ID)) {
+    console.info('[Analytics] Meta Pixel is disabled - no pixel ID configured.');
+    return;
+  }
+
   if (document.getElementById('meta-pixel-script')) return;
 
   console.log('🎯 Initializing Marketing Pixels...');

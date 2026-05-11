@@ -49,7 +49,5 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
 
-# Preload critical resources
-/
-  Link: </assets/react-vendor-BjbVSC3o.js>; rel=modulepreload; as=script
-  Link: </assets/framer-motion-DW4pLpuw.js>; rel=modulepreload; as=script
+# Do not hard-code hashed bundle preloads here.
+# Vite injects the correct modulepreload tags into index.html for each build.
