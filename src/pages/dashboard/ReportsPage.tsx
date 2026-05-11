@@ -302,12 +302,7 @@ export function ReportsPage() {
           }
 
           const itemRes = await api.get(endpoint, {
-            params: {
-              ...commonParams,
-              categoryId: '',
-              itemId: '',
-              subAttributeIds: ''
-            }
+            params: commonParams,
           });
           setItemReportData(itemRes.data);
           break;
