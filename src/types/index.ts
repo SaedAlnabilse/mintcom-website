@@ -273,10 +273,15 @@ export interface ItemPriceHistory {
   name: string;
   establishmentId?: string;
   itemNameSnapshot?: string;
+  field?: 'price';
   oldPrice: number;
   newPrice: number;
+  oldValue?: number;
+  newValue?: number;
   changedById?: string;
+  changedByName?: string | null;
   reason?: string;
   createdAt: string;
+  inSelectedRange?: boolean;
 }
 

@@ -44,6 +44,7 @@ export const ItemsView = React.memo(function ItemsView({
   const [priceHistory, setPriceHistory] = useState<ItemPriceHistory[]>([]);
   const [, setIsFetchingPriceHistory] = useState(false);
   const [selectedHistoryItem, setSelectedHistoryItem] = useState<{ id: string, name: string, type: 'ITEM' | 'ADDON' } | null>(null);
+  const [historyScope, setHistoryScope] = useState<'all' | 'period'>('all');
 
   // Breakdown Modal State
   const [isBreakdownModalOpen, setIsBreakdownModalOpen] = useState(false);
@@ -52,14 +53,69 @@ export const ItemsView = React.memo(function ItemsView({
   const [isFetchingBreakdown, setIsFetchingBreakdown] = useState(false);
   const [breakdownSearchQuery, setBreakdownSearchQuery] = useState('');
 
-  // Fetch Price History when dates change
+  const historyTargets = useMemo(() => {
+    const breakdown = itemReportData?.breakdown || [];
+
+    if (itemReportTab === 'items') {
+      return {
+        itemIds: Array.from(
+          new Set(
+            breakdown
+              .map((item) => item.itemId || item.id)
+              .filter((value): value is string => Boolean(value)),
+          ),
+        ),
+        subAttributeIds: [] as string[],
+      };
+    }
+
+    if (itemReportTab === 'modifiers') {
+      return {
+        itemIds: [] as string[],
+        subAttributeIds: Array.from(
+          new Set(
+            breakdown
+              .map((item) => item.modifierId || item.id)
+              .filter((value): value is string => Boolean(value)),
+          ),
+        ),
+      };
+    }
+
+    return { itemIds: [] as string[], subAttributeIds: [] as string[] };
+  }, [itemReportData?.breakdown, itemReportTab]);
+
+  // Fetch Price History when report content changes
   useEffect(() => {
     const fetchPriceHistory = async () => {
-      if (!startDate || !endDate) return;
+      if (
+        itemReportTab !== 'items' &&
+        itemReportTab !== 'modifiers'
+      ) {
+        setPriceHistory([]);
+        return;
+      }
+
+      if (
+        historyTargets.itemIds.length === 0 &&
+        historyTargets.subAttributeIds.length === 0
+      ) {
+        setPriceHistory([]);
+        return;
+      }
+
       setIsFetchingPriceHistory(true);
       try {
         const res = await api.get('/reports/price-history', {
-          params: { startDate, endDate }
+          params: {
+            ...(startDate && endDate ? { startDate, endDate } : {}),
+            ...(historyTargets.itemIds.length > 0
+              ? { itemIds: historyTargets.itemIds.join(',') }
+              : {}),
+            ...(historyTargets.subAttributeIds.length > 0
+              ? { subAttributeIds: historyTargets.subAttributeIds.join(',') }
+              : {}),
+          }
         });
         setPriceHistory(res.data || []);
       } catch (err) {
@@ -69,10 +125,19 @@ export const ItemsView = React.memo(function ItemsView({
       }
     };
 
-    if (itemReportTab === 'items' || itemReportTab === 'modifiers') {
-      fetchPriceHistory();
-    }
-  }, [startDate, endDate, itemReportTab]);
+    fetchPriceHistory();
+  }, [
+    startDate,
+    endDate,
+    itemReportTab,
+    historyTargets.itemIds,
+    historyTargets.subAttributeIds,
+  ]);
+
+  useEffect(() => {
+    setSelectedHistoryItem(null);
+    setHistoryScope('all');
+  }, [itemReportTab, startDate, endDate]);
 
   const formatCurrency = (value: number) => (
     <span className="inline-flex items-baseline gap-1">
@@ -166,11 +231,50 @@ export const ItemsView = React.memo(function ItemsView({
     );
   }, [categoryBreakdown, breakdownSearchQuery]);
 
-  const getItemPriceHistory = (id: string, type: 'ITEM' | 'ADDON') => {
-    return priceHistory.filter(h => 
-      h.type === type && (h.itemId === id || h.subAttributeId === id)
-    );
+  const getItemPriceHistory = (
+    id: string,
+    type: 'ITEM' | 'ADDON',
+    scope: 'all' | 'period' = 'all',
+  ) => {
+    return priceHistory.filter((historyEntry) => {
+      const matchesId =
+        historyEntry.type === type &&
+        (historyEntry.itemId === id || historyEntry.subAttributeId === id);
+
+      if (!matchesId) {
+        return false;
+      }
+
+      return scope === 'all' || Boolean(historyEntry.inSelectedRange);
+    });
   };
+
+  const selectedAllHistory = useMemo(() => {
+    if (!selectedHistoryItem) {
+      return [];
+    }
+
+    return getItemPriceHistory(
+      selectedHistoryItem.id,
+      selectedHistoryItem.type,
+      'all',
+    );
+  }, [selectedHistoryItem, priceHistory]);
+
+  const selectedPeriodHistory = useMemo(() => {
+    if (!selectedHistoryItem) {
+      return [];
+    }
+
+    return getItemPriceHistory(
+      selectedHistoryItem.id,
+      selectedHistoryItem.type,
+      'period',
+    );
+  }, [selectedHistoryItem, priceHistory]);
+
+  const selectedHistoryEntries =
+    historyScope === 'all' ? selectedAllHistory : selectedPeriodHistory;
 
   return (
     <div className="space-y-6">
@@ -284,12 +388,23 @@ export const ItemsView = React.memo(function ItemsView({
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
               {sortedItems.length > 0 ? (
                 sortedItems
-                  .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                  .map((item: any, idx: number) => {
-                    const itemHist = itemReportTab === 'items' 
-                      ? getItemPriceHistory(item.itemId || item.id, 'ITEM') 
-                      : (itemReportTab === 'modifiers' ? getItemPriceHistory(item.modifierId || item.id, 'ADDON') : []);
-                    const hasPriceChange = itemHist.length > 0;
+                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                    .map((item: any, idx: number) => {
+                    const itemId =
+                      itemReportTab === 'items'
+                        ? (item.itemId || item.id)
+                        : (item.modifierId || item.id);
+                    const itemType = itemReportTab === 'modifiers' ? 'ADDON' : 'ITEM';
+                    const itemHist =
+                      itemReportTab === 'items' || itemReportTab === 'modifiers'
+                        ? getItemPriceHistory(itemId, itemType, 'all')
+                        : [];
+                    const periodHist =
+                      itemReportTab === 'items' || itemReportTab === 'modifiers'
+                        ? getItemPriceHistory(itemId, itemType, 'period')
+                        : [];
+                    const hasHistory = itemHist.length > 0;
+                    const hasHistoryInRange = periodHist.length > 0;
 
                     return (
                       <motion.tr
@@ -318,23 +433,38 @@ export const ItemsView = React.memo(function ItemsView({
                               {itemReportTab === 'categories' && (
                                 <ChevronRight size={14} className="text-gray-300 dark:text-white/10 opacity-40 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
                               )}
-                              {hasPriceChange && (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedHistoryItem({ 
-                                      id: itemReportTab === 'items' ? (item.itemId || item.id) : (item.modifierId || item.id), 
-                                      name: item.itemName || item.name,
-                                      type: itemReportTab === 'modifiers' ? 'ADDON' : 'ITEM'
-                                    });
-                                  }}
-                                  className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:bg-amber-500/20 transition-all animate-pulse"
-                                  title={t('reports.priceHistory.priceChanged', 'Price changed during this period')}
-                                >
-                                  <History size={12} strokeWidth={2.5} />
-                                  <span className="text-[10px] font-black uppercase tracking-wider">{t('reports.priceHistory.auditBadge', 'AUDIT')}</span>
-                                </button>
-                              )}
+                              {hasHistory && (
+                                 <button
+                                   onClick={(e) => {
+                                     e.stopPropagation();
+                                     setHistoryScope('all');
+                                     setSelectedHistoryItem({ 
+                                       id: itemId,
+                                       name: item.itemName || item.name,
+                                       type: itemType,
+                                     });
+                                   }}
+                                   className={`flex items-center gap-1.5 px-2 py-0.5 rounded-lg border transition-all ${
+                                     hasHistoryInRange
+                                       ? 'bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20'
+                                       : 'bg-slate-500/10 text-slate-500 border-slate-500/20 hover:bg-slate-500/20'
+                                   }`}
+                                   title={
+                                     hasHistoryInRange
+                                       ? t('reports.history.inRange', {
+                                           defaultValue: 'Has changes in the selected report period',
+                                         })
+                                       : t('reports.history.allOnly', {
+                                           defaultValue: 'View all recorded history',
+                                         })
+                                   }
+                                 >
+                                   <History size={12} strokeWidth={2.5} />
+                                   <span className="text-[10px] font-black uppercase tracking-wider">
+                                     {t('reports.history.badge', { defaultValue: 'History' })}
+                                   </span>
+                                 </button>
+                               )}
                             </div>
                           </div>
                         </td>
@@ -397,14 +527,14 @@ export const ItemsView = React.memo(function ItemsView({
                       <History size={20} />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
-                        {selectedHistoryItem.name}
-                      </h3>
-                      <p className="text-xs text-gray-500 mt-0.5">
-                        {t('reports.priceHistory.auditTitle', 'Price Audit Trail')}
-                      </p>
-                    </div>
-                  </div>
+                       <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
+                         {selectedHistoryItem.name}
+                       </h3>
+                       <p className="text-xs text-gray-500 mt-0.5">
+                         {t('reports.history.modalTitle', { defaultValue: 'Change History' })}
+                       </p>
+                     </div>
+                   </div>
                   <button
                     onClick={() => setSelectedHistoryItem(null)}
                     className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90"
@@ -413,13 +543,51 @@ export const ItemsView = React.memo(function ItemsView({
                   </button>
                 </div>
 
-                {/* Content */}
-                <div className="p-6 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
-                  <div className="space-y-4">
-                    {getItemPriceHistory(selectedHistoryItem.id, selectedHistoryItem.type).map((history) => (
-                      <div
-                        key={history.id}
-                        className="p-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex flex-col gap-3"
+                 {/* Content */}
+                 <div className="p-6 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
+                   <div className="mb-4 flex items-center justify-between gap-3">
+                     <div>
+                       <p className="text-xs font-black uppercase tracking-widest text-gray-400">
+                         {t('reports.history.scopeLabel', { defaultValue: 'Scope' })}
+                       </p>
+                       <p className="text-xs text-gray-500 mt-1">
+                         {t('reports.history.scopeSummary', {
+                          defaultValue: '{{all}} total changes - {{period}} in selected range',
+                           all: selectedAllHistory.length,
+                           period: selectedPeriodHistory.length,
+                         })}
+                       </p>
+                     </div>
+                     <div className="inline-flex rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.03] p-1">
+                       <button
+                         type="button"
+                         onClick={() => setHistoryScope('all')}
+                         className={`px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wide transition-all ${
+                           historyScope === 'all'
+                             ? 'bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white shadow-sm'
+                             : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-200'
+                         }`}
+                       >
+                         {t('reports.history.scopeAll', { defaultValue: 'All history' })}
+                       </button>
+                       <button
+                         type="button"
+                         onClick={() => setHistoryScope('period')}
+                         className={`px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wide transition-all ${
+                           historyScope === 'period'
+                             ? 'bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white shadow-sm'
+                             : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-200'
+                         }`}
+                       >
+                         {t('reports.history.scopePeriod', { defaultValue: 'This period' })}
+                       </button>
+                     </div>
+                   </div>
+                   <div className="space-y-4">
+                     {selectedHistoryEntries.length > 0 ? selectedHistoryEntries.map((history) => (
+                       <div
+                         key={history.id}
+                         className="p-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex flex-col gap-3"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
@@ -428,49 +596,88 @@ export const ItemsView = React.memo(function ItemsView({
                           </div>
                           <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-wider">
                             <Info size={10} />
-                            {t('reports.priceHistory.updatedLabel', 'Updated')}
+                            {t('reports.history.updatedLabel', { defaultValue: 'Updated' })}
+                          </div>
+                        </div>
+
+                        {(history.changedByName || history.changedById) && (
+                          <div className="px-3 py-2 rounded-xl bg-white dark:bg-black/20 border border-gray-100 dark:border-white/5 text-xs font-bold text-gray-500 dark:text-gray-400">
+                            {t('reports.history.changedBy', {
+                              defaultValue: 'Changed by {{name}}',
+                              name: history.changedByName || history.changedById,
+                            })}
+                          </div>
+                        )}
+
+                        <div className="flex items-center justify-between gap-3 rounded-xl bg-white dark:bg-black/20 border border-gray-100 dark:border-white/5 px-3 py-2">
+                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                            {t('reports.history.fieldLabel', { defaultValue: 'Changed field' })}
+                          </p>
+                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-wider">
+                            <Info size={10} />
+                            {t('reports.history.fieldPrice', { defaultValue: 'Price' })}
                           </div>
                         </div>
 
                         <div className="flex items-center justify-center gap-4 py-2">
                           <div className="text-center">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t('reports.priceHistory.from', 'From')}</p>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                              {t('reports.history.from', { defaultValue: 'Old value' })}
+                            </p>
                             <p className="text-lg font-bold text-gray-500 line-through decoration-paymint-red/40">
-                              {history.oldPrice.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 })} {currencySymbol}
+                              {history.oldValue?.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 }) ?? history.oldPrice.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 })} {currencySymbol}
                             </p>
                           </div>
                           <ChevronRight className="text-gray-300" />
                           <div className="text-center">
-                            <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">{t('reports.priceHistory.to', 'To')}</p>
+                            <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">
+                              {t('reports.history.to', { defaultValue: 'New value' })}
+                            </p>
                             <p className="text-xl font-black text-gray-900 dark:text-white">
-                              {history.newPrice.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 })} {currencySymbol}
+                              {history.newValue?.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 }) ?? history.newPrice.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 })} {currencySymbol}
                             </p>
                           </div>
                         </div>
 
                         {history.reason && (
                           <div className="mt-2 p-3 rounded-xl bg-white dark:bg-black/20 border border-gray-100 dark:border-white/5">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t('reports.priceHistory.reason', 'Reason')}</p>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                              {t('reports.history.reason', { defaultValue: 'Reason' })}
+                            </p>
                             <p className="text-sm font-medium text-gray-700 dark:text-gray-300 italic">"{history.reason}"</p>
                           </div>
                         )}
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    )) : (
+                      <div className="py-10 text-center">
+                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                          {historyScope === 'all'
+                            ? t('reports.history.noAllHistory', {
+                                defaultValue: 'No history has been recorded for this item yet.',
+                              })
+                            : t('reports.history.noPeriodHistory', {
+                                defaultValue: 'No changes were recorded for this item in the selected report period.',
+                              })}
+                        </p>
+                      </div>
+                    )}
+                   </div>
+                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
-                  <p className="text-xs font-bold text-gray-500 max-w-[280px]">
-                    {t('reports.priceHistory.disclaimer', 'This audit trail helps track pricing fluctuations for financial accuracy.')}
-                  </p>
-                  <button
-                    onClick={() => setSelectedHistoryItem(null)}
-                    className="px-6 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-black font-bold text-sm hover:scale-105 transition-all"
-                  >
-                    {t('common.close', 'Got it')}
-                  </button>
-                </div>
+                 <div className="px-6 py-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
+                   <p className="text-xs font-bold text-gray-500 max-w-[280px]">
+                     {t('reports.history.disclaimer', {
+                       defaultValue: 'History helps explain reporting changes when item or add-on prices are updated over time.',
+                     })}
+                   </p>
+                   <button
+                     onClick={() => setSelectedHistoryItem(null)}
+                     className="px-6 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-black font-bold text-sm hover:scale-105 transition-all"
+                   >
+                     {t('common.close', { defaultValue: 'Close' })}
+                   </button>
+                 </div>
               </motion.div>
             </div>
           )}

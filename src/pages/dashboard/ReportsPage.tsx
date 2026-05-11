@@ -47,7 +47,7 @@ interface EmployeeOption {
 
 export function ReportsPage() {
   const { t } = useTranslation();
-  const { account } = useAuth();
+  const { account, currentEstablishment } = useAuth();
   const { currencySymbol } = useCurrency();
   usePermissionGuard(['view_reports']);
 
@@ -99,21 +99,11 @@ export function ReportsPage() {
     setHoveredReportId(id);
   };
 
-  // Current Establishment context
-  const [currentEstablishment, setCurrentEstablishment] = useState<any>(null);
-
   const localizedDateOptions = useMemo(() =>
     DATE_PERIOD_OPTIONS.map(opt => ({
       ...opt,
       label: t(`common.datePeriods.${opt.value}`)
     })), [t]);
-
-  useEffect(() => {
-    try {
-      const est = sessionStorage.getItem('currentEstablishment');
-      if (est) setCurrentEstablishment(JSON.parse(est));
-    } catch (e) { console.error(e); }
-  }, []);
 
   // Sync Report Type from URL
   useEffect(() => {
@@ -172,21 +162,30 @@ export function ReportsPage() {
   // Filter State - (Simplified version, complex filters removed as unused)
 
   useEffect(() => {
+    if (!currentEstablishment?.id) {
+      setEmployees([]);
+      return;
+    }
+
     fetchEmployees();
-  }, []);
+  }, [currentEstablishment?.id]);
 
   const fetchEmployees = async () => {
     try {
+      if (!currentEstablishment?.id) {
+        return;
+      }
+
       const res = await api.get('/reports/employees');
       setEmployees(res.data?.map((u: any) => ({ label: u.name, value: u.id })) || []);
-    } catch {
-      console.error('Failed to load employees');
+    } catch (error: any) {
+      console.error('[Reports] Failed to load employees', error?.response?.status, error?.response?.data || error);
     }
   };
 
   useEffect(() => {
     const fetchEmployeeShifts = async () => {
-      if (!selectedEmployeeId) {
+      if (!currentEstablishment?.id || !selectedEmployeeId) {
         setEmployeeShifts([]);
         setSelectedShiftId(null);
         return;
@@ -212,17 +211,21 @@ export function ReportsPage() {
           totalRefunds: s.totalRefunds || 0,
           variance: s.variance || s.discrepancy || 0,
         })) || []);
-      } catch (error) {
-        console.error('Failed to load employee shifts', error);
+      } catch (error: any) {
+        console.error('[Reports] Failed to load employee shifts', error?.response?.status, error?.response?.data || error);
       }
     };
     fetchEmployeeShifts();
-  }, [selectedEmployeeId, startDate, endDate]);
+  }, [currentEstablishment?.id, selectedEmployeeId, startDate, endDate]);
 
   const [isFetching, setIsFetching] = useState(false);
   const prevReportType = useRef<ReportType>(reportType);
 
   useEffect(() => {
+    if (!currentEstablishment?.id) {
+      return;
+    }
+
     // Determine if we need a hard loading state (blocking)
     const isMajorSwitch = prevReportType.current !== reportType;
     // Initial load check
@@ -245,17 +248,24 @@ export function ReportsPage() {
 
     fetchReportData();
     prevReportType.current = reportType;
-  }, [reportType, startDate, endDate, startTime, endTime, selectedEmployeeId, selectedShiftId, itemReportTab, currentEstablishment]);
+  }, [reportType, startDate, endDate, startTime, endTime, selectedEmployeeId, selectedShiftId, itemReportTab, currentEstablishment?.id]);
 
   const fetchReportData = async () => {
     try {
+      if (!currentEstablishment?.id) {
+        return;
+      }
+
       setIsFetching(true);
 
-      const commonParams = {
+      const commonParams: Record<string, string> = {
         startDate: effectiveDateRange.start,
         endDate: effectiveDateRange.end,
-        employeeId: selectedEmployeeId || ''
       };
+
+      if (selectedEmployeeId) {
+        commonParams.employeeId = selectedEmployeeId;
+      }
 
       switch (reportType) {
         case 'sales':
@@ -323,7 +333,13 @@ export function ReportsPage() {
           break;
         }
       }
-    } catch {
+    } catch (error: any) {
+      console.error('[Reports] Failed to load report data', {
+        reportType,
+        establishmentId: currentEstablishment?.id,
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
       toast.error(t('dashboard.messages.loadFailed'));
     } finally {
       setIsLoading(false);
