@@ -32,7 +32,7 @@
     "react-i18next": "^16.5.4",
     "react-router-dom": "^7.11.0",
     "recharts": "^3.6.0",
-    "socket.io-client": "file:../../../../../tmp/socket.io-client-4.8.3.tgz",
+    "socket.io-client": "^4.8.3",
     "zod": "^4.3.5"
   },
   "devDependencies": {
