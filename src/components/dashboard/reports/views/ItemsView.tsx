@@ -293,6 +293,86 @@ export const ItemsView = React.memo(function ItemsView({
   const selectedHistoryEntries =
     historyScope === 'all' ? selectedAllHistory : selectedPeriodHistory;
 
+  const getHistoryFieldLabel = (field?: ItemPriceHistory['field']) => {
+    if (field === 'name') {
+      return t('reports.history.fieldName', { defaultValue: 'Name' });
+    }
+    if (field === 'image') {
+      return t('reports.history.fieldImage', { defaultValue: 'Image' });
+    }
+    return t('reports.history.fieldPrice', { defaultValue: 'Price' });
+  };
+
+  const getHistoryImageUrl = (value: unknown) => {
+    if (typeof value !== 'string' || !value.trim()) {
+      return null;
+    }
+    const imagePath = value.trim();
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    const cleanPath = imagePath.replace('/public', '').replace('public/', '');
+    return cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
+  };
+
+  const formatHistoryMoney = (
+    value: ItemPriceHistory['oldValue'] | ItemPriceHistory['newValue'],
+    fallback?: number | null,
+  ) => {
+    const numericValue = typeof value === 'number' ? value : fallback;
+    if (typeof numericValue !== 'number' || Number.isNaN(numericValue)) {
+      return '-';
+    }
+
+    return `${numericValue.toLocaleString(t('common.locale'), {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })} ${currencySymbol}`;
+  };
+
+  const renderHistoryValue = (
+    history: ItemPriceHistory,
+    side: 'old' | 'new',
+  ) => {
+    const field = history.field || 'price';
+    const value = side === 'old' ? history.oldValue : history.newValue;
+
+    if (field === 'price') {
+      return formatHistoryMoney(
+        value,
+        side === 'old' ? history.oldPrice : history.newPrice,
+      );
+    }
+
+    if (field === 'image') {
+      const imageUrl = getHistoryImageUrl(
+        side === 'old'
+          ? history.oldImage ?? history.oldValue
+          : history.newImage ?? history.newValue,
+      );
+
+      return imageUrl ? (
+        <img
+          src={imageUrl}
+          alt=""
+          className="h-16 w-16 rounded-xl object-cover border border-gray-200 dark:border-white/10"
+        />
+      ) : (
+        <span className="text-sm font-bold text-gray-400">
+          {t('reports.history.noImage', { defaultValue: 'No image' })}
+        </span>
+      );
+    }
+
+    return (
+      <span className="text-sm font-bold text-gray-700 dark:text-gray-200 break-words">
+        {typeof value === 'string' && value.trim()
+          ? value
+          : t('reports.history.emptyValue', { defaultValue: 'Empty' })}
+      </span>
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Sub-tabs and Search Bar */}
@@ -636,27 +716,27 @@ export const ItemsView = React.memo(function ItemsView({
                           </p>
                           <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-wider">
                             <Info size={10} />
-                            {t('reports.history.fieldPrice', { defaultValue: 'Price' })}
+                            {getHistoryFieldLabel(history.field)}
                           </div>
                         </div>
 
                         <div className="flex items-center justify-center gap-4 py-2">
-                          <div className="text-center">
+                          <div className="min-w-0 flex-1 text-center">
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
                               {t('reports.history.from', { defaultValue: 'Old value' })}
                             </p>
-                            <p className="text-lg font-bold text-gray-500 line-through decoration-paymint-red/40">
-                              {history.oldValue?.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 }) ?? history.oldPrice.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 })} {currencySymbol}
-                            </p>
+                            <div className={(history.field || 'price') === 'price' ? 'text-lg font-bold text-gray-500 line-through decoration-paymint-red/40' : 'flex justify-center'}>
+                              {renderHistoryValue(history, 'old')}
+                            </div>
                           </div>
                           <ChevronRight className="text-gray-300" />
-                          <div className="text-center">
+                          <div className="min-w-0 flex-1 text-center">
                             <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">
                               {t('reports.history.to', { defaultValue: 'New value' })}
                             </p>
-                            <p className="text-xl font-black text-gray-900 dark:text-white">
-                              {history.newValue?.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 }) ?? history.newPrice.toLocaleString(t('common.locale'), { minimumFractionDigits: 2 })} {currencySymbol}
-                            </p>
+                            <div className={(history.field || 'price') === 'price' ? 'text-xl font-black text-gray-900 dark:text-white' : 'flex justify-center'}>
+                              {renderHistoryValue(history, 'new')}
+                            </div>
                           </div>
                         </div>
 
@@ -689,7 +769,7 @@ export const ItemsView = React.memo(function ItemsView({
                  <div className="px-6 py-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
                    <p className="text-xs font-bold text-gray-500 max-w-[280px]">
                      {t('reports.history.disclaimer', {
-                       defaultValue: 'History helps explain reporting changes when item or add-on prices are updated over time.',
+                       defaultValue: 'History helps explain reporting changes when item or add-on details are updated over time.',
                      })}
                    </p>
                    <button

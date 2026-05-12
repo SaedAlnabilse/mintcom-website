@@ -12,9 +12,10 @@ interface TaxesViewProps {
 export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewProps) {
   const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
-  const hasTaxBreakdown = (salesData.taxBreakdown || []).length > 0;
+  const taxBreakdown = salesData.taxBreakdown || [];
+  const hasTaxBreakdown = taxBreakdown.length > 0;
   const hasTaxActivity =
-    (salesData.taxBreakdown || []).some((tax: any) => Number(tax?.collected || 0) > 0 || Number(tax?.taxableAmount || 0) > 0) ||
+    taxBreakdown.some((tax: any) => Number(tax?.collected || 0) > 0 || Number(tax?.taxableAmount || 0) > 0) ||
     (salesData.taxCollected || 0) > 0 ||
     (salesData.totalRevenue || 0) > 0 ||
     (salesData.totalOrders || 0) > 0;
@@ -98,7 +99,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                 {/* NOTE: If backend doesn't provide granular tax breakdown, we reconstruct a "Sales Tax" default row */}
                 {hasTaxBreakdown ? (
-                  salesData.taxBreakdown.map((tax: any, i: number) => {
+                  taxBreakdown.map((tax: any, i: number) => {
                     const contribution = salesData.taxCollected > 0 ? (tax.collected / salesData.taxCollected) * 100 : 0;
                     return (
                       <tr key={i} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
