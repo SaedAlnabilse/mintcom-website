@@ -6,6 +6,7 @@ import { useTheme } from '../../../../context/ThemeContext';
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
@@ -158,10 +159,13 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex h-full items-center justify-center text-gray-400 flex-col gap-2">
-                <CreditCard size={32} className="opacity-20" />
-                <span className="text-xs font-bold tracking-widest">{t('orders.reports.payments.noData')}</span>
-              </div>
+              <AnalyticsEmptyState
+                icon={CreditCard}
+                title={t('orders.reports.payments.noData')}
+                description={t('orders.reports.payments.detailsDesc')}
+                compact
+                className="h-full rounded-2xl bg-gray-50/50 dark:bg-black/20 border border-dashed border-gray-200 dark:border-white/[0.03]"
+              />
             )}
             {/* Center Stats */}
             {paymentMethodBreakdown.length > 0 && (
@@ -213,87 +217,95 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                {paymentMethodBreakdown.map((item: any, i: number) => {
-                  const total = paymentTotal || 1;
-                  const percentage = (item.value / total);
+                {paymentMethodBreakdown.length > 0 ? (
+                  paymentMethodBreakdown.map((item: any, i: number) => {
+                    const total = paymentTotal || 1;
+                    const percentage = (item.value / total);
 
-                  // Check if this method has breakdown details
-                  const isCard = item.name === 'CARD';
-                  const isOther = item.name === 'OTHER';
+                    const isCard = item.name === 'CARD';
+                    const isOther = item.name === 'OTHER';
+                    const hasDetails = (isCard && (salesData.cardTypeBreakdown?.length || 0) > 0) ||
+                                     (isOther && (salesData.otherPaymentBreakdown?.length || 0) > 0);
+                    const isExpanded = expandedPaymentMethod === item.name;
 
-                  const hasDetails = (isCard && (salesData.cardTypeBreakdown?.length || 0) > 0) ||
-                                   (isOther && (salesData.otherPaymentBreakdown?.length || 0) > 0);
-
-                  const isExpanded = expandedPaymentMethod === item.name;
-
-                  return (
-                    <React.Fragment key={i}>
-                      <tr
-                        className={`group transition-colors ${hasDetails ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.02]' : ''} ${isExpanded ? 'bg-gray-50 dark:bg-white/[0.02]' : ''}`}
-                        onClick={() => {
-                          if (hasDetails) {
-                            setExpandedPaymentMethod(isExpanded ? null : item.name);
-                          }
-                        }}
-                      >
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500" style={{ color: COLORS[i % COLORS.length], backgroundColor: `${COLORS[i % COLORS.length]}20` }}>
-                              {isCard ? <CreditCard size={16} /> : <Wallet size={16} />}
+                    return (
+                      <React.Fragment key={i}>
+                        <tr
+                          className={`group transition-colors ${hasDetails ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.02]' : ''} ${isExpanded ? 'bg-gray-50 dark:bg-white/[0.02]' : ''}`}
+                          onClick={() => {
+                            if (hasDetails) {
+                              setExpandedPaymentMethod(isExpanded ? null : item.name);
+                            }
+                          }}
+                        >
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500" style={{ color: COLORS[i % COLORS.length], backgroundColor: `${COLORS[i % COLORS.length]}20` }}>
+                                {isCard ? <CreditCard size={16} /> : <Wallet size={16} />}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-sm text-gray-900 dark:text-white">{getMethodName(item.name)}</span>
+                                {hasDetails && (
+                                  <ChevronRight size={16} className={`text-gray-400 transition-transform ${isExpanded ? (t('common.locale') === 'ar' ? '-rotate-90' : 'rotate-90') : (t('common.locale') === 'ar' ? 'rotate-180' : '')}`} />
+                                )}
+                              </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-bold text-sm text-gray-900 dark:text-white">{getMethodName(item.name)}</span>
-                              {hasDetails && (
-                                <ChevronRight size={16} className={`text-gray-400 transition-transform ${isExpanded ? (t('common.locale') === 'ar' ? '-rotate-90' : 'rotate-90') : (t('common.locale') === 'ar' ? 'rotate-180' : '')}`} />
-                              )}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-end font-black text-gray-900 dark:text-white">
-                          <FormatCurrency value={item.value} />
-                        </td>
-                        <td className="px-6 py-4 text-end">
-                          <div className="flex items-center justify-end gap-2">
-                            <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-                              <div className="h-full rounded-full" style={{ width: `${(percentage * 100)}%`, backgroundColor: COLORS[i % COLORS.length] }} />
-                            </div>
-                            <span className="text-xs font-bold text-gray-500">{percentage.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
-                          </div>
-                        </td>
-                      </tr>
-
-                      {/* Card Breakdown */}
-                      {isExpanded && isCard && salesData.cardTypeBreakdown?.map((card: any, ci: number) => (
-                        <tr key={`card-${ci}`} className="bg-gray-50/50 dark:bg-white/[0.01]">
-                          <td className="px-6 py-3 ps-16">
-                            <span className="text-xs font-bold text-gray-500">{card.name}</span>
                           </td>
-                          <td className="px-6 py-3 text-end text-xs font-bold text-gray-700 dark:text-gray-300">
-                            <FormatCurrency value={card.value} />
+                          <td className="px-6 py-4 text-end font-black text-gray-900 dark:text-white">
+                            <FormatCurrency value={item.value} />
                           </td>
-                          <td className="px-6 py-3 text-end text-xs font-medium text-gray-400">
-                            {(card.value / item.value).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                          <td className="px-6 py-4 text-end">
+                            <div className="flex items-center justify-end gap-2">
+                              <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                <div className="h-full rounded-full" style={{ width: `${(percentage * 100)}%`, backgroundColor: COLORS[i % COLORS.length] }} />
+                              </div>
+                              <span className="text-xs font-bold text-gray-500">{percentage.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
+                            </div>
                           </td>
                         </tr>
-                      ))}
 
-                      {/* Other Payment Breakdown */}
-                      {isExpanded && isOther && salesData.otherPaymentBreakdown?.map((op: any, oi: number) => (
-                        <tr key={`other-${oi}`} className="bg-gray-50/50 dark:bg-white/[0.01]">
-                          <td className="px-6 py-3 ps-16">
-                            <span className="text-xs font-bold text-gray-500">{op.name}</span>
-                          </td>
-                          <td className="px-6 py-3 text-end text-xs font-bold text-gray-700 dark:text-gray-300">
-                            <FormatCurrency value={op.value} />
-                          </td>
-                          <td className="px-6 py-3 text-end text-xs font-medium text-gray-400">
-                            {(op.value / item.value).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
-                          </td>
-                        </tr>
-                      ))}
-                    </React.Fragment>
-                  );
-                })}
+                        {isExpanded && isCard && salesData.cardTypeBreakdown?.map((card: any, ci: number) => (
+                          <tr key={`card-${ci}`} className="bg-gray-50/50 dark:bg-white/[0.01]">
+                            <td className="px-6 py-3 ps-16">
+                              <span className="text-xs font-bold text-gray-500">{card.name}</span>
+                            </td>
+                            <td className="px-6 py-3 text-end text-xs font-bold text-gray-700 dark:text-gray-300">
+                              <FormatCurrency value={card.value} />
+                            </td>
+                            <td className="px-6 py-3 text-end text-xs font-medium text-gray-400">
+                              {(card.value / item.value).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                            </td>
+                          </tr>
+                        ))}
+
+                        {isExpanded && isOther && salesData.otherPaymentBreakdown?.map((op: any, oi: number) => (
+                          <tr key={`other-${oi}`} className="bg-gray-50/50 dark:bg-white/[0.01]">
+                            <td className="px-6 py-3 ps-16">
+                              <span className="text-xs font-bold text-gray-500">{op.name}</span>
+                            </td>
+                            <td className="px-6 py-3 text-end text-xs font-bold text-gray-700 dark:text-gray-300">
+                              <FormatCurrency value={op.value} />
+                            </td>
+                            <td className="px-6 py-3 text-end text-xs font-medium text-gray-400">
+                              {(op.value / item.value).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                            </td>
+                          </tr>
+                        ))}
+                      </React.Fragment>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="px-6 py-14">
+                      <AnalyticsEmptyState
+                        icon={CreditCard}
+                        title={t('orders.reports.payments.noData')}
+                        description={t('orders.reports.payments.detailsDesc')}
+                        compact
+                      />
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

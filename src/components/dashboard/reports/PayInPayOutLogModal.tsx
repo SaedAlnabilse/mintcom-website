@@ -8,6 +8,7 @@ import { useScrollLock } from '../../../hooks/useScrollLock';
 import { useTranslation } from 'react-i18next';
 import { getDateLocale } from '../../../utils/dateLocale';
 import { useCurrency } from '../../../context/CurrencyContext';
+import { AnalyticsEmptyState } from './AnalyticsEmptyState';
 
 interface PayInPayOutLogModalProps {
     isOpen: boolean;
@@ -226,12 +227,13 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="py-12 flex flex-col items-center justify-center text-center opacity-40">
-                                        <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-3">
-                                            <FileText size={20} className="text-gray-400" />
-                                        </div>
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white">{t('common.noRecordsFound')}</p>
-                                    </div>
+                                    <AnalyticsEmptyState
+                                        icon={FileText}
+                                        title={t('common.noRecordsFound')}
+                                        description={t('orders.reports.sales.nonSales')}
+                                        compact
+                                        className="py-12 opacity-70"
+                                    />
                                 )}
                             </div>
                         </div>

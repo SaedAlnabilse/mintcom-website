@@ -3,6 +3,7 @@ import { useCurrency } from '../../../../context/CurrencyContext';
 import type { SalesSummary } from '../../../../types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 
 interface TaxesViewProps {
   salesData: SalesSummary;
@@ -11,6 +12,12 @@ interface TaxesViewProps {
 export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewProps) {
   const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
+  const hasTaxBreakdown = (salesData.taxBreakdown || []).length > 0;
+  const hasTaxActivity =
+    (salesData.taxBreakdown || []).some((tax: any) => Number(tax?.collected || 0) > 0 || Number(tax?.taxableAmount || 0) > 0) ||
+    (salesData.taxCollected || 0) > 0 ||
+    (salesData.totalRevenue || 0) > 0 ||
+    (salesData.totalOrders || 0) > 0;
 
   const formatCurrency = (value: number) => (
     <span className="inline-flex items-baseline gap-1">
@@ -90,7 +97,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                 {/* NOTE: If backend doesn't provide granular tax breakdown, we reconstruct a "Sales Tax" default row */}
-                {salesData.taxBreakdown && salesData.taxBreakdown.length > 0 ? (
+                {hasTaxBreakdown ? (
                   salesData.taxBreakdown.map((tax: any, i: number) => {
                     const contribution = salesData.taxCollected > 0 ? (tax.collected / salesData.taxCollected) * 100 : 0;
                     return (
@@ -125,7 +132,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                       </tr>
                     );
                   })
-                ) : (
+                ) : hasTaxActivity ? (
                   // Default Fallback Row if no granular data
                   <tr className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                     <td className="px-6 py-4 text-start">
@@ -154,6 +161,17 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                           <div className="h-full bg-orange-500 rounded-full" style={{ width: `100%` }} />
                         </div>
                       </div>
+                    </td>
+                  </tr>
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-14">
+                      <AnalyticsEmptyState
+                        icon={Scale}
+                        title={t('orders.reports.taxes.details')}
+                        description={t('orders.reports.peakHours.noDataDesc')}
+                        compact
+                      />
                     </td>
                   </tr>
                 )}

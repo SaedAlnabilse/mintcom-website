@@ -10,6 +10,7 @@ import api from '../../../../config/api';
 import { createPortal } from 'react-dom';
 import { format } from 'date-fns';
 import { getDateLocale } from '../../../../utils/dateLocale';
+import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 
 interface ItemsViewProps {
   itemReportData: ItemReportData;
@@ -501,14 +502,11 @@ export const ItemsView = React.memo(function ItemsView({
               ) : (
                 <tr>
                   <td colSpan={3} className="py-32 text-center">
-                    <div className="flex flex-col items-center justify-center space-y-4">
-                      <div className="w-16 h-16 rounded-[24px] bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-300 dark:text-white/10 border border-gray-100 dark:border-white/5">
-                        <ShoppingBag size={32} />
-                      </div>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide max-w-xs mx-auto leading-relaxed">
-                        {t('orders.reports.items.noData')}
-                      </p>
-                    </div>
+                    <AnalyticsEmptyState
+                      icon={ShoppingBag}
+                      title={t('orders.reports.items.noData')}
+                      description={t('orders.reports.items.totalSales')}
+                    />
                   </td>
                 </tr>
               )}
@@ -783,14 +781,13 @@ export const ItemsView = React.memo(function ItemsView({
                       ))}
                     </div>
                   ) : (
-                    <div className="py-20 flex flex-col items-center justify-center">
-                      <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-300 dark:text-white/10 mb-4 border border-gray-100 dark:border-white/5">
-                        <ShoppingBag size={28} />
-                      </div>
-                      <p className="text-sm font-bold text-gray-500 dark:text-gray-400 tracking-wide text-center max-w-[240px]">
-                        {t('orders.reports.items.noData')}
-                      </p>
-                    </div>
+                    <AnalyticsEmptyState
+                      icon={ShoppingBag}
+                      title={t('orders.reports.items.noData')}
+                      description={t('orders.reports.items.subtitle')}
+                      compact
+                      className="py-20"
+                    />
                   )}
                 </div>
 

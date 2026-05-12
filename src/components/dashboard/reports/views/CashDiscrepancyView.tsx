@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import React from 'react';
 import { Pagination } from '../../../ui';
+import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 
 interface CashDiscrepancyViewProps {
   shifts: Shift[];
@@ -91,20 +92,6 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
   const accuracyRate = stats.totalShifts > 0
     ? (stats.balancedCount / stats.totalShifts).toLocaleString(t('common.locale'), { style: 'percent' })
     : (0).toLocaleString(t('common.locale'), { style: 'percent' });
-
-  if (shifts.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
-        <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transform rotate-3">
-          <Scale size={32} className="text-gray-400" />
-        </div>
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{t('orders.reports.cashGap.noData')}</h3>
-        <p className="text-xs font-medium text-gray-500 max-w-sm leading-relaxed">
-          {t('orders.reports.cashGap.noDataDesc')}
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -290,9 +277,13 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
         </div>
 
         {sortedShifts.length === 0 ? (
-          <div className="p-12 text-center">
-            <p className="text-gray-500 text-sm">{t('orders.reports.cashGap.noClosedShifts')}</p>
-          </div>
+          <AnalyticsEmptyState
+            icon={Scale}
+            title={t('orders.reports.cashGap.noData')}
+            description={t('orders.reports.cashGap.noClosedShifts')}
+            compact
+            className="py-14"
+          />
         ) : (
           <>
             <div className="overflow-x-auto">

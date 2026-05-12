@@ -21,6 +21,7 @@ import { useTheme } from '../../../../context/ThemeContext';
 import type { SalesSummary } from '../../../../types';
 import { useNavigate, useParams } from 'react-router-dom';
 import React from 'react';
+import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
@@ -305,15 +306,12 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
 
                 if (!hasRevenueData) {
                   return (
-                    <div className="h-full w-full flex items-center justify-center bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/[0.03]">
-                      <div className="flex flex-col items-center gap-2 text-center">
-                        <Activity size={32} className="text-gray-300 dark:text-gray-600 mb-1" />
-                        <div>
-                          <p className="sentence-case-text text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('orders.reports.sales.noRevenue')}</p>
-                          <p className="text-xs text-gray-400 mt-1">{t('orders.reports.sales.noRevenueDesc')}</p>
-                        </div>
-                      </div>
-                    </div>
+                    <AnalyticsEmptyState
+                      icon={Activity}
+                      title={t('orders.reports.sales.noRevenue')}
+                      description={t('orders.reports.sales.noRevenueDesc')}
+                      className="h-full w-full rounded-2xl bg-gray-50/50 dark:bg-black/20 border border-dashed border-gray-200 dark:border-white/[0.03]"
+                    />
                   );
                 }
 
@@ -513,12 +511,13 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                 </div>
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                <div className="flex flex-col items-center gap-2">
-                  <CreditCard size={32} className="opacity-20" />
-                  <p className="sentence-case-text text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.paymentMethods.noData')}</p>
-                </div>
-              </div>
+              <AnalyticsEmptyState
+                icon={CreditCard}
+                title={t('dashboard.paymentMethods.noData')}
+                description={t('orders.reports.sales.breakdown')}
+                compact
+                className="h-full"
+              />
             )}
           </div>
         </div>

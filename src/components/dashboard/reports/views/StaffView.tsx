@@ -8,6 +8,7 @@ import { Pagination } from '../../../ui';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 
 const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
   const { t } = useTranslation();
@@ -52,36 +53,17 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
   const { formatAmount } = useCurrency();
   const [staffPage, setStaffPage] = useState(1);
   const itemsPerPage = 10;
-
-  const getNumericTooltipValue = (value: number | string | ReadonlyArray<number | string> | undefined) => {
-    const normalizedValue = Array.isArray(value) ? value[0] : value;
-    return typeof normalizedValue === 'number' ? normalizedValue : Number(normalizedValue ?? 0);
-  };
-
-  // If no shifts, return empty state early
-  if (shifts.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
-        <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transform rotate-3">
-          <Users size={32} className="text-gray-400" />
-        </div>
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{t('orders.reports.staff.noActivity')}</h3>
-        <p className="text-xs font-medium text-gray-500 max-w-sm leading-relaxed">
-          {t('orders.reports.staff.noActivityDesc')}
-        </p>
-      </div>
-    );
-  }
-
-  // Calculate Aggregates
   const selectedEmp = selectedEmployeeId ? employees.find(e => e.value === selectedEmployeeId) : null;
   const empName = selectedEmp?.label || '';
   const isSpecificEmployee = !!selectedEmployeeId;
   const footerText = isSpecificEmployee ? `${t('orders.reports.staff.byStaff')} ${empName}` : (t('common.allStaff') || 'All Staff');
   const footerIssuedText = isSpecificEmployee ? (t('orders.reports.staff.issuedBy', { name: empName }) || `Issued by ${empName}`) : (t('common.allStaff') || 'All Staff');
-
-  // Use employee shifts if employee selected, otherwise use all shifts
   const dataSource = isSpecificEmployee ? employeeShifts : shifts;
+
+  const getNumericTooltipValue = (value: number | string | ReadonlyArray<number | string> | undefined) => {
+    const normalizedValue = Array.isArray(value) ? value[0] : value;
+    return typeof normalizedValue === 'number' ? normalizedValue : Number(normalizedValue ?? 0);
+  };
 
   // Calculate stats
   const totalHours = dataSource.reduce((acc: number, shift: any) => {
@@ -151,6 +133,8 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
   pieData.forEach((entry: any, index: number) => {
     if (entry.name !== t('common.others')) entry.color = COLORS[index % COLORS.length];
   });
+  const hasLeaderboardData = sortedEmployees.length > 0;
+  const hasSalesShareData = pieData.length > 0 && totalStoreSales > 0;
 
   return (
     <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -232,58 +216,71 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                 <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')}</p>
               </div>
               <div className="flex-1 min-h-[180px] relative" dir="ltr">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                      stroke="none"
-                      cornerRadius={8}
-                    >
-                      {pieData.map((entry: any, index: number) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      formatter={(value: any) => `${formatAmount(getNumericTooltipValue(value))}`}
-                      contentStyle={{ 
-                        borderRadius: '12px', 
-                        border: 'none', 
-                        boxShadow: '0 10px 40px -10px rgba(0,0,0,0.15)', 
-                        backgroundColor: '#fff', 
-                        color: '#000', 
-                        fontWeight: 'bold',
-                        fontSize: '11px'
-                      }}
-                      position={{ y: -20 }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-                {/* Center Stat */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="text-center bg-white dark:bg-[#1E293B] w-20 h-20 rounded-full flex flex-col items-center justify-center shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] border border-gray-50 dark:border-white/5">
-                    <p className="text-[10px] font-black tracking-widest text-gray-400 uppercase">{t('owner.overview.total')}</p>
-                    <p className="text-sm font-black text-gray-900 dark:text-white mt-0.5">{totalStoreSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
-                  </div>
+                {hasSalesShareData ? (
+                  <>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={pieData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={80}
+                          paddingAngle={5}
+                          dataKey="value"
+                          stroke="none"
+                          cornerRadius={8}
+                        >
+                          {pieData.map((entry: any, index: number) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          formatter={(value: any) => `${formatAmount(getNumericTooltipValue(value))}`}
+                          contentStyle={{
+                            borderRadius: '12px',
+                            border: 'none',
+                            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.15)',
+                            backgroundColor: '#fff',
+                            color: '#000',
+                            fontWeight: 'bold',
+                            fontSize: '11px'
+                          }}
+                          position={{ y: -20 }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="text-center bg-white dark:bg-[#1E293B] w-20 h-20 rounded-full flex flex-col items-center justify-center shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] border border-gray-50 dark:border-white/5">
+                        <p className="text-[10px] font-black tracking-widest text-gray-400 uppercase">{t('owner.overview.total')}</p>
+                        <p className="text-sm font-black text-gray-900 dark:text-white mt-0.5">{totalStoreSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <AnalyticsEmptyState
+                    icon={Users}
+                    title={t('orders.reports.staff.noActivity')}
+                    description={t('orders.reports.staff.noActivityDesc')}
+                    compact
+                    className="h-full rounded-2xl bg-gray-50/50 dark:bg-black/20 border border-dashed border-gray-200 dark:border-white/[0.03]"
+                  />
+                )}
+              </div>
+              {hasSalesShareData && (
+                <div className="mt-4 flex flex-wrap justify-center gap-2">
+                  {pieData.map((entry: any) => (
+                    <div key={entry.name} className="flex items-center gap-2 bg-gray-50 dark:bg-white/5 px-3 py-1.5 rounded-full border border-gray-100 dark:border-white/5">
+                      <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: entry.color }} />
+                      <p className="text-[13px] font-bold text-gray-600 dark:text-gray-300 truncate max-w-[120px]" title={entry.name}>{entry.name}</p>
+                    </div>
+                  ))}
                 </div>
-              </div>
-              <div className="mt-4 flex flex-wrap justify-center gap-2">
-                {pieData.map((entry: any) => (
-                  <div key={entry.name} className="flex items-center gap-2 bg-gray-50 dark:bg-white/5 px-3 py-1.5 rounded-full border border-gray-100 dark:border-white/5">
-                    <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: entry.color }} />
-                    <p className="text-[13px] font-bold text-gray-600 dark:text-gray-300 truncate max-w-[120px]" title={entry.name}>{entry.name}</p>
-                  </div>
-                ))}
-              </div>
+              )}
             </div>
 
             {/* 2. Top Performer Spotlight (The "Star" View) */}
-            {sortedEmployees.length > 0 && (
+            {hasLeaderboardData ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -337,6 +334,16 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                   </div>
                 </div>
               </motion.div>
+            ) : (
+              <div className="bg-white dark:bg-[#1E293B] p-5 rounded-[24px] border border-gray-100 dark:border-white/[0.05] shadow-sm">
+                <AnalyticsEmptyState
+                  icon={Star}
+                  title={t('orders.reports.staff.noActivity')}
+                  description={t('orders.reports.staff.noActivityDesc')}
+                  compact
+                  className="min-h-[280px] rounded-2xl bg-gray-50/50 dark:bg-black/20 border border-dashed border-gray-200 dark:border-white/[0.03]"
+                />
+              </div>
             )}
           </div>
         )}
@@ -362,48 +369,61 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">
-                {sortedEmployees
-                  .slice((staffPage - 1) * itemsPerPage, staffPage * itemsPerPage)
-                  .map((emp: any, idx: number) => {
-                    const shareRatio = totalStoreSales > 0 ? (emp.totalSales / totalStoreSales) : 0;
-                    const sharePercent = shareRatio * 100;
-                    const avgTicket = emp.totalSales / (emp.transactionCount || 1);
-                    const efficiency = emp.totalSales / (emp.totalHours || 1);
+                {hasLeaderboardData ? (
+                  sortedEmployees
+                    .slice((staffPage - 1) * itemsPerPage, staffPage * itemsPerPage)
+                    .map((emp: any, idx: number) => {
+                      const shareRatio = totalStoreSales > 0 ? (emp.totalSales / totalStoreSales) : 0;
+                      const sharePercent = shareRatio * 100;
+                      const avgTicket = emp.totalSales / (emp.transactionCount || 1);
+                      const efficiency = emp.totalSales / (emp.totalHours || 1);
 
-                    return (
-                      <tr key={emp.username} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                        <td className="px-6 py-4 text-start">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs ${idx === 0 ? 'bg-[#7CC39F]/20 text-[#7CC39F]' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
-                            {((staffPage - 1) * itemsPerPage + idx + 1).toLocaleString(t('common.locale'))}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="font-bold text-gray-900 dark:text-white text-sm" title={emp.username}>{emp.username}</span>
-                        </td>
-                        <td className="px-6 py-4 text-end font-black text-gray-900 dark:text-white">
-                          <FormatCurrency value={emp.totalSales} />
-                        </td>
-                        <td className="px-6 py-4 text-end">
-                          <div className="flex items-center justify-end gap-2">
-                            <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-                              <div className="h-full bg-paymint-green rounded-full" style={{ width: `${sharePercent}%` }} />
+                      return (
+                        <tr key={emp.username} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                          <td className="px-6 py-4 text-start">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs ${idx === 0 ? 'bg-[#7CC39F]/20 text-[#7CC39F]' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                              {((staffPage - 1) * itemsPerPage + idx + 1).toLocaleString(t('common.locale'))}
                             </div>
-                            <span className="text-xs font-bold text-gray-500">
-                              {shareRatio.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="font-bold text-gray-900 dark:text-white text-sm" title={emp.username}>{emp.username}</span>
+                          </td>
+                          <td className="px-6 py-4 text-end font-black text-gray-900 dark:text-white">
+                            <FormatCurrency value={emp.totalSales} />
+                          </td>
+                          <td className="px-6 py-4 text-end">
+                            <div className="flex items-center justify-end gap-2">
+                              <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                <div className="h-full bg-paymint-green rounded-full" style={{ width: `${sharePercent}%` }} />
+                              </div>
+                              <span className="text-xs font-bold text-gray-500">
+                                {shareRatio.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-end font-bold text-gray-900 dark:text-white">
+                            <CurrencyAmount amount={avgTicket} size="text-sm" />
+                          </td>
+                          <td className="px-6 py-4 text-end">
+                            <span className="text-xs font-bold text-gray-500 inline-flex items-center gap-1 justify-end w-full">
+                              <CurrencyAmount amount={efficiency} size="text-xs" color="text-gray-500" /> <span>/ {t('orders.reports.staff.perHour')}</span>
                             </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-end font-bold text-gray-900 dark:text-white">
-                          <CurrencyAmount amount={avgTicket} size="text-sm" />
-                        </td>
-                        <td className="px-6 py-4 text-end">
-                          <span className="text-xs font-bold text-gray-500 inline-flex items-center gap-1 justify-end w-full">
-                            <CurrencyAmount amount={efficiency} size="text-xs" color="text-gray-500" /> <span>/ {t('orders.reports.staff.perHour')}</span>
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                          </td>
+                        </tr>
+                      );
+                    })
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-14">
+                      <AnalyticsEmptyState
+                        icon={Users}
+                        title={t('orders.reports.staff.noActivity')}
+                        description={t('orders.reports.staff.noActivityDesc')}
+                        compact
+                      />
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

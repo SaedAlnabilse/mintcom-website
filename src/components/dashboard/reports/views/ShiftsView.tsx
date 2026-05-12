@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getDateLocale } from '../../../../utils/dateLocale';
 import { Pagination } from '../../../ui';
+import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 
 const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
   const { t } = useTranslation();
@@ -62,21 +63,6 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
     return sortedShifts.slice(startIndex, startIndex + itemsPerPage);
   }, [sortedShifts, currentPage]);
 
-  // If no shifts, return empty state early
-  if (shifts.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
-        <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transform rotate-3">
-          <Clock size={32} className="text-gray-400" />
-        </div>
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{t('orders.reports.shifts.noActivity')}</h3>
-        <p className="text-xs font-medium text-gray-500 max-w-sm leading-relaxed">
-          {t('orders.reports.shifts.noActivityDesc')}
-        </p>
-      </div>
-    );
-  }
-
   const totalVariance = shifts.reduce((acc: number, shift: any) => acc + (shift.discrepancy || 0), 0);
   const activeShiftsCount = shifts.filter((s: any) => s.status === 'OPEN').length;
 
@@ -127,80 +113,93 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-              {paginatedShifts.map((shift: any) => (
-                <motion.tr
-                  key={shift.id}
-                  className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                >
-                  <td className="px-5 py-5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-xs">
-                        {shift.user?.username?.charAt(0).toUpperCase()}
+              {paginatedShifts.length > 0 ? (
+                paginatedShifts.map((shift: any) => (
+                  <motion.tr
+                    key={shift.id}
+                    className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                  >
+                    <td className="px-5 py-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-xs">
+                          {shift.user?.username?.charAt(0).toUpperCase()}
+                        </div>
+                        <span className="font-bold text-gray-900 dark:text-white text-sm">{shift.user?.username || t('common.unknown')}</span>
                       </div>
-                      <span className="font-bold text-gray-900 dark:text-white text-sm">{shift.user?.username || t('common.unknown')}</span>
-                    </div>
-                  </td>
-                  <td className="px-5 py-5">
-                    <div className="flex flex-col">
-                      <span className="text-xs font-bold text-gray-900 dark:text-white">
-                        {format(new Date(shift.startTime), 'MMM d, HH:mm', { locale: getDateLocale(t('common.locale')) })}
-                      </span>
-                      <span className="text-xs font-medium text-gray-500">
-                        {t('common.to')} {shift.endTime ? format(new Date(shift.endTime), 'HH:mm', { locale: getDateLocale(t('common.locale')) }) : t('orders.reports.shifts.present')}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-5 py-5 text-end font-medium text-gray-500">
-                    <FormatCurrency value={shift.openingBalance} />
-                  </td>
-                  <td className="px-5 py-5 text-end font-bold text-paymint-green">
-                    <FormatCurrency value={shift.totalSales} />
-                  </td>
-                  <td className="px-5 py-5 text-end">
-                    {shift.status === 'CLOSED' ? (
-                      <span className="font-bold text-paymint-green">
-                        {shift.closingBalance !== null && shift.closingBalance !== undefined
-                          ? <FormatCurrency value={shift.closingBalance} />
-                          : '—'}
-                      </span>
-                    ) : (
-                      <span className="label-strong font-outfit">{t('orders.reports.shifts.active')}</span>
-                    )}
-                  </td>
-                  <td className="px-5 py-5 text-center">
-                    {shift.status === 'CLOSED' && shift.discrepancy !== null && shift.discrepancy !== undefined ? (
-                      <div className="flex flex-col items-center">
-                        <span className={`px-2.5 py-1 rounded-lg flex items-center gap-1 label-strong font-outfit border ${shift.discrepancy > 0.001
-                          ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
-                          : shift.discrepancy < -0.001
-                            ? 'bg-red-500/10 text-red-500 border-red-500/20'
-                            : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
-                          }`}>
-                          {shift.discrepancy > 0.001 ? '+' : ''}
-                          <CurrencyAmount 
-                            amount={shift.discrepancy} 
-                            size="text-[10px]" 
-                            color={shift.discrepancy > 0.001 ? 'text-amber-500' : shift.discrepancy < -0.001 ? 'text-red-500' : 'text-blue-600 dark:text-blue-400'} 
-                          />
-                          <span className="ml-1">
-                            {shift.discrepancy > 0.001 ? t('orders.reports.shifts.over') : shift.discrepancy < -0.001 ? t('orders.reports.shifts.short') : ''}
-                          </span>
+                    </td>
+                    <td className="px-5 py-5">
+                      <div className="flex flex-col">
+                        <span className="text-xs font-bold text-gray-900 dark:text-white">
+                          {format(new Date(shift.startTime), 'MMM d, HH:mm', { locale: getDateLocale(t('common.locale')) })}
+                        </span>
+                        <span className="text-xs font-medium text-gray-500">
+                          {t('common.to')} {shift.endTime ? format(new Date(shift.endTime), 'HH:mm', { locale: getDateLocale(t('common.locale')) }) : t('orders.reports.shifts.present')}
                         </span>
                       </div>
-                    ) : (
-                      <span className="label-strong font-outfit">—</span>
-                    )}
+                    </td>
+                    <td className="px-5 py-5 text-end font-medium text-gray-500">
+                      <FormatCurrency value={shift.openingBalance} />
+                    </td>
+                    <td className="px-5 py-5 text-end font-bold text-paymint-green">
+                      <FormatCurrency value={shift.totalSales} />
+                    </td>
+                    <td className="px-5 py-5 text-end">
+                      {shift.status === 'CLOSED' ? (
+                        <span className="font-bold text-paymint-green">
+                          {shift.closingBalance !== null && shift.closingBalance !== undefined
+                            ? <FormatCurrency value={shift.closingBalance} />
+                            : '—'}
+                        </span>
+                      ) : (
+                        <span className="label-strong font-outfit">{t('orders.reports.shifts.active')}</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-5 text-center">
+                      {shift.status === 'CLOSED' && shift.discrepancy !== null && shift.discrepancy !== undefined ? (
+                        <div className="flex flex-col items-center">
+                          <span className={`px-2.5 py-1 rounded-lg flex items-center gap-1 label-strong font-outfit border ${shift.discrepancy > 0.001
+                            ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                            : shift.discrepancy < -0.001
+                              ? 'bg-red-500/10 text-red-500 border-red-500/20'
+                              : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
+                            }`}>
+                            {shift.discrepancy > 0.001 ? '+' : ''}
+                            <CurrencyAmount
+                              amount={shift.discrepancy}
+                              size="text-[10px]"
+                              color={shift.discrepancy > 0.001 ? 'text-amber-500' : shift.discrepancy < -0.001 ? 'text-red-500' : 'text-blue-600 dark:text-blue-400'}
+                            />
+                            <span className="ml-1">
+                              {shift.discrepancy > 0.001 ? t('orders.reports.shifts.over') : shift.discrepancy < -0.001 ? t('orders.reports.shifts.short') : ''}
+                            </span>
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="label-strong font-outfit">—</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-5 text-center">
+                      <span className={`px-2.5 py-1 rounded-lg label-strong font-outfit border transition-all ${shift.status === 'OPEN'
+                        ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                        : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
+                        }`}>
+                        {shift.status === 'OPEN' ? t('orders.reports.shifts.active') : t('orders.status.completed')}
+                      </span>
+                    </td>
+                  </motion.tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} className="px-5 py-14">
+                    <AnalyticsEmptyState
+                      icon={Clock}
+                      title={t('orders.reports.shifts.noActivity')}
+                      description={t('orders.reports.shifts.noActivityDesc')}
+                      compact
+                    />
                   </td>
-                  <td className="px-5 py-5 text-center">
-                    <span className={`px-2.5 py-1 rounded-lg label-strong font-outfit border transition-all ${shift.status === 'OPEN'
-                      ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
-                      : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
-                      }`}>
-                      {shift.status === 'OPEN' ? t('orders.reports.shifts.active') : t('orders.status.completed')}
-                    </span>
-                  </td>
-                </motion.tr>
-              ))}
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

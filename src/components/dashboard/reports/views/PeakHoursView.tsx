@@ -5,6 +5,7 @@ import { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, Tooltip } fro
 import { useTheme } from '../../../../context/ThemeContext';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 
 interface PeakHoursViewProps {
   peakHours: PeakHour[];
@@ -92,15 +93,12 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-[#1E293B]/50 rounded-2xl border border-dashed border-gray-200 dark:border-white/[0.03]">
-            <div className="p-5 rounded-full bg-gray-100 dark:bg-white/5">
-              <Clock size={36} className="text-gray-400 dark:text-gray-600" />
-            </div>
-            <div className="text-center">
-              <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('orders.reports.peakHours.noData')}</p>
-              <p className="card-subtitle">{t('orders.reports.peakHours.noDataDesc')}</p>
-            </div>
-          </div>
+          <AnalyticsEmptyState
+            icon={Clock}
+            title={t('orders.reports.peakHours.noData')}
+            description={t('orders.reports.peakHours.noDataDesc')}
+            className="h-full w-full rounded-2xl bg-gray-50/50 dark:bg-[#1E293B]/50 border border-dashed border-gray-200 dark:border-white/[0.03]"
+          />
         )}
       </div>
     </div>

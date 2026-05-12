@@ -20,6 +20,7 @@ import { format } from 'date-fns';
 import { useAuth } from '../../../context/AuthContext';
 import { checkPermission } from '../../../hooks/usePermissionGuard';
 import { formatInputPlaceholder } from '../../../utils/textCase';
+import { AnalyticsEmptyState } from './AnalyticsEmptyState';
 
 
 interface ReceiptsReportProps {
@@ -267,12 +268,13 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                         <p className="text-xs font-bold text-gray-400">{t('common.loading')}</p>
                     </div>
                 ) : orders.length === 0 ? (
-                    <div className="flex-1 flex flex-col items-center justify-center py-20">
-                        <div className="w-14 h-14 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 text-gray-300">
-                            <Receipt size={24} />
-                        </div>
-                        <p className="text-sm font-bold text-gray-500">{t('common.noRecordsFound')}</p>
-                    </div>
+                    <AnalyticsEmptyState
+                        icon={Receipt}
+                        title={t('common.noRecordsFound')}
+                        description={t('orders.reports.receipts.receiptsCount')}
+                        compact
+                        className="flex-1 py-20"
+                    />
                 ) : (
                     <div className="w-full">
                         {/* Desktop Table */}
