@@ -83,9 +83,11 @@ export function AddonsPage() {
     title: string;
     message: string;
     onConfirm: () => void;
+    onSecondary?: () => void;
     type?: 'danger' | 'success' | 'warning' | 'info';
     confirmText?: string;
     cancelText?: string;
+    secondaryText?: string;
     showCancel?: boolean;
   }>({
     isOpen: false,
@@ -193,6 +195,20 @@ export function AddonsPage() {
     setErrors({});
   };
 
+  const reactivateAttributeById = async (id: string) => {
+    await api.post(`/api/attributes/${id}/reactivate`);
+    toast.success(t('attributes.messages.groupReactivated', { defaultValue: 'Add-on group reactivated' }));
+    setShowAttributeModal(false);
+    fetchAttributes();
+  };
+
+  const reactivateSubAttributeById = async (id: string) => {
+    await api.post(`/api/attributes/sub-attributes/${id}/reactivate`);
+    toast.success(t('attributes.messages.optionReactivated', { defaultValue: 'Add-on option reactivated' }));
+    setShowSubAttributeModal(false);
+    fetchAttributes();
+  };
+
   const openSubAttributeModal = (attributeId: string, subAttr?: SubAttribute) => {
     setParentAttributeId(attributeId);
     if (subAttr) {
@@ -226,6 +242,42 @@ export function AddonsPage() {
         await api.patch(`/api/attributes/${editingAttribute.id}`, attributeForm);
         toast.success(t('attributes.messages.groupUpdated'));
       } else {
+        const conflict = await api.get('/api/attributes/name-conflicts', {
+          params: { name: attributeForm.name },
+        });
+        const data = conflict.data;
+        if (data?.activeDuplicate) {
+          setErrors({ groupName: `An active add-on group named "${data.activeDuplicate.displayName}" already exists.` });
+          return;
+        }
+        const archived = data?.archivedDuplicates?.[0];
+        if (archived) {
+          setConfirmConfig({
+            isOpen: true,
+            title: 'Archived add-on group found',
+            message: `An archived add-on group named "${archived.displayName}" already exists. Restore it, or create a new group with the same name?`,
+            type: 'warning',
+            confirmText: 'Restore archived',
+            secondaryText: 'Create new anyway',
+            onConfirm: async () => {
+              await reactivateAttributeById(archived.id);
+            },
+            onSecondary: async () => {
+              setIsSubmitting(true);
+              try {
+                await api.post('/api/attributes', attributeForm);
+                toast.success(t('attributes.messages.groupCreated'));
+                setShowAttributeModal(false);
+                fetchAttributes();
+              } catch (error: any) {
+                setErrors({ groupName: error.response?.data?.message || t('attributes.errors.errorSaving') });
+              } finally {
+                setIsSubmitting(false);
+              }
+            },
+          });
+          return;
+        }
         await api.post('/api/attributes', attributeForm);
         toast.success(t('attributes.messages.groupCreated'));
       }
@@ -260,6 +312,42 @@ export function AddonsPage() {
         await api.patch(`/api/attributes/sub-attributes/${editingSubAttribute.id}`, subAttributeForm);
         toast.success(t('attributes.messages.optionUpdated'));
       } else {
+        const conflict = await api.get('/api/attributes/name-conflicts', {
+          params: { name: subAttributeForm.name, attributeId: parentAttributeId },
+        });
+        const data = conflict.data;
+        if (data?.activeDuplicate) {
+          setErrors({ optionName: `An active option named "${data.activeDuplicate.displayName}" already exists.` });
+          return;
+        }
+        const archived = data?.archivedDuplicates?.[0];
+        if (archived) {
+          setConfirmConfig({
+            isOpen: true,
+            title: 'Archived add-on option found',
+            message: `An archived option named "${archived.displayName}" already exists. Restore it, or create a new option with the same name?`,
+            type: 'warning',
+            confirmText: 'Restore archived',
+            secondaryText: 'Create new anyway',
+            onConfirm: async () => {
+              await reactivateSubAttributeById(archived.id);
+            },
+            onSecondary: async () => {
+              setIsSubmitting(true);
+              try {
+                await api.post(`/api/attributes/${parentAttributeId}/sub-attributes`, subAttributeForm);
+                toast.success(t('attributes.messages.optionCreated'));
+                setShowSubAttributeModal(false);
+                fetchAttributes();
+              } catch (error: any) {
+                setErrors({ optionName: error.response?.data?.message || t('attributes.errors.errorSavingOption') });
+              } finally {
+                setIsSubmitting(false);
+              }
+            },
+          });
+          return;
+        }
         await api.post(`/api/attributes/${parentAttributeId}/sub-attributes`, subAttributeForm);
         toast.success(t('attributes.messages.optionCreated'));
       }
@@ -325,10 +413,7 @@ export function AddonsPage() {
       type: 'success',
       onConfirm: async () => {
         try {
-          await api.post(`/api/attributes/${attribute.id}/reactivate`);
-          toast.success(t('attributes.messages.groupReactivated', { defaultValue: 'Add-on group reactivated' }));
-          setShowAttributeModal(false);
-          fetchAttributes();
+          await reactivateAttributeById(attribute.id);
         } catch (error: any) {
           toast.error(error.response?.data?.message || t('attributes.errors.errorSaving'));
         }
@@ -349,10 +434,7 @@ export function AddonsPage() {
       type: 'success',
       onConfirm: async () => {
         try {
-          await api.post(`/api/attributes/sub-attributes/${sub.id}/reactivate`);
-          toast.success(t('attributes.messages.optionReactivated', { defaultValue: 'Add-on option reactivated' }));
-          setShowSubAttributeModal(false);
-          fetchAttributes();
+          await reactivateSubAttributeById(sub.id);
         } catch (error: any) {
           toast.error(error.response?.data?.message || t('attributes.errors.errorSavingOption'));
         }
@@ -1002,6 +1084,8 @@ export function AddonsPage() {
         message={confirmConfig.message}
         confirmText={confirmConfig.confirmText}
         cancelText={confirmConfig.cancelText}
+        secondaryText={confirmConfig.secondaryText}
+        onSecondary={confirmConfig.onSecondary}
         showCancel={confirmConfig.showCancel}
         type={confirmConfig.type}
       />

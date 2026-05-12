@@ -200,6 +200,22 @@ export const ItemsView = React.memo(function ItemsView({
     return items;
   }, [itemReportData, sortConfig, itemSearchQuery]);
 
+  const totalPages = Math.max(1, Math.ceil(sortedItems.length / itemsPerPage));
+  const paginatedItems = useMemo(
+    () => sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage),
+    [currentPage, sortedItems],
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [itemReportTab, itemSearchQuery, itemReportData]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
   const fetchCategoryBreakdown = async (categoryId: string, categoryName: string) => {
     setSelectedCategory({ id: categoryId, name: categoryName });
     setIsBreakdownModalOpen(true);
@@ -211,7 +227,7 @@ export const ItemsView = React.memo(function ItemsView({
         params: {
           startDate,
           endDate,
-          employeeId: selectedEmployeeId || '',
+          ...(selectedEmployeeId ? { employeeId: selectedEmployeeId } : {}),
           categoryId: categoryId
         }
       });
@@ -387,20 +403,21 @@ export const ItemsView = React.memo(function ItemsView({
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
               {sortedItems.length > 0 ? (
-                sortedItems
-                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                    .map((item: any, idx: number) => {
+                paginatedItems.map((item: any, idx: number) => {
                     const itemId =
                       itemReportTab === 'items'
                         ? (item.itemId || item.id)
                         : (item.modifierId || item.id);
                     const itemType = itemReportTab === 'modifiers' ? 'ADDON' : 'ITEM';
+                    const canShowHistory =
+                      (itemReportTab === 'items' || itemReportTab === 'modifiers') &&
+                      Boolean(itemId);
                     const itemHist =
-                      itemReportTab === 'items' || itemReportTab === 'modifiers'
+                      canShowHistory
                         ? getItemPriceHistory(itemId, itemType, 'all')
                         : [];
                     const periodHist =
-                      itemReportTab === 'items' || itemReportTab === 'modifiers'
+                      canShowHistory
                         ? getItemPriceHistory(itemId, itemType, 'period')
                         : [];
                     const hasHistory = itemHist.length > 0;
@@ -433,14 +450,14 @@ export const ItemsView = React.memo(function ItemsView({
                               {itemReportTab === 'categories' && (
                                 <ChevronRight size={14} className="text-gray-300 dark:text-white/10 opacity-40 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
                               )}
-                              {hasHistory && (
+                              {canShowHistory && (
                                  <button
                                    onClick={(e) => {
                                      e.stopPropagation();
                                      setHistoryScope('all');
                                      setSelectedHistoryItem({ 
                                        id: itemId,
-                                       name: item.itemName || item.name,
+                                       name: item.itemName || item.name || t('common.unknown'),
                                        type: itemType,
                                      });
                                    }}
@@ -454,9 +471,13 @@ export const ItemsView = React.memo(function ItemsView({
                                        ? t('reports.history.inRange', {
                                            defaultValue: 'Has changes in the selected report period',
                                          })
-                                       : t('reports.history.allOnly', {
-                                           defaultValue: 'View all recorded history',
-                                         })
+                                       : hasHistory
+                                         ? t('reports.history.allOnly', {
+                                             defaultValue: 'View all recorded history',
+                                           })
+                                         : t('reports.history.noneYet', {
+                                             defaultValue: 'No recorded price history yet',
+                                           })
                                    }
                                  >
                                    <History size={12} strokeWidth={2.5} />
@@ -497,8 +518,10 @@ export const ItemsView = React.memo(function ItemsView({
 
         <Pagination
           currentPage={currentPage}
-          totalPages={Math.ceil((itemReportData.breakdown?.length || 0) / itemsPerPage)}
+          totalPages={totalPages}
           onPageChange={(p) => setCurrentPage(p)}
+          totalItems={sortedItems.length}
+          itemsPerPage={itemsPerPage}
         />
       </div>
 

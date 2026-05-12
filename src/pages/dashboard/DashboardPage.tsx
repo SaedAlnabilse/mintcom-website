@@ -39,6 +39,11 @@ import { TopSellingProducts } from '../../components/dashboard/overview/TopSelli
 import { PeakHoursChart } from '../../components/dashboard/overview/PeakHoursChart';
 import { PayInPayOutLogModal } from '../../components/dashboard/reports/PayInPayOutLogModal';
 import { SectionLoader } from '../../components/LoadingState';
+import {
+  emptyDashboardStats,
+  normalizeDashboardStats,
+  normalizePeakHours,
+} from '../../utils/reportFallbacks';
 
 // View mode types
 type ViewMode = 'current_shift' | 'previous_shift' | 'last_24_hours';
@@ -289,22 +294,7 @@ export const DashboardPage = () => {
       setActiveDateRange({ start, end });
 
       if (!canViewDashboardAnalytics) {
-        setStats({
-          totalRevenue: 0,
-          totalOrders: 0,
-          averageOrderValue: 0,
-          pendingOrders: 0,
-          completedOrders: 0,
-          activeEmployees: 0,
-          taxCollected: 0,
-          totalRefunds: 0,
-          grossProfit: 0,
-          totalPayIn: 0,
-          totalPayOut: 0,
-          paymentMethodBreakdown: [],
-          categoryBreakdown: [],
-          dailyBreakdown: [],
-        });
+        setStats(emptyDashboardStats());
         setTopProducts([]);
         setPeakHours([]);
         return;
@@ -329,9 +319,9 @@ export const DashboardPage = () => {
         console.warn('Some dashboard data could not be loaded');
       }
 
-      // Process stats
-      const summaryData = summaryRes.data || {};
-      const pendingOrdersData = pendingOrdersRes.data || {};
+      // Process stats. Successful empty/null payloads are normalized to zero-state data.
+      const summaryData = normalizeDashboardStats(summaryRes.data);
+      const pendingOrdersData = normalizeDashboardStats(pendingOrdersRes.data);
       const pendingOrdersLast24Hours = Number(pendingOrdersData.pendingOrders) || 0;
       const categoryData = Array.isArray(categoryRes.data?.breakdown) ? categoryRes.data.breakdown : [];
       
@@ -342,22 +332,22 @@ export const DashboardPage = () => {
           count: cat.count || cat.quantity || cat.orders || 0
       })).sort((a: any, b: any) => b.value - a.value);
 
-      setStats({
-        totalRevenue: summaryData.totalRevenue || 0,
-        totalOrders: summaryData.totalOrders || 0,
-        averageOrderValue: summaryData.averageOrderValue || 0,
+      setStats(normalizeDashboardStats(summaryData, {
+        totalRevenue: summaryData.totalRevenue,
+        totalOrders: summaryData.totalOrders,
+        averageOrderValue: summaryData.averageOrderValue,
         pendingOrders: pendingOrdersLast24Hours,
-        completedOrders: summaryData.completedOrders || summaryData.totalOrders || 0,
-        activeEmployees: summaryData.activeEmployees || 0,
-        taxCollected: summaryData.taxCollected || 0,
-        totalRefunds: summaryData.totalRefunds || 0,
-        grossProfit: summaryData.grossProfit || 0,
-        totalPayIn: summaryData.totalPayIn || 0,
-        totalPayOut: summaryData.totalPayOut || 0,
-        paymentMethodBreakdown: summaryData.paymentMethodBreakdown || [],
+        completedOrders: summaryData.completedOrders || summaryData.totalOrders,
+        activeEmployees: summaryData.activeEmployees,
+        taxCollected: summaryData.taxCollected,
+        totalRefunds: summaryData.totalRefunds,
+        grossProfit: summaryData.grossProfit,
+        totalPayIn: summaryData.totalPayIn,
+        totalPayOut: summaryData.totalPayOut,
+        paymentMethodBreakdown: summaryData.paymentMethodBreakdown,
         categoryBreakdown: processedCategories.length > 0 ? processedCategories : (summaryData.categoryBreakdown || []),
-        dailyBreakdown: summaryData.dailyBreakdown || []
-      });
+        dailyBreakdown: summaryData.dailyBreakdown,
+      }));
 
       // Process top products
       const topItems = (Array.isArray(topItemsRes.data) ? topItemsRes.data : []) as TopSellingItem[];
@@ -368,10 +358,13 @@ export const DashboardPage = () => {
       })));
 
       // Process peak hours
-      setPeakHours(Array.isArray(peakRes.data) ? peakRes.data : []);
+      setPeakHours(normalizePeakHours(peakRes.data));
 
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+      setStats(emptyDashboardStats());
+      setTopProducts([]);
+      setPeakHours([]);
     } finally {
       setIsLoading(false);
     }

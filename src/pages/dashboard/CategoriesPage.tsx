@@ -87,8 +87,10 @@ export function CategoriesPage() {
     title: string;
     message: string;
     onConfirm: () => void;
-    type?: 'danger' | 'success' | 'warning';
+    onSecondary?: () => void;
+    type?: 'danger' | 'success' | 'warning' | 'info';
     confirmText?: string;
+    secondaryText?: string;
   }>({
     isOpen: false,
     title: '',
@@ -271,20 +273,61 @@ export function CategoriesPage() {
     setShowModal(true);
   };
 
+  const saveCategory = async (payload: { name: string; icon: string; sortOrder: number }) => {
+    if (editingCategory) {
+      await api.patch(`/api/categories/${editingCategory.id}`, payload);
+      toast.success(t('categories.messages.updated'));
+    } else {
+      await api.post('/api/categories', payload);
+      toast.success(t('categories.messages.created'));
+    }
+    setShowModal(false);
+    fetchData();
+  };
+
   const onSubmit = async (name: string, icon: string, sortOrder: number) => {
     try {
       setIsSubmitting(true);
       setFormError(null);
       const payload = { name, icon, sortOrder };
-      if (editingCategory) {
-        await api.patch(`/api/categories/${editingCategory.id}`, payload);
-        toast.success(t('categories.messages.updated'));
-      } else {
-        await api.post('/api/categories', payload);
-        toast.success(t('categories.messages.created'));
+
+      if (!editingCategory) {
+        const conflict = await api.get('/api/categories/name-conflicts', {
+          params: { name },
+        });
+        const data = conflict.data;
+        if (data?.activeDuplicate) {
+          setFormError(`An active category named "${data.activeDuplicate.displayName}" already exists.`);
+          return;
+        }
+        const archived = data?.archivedDuplicates?.[0];
+        if (archived) {
+          setConfirmConfig({
+            isOpen: true,
+            title: 'Archived category found',
+            message: `An archived category named "${archived.displayName}" already exists. Restore it, or create a new category with the same name?`,
+            type: 'warning',
+            confirmText: 'Restore archived',
+            secondaryText: 'Create new anyway',
+            onConfirm: async () => {
+              await reactivateCategory(archived.id);
+            },
+            onSecondary: async () => {
+              setIsSubmitting(true);
+              try {
+                await saveCategory(payload);
+              } catch (error: any) {
+                setFormError(error.response?.data?.message || t('categories.messages.saveFailed'));
+              } finally {
+                setIsSubmitting(false);
+              }
+            },
+          });
+          return;
+        }
       }
-      setShowModal(false);
-      fetchData();
+
+      await saveCategory(payload);
     } catch (error: any) {
       let message = error.response?.data?.message || t('categories.messages.saveFailed');
       if (message.includes('Unique constraint failed') && message.includes('name')) {
@@ -856,6 +899,8 @@ export function CategoriesPage() {
         message={confirmConfig.message}
         type={confirmConfig.type}
         confirmText={confirmConfig.confirmText}
+        secondaryText={confirmConfig.secondaryText}
+        onSecondary={confirmConfig.onSecondary}
       />
 
       <CsvImportModal

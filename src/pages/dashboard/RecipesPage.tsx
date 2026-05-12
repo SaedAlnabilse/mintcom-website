@@ -140,8 +140,15 @@ const getFinalRecipeTargetId = (recipe: FinalRecipe) =>
 
 const getFinalRecipeTargetName = (recipe: FinalRecipe) =>
   recipe.item?.name ||
-  recipe.subAttribute?.name ||
+  (recipe.subAttribute?.attribute?.name && recipe.subAttribute?.name
+    ? `${recipe.subAttribute.attribute.name} > ${recipe.subAttribute.name}`
+    : recipe.subAttribute?.name) ||
   'Unknown target';
+
+const getMenuItemLabel = (item: MenuItem) =>
+  item.type === 'addon' && item.groupName
+    ? `${item.groupName} > ${item.name}`
+    : item.name;
 
 export function RecipesPage() {
   const { t } = useTranslation();
@@ -1164,7 +1171,7 @@ export function RecipesPage() {
                       if (errors.itemId) setErrors({ ...errors, itemId: '' });
                     }}
                     options={products.map(p => ({
-                      label: `${p.type === 'addon' ? 'Add-on' : 'Product'}: ${p.name}${p.groupName ? ` (${p.groupName})` : ''}`,
+                      label: `${p.type === 'addon' ? 'Add-on' : 'Product'}: ${getMenuItemLabel(p)}`,
                       value: p.id,
                     }))}
                     placeholder={formatInputPlaceholder(t('manufacturing.formula.selectItem'), t('common.locale'))}

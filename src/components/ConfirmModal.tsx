@@ -12,6 +12,8 @@ interface ConfirmModalProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
+  secondaryText?: string;
+  onSecondary?: () => void;
   type?: 'danger' | 'success' | 'warning' | 'info';
   showCancel?: boolean;
 }
@@ -24,6 +26,8 @@ export function ConfirmModal({
   message,
   confirmText,
   cancelText,
+  secondaryText,
+  onSecondary,
   type = 'success',
   showCancel = true
 }: ConfirmModalProps) {
@@ -146,7 +150,7 @@ export function ConfirmModal({
               </div>
 
               {/* Actions */}
-              <div className={`mt-8 sm:mt-10 ${showCancel ? 'grid grid-cols-2 gap-3 sm:gap-4' : 'flex justify-center'}`}>
+              <div className={`mt-8 sm:mt-10 ${showCancel || onSecondary ? 'grid gap-3 sm:gap-4' : 'flex justify-center'} ${showCancel && !onSecondary ? 'grid-cols-2' : 'grid-cols-1'}`}>
                 {showCancel && (
                   <button
                     type="button"
@@ -156,13 +160,25 @@ export function ConfirmModal({
                     {cancelText || t('common.cancel')}
                   </button>
                 )}
+                {onSecondary && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSecondary();
+                      onClose();
+                    }}
+                    className="px-4 sm:px-6 py-3.5 sm:py-4 rounded-xl text-sm font-bold tracking-tight text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 transition-all duration-200 active:scale-95 touch-target"
+                  >
+                    {secondaryText || t('common.continue', { defaultValue: 'Continue' })}
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => {
                     onConfirm();
                     onClose();
                   }}
-                  className={`px-4 sm:px-6 py-3.5 sm:py-4 rounded-xl text-sm font-bold tracking-tight ${theme.buttonBg} transition-all duration-300 active:scale-95 hover:scale-[1.02] touch-target ${!showCancel ? 'w-full' : ''}`}
+                  className={`px-4 sm:px-6 py-3.5 sm:py-4 rounded-xl text-sm font-bold tracking-tight ${theme.buttonBg} transition-all duration-300 active:scale-95 hover:scale-[1.02] touch-target ${!showCancel && !onSecondary ? 'w-full' : ''}`}
                 >
                   {confirmText || t('common.confirm')}
                 </button>

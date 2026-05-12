@@ -129,8 +129,10 @@ export function ProductsPage() {
         message: string;
         productName?: string;
         onConfirm: () => void;
-        type?: 'danger' | 'success' | 'warning';
+        onSecondary?: () => void;
+        type?: 'danger' | 'success' | 'warning' | 'info';
         confirmText?: string;
+        secondaryText?: string;
     }>({
         isOpen: false,
         title: '',
@@ -279,25 +281,70 @@ export function ProductsPage() {
         return `${BACKEND_URL}${cleanPath.startsWith('/') ? '' : '/'}${cleanPath}`;
     };
 
+    const saveProduct = async (formData: FormData) => {
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        };
+
+        if (editingProduct) {
+            await api.patch(`/api/items/${editingProduct.id}`, formData, config);
+            toast.success(t('products.messages.updated'));
+        } else {
+            await api.post('/api/items', formData, config);
+            toast.success(t('products.messages.created'));
+        }
+        setShowModal(false);
+        fetchData(true);
+    };
+
     // Used by ProductFormModal
     const onSubmit = async (formData: FormData) => {
         try {
             setIsSubmitting(true);
-            const config = {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            };
 
-            if (editingProduct) {
-                await api.patch(`/api/items/${editingProduct.id}`, formData, config);
-                toast.success(t('products.messages.updated'));
-            } else {
-                await api.post('/api/items', formData, config);
-                toast.success(t('products.messages.created'));
+            if (!editingProduct) {
+                const productName = String(formData.get('name') || '').trim();
+                const conflict = await api.get('/api/items/name-conflicts', {
+                    params: { name: productName },
+                });
+                const data = conflict.data;
+
+                if (data?.activeDuplicate) {
+                    toast.error(`An active product named "${data.activeDuplicate.displayName}" already exists.`);
+                    return;
+                }
+
+                const archived = data?.archivedDuplicates?.[0];
+                if (archived) {
+                    setConfirmConfig({
+                        isOpen: true,
+                        title: 'Archived product found',
+                        message: `An archived product named "${archived.displayName}" already exists. Restore it, or create a new product with the same name?`,
+                        type: 'warning',
+                        confirmText: 'Restore archived',
+                        secondaryText: 'Create new anyway',
+                        onConfirm: async () => {
+                            await reactivateProduct(archived.id);
+                        },
+                        onSecondary: async () => {
+                            setIsSubmitting(true);
+                            try {
+                                await saveProduct(formData);
+                            } catch (err) {
+                                console.error('Save error', err);
+                                toast.error(t('products.messages.saveFailed'));
+                            } finally {
+                                setIsSubmitting(false);
+                            }
+                        },
+                    });
+                    return;
+                }
             }
-            setShowModal(false);
-            fetchData(true);
+
+            await saveProduct(formData);
         } catch (err) {
             console.error('Save error', err);
             toast.error(t('products.messages.saveFailed'));
@@ -1230,6 +1277,8 @@ export function ProductsPage() {
                 message={confirmConfig.message}
                 type={confirmConfig.type}
                 confirmText={confirmConfig.confirmText}
+                secondaryText={confirmConfig.secondaryText}
+                onSecondary={confirmConfig.onSecondary}
             />
 
             <CsvImportModal

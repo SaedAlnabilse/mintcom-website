@@ -24,6 +24,14 @@ import { CustomTimePicker } from '../../components/CustomTimePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 import type { SalesSummary, Shift, ItemReportData, PeakHour, ShiftOption } from '../../types';
+import {
+  emptyItemReportData,
+  emptySalesSummary,
+  normalizeItemReportData,
+  normalizePeakHours,
+  normalizeSalesSummary,
+  normalizeShifts,
+} from '../../utils/reportFallbacks';
 
 // View Components
 import { SalesView } from '../../components/dashboard/reports/views/SalesView';
@@ -154,10 +162,10 @@ export function ReportsPage() {
     return { start: start.toISOString(), end: end.toISOString() };
   }, [selectedShiftId, employeeShifts, startDate, endDate, startTime, endTime]);
 
-  const [salesData, setSalesData] = useState<SalesSummary | null>(null);
+  const [salesData, setSalesData] = useState<SalesSummary>(emptySalesSummary);
   const [peakHours, setPeakHours] = useState<PeakHour[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
-  const [itemReportData, setItemReportData] = useState<ItemReportData | null>(null);
+  const [itemReportData, setItemReportData] = useState<ItemReportData>(emptyItemReportData);
 
   // Filter State - (Simplified version, complex filters removed as unused)
 
@@ -235,9 +243,9 @@ export function ReportsPage() {
       (reportType === 'discounts' && salesData) ||
       (reportType === 'taxes' && salesData) ||
       (reportType === 'top-items' && itemReportData) ||
-      (reportType === 'peak-hours' && peakHours.length > 0) ||
-      (reportType === 'staff-sales' && shifts.length > 0) ||
-      (reportType === 'shifts' && shifts.length > 0) ||
+      (reportType === 'peak-hours' && true) ||
+      (reportType === 'staff-sales' && true) ||
+      (reportType === 'shifts' && true) ||
       (reportType === 'receipts' && true); // Receipts are fetched inside the component
 
     // If switching report types or no data yet, block UI.
@@ -272,7 +280,7 @@ export function ReportsPage() {
         case 'payments':
         case 'taxes': {
           const salesRes = await api.get('/reports/historical-summary', { params: commonParams });
-          setSalesData(salesRes.data);
+          setSalesData(normalizeSalesSummary(salesRes.data));
           break;
         }
         case 'discounts': {
@@ -280,7 +288,7 @@ export function ReportsPage() {
           const rawReports = discountRes.data?.reports;
           const discountReports = Array.isArray(rawReports) ? rawReports.filter((r: any) => r) : [];
 
-          setSalesData({
+          setSalesData(normalizeSalesSummary({
             totalDiscounts: discountRes.data?.totalDiscountGiven || 0,
             totalDiscountCount: (Array.isArray(discountReports) ? discountReports : []).reduce((acc: number, curr: any) => acc + (curr.count || 0), 0),
             discountBreakdown: (Array.isArray(discountReports) ? discountReports : []).map((r: any) => ({
@@ -288,7 +296,7 @@ export function ReportsPage() {
                 count: r.count || 0,
                 value: r.totalAmount || 0
               }))
-          } as any);
+          }));
           break;
         }
         case 'top-items': {
@@ -304,27 +312,27 @@ export function ReportsPage() {
           const itemRes = await api.get(endpoint, {
             params: commonParams,
           });
-          setItemReportData(itemRes.data);
+          setItemReportData(normalizeItemReportData(itemRes.data));
           break;
         }
         case 'peak-hours': {
           const peakRes = await api.get('/reports/peak-hours', { params: { ...commonParams, timezone: browserTimeZone } });
-          setPeakHours(peakRes.data || []);
+          setPeakHours(normalizePeakHours(peakRes.data));
           break;
         }
         case 'staff-sales': {
           const staffSalesRes = await api.get('/reports/shifts', { params: { ...commonParams, limit: 50 } });
-          setShifts(staffSalesRes.data || []);
+          setShifts(normalizeShifts(staffSalesRes.data));
           break;
         }
         case 'shifts': {
           const shiftsRes = await api.get('/reports/shifts', { params: { ...commonParams, limit: 20 } });
-          setShifts(shiftsRes.data || []);
+          setShifts(normalizeShifts(shiftsRes.data));
           break;
         }
         case 'cash-discrepancy': {
           const shiftsRes = await api.get('/reports/shifts', { params: { ...commonParams, limit: 100 } });
-          setShifts(shiftsRes.data || []);
+          setShifts(normalizeShifts(shiftsRes.data));
           break;
         }
       }
@@ -335,6 +343,18 @@ export function ReportsPage() {
         status: error?.response?.status,
         data: error?.response?.data,
       });
+      if (reportType === 'sales' || reportType === 'payments' || reportType === 'discounts' || reportType === 'taxes') {
+        setSalesData(emptySalesSummary());
+      }
+      if (reportType === 'top-items') {
+        setItemReportData(emptyItemReportData());
+      }
+      if (reportType === 'peak-hours') {
+        setPeakHours([]);
+      }
+      if (reportType === 'staff-sales' || reportType === 'shifts' || reportType === 'cash-discrepancy') {
+        setShifts([]);
+      }
       toast.error(t('dashboard.messages.loadFailed'));
     } finally {
       setIsLoading(false);
@@ -660,7 +680,7 @@ export function ReportsPage() {
         ) : (
           <motion.div key={reportType} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
 
-            {(reportType === 'sales' || reportType === 'taxes') && salesData && (
+            {(reportType === 'sales' || reportType === 'taxes') && (
               <SalesView
                 salesData={salesData}
                 selectedDateRange={selectedDateRange}
@@ -668,7 +688,7 @@ export function ReportsPage() {
               />
             )}
 
-            {reportType === 'top-items' && itemReportData && (
+            {reportType === 'top-items' && (
               <ItemsView
                 itemReportData={itemReportData}
                 itemReportTab={itemReportTab}
@@ -711,7 +731,7 @@ export function ReportsPage() {
               <PeakHoursView peakHours={peakHours} />
             )}
 
-            {reportType === 'payments' && salesData && (
+            {reportType === 'payments' && (
               <PaymentsView
                 salesData={salesData}
                 effectiveDateRange={effectiveDateRange}
@@ -719,11 +739,11 @@ export function ReportsPage() {
               />
             )}
 
-            {reportType === 'discounts' && salesData && (
+            {reportType === 'discounts' && (
               <DiscountsView salesData={salesData} isFetching={isFetching} />
             )}
 
-            {reportType === 'taxes' && salesData && (
+            {reportType === 'taxes' && (
               <TaxesView salesData={salesData} />
             )}
 
