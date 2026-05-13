@@ -7,12 +7,14 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'paymint-logo.svg', 'paymint-logo.png', 'pwa-icon-192.png', 'pwa-icon-512.png'],
       manifestFilename: 'manifest.webmanifest',
       workbox: {
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
       },
       manifest: {
         name: 'PayMint POS',

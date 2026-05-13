@@ -1,15 +1,12 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { createPortal } from 'react-dom';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   FileBarChart,
   Calendar,
   PlayCircle,
   History,
   Timer,
-  ChevronDown,
-  PartyPopper,
-  X
+  ChevronDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, subHours } from 'date-fns';
@@ -50,12 +47,17 @@ type ViewMode = 'current_shift' | 'previous_shift' | 'last_24_hours';
 
 // Auto-refresh interval: 1 hour in milliseconds
 const AUTO_REFRESH_INTERVAL = 60 * 60 * 1000;
+const NEW_LOCATION_WELCOME_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+const DASHBOARD_SETUP_STORAGE_VERSION = 'v6';
+const DASHBOARD_WELCOME_OVERLAY_ID = 'paymint-dashboard-welcome-popup';
 
 export const DashboardPage = () => {
   const { t } = useTranslation();
   const isRTL = t('common.locale') === 'ar';
   const { locationSlug } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { currentEstablishment, account } = useAuth();
   const accountRole = ((account as { role?: string } | null)?.role || '')
     .toString()
@@ -84,8 +86,9 @@ export const DashboardPage = () => {
   // Modals
   const [showPayInOutModal, setShowPayInOutModal] = useState(false);
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
-  const [showDebugPopup, setShowDebugPopup] = useState(false);
   const [showTasksTour, setShowTasksTour] = useState(false);
+  const welcomeHandledRef = useRef(false);
+  const scopedStoragePrefix = `${account?.id || 'anonymous'}.`;
   const locationStorageKeys = useMemo(
     () =>
       Array.from(
@@ -97,88 +100,315 @@ export const DashboardPage = () => {
       ),
     [currentEstablishment?.establishmentLoginId, currentEstablishment?.id, locationSlug],
   );
-  const locationContextKey = locationStorageKeys[0] ?? null;
-  const isLocalDebugEnvironment = useMemo(() => {
-    if (typeof window === 'undefined') {
+  const dashboardSetupKey = currentEstablishment?.id || currentEstablishment?.establishmentLoginId || locationSlug || null;
+  const isSetupLaunchRequest = searchParams.get('setup') === '1' || searchParams.get('welcome') === '1';
+  const isRecentlyCreatedLocation = useMemo(() => {
+    if (!currentEstablishment?.createdAt) {
       return false;
     }
 
-    const host = window.location.hostname;
-    return host === 'localhost' || host === '127.0.0.1';
-  }, []);
-  const isFreshLocation = useMemo(() => {
-    const createdAt = currentEstablishment?.createdAt;
-    if (!createdAt) {
+    const createdAtMs = Date.parse(currentEstablishment.createdAt);
+    if (!Number.isFinite(createdAtMs)) {
       return false;
     }
 
-    const createdAtMs = new Date(createdAt).getTime();
-    if (Number.isNaN(createdAtMs)) {
-      return false;
-    }
-
-    return Date.now() - createdAtMs <= 1000 * 60 * 60;
+    const ageMs = Date.now() - createdAtMs;
+    return ageMs >= 0 && ageMs <= NEW_LOCATION_WELCOME_WINDOW_MS;
   }, [currentEstablishment?.createdAt]);
 
-  // Check if first visit to this location's dashboard
+  // Check if setup welcome should open for this dashboard tab.
   useEffect(() => {
-    // Only show the welcome popup once the dashboard initial loading is done.
-    // We don't wait for 'stats' to handle local/offline environments where stats might fail.
-    if (locationStorageKeys.length > 0 && !isLoading) {
+    if (showWelcomePopup || welcomeHandledRef.current) {
+      return;
+    }
+
+    if (dashboardSetupKey && locationStorageKeys.length > 0) {
       try {
+        const primaryLocationKey = currentEstablishment?.id || locationSlug || dashboardSetupKey;
+        const sessionDismissedKey = `paymint.dashboard.setup.session.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${primaryLocationKey}`;
         const hasPendingWelcome = locationStorageKeys.some(
           (key) => localStorage.getItem(`paymint.dashboard.welcome.pending.${key}`) === 'true',
         );
-        const hasVisitedDashboard = locationStorageKeys.some(
-          (key) => localStorage.getItem(`paymint.dashboard.visited.${key}`) === 'true',
-        );
-        const hasTaskState = locationStorageKeys.some((key) =>
-          Boolean(localStorage.getItem(`paymint.widget.tasks.v1.dashboard-${key}`)),
-        );
-        const shouldForceFreshLocationWelcome = isFreshLocation && !hasTaskState;
+        const hasDismissedThisTab = sessionStorage.getItem(sessionDismissedKey) === 'true';
+        const shouldShowWelcome =
+          isSetupLaunchRequest ||
+          hasPendingWelcome ||
+          (isRecentlyCreatedLocation && !hasDismissedThisTab) ||
+          !hasDismissedThisTab;
 
-        if (hasPendingWelcome || !hasVisitedDashboard || shouldForceFreshLocationWelcome) {
-          // Delay slightly so it appears smoothly over the loaded dashboard
-          const timer = setTimeout(() => {
-            setShowWelcomePopup(true);
-          }, 600);
-          return () => clearTimeout(timer);
+        const debugState = {
+          version: DASHBOARD_SETUP_STORAGE_VERSION,
+          pathname: location.pathname,
+          accountId: account?.id || null,
+          currentEstablishmentId: currentEstablishment?.id || null,
+          currentEstablishmentLoginId: currentEstablishment?.establishmentLoginId || null,
+          locationSlug: locationSlug || null,
+          locationKeys: locationStorageKeys,
+          sessionDismissedKey,
+          hasPendingWelcome,
+          hasDismissedThisTab,
+          isRecentlyCreatedLocation,
+          isSetupLaunchRequest,
+          isLoading,
+          shouldShowWelcome,
+          showWelcomePopup,
+        };
+
+        console.log('[PayMint Setup Debug]', debugState);
+        (window as any).__paymintSetupDebug = debugState;
+        (window as any).__paymintShowSetupPopup = () => {
+          welcomeHandledRef.current = false;
+          setShowWelcomePopup(true);
+        };
+
+        if (shouldShowWelcome) {
+          console.log('[PayMint Setup Debug] opening welcome popup now');
+          setShowWelcomePopup(true);
         }
       } catch (e) {
         console.warn('Failed to access localStorage for welcome popup:', e);
         setShowWelcomePopup(true);
       }
     }
-  }, [isFreshLocation, isLoading, locationStorageKeys]);
+  }, [
+    dashboardSetupKey,
+    account?.id,
+    currentEstablishment?.establishmentLoginId,
+    currentEstablishment?.id,
+    isLoading,
+    isRecentlyCreatedLocation,
+    isSetupLaunchRequest,
+    location.pathname,
+    locationSlug,
+    locationStorageKeys,
+    scopedStoragePrefix,
+    showWelcomePopup,
+  ]);
 
   useEffect(() => {
-    if (!isLoading && isLocalDebugEnvironment && locationContextKey) {
-      const timer = setTimeout(() => {
-        setShowDebugPopup(true);
-      }, 350);
-
-      return () => clearTimeout(timer);
+    if (!showWelcomePopup) {
+      return;
     }
-  }, [isLoading, isLocalDebugEnvironment, locationContextKey]);
+
+    document.body.classList.remove('app-loading');
+    console.log('[PayMint Setup Debug] showWelcomePopup state is true');
+    const timer = window.setTimeout(() => {
+      console.log('[PayMint Setup Debug] popup DOM render check', {
+        exists: Boolean(document.getElementById('paymint-dashboard-welcome-popup')),
+        bodyClass: document.body.className,
+      });
+    }, 50);
+
+    return () => window.clearTimeout(timer);
+  }, [showWelcomePopup]);
+
+  useEffect(() => {
+    if (!showWelcomePopup) {
+      document.getElementById(DASHBOARD_WELCOME_OVERLAY_ID)?.remove();
+      return;
+    }
+
+    document.getElementById(DASHBOARD_WELCOME_OVERLAY_ID)?.remove();
+    document.body.classList.remove('app-loading');
+
+    const overlay = document.createElement('div');
+    overlay.id = DASHBOARD_WELCOME_OVERLAY_ID;
+    overlay.dir = isRTL ? 'rtl' : 'ltr';
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.zIndex = '2147483647';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.padding = '16px';
+    overlay.style.background = 'rgba(0, 0, 0, 0.72)';
+    overlay.style.backdropFilter = 'blur(6px)';
+    overlay.style.pointerEvents = 'auto';
+
+    const card = document.createElement('div');
+    card.style.width = '100%';
+    card.style.maxWidth = '384px';
+    card.style.borderRadius = '32px';
+    card.style.border = '1px solid rgba(255, 255, 255, 0.12)';
+    card.style.background = '#0F172A';
+    card.style.color = '#fff';
+    card.style.boxShadow = '0 24px 80px rgba(0, 0, 0, 0.45)';
+    card.style.position = 'relative';
+    card.style.overflow = 'hidden';
+    card.style.fontFamily = 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+
+    const content = document.createElement('div');
+    content.style.padding = '32px 24px';
+    content.style.display = 'flex';
+    content.style.flexDirection = 'column';
+    content.style.alignItems = 'center';
+    content.style.textAlign = 'center';
+
+    const icon = document.createElement('div');
+    icon.style.width = '64px';
+    icon.style.height = '64px';
+    icon.style.borderRadius = '999px';
+    icon.style.display = 'flex';
+    icon.style.alignItems = 'center';
+    icon.style.justifyContent = 'center';
+    icon.style.marginBottom = '16px';
+    icon.style.fontSize = '30px';
+    icon.style.fontWeight = '800';
+    icon.style.color = '#7CC39F';
+    icon.style.background = 'rgba(124, 195, 159, 0.14)';
+    icon.innerHTML = `
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7CC39F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5.8 11.3 2 22l10.7-3.79" />
+        <path d="M4 3h.01" />
+        <path d="M22 8h.01" />
+        <path d="M15 2h.01" />
+        <path d="M22 20h.01" />
+        <path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10" />
+        <path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11-.11.7-.72 1.22-1.43 1.22H17" />
+        <path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.91 9 5.52 9 6.23V7" />
+        <path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z" />
+      </svg>
+    `;
+
+    const title = document.createElement('h3');
+    title.style.margin = '0 0 8px';
+    title.style.fontSize = '24px';
+    title.style.fontWeight = '800';
+    title.style.color = '#fff';
+    title.style.display = 'flex';
+    title.style.alignItems = 'center';
+    title.style.justifyContent = 'center';
+    title.style.gap = '8px';
+    const titleText = document.createElement('span');
+    titleText.textContent = t('common.congratulations');
+    const titleIcon = document.createElement('span');
+    titleIcon.textContent = '🎉';
+    titleIcon.setAttribute('aria-hidden', 'true');
+    title.append(titleText, titleIcon);
+
+    const message = document.createElement('p');
+    message.textContent = t('dashboard.welcome.message', {
+      location: currentEstablishment?.name || 'this location',
+    });
+    message.style.margin = '0 0 24px';
+    message.style.color = '#CBD5E1';
+    message.style.lineHeight = '1.6';
+    message.style.fontSize = '14px';
+
+    const startButton = document.createElement('button');
+    startButton.type = 'button';
+    startButton.textContent = t('dashboard.welcome.startGuide');
+    startButton.style.width = '100%';
+    startButton.style.border = '0';
+    startButton.style.borderRadius = '14px';
+    startButton.style.padding = '14px 16px';
+    startButton.style.background = '#7CC39F';
+    startButton.style.color = '#07110B';
+    startButton.style.fontWeight = '800';
+    startButton.style.cursor = 'pointer';
+    startButton.style.boxShadow = '0 16px 36px rgba(124, 195, 159, 0.28)';
+
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.textContent = 'x';
+    closeButton.setAttribute('aria-label', t('common.close'));
+    closeButton.style.position = 'absolute';
+    closeButton.style.top = '14px';
+    closeButton.style.right = isRTL ? 'auto' : '14px';
+    closeButton.style.left = isRTL ? '14px' : 'auto';
+    closeButton.style.width = '34px';
+    closeButton.style.height = '34px';
+    closeButton.style.border = '0';
+    closeButton.style.borderRadius = '999px';
+    closeButton.style.background = 'rgba(255, 255, 255, 0.08)';
+    closeButton.style.color = '#CBD5E1';
+    closeButton.style.fontSize = '18px';
+    closeButton.style.lineHeight = '1';
+    closeButton.style.cursor = 'pointer';
+
+    content.append(icon, title, message, startButton);
+    card.append(content, closeButton);
+    overlay.append(card);
+    document.body.append(overlay);
+
+    console.log('[PayMint Setup Debug] imperative overlay appended', {
+      exists: Boolean(document.getElementById(DASHBOARD_WELCOME_OVERLAY_ID)),
+    });
+
+    const close = () => handleCloseWelcome();
+    const start = () => handleStartTasks();
+
+    overlay.addEventListener('click', close);
+    card.addEventListener('click', (event) => event.stopPropagation());
+    closeButton.addEventListener('click', close);
+    startButton.addEventListener('click', start);
+
+    return () => {
+      overlay.removeEventListener('click', close);
+      closeButton.removeEventListener('click', close);
+      startButton.removeEventListener('click', start);
+      overlay.remove();
+    };
+  }, [
+    currentEstablishment?.name,
+    isRTL,
+    showWelcomePopup,
+    t,
+  ]);
 
   const handleCloseWelcome = useCallback(() => {
+    welcomeHandledRef.current = true;
     setShowWelcomePopup(false);
     if (locationStorageKeys.length > 0) {
+      const primaryLocationKey = currentEstablishment?.id || locationSlug || dashboardSetupKey;
+      sessionStorage.setItem(
+        `paymint.dashboard.setup.session.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${primaryLocationKey}`,
+        'true',
+      );
       locationStorageKeys.forEach((key) => {
+        localStorage.setItem(
+          `paymint.dashboard.setup.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${key}`,
+          'true',
+        );
         localStorage.setItem(`paymint.dashboard.visited.${key}`, 'true');
         localStorage.removeItem(`paymint.dashboard.welcome.pending.${key}`);
       });
     }
-  }, [locationStorageKeys]);
+
+    if (isSetupLaunchRequest) {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete('setup');
+      nextParams.delete('welcome');
+      const nextSearch = nextParams.toString();
+      navigate(
+        {
+          pathname: location.pathname,
+          search: nextSearch ? `?${nextSearch}` : '',
+        },
+        { replace: true },
+      );
+    }
+  }, [
+    currentEstablishment?.id,
+    dashboardSetupKey,
+    isSetupLaunchRequest,
+    location.pathname,
+    locationSlug,
+    locationStorageKeys,
+    navigate,
+    scopedStoragePrefix,
+    searchParams,
+  ]);
 
   const waitForTasksGuideTargets = useCallback(async () => {
     const timeoutAt = Date.now() + 5000;
 
     while (Date.now() < timeoutAt) {
-      const launcher = document.getElementById('tasks-launcher');
-      const firstTask = document.getElementById('widget-task-item-location-profile');
+      const firstTask =
+        document.getElementById('task-item-location-profile') ||
+        document.getElementById('widget-task-item-location-profile');
 
-      if (launcher && firstTask) {
+      if (firstTask) {
         setShowTasksTour(true);
         return;
       }
@@ -626,7 +856,6 @@ export const DashboardPage = () => {
 
                 {/* Action buttons row */}
                 <div className="flex items-center gap-2 sm:gap-3">
-
                   {canOpenReportsPage && (
                     <button
                       onClick={() => navigate(`/dashboard/${locationSlug}/reports/sales`)}
@@ -711,125 +940,13 @@ export const DashboardPage = () => {
         )}
       </AnimatePresence>
 
-      {/* Welcome Popup */}
-      <AnimatePresence>
-        {showWelcomePopup && createPortal(
-          <div 
-            dir={isRTL ? 'rtl' : 'ltr'}
-            className="fixed inset-0 z-[9999999] popup-surface flex items-center justify-center p-4 isolate"
-          >
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={handleCloseWelcome}
-              className="fixed inset-0 bg-black/30 dark:bg-black/80 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 24, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 24, scale: 0.97 }}
-              transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-              className="relative w-full max-w-sm bg-white dark:bg-[#0F172A] rounded-[2rem] shadow-2xl border border-gray-200/50 dark:border-white/10 overflow-hidden z-10"
-            >
-              <div className="px-6 pt-8 pb-8 flex flex-col items-center text-center">
-                <div className="w-16 h-16 mb-4 rounded-full bg-[#7CC39F]/10 flex items-center justify-center">
-                  <PartyPopper size={32} className="text-[#7CC39F]" />
-                </div>
-
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  {t('common.congratulations')}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
-                  {t('dashboard.welcome.message', {
-                    location: currentEstablishment?.name || 'this location'
-                  })}
-                </p>
-
-                <button
-                  onClick={handleStartTasks}
-                  className="w-full py-3.5 px-4 bg-gradient-to-r from-[#7CC39F] to-[#5BA882] hover:brightness-105 text-white font-bold rounded-xl shadow-lg shadow-[#7CC39F]/30 transition-all active:scale-[0.98]"
-                >
-                  {t('dashboard.welcome.startGuide')}
-                </button>
-              </div>
-
-              <button
-                onClick={handleCloseWelcome}
-                className="absolute top-4 right-4 rtl:left-4 rtl:right-auto p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors"
-              >
-                <X size={16} />
-              </button>
-            </motion.div>
-          </div>,
-          document.body
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {showDebugPopup && createPortal(
-          <div
-            dir={isRTL ? 'rtl' : 'ltr'}
-            className="fixed inset-0 z-[10000000] popup-surface flex items-center justify-center p-4 isolate"
-          >
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowDebugPopup(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 24, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 24, scale: 0.97 }}
-              transition={{ type: 'spring', duration: 0.35, bounce: 0.18 }}
-              className="relative w-full max-w-sm rounded-[2rem] border border-orange-200/60 bg-white shadow-2xl overflow-hidden z-10"
-            >
-              <div className="px-6 pt-8 pb-8 flex flex-col items-center text-center">
-                <div className="w-16 h-16 mb-4 rounded-full bg-orange-100 flex items-center justify-center">
-                  <PartyPopper size={30} className="text-orange-500" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Debug Popup Test
-                </h3>
-                <p className="text-gray-600 leading-relaxed mb-2">
-                  This popup is forced on local dashboard loads for testing.
-                </p>
-                <p className="text-sm text-gray-500 mb-6">
-                  Location: {currentEstablishment?.name || locationContextKey || 'Unknown'}
-                </p>
-                <button
-                  onClick={() => setShowDebugPopup(false)}
-                  className="w-full py-3.5 px-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-all active:scale-[0.98]"
-                >
-                  Close Debug Popup
-                </button>
-              </div>
-
-              <button
-                onClick={() => setShowDebugPopup(false)}
-                className="absolute top-4 right-4 rtl:left-4 rtl:right-auto p-2 rounded-full hover:bg-gray-100 text-gray-400 transition-colors"
-              >
-                <X size={16} />
-              </button>
-            </motion.div>
-          </div>,
-          document.body
-        )}
-      </AnimatePresence>
       <TourGuide
         isOpen={showTasksTour}
         onClose={() => setShowTasksTour(false)}
         onComplete={() => setShowTasksTour(false)}
         steps={[
           {
-            targetId: 'tasks-launcher',
-            title: t('dashboard.tour.tasks.title'),
-            description: t('dashboard.tour.tasks.desc'),
-            position: isRTL ? 'right' : 'left'
-          },
-          {
-            targetId: 'widget-task-item-location-profile',
+            targetId: 'task-item-location-profile',
             title: t('dashboard.tour.taskItem.title'),
             description: t('dashboard.tour.taskItem.desc'),
             position: isRTL ? 'right' : 'left'

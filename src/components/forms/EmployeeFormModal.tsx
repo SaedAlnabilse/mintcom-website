@@ -130,6 +130,7 @@ const BASIC_POS_ASSIGNABLE_PERMISSION_IDS = new Set([
   'reprint_receipts',
   'live_chat',
 ]);
+const EMPLOYEE_PASSWORD_POLICY_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 const normalizeAndFilterPermissions = (
   values: unknown,
@@ -460,10 +461,11 @@ export function EmployeeFormModal({
   const isRoleVisibleForTarget = useCallback(
     (customRole: CustomRole, target: 'ALL' | string) => {
       if (customRole.isGlobal) return true;
+      if (!establishments) return true;
       if (target !== 'ALL') return customRole.establishmentId === target;
       return selectedEstablishmentIds.length === 1 && customRole.establishmentId === selectedEstablishmentIds[0];
     },
-    [selectedEstablishmentIds],
+    [establishments, selectedEstablishmentIds],
   );
 
   const fetchCustomRoles = useCallback(async () => {
@@ -538,6 +540,7 @@ export function EmployeeFormModal({
       const response = await api.get(`/api/custom-roles/${estId}`);
       const rolesWithNames = normalizeCustomRolesPayload(response.data).map((r) => ({
         ...r,
+        establishmentId: r.establishmentId || estId,
         establishmentName: r.establishmentName || currentEstablishment?.name || t('staff.form.locationLabel')
       }));
       setCustomRoles(rolesWithNames);
@@ -574,6 +577,23 @@ export function EmployeeFormModal({
       }, 150);
     }
   }, [activeDropdown]);
+
+  useEffect(() => {
+    if (activeDropdown !== 'ROLE') return;
+
+    const nextExpandedSections = new Set<string>();
+    assignableCustomRoles.forEach((customRole) => {
+      if (!isRoleVisibleForTarget(customRole, roleSelectionTarget)) return;
+      if (customRole.isGlobal) {
+        nextExpandedSections.add('global');
+        return;
+      }
+
+      nextExpandedSections.add(customRole.establishmentName || t('staff.form.accessLabel'));
+    });
+
+    setExpandedRoleSections(nextExpandedSections);
+  }, [activeDropdown, assignableCustomRoles, isRoleVisibleForTarget, roleSelectionTarget, t]);
 
   useEffect(() => {
     if (isOpen) {
@@ -892,8 +912,17 @@ export function EmployeeFormModal({
       });
     }
 
-    if (!initialData && !password) newErrors.password = t('staff.errors.passwordRequired');
-    if (password && password.length < 5) newErrors.password = t('staff.errors.passwordMin');
+    if (!initialData && !password) {
+      newErrors.password = t('staff.errors.passwordRequired');
+    } else if (password && password.length < 8) {
+      newErrors.password = t('staff.errors.passwordMin', {
+        defaultValue: 'Password must be at least 8 characters',
+      });
+    } else if (password && !EMPLOYEE_PASSWORD_POLICY_PATTERN.test(password)) {
+      newErrors.password = t('staff.errors.passwordPolicy', {
+        defaultValue: 'Password must contain uppercase, lowercase, and a number',
+      });
+    }
     if (password !== confirmPassword) {
       newErrors.confirmPassword = t('staff.errors.passwordsNotMatch');
     }
@@ -1044,7 +1073,7 @@ export function EmployeeFormModal({
             </button>
           </div>
 
-          <div className="overflow-y-auto p-4 sm:p-8 pt-4 custom-scrollbar flex-1 pb-safe">
+          <div ref={scrollRef} className="overflow-y-auto p-4 sm:p-8 pt-4 custom-scrollbar flex-1 pb-safe">
             <form id="employee-form" onSubmit={handleSubmit} className="space-y-6">
               {/* Error Banner */}
               {Object.keys(errors).length > 0 && (
@@ -1156,7 +1185,7 @@ export function EmployeeFormModal({
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-[340px] flex flex-col shadow-2xl overflow-hidden"
+                        className="mt-3 w-full bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-[340px] flex flex-col shadow-2xl overflow-hidden"
                       >
                         {/* Search */}
                         <div className="relative p-3 border-b border-gray-100 dark:border-white/5 shrink-0">
@@ -1333,7 +1362,7 @@ export function EmployeeFormModal({
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-80 flex flex-col shadow-2xl overflow-hidden"
+                          className="mt-3 w-full bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-80 flex flex-col shadow-2xl overflow-hidden"
                         >
                           <div className="p-2 max-h-80 overflow-y-auto custom-scrollbar">
                             {/* Admin Option */}
@@ -1542,6 +1571,11 @@ export function EmployeeFormModal({
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
+                <p className="mt-1 text-xs font-bold text-gray-500 dark:text-gray-400">
+                  {t('staff.form.passwordRequirements', {
+                    defaultValue: 'At least 8 characters with uppercase, lowercase, and a number.',
+                  })}
+                </p>
                 {errors.password && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.password}</p>}
               </div>
 

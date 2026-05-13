@@ -92,6 +92,11 @@ export const ChatWidgetEnhancer = () => {
         setIsFAQOpen(false);
     };
 
+    useEffect(() => {
+        window.addEventListener('paymint-open-tasks', handleOpenTasks);
+        return () => window.removeEventListener('paymint-open-tasks', handleOpenTasks);
+    }, []);
+
     const handleCloseAll = () => {
         setIsChatOpen(false);
         setIsFAQOpen(false);

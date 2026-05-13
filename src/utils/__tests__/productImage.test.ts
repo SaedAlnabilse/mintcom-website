@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   buildPollinationsImageUrl,
@@ -7,11 +7,17 @@ import {
   buildProductImageSignature,
   createProductFallbackDataUrl,
   createProductFallbackSvg,
+  generatePollinationsProductImage,
   hashPromptToSeed,
   sanitizeProductImageFilename,
 } from '../productImage';
 
 describe('productImage helpers', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
   it('sanitizes product image filenames into stable ascii slugs', () => {
     expect(sanitizeProductImageFilename('  Cafe Latte  ')).toBe('cafe-latte');
     expect(sanitizeProductImageFilename('Crème brûlée')).toBe('creme-brulee');
@@ -109,5 +115,26 @@ describe('productImage helpers', () => {
     expect(url).toContain('width=512');
     expect(url).toContain('height=512');
     expect(url).toContain('nologo=true');
+  });
+
+  it('fails fast on blocked Pollinations responses without trying browser image loading', async () => {
+    const imageConstructor = vi.fn();
+    vi.stubGlobal('Image', imageConstructor);
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response('blocked', {
+        status: 403,
+        headers: { 'Content-Type': 'text/plain' },
+      })
+    );
+
+    await expect(
+      generatePollinationsProductImage({
+        name: 'Espresso',
+        categoryName: 'Coffee',
+        type: 'ITEM',
+      })
+    ).rejects.toThrow(/status 403/i);
+
+    expect(imageConstructor).not.toHaveBeenCalled();
   });
 });

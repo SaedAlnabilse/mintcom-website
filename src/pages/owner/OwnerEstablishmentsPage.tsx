@@ -45,9 +45,10 @@ export function OwnerEstablishmentsPage() {
     ];
 
     const navigate = useNavigate();
-    const { establishments, setCurrentEstablishment } = useAuth();
+    const { account, establishments, setCurrentEstablishment } = useAuth();
     const [searchParams] = useSearchParams();
     const highlightId = searchParams.get('highlight');
+    const launchSetupForHighlightedLocation = searchParams.get('setup') === '1';
 
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
@@ -100,7 +101,30 @@ export function OwnerEstablishmentsPage() {
         const slug = establishment.establishmentLoginId && establishment.establishmentLoginId.trim().length > 0 
             ? establishment.establishmentLoginId 
             : establishment.id;
-        window.open(`/dashboard/${slug}`, '_blank');
+        const shouldLaunchSetup = launchSetupForHighlightedLocation || establishment.id === highlightId;
+
+        if (shouldLaunchSetup) {
+            const welcomeTargets = new Set<string>(
+                [establishment.id, establishment.establishmentLoginId, slug].filter(Boolean)
+            );
+
+            welcomeTargets.forEach((target) => {
+                localStorage.setItem(`paymint.dashboard.welcome.pending.${target}`, 'true');
+                localStorage.removeItem(`paymint.dashboard.setup.dismissed.${target}`);
+                localStorage.removeItem(`paymint.dashboard.setup.dismissed.v3.${account?.id || 'anonymous'}.${target}`);
+                localStorage.removeItem(`paymint.dashboard.setup.dismissed.v3.anonymous.${target}`);
+                localStorage.removeItem(`paymint.dashboard.setup.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
+                localStorage.removeItem(`paymint.dashboard.setup.dismissed.v6.anonymous.${target}`);
+                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v4.${account?.id || 'anonymous'}.${target}`);
+                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v4.anonymous.${target}`);
+                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v5.${account?.id || 'anonymous'}.${target}`);
+                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v5.anonymous.${target}`);
+                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
+                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v6.anonymous.${target}`);
+            });
+        }
+
+        window.open(`/dashboard/${slug}${shouldLaunchSetup ? '?setup=1' : ''}`, '_blank');
     };
 
     const handleAddEstablishment = () => {

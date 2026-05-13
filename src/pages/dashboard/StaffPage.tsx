@@ -18,7 +18,7 @@ import {
   Star,
   ArrowUpDown
 } from 'lucide-react';
-import api from '../../config/api';
+import api, { extractErrorMessage } from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
@@ -287,6 +287,7 @@ export function StaffPage() {
       fetchStaff();
     } catch (error: any) {
       const backendMessage = error?.response?.data?.message;
+      const errorMessage = extractErrorMessage(error);
       if (
         typeof backendMessage === 'string' &&
         backendMessage.toLowerCase().includes('maximum is 50 employees')
@@ -302,8 +303,8 @@ export function StaffPage() {
         });
       } else {
         toast.error(
-          typeof backendMessage === 'string' && backendMessage.trim().length > 0
-            ? backendMessage
+          errorMessage.trim().length > 0
+            ? errorMessage
             : t('staff.messages.saveFailed')
         );
       }

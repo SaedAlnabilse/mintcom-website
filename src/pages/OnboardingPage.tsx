@@ -111,14 +111,11 @@ export function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [formData, setFormData] = useState<any>(() => {
-    const saved = sessionStorage.getItem('onboardingFormData');
-    return saved ? JSON.parse(saved) : {};
-  });
+  const [formData, setFormData] = useState<any>({});
 
   useEffect(() => {
-    sessionStorage.setItem('onboardingFormData', JSON.stringify(formData));
-  }, [formData]);
+    sessionStorage.removeItem('onboardingFormData');
+  }, []);
 
   const [useSavedCard, setUseSavedCard] = useState(true); // Default to using saved card if available
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
@@ -143,6 +140,16 @@ export function OnboardingPage() {
   const [duplicateInventory, setDuplicateInventory] = useState(true);
   const [duplicateDiscounts, setDuplicateDiscounts] = useState(true);
   const [duplicatePaymentMethods, setDuplicatePaymentMethods] = useState(true);
+
+  const handleDuplicateSourceChange = (sourceId: string) => {
+    setDuplicateFromId(sourceId);
+
+    if (sourceId) {
+      setDuplicateInventory(true);
+      setDuplicateDiscounts(true);
+      setDuplicatePaymentMethods(true);
+    }
+  };
 
   // Tour Guide State for Step 5
   const [isTourOpen, setIsTourOpen] = useState(false);
@@ -425,14 +432,8 @@ export function OnboardingPage() {
         duplicatePaymentMethods: formData.duplicatePaymentMethods,
       };
 
-      const requestHeaders: Record<string, string> = {};
-      if (formData.duplicateFromId) {
-        requestHeaders['X-Establishment-Id'] = formData.duplicateFromId;
-      }
-
       const estRes = await api.post('/api/establishments', establishmentPayload, {
         headers: {
-          ...requestHeaders,
           'X-Skip-Establishment-Header': 'true'
         }
       });
@@ -452,6 +453,7 @@ export function OnboardingPage() {
         currency: formData.currency,
         establishmentLoginId: formData.establishmentLoginId,
       } as any);
+      localStorage.setItem('selectedEstablishmentId', estId);
 
       try {
         const welcomeTargets = new Set<string>([
@@ -461,6 +463,17 @@ export function OnboardingPage() {
         ].filter(Boolean) as string[]);
 
         welcomeTargets.forEach((target) => {
+          localStorage.removeItem(`paymint.dashboard.setup.dismissed.${target}`);
+          localStorage.removeItem(`paymint.dashboard.setup.dismissed.v3.${account?.id || 'anonymous'}.${target}`);
+          localStorage.removeItem(`paymint.dashboard.setup.dismissed.v3.anonymous.${target}`);
+          localStorage.removeItem(`paymint.dashboard.setup.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
+          localStorage.removeItem(`paymint.dashboard.setup.dismissed.v6.anonymous.${target}`);
+          sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v4.${account?.id || 'anonymous'}.${target}`);
+          sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v4.anonymous.${target}`);
+          sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v5.${account?.id || 'anonymous'}.${target}`);
+          sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v5.anonymous.${target}`);
+          sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
+          sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v6.anonymous.${target}`);
           localStorage.removeItem(`paymint.dashboard.visited.${target}`);
           localStorage.setItem(`paymint.dashboard.welcome.pending.${target}`, 'true');
         });
@@ -487,34 +500,6 @@ export function OnboardingPage() {
           'X-Establishment-Id': estId
         }
       });
-
-      // 3. Seed default card brands for fresh locations only.
-      if (!formData.duplicateFromId) {
-        try {
-          const getFallbackLogo = (name: string) => {
-            const lower = name.toLowerCase();
-            if (lower.includes('visa')) return 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg';
-            if (lower.includes('mastercard')) return 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg';
-            if (lower.includes('amex')) return 'https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg';
-            if (lower.includes('mada')) return 'https://upload.wikimedia.org/wikipedia/commons/8/84/Mada_Logo.svg';
-            if (lower.includes('apple pay')) return 'https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg';
-            if (lower.includes('google pay')) return 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg';
-            if (lower.includes('uber')) return 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Uber_Eats_2018_logo.svg';
-            if (lower.includes('talabat')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Talabat_logo.png/512px-Talabat_logo.png';
-            if (lower.includes('cash')) return 'https://cdn-icons-png.flaticon.com/512/2331/2331714.png';
-            return null;
-          };
-
-          await Promise.all([
-            api.post('/card-types', { name: 'Visa', imageUrl: getFallbackLogo('visa') }, { headers: { 'X-Establishment-Id': estId } }),
-            api.post('/card-types', { name: 'Mastercard', imageUrl: getFallbackLogo('mastercard') }, { headers: { 'X-Establishment-Id': estId } }),
-            api.post('/card-types', { name: 'American Express', imageUrl: getFallbackLogo('amex') }, { headers: { 'X-Establishment-Id': estId } })
-          ]);
-        } catch (seedErr) {
-          console.warn('[Onboarding] Failed to seed default card brands:', seedErr);
-          // Don't fail onboarding if seeding fails
-        }
-      }
 
       goToStep(5); // Success Step
       toast.success(t('onboarding.messages.complete'));
@@ -546,6 +531,16 @@ export function OnboardingPage() {
     { id: 'retail', label: t('onboarding.step1.businessTypes.retail'), icon: ShoppingBag },
     { id: 'other', label: t('onboarding.step1.businessTypes.other'), icon: Building2 },
   ];
+
+  const getEstablishmentTypeLabel = (type?: string) => {
+    const normalizedType = String(type || 'restaurant').toLowerCase();
+    const typeKey = normalizedType === 'retail_store' ? 'retail' : normalizedType;
+    const fallback = typeKey
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (character) => character.toUpperCase());
+
+    return t(`onboarding.step1.businessTypes.${typeKey}`, { defaultValue: fallback });
+  };
 
   const totalSteps = 4;
 
@@ -608,7 +603,7 @@ export function OnboardingPage() {
                   <p className="text-sm font-sans text-gray-600 dark:text-gray-300">{t('onboarding.step1.subtitle')}</p>
                 </div>
 
-                <form onSubmit={form1.handleSubmit(onStep1Submit)} className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+                <form onSubmit={form1.handleSubmit(onStep1Submit)} autoComplete="off" className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <label className="text-xs font-sans text-gray-400 mx-1 flex items-center">
@@ -747,13 +742,13 @@ export function OnboardingPage() {
                           <div className="relative mb-4">
                             <select
                               value={duplicateFromId}
-                              onChange={(e) => setDuplicateFromId(e.target.value)}
+                              onChange={(e) => handleDuplicateSourceChange(e.target.value)}
                               className="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 text-gray-900 dark:text-white font-sans focus:outline-none focus:ring-2 focus:ring-paymint-green/50 appearance-none"
                             >
                               <option value="">{t('onboarding.step1.startFresh')}</option>
                               {establishments.map((est) => (
                                 <option key={est.id} value={est.id}>
-                                  {est.name} ({t(`establishments.types.${est.type.toLowerCase()}`, { defaultValue: est.type.replace('_', ' ') })})
+                                  {est.name} ({getEstablishmentTypeLabel(est.type)})
                                 </option>
                               ))}
                             </select>
@@ -884,7 +879,7 @@ export function OnboardingPage() {
                   </div>
                 </div>
 
-                <form onSubmit={form2.handleSubmit(onStep2Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+                <form onSubmit={form2.handleSubmit(onStep2Submit)} autoComplete="off" className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="space-y-2">
                     <label className="text-xs font-sans text-gray-400 ml-1 flex items-center">
                       {t('onboarding.step3.locationId')} <span className="text-paymint-red mx-1">*</span>
@@ -894,6 +889,9 @@ export function OnboardingPage() {
                       <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input maxLength={255}
                         type="text"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck={false}
                         {...form2.register('establishmentLoginId')}
                         className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentLoginId ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step3.locationIdPlaceholder'), t('common.locale'))}
@@ -910,6 +908,7 @@ export function OnboardingPage() {
                       <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input maxLength={255}
                         type={showEstablishmentPassword ? "text" : "password"}
+                        autoComplete="new-password"
                         {...form2.register('establishmentPassword')}
                         className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step3.passwordPlaceholder'), t('common.locale'))}
@@ -970,7 +969,7 @@ export function OnboardingPage() {
                   </div>
                 </div>
 
-                <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+                <form onSubmit={form3.handleSubmit(onStep3Submit)} autoComplete="off" className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-xs font-sans text-gray-400 ml-1">
@@ -980,6 +979,9 @@ export function OnboardingPage() {
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                         <input maxLength={255}
                           type="text"
+                          autoComplete="new-password"
+                          autoCorrect="off"
+                          spellCheck={false}
                           {...form3.register('firstName')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.firstName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder={formatInputPlaceholder(t('onboarding.step4.firstNamePlaceholder'), t('common.locale'))}
@@ -995,6 +997,9 @@ export function OnboardingPage() {
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                         <input maxLength={255}
                           type="text"
+                          autoComplete="new-password"
+                          autoCorrect="off"
+                          spellCheck={false}
                           {...form3.register('lastName')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.lastName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder={formatInputPlaceholder(t('onboarding.step4.lastNamePlaceholder'), t('common.locale'))}
@@ -1013,6 +1018,9 @@ export function OnboardingPage() {
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input maxLength={255}
                         type="text"
+                        autoComplete="new-password"
+                        autoCorrect="off"
+                        spellCheck={false}
                         {...form3.register('username')}
                         className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step4.usernamePlaceholder'), t('common.locale'))}
@@ -1030,6 +1038,7 @@ export function OnboardingPage() {
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input maxLength={255}
                         type={showAdminPassword ? "text" : "password"}
+                        autoComplete="new-password"
                         {...form3.register('password')}
                         className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step4.passwordPlaceholder'), t('common.locale'))}
@@ -1113,7 +1122,7 @@ export function OnboardingPage() {
                   )}
                 </div>
 
-                <form onSubmit={form4.handleSubmit(onStep4Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+                <form onSubmit={form4.handleSubmit(onStep4Submit)} autoComplete="off" className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   {/* Billing Cycle Toggle */}
                   {!isTrialFlow && (
                     <div className="flex items-center justify-center">
@@ -1233,6 +1242,7 @@ export function OnboardingPage() {
                           <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                           <input
                             type="text"
+                            autoComplete="new-password"
                             {...form4.register('cardNumber')}
                             onChange={(e) => {
                               const formatted = formatCardNumber(e.target.value);
@@ -1251,6 +1261,7 @@ export function OnboardingPage() {
                           <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel(t('onboarding.step2.expiry'), t('common.locale'))}</label>
                           <input
                             type="text"
+                            autoComplete="new-password"
                             {...form4.register('expiryDate')}
                             onChange={(e) => {
                               const formatted = formatExpiryDate(e.target.value);
@@ -1265,6 +1276,7 @@ export function OnboardingPage() {
                           <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel(t('onboarding.step2.cvc'), t('common.locale'))}</label>
                           <input
                             type="text"
+                            autoComplete="new-password"
                             {...form4.register('cvc')}
                             onChange={(e) => {
                               const formatted = formatCVC(e.target.value);
@@ -1281,6 +1293,7 @@ export function OnboardingPage() {
                         <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel(t('onboarding.step2.cardName'), t('common.locale'))}</label>
                         <input maxLength={255}
                           type="text"
+                          autoComplete="new-password"
                           {...form4.register('cardName')}
                           className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.cardName ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
                         />
@@ -1370,7 +1383,7 @@ export function OnboardingPage() {
                             if (newEstablishment) {
                               setCurrentEstablishment(newEstablishment);
                             }
-                            window.open(`/owner/establishments?highlight=${formData.establishmentId}`, '_blank');
+                            window.open(`/owner/establishments?highlight=${formData.establishmentId}&setup=1`, '_blank');
                           }}
                           className="relative flex items-center gap-3 bg-paymint-green text-black px-8 py-4 rounded-2xl font-sans font-bold text-lg shadow-xl shadow-paymint-green/30"
                         >
@@ -1405,7 +1418,7 @@ export function OnboardingPage() {
                             if (newEstablishment) {
                               setCurrentEstablishment(newEstablishment);
                             }
-                            window.open(`/owner/establishments?highlight=${formData.establishmentId}`, '_blank');
+                            window.open(`/owner/establishments?highlight=${formData.establishmentId}&setup=1`, '_blank');
                           }}
                           className="relative flex items-center gap-3 bg-paymint-green text-black px-8 py-4 rounded-2xl font-sans font-bold text-lg shadow-xl shadow-paymint-green/30"
                         >

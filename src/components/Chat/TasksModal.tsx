@@ -60,8 +60,11 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
     function handleClickOutside(event: MouseEvent) {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         // Ignore clicks on the launcher switcher bar
-        const isSwitcher = (event.target as Element).closest('#paymint-launcher-switcher');
-        if (!isSwitcher) {
+        const target = event.target as Element;
+        const isSwitcher = target.closest('#paymint-launcher-switcher');
+        const isSetupGuide = target.closest('#paymint-tour-guide-active');
+        const isWelcomePopup = target.closest('#paymint-dashboard-welcome-popup');
+        if (!isSwitcher && !isSetupGuide && !isWelcomePopup) {
           onClose();
         }
       }

@@ -18,7 +18,8 @@ const POLLINATIONS_PROXY_IMAGE_URL = '/external/pollinations/prompt/';
 const POLLINATIONS_IMAGE_URL = 'https://gen.pollinations.ai/prompt/';
 const POLLINATIONS_IMAGE_SIZE = 512;
 const POLLINATIONS_CACHE_KEY = 'pollinations-product-image-cache-v1';
-const POLLINATIONS_IMAGE_TIMEOUT_MS = 60000;
+const POLLINATIONS_IMAGE_TIMEOUT_MS = 20000;
+const POLLINATIONS_TOTAL_TIMEOUT_MS = 45000;
 
 const FOOD_AND_DRINK_HINTS = [
   'coffee',
@@ -362,6 +363,41 @@ function createAbortError() {
     error.name = 'AbortError';
     return error;
   }
+}
+
+function isAbortError(error: unknown) {
+  return error instanceof Error && error.name === 'AbortError';
+}
+
+function isNetworkFetchError(error: unknown) {
+  return error instanceof TypeError;
+}
+
+function createTimeoutSignal(timeoutMs: number, parentSignal?: AbortSignal) {
+  const controller = new AbortController();
+  const timeoutId = globalThis.setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
+
+  const cleanup = () => {
+    clearTimeout(timeoutId);
+    parentSignal?.removeEventListener('abort', handleParentAbort);
+  };
+
+  const handleParentAbort = () => {
+    controller.abort();
+  };
+
+  if (parentSignal?.aborted) {
+    controller.abort();
+  } else {
+    parentSignal?.addEventListener('abort', handleParentAbort, { once: true });
+  }
+
+  return {
+    signal: controller.signal,
+    cleanup,
+  };
 }
 
 export function sanitizeProductImageFilename(value: string) {
@@ -860,15 +896,21 @@ async function loadRemoteImageToDataUrl(imageUrl: string, signal?: AbortSignal) 
   });
 }
 
-async function resolvePollinationsDataUrl(imageUrl: string, signal?: AbortSignal) {
-  // Try fetch first; this works reliably through the Vite dev proxy and Cloudflare worker proxy.
-  // and avoids CORS issues that plague the Image element approach.
+async function resolvePollinationsDataUrl(
+  imageUrl: string,
+  signal?: AbortSignal,
+  timeoutMs = POLLINATIONS_IMAGE_TIMEOUT_MS
+) {
+  // Try fetch first; this works reliably through the Vite dev proxy and Cloudflare worker proxy,
+  // and avoids CORS issues that can affect the Image element approach.
+  const attempt = createTimeoutSignal(timeoutMs, signal);
+
   try {
     const response = await fetch(imageUrl, {
       headers: {
         Accept: 'image/*',
       },
-      signal,
+      signal: attempt.signal,
     });
 
     if (!response.ok) {
@@ -894,12 +936,22 @@ async function resolvePollinationsDataUrl(imageUrl: string, signal?: AbortSignal
 
     return blobToDataUrl(blob);
   } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
+    if (signal?.aborted) {
       throw error;
     }
 
-    // Fall back to the Image element approach (works for direct URLs with CORS headers)
+    if (isAbortError(error)) {
+      throw new Error('Timed out while loading the Pollinations image.');
+    }
+
+    if (!isNetworkFetchError(error)) {
+      throw error;
+    }
+
+    // Fall back to the Image element approach only for network/CORS fetch failures.
     return loadRemoteImageToDataUrl(imageUrl, signal);
+  } finally {
+    attempt.cleanup();
   }
 }
 
@@ -931,13 +983,25 @@ export async function generatePollinationsProductImage(
   try {
     let lastError: Error | null = null;
     let dataUrl: string | null = null;
+    const deadline = Date.now() + POLLINATIONS_TOTAL_TIMEOUT_MS;
 
     for (const imageUrl of candidateUrls) {
+      const timeRemaining = deadline - Date.now();
+
+      if (timeRemaining <= 0) {
+        lastError = new Error('Timed out while generating the product image.');
+        break;
+      }
+
       try {
-        dataUrl = await resolvePollinationsDataUrl(imageUrl, signal);
+        dataUrl = await resolvePollinationsDataUrl(
+          imageUrl,
+          signal,
+          Math.min(POLLINATIONS_IMAGE_TIMEOUT_MS, timeRemaining)
+        );
         break;
       } catch (error) {
-        if (error instanceof Error && error.name === 'AbortError') {
+        if (signal?.aborted || isAbortError(error)) {
           throw error;
         }
 

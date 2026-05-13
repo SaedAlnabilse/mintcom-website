@@ -12,10 +12,11 @@ import {
   Grid3X3,
   List
 } from 'lucide-react';
-import api from '../../config/api';
+import api, { extractErrorMessage } from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomRoleFormModal } from '../../components/CustomRoleFormModal';
+import { RoleDeleteResolutionModal } from '../../components/RoleDeleteResolutionModal';
 import { Pagination, SearchInput } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { getLocalizedRoleName } from '../../utils/roleNames';
@@ -102,6 +103,15 @@ export function CustomRolesPage() {
     roleId: '',
     roleName: '',
   });
+  const [roleDeleteResolution, setRoleDeleteResolution] = useState({
+    isOpen: false,
+    roleId: '',
+    roleName: '',
+    employeeCount: 0,
+    assignmentCount: 0,
+    locationCount: 0,
+  });
+  const [isResolvingRoleDelete, setIsResolvingRoleDelete] = useState(false);
 
   useEffect(() => {
     fetchRoles();
@@ -168,6 +178,17 @@ export function CustomRolesPage() {
     return result;
   }, [roles, searchQuery, sortConfig, t]);
 
+  const replacementRoleOptions = useMemo(
+    () =>
+      roles
+        .filter((role) => role.id !== roleDeleteResolution.roleId)
+        .map((role) => ({
+          id: role.id,
+          name: getRoleDisplayName(role.name),
+        })),
+    [roles, roleDeleteResolution.roleId, t],
+  );
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = (Array.isArray(filteredRoles) ? filteredRoles : []).slice(indexOfFirstItem, indexOfLastItem);
@@ -199,56 +220,54 @@ export function CustomRolesPage() {
       toast.success(t('dashboard.roles.messages.deleted'));
       fetchRoles();
     } catch (error: any) {
-      const data = error?.response?.data;
-      if (data?.code === 'CUSTOM_ROLE_IN_USE') {
-        setConfirmConfig({ ...confirmConfig, isOpen: false });
-        const shouldReassign = window.confirm(
-          t('owner.roles.roleInUsePrompt', {
-            defaultValue:
-              'This role is assigned to employees. Press OK to reassign them to another role, or Cancel to keep their current permissions as manual permissions.',
-          }),
-        );
+      const data = error?.response?.data || {};
+      const message = Array.isArray(data.message)
+        ? data.message.join(' ')
+        : String(data.message || '');
+      const roleInUse =
+        data.code === 'CUSTOM_ROLE_IN_USE' ||
+        (error?.response?.status === 409 &&
+          message.includes('assigned to active employees'));
 
-        if (!shouldReassign) {
-          await api.delete(`/api/custom-roles/${confirmConfig.roleId}`, {
-            params: { strategy: 'detach' },
-          });
-          toast.success(t('dashboard.roles.messages.deleted'));
-          fetchRoles();
-          return;
-        }
-
-        const replacementName = window.prompt(
-          t('owner.roles.replacementPrompt', {
-            defaultValue: 'Type the exact name of the replacement role.',
-          }),
-        );
-        const replacementRole = roles.find(
-          (role) =>
-            role.id !== confirmConfig.roleId &&
-            role.name.trim().toLowerCase() === replacementName?.trim().toLowerCase(),
-        );
-
-        if (!replacementRole) {
-          toast.error(
-            t('owner.roles.replacementNotFound', {
-              defaultValue: 'Replacement role was not found.',
-            }),
-          );
-          return;
-        }
-
-        await api.delete(`/api/custom-roles/${confirmConfig.roleId}`, {
-          params: { strategy: 'reassign', replacementRoleId: replacementRole.id },
+      if (roleInUse) {
+        setRoleDeleteResolution({
+          isOpen: true,
+          roleId: confirmConfig.roleId,
+          roleName: confirmConfig.roleName,
+          employeeCount: Number(data.employeeCount || 0),
+          assignmentCount: Number(data.assignmentCount || 0),
+          locationCount: Number(data.locationCount || 0),
         });
-        toast.success(t('dashboard.roles.messages.deleted'));
-        fetchRoles();
         return;
       }
 
-      toast.error(data?.message || t('dashboard.roles.messages.deleteFailed'));
+      toast.error(extractErrorMessage(error) || t('dashboard.roles.messages.deleteFailed'));
     } finally {
       setConfirmConfig({ ...confirmConfig, isOpen: false });
+    }
+  };
+
+  const handleResolveRoleDelete = async (
+    strategy: 'detach' | 'reassign',
+    replacementRoleId?: string,
+  ) => {
+    if (!roleDeleteResolution.roleId) return;
+
+    try {
+      setIsResolvingRoleDelete(true);
+      await api.delete(`/api/custom-roles/${roleDeleteResolution.roleId}`, {
+        params: {
+          strategy,
+          ...(replacementRoleId ? { replacementRoleId } : {}),
+        },
+      });
+      toast.success(t('dashboard.roles.messages.deleted'));
+      setRoleDeleteResolution((prev) => ({ ...prev, isOpen: false }));
+      fetchRoles();
+    } catch (error: any) {
+      toast.error(extractErrorMessage(error) || t('dashboard.roles.messages.deleteFailed'));
+    } finally {
+      setIsResolvingRoleDelete(false);
     }
   };
 
@@ -613,6 +632,23 @@ export function CustomRolesPage() {
         message={t('dashboard.roles.deleteMessage', { name: confirmConfig.roleName })}
         type="danger"
         confirmText={t('dashboard.roles.deleteRole')}
+      />
+
+      <RoleDeleteResolutionModal
+        isOpen={roleDeleteResolution.isOpen}
+        roleName={roleDeleteResolution.roleName}
+        employeeCount={roleDeleteResolution.employeeCount}
+        assignmentCount={roleDeleteResolution.assignmentCount}
+        locationCount={roleDeleteResolution.locationCount}
+        replacementRoles={replacementRoleOptions}
+        isSubmitting={isResolvingRoleDelete}
+        onClose={() =>
+          setRoleDeleteResolution((prev) => ({ ...prev, isOpen: false }))
+        }
+        onDetach={() => handleResolveRoleDelete('detach')}
+        onReassign={(replacementRoleId) =>
+          handleResolveRoleDelete('reassign', replacementRoleId)
+        }
       />
     </div>
   );
