@@ -218,9 +218,9 @@ export function OnboardingPage() {
   // Determine if this is a Trial (first est) or Paid (additional est) flow
   const isTrialFlow = needsOnboarding;
 
-  // Check if user has a saved payment method
-  // If user has existing establishments, they must have a payment method on file
-  const hasSavedCard = !!account?.defaultCardId || !!account?.defaultPaymentMethod || establishments.length > 0;
+  // Only show "Use Saved Card" when the account actually has a saved card.
+  // Existing locations do not guarantee a reusable card exists.
+  const hasSavedCard = !!account?.defaultCardId || !!account?.defaultPaymentMethod;
   const savedCardLast4 = account?.defaultPaymentMethod || '****';
 
   // Forms
@@ -488,7 +488,7 @@ export function OnboardingPage() {
         }
       });
 
-      // 3. Seed Defaults for Fresh Locations (Not Duplicating)
+      // 3. Seed default card brands for fresh locations only.
       if (!formData.duplicateFromId) {
         try {
           const getFallbackLogo = (name: string) => {
@@ -505,25 +505,13 @@ export function OnboardingPage() {
             return null;
           };
 
-          // Standard Payment Methods
-          await Promise.all([
-            api.post('/app-settings/payment-methods', { name: 'Cash', isActive: true, imageUrl: getFallbackLogo('cash') }, { headers: { 'X-Establishment-Id': estId } }),
-            api.post('/app-settings/payment-methods', { name: 'Card', isActive: true }, { headers: { 'X-Establishment-Id': estId } }),
-            api.post('/app-settings/payment-methods', { name: 'Apple Pay', isActive: true, imageUrl: getFallbackLogo('apple pay') }, { headers: { 'X-Establishment-Id': estId } }),
-            api.post('/app-settings/payment-methods', { name: 'Google Pay', isActive: true, imageUrl: getFallbackLogo('google pay') }, { headers: { 'X-Establishment-Id': estId } }),
-            api.post('/app-settings/payment-methods', { name: 'Uber Eats', isActive: true, imageUrl: getFallbackLogo('uber') }, { headers: { 'X-Establishment-Id': estId } }),
-            api.post('/app-settings/payment-methods', { name: 'Talabat', isActive: true, imageUrl: getFallbackLogo('talabat') }, { headers: { 'X-Establishment-Id': estId } })
-          ]);
-
-          // Standard Card Brands
           await Promise.all([
             api.post('/card-types', { name: 'Visa', imageUrl: getFallbackLogo('visa') }, { headers: { 'X-Establishment-Id': estId } }),
             api.post('/card-types', { name: 'Mastercard', imageUrl: getFallbackLogo('mastercard') }, { headers: { 'X-Establishment-Id': estId } }),
-            api.post('/card-types', { name: 'American Express', imageUrl: getFallbackLogo('amex') }, { headers: { 'X-Establishment-Id': estId } }),
-            api.post('/card-types', { name: 'Mada', imageUrl: getFallbackLogo('mada') }, { headers: { 'X-Establishment-Id': estId } })
+            api.post('/card-types', { name: 'American Express', imageUrl: getFallbackLogo('amex') }, { headers: { 'X-Establishment-Id': estId } })
           ]);
         } catch (seedErr) {
-          console.warn('[Onboarding] Failed to seed default payment methods:', seedErr);
+          console.warn('[Onboarding] Failed to seed default card brands:', seedErr);
           // Don't fail onboarding if seeding fails
         }
       }

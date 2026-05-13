@@ -176,8 +176,55 @@ export function OwnerRolesPage() {
       await api.delete(`/api/custom-roles/${confirmConfig.roleId}`);
       toast.success(t('owner.roles.roleDeleted'));
       fetchRoles();
-    } catch {
-      toast.error(t('owner.roles.failedToDelete'));
+    } catch (error: any) {
+      const data = error?.response?.data;
+      if (data?.code === 'CUSTOM_ROLE_IN_USE') {
+        setConfirmConfig({ ...confirmConfig, isOpen: false });
+        const shouldReassign = window.confirm(
+          t('owner.roles.roleInUsePrompt', {
+            defaultValue:
+              'This role is assigned to employees. Press OK to reassign them to another role, or Cancel to keep their current permissions as manual permissions.',
+          }),
+        );
+
+        if (!shouldReassign) {
+          await api.delete(`/api/custom-roles/${confirmConfig.roleId}`, {
+            params: { strategy: 'detach' },
+          });
+          toast.success(t('owner.roles.roleDeleted'));
+          fetchRoles();
+          return;
+        }
+
+        const replacementName = window.prompt(
+          t('owner.roles.replacementPrompt', {
+            defaultValue: 'Type the exact name of the replacement role.',
+          }),
+        );
+        const replacementRole = roles.find(
+          (role) =>
+            role.id !== confirmConfig.roleId &&
+            role.name.trim().toLowerCase() === replacementName?.trim().toLowerCase(),
+        );
+
+        if (!replacementRole) {
+          toast.error(
+            t('owner.roles.replacementNotFound', {
+              defaultValue: 'Replacement role was not found.',
+            }),
+          );
+          return;
+        }
+
+        await api.delete(`/api/custom-roles/${confirmConfig.roleId}`, {
+          params: { strategy: 'reassign', replacementRoleId: replacementRole.id },
+        });
+        toast.success(t('owner.roles.roleDeleted'));
+        fetchRoles();
+        return;
+      }
+
+      toast.error(data?.message || t('owner.roles.failedToDelete'));
     } finally {
       setConfirmConfig({ ...confirmConfig, isOpen: false });
     }

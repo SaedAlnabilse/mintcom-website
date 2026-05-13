@@ -837,12 +837,17 @@ export default function BrandTeamPage() {
 
             {/* Delete Confirmation Modal */}
             {deleteModalOpen && employeeToDelete && createPortal(
-                <div className="fixed inset-0 z-[10001] popup-surface flex items-center justify-center p-4 bg-black/40 dark:bg-black/80 backdrop-blur-sm transition-all duration-300">
+                <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
                     <motion.div 
                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                       className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2.5rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl shadow-black/20"
+                       className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
                     >
+                        {/* Mobile Drag Handle */}
+                        <div className="sm:hidden flex justify-center pt-2 pb-1">
+                          <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+                        </div>
+                        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
                         <div className="p-10 pb-6 flex flex-col items-center text-center">
                             <div className="w-20 h-20 rounded-3xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
                                 <AlertTriangle size={40} />
@@ -891,6 +896,7 @@ export default function BrandTeamPage() {
                                 </div>
                                 {deleteError && <p className="mt-2.5 px-1 text-[11px] font-black text-red-500 flex items-center gap-1.5 animate-pulse"><AlertTriangle size={12} /> {deleteError}</p>}
                             </div>
+                        </div>
                         </div>
 
                         <div className="p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-black/20">

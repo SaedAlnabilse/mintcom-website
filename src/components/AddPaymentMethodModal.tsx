@@ -238,7 +238,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                                 onChange={(e) => { setCvc(e.target.value.replace(/\D/g, '').slice(0, 4)); if (errors.cvc) setErrors({ ...errors, cvc: '' }); }}
                                                 placeholder={formatInputPlaceholder("123", t('common.locale'))}
                                                 maxLength={4}
-                                                className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cvc ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-10 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
+                                                className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cvc ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-10 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
                                             />
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={16} />
                                         </div>
@@ -253,7 +253,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                         type="text"
                                         value={name}
                                         onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                                        className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
+                                        className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
                                     />
                                     {errors.name && <p className="text-xs font-bold text-red-500 pl-1">{errors.name}</p>}
                                 </div>

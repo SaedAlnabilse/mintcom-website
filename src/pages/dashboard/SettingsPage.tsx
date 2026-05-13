@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign, Copy, Key } from 'lucide-react';
+import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign, Copy, Key, Shield } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -807,15 +807,24 @@ export function SettingsPage() {
               </div>
               
               {/* Login ID Section */}
-              <div className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 group-hover:border-blue-500/20 transition-colors">
+              <div className="flex items-center gap-4 p-3 bg-blue-50/70 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20 transition-colors">
                 <div>
-                  <label className="text-[10px] font-normal text-gray-400 tracking-normal flex items-center gap-1.5 mb-1">
-                    <Key size={12} className="text-gray-400" />
-                    {t('owner.account.loginId') || 'Login ID'}
-                  </label>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <label className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 tracking-wide flex items-center gap-1.5">
+                      <Key size={12} className="text-blue-600 dark:text-blue-300" />
+                      {t('settings.profile.locationLoginId') || 'Location Login ID'}
+                    </label>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 dark:bg-blue-500/15 px-2 py-1 text-[10px] font-bold text-blue-700 dark:text-blue-300">
+                      <Shield size={10} />
+                      {t('owner.account.locationLoginBadge') || 'Location'}
+                    </span>
+                  </div>
                   <code className="block text-sm font-mono font-bold text-gray-900 dark:text-white truncate select-all">
                     {estLoginId}
                   </code>
+                  <p className="text-sm text-blue-700/80 dark:text-blue-200/80 mt-1.5 font-medium leading-relaxed">
+                    {t('settings.profile.locationLoginHint') || 'Use this ID to sign in to this location dashboard.'}
+                  </p>
                   <p className="text-sm text-gray-400 dark:text-gray-500 mt-1.5 font-medium leading-relaxed">
                     {t('settings.profile.passwordResetNote') || 'Password reset can only be done from the owner portal'}
                   </p>

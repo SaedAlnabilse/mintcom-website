@@ -86,10 +86,18 @@ export const DashboardPage = () => {
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
   const [showDebugPopup, setShowDebugPopup] = useState(false);
   const [showTasksTour, setShowTasksTour] = useState(false);
-  const locationContextKey = useMemo(
-    () => locationSlug || currentEstablishment?.establishmentLoginId || currentEstablishment?.id || null,
+  const locationStorageKeys = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          [locationSlug, currentEstablishment?.establishmentLoginId, currentEstablishment?.id].filter(
+            Boolean,
+          ) as string[],
+        ),
+      ),
     [currentEstablishment?.establishmentLoginId, currentEstablishment?.id, locationSlug],
   );
+  const locationContextKey = locationStorageKeys[0] ?? null;
   const isLocalDebugEnvironment = useMemo(() => {
     if (typeof window === 'undefined') {
       return false;
@@ -116,14 +124,17 @@ export const DashboardPage = () => {
   useEffect(() => {
     // Only show the welcome popup once the dashboard initial loading is done.
     // We don't wait for 'stats' to handle local/offline environments where stats might fail.
-    if (locationContextKey && !isLoading) {
+    if (locationStorageKeys.length > 0 && !isLoading) {
       try {
-        const visitedKey = `paymint.dashboard.visited.${locationContextKey}`;
-        const pendingKey = `paymint.dashboard.welcome.pending.${locationContextKey}`;
-        const tasksKey = `paymint.widget.tasks.v1.dashboard-${locationContextKey}`;
-        const hasPendingWelcome = localStorage.getItem(pendingKey) === 'true';
-        const hasVisitedDashboard = localStorage.getItem(visitedKey) === 'true';
-        const hasTaskState = Boolean(localStorage.getItem(tasksKey));
+        const hasPendingWelcome = locationStorageKeys.some(
+          (key) => localStorage.getItem(`paymint.dashboard.welcome.pending.${key}`) === 'true',
+        );
+        const hasVisitedDashboard = locationStorageKeys.some(
+          (key) => localStorage.getItem(`paymint.dashboard.visited.${key}`) === 'true',
+        );
+        const hasTaskState = locationStorageKeys.some((key) =>
+          Boolean(localStorage.getItem(`paymint.widget.tasks.v1.dashboard-${key}`)),
+        );
         const shouldForceFreshLocationWelcome = isFreshLocation && !hasTaskState;
 
         if (hasPendingWelcome || !hasVisitedDashboard || shouldForceFreshLocationWelcome) {
@@ -138,7 +149,7 @@ export const DashboardPage = () => {
         setShowWelcomePopup(true);
       }
     }
-  }, [isFreshLocation, isLoading, locationContextKey]);
+  }, [isFreshLocation, isLoading, locationStorageKeys]);
 
   useEffect(() => {
     if (!isLoading && isLocalDebugEnvironment && locationContextKey) {
@@ -152,20 +163,36 @@ export const DashboardPage = () => {
 
   const handleCloseWelcome = useCallback(() => {
     setShowWelcomePopup(false);
-    if (locationContextKey) {
-      const visitedKey = `paymint.dashboard.visited.${locationContextKey}`;
-      const pendingKey = `paymint.dashboard.welcome.pending.${locationContextKey}`;
-      localStorage.setItem(visitedKey, 'true');
-      localStorage.removeItem(pendingKey);
+    if (locationStorageKeys.length > 0) {
+      locationStorageKeys.forEach((key) => {
+        localStorage.setItem(`paymint.dashboard.visited.${key}`, 'true');
+        localStorage.removeItem(`paymint.dashboard.welcome.pending.${key}`);
+      });
     }
-  }, [locationContextKey]);
+  }, [locationStorageKeys]);
+
+  const waitForTasksGuideTargets = useCallback(async () => {
+    const timeoutAt = Date.now() + 5000;
+
+    while (Date.now() < timeoutAt) {
+      const launcher = document.getElementById('tasks-launcher');
+      const firstTask = document.getElementById('widget-task-item-location-profile');
+
+      if (launcher && firstTask) {
+        setShowTasksTour(true);
+        return;
+      }
+
+      await new Promise((resolve) => window.setTimeout(resolve, 100));
+    }
+
+    setShowTasksTour(true);
+  }, []);
 
   const handleStartTasks = () => {
     handleCloseWelcome();
     window.dispatchEvent(new Event('paymint-open-tasks'));
-    setTimeout(() => {
-      setShowTasksTour(true);
-    }, 500);
+    void waitForTasksGuideTargets();
   };
 
   const fallbackShiftStatus: ShiftStatus = useMemo(

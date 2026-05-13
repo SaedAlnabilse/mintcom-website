@@ -1,7 +1,7 @@
 ﻿import { Wallet, CreditCard, PieChart as PieChartIcon, ChevronRight, Activity } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { SalesSummary } from '../../../../types';
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Label } from 'recharts';
 import { useTheme } from '../../../../context/ThemeContext';
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -132,6 +132,35 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                     {paymentMethodBreakdown.map((_: any, index: number) => (
                       <Cell key={index} fill={COLORS[index % COLORS.length]} />
                     ))}
+                    <Label
+                      content={({ viewBox }: any) => {
+                        const { cx, cy } = viewBox;
+                        return (
+                          <g>
+                            <text
+                              x={cx}
+                              y={cy - 10}
+                              fill={isDark ? '#ffffff' : '#111827'}
+                              className="text-3xl font-black"
+                              textAnchor="middle"
+                              dominantBaseline="central"
+                            >
+                              {paymentMethodBreakdown.length.toLocaleString(t('common.locale'))}
+                            </text>
+                            <text
+                              x={cx}
+                              y={cy + 15}
+                              fill="#6b7280"
+                              className="text-[10px] font-bold tracking-widest uppercase"
+                              textAnchor="middle"
+                              dominantBaseline="central"
+                            >
+                              {t('orders.reports.payments.methods')}
+                            </text>
+                          </g>
+                        );
+                      }}
+                    />
                   </Pie>
                   <Tooltip
                     contentStyle={{
@@ -166,15 +195,6 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                 compact
                 className="h-full rounded-2xl bg-gray-50/50 dark:bg-black/20 border border-dashed border-gray-200 dark:border-white/[0.03]"
               />
-            )}
-            {/* Center Stats */}
-            {paymentMethodBreakdown.length > 0 && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" dir="ltr">
-                <span className="text-3xl font-black text-gray-900 dark:text-white">
-                  {paymentMethodBreakdown.length.toLocaleString(t('common.locale'))}
-                </span>
-                <span className="text-xs font-bold text-gray-500 tracking-widest">{t('orders.reports.payments.methods')}</span>
-              </div>
             )}
           </div>
         </div>

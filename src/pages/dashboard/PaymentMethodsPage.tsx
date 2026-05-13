@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -127,25 +128,11 @@ export function PaymentMethodsPage() {
   const handleSeedDefaults = async () => {
     setIsSubmitting(true);
     try {
-      // Seed Payment Methods if empty
-      if (paymentMethods.length === 0) {
-        await Promise.all([
-          api.post('/app-settings/payment-methods', { name: 'Cash', isActive: true, imageUrl: getFallbackLogo('cash') }),
-          api.post('/app-settings/payment-methods', { name: 'Card', isActive: true }),
-          api.post('/app-settings/payment-methods', { name: 'Apple Pay', isActive: true, imageUrl: getFallbackLogo('apple pay') }),
-          api.post('/app-settings/payment-methods', { name: 'Google Pay', isActive: true, imageUrl: getFallbackLogo('google pay') }),
-          api.post('/app-settings/payment-methods', { name: 'Uber Eats', isActive: true, imageUrl: getFallbackLogo('uber') }),
-          api.post('/app-settings/payment-methods', { name: 'Talabat', isActive: true, imageUrl: getFallbackLogo('talabat') })
-        ]);
-      }
-
-      // Seed Card Brands if empty
       if (cardTypes.length === 0) {
         await Promise.all([
           api.post('/card-types', { name: 'Visa', imageUrl: getFallbackLogo('visa') }),
           api.post('/card-types', { name: 'Mastercard', imageUrl: getFallbackLogo('mastercard') }),
-          api.post('/card-types', { name: 'American Express', imageUrl: getFallbackLogo('amex') }),
-          api.post('/card-types', { name: 'Mada', imageUrl: getFallbackLogo('mada') })
+          api.post('/card-types', { name: 'American Express', imageUrl: getFallbackLogo('amex') })
         ]);
       }
 
@@ -724,24 +711,31 @@ export function PaymentMethodsPage() {
       </section>
 
       {/* Payment Method Modal */}
-      <AnimatePresence mode="wait">
-        {showModal && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowModal(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5 z-10"
+      {createPortal(
+        <AnimatePresence mode="wait">
+          {showModal && (
+            <div
+              dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+              className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
             >
-              {/* Mobile Drag Handle */}
-              <div className="h-1.5 w-12 bg-gray-200 dark:bg-white/10 rounded-full mx-auto mt-3 mb-1 sm:hidden" />
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowModal(false)}
+                className="absolute inset-0"
+              />
+              <motion.div
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 100 }}
+                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+                className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
+              >
+                {/* Mobile Drag Handle */}
+                <div className="sm:hidden flex justify-center pt-2 pb-1">
+                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+                </div>
 
               <div className="px-8 py-6 border-b border-gray-50 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
                 <div className="flex items-center gap-4">
@@ -857,27 +851,36 @@ export function PaymentMethodsPage() {
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+      )}
 
       {/* Card Type Modal */}
-      <AnimatePresence mode="wait">
-        {showCardModal && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowCardModal(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5 z-10"
+      {createPortal(
+        <AnimatePresence mode="wait">
+          {showCardModal && (
+            <div
+              dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+              className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
             >
-              {/* Mobile Drag Handle */}
-              <div className="h-1.5 w-12 bg-gray-200 dark:bg-white/10 rounded-full mx-auto mt-3 mb-1 sm:hidden" />
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowCardModal(false)}
+                className="absolute inset-0"
+              />
+              <motion.div
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 100 }}
+                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+                className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
+              >
+                {/* Mobile drag handle */}
+                <div className="sm:hidden flex justify-center pt-2 pb-1">
+                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+                </div>
 
               <div className="px-8 py-6 border-b border-gray-50 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
                 <div className="flex items-center gap-4">
@@ -997,7 +1000,9 @@ export function PaymentMethodsPage() {
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+      )}
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}

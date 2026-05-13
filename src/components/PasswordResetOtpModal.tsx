@@ -222,7 +222,7 @@ export function PasswordResetOtpModal({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] popup-surface flex items-center justify-center p-4 font-sans"
+                className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
                 onClick={handleClose}
             >
                 <motion.div
@@ -230,8 +230,12 @@ export function PasswordResetOtpModal({
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="bg-white dark:bg-[#111111] rounded-2xl shadow-2xl max-w-md w-full border border-gray-200 dark:border-white/[0.05] overflow-hidden"
+                    className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
                 >
+                    {/* Mobile Drag Handle */}
+                    <div className="sm:hidden flex justify-center pt-2 pb-1">
+                      <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+                    </div>
                     {/* Header */}
                     <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/[0.05]">
                         <div className="flex items-center gap-3">

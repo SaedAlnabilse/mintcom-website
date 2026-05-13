@@ -22,7 +22,7 @@ export function MobileAppModal({ isOpen, onClose }: MobileAppModalProps) {
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -35,8 +35,12 @@ export function MobileAppModal({ isOpen, onClose }: MobileAppModalProps) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-sm bg-white dark:bg-[#1a1a1a] rounded-3xl shadow-2xl overflow-hidden"
+            className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-sm rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
           >
+            {/* Mobile Drag Handle */}
+            <div className="sm:hidden flex justify-center pt-2 pb-1">
+              <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+            </div>
             {/* Header */}
             <div className="flex items-center justify-between p-6 pb-0">
               <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">

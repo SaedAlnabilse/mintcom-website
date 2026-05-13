@@ -31,6 +31,20 @@ interface StaffMember {
   posAccess?: boolean;
   backofficeAccess?: boolean;
   backofficePermissions?: string[];
+  assignments?: EmployeeAssignment[];
+}
+
+interface EmployeeAssignment {
+  establishmentId: string;
+  establishmentName?: string;
+  role?: string;
+  permissions?: string[];
+  allowedDiscounts?: string[];
+  customRoleId?: string | null;
+  backofficeAccess?: boolean;
+  backofficePermissions?: string[];
+  posAccess?: boolean;
+  isActive?: boolean;
 }
 
 interface CustomRole {
@@ -206,6 +220,9 @@ export function EmployeeFormModal({
   const [selectedEstablishmentIds, setSelectedEstablishmentIds] = useState<string[]>([]);
   const [establishmentSearch, setEstablishmentSearch] = useState('');
   const [activeDropdown, setActiveDropdown] = useState<'ESTABLISHMENT' | 'ROLE' | null>(null);
+  const [roleSelectionTarget, setRoleSelectionTarget] = useState<'ALL' | string>('ALL');
+  const [sameRoleForAllLocations, setSameRoleForAllLocations] = useState(true);
+  const [assignmentRoleIds, setAssignmentRoleIds] = useState<Record<string, string>>({});
   const establishmentButtonRef = useRef<HTMLButtonElement>(null);
 
   // Custom Roles
@@ -389,6 +406,66 @@ export function EmployeeFormModal({
     [customRoles, roleHasUnauthorizedPermissions],
   );
 
+  const builtInRoleOptionId = useCallback(
+    (roleValue: string) => `builtin:${roleValue.toUpperCase()}`,
+    [],
+  );
+  const customRoleOptionId = useCallback((roleId: string) => `custom:${roleId}`, []);
+
+  const getRoleTemplateByOptionId = useCallback(
+    (optionId?: string) => {
+      if (!optionId?.startsWith('custom:')) return undefined;
+      return assignableCustomRoles.find((customRole) => customRole.id === optionId.slice(7));
+    },
+    [assignableCustomRoles],
+  );
+
+  const getRoleOptionLabel = useCallback(
+    (optionId?: string) => {
+      if (!optionId) return t('staff.form.selectRole');
+      if (optionId.startsWith('builtin:')) {
+        const builtInRole = optionId.slice(8);
+        return builtInRole === 'ADMIN'
+          ? t('staff.form.adminRole')
+          : t(`staff.roles.${builtInRole.toLowerCase()}`, {
+              defaultValue: builtInRole.charAt(0) + builtInRole.slice(1).toLowerCase(),
+            });
+      }
+
+      const customRole = getRoleTemplateByOptionId(optionId);
+      return customRole?.name || t('staff.form.selectRole');
+    },
+    [getRoleTemplateByOptionId, t],
+  );
+
+  const getRoleOptionForTarget = useCallback(
+    (target: 'ALL' | string) =>
+      target === 'ALL'
+        ? selectedCustomRoleId
+          ? customRoleOptionId(selectedCustomRoleId)
+          : builtInRoleOptionId(role)
+        : assignmentRoleIds[target] ||
+          (selectedCustomRoleId
+            ? customRoleOptionId(selectedCustomRoleId)
+            : builtInRoleOptionId(role)),
+    [
+      assignmentRoleIds,
+      builtInRoleOptionId,
+      customRoleOptionId,
+      role,
+      selectedCustomRoleId,
+    ],
+  );
+
+  const isRoleVisibleForTarget = useCallback(
+    (customRole: CustomRole, target: 'ALL' | string) => {
+      if (customRole.isGlobal) return true;
+      if (target !== 'ALL') return customRole.establishmentId === target;
+      return selectedEstablishmentIds.length === 1 && customRole.establishmentId === selectedEstablishmentIds[0];
+    },
+    [selectedEstablishmentIds],
+  );
+
   const fetchCustomRoles = useCallback(async () => {
     // In Owner/Brand mode - fetch global roles + establishment roles
     if (establishments && establishments.length > 0) {
@@ -551,6 +628,19 @@ export function EmployeeFormModal({
           }
         }
 
+        const activeAssignments = (initialData.assignments || []).filter(
+          (assignment) => assignment.isActive !== false,
+        );
+        const nextAssignmentRoleIds: Record<string, string> = {};
+        activeAssignments.forEach((assignment) => {
+          nextAssignmentRoleIds[assignment.establishmentId] = assignment.customRoleId
+            ? customRoleOptionId(assignment.customRoleId)
+            : builtInRoleOptionId((assignment.role || initialData.role || 'USER').toUpperCase());
+        });
+        setAssignmentRoleIds(nextAssignmentRoleIds);
+        const uniqueRoleOptions = Array.from(new Set(Object.values(nextAssignmentRoleIds)));
+        setSameRoleForAllLocations(uniqueRoleOptions.length <= 1);
+
       } else {
         setName('');
         setUsername('');
@@ -570,6 +660,8 @@ export function EmployeeFormModal({
         setAllowedDiscounts([]);
         setSelectedCustomRoleId('');
         setLastAppliedTemplate(null);
+        setAssignmentRoleIds({});
+        setSameRoleForAllLocations(true);
         // Platform access control - defaults for new employees
         setPosAccess(true);
         setBackofficeAccess(true); // Website is considered back office also
@@ -591,6 +683,8 @@ export function EmployeeFormModal({
     establishments,
     buildEffectiveBackofficePermissions,
     sanitizeAssignablePosPermissions,
+    builtInRoleOptionId,
+    customRoleOptionId,
   ]);
 
   const toggleSection = (sectionId: string, e: React.MouseEvent<HTMLButtonElement>) => {
@@ -616,6 +710,15 @@ export function EmployeeFormModal({
 
   const handleTemplateSelect = (roleTemplate: CustomRole) => {
     if (roleHasUnauthorizedPermissions(roleTemplate)) {
+      return;
+    }
+
+    if (roleSelectionTarget !== 'ALL') {
+      setAssignmentRoleIds((prev) => ({
+        ...prev,
+        [roleSelectionTarget]: customRoleOptionId(roleTemplate.id),
+      }));
+      setActiveDropdown(null);
       return;
     }
 
@@ -649,6 +752,15 @@ export function EmployeeFormModal({
     );
     setAllowedDiscounts(roleTemplate.allowedDiscounts || []);
     setSelectedCustomRoleId(roleTemplate.id);
+    if (sameRoleForAllLocations) {
+      setAssignmentRoleIds((prev) => {
+        const next = { ...prev };
+        selectedEstablishmentIds.forEach((establishmentId) => {
+          next[establishmentId] = customRoleOptionId(roleTemplate.id);
+        });
+        return next;
+      });
+    }
     setLastAppliedTemplate({
       ...roleTemplate,
       baseRole: roleType,
@@ -791,6 +903,15 @@ export function EmployeeFormModal({
       newErrors.establishments = t('staff.errors.selectLocation');
     }
 
+    if (establishments && !sameRoleForAllLocations) {
+      const missingLocationRole = selectedEstablishmentIds.some(
+        (establishmentId) => !getRoleOptionForTarget(establishmentId),
+      );
+      if (missingLocationRole) {
+        newErrors.role = t('staff.errors.roleRequired');
+      }
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       // Scroll to the first field that has an error
@@ -818,6 +939,34 @@ export function EmployeeFormModal({
       normalizeAndFilterPermissions(backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS),
       backofficeAccess,
     );
+    const buildAssignmentPayload = (establishmentId: string) => {
+      const optionId = getRoleOptionForTarget(
+        sameRoleForAllLocations ? 'ALL' : establishmentId,
+      );
+      const customRole = getRoleTemplateByOptionId(optionId);
+      const builtInRole = optionId?.startsWith('builtin:')
+        ? optionId.slice(8).toUpperCase()
+        : undefined;
+
+      return {
+        establishmentId,
+        role: customRole
+          ? (customRole.baseRole || customRole.role || 'USER').toUpperCase()
+          : builtInRole || role.toUpperCase(),
+        customRoleId: customRole?.id || null,
+        permissions: customRole ? customRole.permissions : sanitizedPosPermissions,
+        allowedDiscounts: customRole
+          ? customRole.allowedDiscounts || []
+          : allDiscountsSelected
+            ? []
+            : allowedDiscounts,
+        posAccess: customRole ? customRole.posAccess !== false : posAccess,
+        backofficeAccess: customRole ? !!customRole.backofficeAccess : backofficeAccess,
+        backofficePermissions: customRole
+          ? customRole.backofficePermissions || []
+          : effectiveBackofficePermissions,
+      };
+    };
 
     const payload: Partial<StaffMember> & { password?: string; pinCode?: string } = {
       firstName,
@@ -839,6 +988,9 @@ export function EmployeeFormModal({
           : undefined,
       allowedDiscounts: allDiscountsSelected ? [] : allowedDiscounts,
       ...(establishments && { establishmentIds: selectedEstablishmentIds }),
+      ...(establishments && {
+        assignments: selectedEstablishmentIds.map(buildAssignmentPayload),
+      }),
       // Platform access control
       posAccess,
       backofficeAccess,
@@ -1038,11 +1190,21 @@ export function EmployeeFormModal({
                                   key={est.id}
                                   type="button"
                                   onClick={() => {
-                                    setSelectedEstablishmentIds(prev =>
-                                      prev.includes(est.id)
+                                    setSelectedEstablishmentIds(prev => {
+                                      const isRemoving = prev.includes(est.id);
+                                      setAssignmentRoleIds((current) => {
+                                        const updated = { ...current };
+                                        if (isRemoving) {
+                                          delete updated[est.id];
+                                        } else {
+                                          updated[est.id] = getRoleOptionForTarget('ALL');
+                                        }
+                                        return updated;
+                                      });
+                                      return isRemoving
                                         ? prev.filter(id => id !== est.id)
-                                        : [...prev, est.id]
-                                    );
+                                        : [...prev, est.id];
+                                    });
                                   }}
                                   className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${isSelected ? 'bg-paymint-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
                                 >
@@ -1091,18 +1253,71 @@ export function EmployeeFormModal({
                     <button
                       ref={rolesButtonRef}
                       type="button"
-                      onClick={() => setActiveDropdown(activeDropdown === 'ROLE' ? null : 'ROLE')}
+                      onClick={() => {
+                        setRoleSelectionTarget('ALL');
+                        setActiveDropdown(activeDropdown === 'ROLE' ? null : 'ROLE');
+                      }}
                       className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors"
                     >
                       <span className={`text-sm font-bold ${(selectedCustomRoleId || role === 'ADMIN') ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>
-                        {role === 'ADMIN'
-                          ? t('staff.form.adminRole')
-                          : selectedCustomRoleId
-                            ? assignableCustomRoles.find(r => r.id === selectedCustomRoleId)?.name || t('staff.form.selectRole')
-                            : t('staff.form.selectRole')}
+                        {getRoleOptionLabel(getRoleOptionForTarget('ALL'))}
                       </span>
                       <ChevronDown size={16} className={`text-gray-400 transition-transform ${activeDropdown === 'ROLE' ? 'rotate-180' : ''}`} />
                     </button>
+
+                    {establishments && selectedEstablishmentIds.length > 1 && (
+                      <label className="mt-3 flex items-center gap-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-3">
+                        <input
+                          type="checkbox"
+                          checked={sameRoleForAllLocations}
+                          onChange={(event) => {
+                            setSameRoleForAllLocations(event.target.checked);
+                            if (event.target.checked) {
+                              setAssignmentRoleIds((current) => {
+                                const next = { ...current };
+                                selectedEstablishmentIds.forEach((establishmentId) => {
+                                  next[establishmentId] = getRoleOptionForTarget('ALL');
+                                });
+                                return next;
+                              });
+                            }
+                          }}
+                          className="h-4 w-4 accent-paymint-green"
+                        />
+                        <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
+                          {t('staff.form.sameRoleForAll', { defaultValue: 'Same role for all locations' })}
+                        </span>
+                      </label>
+                    )}
+
+                    {establishments && !sameRoleForAllLocations && selectedEstablishmentIds.length > 0 && (
+                      <div className="mt-3 space-y-2">
+                        {selectedEstablishmentIds.map((establishmentId) => {
+                          const establishment = establishments.find((item) => item.id === establishmentId);
+                          return (
+                            <button
+                              key={establishmentId}
+                              type="button"
+                              onClick={() => {
+                                setRoleSelectionTarget(establishmentId);
+                                setActiveDropdown('ROLE');
+                              }}
+                              className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors"
+                            >
+                              <span>
+                                <span className="block text-xs font-black text-gray-500 dark:text-gray-400">
+                                  {establishment?.name || t('staff.form.locationLabel')}
+                                </span>
+                                <span className="block text-sm font-bold text-gray-900 dark:text-white">
+                                  {getRoleOptionLabel(getRoleOptionForTarget(establishmentId))}
+                                </span>
+                              </span>
+                              <ChevronDown size={16} className="text-gray-400" />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
 
                     {/* Dashboard Mode: Show current establishment name under role selection */}
                     {!establishments && currentEstablishment?.name && (
@@ -1126,6 +1341,14 @@ export function EmployeeFormModal({
                               <button
                                 type="button"
                                 onClick={() => {
+                                  if (roleSelectionTarget !== 'ALL') {
+                                    setAssignmentRoleIds((prev) => ({
+                                      ...prev,
+                                      [roleSelectionTarget]: builtInRoleOptionId('ADMIN'),
+                                    }));
+                                    setActiveDropdown(null);
+                                    return;
+                                  }
                                   setRole('ADMIN');
                                   setSelectedCustomRoleId('');
                                   setLastAppliedTemplate(null);
@@ -1139,6 +1362,15 @@ export function EmployeeFormModal({
                                   setActiveDropdown(null);
                                   setPosAccess(true);
                                   setBackofficeAccess(true);
+                                  if (sameRoleForAllLocations) {
+                                    setAssignmentRoleIds((prev) => {
+                                      const next = { ...prev };
+                                      selectedEstablishmentIds.forEach((establishmentId) => {
+                                        next[establishmentId] = builtInRoleOptionId('ADMIN');
+                                      });
+                                      return next;
+                                    });
+                                  }
                                 }}
                                 className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${role === 'ADMIN' ? 'bg-purple-500/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
                               >
@@ -1153,7 +1385,7 @@ export function EmployeeFormModal({
                             )}
 
                             {/* Global Roles Section - Accordion */}
-                            {assignableCustomRoles.filter(r => r.isGlobal).length > 0 && (
+                            {assignableCustomRoles.filter(r => r.isGlobal && isRoleVisibleForTarget(r, roleSelectionTarget)).length > 0 && (
                               <div className="mt-2">
                                 <div className="border-t border-gray-100 dark:border-white/5 mb-2" />
                                 <button
@@ -1173,7 +1405,7 @@ export function EmployeeFormModal({
                                       transition={{ duration: 0.2 }}
                                       className="overflow-hidden"
                                     >
-                                      {assignableCustomRoles.filter(r => r.isGlobal).map(customRole => (
+                                      {assignableCustomRoles.filter(r => r.isGlobal && isRoleVisibleForTarget(r, roleSelectionTarget)).map(customRole => (
                                         <button
                                           key={customRole.id}
                                           type="button"
@@ -1197,7 +1429,7 @@ export function EmployeeFormModal({
 
                             {/* Establishment-Specific Roles - Accordion */}
                             {(() => {
-                              const estRoles = assignableCustomRoles.filter(r => !r.isGlobal);
+                              const estRoles = assignableCustomRoles.filter(r => !r.isGlobal && isRoleVisibleForTarget(r, roleSelectionTarget));
                               // Group by establishment
                               const grouped: Record<string, CustomRole[]> = {};
                               estRoles.forEach(r => {

@@ -595,11 +595,15 @@ export function ActivityLogsPage() {
 
             {/* Detail Modal */}
         {selectedLog && createPortal(
-          <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
             <div
-              className="bg-white dark:bg-[#1E293B] rounded-[2.5rem] border border-gray-200 dark:border-white/5 w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl"
+              className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-2xl rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
             >
-              <div className="p-8 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
+                {/* Mobile Drag Handle */}
+                <div className="sm:hidden flex justify-center pt-2 pb-1 shrink-0">
+                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+                </div>
+              <div className="p-8 border-b border-gray-200 dark:border-white/5 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-[1.25rem] bg-paymint-green/10 text-paymint-green flex items-center justify-center">
                     <Shield size={24} />

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -190,64 +191,76 @@ export function EstablishmentDeletionWizard({
     };
 
     if (isLoading) {
-        return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-            <div className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-200 dark:border-white/5 shadow-xl">
-                <div className="w-12 h-12 border-4 border-paymint-red/10 border-t-paymint-red rounded-full animate-spin mx-auto" />
-                <p className="label-strong font-outfit mt-4 text-center">{t('security.deletion.loading')}</p>
-            </div>
-            </div>
+        return createPortal(
+            <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans p-4">
+                <div className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-200 dark:border-white/5 shadow-xl">
+                    <div className="w-12 h-12 border-4 border-paymint-red/10 border-t-paymint-red rounded-full animate-spin mx-auto" />
+                    <p className="label-strong font-outfit mt-4 text-center">{t('security.deletion.loading')}</p>
+                </div>
+            </div>,
+            document.body
         );
     }
 
-    return (
+    return createPortal(
         <div
             dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
         >
             <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white dark:bg-[#1E293B] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-xl"
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 100 }}
+                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+                className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-2xl rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative"
             >
+                {/* Mobile drag handle */}
+                <div className="sm:hidden flex justify-center pt-2 pb-1">
+                    <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+                </div>
+
                 {/* Header */}
-                <div className="bg-gradient-to-r from-paymint-red to-paymint-red p-6 text-white relative">
+                <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10 flex-shrink-0">
+                    <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-red/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-paymint-red/10 flex items-center justify-center text-paymint-red">
+                            <Trash2 size={20} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+                                {t('security.deletion.title')}
+                            </h2>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">{establishmentName}</p>
+                        </div>
+                    </div>
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-xl transition-colors"
+                        className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
                     >
                         <X size={20} />
                     </button>
-                    <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center">
-                            <Trash2 size={28} />
-                        </div>
-                        <div>
-                            <h2 className="text-xl font-bold">{t('security.deletion.title')}</h2>
-                            <p className="text-white/80 text-sm">{establishmentName}</p>
-                        </div>
-                    </div>
+                </div>
 
-                    {/* Step Indicator */}
-                    <div className="flex items-center gap-2 mt-6">
+                {/* Step Indicator */}
+                <div className="px-6 sm:px-8 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] flex-shrink-0">
+                    <div className="flex items-center gap-2">
                         {['warning', 'export', 'confirm'].map((s, i) => (
                             <div key={s} className="flex items-center">
                                 <div
                                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-colors ${step === s
-                                        ? 'bg-white text-paymint-red shadow-sm'
+                                        ? 'bg-paymint-red text-white shadow-sm'
                                         : ['warning', 'export', 'confirm'].indexOf(step) > i
-                                            ? 'bg-white/30 text-white'
-                                            : 'bg-white/10 text-white/50'
+                                            ? 'bg-paymint-red/20 text-paymint-red'
+                                            : 'bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-gray-500'
                                         }`}
                                 >
                                     {i + 1}
                                 </div>
                                 {i < 2 && (
                                     <div
-                                        className={`w-12 h-0.5 mx-1 ${['warning', 'export', 'confirm'].indexOf(step) > i
-                                            ? 'bg-white/30'
-                                            : 'bg-white/10'
+                                        className={`w-12 h-0.5 mx-2 ${['warning', 'export', 'confirm'].indexOf(step) > i
+                                            ? 'bg-paymint-red/30'
+                                            : 'bg-gray-200 dark:bg-white/10'
                                             }`}
                                     />
                                 )}
@@ -257,7 +270,7 @@ export function EstablishmentDeletionWizard({
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6">
+                <div className="flex-1 overflow-y-auto px-4 sm:px-8 pt-6 pb-safe custom-scrollbar">
                     <AnimatePresence mode="wait">
                         {/* Step 1: Warning */}
                         {step === 'warning' && (
@@ -586,7 +599,8 @@ export function EstablishmentDeletionWizard({
                     )}
                 </div>
             </motion.div>
-        </div>
+        </div>,
+        document.body
     );
 }
 

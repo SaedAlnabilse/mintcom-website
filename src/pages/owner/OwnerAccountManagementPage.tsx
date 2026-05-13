@@ -793,12 +793,18 @@ export function OwnerAccountManagementPage() {
 
                                                 {/* Login ID Section */}
                                                 <div className="mt-auto">
-                                                    <div className="p-3 bg-gray-50 dark:bg-[#0F172A] rounded-xl border border-gray-100 dark:border-white/[0.05] group-hover:border-blue-500/20 transition-colors">
-                                                        <div className="flex items-center justify-between gap-2 mb-1">
-                                                            <label className="text-[10px] font-normal text-gray-400  tracking-normal flex items-center gap-1">
+                                                    <div className="p-3 bg-blue-50/70 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20 transition-colors">
+                                                        <div className="flex items-center justify-between gap-2 mb-2">
+                                                            <label className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 tracking-wide flex items-center gap-1">
                                                                 <Key size={10} />
-                                                                {t('owner.account.loginId')}
+                                                                {t('owner.account.locationLoginId', { defaultValue: 'Location Login ID' })}
                                                             </label>
+                                                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 dark:bg-blue-500/15 px-2 py-1 text-[10px] font-bold text-blue-700 dark:text-blue-300">
+                                                                <Shield size={10} />
+                                                                {t('owner.account.locationLoginBadge', { defaultValue: 'Location' })}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex items-center justify-between gap-2">
                                                             <button
                                                                 onClick={() => copyToClipboard(slug, `est-login-${est.id}`)}
                                                                 disabled={!slug}
@@ -811,9 +817,12 @@ export function OwnerAccountManagementPage() {
                                                                 )}
                                                             </button>
                                                         </div>
-                                                        <code className="block text-xs font-mono font-bold text-gray-900 dark:text-white truncate select-all">
+                                                        <code className="mt-2 block text-xs font-mono font-bold text-gray-900 dark:text-white truncate select-all">
                                                             {slug || t('common.na')}
                                                         </code>
+                                                        <p className="mt-2 text-[11px] font-medium text-blue-700/80 dark:text-blue-200/80 leading-relaxed">
+                                                            {t('owner.account.locationLoginHint', { defaultValue: 'Use this ID to sign in to this location dashboard.' })}
+                                                        </p>
                                                     </div>
 
                                                     <div className="mt-3 flex justify-end">
@@ -910,22 +919,35 @@ export function OwnerAccountManagementPage() {
                                                     </button>
                                                 </div>
 
-                                                <div className="mt-5 p-4 bg-white dark:bg-[#020617] rounded-xl border border-gray-200 dark:border-white/[0.05] group-hover:border-purple-500/20 transition-colors">
-                                                    <label className="label-strong mb-2 flex items-center gap-1.5">
-                                                        <Key size={10} />
-                                                        {t('owner.account.brandLoginId')}
-                                                    </label>
-                                                    <div className="flex items-center justify-between gap-3">
-                                                        <code className="text-sm font-mono font-bold text-gray-900 dark:text-white tracking-wide truncate">
-                                                            {brand.establishmentLoginId}
-                                                        </code>
+                                                <div className="mt-5 p-4 bg-blue-50/70 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20 transition-colors">
+                                                    <div className="flex items-center justify-between gap-2 mb-2">
+                                                        <label className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 tracking-wide flex items-center gap-1.5">
+                                                            <Key size={10} />
+                                                            {t('owner.account.brandLoginId')}
+                                                        </label>
+                                                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 dark:bg-blue-500/15 px-2 py-1 text-[10px] font-bold text-blue-700 dark:text-blue-300">
+                                                            <Shield size={10} />
+                                                            {t('owner.account.brandLoginBadge', { defaultValue: 'Brand' })}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center justify-between gap-2">
                                                         <button
                                                             onClick={() => copyToClipboard(brand.establishmentLoginId, `brand-${brand.id}`)}
-                                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/[0.1] text-gray-400 hover:text-purple-500 transition-colors"
+                                                            className="text-xs font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1"
                                                         >
-                                                            {copiedId === `brand-${brand.id}` ? <CheckCircle2 size={18} className="text-purple-500" /> : <Copy size={18} />}
+                                                            {copiedId === `brand-${brand.id}` ? (
+                                                                <span className="flex items-center gap-1 text-paymint-green"><CheckCircle2 size={10} /> {t('common.copied')}</span>
+                                                            ) : (
+                                                                <span className="flex items-center gap-1"><Copy size={10} /> {t('common.copy')}</span>
+                                                            )}
                                                         </button>
                                                     </div>
+                                                    <code className="mt-2 block text-sm font-mono font-bold text-gray-900 dark:text-white tracking-wide truncate select-all">
+                                                        {brand.establishmentLoginId}
+                                                    </code>
+                                                    <p className="mt-2 text-[11px] font-medium text-blue-700/80 dark:text-blue-200/80 leading-relaxed">
+                                                        {t('owner.account.brandLoginHint', { defaultValue: 'Use this ID to sign in to the brand dashboard.' })}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>

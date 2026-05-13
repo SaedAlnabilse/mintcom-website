@@ -113,6 +113,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           },
           {
             label: t('orders.reports.sales.numOrders'),
+            labelClassName: 'capitalize-none',
             value: (salesData.totalOrders || 0).toLocaleString(t('common.locale')),
             suffix: t('dashboard.stats.orders'),
             icon: ShoppingBag,
@@ -185,7 +186,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                   </div>
                 )}
               </div>
-              <p className="dashboard-stat-title mb-1 flex items-center gap-1">
+              <p className={`dashboard-stat-title mb-1 flex items-center gap-1 ${stat.labelClassName || ''}`}>
                 {stat.label}
               </p>
               {stat.customContent ? (
