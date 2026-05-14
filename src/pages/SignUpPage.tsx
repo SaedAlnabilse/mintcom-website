@@ -2,50 +2,39 @@ import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import {
+  Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check,
+  ShieldCheck, CheckCircle2, ArrowRight, Zap,
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
-import { GoogleAuthButton, AuthDivider, GOOGLE_CLIENT_ID, type GoogleAuthButtonHandle } from '../components/GoogleAuthButton';
+import {
+  GoogleAuthButton, AuthDivider, GOOGLE_CLIENT_ID,
+  type GoogleAuthButtonHandle,
+} from '../components/GoogleAuthButton';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { Spinner } from '../components/ui/Spinner';
-
-// PayMint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
+import { getSignUpSchema, type SignUpFormData } from '../utils/validation';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 export function SignUpPage() {
   const { t } = useTranslation();
+  const isRtl = t('common.locale') === 'ar';
 
-  const signUpSchema = z.object({
-    firstName: z.string().min(2, t('auth.validation.firstNameMin')),
-    lastName: z.string().min(2, t('auth.validation.lastNameMin')),
-    email: z.string().email(t('auth.validation.emailInvalid')),
-    password: z
-      .string()
-      .min(8, t('auth.validation.passwordMin'))
-      .regex(/[A-Z]/, t('auth.validation.passwordUppercase'))
-      .regex(/[a-z]/, t('auth.validation.passwordLowercase'))
-      .regex(/[0-9]/, t('auth.validation.passwordNumber')),
-    confirmPassword: z.string(),
-    agreeToTerms: z.boolean().refine(val => val === true, {
-      message: t('auth.validation.termsRequired'),
-    }),
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: t('auth.validation.passwordsDoNotMatch'),
-    path: ['confirmPassword'],
-  });
-
-  type SignUpFormData = z.infer<typeof signUpSchema>;
+  const signUpSchema = getSignUpSchema(t);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
+  const [isResendingVerification, setIsResendingVerification] = useState(false);
   const [showGoogleTermsModal, setShowGoogleTermsModal] = useState(false);
   const [modalAgreed, setModalAgreed] = useState(false);
   const [subscribeToNews, setSubscribeToNews] = useState(false);
@@ -53,25 +42,17 @@ export function SignUpPage() {
   const googleAuthRef = useRef<GoogleAuthButtonHandle>(null);
 
   const navigate = useNavigate();
-  const { register: registerAccount, loginWithGoogle } = useAuth();
+  const { register: registerAccount, loginWithGoogle, resendVerification } = useAuth();
 
   const {
-    register,
-    handleSubmit,
-    watch,
-    setError,
-    setValue,
+    register, handleSubmit, watch, setError, setValue,
     formState: { errors },
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      agreeToTerms: false,
-    }
+      firstName: '', lastName: '', email: '',
+      password: '', confirmPassword: '', agreeToTerms: false,
+    },
   });
 
   const password = watch('password');
@@ -93,27 +74,13 @@ export function SignUpPage() {
     }
   };
 
-  const handleModalContinue = () => {
-    // This is a fallback in case they click it before the Google iframe loads or if it fails
-    if (modalAgreed && !isSubmitting) {
-      setValue('agreeToTerms', true);
-      setSubscribeToNews(modalSubscribeToNews);
-      setShowGoogleTermsModal(false);
-      toast.success(t('auth.signup.clickGoogleAgain', "Terms agreed. Please click 'Sign in with Google' again."));
-    }
-  };
-
   const handleGoogleSuccess = async (credential: string) => {
     if (!agreed) {
-      setError('agreeToTerms', {
-        type: 'manual',
-        message: t('auth.validation.termsRequired')
-      });
+      setError('agreeToTerms', { type: 'manual', message: t('auth.validation.termsRequired') });
       return;
     }
     try {
       const result = await loginWithGoogle(credential, subscribeToNews);
-
       if (result.success) {
         toast.success(result.message || t('auth.signup.success'));
         navigate('/');
@@ -125,21 +92,15 @@ export function SignUpPage() {
     }
   };
 
-  const handleGoogleError = (error: string) => {
-    toast.error(error);
-  };
+  const handleGoogleError = (error: string) => toast.error(error);
 
   const onSubmit = async (data: SignUpFormData) => {
     setIsSubmitting(true);
     try {
       const result = await registerAccount({
-        email: data.email,
-        password: data.password,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        subscribeToNews,
+        email: data.email, password: data.password,
+        firstName: data.firstName, lastName: data.lastName, subscribeToNews,
       });
-
       if (result.success) {
         setRegisteredEmail(data.email);
         setRegistrationSuccess(true);
@@ -154,33 +115,77 @@ export function SignUpPage() {
     }
   };
 
+  const handleResendVerification = async () => {
+    if (!registeredEmail || isResendingVerification) return;
+
+    setIsResendingVerification(true);
+    try {
+      const result = await resendVerification(registeredEmail);
+      if (result.success) {
+        toast.success(result.message || t('auth.signup.verificationSent'));
+      } else {
+        toast.error(result.error || t('auth.signup.failed'));
+      }
+    } catch {
+      toast.error(t('common.error'));
+    } finally {
+      setIsResendingVerification(false);
+    }
+  };
+
+  /* ── Input base classes ── */
+  const inputBase = (hasError: boolean) =>
+    `w-full rounded-2xl border bg-gray-50/70 px-5 py-4 text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:bg-white/10 ${
+      hasError
+        ? 'border-red-400 dark:border-red-500'
+        : 'border-gray-200 dark:border-white/10 focus:border-paymint-green/40'
+    }`;
+
+  /* ── Success screen ── */
   if (registrationSuccess) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 transition-colors duration-300">
+      <div className="flex min-h-screen items-center justify-center bg-white p-4 dark:bg-[#050505]">
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-8 max-w-md w-full text-center border border-gray-200 dark:border-white/10 transition-colors duration-300"
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full max-w-md overflow-hidden rounded-3xl border border-gray-200/70 bg-white/90 p-12 text-center shadow-[0_20px_60px_-20px_rgba(0,0,0,0.15)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.03]"
         >
-          <div className="w-16 h-16 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Check className="w-8 h-8 text-paymint-green" />
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('auth.signup.checkEmail')}</h2>
-          <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-6">
-            {t('auth.signup.verificationSent')} <span className="text-gray-900 dark:text-white font-bold">{registeredEmail}</span>.
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
+            className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-paymint-green/15 ring-4 ring-paymint-green/20"
+          >
+            <Check size={40} strokeWidth={2.5} className="text-paymint-green" />
+          </motion.div>
+          <h2 className="font-magilio text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {t('auth.signup.checkEmail')}
+          </h2>
+          <p className="mt-4 text-sm font-medium leading-relaxed text-gray-600 dark:text-gray-400">
+            {t('auth.signup.verificationSent')}{' '}
+            <span className="font-bold text-gray-900 dark:text-white">{registeredEmail}</span>.{' '}
             {t('auth.signup.clickToVerify')}
           </p>
-          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 mb-6 border border-gray-100 dark:border-transparent">
-            <p className="text-xs font-bold text-gray-500">
+          <div className="mt-6 rounded-2xl border border-gray-100 bg-gray-50/70 p-4 dark:border-white/5 dark:bg-white/[0.03]">
+            <p className="text-xs text-gray-500">
               {t('auth.signup.didntReceive')}{' '}
-              <button className="text-sm font-bold text-paymint-green hover:underline">{t('auth.signup.resendVerification')}</button>
+              <button
+                type="button"
+                onClick={handleResendVerification}
+                disabled={isResendingVerification}
+                className="font-bold text-paymint-green hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isResendingVerification ? t('common.sending', 'Sending...') : t('auth.signup.resendVerification')}
+              </button>
             </p>
           </div>
           <Link
             to="/login"
-            className="inline-flex items-center justify-center w-full bg-paymint-green text-black label-strong font-outfit py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
+            className="group mt-8 inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-paymint-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(124,195,159,0.7)]"
           >
             {t('auth.signup.goToLogin')}
+            <ArrowRight size={16} className={isRtl ? 'rotate-180' : ''} />
           </Link>
         </motion.div>
       </div>
@@ -188,208 +193,228 @@ export function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex transition-colors duration-300 relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <div
+      dir={isRtl ? 'rtl' : 'ltr'}
+      className="relative flex min-h-screen bg-white transition-colors duration-300 dark:bg-[#050505]"
+    >
       <Helmet>
         <title>{t('metadata.signup.title')}</title>
         <meta name="description" content={t('metadata.signup.description')} />
         <meta property="og:title" content={t('metadata.signup.title')} />
         <meta property="og:description" content={t('metadata.signup.description')} />
       </Helmet>
-      {/* Full-screen Loading Overlay */}
+
+      {/* Loading overlay */}
       <AnimatePresence>
         {isSubmitting && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
           >
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-white dark:bg-gray-800 rounded-xl p-8 flex flex-col items-center gap-4 shadow-2xl"
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="flex flex-col items-center gap-4 rounded-3xl border border-gray-100 bg-white p-10 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
             >
-              {/* High Resolution SVG Spinner */}
-              {/* High Resolution SVG Spinner – matched to cursor style */}
               <Spinner size={32} />
-              <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.signup.creatingYourAccount')}</p>
-              <p className="text-xs font-bold text-gray-500">{t('auth.signup.pleaseWait')}</p>
+              <p className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+                {t('auth.signup.creatingYourAccount')}
+              </p>
+              <p className="text-xs font-medium text-gray-500">{t('auth.signup.pleaseWait')}</p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Left Side - Form */}
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-white dark:bg-transparent transition-colors duration-300 overflow-y-auto">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-md py-8"
-        >
-          <Link
-            to="/"
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mb-8 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t('auth.signup.backButton')}
-          </Link>
+      {/* ── Minimal top bar ── */}
+      <div className="absolute inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-4 md:px-10">
+        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <img src={PaymintLogoGreen} alt="PayMint" className="h-8 w-auto object-contain dark:hidden" />
+          <img src={PaymintLogoWhite} alt="PayMint" className="hidden h-8 w-auto object-contain dark:block" />
+        </Link>
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </div>
+      </div>
 
+      {/* ── Left: Form ── */}
+      <div className="flex flex-1 flex-col items-center justify-center overflow-y-auto px-6 py-12 pt-24 md:px-10">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full max-w-md"
+        >
+          {/* Back link */}
+          <a
+            href="/"
+            className="group mb-8 inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+          >
+            <ArrowLeft size={15} className={`transition-transform group-hover:-translate-x-0.5 ${isRtl ? 'rotate-180' : ''}`} />
+            {t('auth.signup.backButton')}
+          </a>
+
+          {/* Heading */}
           <div className="mb-8">
-            <div className="flex mb-4">
-              <img
-                src={PaymintLogoGreen}
-                alt="PayMint"
-                className="h-12 w-auto object-contain dark:hidden"
-              />
-              <img
-                src={PaymintLogoWhite}
-                alt="PayMint"
-                className="h-12 w-auto object-contain hidden dark:block"
-              />
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white mb-2 tracking-tight">{t('auth.signup.title')}</h2>
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{t('auth.signup.subtitle')}</p>
+            <h1 className="font-magilio text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl">
+              {t('auth.signup.title')}
+            </h1>
+            <p className="mt-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+              {t('auth.signup.subtitle')}
+            </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-8 transition-colors duration-300 border border-gray-200 dark:border-white/10">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="firstName" className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
-                    {t('auth.signup.firstNameLabel')}<span className="text-accent ml-1">*</span>
+          {/* Glass card */}
+          <div className="relative overflow-hidden rounded-3xl border border-gray-200/70 bg-white/90 p-8 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
+            {/* Subtle corner glow */}
+            <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-paymint-green/10 blur-3xl" />
+
+            <form onSubmit={handleSubmit(onSubmit)} className="relative space-y-5">
+              {/* Name row */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="firstName" className="block text-[12px] font-bold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
+                    {t('auth.signup.firstNameLabel')}<span className="ml-1 text-red-400">*</span>
                   </label>
                   <div className="relative">
-                    <User className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input maxLength={255}
+                    <User size={15} className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      maxLength={255}
                       {...register('firstName')}
                       type="text"
                       id="firstName"
-                      aria-label={t('auth.signup.firstNameLabel')}
-                      aria-describedby={errors.firstName ? 'firstName-error' : undefined}
                       autoComplete="given-name"
-                      className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.firstName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                        } rounded-xl py-3 ps-10 pe-4 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                      aria-invalid={!!errors.firstName}
+                      aria-describedby={errors.firstName ? 'firstName-error' : undefined}
+                      className={`${inputBase(!!errors.firstName)} ps-10`}
                       placeholder={formatInputPlaceholder(t('auth.signup.firstNamePlaceholder'), t('common.locale'))}
                     />
                   </div>
                   {errors.firstName?.message && (
-                    <p id="firstName-error" role="alert" className="text-accent text-xs font-bold mt-1">{errors.firstName.message}</p>
+                    <p id="firstName-error" role="alert" className="text-xs font-bold text-red-500">{errors.firstName.message}</p>
                   )}
                 </div>
-                <div>
-                  <label htmlFor="lastName" className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
-                    {t('auth.signup.lastNameLabel')}<span className="text-accent ml-1">*</span>
+                <div className="space-y-2">
+                  <label htmlFor="lastName" className="block text-[12px] font-bold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
+                    {t('auth.signup.lastNameLabel')}<span className="ml-1 text-red-400">*</span>
                   </label>
-                  <input maxLength={255}
+                  <input
+                    maxLength={255}
                     {...register('lastName')}
                     type="text"
                     id="lastName"
-                    aria-label={t('auth.signup.lastNameLabel')}
-                    aria-describedby={errors.lastName ? 'lastName-error' : undefined}
                     autoComplete="family-name"
-                    className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.lastName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-xl py-3 px-4 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    aria-invalid={!!errors.lastName}
+                    aria-describedby={errors.lastName ? 'lastName-error' : undefined}
+                    className={inputBase(!!errors.lastName)}
                     placeholder={formatInputPlaceholder(t('auth.signup.lastNamePlaceholder'), t('common.locale'))}
                   />
                   {errors.lastName?.message && (
-                    <p id="lastName-error" role="alert" className="text-accent text-xs font-bold mt-1">{errors.lastName.message}</p>
+                    <p id="lastName-error" role="alert" className="text-xs font-bold text-red-500">{errors.lastName.message}</p>
                   )}
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
-                  {t('auth.signup.emailLabel')}<span className="text-accent ml-1">*</span>
+              {/* Email */}
+              <div className="space-y-2">
+                <label htmlFor="email" className="block text-[12px] font-bold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
+                  {t('auth.signup.emailLabel')}<span className="ml-1 text-red-400">*</span>
                 </label>
                 <div className="relative">
-                  <Mail className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input maxLength={255}
+                  <Mail size={15} className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    maxLength={255}
                     {...register('email')}
                     type="email"
                     id="email"
-                    aria-label={t('auth.signup.emailLabel')}
-                    aria-describedby={errors.email ? 'email-error' : undefined}
                     autoComplete="email"
-                    className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-xl py-3 ps-10 pe-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? 'email-error' : undefined}
+                    className={`${inputBase(!!errors.email)} ps-10`}
                     placeholder={formatInputPlaceholder(t('auth.signup.emailPlaceholder'), t('common.locale'))}
                   />
                 </div>
                 {errors.email?.message && (
-                  <p id="email-error" role="alert" className="text-accent text-xs font-bold mt-1">{errors.email.message}</p>
+                  <p id="email-error" role="alert" className="text-xs font-bold text-red-500">{errors.email.message}</p>
                 )}
               </div>
 
-              <div>
-                <label htmlFor="password" className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
-                  {t('auth.signup.passwordLabel')}<span className="text-accent ml-1">*</span>
+              {/* Password */}
+              <div className="space-y-2">
+                <label htmlFor="password" className="block text-[12px] font-bold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
+                  {t('auth.signup.passwordLabel')}<span className="ml-1 text-red-400">*</span>
                 </label>
                 <div className="relative">
-                  <Lock className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input maxLength={255}
+                  <Lock size={15} className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    maxLength={255}
                     {...register('password')}
                     type={showPassword ? 'text' : 'password'}
                     id="password"
-                    aria-label={t('auth.signup.passwordLabel')}
-                    aria-describedby={errors.password ? 'password-error' : undefined}
                     autoComplete="new-password"
-                    className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-xl py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    aria-invalid={!!errors.password}
+                    aria-describedby={errors.password ? 'password-error' : undefined}
+                    className={`${inputBase(!!errors.password)} ps-10 pe-12`}
                     placeholder={formatInputPlaceholder(t('auth.signup.passwordPlaceholder'), t('common.locale'))}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
-                    className="absolute end-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                    className="absolute end-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/10 dark:hover:text-white"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
                 </div>
                 {errors.password?.message && (
-                  <p id="password-error" role="alert" className="text-accent text-xs font-bold mt-1">{errors.password.message}</p>
+                  <p id="password-error" role="alert" className="text-xs font-bold text-red-500">{errors.password.message}</p>
                 )}
               </div>
 
-              <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2">
-                  {t('auth.signup.confirmPasswordLabel')}<span className="text-accent ml-1">*</span>
+              {/* Confirm password */}
+              <div className="space-y-2">
+                <label htmlFor="confirmPassword" className="block text-[12px] font-bold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
+                  {t('auth.signup.confirmPasswordLabel')}<span className="ml-1 text-red-400">*</span>
                 </label>
                 <div className="relative">
-                  <Lock className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input maxLength={255}
+                  <Lock size={15} className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    maxLength={255}
                     {...register('confirmPassword')}
                     type={showConfirmPassword ? 'text' : 'password'}
                     id="confirmPassword"
-                    aria-label={t('auth.signup.confirmPasswordLabel')}
-                    aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
                     autoComplete="new-password"
-                    className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.confirmPassword ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-xl py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    aria-invalid={!!errors.confirmPassword}
+                    aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
+                    className={`${inputBase(!!errors.confirmPassword)} ps-10 pe-12`}
                     placeholder={formatInputPlaceholder(t('auth.signup.confirmPasswordPlaceholder'), t('common.locale'))}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     aria-label={showConfirmPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
-                    className="absolute end-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                    className="absolute end-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/10 dark:hover:text-white"
                   >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
                 </div>
-                {errors.confirmPassword && (
-                  <p id="confirmPassword-error" role="alert" className="text-accent text-xs font-bold mt-1">{errors.confirmPassword.message}</p>
+                {errors.confirmPassword?.message && (
+                  <p id="confirmPassword-error" role="alert" className="text-xs font-bold text-red-500">{errors.confirmPassword.message}</p>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-gray-50 dark:bg-white/[0.02] rounded-[12px] border border-gray-200 dark:border-white/[0.05]">
-                {criteria.map((item, index) => (
-                  <div key={index} className="flex items-center gap-2">
+              {/* Password criteria */}
+              <div className="grid grid-cols-2 gap-2 rounded-2xl border border-gray-100 bg-gray-50/70 p-4 dark:border-white/5 dark:bg-white/[0.03]">
+                {criteria.map((item, i) => (
+                  <div key={i} className="flex items-center gap-2">
                     {item.met ? (
-                      <CheckCircle2 size={14} className="text-paymint-green flex-shrink-0" />
+                      <CheckCircle2 size={13} className="flex-shrink-0 text-paymint-green" />
                     ) : (
-                      <div className="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-white/10 flex-shrink-0" />
+                      <div className="h-3.5 w-3.5 flex-shrink-0 rounded-full border-2 border-gray-300 dark:border-white/10" />
                     )}
                     <span className={`text-[10px] font-bold ${item.met ? 'text-paymint-green' : 'text-gray-400'}`}>
                       {item.label}
@@ -398,51 +423,59 @@ export function SignUpPage() {
                 ))}
               </div>
 
+              {/* Checkboxes */}
               <div className="space-y-3">
-                <div className="flex items-center gap-3 py-1">
+                <div className="flex items-start gap-3 py-1">
                   <input
                     {...register('agreeToTerms')}
                     id="agreeToTerms"
                     type="checkbox"
-                    className={`w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors ${errors.agreeToTerms ? 'border-accent ring-1 ring-accent' : ''}`}
+                    aria-invalid={!!errors.agreeToTerms}
+                    aria-describedby={errors.agreeToTerms ? 'agreeToTerms-error' : undefined}
+                    className={`mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-paymint-green focus:ring-paymint-green dark:border-white/20 ${errors.agreeToTerms ? 'border-red-400' : ''}`}
                   />
-                  <label htmlFor="agreeToTerms" className="text-xs text-gray-600 dark:text-gray-400 leading-tight cursor-pointer pt-0.5">
-                    {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.termsOfService')}</Link>.
+                  <label htmlFor="agreeToTerms" className="cursor-pointer text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+                    {t('landing.contact.termsAgree')}{' '}
+                    <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="font-bold text-paymint-green hover:underline">{t('landing.contact.privacyPolicy')}</Link>{' '}
+                    {t('common.and')}{' '}
+                    <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="font-bold text-paymint-green hover:underline">{t('landing.contact.termsOfService')}</Link>.
                   </label>
                 </div>
                 {errors.agreeToTerms && (
-                  <p className="text-accent text-xs font-bold -mt-1">{errors.agreeToTerms.message}</p>
+                  <p id="agreeToTerms-error" role="alert" className="text-xs font-bold text-red-500">{errors.agreeToTerms.message}</p>
                 )}
-
-                <div className="flex items-center gap-3 py-1">
+                <div className="flex items-start gap-3 py-1">
                   <input
                     id="subscribeToNews"
                     type="checkbox"
                     checked={subscribeToNews}
                     onChange={(e) => setSubscribeToNews(e.target.checked)}
-                    className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
+                    className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-paymint-green focus:ring-paymint-green dark:border-white/20"
                   />
-                  <label htmlFor="subscribeToNews" className="text-xs text-gray-600 dark:text-gray-400 leading-tight cursor-pointer pt-0.5">
+                  <label htmlFor="subscribeToNews" className="cursor-pointer text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {formatInputLabel(t('auth.signup.subscribeToNews'), t('common.locale'))}
                   </label>
                 </div>
               </div>
 
-              <button
+              {/* Submit */}
+              <motion.button
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.97 }}
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-paymint-green text-black text-sm font-bold hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
+                className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-paymint-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(124,195,159,0.7)] disabled:opacity-60"
               >
-                {isSubmitting ? t('auth.signup.creatingAccount') : t('auth.signup.signUpButton')}
-              </button>
+                <span aria-hidden className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                <span className="relative">{isSubmitting ? t('auth.signup.creatingAccount') : t('auth.signup.signUpButton')}</span>
+                <ArrowRight size={16} className={`relative transition-transform ${isRtl ? 'rotate-180 group-hover:-translate-x-0.5' : 'group-hover:translate-x-0.5'}`} />
+              </motion.button>
             </form>
 
             {GOOGLE_CLIENT_ID && (
               <>
                 <AuthDivider />
-
-                {/* Google Sign-Up Button */}
-                <div className="w-full relative">
+                <div className="relative w-full">
                   <GoogleAuthButton
                     ref={googleAuthRef}
                     onSuccess={handleGoogleSuccess}
@@ -451,69 +484,108 @@ export function SignUpPage() {
                     disabled={isSubmitting}
                   />
                   {!agreed && (
-                    <div
-                      className="absolute top-0 right-0 bottom-0 left-0 z-20 cursor-pointer"
-                      onClick={handleGoogleAuthClick}
-                    />
+                    <div className="absolute inset-0 z-20 cursor-pointer" onClick={handleGoogleAuthClick} />
                   )}
                 </div>
               </>
             )}
 
             <div className="mt-6 text-center">
-              <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 {t('auth.signup.haveAccount')}{' '}
-                <Link to="/login" className="text-sm font-bold text-paymint-green hover:underline">
+                <Link to="/login" className="font-bold text-paymint-green hover:underline">
                   {t('auth.signup.logIn')}
                 </Link>
               </p>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-gray-100 dark:border-white/5">
-              <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 text-center leading-relaxed">
-                {t('auth.signup.disclaimerPrefix')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.termsOfService')}</Link> {t('common.and')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.privacyPolicy')}</Link>.
+            <div className="mt-6 border-t border-gray-100 pt-5 dark:border-white/5">
+              <p className="text-center text-[10px] leading-relaxed text-gray-400 dark:text-gray-500">
+                {t('auth.signup.disclaimerPrefix')}{' '}
+                <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.termsOfService')}</Link>{' '}
+                {t('common.and')}{' '}
+                <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.privacyPolicy')}</Link>.
               </p>
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* Right Side - Benefits */}
-      <div className="hidden lg:flex flex-1 bg-gray-50 dark:bg-[#0a0f12] items-center justify-center p-12 transition-colors duration-300">
-        <div className="max-w-xl w-full">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-gray-800/50 rounded-xl p-10 shadow-lg shadow-gray-200/50 dark:shadow-none border border-gray-200 dark:border-white/10 backdrop-blur-sm"
-          >
-            <h2 className="text-3xl font-sans font-bold text-gray-900 dark:text-white mb-8 tracking-tight">{t('auth.signup.allFeaturesIncluded')}</h2>
-            <div className="grid grid-cols-1 gap-y-7">
-              {[
-                { title: t('auth.signup.feature1Title'), desc: t('auth.signup.feature1Desc') },
-                { title: t('auth.signup.feature2Title'), desc: t('auth.signup.feature2Desc') },
-                { title: t('auth.signup.feature3Title'), desc: t('auth.signup.feature3Desc') },
-                { title: t('auth.signup.feature5Title'), desc: t('auth.signup.feature5Desc') },
-                { title: t('auth.signup.feature6Title'), desc: t('auth.signup.feature6Desc') },
-                { title: t('auth.signup.feature7Title'), desc: t('auth.signup.feature7Desc') },
-                { title: t('dashboard.menu.recipes'), desc: t('manufacturing.subtitle', 'Track raw materials, recipes, and automatic production costs.') },
-                { title: t('auth.signup.feature4Title'), desc: t('auth.signup.feature4Desc') },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-6 group">
-                  <div className="w-12 h-12 rounded-xl bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center flex-shrink-0 mt-1 transition-all duration-300 group-hover:scale-110 group-hover:bg-paymint-green/20 group-hover:rotate-3">
-                    <Check className="w-7 h-7 text-paymint-green" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-sans font-bold tracking-tight text-gray-900 dark:text-white leading-tight mb-1">{item.title}</h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm font-medium leading-relaxed">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+      {/* ── Right: Benefits panel ── */}
+      <div className="relative hidden overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 lg:flex lg:flex-1 lg:items-center lg:justify-center dark:from-[#050505] dark:via-[#0a0a0a] dark:to-[#050505]">
+        {/* Background ambient */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-20 right-[10%] h-[400px] w-[400px] rounded-full bg-paymint-green/10 blur-[120px]" />
+          <div className="absolute -bottom-20 left-[10%] h-[400px] w-[400px] rounded-full bg-emerald-400/5 blur-[120px]" />
+          {/* Faint grid */}
+          <div
+            aria-hidden
+            className="absolute inset-0 opacity-[0.05] dark:opacity-[0.07]"
+            style={{
+              backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
+              backgroundSize: '48px 48px',
+              color: '#7CC39F',
+              maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
+              WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
+            }}
+          />
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10 w-full max-w-lg px-10"
+        >
+          {/* Badge */}
+          <div className="mb-8 inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-paymint-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
+            <Zap size={12} fill="currentColor" />
+            <span>{t('auth.signup.allFeaturesIncluded')}</span>
+          </div>
+
+          <h2 className="font-magilio text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 dark:text-white lg:text-5xl">
+            {t('landing.features.title')}{' '}
+            <span className="bg-gradient-to-r from-paymint-green via-emerald-400 to-paymint-green bg-clip-text text-transparent">
+              {t('landing.features.titleHighlight')}
+            </span>
+          </h2>
+          <p className="mt-4 text-base font-light leading-relaxed text-gray-600 dark:text-gray-400">
+            {t('landing.features.subtitle')}
+          </p>
+
+          {/* Feature list */}
+          <ul className="mt-10 space-y-5">
+            {[
+              { title: t('auth.signup.feature1Title'), desc: t('auth.signup.feature1Desc') },
+              { title: t('auth.signup.feature2Title'), desc: t('auth.signup.feature2Desc') },
+              { title: t('auth.signup.feature3Title'), desc: t('auth.signup.feature3Desc') },
+              { title: t('auth.signup.feature5Title'), desc: t('auth.signup.feature5Desc') },
+              { title: t('auth.signup.feature6Title'), desc: t('auth.signup.feature6Desc') },
+              { title: t('auth.signup.feature7Title'), desc: t('auth.signup.feature7Desc') },
+              { title: t('dashboard.menu.recipes'), desc: t('manufacturing.subtitle', 'Track raw materials, recipes, and automatic production costs.') },
+              { title: t('auth.signup.feature4Title'), desc: t('auth.signup.feature4Desc') },
+            ].map((item, i) => (
+              <motion.li
+                key={i}
+                initial={{ opacity: 0, x: 16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="group flex items-start gap-4 rounded-2xl border border-transparent p-3 transition-all duration-300 hover:border-paymint-green/15 hover:bg-paymint-green/5"
+              >
+                <span className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-paymint-green/10 ring-1 ring-paymint-green/20 transition-all group-hover:bg-paymint-green group-hover:ring-paymint-green/40">
+                  <Check size={15} strokeWidth={3} className="text-paymint-green transition-colors group-hover:text-black" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{item.title}</p>
+                  <p className="mt-0.5 text-xs font-light leading-relaxed text-gray-500 dark:text-gray-400">{item.desc}</p>
+                </div>
+              </motion.li>
+            ))}
+          </ul>
+        </motion.div>
       </div>
 
-      {/* Google Terms Modal */}
+      {/* ── Google Terms Modal ── */}
       <AnimatePresence>
         {showGoogleTermsModal && (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
@@ -528,95 +600,82 @@ export function SignUpPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl max-w-md w-full p-8 shadow-2xl"
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
             >
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-paymint-green/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <ShieldCheck size={32} className="text-paymint-green" />
+              <div className="mb-8 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-paymint-green/10">
+                  <ShieldCheck size={28} className="text-paymint-green" />
                 </div>
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white">
+                <h3 className="font-magilio text-2xl font-bold text-gray-900 dark:text-white">
                   {t('common.security')}
                 </h3>
-                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                   {t('auth.signup.subtitle')}
                 </p>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div
-                  className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 cursor-pointer"
+                  className="flex cursor-pointer items-start gap-3 rounded-2xl border border-gray-100 bg-gray-50/70 p-4 transition-colors hover:border-paymint-green/20 dark:border-white/5 dark:bg-white/[0.03]"
                   onClick={() => setModalAgreed(!modalAgreed)}
                 >
-                  <label htmlFor="modal-agree" className="relative flex items-center justify-center pointer-events-none">
-                    <input
-                      id="modal-agree"
-                      type="checkbox"
-                      checked={modalAgreed}
-                      readOnly
-                      className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green transition-colors"
-                    />
-                  </label>
-                  <div className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-snug pt-0.5 select-none" onClick={(e) => e.stopPropagation()}>
-                    {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-black hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-black hover:underline">{t('landing.contact.termsOfService')}</Link>.
+                  <input
+                    id="modal-agree"
+                    type="checkbox"
+                    checked={modalAgreed}
+                    readOnly
+                    className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-paymint-green focus:ring-paymint-green dark:border-white/20"
+                  />
+                  <div className="text-xs leading-relaxed text-gray-600 dark:text-gray-300" onClick={(e) => e.stopPropagation()}>
+                    {t('landing.contact.termsAgree')}{' '}
+                    <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="font-bold text-paymint-green hover:underline">{t('landing.contact.privacyPolicy')}</Link>{' '}
+                    {t('common.and')}{' '}
+                    <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="font-bold text-paymint-green hover:underline">{t('landing.contact.termsOfService')}</Link>.
                   </div>
                 </div>
 
                 <div
-                  className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 cursor-pointer"
-                  onClick={() => setSubscribeToNews(!subscribeToNews)}
+                  className="flex cursor-pointer items-start gap-3 rounded-2xl border border-gray-100 bg-gray-50/70 p-4 transition-colors hover:border-paymint-green/20 dark:border-white/5 dark:bg-white/[0.03]"
+                  onClick={() => setModalSubscribeToNews(!modalSubscribeToNews)}
                 >
-                  <label htmlFor="modal-subscribe" className="relative flex items-center justify-center pointer-events-none">
-                    <input
-                      id="modal-subscribe"
-                      type="checkbox"
-                      checked={subscribeToNews}
-                      readOnly
-                      className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green transition-colors"
-                    />
-                  </label>
-                  <div className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-snug pt-0.5 select-none" onClick={(e) => e.stopPropagation()}>
+                  <input
+                    id="modal-subscribe"
+                    type="checkbox"
+                    checked={modalSubscribeToNews}
+                    readOnly
+                    className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-paymint-green focus:ring-paymint-green dark:border-white/20"
+                  />
+                  <div className="text-xs leading-relaxed text-gray-600 dark:text-gray-300" onClick={(e) => e.stopPropagation()}>
                     {t('auth.signup.subscribeToNews')}
                   </div>
                 </div>
 
-                <div className="relative w-full">
-                  <button
-                    onClick={handleModalContinue}
-                    disabled={!modalAgreed || isSubmitting}
-                    className="w-full py-5 bg-paymint-green text-black font-black text-xs tracking-widest rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-2"
-                  >
-                    {t('common.continue').toUpperCase()}
-                    <Check size={18} strokeWidth={3} />
-                  </button>
-
-                  {modalAgreed && (
-                    <GoogleAuthButton
-                      onSuccess={async (credential) => {
-                        setValue('agreeToTerms', true);
-                        setShowGoogleTermsModal(false);
-                        try {
-                          const result = await loginWithGoogle(credential, modalSubscribeToNews);
-                          if (result.success) {
-                            toast.success(result.message || t('auth.signup.success'));
-                            navigate('/');
-                          } else {
-                            toast.error(result.error || t('auth.signup.failed'));
-                          }
-                        } catch {
-                          toast.error(t('common.error'));
-                        }
-                      }}
-                      onError={handleGoogleError}
-                      text="signup_with"
-                      disabled={isSubmitting}
-                      isOverlay={true}
-                    />
-                  )}
-                </div>
+                <GoogleAuthButton
+                  onSuccess={async (credential) => {
+                    setValue('agreeToTerms', true);
+                    setSubscribeToNews(modalSubscribeToNews);
+                    setShowGoogleTermsModal(false);
+                    try {
+                      const result = await loginWithGoogle(credential, modalSubscribeToNews);
+                      if (result.success) {
+                        toast.success(result.message || t('auth.signup.success'));
+                        navigate('/');
+                      } else {
+                        toast.error(result.error || t('auth.signup.failed'));
+                      }
+                    } catch {
+                      toast.error(t('common.error'));
+                    }
+                  }}
+                  onError={handleGoogleError}
+                  text="signup_with"
+                  disabled={!modalAgreed || isSubmitting}
+                />
 
                 <button
                   onClick={() => setShowGoogleTermsModal(false)}
-                  className="w-full py-2 text-xs font-black text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors uppercase tracking-widest"
+                  className="w-full py-2 text-xs font-bold uppercase tracking-widest text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-white"
                 >
                   {t('common.cancel')}
                 </button>
@@ -628,4 +687,3 @@ export function SignUpPage() {
     </div>
   );
 }
-

@@ -122,7 +122,7 @@ export const PricingDownload = () => {
             className="absolute -inset-px -z-10 rounded-[2.5rem] bg-gradient-to-tr from-paymint-green/40 via-transparent to-paymint-green/40 opacity-60 blur-2xl"
           />
 
-          <div className="relative overflow-hidden rounded-[2.5rem] border border-gray-200/70 bg-white/90 p-8 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.15)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] md:p-12 lg:p-16">
+          <div className="relative overflow-hidden rounded-[2.5rem] border border-gray-200/70 bg-white/90 p-8 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.4)] md:p-12 lg:p-16">
             {/* Decorative corner glow */}
             <div
               aria-hidden

@@ -51,7 +51,7 @@ const FeatureCard = ({
         isAccent
           ? 'bg-gradient-to-br from-paymint-green/15 via-paymint-green/5 to-transparent border border-paymint-green/25 dark:from-paymint-green/20 dark:via-paymint-green/8'
           : 'bg-white border border-gray-100 dark:bg-white/[0.03] dark:border-white/10'
-      } shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)] dark:shadow-none transition-all duration-500 hover:border-paymint-green/40 hover:shadow-[0_20px_60px_-20px_rgba(124,195,159,0.4)]`}
+      } shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] dark:shadow-none transition-all duration-500 hover:border-paymint-green/40 hover:shadow-[0_10px_30px_-10px_rgba(124,195,159,0.2)]`}
     >
       {/* Decorative glow that follows hover */}
       <div
@@ -209,7 +209,7 @@ export const Features = () => {
             className="absolute inset-0 -z-10 scale-[0.95] rounded-[2.5rem] bg-gradient-to-tr from-paymint-green/30 via-transparent to-paymint-green/10 blur-3xl"
           />
 
-          <div className="group relative aspect-video overflow-hidden rounded-[2rem] border border-gray-200/80 bg-gray-900 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.35)] dark:border-white/10 dark:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]">
+          <div className="group relative aspect-video overflow-hidden rounded-[2rem] border border-gray-200/80 bg-gray-900 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.18)] dark:border-white/10 dark:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.5)]">
             {isVideoVisible ? (
               <iframe
                 src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"

@@ -94,7 +94,7 @@ export const Contact = () => {
               className="absolute -inset-px -z-10 rounded-[2.5rem] bg-gradient-to-tr from-paymint-green/30 via-transparent to-paymint-green/30 opacity-50 blur-2xl"
             />
 
-            <div className="relative overflow-hidden rounded-[2.5rem] border border-gray-200/70 bg-white/90 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.15)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
+            <div className="relative overflow-hidden rounded-[2.5rem] border border-gray-200/70 bg-white/90 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.4)]">
               <div className="grid grid-cols-1 lg:grid-cols-12">
                 {/* ====== Left: Pitch / contact info ====== */}
                 <div className="relative overflow-hidden bg-gradient-to-br from-paymint-green/5 via-white to-white p-10 dark:from-paymint-green/10 dark:via-transparent dark:to-transparent lg:col-span-5 lg:p-14">

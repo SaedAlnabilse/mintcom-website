@@ -3,6 +3,24 @@ interface Env {
     API_TARGET?: string;
 }
 
+const SECURITY_HEADERS: Record<string, string> = {
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+};
+
+function withSecurityHeaders(response: Response): Response {
+    const secured = new Response(response.body, response);
+
+    Object.entries(SECURITY_HEADERS).forEach(([key, value]) => {
+        secured.headers.set(key, value);
+    });
+
+    return secured;
+}
+
 export default {
     async fetch(request: Request, env: Env) {
         try {
@@ -41,24 +59,7 @@ export default {
                     redirect: 'follow'
                 });
 
-                return await fetch(proxyRequest);
-            }
-
-            // 2. Pollinations Proxy (Forward /external/pollinations requests to gen.pollinations.ai)
-            if (url.pathname.startsWith('/external/pollinations/')) {
-                const pollinationsUrl = new URL(url.pathname.replace('/external/pollinations/', '/'), 'https://gen.pollinations.ai');
-                pollinationsUrl.search = url.search;
-
-                const proxyRequest = new Request(pollinationsUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'image/*',
-                        'User-Agent': request.headers.get('User-Agent') || 'Mozilla/5.0'
-                    },
-                    redirect: 'follow'
-                });
-
-                return await fetch(proxyRequest);
+                return withSecurityHeaders(await fetch(proxyRequest));
             }
 
             // 3. Try to fetch the asset
@@ -70,7 +71,7 @@ export default {
 
                 // Don't fallback for files (extensions) or API
                 if (path.match(/\.[^/.]+$/) || path.startsWith('/api/')) {
-                    return response;
+                    return withSecurityHeaders(response);
                 }
 
                 // Serve index.html
@@ -80,13 +81,13 @@ export default {
                     method: request.method
                 });
 
-                return await env.ASSETS.fetch(indexRequest);
+                return withSecurityHeaders(await env.ASSETS.fetch(indexRequest));
             }
 
-            return response;
+            return withSecurityHeaders(response);
         } catch (error) {
             console.error('Cloudflare worker request failed', error);
-            return new Response('Internal server error', { status: 500 });
+            return withSecurityHeaders(new Response('Internal server error', { status: 500 }));
         }
     }
 };

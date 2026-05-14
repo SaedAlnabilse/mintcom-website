@@ -244,10 +244,10 @@ export const TicketDetailPage = () => {
   // ─── Auth guard ────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
         <Navbar />
         <main className="pt-28 pb-20">
-          <div className="container mx-auto px-8 md:px-16 lg:px-24">
+          <div className="container mx-auto max-w-[1280px] px-6 md:px-10">
             <SurfaceLoader message={t('common.loading')} className="max-w-4xl mx-auto" />
           </div>
         </main>
@@ -263,10 +263,10 @@ export const TicketDetailPage = () => {
   // ─── Loading ticket ────────────────────────────────────────────────────────
   if (loadingDetail) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
         <Navbar />
         <main className="pt-28 pb-20">
-          <div className="container mx-auto px-8 md:px-16 lg:px-24">
+          <div className="container mx-auto max-w-[1280px] px-6 md:px-10">
             <SurfaceLoader
               message={t('support.tickets.loadingDetail', { defaultValue: 'Loading ticket...' })}
               className="max-w-4xl mx-auto"
@@ -281,11 +281,11 @@ export const TicketDetailPage = () => {
   // ─── Not found ─────────────────────────────────────────────────────────────
   if (notFound || !ticket) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
         <Navbar />
         <main className="pt-28 pb-20">
-          <div className="container mx-auto px-8 md:px-16 lg:px-24">
-            <div className="max-w-4xl mx-auto bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-16 text-center">
+          <div className="container mx-auto max-w-[1280px] px-6 md:px-10">
+            <div className="max-w-4xl mx-auto rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-16 text-center">
               <div className="w-20 h-20 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Inbox size={36} className="text-gray-400" />
               </div>
@@ -295,7 +295,7 @@ export const TicketDetailPage = () => {
               </p>
               <Link
                 to="/support/tickets"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
               >
                 <ArrowLeft size={18} />
                 Back to Tickets
@@ -315,11 +315,11 @@ export const TicketDetailPage = () => {
 
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+    <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
       <Navbar />
 
       <main className="pt-28 pb-20">
-        <div className="container mx-auto px-6 md:px-12 lg:px-20 max-w-5xl">
+        <div className="container mx-auto max-w-5xl px-6 md:px-10">
           {/* ──── Header ──── */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
@@ -366,7 +366,7 @@ export const TicketDetailPage = () => {
           </div>
 
           {/* ──── Info card ──── */}
-          <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
+          <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 mb-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('support.tickets.created')}</p>
@@ -391,7 +391,7 @@ export const TicketDetailPage = () => {
           </div>
 
           {/* ──── Conversation ──── */}
-          <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl overflow-hidden">
+          <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] overflow-hidden">
             {/* Header */}
             <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
               <h2 className="font-bold flex items-center gap-2">
@@ -483,7 +483,7 @@ export const TicketDetailPage = () => {
                   </p>
                   <button
                     onClick={() => handleChangeStatus('open')}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all text-sm"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] text-sm"
                   >
                     Reopen Ticket
                   </button>
@@ -511,7 +511,7 @@ export const TicketDetailPage = () => {
                     <button
                       type="submit"
                       disabled={!newMessage.trim() || isSending}
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-paymint-green/20"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] disabled:opacity-50 shadow-lg shadow-paymint-green/20"
                     >
                       {isSending ? (
                         <Loader2 size={18} className="animate-spin" />

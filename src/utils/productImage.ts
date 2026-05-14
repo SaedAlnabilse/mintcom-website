@@ -14,7 +14,6 @@ const FREEGEN_GENERATOR_URL = 'https://image-generator.freegen.app';
 const FREEGEN_WEBSOCKET_URL = 'wss://websocket-bridge.freegen.app/ws';
 const FREEGEN_RATIO_ID = '1:1';
 const FREEGEN_RESULT_TIMEOUT_MS = 45000;
-const POLLINATIONS_PROXY_IMAGE_URL = '/external/pollinations/prompt/';
 const POLLINATIONS_IMAGE_URL = 'https://gen.pollinations.ai/prompt/';
 const POLLINATIONS_IMAGE_SIZE = 512;
 const POLLINATIONS_CACHE_KEY = 'pollinations-product-image-cache-v1';
@@ -901,8 +900,7 @@ async function resolvePollinationsDataUrl(
   signal?: AbortSignal,
   timeoutMs = POLLINATIONS_IMAGE_TIMEOUT_MS
 ) {
-  // Try fetch first; this works reliably through the Vite dev proxy and Cloudflare worker proxy,
-  // and avoids CORS issues that can affect the Image element approach.
+  // Try fetch first; if browser CORS blocks the response, fall back to Image loading.
   const attempt = createTimeoutSignal(timeoutMs, signal);
 
   try {
@@ -974,9 +972,7 @@ export async function generatePollinationsProductImage(
   }
 
   const candidateUrls = uniqueStrings([
-    buildPollinationsImageUrl(prompt, seed, POLLINATIONS_PROXY_IMAGE_URL),
     buildPollinationsImageUrl(prompt, seed, POLLINATIONS_IMAGE_URL),
-    buildPollinationsImageUrl(retryPrompt, seed, POLLINATIONS_PROXY_IMAGE_URL),
     buildPollinationsImageUrl(retryPrompt, seed, POLLINATIONS_IMAGE_URL),
   ]);
 

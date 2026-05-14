@@ -29,10 +29,13 @@ interface Attachment {
   file: File;
 }
 
+const MAX_ATTACHMENT_COUNT = 5;
+const MAX_ATTACHMENT_SIZE_BYTES = 10 * 1024 * 1024;
+
 export const NewTicketPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading, account } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const categories = [
@@ -66,12 +69,25 @@ export const NewTicketPage = () => {
 
     const newAttachments: Attachment[] = [];
     for (let i = 0; i < files.length; i++) {
+      if (attachments.length + newAttachments.length >= MAX_ATTACHMENT_COUNT) {
+        toast.error(t('support.newTicket.attachmentLimit'));
+        break;
+      }
+
       const file = files[i];
+      if (file.size > MAX_ATTACHMENT_SIZE_BYTES) {
+        toast.error(`${file.name}: ${t('support.newTicket.attachmentLimit')}`);
+        continue;
+      }
+
       const sizeInKB = Math.round(file.size / 1024);
       const sizeStr = sizeInKB > 1024 ? `${(sizeInKB / 1024).toFixed(1)} MB` : `${sizeInKB} KB`;
       newAttachments.push({ name: file.name, size: sizeStr, file });
     }
-    setAttachments([...attachments, ...newAttachments]);
+    if (newAttachments.length > 0) {
+      setAttachments([...attachments, ...newAttachments]);
+    }
+    e.target.value = '';
   };
 
   const removeAttachment = (index: number) => {
@@ -80,12 +96,14 @@ export const NewTicketPage = () => {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
+    const subject = formData.subject.trim();
+    const description = formData.description.trim();
 
     if (!formData.category) newErrors.category = t('support.newTicket.errors.category');
-    if (!formData.subject.trim()) newErrors.subject = t('support.newTicket.errors.subject');
-    if (formData.subject.length > 100) newErrors.subject = t('support.newTicket.errors.subjectLength');
-    if (!formData.description.trim()) newErrors.description = t('support.newTicket.errors.description');
-    if (formData.description.length < 5) newErrors.description = t('support.newTicket.errors.descriptionLength');
+    if (!subject) newErrors.subject = t('support.newTicket.errors.subject');
+    if (subject.length > 100) newErrors.subject = t('support.newTicket.errors.subjectLength');
+    if (!description) newErrors.description = t('support.newTicket.errors.description');
+    if (description.length < 5) newErrors.description = t('support.newTicket.errors.descriptionLength');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -145,65 +163,20 @@ export const NewTicketPage = () => {
         return;
       }
 
-      // If it was a validation or server error, show the real error
-      if (axiosErr?.response?.status && axiosErr.response.status >= 400) {
-        toast.error(axiosErr?.response?.data?.message || 'Failed to create ticket. Please try again.');
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Only fallback to localStorage if the API is truly unreachable (network error)
-      const timestamp = Date.now().toString().slice(-8);
-      const random = Math.random().toString(36).slice(2, 6).toUpperCase();
-      const localTicketId = `TKT-${timestamp}-${random}`;
-
-      const { addTicket } = await import('./TicketsPage');
-      const now = new Date().toISOString();
-      const userName = account?.firstName
-        ? `${account.firstName} ${account.lastName || ''}`.trim()
-        : 'You';
-
-      addTicket({
-        id: localTicketId,
-        subject: formData.subject.trim(),
-        category: formData.category,
-        status: 'open' as const,
-        priority: formData.priority as 'low' | 'medium' | 'high' | 'urgent',
-        createdAt: now,
-        updatedAt: now,
-        description: formData.description.trim(),
-        messages: [
-          {
-            id: `msg-${Date.now()}`,
-            sender: 'user' as const,
-            senderName: userName,
-            content: formData.description.trim(),
-            timestamp: now,
-            attachments: attachments.map((a) => ({
-              name: a.name,
-              size: a.size,
-              type: a.file.type.startsWith('image/') ? 'image' : 'file',
-            })),
-          },
-        ],
-        unreadReplies: 0,
-      });
-
-      toast.success(`${t('support.newTicket.success')} (${localTicketId}) — saved locally`);
+      toast.error(axiosErr?.response?.data?.message || t('support.newTicket.error'));
       setIsSubmitting(false);
-      navigate('/support/tickets');
     }
   };
 
   // Redirect unauthenticated users to login before entering ticket screen
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
         <Navbar />
         <main className="pt-28 pb-20">
-          <div className="container mx-auto px-8 md:px-16 lg:px-24">
+          <div className="container mx-auto max-w-[1280px] px-6 md:px-10">
             <div className="max-w-3xl mx-auto">
-              <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-10 text-center">
+              <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-10 text-center">
                 <Loader2 size={28} className="animate-spin mx-auto mb-3 text-paymint-green" />
                 <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">Loading account...</p>
               </div>
@@ -220,11 +193,11 @@ export const NewTicketPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+    <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
       <Navbar />
 
       <main className="pt-28 pb-20">
-        <div className="container mx-auto px-8 md:px-16 lg:px-24">
+        <div className="container mx-auto max-w-[1280px] px-6 md:px-10">
           <div className="max-w-3xl mx-auto">
             {/* Header */}
             <div className="mb-8">
@@ -244,7 +217,7 @@ export const NewTicketPage = () => {
 
             <form onSubmit={handleSubmit}>
               {/* Category Selection */}
-              <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
+              <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 mb-6">
                 <label className="block text-sm font-normal text-gray-900 dark:text-white mb-4">
                   {t('support.newTicket.categoryLabel')} <span className="text-red-500">*</span>
                 </label>
@@ -286,7 +259,7 @@ export const NewTicketPage = () => {
               </div>
 
               {/* Priority Selection */}
-              <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
+              <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 mb-6">
                 <label className="block text-sm font-normal text-gray-900 dark:text-white mb-4">
                   {formatInputLabel(t('support.newTicket.priorityLabel'), t('common.locale'))}
                 </label>
@@ -310,7 +283,7 @@ export const NewTicketPage = () => {
               </div>
 
               {/* Subject */}
-              <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
+              <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 mb-6">
                 <label className="block text-sm font-normal text-gray-900 dark:text-white mb-3">
                   {t('support.newTicket.subjectLabel')} <span className="text-red-500">*</span>
                 </label>
@@ -340,7 +313,7 @@ export const NewTicketPage = () => {
               </div>
 
               {/* Description */}
-              <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
+              <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 mb-6">
                 <label className="block text-sm font-normal text-gray-900 dark:text-white mb-3">
                   {t('support.newTicket.descriptionLabel')} <span className="text-red-500">*</span>
                 </label>
@@ -425,7 +398,7 @@ export const NewTicketPage = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex items-center gap-2 px-8 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-paymint-green/20"
+                    className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] disabled:opacity-50 shadow-lg shadow-paymint-green/20"
                   >
                     {isSubmitting ? (
                       <>

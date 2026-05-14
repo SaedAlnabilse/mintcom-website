@@ -29,6 +29,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { FullScreenLoader, SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { isSupportAdminEmail } from '../../config/support';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -60,8 +61,6 @@ interface Ticket {
 }
 
 // ─── Constants ───────────────────────────────────────────────────────────────
-
-const SUPPORT_EMAILS = ['sa3d.n97@gmail.com'];
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; icon: typeof Inbox }> = {
     open: { label: 'Open', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', icon: Inbox },
@@ -103,7 +102,7 @@ export const SupportAdminDetailPage = () => {
     const [copied, setCopied] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    const isSupportTeam = account?.email && SUPPORT_EMAILS.includes(account.email);
+    const isSupportTeam = isSupportAdminEmail(account?.email);
 
     // Fetch ticket data
     const fetchTicket = useCallback(async () => {

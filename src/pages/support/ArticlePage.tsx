@@ -318,10 +318,10 @@ export const ArticlePage = () => {
 
   if (!article) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
         <Navbar />
         <main className="pt-28 pb-20">
-          <div className="container mx-auto px-8 md:px-16 lg:px-24 text-center">
+          <div className="container mx-auto max-w-\[1280px\] px-6 md:px-10 text-center">
             <h1 className="text-3xl font-black mb-4">{t('support.articles.notFound')}</h1>
             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-8">{t('support.articles.notFoundDescDetail')}</p>
             <Link to="/support" className="text-paymint-green font-bold hover:underline">
@@ -339,11 +339,11 @@ export const ArticlePage = () => {
     .filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+    <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
       <Navbar />
 
       <main className="pt-28 pb-20">
-        <div className="container mx-auto px-8 md:px-16 lg:px-24">
+        <div className="container mx-auto max-w-\[1280px\] px-6 md:px-10">
           <div className="max-w-4xl mx-auto">
             {/* Breadcrumb */}
             <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-6">
@@ -396,7 +396,7 @@ export const ArticlePage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-8 md:p-12 mb-8"
+              className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-8 md:p-12 mb-8"
             >
               <div className="prose prose-lg dark:prose-invert max-w-none">
                 {article.content.map((paragraph, index) => {
@@ -442,7 +442,7 @@ export const ArticlePage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-8"
+              className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 mb-8"
             >
               {helpful === null ? (
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

@@ -36,6 +36,23 @@ describe('Validation Schemas', () => {
         expect(result.error.issues.find(i => i.path.includes('confirmPassword'))?.message).toBe('auth.validation.passwordsDoNotMatch');
       }
     });
+
+    it('should reject names that are only whitespace', () => {
+      const invalidData = {
+        firstName: '  ',
+        lastName: '  ',
+        email: ' john.doe@example.com ',
+        password: 'Password123',
+        confirmPassword: 'Password123',
+        agreeToTerms: true,
+      };
+      const result = signUpSchema.safeParse(invalidData);
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues.some(i => i.path.includes('firstName'))).toBe(true);
+        expect(result.error.issues.some(i => i.path.includes('lastName'))).toBe(true);
+      }
+    });
   });
 
   describe('Login Schema', () => {

@@ -230,7 +230,7 @@ export const Hardware = () => {
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 whileHover={{ y: -6 }}
-                className="group relative overflow-hidden rounded-3xl border border-gray-200/70 bg-white/90 p-8 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.12)] backdrop-blur-xl transition-all duration-500 hover:border-paymint-green/40 hover:shadow-[0_25px_60px_-20px_rgba(124,195,159,0.3)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none lg:p-10"
+                className="group relative overflow-hidden rounded-3xl border border-gray-200/70 bg-white/90 p-8 shadow-[0_8px_20px_-8px_rgba(0,0,0,0.06)] backdrop-blur-xl transition-all duration-500 hover:border-paymint-green/40 hover:shadow-[0_12px_30px_-10px_rgba(124,195,159,0.15)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none lg:p-10"
               >
                 {/* Decorative corner glow */}
                 <div

@@ -121,7 +121,7 @@ export const AdminControl = () => {
               viewport={{ once: true }}
               transition={{ delay: 0.1, duration: 0.8 }}
               whileHover={{ rotate: 0, scale: 1.02, zIndex: 30 }}
-              className="absolute left-[10%] top-[5%] z-10 h-[440px] w-[210px] -rotate-[8deg] overflow-hidden rounded-[2.2rem] border-[5px] border-gray-800 bg-[#0a0a0a] shadow-[0_30px_60px_-20px_rgba(0,0,0,0.5)] ring-1 ring-white/10 transition-transform duration-500 sm:left-[12%] lg:left-[5%]"
+              className="absolute left-[15%] top-[5%] z-10 h-[440px] w-[210px] -rotate-[8deg] overflow-hidden rounded-[2.2rem] border-[5px] border-gray-800 bg-[#0a0a0a] shadow-[0_15px_30px_-10px_rgba(0,0,0,0.4)] ring-1 ring-white/10 transition-transform duration-500 sm:left-[18%] lg:left-[12%]"
               style={{ transform: 'translateZ(20px) rotate(-8deg)' }}
             >
               <div className="absolute left-1/2 top-0 z-30 h-5 w-20 -translate-x-1/2 rounded-b-xl bg-gray-800" />
@@ -195,7 +195,7 @@ export const AdminControl = () => {
               viewport={{ once: true }}
               transition={{ delay: 0.25, duration: 0.8 }}
               whileHover={{ y: -8, scale: 1.02 }}
-              className="absolute right-[5%] top-[8%] z-20 h-[460px] w-[230px] rotate-[5deg] overflow-hidden rounded-[2.4rem] border-[5px] border-gray-800 bg-[#0a0a0a] shadow-[0_40px_80px_-25px_rgba(0,0,0,0.6)] ring-1 ring-white/10 transition-transform duration-500 sm:right-[12%] lg:right-[5%]"
+              className="absolute right-[10%] top-[8%] z-20 h-[460px] w-[230px] rotate-[5deg] overflow-hidden rounded-[2.4rem] border-[5px] border-gray-800 bg-[#0a0a0a] shadow-[0_20px_40px_-12px_rgba(0,0,0,0.5)] ring-1 ring-white/10 transition-transform duration-500 sm:right-[18%] lg:right-[12%]"
               style={{ transform: 'translateZ(60px) rotate(5deg)' }}
             >
               <div className="absolute left-1/2 top-2 z-30 h-3 w-3 -translate-x-1/2 rounded-full border border-gray-800 bg-black" />

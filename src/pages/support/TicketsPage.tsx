@@ -221,10 +221,10 @@ export const TicketsPage = () => {
   // ─── Auth guard ──────────────────────────────────────────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
         <Navbar />
         <main className="pt-28 pb-20">
-          <div className="container mx-auto px-8 md:px-16 lg:px-24">
+          <div className="container mx-auto max-w-[1280px] px-6 md:px-10">
             <SurfaceLoader message={t('common.loading')} className="max-w-4xl mx-auto" />
           </div>
         </main>
@@ -239,11 +239,11 @@ export const TicketsPage = () => {
 
   // ─── Render ──────────────────────────────────────────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+    <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
       <Navbar />
 
       <main className="pt-28 pb-20">
-        <div className="container mx-auto px-6 md:px-12 lg:px-20 max-w-6xl">
+        <div className="container mx-auto max-w-6xl px-6 md:px-10">
           {/* ──── Header ──── */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
             <div>
@@ -263,7 +263,7 @@ export const TicketsPage = () => {
 
             <Link
               to="/support/tickets/new"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-paymint-green/20"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
             >
               <Plus size={18} />
               {t('support.tickets.new')}
@@ -282,7 +282,7 @@ export const TicketsPage = () => {
                 key={stat.key}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-5 hover:border-gray-200 dark:hover:border-white/20 transition-colors"
+                className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-5 hover:border-gray-200 dark:hover:border-white/20 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 ${stat.bgColor} rounded-xl flex items-center justify-center`}>
@@ -298,7 +298,7 @@ export const TicketsPage = () => {
           </div>
 
           {/* ──── Search + Filters bar ──── */}
-          <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-4 mb-6">
+          <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-4 mb-6">
             <div className="flex flex-col md:flex-row gap-3">
               {/* Search */}
               <div className="relative flex-1">
@@ -433,7 +433,7 @@ export const TicketsPage = () => {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-16 text-center"
+                className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-16 text-center"
               >
                 <div className="w-20 h-20 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Inbox size={36} className="text-gray-400" />
@@ -465,7 +465,7 @@ export const TicketsPage = () => {
                 ) : (
                   <Link
                     to="/support/tickets/new"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-paymint-green/20"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
                   >
                     <Plus size={18} />
                     {t('support.tickets.createFirst')}
@@ -497,7 +497,7 @@ export const TicketsPage = () => {
                     >
                       <Link
                         to={`/support/tickets/${ticket.id}`}
-                        className="block bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-5 md:p-6 hover:border-paymint-green/30 hover:shadow-lg hover:shadow-paymint-green/5 transition-all group"
+                        className="block rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-5 md:p-6 hover:border-paymint-green/30 hover:shadow-lg hover:shadow-paymint-green/5 transition-all group"
                       >
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                           <div className="flex-1 min-w-0">

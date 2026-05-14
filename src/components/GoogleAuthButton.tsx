@@ -73,7 +73,7 @@ export interface GoogleAuthButtonHandle {
 }
 
 export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthButtonProps>(
-  ({ onSuccess, onError, text = 'continue_with', disabled = false, isOverlay = false }, ref) => {
+  ({ onSuccess, onError, text = 'continue_with', disabled = false }, ref) => {
     const { t, i18n } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [isScriptLoaded, setIsScriptLoaded] = useState(false);
@@ -205,37 +205,19 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
       signin: t('auth.google.signIn'),
     }[text];
 
-    if (isOverlay) {
-      return (
-        <div className={`absolute inset-0 z-20 overflow-hidden opacity-[0.01] ${disabled || isLoading ? 'pointer-events-none' : ''}`}>
-          <div ref={buttonRef} className="w-full h-full flex items-center justify-center transform scale-y-[1.5] scale-x-[1.02] [&>div]:w-full [&_iframe]:w-full" />
-        </div>
-      );
-    }
-
     return (
       <div className={`relative w-full ${disabled || isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
-        {/* Custom Visual Button */}
-        <motion.button
-          type="button"
-          disabled={disabled || isLoading || !isScriptLoaded}
-          whileHover={{ scale: disabled ? 1 : 1.01 }}
-          whileTap={{ scale: disabled ? 1 : 0.99 }}
-          className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg py-3 px-4 text-sm font-bold text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm"
-        >
-          {isLoading ? (
-            <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
-          ) : (
+        {isScriptLoaded ? (
+          <div ref={buttonRef} className="flex min-h-[44px] w-full items-center justify-center [&>div]:w-full [&_iframe]:w-full" />
+        ) : (
+          <motion.button
+            type="button"
+            disabled
+            className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-700 shadow-sm transition-all dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          >
             <GoogleIcon />
-          )}
-          <span>{isLoading ? t('common.connecting') : buttonText}</span>
-        </motion.button>
-
-        {/* Invisible Google Button Overlay targeting strictly the button area */}
-        {!disabled && !isLoading && isScriptLoaded && (
-          <div className="absolute inset-0 z-10 w-full h-full overflow-hidden opacity-[0.01]">
-            <div ref={buttonRef} className="w-full h-full flex items-center justify-center [&>div]:w-full [&_iframe]:w-full" />
-          </div>
+            <span>{isLoading ? t('common.connecting') : buttonText}</span>
+          </motion.button>
         )}
       </div>
     );
@@ -248,10 +230,10 @@ export function AuthDivider() {
   return (
     <div className="relative my-6">
       <div className="absolute inset-0 flex items-center">
-        <div className="w-full border-t border-gray-200 dark:border-gray-700" />
+        <div className="w-full border-t border-gray-200 dark:border-white/10" />
       </div>
       <div className="relative flex justify-center text-xs">
-        <span className="px-4 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">
+        <span className="bg-white px-4 font-bold uppercase tracking-wider text-gray-400 dark:bg-[#0e0e0e] dark:text-gray-500">
           {t('common.or')}
         </span>
       </div>

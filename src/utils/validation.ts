@@ -9,9 +9,9 @@ import type { TFunction } from 'i18next';
 
 export const getSignUpSchema = (t: TFunction) => {
   return z.object({
-    firstName: z.string().min(2, t('auth.validation.firstNameMin')),
-    lastName: z.string().min(2, t('auth.validation.lastNameMin')),
-    email: z.string().email(t('auth.validation.emailInvalid')),
+    firstName: z.string().trim().min(2, t('auth.validation.firstNameMin')),
+    lastName: z.string().trim().min(2, t('auth.validation.lastNameMin')),
+    email: z.string().trim().email(t('auth.validation.emailInvalid')),
     password: z
       .string()
       .min(8, t('auth.validation.passwordMin'))
