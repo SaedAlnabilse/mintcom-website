@@ -1011,8 +1011,8 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
     keywords: ['support', 'help', 'contact', 'customer service', 'issue', 'problem', 'email support', 'دعم', 'مساعدة', 'تواصل', 'خدمة عملاء', 'مشكلة'],
     question: 'How do I contact support?',
     questionAr: 'كيف أتواصل مع الدعم؟',
-    answer: `Email us at **support@PayMint.io**. Include: error message, steps taken, device info, screenshots. We respond within 24 hours!`,
-    answerAr: `راسلنا على **support@PayMint.io**. أرفق: رسالة الخطأ، الخطوات المتخذة، معلومات الجهاز، لقطات شاشة. نرد خلال 24 ساعة!`,
+    answer: `Email us at **support@paymintpos.net**. Include: error message, steps taken, device info, screenshots. We respond within 24 hours!`,
+    answerAr: `راسلنا على **support@paymintpos.net**. أرفق: رسالة الخطأ، الخطوات المتخذة، معلومات الجهاز، لقطات شاشة. نرد خلال 24 ساعة!`,
     category: 'technical'
   },
   {

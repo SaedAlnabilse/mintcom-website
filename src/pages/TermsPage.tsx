@@ -141,7 +141,7 @@ export const TermsPage = () => {
                                 {t('legal.terms.contact.desc')}
                             </p>
                             <div className="flex items-center gap-3 text-sm font-medium text-gray-600 dark:text-gray-300">
-                                <a href="mailto:support@paymint.com" className="text-blue-500 hover:underline">support@paymint.com</a>
+                                <a href="mailto:legal@paymintpos.net" className="text-blue-500 hover:underline">legal@paymintpos.net</a>
                             </div>
                         </section>
                     </div>

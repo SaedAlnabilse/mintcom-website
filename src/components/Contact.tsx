@@ -134,7 +134,7 @@ export const Contact = () => {
                         {
                           icon: Mail,
                           label: t('common.email'),
-                          value: 'hello@paymint.com',
+                          value: 'support@paymintpos.net',
                         },
                         {
                           icon: Phone,

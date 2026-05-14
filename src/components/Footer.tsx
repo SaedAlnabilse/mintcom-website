@@ -97,7 +97,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
             <div className="flex items-center gap-6">
               <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <Mail size={14} className="text-paymint-green" />
-                <span dir="ltr">hello@paymint.com</span>
+                <span dir="ltr">support@paymintpos.net</span>
               </span>
               <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <Phone size={14} className="text-paymint-green" />
@@ -178,7 +178,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
                   <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-paymint-green/10">
                     <Mail size={12} className="text-paymint-green" />
                   </div>
-                  <span dir="ltr">hello@paymint.com</span>
+                  <span dir="ltr">support@paymintpos.net</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-gray-400">
                   <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-paymint-green/10">

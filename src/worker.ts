@@ -8,15 +8,37 @@ const SECURITY_HEADERS: Record<string, string> = {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), accelerometer=(), gyroscope=(), magnetometer=()',
+    'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+    'Content-Security-Policy': [
+        "default-src 'self'",
+        "base-uri 'self'",
+        "object-src 'none'",
+        "frame-ancestors 'none'",
+        "form-action 'self'",
+        "img-src 'self' data: blob: https://paymintpos.net https://www.paymintpos.net https://upload.wikimedia.org https://cdn-icons-png.flaticon.com",
+        "font-src 'self' data: https://fonts.gstatic.com",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://accounts.google.com https://apis.google.com",
+        "connect-src 'self' https://grateful-liberation-production-d036.up.railway.app wss://grateful-liberation-production-d036.up.railway.app https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://connect.facebook.net",
+        "frame-src https://player.vimeo.com https://accounts.google.com",
+        "media-src 'self' https://player.vimeo.com",
+        "manifest-src 'self'",
+        "worker-src 'self'",
+        'upgrade-insecure-requests',
+    ].join('; '),
 };
 
-function withSecurityHeaders(response: Response): Response {
+function withSecurityHeaders(response: Response, noIndex = false): Response {
     const secured = new Response(response.body, response);
 
     Object.entries(SECURITY_HEADERS).forEach(([key, value]) => {
         secured.headers.set(key, value);
     });
+
+    if (noIndex) {
+        secured.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+    }
 
     return secured;
 }
@@ -32,6 +54,7 @@ export default {
             }
 
             const targetBase = env.API_TARGET || 'https://grateful-liberation-production-d036.up.railway.app';
+            const noIndexPath = /^\/(api|uploads|files|dashboard|owner|brand|login|signup|verify-email|forgot-password|reset-password|select-establishment)(\/|$)/.test(url.pathname);
 
             // 0. WebSocket Proxy (Forward /realtime WebSocket requests to Railway)
             if (url.pathname.startsWith('/realtime') || url.pathname.startsWith('/socket.io/')) {
@@ -59,7 +82,7 @@ export default {
                     redirect: 'follow'
                 });
 
-                return withSecurityHeaders(await fetch(proxyRequest));
+                return withSecurityHeaders(await fetch(proxyRequest), true);
             }
 
             // 3. Try to fetch the asset
@@ -71,7 +94,7 @@ export default {
 
                 // Don't fallback for files (extensions) or API
                 if (path.match(/\.[^/.]+$/) || path.startsWith('/api/')) {
-                    return withSecurityHeaders(response);
+                    return withSecurityHeaders(response, noIndexPath);
                 }
 
                 // Serve index.html
@@ -81,10 +104,10 @@ export default {
                     method: request.method
                 });
 
-                return withSecurityHeaders(await env.ASSETS.fetch(indexRequest));
+                return withSecurityHeaders(await env.ASSETS.fetch(indexRequest), noIndexPath);
             }
 
-            return withSecurityHeaders(response);
+            return withSecurityHeaders(response, noIndexPath);
         } catch (error) {
             console.error('Cloudflare worker request failed', error);
             return withSecurityHeaders(new Response('Internal server error', { status: 500 }));

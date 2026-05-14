@@ -770,7 +770,7 @@ If issues persist after troubleshooting:
 4. Submit the support request.
 
 **Support Contact:**
-- Email: support@PayMint.io
+- Email: support@paymintpos.net
 - In-App: Settings > Contact Support
 
 ---

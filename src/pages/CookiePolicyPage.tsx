@@ -191,7 +191,7 @@ export function CookiePolicyPage() {
           <section className="scroll-mt-28 pt-8 border-t border-gray-200 dark:border-white/10 mt-12">
             <h3>{t('legal.cookies.questions')}</h3>
             <p>
-              {t('legal.cookies.content.questionsDesc')} <a href="mailto:privacy@paymint.com" className="text-paymint-green hover:underline">privacy@paymint.com</a>.
+              {t('legal.cookies.content.questionsDesc')} <a href="mailto:privacy@paymintpos.net" className="text-paymint-green hover:underline">privacy@paymintpos.net</a>.
             </p>
           </section>
 

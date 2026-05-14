@@ -10,6 +10,8 @@ const envSchema = z.object({
   VITE_GA_MEASUREMENT_ID: z.string().optional(),
   VITE_META_PIXEL_ID: z.string().optional(),
   VITE_SUPPORT_ADMIN_EMAILS: z.string().optional(),
+  VITE_ANDROID_DOWNLOAD_URL: z.string().optional(),
+  VITE_IOS_DOWNLOAD_URL: z.string().optional(),
   VITE_APP_NAME: z.string().default('PayMint'),
   VITE_SITE_URL: z.string().url().default('https://paymintpos.net'),
   PROD: z.boolean(),
@@ -24,6 +26,8 @@ const envData = {
   VITE_GA_MEASUREMENT_ID: import.meta.env.VITE_GA_MEASUREMENT_ID,
   VITE_META_PIXEL_ID: import.meta.env.VITE_META_PIXEL_ID,
   VITE_SUPPORT_ADMIN_EMAILS: import.meta.env.VITE_SUPPORT_ADMIN_EMAILS,
+  VITE_ANDROID_DOWNLOAD_URL: import.meta.env.VITE_ANDROID_DOWNLOAD_URL,
+  VITE_IOS_DOWNLOAD_URL: import.meta.env.VITE_IOS_DOWNLOAD_URL,
   VITE_APP_NAME: import.meta.env.VITE_APP_NAME,
   VITE_SITE_URL: import.meta.env.VITE_SITE_URL,
   PROD: import.meta.env.PROD,
@@ -33,7 +37,7 @@ const envData = {
 const result = envSchema.safeParse(envData);
 
 if (!result.success) {
-  console.error('âŒ Invalid environment variables:', result.error.flatten().fieldErrors);
+  console.error('Invalid environment variables:', result.error.flatten().fieldErrors);
   // In production, we might still want to proceed with defaults if possible, 
   // but in development, we want to know immediately.
   if (import.meta.env.DEV) {

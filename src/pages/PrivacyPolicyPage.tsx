@@ -183,7 +183,7 @@ export const PrivacyPolicyPage = () => {
                                 <li>{t('legal.privacy.rights.ri4')}</li>
                             </ul>
                             <p className="text-sm font-medium">
-                                {t('legal.privacy.rights.contact')} <a href="mailto:privacy@paymint.com" className="text-paymint-green hover:underline font-bold">privacy@paymint.com</a>
+                                {t('legal.privacy.rights.contact')} <a href="mailto:privacy@paymintpos.net" className="text-paymint-green hover:underline font-bold">privacy@paymintpos.net</a>
                             </p>
                         </section>
 
@@ -235,11 +235,11 @@ export const PrivacyPolicyPage = () => {
                                 </div>
                                 <div className="flex items-center gap-3 text-sm font-medium text-gray-600 dark:text-gray-300">
                                     <span className={t('common.locale') === 'ar' ? 'ml-2' : 'w-20'}>{t('common.email')}:</span>
-                                    <a href="mailto:privacy@paymint.com" className="text-paymint-green hover:underline">privacy@paymint.com</a>
+                                    <a href="mailto:privacy@paymintpos.net" className="text-paymint-green hover:underline">privacy@paymintpos.net</a>
                                 </div>
                                 <div className="flex items-center gap-3 text-sm font-medium text-gray-600 dark:text-gray-300">
                                     <span className={t('common.locale') === 'ar' ? 'ml-2' : 'w-20'}>{t('common.website')}:</span>
-                                    <a href="https://www.paymint.com" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">www.paymint.com</a>
+                                    <a href="https://paymintpos.net" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">paymintpos.net</a>
                                 </div>
                             </div>
                         </section>

@@ -2020,7 +2020,7 @@
         "fbDesc": "Used to measure the effectiveness of our advertising campaigns on Facebook and to deliver targeted ads.",
         "ga": "Google Analytics",
         "gaDesc": "Used to collect anonymous data about how visitors use our site, including pages visited, time spent, and traffic sources.",
-        "questionsDesc": "If you have any questions about our use of cookies, please contact us at support@PayMint.app",
+        "questionsDesc": "If you have any questions about our use of cookies, please contact us at privacy@paymintpos.net",
         "questionsTitle": "Questions About Cookies",
         "thirdParty_1": "We may use third-party cookies from services like Google Analytics and Facebook to help us analyze traffic and improve our services.",
         "thirdPartyTitle": "Third-Party Services",
@@ -2086,7 +2086,7 @@
         "desc": "Our services are not directed to individuals under the age of 16. We do not knowingly collect personal information from children."
       },
       "contact": {
-        "desc": "If you have any questions about this Privacy Policy or our data practices, please contact us at privacy@PayMint.app"
+        "desc": "If you have any questions about this Privacy Policy or our data practices, please contact us at privacy@paymintpos.net"
       },
       "cookies": {
         "c1": "Essential cookies for site functionality and authentication",
@@ -2125,7 +2125,7 @@
         "r3": "Analytics data: Retained in anonymized form indefinitely"
       },
       "rights": {
-        "contact": "To exercise any of these rights, please contact us at privacy@PayMint.app",
+        "contact": "To exercise any of these rights, please contact us at privacy@paymintpos.net",
         "ri1": "Right to access your personal data and request a copy",
         "ri2": "Right to correct inaccurate or incomplete personal data",
         "ri3": "Right to request deletion of your personal data",
@@ -2160,7 +2160,7 @@
         "s7": "7. Your Rights",
         "s7_desc": "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the updated policy on our website.",
         "s8": "8. Cookies & Tracking Technologies",
-        "s8_desc": "If you have any questions about this Privacy Policy, please contact us at privacy@PayMint.app",
+        "s8_desc": "If you have any questions about this Privacy Policy, please contact us at privacy@paymintpos.net",
         "s9": "9. International Operations",
         "subtitle": "How We Protect Your Data",
         "title": "Privacy Policy"
@@ -2196,7 +2196,7 @@
         "desc": "We strive to maintain high availability but do not guarantee uninterrupted service. We may perform scheduled maintenance with advance notice."
       },
       "contact": {
-        "desc": "For questions about these Terms of Service, please contact us at legal@PayMint.app"
+        "desc": "For questions about these Terms of Service, please contact us at legal@paymintpos.net"
       },
       "intro": "Welcome to PayMint. By accessing or using our services, you agree to be bound by these Terms of Service. Please read them carefully.",
       "ip": {
@@ -4382,7 +4382,7 @@
         "h5": "Configuring Payment Methods",
         "h6": "Inviting Staff",
         "h7": "Going Live",
-        "li1_desc": "Visit PayMint.app and click \"Get Started\" to begin your registration.",
+        "li1_desc": "Visit paymintpos.net and click \"Get Started\" to begin your registration.",
         "li1_label": "Sign Up",
         "li2_desc": "Check your inbox for a verification email and click the link to activate your account.",
         "li2_label": "Verify Email",

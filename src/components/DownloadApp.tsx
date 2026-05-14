@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Download, Smartphone, CheckCircle2, Apple, Tablet } from 'lucide-react';
+import { ANDROID_DOWNLOAD_URL, isDirectInstallerDownload } from '../config/downloads';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -22,6 +23,7 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
 
 export const DownloadApp = () => {
   const { t } = useTranslation();
+  const hasAndroidDownload = Boolean(ANDROID_DOWNLOAD_URL);
 
   return (
     <section id="download" className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] relative overflow-hidden" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -83,17 +85,32 @@ export const DownloadApp = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href={import.meta.env.VITE_ANDROID_DOWNLOAD_URL || '/downloads/paymint-android.apk'}
-                download
-                className="flex items-center justify-center gap-3 bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 py-4 px-8 rounded-xl transition-all shadow-xl group"
-              >
-                <Download className="w-6 h-6" />
-                <div className="text-left">
-                  <div className="text-xs font-medium opacity-80">{t('landing.download.downloadFor')}</div>
-                  <div className="text-lg font-bold leading-none">{t('landing.download.android')}</div>
-                </div>
-              </a>
+              {hasAndroidDownload ? (
+                <a
+                  href={ANDROID_DOWNLOAD_URL}
+                  download={isDirectInstallerDownload(ANDROID_DOWNLOAD_URL) ? true : undefined}
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-3 bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 py-4 px-8 rounded-xl transition-all shadow-xl group"
+                >
+                  <Download className="w-6 h-6" />
+                  <div className="text-left">
+                    <div className="text-xs font-medium opacity-80">{t('landing.download.downloadFor')}</div>
+                    <div className="text-lg font-bold leading-none">{t('landing.download.android')}</div>
+                  </div>
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-500 py-4 px-8 rounded-xl cursor-not-allowed"
+                >
+                  <Download className="w-6 h-6" />
+                  <div className="text-left">
+                    <div className="text-xs font-medium opacity-80">{t('landing.download.android')}</div>
+                    <div className="text-lg font-bold leading-none">Coming Soon</div>
+                  </div>
+                </button>
+              )}
 
               <div
                 className="flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-500 py-4 px-8 rounded-xl cursor-not-allowed"

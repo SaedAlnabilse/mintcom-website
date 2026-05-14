@@ -49,6 +49,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { QuickInfo } from '../components/QuickInfo';
 import { formatCurrencyCode } from '../utils/currency';
+import { ANDROID_DOWNLOAD_URL, IOS_DOWNLOAD_URL, isDirectInstallerDownload } from '../config/downloads';
 
 // PayMint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
@@ -61,6 +62,8 @@ import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 export function OnboardingPage() {
   const { t } = useTranslation();
   const isRTL = t('common.locale') === 'ar';
+  const hasAndroidDownload = Boolean(ANDROID_DOWNLOAD_URL);
+  const hasIosDownload = Boolean(IOS_DOWNLOAD_URL);
   const formatUsd = (amount: number) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -1484,25 +1487,47 @@ export function OnboardingPage() {
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 pt-2">
-                      <a
-                        href={import.meta.env.VITE_ANDROID_DOWNLOAD_URL || '/downloads/PayMint-universal.apk'}
-                        download
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Get it on Google Play"
-                        className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
-                      >
-                        <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[54px] w-full object-fill rounded-[11px]" />
-                      </a>
-                      <a
-                        href={import.meta.env.VITE_IOS_DOWNLOAD_URL || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Download on the App Store"
-                        className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
-                      >
-                        <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[54px] w-full object-fill rounded-[11px]" />
-                      </a>
+                      {hasAndroidDownload ? (
+                        <a
+                          href={ANDROID_DOWNLOAD_URL}
+                          download={isDirectInstallerDownload(ANDROID_DOWNLOAD_URL) ? true : undefined}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Get it on Google Play"
+                          className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
+                        >
+                          <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[54px] w-full object-fill rounded-[11px]" />
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          aria-label="Android app download coming soon"
+                          className="block opacity-50 cursor-not-allowed"
+                        >
+                          <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[54px] w-full object-fill rounded-[11px]" />
+                        </button>
+                      )}
+                      {hasIosDownload ? (
+                        <a
+                          href={IOS_DOWNLOAD_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Download on the App Store"
+                          className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
+                        >
+                          <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[54px] w-full object-fill rounded-[11px]" />
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          aria-label="iOS app download coming soon"
+                          className="block opacity-50 cursor-not-allowed"
+                        >
+                          <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[54px] w-full object-fill rounded-[11px]" />
+                        </button>
+                      )}
                     </div>
                   </motion.div>
 
@@ -1731,7 +1756,7 @@ export function OnboardingPage() {
                 className="mt-6 text-center"
               >
                 <p className="text-sm text-gray-500">
-                  {t('onboarding.step5.needHelp')} <a href="mailto:support@PayMint.com" className="text-paymint-green font-sans font-bold hover:underline">support@PayMint.com</a>
+                  {t('onboarding.step5.needHelp')} <a href="mailto:support@paymintpos.net" className="text-paymint-green font-sans font-bold hover:underline">support@paymintpos.net</a>
                 </p>
               </motion.div>
 

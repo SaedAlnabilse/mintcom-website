@@ -28,7 +28,15 @@ Allow: /
 
 # Block admin/dashboard routes from indexing (they require auth anyway)
 User-agent: *
+Disallow: /login
+Disallow: /signup
+Disallow: /verify-email
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /select-establishment
 Disallow: /dashboard/
 Disallow: /owner/
 Disallow: /brand/
 Disallow: /api/
+Disallow: /uploads/
+Disallow: /files/

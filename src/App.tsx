@@ -151,11 +151,23 @@ function RouteSeo() {
     .find((entry) => entry.path !== '/' && pathname.startsWith(entry.path));
   const seo = exact || prefix || routeSeo[0];
   const canonicalPath = pathname === '/' ? '' : pathname;
+  const shouldNoIndex = [
+    '/login',
+    '/signup',
+    '/verify-email',
+    '/forgot-password',
+    '/reset-password',
+    '/select-establishment',
+    '/dashboard',
+    '/owner',
+    '/brand',
+  ].some((path) => pathname === path || pathname.startsWith(`${path}/`));
 
   return (
     <Helmet>
       <title>{seo.title}</title>
       <meta name="description" content={seo.description} />
+      <meta name="robots" content={shouldNoIndex ? 'noindex, nofollow, noarchive' : 'index, follow'} />
       <link rel="canonical" href={`${siteUrl}${canonicalPath}`} />
       <meta property="og:title" content={seo.title} />
       <meta property="og:description" content={seo.description} />

@@ -1,0 +1,6 @@
+Contact: mailto:security@paymintpos.net
+Contact: mailto:support@paymintpos.net
+Policy: https://paymintpos.net/legal/privacy
+Preferred-Languages: en, ar
+Canonical: https://paymintpos.net/.well-known/security.txt
+Expires: 2027-05-10T00:00:00Z
