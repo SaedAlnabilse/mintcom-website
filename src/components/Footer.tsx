@@ -1,10 +1,19 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, Instagram, Youtube } from 'lucide-react';
+import { Mail, Phone, Instagram, Youtube, ArrowUpRight } from 'lucide-react';
 import { Logo } from './Logo';
+
+/* -----------------------------------------------------------
+   Footer — Apple-style minimal footer
+   - Clean 5-column grid on desktop
+   - Subtle top border with gradient accent
+   - Compact, functional, cohesive with the rest of the redesign
+----------------------------------------------------------- */
 
 export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
   const { t } = useTranslation();
+  const isRtl = t('common.locale') === 'ar';
+
   type FooterLink = {
     name: string;
     href?: string;
@@ -29,190 +38,200 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
     { name: t('footer.termsOfService'), href: '/legal/terms', target: '_blank' },
   ];
 
+  const FooterLinkItem = ({ link }: { link: FooterLink }) => {
+    if (link.href) {
+      return (
+        <Link
+          to={link.href}
+          target={link.target}
+          rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
+          onClick={(e) => {
+            if (link.href?.startsWith('/#') && window.location.pathname === '/') {
+              const el = document.getElementById(link.href.slice(2));
+              if (el) {
+                e.preventDefault();
+                el.scrollIntoView({ behavior: 'smooth' });
+              }
+            }
+          }}
+          className="group inline-flex items-center gap-1 text-sm font-medium text-gray-500 transition-colors hover:text-paymint-green dark:text-gray-400 dark:hover:text-paymint-green"
+        >
+          {link.name}
+          {link.target === '_blank' && (
+            <ArrowUpRight
+              size={11}
+              className="opacity-0 transition-opacity group-hover:opacity-100"
+            />
+          )}
+        </Link>
+      );
+    }
+    return (
+      <button
+        onClick={link.action}
+        className="text-sm font-medium text-gray-500 transition-colors hover:text-paymint-green dark:text-gray-400 dark:hover:text-paymint-green"
+      >
+        {link.name}
+      </button>
+    );
+  };
+
   return (
-    <>
-      <footer className={`bg-gray-50 dark:bg-[#050505] border-t border-gray-200 dark:border-white/10 ${minimal ? 'pt-10 pb-6' : 'pt-16 lg:pt-20 pb-10'} transition-colors duration-300`} dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-        <div className="container mx-auto px-8 md:px-16 lg:px-24">
-          <div className={minimal ? "flex flex-col sm:flex-row justify-between items-center gap-8 mb-8" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20 items-start"}>
-            {/* Brand */}
-            <div className={minimal ? "space-y-4" : "space-y-8 flex flex-col"} dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-              <div className="-mt-1.5 h-10 flex items-center">
-                <Logo size="lg" />
+    <footer
+      dir={isRtl ? 'rtl' : 'ltr'}
+      className={`relative border-t border-gray-200/70 bg-white transition-colors duration-300 dark:border-white/5 dark:bg-[#050505] ${
+        minimal ? 'pb-6 pt-10' : 'pb-10 pt-16 lg:pt-20'
+      }`}
+    >
+      {/* Gradient accent line at the top */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-paymint-green/40 to-transparent"
+      />
+
+      <div className="container mx-auto max-w-[1280px] px-6 md:px-10">
+        {minimal ? (
+          /* ===== Minimal footer ===== */
+          <div className="flex flex-col items-center justify-between gap-8 sm:flex-row">
+            <Logo size="lg" />
+            <div className="flex items-center gap-6">
+              <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <Mail size={14} className="text-paymint-green" />
+                <span dir="ltr">hello@paymint.com</span>
+              </span>
+              <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <Phone size={14} className="text-paymint-green" />
+                <span dir="ltr">+962 790 000 000</span>
+              </span>
+            </div>
+          </div>
+        ) : (
+          /* ===== Full footer ===== */
+          <div className="mb-16 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-5 lg:gap-8">
+            {/* Brand column */}
+            <div className="space-y-6 lg:col-span-2">
+              <Logo size="lg" />
+              <p className="max-w-xs text-sm font-light leading-relaxed text-gray-500 dark:text-gray-400">
+                {t('brand.description')}
+              </p>
+              <div className="flex gap-3">
+                {[
+                  { Icon: Instagram, href: 'https://www.instagram.com' },
+                  { Icon: Youtube, href: 'https://www.youtube.com' },
+                ].map((social, i) => (
+                  <a
+                    key={i}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-all hover:border-paymint-green hover:bg-paymint-green hover:text-black dark:border-white/10 dark:bg-white/5 dark:text-gray-400"
+                  >
+                    <social.Icon size={16} />
+                  </a>
+                ))}
               </div>
-              {!minimal && (
-                <div className="pt-1.5">
-                  <p className="text-sm font-bold text-gray-500 dark:text-gray-400 max-w-xs leading-6">
-                    {t('brand.description')}
-                  </p>
-                  <div className="flex gap-4 mt-8">
-                    {[
-                      { Icon: Instagram, href: 'https://www.instagram.com' },
-                      { Icon: Youtube, href: 'https://www.youtube.com' }
-                    ].map((social, i) => (
-                      <a
-                        key={i}
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all"
-                      >
-                        <social.Icon size={18} />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Product */}
-            {!minimal && (
-              <div>
-                <div className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-8 transition-colors">{t('footer.product')}</div>
-                <ul className="space-y-4">
-                  {productLinks.map((link) => (
-                    <li key={link.name}>
-                      {link.href ? (
-                        <Link
-                          to={link.href}
-                          target={link.target}
-                          rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
-                          onClick={(e) => {
-                            if (link.href?.startsWith('/#') && window.location.pathname === '/') {
-                              const el = document.getElementById(link.href.slice(2));
-                              if (el) {
-                                e.preventDefault();
-                                el.scrollIntoView({ behavior: 'smooth' });
-                              }
-                            }
-                          }}
-                          className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
-                        >
-                          {link.name}
-                        </Link>
-                      ) : (
-                        <button
-                          onClick={link.action}
-                          className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
-                        >
-                          {link.name}
-                        </button>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Company */}
-            {!minimal && (
-              <div>
-                <div className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-8 transition-colors">{t('footer.company')}</div>
-                <ul className="space-y-4">
-                  {companyLinks.map((link) => (
-                    <li key={link.name}>
-                      {link.href ? (
-                        <Link
-                          to={link.href}
-                          target={link.target}
-                          rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
-                          onClick={(e) => {
-                            if (link.href?.startsWith('/#') && window.location.pathname === '/') {
-                              const el = document.getElementById(link.href.slice(2));
-                              if (el) {
-                                e.preventDefault();
-                                el.scrollIntoView({ behavior: 'smooth' });
-                              }
-                            }
-                          }}
-                          className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
-                        >
-                          {link.name}
-                        </Link>
-                      ) : (
-                        <button
-                          onClick={link.action}
-                          className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
-                        >
-                          {link.name}
-                        </button>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Resources */}
-            {!minimal && (
-              <div>
-                <div className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-8 transition-colors">{t('footer.resources')}</div>
-                <ul className="space-y-4">
-                  {resourceLinks.map((link) => (
-                    <li key={link.name}>
-                      {link.href ? (
-                        <Link
-                          to={link.href}
-                          target={link.target}
-                          rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
-                          className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
-                        >
-                          {link.name}
-                        </Link>
-                      ) : (
-                        <button
-                          onClick={link.action}
-                          className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
-                        >
-                          {link.name}
-                        </button>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Contact */}
-            <div className={minimal ? "flex items-center" : ""}>
-              {!minimal && <div className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-8 transition-colors">{t('footer.getInTouch')}</div>}
-              <ul className={minimal ? "flex flex-col sm:flex-row items-center gap-6" : "space-y-6"}>
-                <li className="flex items-center gap-3 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
-                  <div className={`${minimal ? 'w-8 h-8' : 'w-8 h-8'} rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center shrink-0 aspect-square`}>
-                    <Mail size={14} className="text-paymint-green" />
-                  </div>
-                  <span dir="ltr">hello@paymint.com</span>
-                </li>
-                <li className="flex items-center gap-3 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
-                  <div className={`${minimal ? 'w-8 h-8' : 'w-8 h-8'} rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center shrink-0 aspect-square`}>
-                    <Phone size={14} className="text-paymint-green" />
-                  </div>
-                  <span dir="ltr">+962 790 000 000</span>
-                </li>
+            <div>
+              <h4 className="mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
+                {t('footer.product')}
+              </h4>
+              <ul className="space-y-3">
+                {productLinks.map((link) => (
+                  <li key={link.name}>
+                    <FooterLinkItem link={link} />
+                  </li>
+                ))}
               </ul>
             </div>
-          </div>
 
-          <div className={`border-t border-gray-200 dark:border-white/5 ${minimal ? 'pt-6' : 'pt-10'} flex flex-col md:flex-row justify-between items-center gap-6`}>
-            <p className="text-gray-500 dark:text-gray-400 text-sm font-bold">
-              {t('brand.copyright')}
-            </p>
-            <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-8 gap-y-4">
-              <Link to="/about" className="text-gray-500 dark:text-gray-400 text-sm font-bold hover:text-paymint-green transition-colors">{t('footer.aboutUs')}</Link>
-              <a href="/legal/privacy" target="_blank" className="text-gray-500 dark:text-gray-400 text-sm font-bold hover:text-paymint-green transition-colors">{t('footer.privacyPolicy')}</a>
-              <a href="/legal/terms" target="_blank" className="text-gray-500 dark:text-gray-400 text-sm font-bold hover:text-paymint-green transition-colors">{t('footer.termsOfService')}</a>
-              <button
-                onClick={() => window.dispatchEvent(new CustomEvent('open-feedback'))}
-                className="text-gray-500 dark:text-gray-400 text-sm font-bold hover:text-paymint-green transition-colors"
-              >
-                Feedback
-              </button>
+            {/* Company */}
+            <div>
+              <h4 className="mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
+                {t('footer.company')}
+              </h4>
+              <ul className="space-y-3">
+                {companyLinks.map((link) => (
+                  <li key={link.name}>
+                    <FooterLinkItem link={link} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Resources + Contact */}
+            <div>
+              <h4 className="mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
+                {t('footer.resources')}
+              </h4>
+              <ul className="space-y-3">
+                {resourceLinks.map((link) => (
+                  <li key={link.name}>
+                    <FooterLinkItem link={link} />
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-8 space-y-3">
+                <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-paymint-green/10">
+                    <Mail size={12} className="text-paymint-green" />
+                  </div>
+                  <span dir="ltr">hello@paymint.com</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-paymint-green/10">
+                    <Phone size={12} className="text-paymint-green" />
+                  </div>
+                  <span dir="ltr">+962 790 000 000</span>
+                </div>
+              </div>
             </div>
           </div>
+        )}
+
+        {/* Bottom bar */}
+        <div
+          className={`flex flex-col items-center justify-between gap-5 border-t border-gray-200/70 dark:border-white/5 md:flex-row ${
+            minimal ? 'pt-6' : 'pt-8'
+          }`}
+        >
+          <p className="text-sm text-gray-400 dark:text-gray-500">
+            {t('brand.copyright')}
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 md:justify-end">
+            <Link
+              to="/about"
+              className="text-sm text-gray-400 transition-colors hover:text-paymint-green dark:text-gray-500"
+            >
+              {t('footer.aboutUs')}
+            </Link>
+            <a
+              href="/legal/privacy"
+              target="_blank"
+              className="text-sm text-gray-400 transition-colors hover:text-paymint-green dark:text-gray-500"
+            >
+              {t('footer.privacyPolicy')}
+            </a>
+            <a
+              href="/legal/terms"
+              target="_blank"
+              className="text-sm text-gray-400 transition-colors hover:text-paymint-green dark:text-gray-500"
+            >
+              {t('footer.termsOfService')}
+            </a>
+            <button
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent('open-feedback'))
+              }
+              className="text-sm text-gray-400 transition-colors hover:text-paymint-green dark:text-gray-500"
+            >
+              Feedback
+            </button>
+          </div>
         </div>
-      </footer>
-
-
-    </>
+      </div>
+    </footer>
   );
 };
-
