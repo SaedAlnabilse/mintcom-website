@@ -121,39 +121,44 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
     useEffect(() => {
       if (!isScriptLoaded || !window.google || !GOOGLE_CLIENT_ID) return;
 
-      try {
-        window.google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: (response) => {
-            if (response.credential) {
-              setIsLoading(false);
-              onSuccess(response.credential);
-            }
-          },
-          auto_select: false,
-          cancel_on_tap_outside: true,
-        });
+      // Small delay to ensure the buttonRef div is rendered in the DOM
+      const timeoutId = setTimeout(() => {
+        try {
+          window.google!.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: (response) => {
+              if (response.credential) {
+                setIsLoading(false);
+                onSuccess(response.credential);
+              }
+            },
+            auto_select: false,
+            cancel_on_tap_outside: true,
+          });
 
-        // Use renderButton for correct incognito/strict cookie support
-        if (buttonRef.current) {
-          window.google.accounts.id.renderButton(
-            buttonRef.current,
-            {
-              type: 'standard',
-              theme: 'filled_black',
-              size: 'large',
-              text: text, // 'signin_with', 'signup_with', 'continue_with', 'signin'
-              shape: 'rectangular',
-              logo_alignment: 'center',
-              width: buttonRef.current.parentElement?.offsetWidth || undefined,
-              locale: i18n.language,
-            }
-          );
+          // Use renderButton for correct incognito/strict cookie support
+          if (buttonRef.current) {
+            window.google!.accounts.id.renderButton(
+              buttonRef.current,
+              {
+                type: 'standard',
+                theme: resolvedTheme === 'dark' ? 'filled_black' : 'outline',
+                size: 'large',
+                text: text,
+                shape: 'rectangular',
+                logo_alignment: 'center',
+                width: buttonRef.current.parentElement?.offsetWidth || 400,
+                locale: i18n.language,
+              }
+            );
+          }
+        } catch (error) {
+          console.error('[GoogleAuth] Failed to initialize:', error);
+          onError?.(t('auth.errors.googleInitFailed'));
         }
-      } catch (error) {
-        console.error('[GoogleAuth] Failed to initialize:', error);
-        onError?.(t('auth.errors.googleInitFailed'));
-      }
+      }, 100);
+
+      return () => clearTimeout(timeoutId);
     }, [isScriptLoaded, onSuccess, onError, t, text, i18n.language, resolvedTheme]);
 
     // We can no longer trigger the popup programmatically with standard GIS.
@@ -208,27 +213,20 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
 
     return (
       <div className={`relative w-full ${disabled || isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
-        {/* Custom-styled visible button */}
-        <button
-          type="button"
-          onClick={() => {
-            // Find Google's hidden iframe button and click it
-            const googleBtn = buttonRef.current?.querySelector<HTMLElement>('div[role="button"]');
-            googleBtn?.click();
-          }}
-          disabled={disabled || isLoading}
+        {/* Custom-styled visible button (visual only, sits behind) */}
+        <div
           className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:border-gray-300 hover:shadow-md hover:-translate-y-px active:translate-y-0 dark:border-white/10 dark:bg-white/[0.04] dark:text-gray-100 dark:hover:border-white/20 dark:hover:bg-white/[0.07]"
         >
           <GoogleIcon />
           <span>{isLoading ? t('common.connecting') : buttonText}</span>
-        </button>
+        </div>
 
-        {/* Official Google button — hidden but clickable for OAuth flow */}
+        {/* Official Google button — transparent overlay on top so the real click triggers OAuth */}
         {isScriptLoaded && (
           <div
             ref={buttonRef}
-            aria-hidden
-            className="pointer-events-none absolute inset-0 -z-10 opacity-0 [&>div]:w-full [&_iframe]:w-full"
+            aria-label={buttonText}
+            className="absolute inset-0 z-10 cursor-pointer overflow-hidden rounded-xl opacity-[0.01] [&>div]:!w-full [&>div]:!h-full [&_iframe]:!w-full [&_iframe]:!h-full [&_iframe]:!min-h-full"
           />
         )}
       </div>
