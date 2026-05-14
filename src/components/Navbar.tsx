@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Menu, X, Laptop, LogOut, User, Headset, ArrowRight } from 'lucide-react';
+import { Menu, X, LogOut, User, Headset, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
 import { ThemeToggle } from './ThemeToggle';
@@ -55,24 +55,66 @@ export const Navbar = () => {
   return (
     <nav
       dir={isRtl ? 'rtl' : 'ltr'}
-      className={`fixed inset-x-0 top-0 z-50 transition-[background-color,backdrop-filter,border-color,box-shadow] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
-        isMobileMenuOpen
-          ? 'bg-white dark:bg-[#050505]'
-          : isScrolled
-          ? 'bg-white/70 shadow-[0_1px_0_rgba(0,0,0,0.04),0_4px_20px_-4px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:bg-[#050505]/70 dark:shadow-[0_1px_0_rgba(255,255,255,0.03),0_4px_20px_-4px_rgba(0,0,0,0.4)]'
-          : 'bg-transparent'
-      }`}
+      className="fixed inset-x-0 top-0 z-50"
     >
-      {/* Gradient accent line at the bottom — fades in on scroll */}
+      {/* Glass background layer — separate element so backdrop-filter is never animated */}
       <div
         aria-hidden
-        className={`absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-paymint-green/40 to-transparent transition-opacity duration-[600ms] ${
+        className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${
+          isMobileMenuOpen
+            ? 'opacity-0'
+            : isScrolled
+            ? 'opacity-100'
+            : 'opacity-0'
+        }`}
+        style={{
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          backgroundColor: 'rgba(255,255,255,0.72)',
+        }}
+      />
+      {/* Dark mode glass layer */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-0 hidden transition-opacity duration-500 dark:block ${
+          isMobileMenuOpen
+            ? 'opacity-0'
+            : isScrolled
+            ? 'opacity-100'
+            : 'opacity-0'
+        }`}
+        style={{
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          backgroundColor: 'rgba(5,5,5,0.72)',
+        }}
+      />
+      {/* Solid bg when menu is open */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-200 dark:bg-[#050505] ${
+          isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+      {/* Shadow layer */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-paymint-green/40 to-transparent transition-opacity duration-500 ${
           isScrolled && !isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
         }`}
       />
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-x-0 -bottom-px h-[20px] transition-opacity duration-500 ${
+          isScrolled && !isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
+        }`}
+        style={{
+          boxShadow: '0 4px 20px -4px rgba(0,0,0,0.08)',
+        }}
+      />
 
       <div
-        className={`mx-auto flex max-w-[1280px] items-center justify-between px-6 transition-[padding] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] md:px-10 ${
+        className={`relative z-10 mx-auto flex max-w-[1280px] items-center justify-between px-6 md:px-10 ${
           isScrolled ? 'py-3' : 'py-5'
         }`}
       >
@@ -203,29 +245,7 @@ export const Navbar = () => {
             aria-controls="mobile-menu"
             className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2 text-gray-900 transition-colors hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
           >
-            <AnimatePresence mode="wait" initial={false}>
-              {isMobileMenuOpen ? (
-                <motion.span
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X size={22} />
-                </motion.span>
-              ) : (
-                <motion.span
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu size={22} />
-                </motion.span>
-              )}
-            </AnimatePresence>
+            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
@@ -234,53 +254,61 @@ export const Navbar = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
             id="mobile-menu"
             role="navigation"
             aria-label={t('common.aria.mobileNav')}
-            className="fixed inset-0 z-50 flex flex-col items-center overflow-y-auto bg-white px-6 pt-28 dark:bg-[#050505] sm:px-10 lg:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed inset-0 z-50 bg-white dark:bg-[#050505] lg:hidden will-change-[opacity,transform]"
           >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="w-full max-w-sm space-y-10 pb-20"
+            {/* Content — stopPropagation so clicks inside don't close the menu */}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="flex flex-col items-center px-6 pt-6 sm:px-10"
             >
+              {/* Top bar: logo centered, X on the right */}
+              <div className="flex w-full max-w-sm items-center justify-between mb-12">
+                <div className="w-11" /> {/* Spacer to center logo */}
+                <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Logo size="lg" />
+                </Link>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-white transition-colors hover:bg-white/20 dark:bg-white/10 dark:text-white"
+                  aria-label={t('common.aria.closeMenu')}
+                >
+                  <X size={22} />
+                </button>
+              </div>
+
+              <div className="w-full max-w-sm space-y-10 pb-20">
               {!isAuthenticated && (
                 <>
                   <div className="flex flex-col items-center gap-6">
-                    {navLinks.map((link, i) => (
-                      <motion.div
+                    {navLinks.map((link) => (
+                      <Link
                         key={link.name}
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.15 + i * 0.06 }}
-                      >
-                        <Link
-                          to={link.href}
-                          onClick={(e) => {
-                            setIsMobileMenuOpen(false);
-                            if (
-                              link.href.startsWith('/#') &&
-                              window.location.pathname === '/'
-                            ) {
-                              const el = document.getElementById(
-                                link.href.slice(2)
-                              );
-                              if (el) {
-                                e.preventDefault();
-                                el.scrollIntoView({ behavior: 'smooth' });
-                              }
+                        to={link.href}
+                        onClick={(e) => {
+                          setIsMobileMenuOpen(false);
+                          if (
+                            link.href.startsWith('/#') &&
+                            window.location.pathname === '/'
+                          ) {
+                            const el = document.getElementById(link.href.slice(2));
+                            if (el) {
+                              e.preventDefault();
+                              el.scrollIntoView({ behavior: 'smooth' });
                             }
-                          }}
-                          className="font-magilio text-3xl font-bold tracking-tight text-gray-900 transition-colors hover:text-paymint-green dark:text-white sm:text-4xl"
-                        >
-                          {link.name}
-                        </Link>
-                      </motion.div>
+                          }
+                        }}
+                        className="font-magilio text-3xl font-bold tracking-tight text-gray-900 transition-colors hover:text-paymint-green dark:text-white sm:text-4xl"
+                      >
+                        {link.name}
+                      </Link>
                     ))}
                   </div>
                   <div className="h-px w-full bg-gray-100 dark:bg-white/5" />
@@ -339,16 +367,8 @@ export const Navbar = () => {
                 )}
               </div>
 
-              <div className="flex flex-col items-center gap-6 pt-10 opacity-40">
-                <div className="flex gap-8">
-                  <LanguageSwitcher />
-                  <Laptop size={20} className="text-gray-900 dark:text-white" />
-                </div>
-                <p className="text-xs font-bold tracking-widest text-gray-500">
-                  {t('brand.name')} {t('brand.tagline')} {t('brand.version')}
-                </p>
-              </div>
-            </motion.div>
+            </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
