@@ -1,21 +1,23 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
-    Search,
-    Filter,
-    Inbox,
-    Clock,
-    CheckCircle2,
-    XCircle,
-    AlertTriangle,
-    MessageSquare,
-    ChevronRight,
-    RefreshCw,
-    Shield,
-    BarChart3,
-    Tag,
-  X
+  AlertTriangle,
+  BarChart3,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  Filter,
+  Inbox,
+  MessageSquare,
+  RefreshCw,
+  Search,
+  Shield,
+  Tag,
+  TimerReset,
+  UserRound,
+  X,
+  XCircle,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
@@ -24,415 +26,494 @@ import { Footer } from '../../components/Footer';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { FullScreenLoader, SurfaceLoader } from '../../components/LoadingState';
-import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
+import { formatInputPlaceholder } from '../../utils/textCase';
 import { isSupportAdminEmail } from '../../config/support';
 
-// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Types ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
-
 interface AdminTicket {
-    id: string;
-    ticketNumber: string;
-    subject: string;
-    category: string;
-    priority: string;
-    status: string;
-    requesterName: string | null;
-    requesterEmail: string | null;
+  id: string;
+  ticketNumber: string;
+  subject: string;
+  category: string;
+  priority: string;
+  status: string;
+  requesterName: string | null;
+  requesterEmail: string | null;
+  createdAt: string;
+  updatedAt: string;
+  messageCount: number;
+  lastMessage: {
+    content: string;
+    senderType: string;
     createdAt: string;
-    updatedAt: string;
-    messageCount: number;
-    lastMessage: {
-        content: string;
-        senderType: string;
-        createdAt: string;
-    } | null;
+  } | null;
 }
 
 interface Stats {
-    open: number;
-    inProgress: number;
-    resolved: number;
-    closed: number;
-    total: number;
+  open: number;
+  inProgress: number;
+  resolved: number;
+  closed: number;
+  total: number;
 }
 
-// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Constants ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+type QueueKey = 'all' | 'needs_reply' | 'urgent' | 'stale' | 'open' | 'in_progress' | 'resolved';
 
-// The support team email(s) ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â only these accounts can access the admin portal
-const statusConfig: Record<string, { label: string; color: string; bg: string; icon: typeof Inbox }> = {
-    open: { label: 'Open', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', icon: Inbox },
-    in_progress: { label: 'In Progress', color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', icon: Clock },
-    resolved: { label: 'Resolved', color: 'text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2 },
-    closed: { label: 'Closed', color: 'text-gray-500', bg: 'bg-gray-50 dark:bg-gray-800', icon: XCircle },
+const statusConfig = {
+  open: { label: 'Open', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: Inbox },
+  in_progress: { label: 'In progress', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/15', icon: Clock },
+  resolved: { label: 'Resolved', color: 'text-paymint-green', bg: 'bg-paymint-green/10', icon: CheckCircle2 },
+  closed: { label: 'Closed', color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-white/10', icon: XCircle },
 };
 
-const priorityConfig: Record<string, { label: string; color: string; dot: string }> = {
-    low: { label: 'Low', color: 'text-gray-500', dot: 'bg-gray-400' },
-    medium: { label: 'Medium', color: 'text-blue-600', dot: 'bg-blue-500' },
-    high: { label: 'High', color: 'text-orange-600', dot: 'bg-orange-500' },
-    urgent: { label: 'Urgent', color: 'text-red-600', dot: 'bg-red-500' },
+const priorityConfig = {
+  low: { label: 'Low', dot: 'bg-gray-400', color: 'text-gray-500', weight: 1, slaHours: 48 },
+  medium: { label: 'Medium', dot: 'bg-blue-500', color: 'text-blue-600 dark:text-blue-400', weight: 2, slaHours: 24 },
+  high: { label: 'High', dot: 'bg-orange-500', color: 'text-orange-600 dark:text-orange-400', weight: 3, slaHours: 8 },
+  urgent: { label: 'Urgent', dot: 'bg-red-500', color: 'text-red-600 dark:text-red-400', weight: 4, slaHours: 2 },
 };
 
 function timeAgo(dateStr: string): string {
-    const now = Date.now();
-    const diff = now - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'Just now';
-    if (mins < 60) return `${mins}m ago`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs}h ago`;
-    const days = Math.floor(hrs / 24);
-    if (days < 7) return `${days}d ago`;
-    return new Date(dateStr).toLocaleDateString();
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.max(0, Math.floor(diff / 60000));
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(dateStr).toLocaleDateString();
 }
 
-// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Component ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+function hoursSince(dateStr: string): number {
+  return Math.max(0, (Date.now() - new Date(dateStr).getTime()) / 36e5);
+}
+
+function normalizeStatus(status: string) {
+  return status.toLowerCase().replace('-', '_');
+}
+
+function getPriority(ticket: AdminTicket) {
+  return priorityConfig[ticket.priority as keyof typeof priorityConfig] || priorityConfig.medium;
+}
+
+function getLastCustomerActivity(ticket: AdminTicket) {
+  return ticket.lastMessage?.senderType === 'user' ? ticket.lastMessage.createdAt : ticket.createdAt;
+}
+
+function needsSupportReply(ticket: AdminTicket) {
+  const status = normalizeStatus(ticket.status);
+  return status !== 'closed' && status !== 'resolved' && ticket.lastMessage?.senderType !== 'support';
+}
+
+function isStale(ticket: AdminTicket) {
+  if (!needsSupportReply(ticket)) return false;
+  const priority = getPriority(ticket);
+  return hoursSince(getLastCustomerActivity(ticket)) >= priority.slaHours;
+}
+
+function getSlaLabel(ticket: AdminTicket) {
+  if (!needsSupportReply(ticket)) return { label: 'Waiting on customer', tone: 'text-gray-500' };
+
+  const priority = getPriority(ticket);
+  const remaining = priority.slaHours - hoursSince(getLastCustomerActivity(ticket));
+
+  if (remaining <= 0) return { label: 'SLA overdue', tone: 'text-red-600 dark:text-red-400' };
+  if (remaining <= 2) return { label: `${Math.ceil(remaining)}h left`, tone: 'text-orange-600 dark:text-orange-400' };
+  return { label: `${Math.ceil(remaining)}h left`, tone: 'text-gray-500 dark:text-gray-400' };
+}
 
 export const SupportAdminPage = () => {
-    const { t } = useTranslation();
-    const navigate = useNavigate();
-    const { isAuthenticated, isLoading: authLoading, account } = useAuth();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { isAuthenticated, isLoading: authLoading, account } = useAuth();
 
-    const [tickets, setTickets] = useState<AdminTicket[]>([]);
-    const [stats, setStats] = useState<Stats | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [statusFilter, setStatusFilter] = useState<string>('all');
-    const [priorityFilter, setPriorityFilter] = useState<string>('all');
-    const [showFilters, setShowFilters] = useState(false);
+  const [tickets, setTickets] = useState<AdminTicket[]>([]);
+  const [stats, setStats] = useState<Stats>({ open: 0, inProgress: 0, resolved: 0, closed: 0, total: 0 });
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [priorityFilter, setPriorityFilter] = useState('all');
+  const [queue, setQueue] = useState<QueueKey>('needs_reply');
+  const [showFilters, setShowFilters] = useState(false);
 
-    // Check if the current user is a support team member
-    const isSupportTeam = isSupportAdminEmail(account?.email);
+  const isSupportTeam = isSupportAdminEmail(account?.email);
 
-    // Fetch tickets and stats
-    const fetchData = useCallback(async (isRefresh = false) => {
-        if (isRefresh) setRefreshing(true);
-        else setLoading(true);
-
-        try {
-            const [ticketsRes, statsRes] = await Promise.all([
-                api.get('/api/support/admin/tickets', {
-                    params: {
-                        ...(statusFilter !== 'all' ? { status: statusFilter } : {}),
-                        ...(priorityFilter !== 'all' ? { priority: priorityFilter } : {}),
-                        ...(searchQuery ? { search: searchQuery } : {}),
-                    },
-                }),
-                api.get('/api/support/admin/tickets/stats'),
-            ]);
-
-            setTickets(ticketsRes.data);
-            setStats(statsRes.data);
-        } catch (err) {
-            console.error('Failed to fetch tickets:', err);
-            toast.error('Failed to load tickets');
-        } finally {
-            setLoading(false);
-            setRefreshing(false);
-        }
-    }, [searchQuery, statusFilter, priorityFilter]);
-
-    useEffect(() => {
-        if (isAuthenticated && isSupportTeam) {
-            fetchData();
-        }
-    }, [isAuthenticated, isSupportTeam, statusFilter, priorityFilter, fetchData]);
-
-    // Debounced search
-    useEffect(() => {
-        if (!isAuthenticated || !isSupportTeam) return;
-        const timer = setTimeout(() => fetchData(), 400);
-        return () => clearTimeout(timer);
-    }, [searchQuery, isAuthenticated, isSupportTeam, fetchData]);
-
-    // Filter on client side for instant feedback
-    const filteredTickets = useMemo(() => tickets, [tickets]);
-
-    // ─── Auth Guards ───────────────────────────────────────────────────────────────────────────────────────────
-
-    if (authLoading) {
-        return <FullScreenLoader />;
+  const fetchTickets = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [ticketsRes, statsRes] = await Promise.all([
+        api.get('/api/support/admin/tickets', {
+          params: {
+            status: statusFilter !== 'all' ? statusFilter : undefined,
+            priority: priorityFilter !== 'all' ? priorityFilter : undefined,
+            search: searchQuery.trim() || undefined,
+          },
+        }),
+        api.get('/api/support/admin/tickets/stats'),
+      ]);
+      setTickets(ticketsRes.data || []);
+      setStats(statsRes.data || { open: 0, inProgress: 0, resolved: 0, closed: 0, total: 0 });
+    } catch {
+      toast.error('Failed to load support tickets');
+    } finally {
+      setLoading(false);
     }
+  }, [priorityFilter, searchQuery, statusFilter]);
 
-    if (!isAuthenticated) {
-        return <Navigate to="/login" state={{ from: '/support/admin' }} replace />;
+  useEffect(() => {
+    if (isAuthenticated && isSupportTeam) {
+      fetchTickets();
     }
+  }, [fetchTickets, isAuthenticated, isSupportTeam]);
 
-    if (!isSupportTeam) {
-        return (
-            <>
-                <Navbar />
-                <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0a0a0a] pt-24">
-                    <div className="text-center max-w-md mx-auto px-6">
-                        <div className="w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <Shield className="w-10 h-10 text-red-500" />
-                        </div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">{t('support.admin.accessDenied')}</h1>
-                        <p className="text-gray-500 dark:text-gray-400 mb-6">
-                            {t('support.admin.accessDeniedDesc')}
-                        </p>
-                        <Link
-                            to="/support"
-                            className="inline-flex items-center px-6 py-3 bg-paymint-green text-black font-bold rounded-xl hover:opacity-90 transition-all"
-                        >
-                            {t('support.admin.goToSupport')}
-                        </Link>
-                    </div>
-                </div>
-                <Footer />
-            </>
-        );
-    }
+  const deskStats = useMemo(() => {
+    const needsReply = tickets.filter(needsSupportReply).length;
+    const urgent = tickets.filter((ticket) => ticket.priority === 'urgent' && normalizeStatus(ticket.status) !== 'closed').length;
+    const stale = tickets.filter(isStale).length;
+    const active = tickets.filter((ticket) => !['resolved', 'closed'].includes(normalizeStatus(ticket.status))).length;
 
-    // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Render ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+    return { needsReply, urgent, stale, active };
+  }, [tickets]);
 
-    return (
-        <>
-            <Navbar />
-            <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] pt-28 pb-16">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+  const queueItems = useMemo(() => ([
+    { key: 'needs_reply' as const, label: 'Needs reply', count: deskStats.needsReply, icon: AlertTriangle },
+    { key: 'urgent' as const, label: 'Urgent', count: deskStats.urgent, icon: TimerReset },
+    { key: 'stale' as const, label: 'SLA overdue', count: deskStats.stale, icon: Clock },
+    { key: 'open' as const, label: 'Open', count: stats.open, icon: Inbox },
+    { key: 'in_progress' as const, label: 'In progress', count: stats.inProgress, icon: MessageSquare },
+    { key: 'resolved' as const, label: 'Resolved', count: stats.resolved, icon: CheckCircle2 },
+    { key: 'all' as const, label: 'All tickets', count: stats.total, icon: BarChart3 },
+  ]), [deskStats.needsReply, deskStats.stale, deskStats.urgent, stats.inProgress, stats.open, stats.resolved, stats.total]);
 
-                    {/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Header ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-                        <div>
-                            <div className="flex items-center gap-3 mb-1">
-                                <Shield className="w-6 h-6 text-paymint-green" />
-                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                    {t('support.admin.title')}
-                                </h1>
-                            </div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                {t('support.admin.subtitle')}
-                            </p>
-                        </div>
-                        <button
-                            onClick={() => fetchData(true)}
-                            disabled={refreshing}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/10 transition-all disabled:opacity-50"
-                        >
-                            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                            {t('support.admin.refresh')}
-                        </button>
-                    </div>
+  const filteredTickets = useMemo(() => {
+    const filtered = tickets.filter((ticket) => {
+      const status = normalizeStatus(ticket.status);
+      if (queue === 'needs_reply' && !needsSupportReply(ticket)) return false;
+      if (queue === 'urgent' && !(ticket.priority === 'urgent' && status !== 'closed')) return false;
+      if (queue === 'stale' && !isStale(ticket)) return false;
+      if (queue === 'open' && status !== 'open') return false;
+      if (queue === 'in_progress' && status !== 'in_progress') return false;
+      if (queue === 'resolved' && status !== 'resolved') return false;
+      return true;
+    });
 
-                    {/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Stats Cards ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */}
-                    {stats && (
-                        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
-                            {[
-                                { label: t('support.tickets.stats.open'), value: stats.open, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', icon: Inbox },
-                                { label: t('support.tickets.stats.inProgress'), value: stats.inProgress, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', icon: Clock },
-                                { label: t('support.tickets.stats.resolved'), value: stats.resolved, color: 'text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2 },
-                                { label: t('support.admin.closed'), value: stats.closed, color: 'text-gray-500', bg: 'bg-gray-50 dark:bg-gray-800', icon: XCircle },
-                                { label: t('support.tickets.stats.total'), value: stats.total, color: 'text-gray-900 dark:text-white', bg: 'bg-white dark:bg-white/5', icon: BarChart3 },
-                            ].map((stat) => {
-                                const Icon = stat.icon;
-                                return (
-                                    <div
-                                        key={stat.label}
-                                        className={`${stat.bg} rounded-xl p-4 border border-gray-100 dark:border-white/5`}
-                                    >
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <Icon className={`w-4 h-4 ${stat.color}`} />
-                                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{stat.label}</span>
-                                        </div>
-                                        <p className={`text-2xl font-black ${stat.color}`}>{stat.value}</p>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
+    return filtered.sort((a, b) => {
+      const aNeedsReply = needsSupportReply(a) ? 1 : 0;
+      const bNeedsReply = needsSupportReply(b) ? 1 : 0;
+      if (aNeedsReply !== bNeedsReply) return bNeedsReply - aNeedsReply;
 
-                    {/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Search & Filters ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */}
-                    <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                            <input maxLength={255}
-                                type="text"
-                                placeholder={formatInputPlaceholder(t('support.admin.searchPlaceholder'), t('common.locale'))}
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-11 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30"
-                            />
-                            {searchQuery && (
-                              <button
-                                type="button"
-                                onClick={() => setSearchQuery('')}
-                                aria-label={t('common.clearSearch', 'Clear search')}
-                                className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                              >
-                                <X size={12} strokeWidth={2.75} />
-                              </button>
-                            )}
-                        </div>
-                        <button
-                            onClick={() => setShowFilters(!showFilters)}
-                            className={`inline-flex items-center gap-2 px-4 py-3 text-sm font-bold rounded-xl border transition-all ${showFilters || statusFilter !== 'all' || priorityFilter !== 'all'
-                                ? 'bg-paymint-green/10 border-paymint-green/30 text-paymint-green'
-                                : 'bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300'
-                                }`}
-                        >
-                            <Filter className="w-4 h-4" />
-                            {t('support.admin.filters')}
-                        </button>
-                    </div>
+      const priorityDiff = getPriority(b).weight - getPriority(a).weight;
+      if (priorityDiff !== 0) return priorityDiff;
 
-                    {/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Filter Panel ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */}
-                    <AnimatePresence>
-                        {showFilters && (
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="overflow-hidden mb-6"
-                            >
-                                <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-4 flex flex-wrap gap-4">
-                                    <div>
-                                        <label className="block text-xs font-normal text-gray-500 mb-2">{formatInputLabel(t('support.tickets.statusLabel'), t('common.locale'))}</label>
-                                        <div className="flex flex-wrap gap-2">
-                                            {['all', 'open', 'in_progress', 'resolved', 'closed'].map((s) => (
-                                                <button
-                                                    key={s}
-                                                    onClick={() => setStatusFilter(s)}
-                                                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${statusFilter === s
-                                                        ? 'bg-paymint-green text-black'
-                                                        : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/15'
-                                                        }`}
-                                                >
-                                                    {s === 'all' ? t('support.admin.all') : s === 'in_progress' ? t('support.tickets.status.inProgress') : s === 'open' ? t('support.tickets.status.open') : s === 'resolved' ? t('support.tickets.status.resolved') : t('support.admin.closed')}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-normal text-gray-500 mb-2">{formatInputLabel(t('support.tickets.priorityLabel'), t('common.locale'))}</label>
-                                        <div className="flex flex-wrap gap-2">
-                                            {['all', 'low', 'medium', 'high', 'urgent'].map((p) => (
-                                                <button
-                                                    key={p}
-                                                    onClick={() => setPriorityFilter(p)}
-                                                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${priorityFilter === p
-                                                        ? 'bg-paymint-green text-black'
-                                                        : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/15'
-                                                        }`}
-                                                >
-                                                    {p === 'all' ? t('support.admin.all') : p === 'low' ? t('support.tickets.priority.low') : p === 'medium' ? t('support.tickets.priority.medium') : p === 'high' ? t('support.tickets.priority.high') : t('support.tickets.priority.urgent')}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
+  }, [queue, tickets]);
 
-                    {/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Tickets List ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */}
-                    {loading ? (
-                        <SurfaceLoader
-                            message={t('support.admin.loading', { defaultValue: 'Loading tickets...' })}
-                            className="border-none bg-transparent shadow-none"
-                            paddingClassName="py-20"
-                        />
-                    ) : filteredTickets.length === 0 ? (
-                        <div className="text-center py-20">
-                            <Inbox className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('support.admin.noTickets')}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                {searchQuery || statusFilter !== 'all' || priorityFilter !== 'all'
-                                    ? t('support.admin.adjustSearch')
-                                    : t('support.admin.noTicketsYet')}
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="space-y-3">
-                            {filteredTickets.map((ticket, i) => {
-                                const sCfg = statusConfig[ticket.status] || statusConfig.open;
-                                const pCfg = priorityConfig[ticket.priority] || priorityConfig.medium;
-                                const StatusIcon = sCfg.icon;
-                                const needsAttention = ticket.lastMessage?.senderType === 'user' && ticket.status !== 'closed';
+  if (authLoading) {
+    return <FullScreenLoader />;
+  }
 
-                                return (
-                                    <motion.div
-                                        key={ticket.id}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: i * 0.03 }}
-                                    >
-                                        <button
-                                            onClick={() => navigate(`/support/admin/${ticket.id}`)}
-                                            className={`w-full text-left bg-white dark:bg-white/[0.03] border rounded-xl p-4 sm:p-5 transition-all hover:shadow-md hover:border-paymint-green/30 group ${needsAttention
-                                                ? 'border-amber-300 dark:border-amber-600/40 bg-amber-50/30 dark:bg-amber-900/5'
-                                                : 'border-gray-100 dark:border-white/5'
-                                                }`}
-                                        >
-                                            <div className="flex items-start gap-4">
-                                                {/* Status icon */}
-                                                <div className={`hidden sm:flex w-10 h-10 rounded-full items-center justify-center flex-shrink-0 ${sCfg.bg}`}>
-                                                    <StatusIcon className={`w-5 h-5 ${sCfg.color}`} />
-                                                </div>
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: '/support/admin' }} replace />;
+  }
 
-                                                {/* Content */}
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                                        <span className="text-[10px] font-mono font-bold text-gray-400">{ticket.ticketNumber}</span>
-                                                        {needsAttention && (
-                                                            <span className="flex items-center gap-1 text-[10px] font-bold text-amber-600 bg-amber-100 dark:bg-amber-900/30 px-2 py-0.5 rounded-full">
-                                                                <AlertTriangle className="w-3 h-3" />
-                                                                {t('support.admin.needsReply')}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-1 truncate">
-                                                        {ticket.subject}
-                                                    </h3>
-                                                    <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 flex-wrap">
-                                                        <span className="font-bold">{ticket.requesterName || t('support.admin.unknown')}</span>
-                                                        {ticket.requesterEmail && (
-                                                            <span className="hidden sm:inline">({ticket.requesterEmail})</span>
-                                                        )}
-                                                        <span>ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢</span>
-                                                        <span>{timeAgo(ticket.createdAt)}</span>
-                                                        <span className="flex items-center gap-1">
-                                                            <MessageSquare className="w-3 h-3" />
-                                                            {ticket.messageCount}
-                                                        </span>
-                                                    </div>
-                                                    {ticket.lastMessage && (
-                                                        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400 truncate">
-                                                            <span className={`font-bold ${ticket.lastMessage.senderType === 'support' ? 'text-paymint-green' : 'text-gray-600 dark:text-gray-300'}`}>
-                                                                {ticket.lastMessage.senderType === 'support' ? t('support.admin.supportLabel') + ': ' : t('support.admin.customerLabel') + ': '}
-                                                            </span>
-                                                            {ticket.lastMessage.content}
-                                                        </p>
-                                                    )}
-                                                </div>
+  if (!isSupportTeam) {
+    return <Navigate to="/support" replace />;
+  }
 
-                                                {/* Right side ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â status + priority badges */}
-                                                <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                                                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold ${sCfg.bg} ${sCfg.color}`}>
-                                                        {sCfg.label}
-                                                    </span>
-                                                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold">
-                                                        <span className={`w-2 h-2 rounded-full ${pCfg.dot}`} />
-                                                        <span className={pCfg.color}>{pCfg.label}</span>
-                                                    </span>
-                                                    <span className="flex items-center gap-1 text-xs text-gray-400">
-                                                        <Tag className="w-3 h-3" />
-                                                        {ticket.category}
-                                                    </span>
-                                                    <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-paymint-green transition-colors" />
-                                                </div>
-                                            </div>
-                                        </button>
-                                    </motion.div>
-                                );
-                            })}
-                        </div>
-                    )}
-                </div>
+  return (
+    <>
+      <Navbar />
+      <main className="min-h-screen bg-gray-50 pt-28 pb-16 dark:bg-[#0a0a0a]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <div className="mb-3 inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-paymint-green/10 px-3 py-1.5 text-xs font-bold text-paymint-green">
+                <Shield size={14} />
+                Support admin: {account?.email}
+              </div>
+              <h1 className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">
+                Support Desk
+              </h1>
+              <p className="mt-2 max-w-2xl text-sm font-medium text-gray-500 dark:text-gray-400">
+                Triage customer tickets, keep urgent requests visible, and reply as Paymint Support.
+              </p>
             </div>
-            <Footer />
-        </>
-    );
+            <button
+              onClick={fetchTickets}
+              disabled={loading}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+            >
+              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+              Refresh
+            </button>
+          </div>
+
+          <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { label: 'Active', value: deskStats.active, icon: Inbox, tone: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' },
+              { label: 'Needs reply', value: deskStats.needsReply, icon: AlertTriangle, tone: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
+              { label: 'SLA overdue', value: deskStats.stale, icon: TimerReset, tone: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
+              { label: 'Resolved', value: stats.resolved, icon: CheckCircle2, tone: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+            ].map((item) => (
+              <div key={item.label} className="rounded-2xl border border-gray-100 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
+                <div className="flex items-center gap-3">
+                  <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${item.bg}`}>
+                    <item.icon size={20} className={item.tone} />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-black leading-none text-gray-900 dark:text-white">{item.value}</p>
+                    <p className="mt-1 text-sm font-bold text-gray-500 dark:text-gray-400">{item.label}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+            <aside className="space-y-3">
+              <div className="rounded-2xl border border-gray-100 bg-white p-3 dark:border-white/10 dark:bg-white/[0.03]">
+                {queueItems.map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => setQueue(item.key)}
+                    className={`flex w-full items-center justify-between rounded-xl px-3 py-3 text-left transition-colors ${
+                      queue === item.key
+                        ? 'bg-gray-900 text-white dark:bg-white dark:text-black'
+                        : 'text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2 text-sm font-bold">
+                      <item.icon size={16} />
+                      {item.label}
+                    </span>
+                    <span className={`rounded-lg px-2 py-0.5 text-xs font-black ${queue === item.key ? 'bg-white/15 dark:bg-black/10' : 'bg-gray-100 dark:bg-white/10'}`}>
+                      {item.count}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="rounded-2xl border border-gray-100 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
+                <h2 className="mb-3 text-sm font-black text-gray-900 dark:text-white">Triage rules</h2>
+                <div className="space-y-3 text-xs font-medium text-gray-500 dark:text-gray-400">
+                  <p>Urgent tickets target a 2 hour first response.</p>
+                  <p>High priority tickets target 8 hours.</p>
+                  <p>Resolved tickets can still be reopened from the conversation page.</p>
+                </div>
+              </div>
+            </aside>
+
+            <section>
+              <div className="mb-4 rounded-2xl border border-gray-100 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
+                <div className="flex flex-col gap-3 md:flex-row">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      maxLength={255}
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') fetchTickets();
+                      }}
+                      placeholder={formatInputPlaceholder('Search ticket number, subject, email, or customer...', t('common.locale'))}
+                      className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-11 text-sm font-bold text-gray-700 outline-none transition-colors focus:border-paymint-green/50 focus:ring-2 focus:ring-paymint-green/20 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+                    />
+                    {searchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setSearchQuery('')}
+                        className="absolute right-2.5 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/10"
+                      >
+                        <X size={13} />
+                      </button>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setShowFilters((value) => !value)}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-100 px-4 py-3 text-sm font-bold text-gray-700 transition-colors hover:bg-gray-200 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15"
+                  >
+                    <Filter size={18} />
+                    Filters
+                  </button>
+                  <button
+                    onClick={fetchTickets}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-paymint-green px-5 py-3 text-sm font-black text-black transition-opacity hover:opacity-90"
+                  >
+                    Apply
+                  </button>
+                </div>
+
+                <AnimatePresence>
+                  {showFilters && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-4 grid gap-4 border-t border-gray-100 pt-4 dark:border-white/10 md:grid-cols-2">
+                        <FilterGroup
+                          label="Status"
+                          value={statusFilter}
+                          options={['all', 'open', 'in_progress', 'resolved', 'closed']}
+                          onChange={setStatusFilter}
+                        />
+                        <FilterGroup
+                          label="Priority"
+                          value={priorityFilter}
+                          options={['all', 'low', 'medium', 'high', 'urgent']}
+                          onChange={setPriorityFilter}
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {loading ? (
+                <SurfaceLoader message="Loading support queue..." paddingClassName="py-16" />
+              ) : filteredTickets.length === 0 ? (
+                <div className="rounded-2xl border border-gray-100 bg-white p-16 text-center dark:border-white/10 dark:bg-white/[0.03]">
+                  <Inbox className="mx-auto mb-4 h-14 w-14 text-gray-300 dark:text-gray-600" />
+                  <h3 className="mb-2 text-lg font-black text-gray-900 dark:text-white">No tickets in this queue</h3>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Try a different queue or clear filters.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between px-1 text-sm font-bold text-gray-500 dark:text-gray-400">
+                    <span>{filteredTickets.length} ticket{filteredTickets.length === 1 ? '' : 's'}</span>
+                    <span>Sorted by reply need, priority, and last update</span>
+                  </div>
+                  {filteredTickets.map((ticket, index) => (
+                    <TicketRow
+                      key={ticket.id}
+                      ticket={ticket}
+                      index={index}
+                      onOpen={() => navigate(`/support/admin/${ticket.id}`)}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
 };
 
+function FilterGroup({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: string[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div>
+      <p className="mb-2 text-xs font-black uppercase tracking-wider text-gray-400">{label}</p>
+      <div className="flex flex-wrap gap-2">
+        {options.map((option) => (
+          <button
+            key={option}
+            onClick={() => onChange(option)}
+            className={`rounded-lg px-3 py-1.5 text-xs font-bold capitalize transition-colors ${
+              value === option
+                ? 'bg-gray-900 text-white dark:bg-white dark:text-black'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15'
+            }`}
+          >
+            {option.replace('_', ' ')}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TicketRow({ ticket, index, onOpen }: { ticket: AdminTicket; index: number; onOpen: () => void }) {
+  const status = statusConfig[normalizeStatus(ticket.status) as keyof typeof statusConfig] || statusConfig.open;
+  const priority = getPriority(ticket);
+  const StatusIcon = status.icon;
+  const sla = getSlaLabel(ticket);
+  const waitingForSupport = needsSupportReply(ticket);
+
+  return (
+    <motion.button
+      type="button"
+      onClick={onOpen}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: Math.min(index * 0.025, 0.25) }}
+      className={`block w-full rounded-2xl border bg-white p-5 text-left transition-all hover:border-paymint-green/40 hover:shadow-lg hover:shadow-paymint-green/5 dark:bg-white/[0.03] ${
+        waitingForSupport
+          ? 'border-amber-300 dark:border-amber-500/40'
+          : 'border-gray-100 dark:border-white/10'
+      }`}
+    >
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0 flex-1">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <span className="font-mono text-xs font-black text-gray-400">{ticket.ticketNumber}</span>
+            {waitingForSupport && (
+              <span className="inline-flex items-center gap-1 rounded-lg bg-amber-100 px-2 py-1 text-[11px] font-black text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
+                <AlertTriangle size={12} />
+                Needs reply
+              </span>
+            )}
+            <span className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-black ${status.bg} ${status.color}`}>
+              <StatusIcon size={12} />
+              {status.label}
+            </span>
+            <span className={`inline-flex items-center gap-1.5 text-[11px] font-black ${priority.color}`}>
+              <span className={`h-2 w-2 rounded-full ${priority.dot}`} />
+              {priority.label}
+            </span>
+            <span className={`inline-flex items-center gap-1 text-[11px] font-black ${sla.tone}`}>
+              <TimerReset size={12} />
+              {sla.label}
+            </span>
+          </div>
+
+          <h3 className="truncate text-base font-black text-gray-900 dark:text-white">{ticket.subject}</h3>
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-gray-500 dark:text-gray-400">
+            <span className="inline-flex items-center gap-1">
+              <UserRound size={13} />
+              {ticket.requesterName || 'Customer'}
+            </span>
+            {ticket.requesterEmail && <span>{ticket.requesterEmail}</span>}
+            <span className="inline-flex items-center gap-1">
+              <Tag size={13} />
+              {ticket.category}
+            </span>
+            <span>{timeAgo(ticket.updatedAt)}</span>
+          </div>
+
+          {ticket.lastMessage && (
+            <p className="mt-3 line-clamp-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+              <span className="font-black">
+                {ticket.lastMessage.senderType === 'support' ? 'Support: ' : 'Customer: '}
+              </span>
+              {ticket.lastMessage.content}
+            </p>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between gap-3 lg:flex-col lg:items-end">
+          <span className="inline-flex items-center gap-1.5 rounded-xl bg-gray-100 px-3 py-2 text-xs font-black text-gray-600 dark:bg-white/10 dark:text-gray-300">
+            <MessageSquare size={14} />
+            {ticket.messageCount}
+          </span>
+          <ChevronRight className="h-5 w-5 text-gray-300 transition-colors group-hover:text-paymint-green" />
+        </div>
+      </div>
+    </motion.button>
+  );
+}

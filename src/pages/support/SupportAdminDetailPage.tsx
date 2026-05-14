@@ -21,6 +21,8 @@ import {
     MessageSquare,
     Download,
     Image as ImageIcon,
+    TimerReset,
+    ClipboardCheck,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Navbar } from '../../components/Navbar';
@@ -76,6 +78,32 @@ const priorityConfig: Record<string, { label: string; dot: string }> = {
     urgent: { label: 'Urgent', dot: 'bg-red-500' },
 };
 
+const prioritySlaHours: Record<string, number> = {
+    low: 48,
+    medium: 24,
+    high: 8,
+    urgent: 2,
+};
+
+const quickReplies = [
+    {
+        label: 'Ask for details',
+        text: 'Thanks for reaching out. Could you send us the exact steps you took, what you expected to happen, and a screenshot or short screen recording if possible? That will help us investigate faster.',
+    },
+    {
+        label: 'Investigating',
+        text: 'Thanks for the report. We are checking this now and will update you here as soon as we confirm the cause or next step.',
+    },
+    {
+        label: 'Resolved',
+        text: 'This should now be resolved. Please refresh the page and try again. If the issue continues, reply here with what you see and we will reopen the investigation.',
+    },
+    {
+        label: 'Billing follow-up',
+        text: 'Thanks for contacting Paymint Support. We are reviewing the billing details on your account and will follow up here with the safest next step.',
+    },
+];
+
 function formatDate(dateStr: string): string {
     return new Date(dateStr).toLocaleString('en-US', {
         month: 'short',
@@ -84,6 +112,31 @@ function formatDate(dateStr: string): string {
         hour: '2-digit',
         minute: '2-digit',
     });
+}
+
+function hoursSince(dateStr: string): number {
+    return Math.max(0, (Date.now() - new Date(dateStr).getTime()) / 36e5);
+}
+
+function getSlaState(ticket: Ticket) {
+    const slaHours = prioritySlaHours[ticket.priority] || prioritySlaHours.medium;
+    const lastCustomerMessage = [...ticket.messages].reverse().find((msg) => msg.senderType === 'user');
+    const anchorDate = lastCustomerMessage?.createdAt || ticket.createdAt;
+    const remaining = slaHours - hoursSince(anchorDate);
+
+    if (ticket.status === 'resolved' || ticket.status === 'closed') {
+        return { label: 'SLA complete', color: 'text-paymint-green' };
+    }
+
+    if (remaining <= 0) {
+        return { label: 'SLA overdue', color: 'text-red-600 dark:text-red-400' };
+    }
+
+    if (remaining <= 2) {
+        return { label: `${Math.ceil(remaining)}h left`, color: 'text-orange-600 dark:text-orange-400' };
+    }
+
+    return { label: `${Math.ceil(remaining)}h left`, color: 'text-gray-500 dark:text-gray-400' };
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -100,6 +153,7 @@ export const SupportAdminDetailPage = () => {
     const [sending, setSending] = useState(false);
     const [showStatusMenu, setShowStatusMenu] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [internalNote, setInternalNote] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const isSupportTeam = isSupportAdminEmail(account?.email);
@@ -129,6 +183,20 @@ export const SupportAdminDetailPage = () => {
             messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
         }
     }, [ticket?.messages]);
+
+    useEffect(() => {
+        if (!ticketId) return;
+        setInternalNote(localStorage.getItem(`paymint-support-note-${ticketId}`) || '');
+    }, [ticketId]);
+
+    useEffect(() => {
+        if (!ticketId) return;
+        if (internalNote.trim()) {
+            localStorage.setItem(`paymint-support-note-${ticketId}`, internalNote);
+        } else {
+            localStorage.removeItem(`paymint-support-note-${ticketId}`);
+        }
+    }, [internalNote, ticketId]);
 
     // Send reply
     const handleSendReply = async () => {
@@ -180,6 +248,10 @@ export const SupportAdminDetailPage = () => {
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const insertQuickReply = (text: string) => {
+        setReplyText((current) => current ? `${current.trim()}\n\n${text}` : text);
+    };
+
     // ─── Guards ──────────────────────────────────────────────────────────────────
 
     if (authLoading) {
@@ -227,12 +299,15 @@ export const SupportAdminDetailPage = () => {
     const currentStatus = statusConfig[ticket.status] || statusConfig.open;
     const currentPriority = priorityConfig[ticket.priority] || priorityConfig.medium;
     const StatusIcon = currentStatus.icon;
+    const slaState = getSlaState(ticket);
+    const lastCustomerMessage = [...ticket.messages].reverse().find((msg) => msg.senderType === 'user');
+    const lastSupportMessage = [...ticket.messages].reverse().find((msg) => msg.senderType === 'support');
 
     return (
         <>
             <Navbar />
             <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] pt-28 pb-16">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
                     {/* ── Back + Header ──────────────────────────────────────────── */}
                     <Link
@@ -329,6 +404,8 @@ export const SupportAdminDetailPage = () => {
                     </div>
 
                     {/* ── Messages ───────────────────────────────────────────────── */}
+                    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+                    <div className="min-w-0">
                     <div className="bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 rounded-xl overflow-hidden">
                         <div className="p-4 border-b border-gray-100 dark:border-white/5 flex items-center gap-2">
                             <MessageSquare className="w-4 h-4 text-gray-400" />
@@ -449,10 +526,99 @@ export const SupportAdminDetailPage = () => {
                             </div>
                         )}
                     </div>
+                    </div>
+
+                    <aside className="space-y-4">
+                        <div className="rounded-xl border border-gray-100 bg-white p-4 dark:border-white/5 dark:bg-white/[0.03]">
+                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
+                                <TimerReset className="h-4 w-4 text-gray-400" />
+                                Support SLA
+                            </div>
+                            <p className={`text-lg font-black ${slaState.color}`}>{slaState.label}</p>
+                            <p className="mt-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+                                Based on {currentPriority.label.toLowerCase()} priority and the latest customer activity.
+                            </p>
+                        </div>
+
+                        <div className="rounded-xl border border-gray-100 bg-white p-4 dark:border-white/5 dark:bg-white/[0.03]">
+                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
+                                <User className="h-4 w-4 text-gray-400" />
+                                Customer context
+                            </div>
+                            <div className="space-y-3 text-xs">
+                                <InfoRow label="Name" value={ticket.requesterName || 'Customer'} />
+                                <InfoRow label="Email" value={ticket.requesterEmail || 'Not provided'} />
+                                <InfoRow label="Created" value={formatDate(ticket.createdAt)} />
+                                <InfoRow label="Last customer" value={lastCustomerMessage ? formatDate(lastCustomerMessage.createdAt) : 'No message yet'} />
+                                <InfoRow label="Last support" value={lastSupportMessage ? formatDate(lastSupportMessage.createdAt) : 'No reply yet'} />
+                            </div>
+                        </div>
+
+                        <div className="rounded-xl border border-gray-100 bg-white p-4 dark:border-white/5 dark:bg-white/[0.03]">
+                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
+                                <ClipboardCheck className="h-4 w-4 text-gray-400" />
+                                Triage checklist
+                            </div>
+                            <div className="space-y-2 text-xs font-medium text-gray-600 dark:text-gray-300">
+                                {[
+                                    'Confirm issue category and priority',
+                                    'Check attachments and reproduction details',
+                                    'Reply with next action or resolution',
+                                    'Mark resolved only after customer can continue',
+                                ].map((item) => (
+                                    <label key={item} className="flex items-start gap-2 rounded-lg bg-gray-50 p-2 dark:bg-white/5">
+                                        <input type="checkbox" className="mt-0.5 h-3.5 w-3.5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green" />
+                                        <span>{item}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="rounded-xl border border-gray-100 bg-white p-4 dark:border-white/5 dark:bg-white/[0.03]">
+                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
+                                <MessageSquare className="h-4 w-4 text-gray-400" />
+                                Quick replies
+                            </div>
+                            <div className="space-y-2">
+                                {quickReplies.map((reply) => (
+                                    <button
+                                        key={reply.label}
+                                        type="button"
+                                        onClick={() => insertQuickReply(reply.text)}
+                                        className="w-full rounded-lg bg-gray-50 px-3 py-2 text-left text-xs font-bold text-gray-600 transition-colors hover:bg-paymint-green/10 hover:text-gray-900 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-paymint-green/10"
+                                    >
+                                        {reply.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="rounded-xl border border-gray-100 bg-white p-4 dark:border-white/5 dark:bg-white/[0.03]">
+                            <div className="mb-3 text-sm font-bold text-gray-900 dark:text-white">Internal note</div>
+                            <textarea
+                                value={internalNote}
+                                onChange={(e) => setInternalNote(e.target.value)}
+                                rows={5}
+                                maxLength={1000}
+                                placeholder="Private note for this browser. Not sent to the customer."
+                                className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs font-medium text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+                            />
+                        </div>
+                    </aside>
+                    </div>
                 </div>
             </div>
             <Footer />
         </>
     );
 };
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+    return (
+        <div>
+            <p className="font-black uppercase tracking-wider text-gray-400">{label}</p>
+            <p className="mt-0.5 break-words font-bold text-gray-700 dark:text-gray-200">{value}</p>
+        </div>
+    );
+}
 

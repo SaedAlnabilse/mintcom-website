@@ -2,6 +2,7 @@ import { useEffect, useCallback, useState, forwardRef, useImperativeHandle, useR
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
+import { useTheme } from '../context/ThemeContext';
 
 // Google Icon SVG Component
 const GoogleIcon = () => (
@@ -75,6 +76,7 @@ export interface GoogleAuthButtonHandle {
 export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthButtonProps>(
   ({ onSuccess, onError, text = 'continue_with', disabled = false }, ref) => {
     const { t, i18n } = useTranslation();
+    const { resolvedTheme } = useTheme();
     const [isLoading, setIsLoading] = useState(false);
     const [isScriptLoaded, setIsScriptLoaded] = useState(false);
     const buttonRef = useRef<HTMLDivElement>(null);
@@ -139,7 +141,7 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
             buttonRef.current,
             {
               type: 'standard',
-              theme: document.documentElement.classList.contains('dark') ? 'filled_black' : 'outline',
+              theme: 'filled_black',
               size: 'large',
               text: text, // 'signin_with', 'signup_with', 'continue_with', 'signin'
               shape: 'rectangular',
@@ -153,7 +155,7 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
         console.error('[GoogleAuth] Failed to initialize:', error);
         onError?.(t('auth.errors.googleInitFailed'));
       }
-    }, [isScriptLoaded, onSuccess, onError, t, text, i18n.language]);
+    }, [isScriptLoaded, onSuccess, onError, t, text, i18n.language, resolvedTheme]);
 
     // We can no longer trigger the popup programmatically with standard GIS.
     // If triggerPrompt is called, we can only try prompt() which may fail in incognito,
@@ -207,17 +209,28 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
 
     return (
       <div className={`relative w-full ${disabled || isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
-        {isScriptLoaded ? (
-          <div ref={buttonRef} className="flex min-h-[44px] w-full items-center justify-center [&>div]:w-full [&_iframe]:w-full" />
-        ) : (
-          <motion.button
-            type="button"
-            disabled
-            className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-700 shadow-sm transition-all dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-          >
-            <GoogleIcon />
-            <span>{isLoading ? t('common.connecting') : buttonText}</span>
-          </motion.button>
+        {/* Custom-styled visible button */}
+        <button
+          type="button"
+          onClick={() => {
+            // Find Google's hidden iframe button and click it
+            const googleBtn = buttonRef.current?.querySelector<HTMLElement>('div[role="button"]');
+            googleBtn?.click();
+          }}
+          disabled={disabled || isLoading}
+          className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:border-gray-300 hover:shadow-md hover:-translate-y-px active:translate-y-0 dark:border-white/10 dark:bg-white/[0.04] dark:text-gray-100 dark:hover:border-white/20 dark:hover:bg-white/[0.07]"
+        >
+          <GoogleIcon />
+          <span>{isLoading ? t('common.connecting') : buttonText}</span>
+        </button>
+
+        {/* Official Google button — hidden but clickable for OAuth flow */}
+        {isScriptLoaded && (
+          <div
+            ref={buttonRef}
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10 opacity-0 [&>div]:w-full [&_iframe]:w-full"
+          />
         )}
       </div>
     );
@@ -228,15 +241,12 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
 export function AuthDivider() {
   const { t } = useTranslation();
   return (
-    <div className="relative my-6">
-      <div className="absolute inset-0 flex items-center">
-        <div className="w-full border-t border-gray-200 dark:border-white/10" />
-      </div>
-      <div className="relative flex justify-center text-xs">
-        <span className="bg-white px-4 font-bold uppercase tracking-wider text-gray-400 dark:bg-[#0e0e0e] dark:text-gray-500">
-          {t('common.or')}
-        </span>
-      </div>
+    <div className="my-6 flex items-center gap-4">
+      <div className="h-px flex-1 bg-gradient-to-r from-transparent to-gray-200 dark:to-white/10" />
+      <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
+        {t('common.or')}
+      </span>
+      <div className="h-px flex-1 bg-gradient-to-l from-transparent to-gray-200 dark:to-white/10" />
     </div>
   );
 }
