@@ -1,5 +1,4 @@
 import { useEffect, useCallback, useState, forwardRef, useImperativeHandle, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { useTheme } from '../context/ThemeContext';
