@@ -59,7 +59,7 @@ This document lists all the application screens (pages) and interactive popups (
 | **Discounts** | Manage promotional rules. |
 | **Payment Methods** | Configure accepted payment types. |
 | **Settings** | Store configuration (Tax, Printers, etc.). |
-| **Activity Logs** | Audit trail of all actions. |
+| **Activity Log** | Audit trail of all actions. |
 | **Add-ons** | Manage product modifiers (Attributes). |
 | **Materials** | Raw material inventory tracking. |
 | **Recipes** | Link products to raw materials. |

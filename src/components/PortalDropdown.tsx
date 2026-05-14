@@ -108,7 +108,7 @@ export function PortalDropdown({
                     exit={{ opacity: 0, y: shouldGoUp ? 4 : -4 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     style={style}
-                    className={`bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl overflow-hidden ${width} ${maxHeight} ${className}`}
+                    className={`dropdown-container bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl overflow-hidden ${width} ${maxHeight} ${className}`}
                 >
                     {children}
                 </motion.div>

@@ -134,9 +134,9 @@ export const FAQ_DATA: FAQItem[] = [
   {
     id: 'activity-logs',
     category: 'technical',
-    question: 'How do I view activity logs?',
-    questionAr: 'كيف أعرض سجلات النشاط؟',
-    answer: 'Go to Dashboard > Activity Logs to monitor all actions taken within your establishment. You can filter logs by specific users, action types, or date ranges for complete transparency.',
+    question: 'How do I view the activity log?',
+    questionAr: 'كيف أعرض سجل النشاط؟',
+    answer: 'Go to Dashboard > Activity Log to monitor all actions taken within your establishment. You can filter the log by specific users, action types, or date ranges for complete transparency.',
     answerAr: 'اذهب إلى لوحة التحكم > سجل النشاط لرؤية جميع الإجراءات في منشأتك. يمكنك الفلترة حسب المستخدم ونوع الإجراء ونطاق التاريخ.'
   },
 

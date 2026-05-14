@@ -409,7 +409,7 @@ Static analysis date: 2026-05-02
 | UI area | Endpoint(s) | Current page size | Server pagination support | UI assumption |
 |---|---|---:|---|---|
 | Orders history | `/reports/orders-history` | 10 on Orders page, 20 on Receipts report | Yes | Uses server totals and pages |
-| Activity logs | `/activity-log` | 10 | Yes | Uses server totals and pages |
+| Activity log | `/activity-log` | 10 | Yes | Uses server totals and pages |
 | Reports shifts | `/reports/shifts` | Fetch limits 20, 50, 100 depending on report | No real UI server paging | UI paginates fetched arrays client-side |
 | Reports item/category/modifier/attribute | `/reports/*-report` | 10 client-side | Not used | UI assumes full `breakdown[]` array |
 | Held orders | `/api/held-orders` | 10 client-side when shown in main table | No | UI assumes full array |

@@ -256,7 +256,7 @@ export function ActivityLogsPage() {
       ip: l.ipAddress
     }));
 
-    exportToCSV(exportData, 'system_activity', {
+    exportToCSV(exportData, 'activity_log', {
       time: t('activity.time'),
       user: t('activity.user'),
       action: t('activity.action'),

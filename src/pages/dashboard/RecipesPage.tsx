@@ -275,6 +275,14 @@ export function RecipesPage() {
   const filteredMaterials = useMemo(() => (Array.isArray(rawMaterials) ? rawMaterials : []).filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase()) && matchesStatus(r)), [rawMaterials, searchQuery, statusFilter]);
   const filteredSub = useMemo(() => (Array.isArray(subRecipes) ? subRecipes : []).filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase()) && matchesStatus(r)), [subRecipes, searchQuery, statusFilter]);
   const filteredFinal = useMemo(() => (Array.isArray(finalRecipes) ? finalRecipes : []).filter(r => getFinalRecipeTargetName(r).toLowerCase().includes(searchQuery.toLowerCase()) && matchesStatus(r)), [finalRecipes, searchQuery, statusFilter]);
+  const shouldShowInactiveEmptyState = !searchQuery.trim() && statusFilter === 'INACTIVE';
+
+  const moveCreateViewToActive = () => {
+    if (statusFilter === 'INACTIVE') {
+      setStatusFilter('ACTIVE');
+      setPage(1);
+    }
+  };
 
   const totalPages = Math.ceil(((activeTab === 'materials' ? filteredMaterials : activeTab === 'final' ? filteredFinal : filteredSub) || []).length / itemsPerPage);
   const paginatedItems = useMemo(() => {
@@ -309,6 +317,7 @@ export function RecipesPage() {
       } else {
         await api.post('/api/manufacturing/raw-materials', materialForm);
         toast.success(t('inventory.messages.created', {defaultValue: 'Created successfully'}));
+        moveCreateViewToActive();
       }
       setShowMaterialModal(false);
       fetchData();
@@ -413,7 +422,10 @@ export function RecipesPage() {
     setIsSubmitting(true);
     try {
       if (editingRecipe) await api.put(`/api/manufacturing/sub-recipes/${editingRecipe.id}`, subRecipeForm);
-      else await api.post('/api/manufacturing/sub-recipes', subRecipeForm);
+      else {
+        await api.post('/api/manufacturing/sub-recipes', subRecipeForm);
+        moveCreateViewToActive();
+      }
       toast.success(t('manufacturing.messages.saveSuccess'));
       setShowSubRecipeModal(false);
       fetchData();
@@ -459,6 +471,7 @@ export function RecipesPage() {
           ...targetPayload,
           ingredients,
         });
+        moveCreateViewToActive();
       }
       toast.success(t('manufacturing.messages.saveSuccess'));
       setShowFinalRecipeModal(false);
@@ -606,8 +619,24 @@ export function RecipesPage() {
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
               <Pizza size={32} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{searchQuery.trim() ? t('common.noResults') : t('manufacturing.noRecipes')}</h3>
-            <p className="text-sm font-medium text-gray-500 max-w-xs">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'recipes', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('manufacturing.noRecipesDesc')}</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              {searchQuery.trim()
+                ? t('common.noResults')
+                : shouldShowInactiveEmptyState
+                  ? t('manufacturing.noInactiveRecipes', { defaultValue: activeTab === 'materials' ? 'No inactive ingredients found' : 'No inactive recipes found' })
+                  : t('manufacturing.noRecipes')}
+            </h3>
+            <p className="text-sm font-medium text-gray-500 max-w-xs">
+              {searchQuery.trim()
+                ? t('common.noMatchingResults', { entity: 'recipes', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
+                : shouldShowInactiveEmptyState
+                  ? t('manufacturing.noInactiveRecipesDesc', {
+                    defaultValue: activeTab === 'materials'
+                      ? 'Archived ingredients will appear here.'
+                      : 'Archived recipes will appear here.',
+                  })
+                  : t('manufacturing.noRecipesDesc')}
+            </p>
           </div>
         ) : (
           <div className="space-y-8">

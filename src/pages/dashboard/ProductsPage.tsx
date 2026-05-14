@@ -206,6 +206,13 @@ export function ProductsPage() {
         setShowModal(true);
     };
 
+    const moveCreateViewToActive = () => {
+        if (filterStatus === 'INACTIVE') {
+            setFilterStatus('ACTIVE');
+            setCurrentPage(1);
+        }
+    };
+
     const handleEdit = (product: Product) => {
         setEditingProduct(product);
         setShowModal(true);
@@ -294,6 +301,7 @@ export function ProductsPage() {
         } else {
             await api.post('/api/items', formData, config);
             toast.success(t('products.messages.created'));
+            moveCreateViewToActive();
         }
         setShowModal(false);
         fetchData(true);
@@ -670,14 +678,29 @@ export function ProductsPage() {
                     ? t('products.stats.outOfStock')
                     : '';
 
+    const shouldShowStatusEmptyState =
+        searchQuery.trim().length === 0 &&
+        selectedCategoryId === 'all' &&
+        stockFilter === 'all' &&
+        filterStatus !== 'ALL';
+
     const emptyStateTitle = !hasAnyProducts
         ? t('products.messages.noProducts')
+        : shouldShowStatusEmptyState
+            ? t(
+                filterStatus === 'INACTIVE' ? 'products.messages.noInactiveProducts' : 'products.messages.noActiveProducts',
+                {
+                    defaultValue: filterStatus === 'INACTIVE' ? 'No inactive products found' : 'No active products found',
+                },
+            )
         : stockFilter !== 'all'
             ? `${t('products.messages.noProducts')} (${activeStockFilterLabel})`
             : t('products.messages.noResults');
 
     const emptyStateDescription = !hasAnyProducts
         ? t('products.messages.noProductsDesc')
+        : shouldShowStatusEmptyState
+            ? ''
         : searchQuery.trim()
             ? t('products.messages.noResultsDesc', { query: searchQuery.trim() })
             : selectedCategoryId !== 'all' && selectedCategoryName

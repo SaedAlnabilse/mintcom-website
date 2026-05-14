@@ -1010,9 +1010,9 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
   {
     id: 'activity-logs',
     keywords: ['activity', 'logs', 'audit', 'history', 'changes', 'who did what', 'audit log', 'سجل النشاط', 'سجلات', 'تدقيق', 'تاريخ التغييرات'],
-    question: 'How do I view activity logs?',
-    questionAr: 'كيف أعرض سجلات النشاط؟',
-    answer: `Go to **Dashboard > Activity Logs** (Admin only). Track: product changes, employee actions, orders, settings changes, cash operations. Filter by date, user, or action type.`,
+    question: 'How do I view the activity log?',
+    questionAr: 'كيف أعرض سجل النشاط؟',
+    answer: `Go to **Dashboard > Activity Log** (Admin only). Track: product changes, employee actions, orders, settings changes, cash operations. Filter by date, user, or action type.`,
     answerAr: `اذهب إلى **لوحة التحكم > سجل النشاط** (للمسؤولين فقط). تتبع: تغييرات المنتجات، إجراءات الموظفين، الطلبات، تغييرات الإعدادات، عمليات النقد. فلتر حسب التاريخ أو المستخدم أو نوع الإجراء.`,
     category: 'technical',
     navigationPath: '/dashboard/:location/activity-logs'
@@ -1031,8 +1031,8 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
     keywords: ['security', 'pin', 'password security', 'safe', 'protect', 'أمان', 'رقم سري', 'حماية', 'أمن الحساب'],
     question: 'What are the security best practices?',
     questionAr: 'ما أفضل ممارسات الأمان؟',
-    answer: `Never share your PIN. Log out when leaving POS unattended. Report suspicious activity. Change password if compromised. Close shifts before leaving. Admins: review activity logs regularly.`,
-    answerAr: `لا تشارك رقم PIN الخاص بك. سجل الخروج عند ترك نقاط البيع. أبلغ عن أي نشاط مشبوه. غيّر كلمة المرور إذا تم اختراقها. أغلق الوردية قبل المغادرة. المسؤولون: راجعوا سجلات النشاط بانتظام.`,
+    answer: `Never share your PIN. Log out when leaving POS unattended. Report suspicious activity. Change password if compromised. Close shifts before leaving. Admins: review the activity log regularly.`,
+    answerAr: `لا تشارك رقم PIN الخاص بك. سجل الخروج عند ترك نقاط البيع. أبلغ عن أي نشاط مشبوه. غيّر كلمة المرور إذا تم اختراقها. أغلق الوردية قبل المغادرة. المسؤولون: راجعوا سجل النشاط بانتظام.`,
     category: 'account'
   }
 ];

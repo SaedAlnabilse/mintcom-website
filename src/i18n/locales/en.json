@@ -96,7 +96,7 @@
     "subtitle": "Track All System Changes and User Actions",
     "syncError": "Failed to sync logs",
     "time": "Time",
-    "title": "Activity Logs",
+    "title": "Activity Log",
     "user": "User"
   },
   "adminUsers": {
@@ -1241,7 +1241,7 @@
       "shiftsReports": "Shifts Reports",
       "switchLocation": "Switch Location",
       "system": "System",
-      "systemLogs": "System Logs",
+      "activityLog": "Activity Log",
       "team": "Team",
       "teamManagement": "Team Management",
       "viewCustomerOrders": "View Customer Orders"
@@ -3735,8 +3735,8 @@
       "includedDefaults": "Dashboard and Order history access are included by default.",
       "inventory": "Recipe Operations",
       "inventoryDesc": "View and update recipes and ingredients",
-      "logs": "View activity logs",
-      "logsDesc": "View system activity and audit logs",
+      "logs": "View Activity Log",
+      "logsDesc": "View system activity and activity log",
       "orders": "View orders",
       "ordersDesc": "Access order history and details",
       "payments": "Manage payment methods",
@@ -4149,9 +4149,8 @@
         "manage_settings": "Change Establishment Settings",
         "manage_taxes_backoffice": "Taxes",
         "refunds": "Refunds",
-        "view_activity_logs": "Activity Logs",
-        "view_cost": "View Costs",
-        "view_orders": "View Orders",
+        "view_activity_logs": "Activity Log",
+        "view_cost": "View Costs",        "view_orders": "View Orders",
         "view_reports": "View Reports",
         "view_shift_reports": "Shift Reports"
       },

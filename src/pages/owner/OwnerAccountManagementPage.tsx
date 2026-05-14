@@ -78,6 +78,12 @@ interface AdminUser {
     lastName: string;
 }
 
+const MAX_OWNER_PROFILE_NAME_LENGTH = 100;
+const MAX_OWNER_PROFILE_EMAIL_LENGTH = 254;
+
+const sanitizeOwnerProfileText = (value: unknown, maxLength: number) =>
+    String(value ?? '').slice(0, maxLength);
+
 export function OwnerAccountManagementPage() {
     const { t } = useTranslation();
     const { account, establishments, logout, updateAccount } = useAuth();
@@ -187,19 +193,24 @@ export function OwnerAccountManagementPage() {
         try {
             setIsSaving(true);
 
-            // Validate
-            if (!editForm.firstName || !editForm.lastName || !editForm.email) {
+            const normalizedEditForm = {
+                firstName: sanitizeOwnerProfileText(editForm.firstName, MAX_OWNER_PROFILE_NAME_LENGTH).trim(),
+                lastName: sanitizeOwnerProfileText(editForm.lastName, MAX_OWNER_PROFILE_NAME_LENGTH).trim(),
+                email: sanitizeOwnerProfileText(editForm.email, MAX_OWNER_PROFILE_EMAIL_LENGTH).trim(),
+            };
+
+            if (!normalizedEditForm.firstName || !normalizedEditForm.lastName || !normalizedEditForm.email) {
                 toast.error(t('owner.account.validation.requiredFields'));
                 setIsSaving(false);
                 return;
             }
 
-            const response = await api.put('/api/accounts/profile', editForm);
+            const response = await api.put('/api/accounts/profile', normalizedEditForm);
 
             // Backend returns the updated user object directly (check for id)
             if (response.data && response.data.id) {
                 const updatedData = response.data;
-                const emailChangedButNotVerified = editForm.email.toLowerCase() !== updatedData.email.toLowerCase();
+                const emailChangedButNotVerified = normalizedEditForm.email.toLowerCase() !== updatedData.email.toLowerCase();
 
                 if (emailChangedButNotVerified) {
                     toast.success(t('owner.account.profileUpdatedVerifyEmail'), { duration: 5000 });
@@ -640,14 +651,14 @@ export function OwnerAccountManagementPage() {
                                     </label>
                                     {isEditing ? (
                                         <div className="flex gap-2">
-                                            <input maxLength={255}
+                                            <input maxLength={MAX_OWNER_PROFILE_NAME_LENGTH}
                                                 type="text"
                                                 value={editForm.firstName}
                                                 onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
                                                 placeholder={formatInputPlaceholder(t('owner.account.firstName'), t('common.locale'))}
                                                 className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                                             />
-                                            <input maxLength={255}
+                                            <input maxLength={MAX_OWNER_PROFILE_NAME_LENGTH}
                                                 type="text"
                                                 value={editForm.lastName}
                                                 onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
@@ -668,7 +679,7 @@ export function OwnerAccountManagementPage() {
                                         {t('owner.account.email')}
                                     </label>
                                     {isEditing ? (
-                                        <input maxLength={255}
+                                        <input maxLength={MAX_OWNER_PROFILE_EMAIL_LENGTH}
                                             type="email"
                                             value={editForm.email}
                                             onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}

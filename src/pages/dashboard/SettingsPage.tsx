@@ -81,6 +81,37 @@ interface EstablishmentInfo {
   name: string;
 }
 
+const MAX_ESTABLISHMENT_NAME_LENGTH = 120;
+const MAX_ESTABLISHMENT_TAGLINE_LENGTH = 255;
+const MAX_ESTABLISHMENT_ADDRESS_LENGTH = 255;
+const MAX_ESTABLISHMENT_EMAIL_LENGTH = 254;
+const MAX_ESTABLISHMENT_TAX_ID_LENGTH = 50;
+const MAX_RECEIPT_FAREWELL_LENGTH = 255;
+const MAX_TAX_RATE_PERCENT = 100;
+const MAX_TAX_RATE_INPUT_DIGITS = 5;
+const MAX_HOLD_ORDER_TABLE_COUNT = 300;
+const MAX_HOLD_ORDER_TABLE_DIGITS = 3;
+
+const sanitizeLimitedText = (value: unknown, maxLength: number) =>
+  String(value ?? '').slice(0, maxLength);
+
+const sanitizeDigits = (value: unknown, maxLength: number) =>
+  String(value ?? '')
+    .replace(/\D/g, '')
+    .slice(0, maxLength);
+
+const clampTaxRatePercent = (value: unknown) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.min(MAX_TAX_RATE_PERCENT, Math.max(0, Math.round(parsed * 100) / 100));
+};
+
+const normalizeHoldOrderTableCount = (value: unknown, fallback = 20) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(MAX_HOLD_ORDER_TABLE_COUNT, Math.max(0, Math.floor(parsed)));
+};
+
 export function SettingsPage() {
   const { t } = useTranslation();
   const location = useLocation();
@@ -186,6 +217,37 @@ export function SettingsPage() {
   });
 
   const { register, handleSubmit, reset, watch, setValue, clearErrors, formState: { errors } } = useForm<AppSettings>();
+
+  const restaurantNameField = register('restaurantName', {
+    maxLength: { value: MAX_ESTABLISHMENT_NAME_LENGTH, message: t('common.maxLength', { count: MAX_ESTABLISHMENT_NAME_LENGTH }) },
+    setValueAs: (value) => sanitizeLimitedText(value, MAX_ESTABLISHMENT_NAME_LENGTH),
+  });
+  const restaurantDescriptionField = register('restaurantDescription', {
+    maxLength: { value: MAX_ESTABLISHMENT_TAGLINE_LENGTH, message: t('common.maxLength', { count: MAX_ESTABLISHMENT_TAGLINE_LENGTH }) },
+    setValueAs: (value) => sanitizeLimitedText(value, MAX_ESTABLISHMENT_TAGLINE_LENGTH),
+  });
+  const restaurantAddressField = register('restaurantAddress', {
+    maxLength: { value: MAX_ESTABLISHMENT_ADDRESS_LENGTH, message: t('common.maxLength', { count: MAX_ESTABLISHMENT_ADDRESS_LENGTH }) },
+    setValueAs: (value) => sanitizeLimitedText(value, MAX_ESTABLISHMENT_ADDRESS_LENGTH),
+  });
+  const emailField = register('email', {
+    maxLength: { value: MAX_ESTABLISHMENT_EMAIL_LENGTH, message: t('common.maxLength', { count: MAX_ESTABLISHMENT_EMAIL_LENGTH }) },
+    setValueAs: (value) => sanitizeLimitedText(value, MAX_ESTABLISHMENT_EMAIL_LENGTH),
+  });
+  const taxIdField = register('taxIdNumber', {
+    maxLength: { value: MAX_ESTABLISHMENT_TAX_ID_LENGTH, message: t('common.maxLength', { count: MAX_ESTABLISHMENT_TAX_ID_LENGTH }) },
+    setValueAs: (value) => sanitizeDigits(value, MAX_ESTABLISHMENT_TAX_ID_LENGTH),
+  });
+  const farewellMessageField = register('farewellMessage', {
+    maxLength: { value: MAX_RECEIPT_FAREWELL_LENGTH, message: t('common.maxLength', { count: MAX_RECEIPT_FAREWELL_LENGTH }) },
+    setValueAs: (value) => sanitizeLimitedText(value, MAX_RECEIPT_FAREWELL_LENGTH),
+  });
+  const taxRateField = register('taxRate', {
+    setValueAs: (value) => clampTaxRatePercent(value),
+    validate: (value) =>
+      (Number.isFinite(Number(value)) && Number(value) >= 0 && Number(value) <= MAX_TAX_RATE_PERCENT) ||
+      t('settings.sales.invalidTaxMessage'),
+  });
 
   // Watch all form values for dirty state comparison
   const watchedValues = watch();
@@ -318,11 +380,15 @@ export function SettingsPage() {
       // Convert taxRate from decimal (0.16) to percentage (16) for display
       const formData = {
         ...data,
-        taxRate: data.taxRate ? Math.round(data.taxRate * 100 * 100) / 100 : 0,
+        restaurantName: sanitizeLimitedText(data.restaurantName, MAX_ESTABLISHMENT_NAME_LENGTH),
+        restaurantDescription: sanitizeLimitedText(data.restaurantDescription, MAX_ESTABLISHMENT_TAGLINE_LENGTH),
+        restaurantAddress: sanitizeLimitedText(data.restaurantAddress, MAX_ESTABLISHMENT_ADDRESS_LENGTH),
+        email: sanitizeLimitedText(data.email, MAX_ESTABLISHMENT_EMAIL_LENGTH),
+        taxIdNumber: sanitizeDigits(data.taxIdNumber, MAX_ESTABLISHMENT_TAX_ID_LENGTH),
+        farewellMessage: sanitizeLimitedText(data.farewellMessage, MAX_RECEIPT_FAREWELL_LENGTH),
+        taxRate: data.taxRate ? clampTaxRatePercent(data.taxRate) : 0,
         showTaxId: Boolean(data.showTaxId),
-        holdOrderTableCount: Number.isFinite(data.holdOrderTableCount)
-          ? Math.min(300, Math.max(0, Math.floor(Number(data.holdOrderTableCount))))
-          : 20,
+        holdOrderTableCount: normalizeHoldOrderTableCount(data.holdOrderTableCount),
       };
 
       // Populate form with fetched data
@@ -436,15 +502,19 @@ export function SettingsPage() {
 
       const submissionData = {
         ...data,
-        taxRate: Number(data.taxRate) / 100,
-        holdOrderTableCount: Number.isFinite(data.holdOrderTableCount)
-          ? Math.min(300, Math.max(0, Math.floor(Number(data.holdOrderTableCount))))
-          : 20,
+        restaurantName: sanitizeLimitedText(data.restaurantName, MAX_ESTABLISHMENT_NAME_LENGTH),
+        restaurantDescription: sanitizeLimitedText(data.restaurantDescription, MAX_ESTABLISHMENT_TAGLINE_LENGTH),
+        restaurantAddress: sanitizeLimitedText(data.restaurantAddress, MAX_ESTABLISHMENT_ADDRESS_LENGTH),
+        email: sanitizeLimitedText(data.email, MAX_ESTABLISHMENT_EMAIL_LENGTH),
+        taxIdNumber: sanitizeDigits(data.taxIdNumber, MAX_ESTABLISHMENT_TAX_ID_LENGTH),
+        farewellMessage: sanitizeLimitedText(data.farewellMessage, MAX_RECEIPT_FAREWELL_LENGTH),
+        taxRate: clampTaxRatePercent(data.taxRate) / 100,
+        holdOrderTableCount: normalizeHoldOrderTableCount(data.holdOrderTableCount),
       };
 
       await api.put('/app-settings', submissionData);
 
-      const nextRestaurantName = String(data.restaurantName || '').trim();
+      const nextRestaurantName = String(submissionData.restaurantName || '').trim();
       if (nextRestaurantName && currentEstablishment && nextRestaurantName !== currentEstablishment.name) {
         // Keep shared establishment state in sync so the new name appears across the app immediately.
         setCurrentEstablishment({ ...currentEstablishment, name: nextRestaurantName });
@@ -801,9 +871,14 @@ export function SettingsPage() {
           return (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 rounded-2xl shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 border-b border-gray-100 dark:border-white/5">
-              <div>
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('settings.tabs.profile')}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">{t('settings.profile.detailsDesc' as any) || 'Manage your establishment identity and branding'}</p>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 shadow-sm">
+                  <Store size={20} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.tabs.profile')}</h3>
+                  <p className="text-sm text-gray-500 font-medium">{t('settings.profile.detailsDesc' as any) || 'Manage your establishment identity and branding'}</p>
+                </div>
               </div>
               
               {/* Login ID Section */}
@@ -876,24 +951,24 @@ export function SettingsPage() {
             </div>
             <div className="space-y-2">
               <label className="label-strong font-outfit  block">{formatInputLabel(t('settings.profile.name'), t('common.locale'))}</label>
-              <input type="text" {...register('restaurantName')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
+              <input type="text" {...restaurantNameField} maxLength={MAX_ESTABLISHMENT_NAME_LENGTH} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
             </div>
             <div className="space-y-2">
               <label className="label-strong font-outfit  block">{formatInputLabel(t('settings.profile.about'), t('common.locale'))}</label>
-              <textarea {...register('restaurantDescription')} rows={3} maxLength={2000} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal resize-none" />
+              <textarea {...restaurantDescriptionField} rows={3} maxLength={MAX_ESTABLISHMENT_TAGLINE_LENGTH} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal resize-none" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="label-strong font-outfit  block">{formatInputLabel(t('settings.profile.address'), t('common.locale'))}</label>
-                <input type="text" {...register('restaurantAddress')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
+                <input type="text" {...restaurantAddressField} maxLength={MAX_ESTABLISHMENT_ADDRESS_LENGTH} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
               </div>
               <div className="space-y-2">
                 <label className="label-strong font-outfit  block">{formatInputLabel(t('settings.profile.email'), t('common.locale'))}</label>
-                <input type="email" {...register('email')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
+                <input type="email" {...emailField} maxLength={MAX_ESTABLISHMENT_EMAIL_LENGTH} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
               </div>
               <div className="space-y-2">
                 <label className="label-strong font-outfit  block">{formatInputLabel(t('settings.profile.taxId'), t('common.locale'))}</label>
-                <input type="text" {...register('taxIdNumber')} maxLength={255} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
+                <input type="text" {...taxIdField} inputMode="numeric" maxLength={MAX_ESTABLISHMENT_TAX_ID_LENGTH} onInput={(e) => { const target = e.target as HTMLInputElement; target.value = sanitizeDigits(target.value, MAX_ESTABLISHMENT_TAX_ID_LENGTH); }} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-normal" />
               </div>
             </div>
           </motion.div>
@@ -923,15 +998,16 @@ export function SettingsPage() {
                     <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-xs font-bold tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">{t('settings.sales.update')}</button>
                   </div>
                   <div className={`relative group transition-all`}>
+                    <input type="hidden" {...taxRateField} />
                     <input
                       type="text"
                       inputMode="decimal"
                       value={watch('taxRate') === 0 ? '' : watch('taxRate').toFixed(2)}
+                      maxLength={MAX_TAX_RATE_INPUT_DIGITS}
                       onChange={(e) => {
-                        const val = e.target.value.replace(/\D/g, '');
-                        if (val.length > 19) return;
-                        const numericValue = parseInt(val || '0', 10) / 100;
-                        setValue('taxRate', numericValue, { shouldDirty: true });
+                        const val = e.target.value.replace(/\D/g, '').slice(0, MAX_TAX_RATE_INPUT_DIGITS);
+                        const numericValue = Math.min(MAX_TAX_RATE_PERCENT, parseInt(val || '0', 10) / 100);
+                        setValue('taxRate', numericValue, { shouldDirty: true, shouldValidate: true });
                         if (errors.taxRate) clearErrors('taxRate');
                       }}
                       className={`w-full h-16 bg-white dark:bg-white/[0.03] border ${errors.taxRate ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-6 font-semibold text-3xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.taxRate ? 'focus:ring-red-500/20' : 'focus:ring-paymint-green/20'} transition-all pr-16 group-hover:border-paymint-green/50 shadow-sm`}
@@ -1012,14 +1088,19 @@ export function SettingsPage() {
                     <input
                       type="number"
                       min="0"
+                      max={MAX_HOLD_ORDER_TABLE_COUNT}
                       step="1"
+                      maxLength={MAX_HOLD_ORDER_TABLE_DIGITS}
                       inputMode="numeric"
                       onInput={(e: React.FormEvent<HTMLInputElement>) => {
                         const target = e.target as HTMLInputElement;
-                        if (target.value.length > 19) {
-                          target.value = target.value.slice(0, 19);
+                        const onlyDigits = target.value.replace(/[^\d]/g, '').slice(0, MAX_HOLD_ORDER_TABLE_DIGITS);
+                        if (!onlyDigits) {
+                          target.value = '';
+                          return;
                         }
-                        const onlyDigits = target.value.replace(/[^\d]/g, '');                        target.value = onlyDigits;
+                        const parsed = parseInt(onlyDigits, 10);
+                        target.value = String(Math.min(parsed, MAX_HOLD_ORDER_TABLE_COUNT));
                       }}
                       onKeyDown={(e) => {
                         if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E') {
@@ -1029,11 +1110,9 @@ export function SettingsPage() {
                       {...register('holdOrderTableCount', {
                         valueAsNumber: true,
                         min: { value: 0, message: t('settings.sales.holdOrderTableCountErrorRange') },
-                        max: { value: 300, message: t('settings.sales.holdOrderTableCountErrorRange') },
+                        max: { value: MAX_HOLD_ORDER_TABLE_COUNT, message: t('settings.sales.holdOrderTableCountErrorRange') },
                         setValueAs: (value) => {
-                          const parsed = Number(value);
-                          if (!Number.isFinite(parsed)) return 10;
-                          return Math.min(300, Math.max(0, Math.floor(parsed)));
+                          return normalizeHoldOrderTableCount(value, 10);
                         },
                       })}
                       className={`w-full h-16 bg-white dark:bg-white/[0.03] border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-6 font-semibold text-3xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.holdOrderTableCount ? 'focus:ring-red-500/20' : 'focus:ring-indigo-500/20'} transition-all group-hover:border-indigo-500/50 shadow-sm`}
@@ -1093,9 +1172,9 @@ export function SettingsPage() {
                         </div>
                         <input
                           type="text"
-                          {...register('restaurantName')}
+                          {...restaurantNameField}
                           disabled={!showRestaurantName}
-                          maxLength={255}
+                          maxLength={MAX_ESTABLISHMENT_NAME_LENGTH}
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
                           placeholder={formatInputPlaceholder(t('settings.profile.namePlaceholder'), t('common.locale'))}
                         />
@@ -1114,9 +1193,9 @@ export function SettingsPage() {
                         </div>
                         <input
                           type="text"
-                          {...register('restaurantDescription')}
+                          {...restaurantDescriptionField}
                           disabled={!showDescription}
-                          maxLength={255}
+                          maxLength={MAX_ESTABLISHMENT_TAGLINE_LENGTH}
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
                           placeholder={formatInputPlaceholder(t('settings.profile.aboutPlaceholder'), t('common.locale'))}
                         />
@@ -1164,9 +1243,9 @@ export function SettingsPage() {
                     </div>
                     <input
                       type="text"
-                      {...register('restaurantAddress')}
+                      {...restaurantAddressField}
                       disabled={!showAddress}
-                      maxLength={255}
+                      maxLength={MAX_ESTABLISHMENT_ADDRESS_LENGTH}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
                       placeholder={formatInputPlaceholder(t('settings.profile.addressPlaceholder'), t('common.locale'))}
                     />
@@ -1186,9 +1265,14 @@ export function SettingsPage() {
                     </div>
                     <input
                       type="text"
-                      {...register('taxIdNumber')}
+                      {...taxIdField}
                       disabled={!showTaxId}
-                      maxLength={255}
+                      inputMode="numeric"
+                      maxLength={MAX_ESTABLISHMENT_TAX_ID_LENGTH}
+                      onInput={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        target.value = sanitizeDigits(target.value, MAX_ESTABLISHMENT_TAX_ID_LENGTH);
+                      }}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
                       placeholder={formatInputPlaceholder(t('settings.profile.taxIdPlaceholder'), t('common.locale'))}
                     />
@@ -1207,10 +1291,10 @@ export function SettingsPage() {
                       </label>
                     </div>
                     <textarea
-                      {...register('farewellMessage')}
+                      {...farewellMessageField}
                       rows={2}
                       disabled={!showFarewellMessage}
-                      maxLength={2000}
+                      maxLength={MAX_RECEIPT_FAREWELL_LENGTH}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
                       placeholder={formatInputPlaceholder(t('settings.receipts.footerPlaceholder'), t('common.locale'))}
                     />

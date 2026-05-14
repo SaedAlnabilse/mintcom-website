@@ -157,6 +157,27 @@ export function AddonsPage() {
       return matchesSearch && matchesSelection && matchesRequirement && matchesPricing && matchesStatus;
     });
   }, [attributes, searchQuery, filterSelection, filterRequirement, filterPricing, filterStatus]);
+  const shouldShowStatusEmptyState =
+    !searchQuery.trim() &&
+    filterSelection === 'ALL' &&
+    filterRequirement === 'ALL' &&
+    filterPricing === 'ALL' &&
+    filterStatus !== 'ALL';
+  const addonsEmptyTitle = shouldShowStatusEmptyState
+    ? t(
+        filterStatus === 'INACTIVE' ? 'attributes.list.noInactiveAddons' : 'attributes.list.noActiveAddons',
+        {
+          defaultValue: filterStatus === 'INACTIVE' ? 'No inactive add-ons found' : 'No active add-ons found',
+        },
+      )
+    : searchQuery.trim()
+      ? t('common.noResults')
+      : t('attributes.list.noAddons');
+  const addonsEmptyDescription = shouldShowStatusEmptyState
+    ? ''
+    : searchQuery.trim()
+      ? t('common.noMatchingResults', { entity: 'add-ons', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
+      : t('attributes.list.noAddonsDesc');
 
   const totalPages = Math.ceil(filteredAttributes.length / itemsPerPage);
   const paginatedAttributes = useMemo(() => {
@@ -193,6 +214,13 @@ export function AddonsPage() {
     }
     setShowAttributeModal(true);
     setErrors({});
+  };
+
+  const moveCreateViewToActive = () => {
+    if (filterStatus === 'INACTIVE') {
+      setFilterStatus('ACTIVE');
+      setPage(1);
+    }
   };
 
   const reactivateAttributeById = async (id: string) => {
@@ -267,6 +295,7 @@ export function AddonsPage() {
               try {
                 await api.post('/api/attributes', attributeForm);
                 toast.success(t('attributes.messages.groupCreated'));
+                moveCreateViewToActive();
                 setShowAttributeModal(false);
                 fetchAttributes();
               } catch (error: any) {
@@ -280,6 +309,7 @@ export function AddonsPage() {
         }
         await api.post('/api/attributes', attributeForm);
         toast.success(t('attributes.messages.groupCreated'));
+        moveCreateViewToActive();
       }
       setShowAttributeModal(false);
       fetchAttributes();
@@ -337,6 +367,7 @@ export function AddonsPage() {
               try {
                 await api.post(`/api/attributes/${parentAttributeId}/sub-attributes`, subAttributeForm);
                 toast.success(t('attributes.messages.optionCreated'));
+                moveCreateViewToActive();
                 setShowSubAttributeModal(false);
                 fetchAttributes();
               } catch (error: any) {
@@ -350,6 +381,7 @@ export function AddonsPage() {
         }
         await api.post(`/api/attributes/${parentAttributeId}/sub-attributes`, subAttributeForm);
         toast.success(t('attributes.messages.optionCreated'));
+        moveCreateViewToActive();
       }
       setShowSubAttributeModal(false);
       fetchAttributes();
@@ -643,8 +675,10 @@ export function AddonsPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Package size={32} className="text-gray-300" />
           </div>
-          <h3 className="dashboard-card-value mb-2">{searchQuery.trim() ? t('common.noResults') : t('attributes.list.noAddons')}</h3>
-          <p className="text-sm font-bold text-gray-500 max-w-xs">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'add-ons', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('attributes.list.noAddonsDesc')}</p>
+          <h3 className="dashboard-card-value mb-2">{addonsEmptyTitle}</h3>
+          {addonsEmptyDescription ? (
+            <p className="text-sm font-bold text-gray-500 max-w-xs">{addonsEmptyDescription}</p>
+          ) : null}
         </div>
       ) : (
         <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">

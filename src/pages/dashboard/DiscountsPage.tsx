@@ -151,6 +151,18 @@ export function DiscountsPage() {
 
     return result;
   }, [discounts, normalizedSearchQuery, sortConfig, filterStatus]);
+  const shouldShowStatusEmptyState = !normalizedSearchQuery && filterStatus !== 'ALL';
+  const discountsEmptyTitle = shouldShowStatusEmptyState
+    ? t(
+        filterStatus === 'INACTIVE' ? 'discounts.messages.noInactiveDiscounts' : 'discounts.messages.noActiveDiscounts',
+        {
+          defaultValue: filterStatus === 'INACTIVE' ? 'No inactive discounts found' : 'No active discounts found',
+        },
+      )
+    : t('discounts.messages.noResults', 'No results found');
+  const discountsEmptyDescription = shouldShowStatusEmptyState
+    ? ''
+    : t('discounts.messages.noResultsDesc', { query: searchQuery.trim(), defaultValue: 'No discounts matching "{{query}}"' });
   const totalPages = Math.ceil((Array.isArray(filteredDiscounts) ? filteredDiscounts : []).length / ITEMS_PER_PAGE);
 
   const paginatedDiscounts = useMemo(() => {
@@ -161,6 +173,13 @@ export function DiscountsPage() {
   const openCreateModal = () => {
     setEditingDiscount(null);
     setShowModal(true);
+  };
+
+  const moveCreateViewToActive = () => {
+    if (filterStatus === 'INACTIVE') {
+      setFilterStatus('ACTIVE');
+      setCurrentPage(1);
+    }
   };
 
   const openEditModal = (discount: Discount) => {
@@ -204,6 +223,7 @@ export function DiscountsPage() {
       } else {
         await api.post('/app-settings/discounts', payload);
         toast.success(t('common.success'));
+        moveCreateViewToActive();
       }
 
       setShowModal(false);
@@ -218,6 +238,8 @@ export function DiscountsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleDelete = async (discountId: string, name: string) => {
+    setShowModal(false);
+    setEditingDiscount(null);
     setConfirmConfig({
       isOpen: true,
       title: t('discounts.confirm.deleteTitle'),
@@ -406,10 +428,10 @@ export function DiscountsPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-center mb-6">
             <Tag className="w-10 h-10 text-gray-300 dark:text-gray-600" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('discounts.messages.noResults', 'No results found')}</h3>
-          <p className="text-sm font-bold text-gray-500 max-w-xs">
-            {t('discounts.messages.noResultsDesc', { query: searchQuery.trim(), defaultValue: 'No discounts matching "{{query}}"' })}
-          </p>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{discountsEmptyTitle}</h3>
+          {discountsEmptyDescription ? (
+            <p className="text-sm font-bold text-gray-500 max-w-xs">{discountsEmptyDescription}</p>
+          ) : null}
         </div>
       ) : (
         <div className="space-y-8">

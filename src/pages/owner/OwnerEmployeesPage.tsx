@@ -56,6 +56,9 @@ interface Employee {
     establishments: string[];
     assignments: EmployeeAssignment[];
     hasActiveShift?: boolean;
+    isAccountOwner?: boolean;
+    isOwnerAccount?: boolean;
+    isProtected?: boolean;
 }
 
 type ViewMode = 'grid' | 'list';
@@ -70,6 +73,14 @@ const EMPLOYEE_LIMIT_POPUP_MESSAGE =
 
 const getDisplayInitial = (firstName?: string, username?: string) =>
     (firstName?.trim()?.charAt(0) || username?.trim()?.charAt(0) || '?').toUpperCase();
+
+const isOwnerEmployee = (employee: Pick<Employee, 'role' | 'isAccountOwner' | 'isOwnerAccount' | 'isProtected'>) =>
+    Boolean(
+        employee.isAccountOwner ||
+        employee.isOwnerAccount ||
+        employee.isProtected ||
+        employee.role?.toUpperCase() === 'ACCOUNT_OWNER',
+    );
 
 export function OwnerEmployeesPage() {
     const { t } = useTranslation();
@@ -97,6 +108,11 @@ export function OwnerEmployeesPage() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState('');
     const [deleteAttemptCount, setDeleteAttemptCount] = useState(0);
+
+    const managedEmployeeCount = useMemo(
+        () => employees.filter((employee) => !isOwnerEmployee(employee)).length,
+        [employees],
+    );
 
 
 
@@ -142,6 +158,12 @@ export function OwnerEmployeesPage() {
     }, [activeMenu]);
 
     const openDeleteModal = (emp: Employee) => {
+        if (isOwnerEmployee(emp)) {
+            toast.error(t('owner.staff.ownerProtected', {
+                defaultValue: 'The account owner cannot be deactivated from employee management.',
+            }));
+            return;
+        }
         setEmployeeToDelete(emp);
         setDeletePassword('');
         setDeleteError('');
@@ -217,8 +239,19 @@ export function OwnerEmployeesPage() {
         }
     };
 
+    const openEditEmployee = (emp: Employee) => {
+        if (isOwnerEmployee(emp)) {
+            toast.error(t('owner.staff.ownerEditProtected', {
+                defaultValue: 'The owner profile is managed from Account settings.',
+            }));
+            return;
+        }
+        setEditingEmployee(emp);
+        setIsFormModalOpen(true);
+    };
+
     const handleOpenAddEmployeeModal = () => {
-        if (employees.length >= MAX_EMPLOYEES_PER_ACCOUNT) {
+        if (managedEmployeeCount >= MAX_EMPLOYEES_PER_ACCOUNT) {
             window.alert(EMPLOYEE_LIMIT_POPUP_MESSAGE);
             return;
         }
@@ -228,7 +261,7 @@ export function OwnerEmployeesPage() {
 
     const handleEmployeeSubmit = async (data: any) => {
         try {
-            if (!editingEmployee && employees.length >= MAX_EMPLOYEES_PER_ACCOUNT) {
+            if (!editingEmployee && managedEmployeeCount >= MAX_EMPLOYEES_PER_ACCOUNT) {
                 window.alert(EMPLOYEE_LIMIT_POPUP_MESSAGE);
                 return;
             }
@@ -341,6 +374,8 @@ export function OwnerEmployeesPage() {
 
     const getRoleStyle = (role: string) => {
         switch (role?.toUpperCase()) {
+            case 'ACCOUNT_OWNER':
+                return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
             case 'ADMIN':
                 return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
             case 'MANAGER':
@@ -351,6 +386,9 @@ export function OwnerEmployeesPage() {
     };
 
     const getRoleLabel = (role: string) => {
+        if (role?.toUpperCase() === 'ACCOUNT_OWNER') {
+            return t('staff.roles.accountOwner', { defaultValue: 'Owner' });
+        }
         const translationKey = `staff.roles.${role?.toLowerCase?.() || ''}`;
         const translatedRole = t(translationKey);
         if (translatedRole !== translationKey) {
@@ -397,7 +435,7 @@ export function OwnerEmployeesPage() {
     const stats = useMemo(() => ({
         total: employees.length,
         admins: employees.filter(e => e.role === 'ADMIN').length,
-        staff: employees.filter(e => e.role !== 'ADMIN').length,
+        staff: employees.filter(e => e.role !== 'ADMIN' && !isOwnerEmployee(e)).length,
         active: employees.filter(e => e.hasActiveShift).length
     }), [employees]);
 
@@ -536,7 +574,7 @@ export function OwnerEmployeesPage() {
                                 return (
                                 <div
                                     key={emp.id}
-                                    className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg hover:border-indigo-500/30 p-6 transition-all duration-300 overflow-hidden"
+                                    className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border shadow-sm hover:shadow-lg hover:border-indigo-500/30 p-6 transition-all duration-300 overflow-hidden ${isOwnerEmployee(emp) ? 'border-amber-300/60 dark:border-amber-500/30 bg-amber-50/40 dark:bg-amber-500/[0.04]' : 'border-gray-200 dark:border-white/5'}`}
                                 >
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
@@ -552,6 +590,11 @@ export function OwnerEmployeesPage() {
                                                 <div>
                                                     <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
                                                         {emp.firstName} {emp.lastName}
+                                                        {isOwnerEmployee(emp) && (
+                                                            <span className="ml-2 align-middle px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide">
+                                                                {t('staff.roles.accountOwner', { defaultValue: 'Owner' })}
+                                                            </span>
+                                                        )}
                                                     </h3>
                                                     <p className="text-xs text-gray-500 mt-1">
                                                         {emp.username}
@@ -579,8 +622,7 @@ export function OwnerEmployeesPage() {
                                                 >
                                                     <button
                                                         onClick={() => {
-                                                            setEditingEmployee(emp);
-                                                            setIsFormModalOpen(true);
+                                                            openEditEmployee(emp);
                                                             setActiveMenu(null);
                                                         }}
                                                         className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
@@ -593,10 +635,13 @@ export function OwnerEmployeesPage() {
                                                             handleDeleteEmployee(emp.id);
                                                             setActiveMenu(null);
                                                         }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors border-t border-gray-100 dark:border-white/5"
+                                                        disabled={isOwnerEmployee(emp)}
+                                                        className={`w-full px-4 py-3 text-left text-sm font-medium flex items-center gap-3 transition-colors border-t border-gray-100 dark:border-white/5 ${isOwnerEmployee(emp) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10'}`}
                                                     >
                                                         <Trash2 size={16} />
-                                                        {t('common.deactivate')}
+                                                        {isOwnerEmployee(emp)
+                                                            ? t('staff.ownerProtected', { defaultValue: 'Owner protected' })
+                                                            : t('common.deactivate')}
                                                     </button>
                                                 </PortalDropdown>
                                             </div>
@@ -666,7 +711,7 @@ export function OwnerEmployeesPage() {
                                     return (
                                         <div
                                             key={emp.id}
-                                            className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                                            className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${isOwnerEmployee(emp) ? 'bg-amber-50/50 dark:bg-amber-500/[0.04]' : ''}`}
                                         >
                                             <div className="flex items-start justify-between mb-3">
                                                 <div className="flex items-center gap-3">
@@ -674,7 +719,14 @@ export function OwnerEmployeesPage() {
                                                         {getDisplayInitial(emp.firstName, emp.username)}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-900 dark:text-white text-sm">{emp.firstName} {emp.lastName}</p>
+                                                        <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
+                                                            <span>{emp.firstName} {emp.lastName}</span>
+                                                            {isOwnerEmployee(emp) && (
+                                                                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide">
+                                                                    {t('staff.roles.accountOwner', { defaultValue: 'Owner' })}
+                                                                </span>
+                                                            )}
+                                                        </p>
                                                         <p className="text-xs text-gray-500">{emp.username}</p>
                                                     </div>
                                                 </div>
@@ -725,8 +777,7 @@ export function OwnerEmployeesPage() {
                                             <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-white/5">
                                                 <button
                                                     onClick={() => {
-                                                        setEditingEmployee(emp);
-                                                        setIsFormModalOpen(true);
+                                                        openEditEmployee(emp);
                                                     }}
                                                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all text-xs font-bold touch-target"
                                                 >
@@ -735,10 +786,13 @@ export function OwnerEmployeesPage() {
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteEmployee(emp.id)}
-                                                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
+                                                    disabled={isOwnerEmployee(emp)}
+                                                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border transition-all text-xs font-bold touch-target ${isOwnerEmployee(emp) ? 'border-amber-200 text-amber-600 cursor-not-allowed opacity-70' : 'border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
                                                 >
                                                     <Trash2 size={14} />
-                                                    {t('common.deactivate')}
+                                                    {isOwnerEmployee(emp)
+                                                        ? t('staff.ownerProtected', { defaultValue: 'Owner protected' })
+                                                        : t('common.deactivate')}
                                                 </button>
                                             </div>
                                         </div>
@@ -806,7 +860,7 @@ export function OwnerEmployeesPage() {
                                             return (
                                                 <tr
                                                     key={emp.id}
-                                                    className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                                                    className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${isOwnerEmployee(emp) ? 'bg-amber-50/40 dark:bg-amber-500/[0.04]' : ''}`}
                                                 >
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-4">
@@ -814,7 +868,14 @@ export function OwnerEmployeesPage() {
                                                                 {getDisplayInitial(emp.firstName, emp.username)}
                                                             </div>
                                                             <div>
-                                                                <p className="font-bold text-gray-900 dark:text-white text-sm">{emp.firstName} {emp.lastName}</p>
+                                                                <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
+                                                                    <span>{emp.firstName} {emp.lastName}</span>
+                                                                    {isOwnerEmployee(emp) && (
+                                                                        <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide">
+                                                                            {t('staff.roles.accountOwner', { defaultValue: 'Owner' })}
+                                                                        </span>
+                                                                    )}
+                                                                </p>
                                                                 <p className="text-xs text-gray-500">{emp.username}</p>
                                                             </div>
                                                         </div>
@@ -860,8 +921,7 @@ export function OwnerEmployeesPage() {
                                                         <div className="flex items-center justify-center gap-1 sm:gap-2">
                                                             <button
                                                                 onClick={() => {
-                                                                    setEditingEmployee(emp);
-                                                                    setIsFormModalOpen(true);
+                                                                    openEditEmployee(emp);
                                                                 }}
                                                                 aria-label={t('common.edit')}
                                                                 className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
@@ -892,8 +952,7 @@ export function OwnerEmployeesPage() {
                                                                     <button
                                                                         onClick={() => {
                                                                             setActiveMenu(null);
-                                                                            setEditingEmployee(emp);
-                                                                            setIsFormModalOpen(true);
+                                                                            openEditEmployee(emp);
                                                                         }}
                                                                         className="w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
                                                                     >
@@ -905,10 +964,15 @@ export function OwnerEmployeesPage() {
                                                                             setActiveMenu(null);
                                                                             handleDeleteEmployee(emp.id);
                                                                         }}
-                                                                        className="w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+                                                                        disabled={isOwnerEmployee(emp)}
+                                                                        className={`w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit transition-colors text-left border-t border-gray-100 dark:border-white/5 ${isOwnerEmployee(emp) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
                                                                     >
                                                                         <Trash2 size={14} />
-                                                                        <span>{t('common.deactivate')}</span>
+                                                                        <span>
+                                                                            {isOwnerEmployee(emp)
+                                                                                ? t('staff.ownerProtected', { defaultValue: 'Owner protected' })
+                                                                                : t('common.deactivate')}
+                                                                        </span>
                                                                     </button>
                                                                 </PortalDropdown>
                                                             </div>

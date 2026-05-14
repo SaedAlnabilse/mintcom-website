@@ -42,6 +42,9 @@ interface Staff {
   permissions?: string[];
   allowedDiscounts?: string[];
   customRoleId?: string;
+  isAccountOwner?: boolean;
+  isOwnerAccount?: boolean;
+  isProtected?: boolean;
 }
 
 interface Discount {
@@ -53,6 +56,14 @@ interface Discount {
 
 const getDisplayInitial = (name?: string, username?: string) =>
   (name?.trim()?.charAt(0) || username?.trim()?.charAt(0) || '?').toUpperCase();
+
+const isOwnerStaff = (member: Pick<Staff, 'role' | 'isAccountOwner' | 'isOwnerAccount' | 'isProtected'>) =>
+  Boolean(
+    member.isAccountOwner ||
+    member.isOwnerAccount ||
+    member.isProtected ||
+    member.role?.toUpperCase() === 'ACCOUNT_OWNER',
+  );
 
 const MAX_EMPLOYEES_PER_ACCOUNT = 50;
 const EMPLOYEE_LIMIT_POPUP_MESSAGE =
@@ -105,6 +116,10 @@ export function StaffPage() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Staff | 'status'; direction: 'asc' | 'desc' } | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const managedStaffCount = useMemo(
+    () => staff.filter((member) => !isOwnerStaff(member)).length,
+    [staff],
+  );
 
   // Close dropdown when clicking outside or scrolling
   useEffect(() => {
@@ -216,6 +231,22 @@ export function StaffPage() {
 
     return result;
   }, [staff, filterRole, filterStatus, searchQuery, sortConfig]);
+  const shouldShowStatusEmptyState = !searchQuery.trim() && filterRole === 'ALL' && filterStatus !== 'ALL';
+  const staffEmptyTitle = shouldShowStatusEmptyState
+    ? t(
+        filterStatus === 'INACTIVE' ? 'staff.messages.noInactiveStaff' : 'staff.messages.noActiveStaff',
+        {
+          defaultValue: filterStatus === 'INACTIVE' ? 'No inactive employees found' : 'No active employees found',
+        },
+      )
+    : searchQuery.trim()
+      ? t('common.noResults')
+      : t('staff.messages.noStaff');
+  const staffEmptyDescription = shouldShowStatusEmptyState
+    ? ''
+    : searchQuery.trim()
+      ? t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
+      : t('staff.messages.noStaffDesc');
 
   // Pagination Logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -235,8 +266,21 @@ export function StaffPage() {
   };
 
   const openEditModal = (member: Staff) => {
+    if (isOwnerStaff(member)) {
+      toast.error(t('staff.messages.ownerProtected', {
+        defaultValue: 'The owner account is managed from Account settings.',
+      }));
+      return;
+    }
     setEditingStaff(member);
     setShowModal(true);
+  };
+
+  const moveCreateViewToActive = () => {
+    if (filterStatus === 'INACTIVE') {
+      setFilterStatus('ACTIVE');
+      setCurrentPage(1);
+    }
   };
 
   const handleExport = () => {
@@ -264,7 +308,7 @@ export function StaffPage() {
   const onEmployeeSubmit = async (payload: Record<string, any>) => {
     try {
       setIsSubmitting(true);
-      if (!editingStaff && staff.length >= MAX_EMPLOYEES_PER_ACCOUNT) {
+      if (!editingStaff && managedStaffCount >= MAX_EMPLOYEES_PER_ACCOUNT) {
         setConfirmConfig({
           isOpen: true,
           title: t('common.error'),
@@ -282,6 +326,7 @@ export function StaffPage() {
       } else {
         await api.post('/api/users', payload);
         toast.success(t('staff.messages.created'));
+        moveCreateViewToActive();
       }
       setShowModal(false);
       fetchStaff();
@@ -314,7 +359,7 @@ export function StaffPage() {
   };
 
   const handleOpenAddEmployeeModal = () => {
-    if (staff.length >= MAX_EMPLOYEES_PER_ACCOUNT) {
+    if (managedStaffCount >= MAX_EMPLOYEES_PER_ACCOUNT) {
       setConfirmConfig({
         isOpen: true,
         title: t('common.error'),
@@ -330,7 +375,14 @@ export function StaffPage() {
     setShowModal(true);
   };
 
-  const handleDelete = (staffId: string, username: string) => {
+  const handleDelete = (staffId: string, username: string, member?: Staff) => {
+    const targetMember = member || staff.find((staffMember) => staffMember.id === staffId);
+    if (targetMember && isOwnerStaff(targetMember)) {
+      toast.error(t('staff.messages.ownerDeactivateBlocked', {
+        defaultValue: 'The account owner cannot be deactivated from employee management.',
+      }));
+      return;
+    }
     setSecurityModal({
       isOpen: true,
       memberId: staffId,
@@ -340,6 +392,8 @@ export function StaffPage() {
 
   const getRoleStyle = (role: string) => {
     switch (role?.toUpperCase()) {
+      case 'ACCOUNT_OWNER':
+        return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
       case 'ADMIN':
         return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
       case 'MANAGER':
@@ -347,6 +401,17 @@ export function StaffPage() {
       default:
         return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
     }
+  };
+
+  const getRoleLabel = (role: string) => {
+    if (role?.toUpperCase() === 'ACCOUNT_OWNER') {
+      return t('staff.roles.accountOwner', { defaultValue: 'Owner' });
+    }
+    const translationKey = `staff.roles.${role.toLowerCase()}`;
+    const translatedRole = t(translationKey);
+    return translatedRole !== translationKey
+      ? translatedRole
+      : role.charAt(0) + role.slice(1).toLowerCase();
   };
 
   return (
@@ -388,7 +453,7 @@ export function StaffPage() {
           { label: t('owner.employees.totalUsers'), info: t('owner.staff.usersInfo'), value: staff.length, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
           { label: t('owner.employees.activeNow'), info: t('owner.staff.activeInfo'), value: staff.filter(s => s.isClockedIn).length, icon: UserCheck, color: 'text-paymint-green', bg: 'bg-paymint-green/' },
           { label: t('owner.staff.admins'), info: t('owner.staff.adminsInfo'), value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-          { label: t('owner.staff.standardUsers'), info: t('owner.staff.standardInfo'), value: staff.filter(s => s.role !== 'ADMIN').length, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+          { label: t('owner.staff.standardUsers'), info: t('owner.staff.standardInfo'), value: staff.filter(s => s.role !== 'ADMIN' && !isOwnerStaff(s)).length, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
           <div
             key={i}
@@ -469,8 +534,10 @@ export function StaffPage() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <Users size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
-            <h3 className="dashboard-card-value mb-2">{searchQuery.trim() ? t('common.noResults') : t('staff.messages.noStaff')}</h3>
-            <p className="text-sm font-medium text-gray-500 max-w-xs mx-auto">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('staff.messages.noStaffDesc')}</p>
+            <h3 className="dashboard-card-value mb-2">{staffEmptyTitle}</h3>
+            {staffEmptyDescription ? (
+              <p className="text-sm font-medium text-gray-500 max-w-xs mx-auto">{staffEmptyDescription}</p>
+            ) : null}
           </div>
         ) : (
           <>
@@ -480,7 +547,7 @@ export function StaffPage() {
                 <div
                   key={member.id}
                   data-member-id={member.id}
-                  className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                  className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${isOwnerStaff(member) ? 'bg-amber-50/50 dark:bg-amber-500/[0.04]' : ''}`}
                 >
                   {/* Card Header */}
                   <div className="flex items-start justify-between mb-3">
@@ -489,15 +556,20 @@ export function StaffPage() {
                         {getDisplayInitial(member.name, member.username)}
                       </div>
                       <div>
-                        <p className="font-bold text-gray-900 dark:text-white text-sm">{member.name}</p>
+                        <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
+                          <span>{member.name}</span>
+                          {isOwnerStaff(member) && (
+                            <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide">
+                              {t('staff.roles.accountOwner', { defaultValue: 'Owner' })}
+                            </span>
+                          )}
+                        </p>
                         <p className="text-xs text-gray-500">{member.username}</p>
                       </div>
                     </div>
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
                       <Shield size={10} />
-                      {t(`staff.roles.${member.role.toLowerCase()}`) !== `staff.roles.${member.role.toLowerCase()}`
-                        ? t(`staff.roles.${member.role.toLowerCase()}`)
-                        : member.role.charAt(0) + member.role.slice(1).toLowerCase()}
+                      {getRoleLabel(member.role)}
                     </span>
                   </div>
 
@@ -549,11 +621,14 @@ export function StaffPage() {
                       {t('common.edit')}
                     </button>
                     <button
-                      onClick={() => handleDelete(member.id, member.username)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
+                      onClick={() => handleDelete(member.id, member.username, member)}
+                      disabled={isOwnerStaff(member)}
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border transition-all text-xs font-bold touch-target ${isOwnerStaff(member) ? 'border-amber-200 text-amber-600 cursor-not-allowed opacity-70' : 'border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
                     >
                       <Trash2 size={14} />
-                      {t('common.deactivate')}
+                      {isOwnerStaff(member)
+                        ? t('staff.ownerProtected', { defaultValue: 'Owner protected' })
+                        : t('common.deactivate')}
                     </button>
                   </div>
                 </div>
@@ -602,7 +677,7 @@ export function StaffPage() {
                     <tr
                       key={member.id}
                       data-member-id={member.id}
-                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                      className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${isOwnerStaff(member) ? 'bg-amber-50/40 dark:bg-amber-500/[0.04]' : ''}`}
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
@@ -610,7 +685,14 @@ export function StaffPage() {
                             {getDisplayInitial(member.name, member.username)}
                           </div>
                           <div>
-                            <p className="font-bold text-gray-900 dark:text-white text-sm">{member.name}</p>
+                            <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
+                              <span>{member.name}</span>
+                              {isOwnerStaff(member) && (
+                                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide">
+                                  {t('staff.roles.accountOwner', { defaultValue: 'Owner' })}
+                                </span>
+                              )}
+                            </p>
                             <p className="text-xs text-gray-500">{member.username}</p>
                           </div>
                         </div>
@@ -618,9 +700,7 @@ export function StaffPage() {
                       <td className="px-6 py-4 text-center">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
                           <Shield size={10} />
-                          {t(`staff.roles.${member.role.toLowerCase()}`) !== `staff.roles.${member.role.toLowerCase()}`
-                            ? t(`staff.roles.${member.role.toLowerCase()}`)
-                            : member.role.charAt(0) + member.role.slice(1).toLowerCase()}
+                          {getRoleLabel(member.role)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
@@ -696,11 +776,16 @@ export function StaffPage() {
                                 <span>{t('staff.actions.resetPassword')}</span>
                               </button>
                               <button
-                                onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
-                                className="w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+                                onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username, member); }}
+                                disabled={isOwnerStaff(member)}
+                                className={`w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit transition-colors text-left border-t border-gray-100 dark:border-white/5 ${isOwnerStaff(member) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
                               >
                                 <Trash2 size={14} />
-                                <span>{t('common.deactivate')}</span>
+                                <span>
+                                  {isOwnerStaff(member)
+                                    ? t('staff.ownerProtected', { defaultValue: 'Owner protected' })
+                                    : t('common.deactivate')}
+                                </span>
                               </button>
                             </PortalDropdown>
                           </div>
@@ -727,7 +812,7 @@ export function StaffPage() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onSubmit={onEmployeeSubmit}
-        onDelete={editingStaff ? () => handleDelete(editingStaff.id, editingStaff.username) : undefined}
+        onDelete={editingStaff ? () => handleDelete(editingStaff.id, editingStaff.username, editingStaff) : undefined}
         initialData={editingStaff || undefined}
         availableDiscounts={discounts}
         isSubmitting={isSubmitting}

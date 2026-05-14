@@ -101,6 +101,33 @@ export function PaymentMethodsPage() {
   const watchName = watch('name');
   const isEditingInactiveMethod = !!editingMethod && !editingMethod.isDefault && !editingMethod.isActive;
   const isEditingInactiveCard = !!editingCard && editingCard.isActive === false;
+  const movePaymentMethodsCreateViewToActive = () => {
+    if (paymentMethodStatusFilter === 'INACTIVE') {
+      setPaymentMethodStatusFilter('ACTIVE');
+    }
+  };
+  const moveCardTypesCreateViewToActive = () => {
+    if (cardTypeStatusFilter === 'INACTIVE') {
+      setCardTypeStatusFilter('ACTIVE');
+    }
+  };
+  const openCreatePaymentMethodModal = () => {
+    setEditingMethod(null);
+    reset({ name: '', isActive: true });
+    setImagePreview(null);
+    setSelectedImage(null);
+    movePaymentMethodsCreateViewToActive();
+    setShowModal(true);
+  };
+  const openCreateCardTypeModal = () => {
+    setEditingCard(null);
+    setNewCardName('');
+    setCardImagePreview(null);
+    setSelectedCardImage(null);
+    moveCardTypesCreateViewToActive();
+    setCardErrors({});
+    setShowCardModal(true);
+  };
 
   const getFallbackLogo = (name: string) => {
     const lower = name.toLowerCase();
@@ -268,6 +295,7 @@ export function PaymentMethodsPage() {
       } else {
         await api.post('/app-settings/payment-methods', payload);
         toast.success(t('paymentMethods.messages.created'));
+        movePaymentMethodsCreateViewToActive();
       }
 
       setShowModal(false);
@@ -343,6 +371,7 @@ export function PaymentMethodsPage() {
       } else {
         await api.post('/card-types', payload);
         toast.success(t('paymentMethods.messages.brandAdded'));
+        moveCardTypesCreateViewToActive();
       }
 
       setShowCardModal(false);
@@ -410,6 +439,18 @@ export function PaymentMethodsPage() {
       ),
     [paymentMethods, paymentMethodStatusFilter],
   );
+  const cardTypesEmptyLabel =
+    cardTypeStatusFilter === 'INACTIVE'
+      ? t('paymentMethods.noInactiveCardBrands', 'No inactive card brands found')
+      : cardTypeStatusFilter === 'ACTIVE'
+        ? t('paymentMethods.noActiveCardBrands', 'No active card brands found')
+        : t('common.noResults', 'No results');
+  const paymentMethodsEmptyLabel =
+    paymentMethodStatusFilter === 'INACTIVE'
+      ? t('paymentMethods.noInactivePaymentMethods', 'No inactive payment methods found')
+      : paymentMethodStatusFilter === 'ACTIVE'
+        ? t('paymentMethods.noActivePaymentMethods', 'No active payment methods found')
+        : t('common.noResults', 'No results');
 
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-16" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -475,7 +516,7 @@ export function PaymentMethodsPage() {
             </div>
           ) : visibleCardTypes.length === 0 ? (
             <div className="col-span-full py-20 text-center bg-gray-50/50 dark:bg-white/[0.01] rounded-[24px] border border-dashed border-gray-200 dark:border-white/5">
-              <p className="text-gray-400 font-black tracking-[0.2em] text-xs uppercase">{t('common.noResults', 'No results')}</p>
+              <p className="text-gray-400 font-black tracking-[0.2em] text-xs uppercase">{cardTypesEmptyLabel}</p>
             </div>
           ) : (
             visibleCardTypes.map((card) => (
@@ -546,16 +587,18 @@ export function PaymentMethodsPage() {
           )}
 
           {/* Add New Network Card */}
-          <motion.button
-            layout
-            onClick={() => { setEditingCard(null); setNewCardName(''); setCardImagePreview(null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
-            className="group relative aspect-square sm:aspect-auto sm:min-h-[220px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-[24px] p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-4"
-          >
-            <div className="w-14 h-14 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
-              <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
-            </div>
-            <span className="text-sm font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{t('paymentMethods.addBrand')}</span>
-          </motion.button>
+          {cardTypeStatusFilter === 'ACTIVE' && (
+            <motion.button
+              layout
+              onClick={openCreateCardTypeModal}
+              className="group relative aspect-square sm:aspect-auto sm:min-h-[220px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-[24px] p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-4"
+            >
+              <div className="w-14 h-14 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
+                <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+              </div>
+              <span className="text-sm font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{t('paymentMethods.addBrand')}</span>
+            </motion.button>
+          )}
         </div>
       </section>
 
@@ -609,7 +652,7 @@ export function PaymentMethodsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
             {visiblePaymentMethods.length === 0 ? (
               <div className="col-span-full py-20 text-center bg-gray-50/50 dark:bg-white/[0.01] rounded-[24px] border border-dashed border-gray-200 dark:border-white/5">
-                <p className="text-gray-400 font-black tracking-[0.2em] text-xs uppercase">{t('common.noResults', 'No results')}</p>
+                <p className="text-gray-400 font-black tracking-[0.2em] text-xs uppercase">{paymentMethodsEmptyLabel}</p>
               </div>
             ) : visiblePaymentMethods.map((method) => (
               <motion.div
@@ -696,16 +739,18 @@ export function PaymentMethodsPage() {
             ))}
 
             {/* Add New Method Card */}
-            <motion.button
-              layout
-              onClick={() => { setEditingMethod(null); reset({ name: '', isActive: true }); setImagePreview(null); setShowModal(true); }}
-              className="group relative aspect-square sm:aspect-auto sm:min-h-[220px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-[24px] p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-4"
-            >
-              <div className="w-14 h-14 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
-                <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
-              </div>
-              <span className="text-sm font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{t('paymentMethods.addPayment')}</span>
-            </motion.button>
+            {paymentMethodStatusFilter === 'ACTIVE' && (
+              <motion.button
+                layout
+                onClick={openCreatePaymentMethodModal}
+                className="group relative aspect-square sm:aspect-auto sm:min-h-[220px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-[24px] p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-4"
+              >
+                <div className="w-14 h-14 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
+                  <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+                </div>
+                <span className="text-sm font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{t('paymentMethods.addPayment')}</span>
+              </motion.button>
+            )}
           </div>
         )}
       </section>

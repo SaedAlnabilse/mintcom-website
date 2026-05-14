@@ -136,6 +136,13 @@ export function CategoriesPage() {
     setShowModal(true);
   };
 
+  const moveCreateViewToActive = () => {
+    if (filterStatus === 'INACTIVE') {
+      setFilterStatus('ACTIVE');
+      setCurrentPage(1);
+    }
+  };
+
   const categoryCsvColumns: CsvColumn[] = [
     { key: 'name', label: 'Name', required: true, type: 'string' },
   ];
@@ -254,6 +261,22 @@ export function CategoriesPage() {
       );
     });
   }, [categories, normalizedSearchQuery, filterStatus]);
+  const shouldShowStatusEmptyState = !normalizedSearchQuery && filterStatus !== 'ALL';
+  const categoriesEmptyTitle = shouldShowStatusEmptyState
+    ? t(
+        filterStatus === 'INACTIVE' ? 'categories.messages.noInactiveCategories' : 'categories.messages.noActiveCategories',
+        {
+          defaultValue: filterStatus === 'INACTIVE' ? 'No inactive categories found' : 'No active categories found',
+        },
+      )
+    : normalizedSearchQuery
+      ? t('categories.messages.noResults')
+      : t('categories.messages.noCategories');
+  const categoriesEmptyDescription = shouldShowStatusEmptyState
+    ? ''
+    : normalizedSearchQuery
+      ? t('categories.messages.noResultsDesc', { query: searchQuery.trim() })
+      : t('categories.messages.noCategoriesDesc');
 
   const totalPages = Math.ceil((Array.isArray(filteredCategories) ? filteredCategories : []).length / ITEMS_PER_PAGE);
 
@@ -280,6 +303,7 @@ export function CategoriesPage() {
     } else {
       await api.post('/api/categories', payload);
       toast.success(t('categories.messages.created'));
+      moveCreateViewToActive();
     }
     setShowModal(false);
     fetchData();
@@ -555,12 +579,10 @@ export function CategoriesPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Layers className="w-10 h-10 text-gray-300" />
           </div>
-          <h3 className="dashboard-card-value mb-2">
-            {normalizedSearchQuery ? t('categories.messages.noResults') : t('categories.messages.noCategories')}
-          </h3>
-          <p className="text-sm font-bold text-gray-500 max-w-xs">
-            {normalizedSearchQuery ? t('categories.messages.noResultsDesc', { query: searchQuery.trim() }) : t('categories.messages.noCategoriesDesc')}
-          </p>
+          <h3 className="dashboard-card-value mb-2">{categoriesEmptyTitle}</h3>
+          {categoriesEmptyDescription ? (
+            <p className="text-sm font-bold text-gray-500 max-w-xs">{categoriesEmptyDescription}</p>
+          ) : null}
         </div>
       ) : (
         <div className="space-y-8">
