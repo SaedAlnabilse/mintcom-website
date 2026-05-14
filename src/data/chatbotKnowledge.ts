@@ -16,6 +16,7 @@ export interface KnowledgeEntry {
   navigationFallbackPath?: string;
   priority?: number;
   relatedTopics?: string[];
+  contexts?: string[];
 }
 
 export const PAYMINT_KNOWLEDGE: KnowledgeEntry[] = [
@@ -338,7 +339,8 @@ Your product is now ready to sell!`,
 منتجك جاهز للبيع الآن! 🎉`,
     category: 'products',
     navigationPath: '/dashboard/:location/products',
-    relatedTopics: ['categories', 'recipe operations', 'addons']
+    relatedTopics: ['categories', 'recipe operations', 'addons'],
+    contexts: ['dashboard-products', 'dashboard-categories', 'dashboard-home']
   },
   {
     id: 'categories',
@@ -656,7 +658,8 @@ The employee will receive an email invitation.`,
 الموظف سيتلقى دعوة بالبريد الإلكتروني.`,
     category: 'staff',
     navigationPath: '/dashboard/:location/staff',
-    relatedTopics: ['roles-permissions']
+    relatedTopics: ['roles-permissions'],
+    contexts: ['dashboard-staff', 'brand-team']
   },
   {
     id: 'roles-permissions',
@@ -794,7 +797,8 @@ Important: if a location is already linked to another brand, it will not appear 
     category: 'feature',
     navigationPath: '/owner/establishments',
     priority: 14,
-    relatedTopics: ['add-owner-location', 'link-location-brand', 'create-brand']
+    relatedTopics: ['add-owner-location', 'link-location-brand', 'create-brand'],
+    contexts: ['owner-overview', 'owner-establishments', 'brand-locations']
   },
   {
     id: 'add-owner-location',
@@ -821,7 +825,8 @@ This flow is for creating a brand-new location. Linking an existing unlinked loc
     navigationPath: '/onboarding',
     navigationFallbackPath: '/owner/establishments',
     priority: 18,
-    relatedTopics: ['link-location-brand', 'establishments', 'create-brand']
+    relatedTopics: ['link-location-brand', 'establishments', 'create-brand'],
+    contexts: ['owner-overview', 'owner-establishments', 'onboarding', 'brand-locations']
   },
   {
     id: 'create-brand',
@@ -851,7 +856,8 @@ Later, if you want to add more locations to the same brand, open the brand dashb
     category: 'feature',
     navigationPath: '/owner/brands',
     priority: 18,
-    relatedTopics: ['link-location-brand', 'add-owner-location', 'establishments']
+    relatedTopics: ['link-location-brand', 'add-owner-location', 'establishments'],
+    contexts: ['owner-overview', 'owner-brands']
   },
   {
     id: 'link-location-brand',
@@ -890,7 +896,8 @@ Important:
     navigationPath: '/brand/:brand/locations',
     navigationFallbackPath: '/owner/brands',
     priority: 24,
-    relatedTopics: ['add-owner-location', 'create-brand', 'establishments']
+    relatedTopics: ['add-owner-location', 'create-brand', 'establishments'],
+    contexts: ['brand-locations', 'brand-overview', 'owner-brands']
   },
 
   // ========== HARDWARE ==========
@@ -994,7 +1001,8 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
 
 **الإدارة:** اذهب إلى **المالك > الفوترة** لعرض الخطط، تبديل دورة الفوترة، تحديث طرق الدفع، وتحميل الفواتير.`,
     category: 'billing',
-    navigationPath: '/owner/billing'
+    navigationPath: '/owner/billing',
+    contexts: ['owner-billing', 'owner-overview']
   },
 
   // ========== MISC ==========

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import PaymintLeafIcon from '../../assets/small-logo.svg';
+import { useChatPageContext } from '../../hooks/useChatPageContext';
 
 interface DualLauncherProps {
   onOpenChat: () => void;
@@ -27,17 +28,25 @@ export function DualLauncher({
   onCloseAll,
   tasksCount = 0
 }: DualLauncherProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const params = useParams();
-  const { account } = useAuth();
+  const { account, currentEstablishment } = useAuth();
   
   const isDashboardRoute = /^\/dashboard\/[^/]+/.test(location.pathname);
   const isBrandRoute = /^\/brand\/[^/]+/.test(location.pathname);
   const isOwnerRoute = /^\/owner/.test(location.pathname);
-  const isRTL = t('common.locale') === 'ar';
+  const isRTL = i18n.language === 'ar';
   const isAnyOpen = isChatOpen || isFAQOpen || isTasksOpen;
-  const shouldShowTasksLauncher = false;
+  const shouldShowTasksLauncher = isDashboardRoute;
+  const dashboardSlug = currentEstablishment?.establishmentLoginId || currentEstablishment?.id;
+  const pageContext = useChatPageContext(location.pathname, isRTL, {
+    isAuthenticated: Boolean(account),
+    dashboardPath: dashboardSlug ? `/dashboard/${dashboardSlug}` : '/select-establishment',
+    canAccessOwnerPortal: Boolean(account && !account.isSecondaryAdmin),
+  });
+  const launcherTooltip = pageContext.launcherPrompt;
+  const switcherWidth = shouldShowTasksLauncher ? '520px' : isDashboardRoute ? '440px' : '340px';
 
   const isVisible = true;
 
@@ -85,9 +94,9 @@ export function DualLauncher({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.95 }}
           transition={{ type: "spring", stiffness: 320, damping: 26 }}
-          className={`w-[min(${isDashboardRoute ? '440px' : '340px'},calc(100vw-20px))] flex items-center gap-2 p-1.5 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-xl shadow-[0_10px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_10px_32px_rgba(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10`}
+          className={`w-[min(${switcherWidth},calc(100vw-20px))] flex items-center gap-2 p-1.5 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-xl shadow-[0_10px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_10px_32px_rgba(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10`}
         >
-          <div className="grid grid-cols-2 gap-1 flex-1 p-1 rounded-xl bg-gray-100/80 dark:bg-white/5">
+          <div className={`grid ${shouldShowTasksLauncher ? 'grid-cols-3' : 'grid-cols-2'} gap-1 flex-1 p-1 rounded-xl bg-gray-100/80 dark:bg-white/5`}>
             {/* Ask AI Tab */}
             <button
               onClick={() => {
@@ -222,7 +231,7 @@ export function DualLauncher({
                       : `bottom-[60px] ${isRTL ? 'left-0' : 'right-0'}`
                   }`}
                 >
-                  <span>{t('chat.launcher.help_message', 'How can I help you?')} 👋</span>
+                  <span>{launcherTooltip}</span>
                   <button
                     onClick={dismissTooltip}
                     className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400"
