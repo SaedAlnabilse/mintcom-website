@@ -789,12 +789,12 @@ export function ProductFormModal({
 
                             if (target.src.startsWith('data:') || target.dataset.failed) return;
 
-                            const prodUrl = 'https://grateful-liberation-production-d036.up.railway.app';
-                            if (target.src.includes('/uploads/images/') && !target.src.includes(prodUrl)) {
-                              console.log('Attempting fallback to production backend...');
+                            // Fallback: retry with same-origin relative path to go through the proxy.
+                            // This avoids cross-origin requests that fail in Incognito mode.
+                            if (target.src.includes('/uploads/images/')) {
                               target.dataset.failed = 'true';
                               const path = target.src.split('/uploads/')[1];
-                              target.src = `${prodUrl}/uploads/${path}`;
+                              target.src = `/uploads/${path}`;
                             }
                           }}
                         />

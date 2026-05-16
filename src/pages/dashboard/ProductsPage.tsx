@@ -297,20 +297,15 @@ export function ProductsPage() {
     };
 
     // Helper to construct full image URLs
-    // In development, use relative paths to leverage Vite proxy (avoids CORS issues)
-    // In production (Cloudflare Workers), use the full backend URL
-    const isCloudflareWorkers = typeof window !== 'undefined' &&
-        window.location.hostname.endsWith('.workers.dev');
-    const BACKEND_URL = isCloudflareWorkers
-        ? 'https://grateful-liberation-production-d036.up.railway.app'
-        : '';
-
+    // Always use relative paths so requests go through the same-origin proxy
+    // (Vite proxy in dev, Cloudflare Worker in production). This avoids CORS
+    // issues in Incognito/privacy mode where cross-origin requests are blocked.
     const getProductImageUrl = (imagePath?: string) => {
         if (!imagePath) return null;
         if (imagePath.startsWith('http')) return imagePath;
         // Fix: Remove /public prefix to match POS behavior and correct serving path
         const cleanPath = imagePath.replace('/public', '').replace('public/', '');
-        return `${BACKEND_URL}${cleanPath.startsWith('/') ? '' : '/'}${cleanPath}`;
+        return `${cleanPath.startsWith('/') ? '' : '/'}${cleanPath}`;
     };
 
     const saveProduct = async (formData: FormData) => {
