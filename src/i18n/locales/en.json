@@ -2326,7 +2326,7 @@
       "title": "Privacy Policy | PayMint"
     },
     "qa": {
-      "description": "Find answers to frequently asked questions about PayMint POS, pricing, and features.",
+      "description": "Find answers about setup, pricing, features, and support for PayMint POS.",
       "title": "Questions & Answers | PayMint Support"
     },
     "signup": {
@@ -2824,6 +2824,7 @@
       "completed": "Completed",
       "onHold": "On Hold",
       "paidTaxChanged": "Paid (Tax Change)",
+      "partially_refunded": "Partially Refunded",
       "refunded": "Refunded"
     },
     "subtitle": "Oversee All Orders",
@@ -4150,7 +4151,8 @@
         "manage_taxes_backoffice": "Taxes",
         "refunds": "Refunds",
         "view_activity_logs": "Activity Log",
-        "view_cost": "View Costs",        "view_orders": "View Orders",
+        "view_cost": "View Costs",
+        "view_orders": "View Orders",
         "view_reports": "View Reports",
         "view_shift_reports": "Shift Reports"
       },
@@ -4274,11 +4276,11 @@
         "li17": "Access continues until end of current billing period",
         "li18": "Data retained for 30 days after cancellation",
         "li19": "Export your data before the retention period ends",
-        "li2": "7-day free trial for new locations",
+        "li2": "14-day free trial for new locations",
         "li20": "Refunds processed within 5-7 business days",
         "li21": "Contact support for billing disputes",
         "li3": "No setup fees or hidden charges",
-        "li4": "Cancel anytime with 30-day notice",
+        "li4": "Cancel anytime from your billing settings",
         "li5": "Credit and debit cards accepted",
         "li6": "Automatic recurring billing",
         "li7": "Secure PCI-compliant processing",
@@ -4472,12 +4474,12 @@
       "stubTitle": "Coming Soon",
       "tc1": {
         "a1_1": "First, check your internet connection. Try loading another website to verify. If the internet is working, try refreshing the page or clearing your browser cache.",
-        "a1_2": "If the problem persists, try using a different browser or device. You can also check our status page for any known outages.",
+        "a1_2": "If the problem continues, try a different browser or device, then contact support with the exact error and a screenshot.",
         "a1_3": "If none of these steps work, contact our support team with details about the error you're seeing.",
         "a2_1": "Ensure your printer is powered on and connected to the same network as your POS device. Check that the correct printer is selected in Settings > Receipts.",
-        "a2_2": "Try printing a test page from the printer settings. If that works but POS printing doesn't, reinstall the printer driver.",
+        "a2_2": "If the test page prints, reconnect the printer in the app settings and run another test receipt.",
         "a3_1": "PayMint automatically syncs data when your connection is restored. You can continue processing orders in offline mode.",
-        "a3_2": "Once back online, go to Settings > Sync to manually trigger a sync if needed.",
+        "a3_2": "When the connection returns, PayMint syncs saved data automatically. If pending items remain, keep the app open until sync finishes.",
         "a3_3": "All offline transactions are securely stored on your device and will be uploaded when connectivity returns.",
         "h1": "Troubleshooting Common Issues",
         "h2": "Connection Problems",
@@ -4492,7 +4494,7 @@
         "li6": "Update your browser to the latest version",
         "li7": "Contact support if issues persist after trying all steps",
         "p1": "This guide helps you troubleshoot the most common technical issues you may encounter with PayMint.",
-        "p2": "Most issues can be resolved with these simple steps. If you need further assistance, our support team is available 24/7.",
+        "p2": "Most issues can be resolved with these simple steps. If you still need help, email support with the error message, screenshots, and the device you are using.",
         "p3": "Follow this diagnostic process to identify and resolve technical issues.",
         "q1": "Why can't I access the PayMint dashboard?",
         "q2": "My receipt printer isn't working. What should I do?",
@@ -4648,35 +4650,35 @@
       "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
       "noResults": "No results found",
       "q1": {
-        "answer": "PayMint is a comprehensive digital payment solution designed to help businesses of all sizes accept payments, manage finances, and grow. We offer a suite of tools including a payment gateway, point-of-sale systems, and detailed analytics.",
+        "answer": "PayMint is a cloud POS and business management platform for restaurants, cafes, and retail businesses. It helps you manage sales, products, staff, reports, and multiple locations from one place.",
         "question": "What is PayMint?"
       },
       "q2": {
-        "answer": "PayMint is currently available in over 30 countries across North America, Europe, and Asia. We are rapidly expanding to new regions. Please check our supported countries list on our pricing page for the most up-to-date information.",
+        "answer": "PayMint can be used wherever your business can be onboarded and your payment setup is supported. If you are unsure, contact support before creating a new location.",
         "question": "Is PayMint available in my country?"
       },
       "q3": {
-        "answer": "With PayMint, you can accept all major credit and debit cards (Visa, Mastercard, Amex), digital wallets (Apple Pay, Google Pay), and local payment methods specific to your region.",
+        "answer": "In the POS you can accept cash, cards, and any custom payment methods you configure for the location. For card processing, use the terminal or provider connected to your business.",
         "question": "What payment methods can I accept?"
       },
       "q4": {
-        "answer": "Standard payouts are processed daily and typically arrive in your bank account within 2 business days. We also offer an Instant Payout feature for eligible merchants, allowing you to access your funds in minutes for a small fee.",
+        "answer": "Settlement timing depends on your payment provider. PayMint records the sale immediately in your dashboard and reports, while card settlement follows the terms of your processor.",
         "question": "How long do payouts take?"
       },
       "q5": {
-        "answer": "Yes, security is our top priority. We are PCI DSS Level 1 compliant, which is the highest standard of payment security. All data is encrypted using advanced encryption standards (AES-256), and we employ 24/7 fraud monitoring.",
+        "answer": "Yes. We use secure authentication, role-based access, encrypted connections, and activity logs to protect your account and business data.",
         "question": "Is PayMint secure?"
       },
       "q6": {
-        "answer": "You can reset your password by clicking on the \"Forgot Password\" link on the login page. Follow the instructions sent to your registered email address to create a new password. If you are logged in, you can change it from your Account Settings.",
+        "answer": "You can reset your password by clicking Forgot Password on the login screen. Follow the link sent to your registered email address to create a new password.",
         "question": "How do I reset my password?"
       },
       "q7": {
-        "answer": "Yes! Our Team Management feature allows you to add multiple users with different roles and permissions (e.g., Admin, Manager, Cashier). You can manage these settings from the \"Team\" section in your dashboard.",
+        "answer": "Yes. You can add multiple users to your account and assign different roles and permissions from the dashboard or owner portal.",
         "question": "Can I add multiple users to my account?"
       },
       "q8": {
-        "answer": "No, we believe in complete transparency. Our pricing model is simple: a small percentage per transaction plus a fixed fee. There are no setup fees, monthly fees, or hidden charges for our standard plan.",
+        "answer": "No hidden setup fees. Subscription pricing is shown on the pricing page, with monthly and yearly options per location.",
         "question": "Are there any hidden fees?"
       },
       "search_placeholder": "Search for questions...",
@@ -4765,5 +4767,3 @@
     "passwordUppercase": "Password must contain at least one uppercase letter"
   }
 }
-
-

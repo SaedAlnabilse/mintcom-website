@@ -97,11 +97,17 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
             case 'HELD':
                 return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
             case 'REFUNDED':
+            case 'PARTIALLY_REFUNDED':
                 return 'bg-paymint-red/10 text-paymint-red border-paymint-red/20';
             default:
                 return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
         }
     };
+
+    const isRefundable =
+        order.paymentStatus === 'COMPLETED' ||
+        order.status === 'COMPLETED' ||
+        order.status === 'PARTIALLY_REFUNDED';
 
     const handleRefund = async () => {
         if (!canRefund) {
@@ -345,7 +351,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             >
                                 {t('common.close')}
                             </button>
-                            {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                            {isRefundable && (
                                 <div className="flex-1">
                                     <button
                                         onClick={() => {

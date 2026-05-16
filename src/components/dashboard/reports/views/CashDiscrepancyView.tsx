@@ -22,6 +22,27 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
   const itemsPerPage = 10;
 
   const formatCurrency = (value: number) => formatAmount(value);
+  const toNumber = (value: unknown) => Number(value || 0);
+  const getCashSales = (shift: any) =>
+    toNumber(shift.cashSales ?? shift.totalCashSales ?? shift.cashPayments ?? 0);
+  const getExpectedBalance = (shift: any) =>
+    toNumber(
+      shift.expectedBalance ??
+        shift.expectedCash ??
+        shift.expectedCashBalance ??
+        toNumber(shift.openingBalance) +
+          getCashSales(shift) +
+          toNumber(shift.totalPayIn) -
+          toNumber(shift.totalPayOut),
+    );
+  const getClosingBalance = (shift: any) =>
+    toNumber(shift.closingBalance ?? shift.actualCash ?? 0);
+  const getDiscrepancy = (shift: any) =>
+    toNumber(
+      shift.discrepancy ??
+        shift.variance ??
+        getClosingBalance(shift) - getExpectedBalance(shift),
+    );
 
   // Filter only closed shifts with discrepancies
   const closedShifts = useMemo(() => {
@@ -31,20 +52,20 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
   // Calculate statistics
   const stats = useMemo(() => {
     const totalOver = closedShifts.reduce((acc: number, shift: any) => {
-      const disc = shift.discrepancy || 0;
+      const disc = getDiscrepancy(shift);
       return disc > 0 ? acc + disc : acc;
     }, 0);
 
     const totalShort = closedShifts.reduce((acc: number, shift: any) => {
-      const disc = shift.discrepancy || 0;
+      const disc = getDiscrepancy(shift);
       return disc < 0 ? acc + Math.abs(disc) : acc;
     }, 0);
 
     const netVariance = totalOver - totalShort;
-    const overCount = closedShifts.filter((s: any) => (s.discrepancy || 0) > 0.001).length;
-    const shortCount = closedShifts.filter((s: any) => (s.discrepancy || 0) < -0.001).length;
+    const overCount = closedShifts.filter((s: any) => getDiscrepancy(s) > 0.001).length;
+    const shortCount = closedShifts.filter((s: any) => getDiscrepancy(s) < -0.001).length;
     const balancedCount = closedShifts.filter((s: any) => {
-      const disc = s.discrepancy || 0;
+      const disc = getDiscrepancy(s);
       return disc >= -0.001 && disc <= 0.001;
     }).length;
 
@@ -62,7 +83,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
   // Filter shifts based on status filter
   const filteredShifts = useMemo(() => {
     return closedShifts.filter((s: any) => {
-      const discrepancy = s.discrepancy || 0;
+      const discrepancy = getDiscrepancy(s);
       if (statusFilter === 'over') return discrepancy > 0.001;
       if (statusFilter === 'short') return discrepancy < -0.001;
       if (statusFilter === 'balanced') return discrepancy >= -0.001 && discrepancy <= 0.001;
@@ -73,8 +94,8 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
   // Sort shifts by discrepancy (largest first for over, most negative for short)
   const sortedShifts = useMemo(() => {
     return [...filteredShifts].sort((a: any, b: any) => {
-      const discA = Math.abs(a.discrepancy || 0);
-      const discB = Math.abs(b.discrepancy || 0);
+      const discA = Math.abs(getDiscrepancy(a));
+      const discB = Math.abs(getDiscrepancy(b));
       return discB - discA; // Sort by absolute value, largest first
     });
   }, [filteredShifts]);
@@ -302,8 +323,9 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                   {paginatedShifts.map((shift: any, idx: number) => {
-                    const discrepancy = shift.discrepancy || 0;
-                    const expected = (shift.openingBalance || 0) + (shift.totalSales || 0);
+                    const discrepancy = getDiscrepancy(shift);
+                    const expected = getExpectedBalance(shift);
+                    const cashSales = getCashSales(shift);
                     const isOver = discrepancy > 0.001;
                     const isShort = discrepancy < -0.001;
                     return (
@@ -339,7 +361,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                         </td>
                         <td className="px-5 py-4 text-end">
                           <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                            +{formatCurrency(shift.totalSales || 0)}
+                            +{formatCurrency(cashSales)}
                           </span>
                         </td>
                         <td className="px-5 py-4 text-end font-bold text-gray-900 dark:text-white">

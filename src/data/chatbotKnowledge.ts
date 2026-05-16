@@ -53,32 +53,32 @@ The whole process takes just a few minutes. What would you like help with first?
     keywords: ['what is PayMint', 'about PayMint', 'PayMint features', 'what does PayMint do', 'explain PayMint', 'ما هو بيمنت', 'عن بيمنت', 'ميزات بيمنت', 'ماذا يفعل بيمنت', 'ايش بيمنت'],
     question: 'What is PayMint?',
     questionAr: 'ما هو بيمنت؟',
-    answer: `PayMint is a comprehensive Point of Sale (POS) system designed for restaurants, cafes, and retail establishments!
+    answer: `PayMint is a cloud Point of Sale (POS) and business management platform for restaurants, cafes, and retail businesses.
 
 **Key Features:**
-- Multi-device support - connect multiple devices to one account
-- Real-time sales tracking and analytics
-- Shift management with cash reconciliation
+- Multi-location support from one owner dashboard
+- Fast sales, receipts, and refund handling
+- Shift tracking with cash reconciliation
 - Recipe operations with low-stock alerts
-- Built-in loyalty program for customer rewards
-- Multi-language support (English & Arabic)
-- Detailed reports with PDF export
-- Split payment handling
+- Staff roles and permissions
+- Reporting, activity logs, and PDF exports
+- Loyalty tools and customer tracking
+- Offline sales that sync when the connection returns
 
-It's designed to make your daily operations smooth and efficient!`,
-    answerAr: `بيمنت هو نظام نقاط بيع (POS) شامل مصمم للمطاعم والكافيهات ومحلات التجزئة!
+It is built to keep daily operations organized and fast.`,
+    answerAr: `بيمنت هو منصة سحابية لنقاط البيع وإدارة الأعمال للمطاعم والمقاهي ومحلات التجزئة.
 
 **الميزات الرئيسية:**
-- دعم أجهزة متعددة متصلة بحساب واحد
-- تتبع المبيعات والتحليلات بشكل فوري
-- إدارة الورديات مع مطابقة النقد
-- عمليات الوصفات مع تنبيهات النقص
-- برنامج ولاء مدمج لمكافأة العملاء
-- دعم اللغتين العربية والإنجليزية
-- تقارير مفصلة مع تصدير PDF
-- دعم الدفع المقسم
+- دعم مواقع متعددة من لوحة مالك واحدة
+- مبيعات سريعة وإيصالات وإدارة الاسترداد
+- تتبع الورديات مع مطابقة النقد
+- المنتجات والتصنيفات والإضافات وعمليات الوصفات
+- أدوار الموظفين والصلاحيات
+- التقارير وسجل النشاط وتصدير PDF
+- أدوات الولاء وتتبع العملاء
+- المبيعات دون اتصال مع المزامنة عند عودة الاتصال
 
-مصمم لجعل عملياتك اليومية سلسة وفعالة!`,
+تم تصميمه لتنظيم العمليات اليومية وتسريعها.`,
     category: 'getting-started',
     relatedTopics: ['features', 'pricing']
   },
@@ -95,7 +95,7 @@ It's designed to make your daily operations smooth and efficient!`,
 4. Click **"Sign Up"** to create your account
 5. Check your email and click the **verification link**
 
-Once verified, you'll go through our onboarding wizard to set up your first establishment. New users get a **7-day free trial** with full access to all features!`,
+Once verified, you'll go through our onboarding wizard to set up your first establishment. New users get a **14-day free trial** with full access to all features!`,
     answerAr: `إنشاء حساب بيمنت سريع وسهل!
 
 1. اضغط **"تسجيل"** أو زر صفحة التسجيل
@@ -104,7 +104,7 @@ Once verified, you'll go through our onboarding wizard to set up your first esta
 4. اضغط **"تسجيل"** لإنشاء حسابك
 5. افتح بريدك واضغط على **رابط التأكيد**
 
-بعد التأكيد، ستمر بمعالج الإعداد لتهيئة أول موقع لك. المستخدمون الجدد يحصلون على **تجربة مجانية 7 أيام**!`,
+بعد التأكيد، ستمر بمعالج الإعداد لتجهيز أول موقع لك. يحصل المستخدمون الجدد على **تجربة مجانية لمدة 14 يوماً** مع وصول كامل إلى كل الميزات.`,
     category: 'getting-started',
     navigationPath: '/signup'
   },
@@ -180,7 +180,7 @@ The reset link expires in **24 hours** for security.`,
 - Currency settings
 
 **Step 2: Subscription & Payment**
-- New users get a 7-day free trial
+- New users get a 14-day free trial
 - Securely link your payment card
 
 **Step 3: Establishment Credentials**
@@ -199,11 +199,11 @@ If you already have a brand and only want to connect an existing location to it,
 - إعدادات العملة
 
 **الخطوة 2: الاشتراك والدفع**
-- يحصل المستخدم الجديد على تجربة مجانية لمدة 7 أيام
+- يحصل المستخدم الجديد على تجربة مجانية لمدة 14 يوماً
 - ربط بطاقة الدفع بشكل آمن
 
 **الخطوة 3: بيانات المنشأة**
-- إنشاء معرف فريد للمنشأة (مثل: "downtown-cafe")
+- إنشاء معرّف فريد للمنشأة (مثل: "downtown-cafe")
 - تعيين كلمة مرور لاتصال تطبيق نقاط البيع
 
 **الخطوة 4: ملف المسؤول الأول**
@@ -982,7 +982,7 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
     keywords: ['billing', 'subscription', 'plan', 'pricing', 'invoice', 'payment', 'yearly', 'annual', 'monthly', 'location', 'branch', 'فوترة', 'اشتراك', 'خطة', 'أسعار', 'فاتورة', 'دفع', 'سنوي', 'شهري', 'فرع'],
     question: 'How does billing work?',
     questionAr: 'كيف تعمل الفوترة؟',
-    answer: `**Trial:** 7-day free trial with full access.
+    answer: `**Trial:** 14-day free trial with full access.
 
 **Monthly Plan:** 20 USD/month for your first location with full access to all features.
 
@@ -991,15 +991,15 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
 **Additional Locations:** Each extra location after the first is 17 USD/month or 180 USD/year (instead of 204 USD). That's a discounted rate for multi-branch businesses!
 
 **Manage:** Go to **Owner > Billing** to view plans, switch billing cycles, update payment methods, and download invoices.`,
-    answerAr: `**التجربة:** تجربة مجانية 7 أيام مع وصول كامل.
+    answerAr: `**التجربة:** تجربة مجانية لمدة 14 يوماً مع وصول كامل.
 
-**الخطة الشهرية:** 20 USD/شهر للموقع الأول مع وصول كامل لجميع الميزات.
+**الخطة الشهرية:** 20 دولاراً شهرياً للموقع الأول مع وصول كامل إلى جميع الميزات.
 
-**الخطة السنوية:** 210 USD/سنة (بدلاً من 240 USD) — وفّر 30 USD! يمكنك التبديل بين الشهري والسنوي في أي وقت.
+**الخطة السنوية:** 210 دولارات سنوياً (بدلاً من 240 دولاراً) مع توفير 30 دولاراً. ويمكنك التبديل بين الشهري والسنوي في أي وقت.
 
-**المواقع الإضافية:** كل موقع إضافي بعد الأول بـ 17 USD/شهر أو 180 USD/سنة (بدلاً من 204 USD). سعر مخفض للأعمال متعددة الفروع!
+**المواقع الإضافية:** كل موقع إضافي بعد الأول يكلف 17 دولاراً شهرياً أو 180 دولاراً سنوياً (بدلاً من 204 دولارات). هذا سعر مخفض للأعمال متعددة الفروع.
 
-**الإدارة:** اذهب إلى **المالك > الفوترة** لعرض الخطط، تبديل دورة الفوترة، تحديث طرق الدفع، وتحميل الفواتير.`,
+**الإدارة:** انتقل إلى **المالك > الفوترة** لعرض الخطط وتبديل دورة الفوترة وتحديث طرق الدفع وتنزيل الفواتير.`,
     category: 'billing',
     navigationPath: '/owner/billing',
     contexts: ['owner-billing', 'owner-overview']

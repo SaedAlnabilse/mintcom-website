@@ -5,6 +5,9 @@ const toNumber = (value: unknown) => {
   return Number.isFinite(numeric) ? numeric : 0;
 };
 
+const firstPresent = (...values: unknown[]) =>
+  values.find((value) => value !== undefined && value !== null);
+
 const toArray = <T = any>(value: unknown): T[] => (Array.isArray(value) ? value.filter(Boolean) as T[] : []);
 
 export const emptySalesSummary = (): SalesSummary => ({
@@ -35,8 +38,8 @@ export const normalizeSalesSummary = (payload: any): SalesSummary => {
   return {
     ...base,
     ...source,
-    totalRevenue: toNumber(source.totalRevenue),
-    taxCollected: toNumber(source.taxCollected),
+    totalRevenue: toNumber(firstPresent(source.totalRevenue, source.totalNetSales, source.netSales, source.totalSales, source.grossSales)),
+    taxCollected: toNumber(firstPresent(source.taxCollected, source.totalTaxCollected, source.totalTax)),
     grossProfit: toNumber(source.grossProfit),
     totalOrders: toNumber(source.totalOrders),
     totalRefunds: toNumber(source.totalRefunds),
@@ -45,17 +48,17 @@ export const normalizeSalesSummary = (payload: any): SalesSummary => {
     totalPayOut: toNumber(source.totalPayOut),
     dailyBreakdown: toArray(source.dailyBreakdown).map((row: any) => ({
       date: String(row?.date || ''),
-      revenue: toNumber(row?.revenue),
-      count: toNumber(row?.count),
+      revenue: toNumber(firstPresent(row?.revenue, row?.sales, row?.total, row?.amount)),
+      count: toNumber(firstPresent(row?.count, row?.orders, row?.transactions)),
     })),
     paymentMethodBreakdown: toArray(source.paymentMethodBreakdown).map((row: any) => ({
-      name: String(row?.name || 'Unknown'),
-      value: toNumber(row?.value),
+      name: String(row?.name || row?.method || 'Unknown'),
+      value: toNumber(firstPresent(row?.value, row?.amount, row?.total)),
     })),
     discountBreakdown: toArray(source.discountBreakdown).map((row: any) => ({
-      name: String(row?.name || 'Unknown'),
+      name: String(row?.name || row?.discountName || 'Unknown'),
       count: toNumber(row?.count),
-      value: toNumber(row?.value),
+      value: toNumber(firstPresent(row?.value, row?.amount, row?.totalAmount)),
     })),
     cardTypeBreakdown: toArray(source.cardTypeBreakdown),
     otherPaymentBreakdown: toArray(source.otherPaymentBreakdown),
@@ -89,13 +92,13 @@ export const normalizeDashboardStats = (payload: any, overrides: Partial<Dashboa
 
   return {
     ...emptyDashboardStats(),
-    totalRevenue: toNumber(source.totalRevenue),
+    totalRevenue: toNumber(firstPresent(source.totalRevenue, source.totalNetSales, source.netSales, source.totalSales, source.grossSales)),
     totalOrders: toNumber(source.totalOrders),
     averageOrderValue: toNumber(source.averageOrderValue),
     pendingOrders: toNumber(source.pendingOrders),
-    completedOrders: toNumber(source.completedOrders || source.totalOrders),
+    completedOrders: toNumber(firstPresent(source.completedOrders, source.totalOrders)),
     activeEmployees: toNumber(source.activeEmployees),
-    taxCollected: toNumber(source.taxCollected),
+    taxCollected: toNumber(firstPresent(source.taxCollected, source.totalTaxCollected, source.totalTax)),
     totalRefunds: toNumber(source.totalRefunds),
     grossProfit: toNumber(source.grossProfit),
     totalPayIn: toNumber(source.totalPayIn),

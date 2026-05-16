@@ -64,12 +64,20 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
   const isDark = resolvedTheme === 'dark';
   const navigate = useNavigate();
   const { locationSlug } = useParams();
+  const grossSales = salesData.totalRevenue ?? 0;
+  const taxCollected = salesData.taxCollected ?? 0;
+  const netSales = Math.max(grossSales - taxCollected, 0);
   const paymentMethodBreakdown = (salesData.paymentMethodBreakdown || [])
-    .map((item: any) => ({
-      ...item,
-      value: Number(item.value) || 0
-    }))
-    .filter((item: any) => item.value > 0);
+    .map((item: any) => {
+      const value = Number(item.value ?? item.amount ?? item.total ?? 0);
+      const safeValue = Number.isFinite(value) ? value : 0;
+      return {
+        ...item,
+        value: safeValue,
+        chartValue: Math.abs(safeValue),
+      };
+    })
+    .filter((item: any) => item.chartValue > 0.005);
 
   return (
     <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -77,7 +85,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
         {[
           {
             label: t('orders.reports.sales.totalSales'),
-            amount: (salesData.totalRevenue || 0) + (salesData.taxCollected || 0),
+            amount: grossSales,
             isCurrency: true,
             icon: Wallet,
             color: 'text-paymint-green',
@@ -86,7 +94,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           },
           {
             label: t('orders.reports.sales.netSales'),
-            amount: (salesData.totalRevenue || 0),
+            amount: netSales,
             isCurrency: true,
             icon: TrendingUp,
             color: 'text-paymint-green',
@@ -95,16 +103,16 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           },
           {
             label: t('orders.reports.sales.profit'),
-            amount: (salesData.grossProfit || 0),
+            amount: (salesData.grossProfit ?? 0),
             isCurrency: true,
             icon: DollarSign,
-            color: (salesData.grossProfit || 0) >= 0 ? 'text-paymint-green' : 'text-red-500',
-            bg: (salesData.grossProfit || 0) >= 0 ? 'bg-paymint-green/10' : 'bg-red-500/10',
+            color: (salesData.grossProfit ?? 0) >= 0 ? 'text-paymint-green' : 'text-red-500',
+            bg: (salesData.grossProfit ?? 0) >= 0 ? 'bg-paymint-green/10' : 'bg-red-500/10',
             sub: t('orders.reports.sales.netSalesCost')
           },
           {
             label: t('orders.reports.sales.totalTax'),
-            amount: (salesData.taxCollected || 0),
+            amount: (salesData.taxCollected ?? 0),
             isCurrency: true,
             icon: Percent,
             color: 'text-paymint-green',
@@ -114,7 +122,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           {
             label: t('orders.reports.sales.numOrders'),
             labelClassName: 'capitalize-none',
-            value: (salesData.totalOrders || 0).toLocaleString(t('common.locale')),
+            value: (salesData.totalOrders ?? 0).toLocaleString(t('common.locale')),
             suffix: t('dashboard.stats.orders'),
             icon: ShoppingBag,
             color: 'text-paymint-green',
@@ -123,7 +131,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           },
           {
             label: t('orders.reports.sales.refunds'),
-            amount: (salesData.totalRefunds || 0),
+            amount: (salesData.totalRefunds ?? 0),
             isCurrency: true,
             icon: ArrowDownRight,
             color: 'text-red-500',
@@ -132,7 +140,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           },
           {
             label: t('orders.reports.sales.hours'),
-            value: (salesData.totalHoursWorked || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+            value: (salesData.totalHoursWorked ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
             suffix: t('orders.reports.sales.hours'),
             icon: Clock,
             color: 'text-paymint-green',
@@ -154,12 +162,12 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
               <div className="w-full mt-6 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-400">{t('orders.reports.sales.payIn')}</span>
-                  <CurrencyAmount amount={salesData.totalPayIn || 0} size="text-sm" color="text-paymint-green" />
+                  <CurrencyAmount amount={salesData.totalPayIn ?? 0} size="text-sm" color="text-paymint-green" />
                 </div>
                 <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-400">{t('orders.reports.sales.payOut')}</span>
-                  <CurrencyAmount amount={salesData.totalPayOut || 0} size="text-sm" color="text-red-500" />
+                  <CurrencyAmount amount={salesData.totalPayOut ?? 0} size="text-sm" color="text-red-500" />
                 </div>
               </div>
             ),
@@ -264,8 +272,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                     if (hourItems.length > 0) {
                       return {
                         date: hourStr,
-                        revenue: hourItems.reduce((sum, d) => sum + (Number(d.revenue) || 0), 0),
-                        count: hourItems.reduce((sum, d) => sum + (Number(d.count) || 0), 0)
+                        revenue: hourItems.reduce((sum, d) => sum + (Number.isFinite(Number(d.revenue)) ? Number(d.revenue) : 0), 0),
+                        count: hourItems.reduce((sum, d) => sum + (Number.isFinite(Number(d.count)) ? Number(d.count) : 0), 0)
                       };
                     }
                     return { date: hourStr, revenue: 0, count: 0 };
@@ -290,8 +298,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                           count: 0
                         };
                       }
-                      dailyMap[dayKey].revenue += Number(d.revenue) || 0;
-                      dailyMap[dayKey].count += Number(d.count) || 0;
+                      dailyMap[dayKey].revenue += Number.isFinite(Number(d.revenue)) ? Number(d.revenue) : 0;
+                      dailyMap[dayKey].count += Number.isFinite(Number(d.count)) ? Number(d.count) : 0;
                     }
                   });
                   chartData = Object.values(dailyMap).sort((a: any, b: any) =>
@@ -299,11 +307,15 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                   );
                 }
 
-                const maxRevenue = chartData.length > 0
-                  ? Math.max(...chartData.map((d: any) => Number(d.revenue) || 0))
-                  : 100;
+                const revenueValues = chartData.map((d: any) => {
+                  const value = Number(d.revenue);
+                  return Number.isFinite(value) ? value : 0;
+                });
+                const maxRevenue = revenueValues.length > 0 ? Math.max(...revenueValues) : 0;
+                const minRevenue = revenueValues.length > 0 ? Math.min(...revenueValues) : 0;
                 const maxY = maxRevenue > 0 ? maxRevenue : 100;
-                const hasRevenueData = chartData.length > 0 && chartData.some((d: any) => Number(d.revenue) > 0);
+                const minY = minRevenue < 0 ? minRevenue : 0;
+                const hasRevenueData = revenueValues.some((value) => Math.abs(value) > 0.005);
 
                 if (!hasRevenueData) {
                   return (
@@ -327,8 +339,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                             tickLine={false}
                             axisLine={false}
                             tickFormatter={(val) => val.toLocaleString(t('common.locale'), { maximumFractionDigits: 1 })}
-                            domain={[0, maxY]}
-                            ticks={[0, maxY / 2, maxY]}
+                            domain={[minY, maxY]}
+                            ticks={minY < 0 ? [minY, 0, maxY] : [0, maxY / 2, maxY]}
                             width={40}
                           />
                           <Area dataKey="revenue" stroke="none" fill="none" />
@@ -372,7 +384,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                               dy={15}
                               interval={isHourly && !needsDailyAggregation ? 0 : "preserveStartEnd"}
                             />
-                            <YAxis hide domain={[0, maxY]} />
+                            <YAxis hide domain={[minY, maxY]} />
                             <Tooltip
                               cursor={chartData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                               formatter={(val: any) => [`${Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencySymbol}`, t('dashboard.revenueChart.revenue')]}
@@ -465,7 +477,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                         innerRadius={50}
                         outerRadius={80}
                         paddingAngle={4}
-                        dataKey="value"
+                        dataKey="chartValue"
                         animationDuration={1500}
                         stroke="none"
                       >
@@ -486,14 +498,17 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                           fontWeight: 'bold',
                           fontSize: '11px'
                         }}
-                        formatter={(val: any) => (
-                          <span className="inline-flex items-baseline gap-1">
-                            <span className="font-bold tracking-tight">
-                              {Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        formatter={(val: any, _name: any, entry: any) => {
+                          const signedValue = Number(entry?.payload?.value ?? val);
+                          return (
+                            <span className="inline-flex items-baseline gap-1">
+                              <span className="font-bold tracking-tight">
+                                {signedValue.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              </span>
+                              <span className="text-[10px] font-black opacity-60 uppercase tracking-widest">{currencySymbol}</span>
                             </span>
-                            <span className="text-[10px] font-black opacity-60 uppercase tracking-widest">{currencySymbol}</span>
-                          </span>
-                        )}
+                          );
+                        }}
                         position={{ y: -10 }}
                       />
                     </PieChart>

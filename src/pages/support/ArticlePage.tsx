@@ -43,7 +43,7 @@ export const ArticlePage = () => {
         categoryId: 'getting-started',
         readTime: '5 min',
         views: '8.2k',
-        lastUpdated: 'January 15, 2025',
+        lastUpdated: 'May 2026',
         content: [
           `## ${t('support.articles.gs1.h1')}`,
           t('support.articles.gs1.p1'),
@@ -73,7 +73,7 @@ export const ArticlePage = () => {
         categoryId: 'getting-started',
         readTime: '8 min',
         views: '6.5k',
-        lastUpdated: 'January 20, 2025',
+        lastUpdated: 'May 2026',
         content: [
           `## ${t('support.articles.gs2.h1')}`,
           t('support.articles.gs2.p1'),
@@ -115,7 +115,7 @@ export const ArticlePage = () => {
         categoryId: 'technical',
         readTime: '8 min',
         views: '5.6k',
-        lastUpdated: 'February 1, 2025',
+        lastUpdated: 'May 2026',
         content: [
           `## ${t('support.articles.tc1.h1')}`,
           t('support.articles.tc1.p1'),
@@ -163,7 +163,7 @@ export const ArticlePage = () => {
         categoryId: 'features',
         readTime: '12 min',
         views: '6.2k',
-        lastUpdated: 'January 28, 2025',
+        lastUpdated: 'May 2026',
         content: [
           `## ${t('support.articles.ft1.h1')}`,
           t('support.articles.ft1.p1'),
@@ -215,7 +215,7 @@ export const ArticlePage = () => {
         categoryId: 'billing',
         readTime: '3 min',
         views: '3.8k',
-        lastUpdated: 'February 5, 2025',
+        lastUpdated: 'May 2026',
         content: [
           `## ${t('support.articles.bl2.h1')}`,
           t('support.articles.bl2.p1'),
@@ -288,7 +288,7 @@ export const ArticlePage = () => {
           categoryId: cat.id,
           readTime: '4 min',
           views: `${stableViews}k`,
-          lastUpdated: 'February 2025',
+          lastUpdated: 'May 2026',
           content: [
             `## ${t('support.genericArticle.overview')}`,
             translatedExcerpt || t('support.genericArticle.p1'),

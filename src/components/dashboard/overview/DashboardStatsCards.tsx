@@ -48,11 +48,14 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const { currencySymbol } = useCurrency();
+  const grossSales = stats?.totalRevenue ?? 0;
+  const taxCollected = stats?.taxCollected ?? 0;
+  const netSales = Math.max(grossSales - taxCollected, 0);
 
   const statCards: any[] = [
     {
       label: t('dashboard.stats.totalSales'),
-      value: ((stats?.totalRevenue || 0) + (stats?.taxCollected || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: grossSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       sub: t('dashboard.stats.includingTax'),
       icon: Wallet,
       color: 'text-paymint-green',
@@ -60,7 +63,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     },
     {
       label: t('dashboard.stats.netSales'),
-      value: (stats?.totalRevenue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: netSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       sub: t('dashboard.stats.excludingTax'),
       icon: DollarSign,
       color: 'text-paymint-green',
@@ -68,7 +71,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     },
     {
       label: t('dashboard.stats.profit'),
-      value: (stats?.grossProfit || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: (stats?.grossProfit ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       sub: t('dashboard.stats.netSalesCosts'),
       icon: TrendingUp,
       color: 'text-paymint-green',
@@ -76,7 +79,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     },
     {
       label: t('dashboard.stats.tax'),
-      value: (stats?.taxCollected || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: (stats?.taxCollected ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       sub: t('dashboard.stats.totalTax'),
       icon: Percent,
       color: 'text-paymint-green',
@@ -84,7 +87,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     },
     {
       label: t('dashboard.stats.totalOrders'),
-      value: (stats?.totalOrders || 0).toLocaleString(t('common.locale')),
+      value: (stats?.totalOrders ?? 0).toLocaleString(t('common.locale')),
       sub: viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h'),
       icon: Receipt,
       color: 'text-paymint-green',
@@ -98,7 +101,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     },
     {
       label: t('dashboard.stats.onHold'),
-      value: (stats?.pendingOrders || 0).toLocaleString(t('common.locale')),
+      value: (stats?.pendingOrders ?? 0).toLocaleString(t('common.locale')),
       sub: `${t('dashboard.stats.pendingOrders')} (${t('dashboard.stats.last24h')})`,
       icon: ShoppingBag,
       color: 'text-paymint-green',
@@ -113,7 +116,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
   statCards.push(
     {
       label: t('dashboard.stats.avgOrder'),
-      value: (stats?.averageOrderValue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: (stats?.averageOrderValue ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       sub: t('dashboard.stats.averageValue'),
       icon: Scale,
       color: 'text-paymint-green',
@@ -121,7 +124,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     },
     {
       label: t('dashboard.stats.refunds'),
-      value: (stats?.totalRefunds || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: (stats?.totalRefunds ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       sub: viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h'),
       icon: ArrowDownRight,
       color: 'text-paymint-green',
@@ -138,12 +141,12 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
         <div className="space-y-3 mt-6">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.payIn')}</span>
-            <span className="text-sm font-bold text-paymint-green tracking-tight">+{ (stats?.totalPayIn || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
+            <span className="text-sm font-bold text-paymint-green tracking-tight">+{ (stats?.totalPayIn ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
           </div>
           <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.payOut')}</span>
-            <span className="text-sm font-bold text-red-500 tracking-tight">-{ (stats?.totalPayOut || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
+            <span className="text-sm font-bold text-red-500 tracking-tight">-{ (stats?.totalPayOut ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
           </div>
         </div>
       ),

@@ -13,12 +13,16 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
   const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
   const taxBreakdown = salesData.taxBreakdown || [];
+  const totalTax = salesData.taxCollected ?? 0;
+  const grossSales = salesData.totalRevenue ?? 0;
+  const taxableSales = Math.max(grossSales - totalTax, 0);
+  const averageTaxRate = taxableSales > 0 ? totalTax / taxableSales : 0;
   const hasTaxBreakdown = taxBreakdown.length > 0;
   const hasTaxActivity =
-    taxBreakdown.some((tax: any) => Number(tax?.collected || 0) > 0 || Number(tax?.taxableAmount || 0) > 0) ||
-    (salesData.taxCollected || 0) > 0 ||
-    (salesData.totalRevenue || 0) > 0 ||
-    (salesData.totalOrders || 0) > 0;
+    taxBreakdown.some((tax: any) => Number(tax?.collected ?? 0) > 0 || Number(tax?.taxableAmount ?? 0) > 0) ||
+    totalTax > 0 ||
+    grossSales > 0 ||
+    (salesData.totalOrders ?? 0) > 0;
 
   const formatCurrency = (value: number) => (
     <span className="inline-flex items-baseline gap-1">
@@ -37,7 +41,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.taxes.totalTax')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {formatCurrency(salesData.taxCollected || 0)}
+              {formatCurrency(totalTax)}
             </p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.taxes.totalTaxDesc')}</p>
           </div>
@@ -48,7 +52,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.taxes.taxableSales')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {formatCurrency(salesData.totalRevenue || 0)}
+              {formatCurrency(taxableSales)}
             </p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.taxes.taxableSalesDesc')}</p>
           </div>
@@ -59,8 +63,8 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.taxes.avgRate')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {salesData.totalRevenue > 0
-                ? ((salesData.taxCollected / salesData.totalRevenue)).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
+              {taxableSales > 0
+                ? averageTaxRate.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
                 : (0).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
             </p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.taxes.avgRateDesc')}</p>
@@ -100,28 +104,33 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                 {/* NOTE: If backend doesn't provide granular tax breakdown, we reconstruct a "Sales Tax" default row */}
                 {hasTaxBreakdown ? (
                   taxBreakdown.map((tax: any, i: number) => {
-                    const contribution = salesData.taxCollected > 0 ? (tax.collected / salesData.taxCollected) * 100 : 0;
+                    const taxName = String(tax.name ?? tax.taxName ?? tax.category ?? 'Tax');
+                    const rawRate = Number(tax.rate ?? 0);
+                    const displayRate = Number.isFinite(rawRate) ? (rawRate > 1 ? rawRate / 100 : rawRate) : 0;
+                    const taxableAmount = Number(tax.taxableAmount ?? tax.amount ?? 0);
+                    const collected = Number(tax.collected ?? tax.taxAmount ?? tax.value ?? 0);
+                    const contribution = totalTax > 0 ? (collected / totalTax) * 100 : 0;
                     return (
                       <tr key={i} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                         <td className="px-6 py-4 text-start">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500 font-bold">
-                              {tax.name.charAt(0)}
+                              {taxName.charAt(0)}
                             </div>
                             <div className="flex flex-col">
-                              <span className="font-bold text-sm text-gray-900 dark:text-white">{tax.name}</span>
-                              <span className="text-xs text-gray-400 font-bold">{tax.transactions.toLocaleString(t('common.locale'))} {t('orders.reports.taxes.txns')}</span>
+                              <span className="font-bold text-sm text-gray-900 dark:text-white">{taxName}</span>
+                              <span className="text-xs text-gray-400 font-bold">{(tax.transactions ?? 0).toLocaleString(t('common.locale'))} {t('orders.reports.taxes.txns')}</span>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-end font-bold text-gray-500">
-                          {tax.rate.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                          {displayRate.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                         </td>
                         <td className="px-6 py-4 text-end font-bold text-gray-900 dark:text-white">
-                          {formatCurrency(tax.taxableAmount)}
+                          {formatCurrency(Number.isFinite(taxableAmount) ? taxableAmount : 0)}
                         </td>
                         <td className="px-6 py-4 text-end font-bold text-orange-500">
-                          {formatCurrency(tax.collected)}
+                          {formatCurrency(Number.isFinite(collected) ? collected : 0)}
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2 max-w-[100px] mx-auto">
@@ -143,18 +152,18 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                         </div>
                         <div className="flex flex-col">
                           <span className="font-bold text-sm text-gray-900 dark:text-white">{t('orders.reports.taxes.standardTax')}</span>
-                          <span className="text-xs text-gray-400 font-bold">{(salesData.totalOrders || 0).toLocaleString(t('common.locale'))} {t('orders.reports.taxes.txns')}</span>
+                          <span className="text-xs text-gray-400 font-bold">{(salesData.totalOrders ?? 0).toLocaleString(t('common.locale'))} {t('orders.reports.taxes.txns')}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-end font-bold text-gray-500">
-                      {(salesData.totalRevenue > 0 ? (salesData.taxCollected / salesData.totalRevenue) : 0.16).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                      {(taxableSales > 0 ? averageTaxRate : 0).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                     </td>
                     <td className="px-6 py-4 text-end font-bold text-gray-900 dark:text-white">
-                      {formatCurrency(salesData.totalRevenue || 0)}
+                      {formatCurrency(taxableSales)}
                     </td>
                     <td className="px-6 py-4 text-end font-bold text-orange-500">
-                      {formatCurrency(salesData.taxCollected || 0)}
+                      {formatCurrency(totalTax)}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 max-w-[100px] mx-auto">
@@ -194,7 +203,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
             </div>
             <div>
               <p className="text-2xl font-black text-gray-900 dark:text-white">
-                {formatCurrency(salesData.taxExemptSales || 0)}
+                {formatCurrency(salesData.taxExemptSales ?? 0)}
               </p>
               <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">{t('orders.reports.taxes.taxFreeSales')}</p>
             </div>

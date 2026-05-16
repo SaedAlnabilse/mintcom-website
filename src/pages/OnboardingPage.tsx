@@ -1649,8 +1649,8 @@ export function OnboardingPage() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                       {/* User Manual */}
                       <a
-                        href="/docs/PayMint-user-manual.md"
-                        download="Paymint_User_Manual.md"
+                        href="/docs/paymint-user-manual.pdf"
+                        download="Paymint_User_Manual.pdf"
                         className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
                       >
                         <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
@@ -1662,7 +1662,7 @@ export function OnboardingPage() {
 
                       {/* Setup Manual */}
                       <a
-                        href="/docs/PayMint-setup-manual.pdf"
+                        href="/docs/paymint-setup-manual.pdf"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"

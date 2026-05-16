@@ -651,7 +651,7 @@ export function OrdersPage() {
 
       // Process server-side summary for KPI revenue (only completed/paid orders)
       const kpiSummary = summaryRes?.data || {};
-      const serverTotalRevenue = Number(kpiSummary.totalRevenue || 0) + Number(kpiSummary.taxCollected || 0);
+      const serverTotalRevenue = Number(kpiSummary.totalRevenue || 0);
       setCompletedOrderRevenue(serverTotalRevenue);
       setCompletedOrderCount(Number(kpiSummary.totalOrders || regularTotalForPeriod || 0));
 
@@ -923,11 +923,17 @@ export function OrdersPage() {
       case 'HELD':
         return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       case 'REFUNDED':
+      case 'PARTIALLY_REFUNDED':
         return 'bg-paymint-red/10 text-paymint-red border-paymint-red/20';
       default:
         return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
     }
   };
+
+  const isRefundableOrder = (order: Order): boolean =>
+    order.paymentStatus === 'COMPLETED' ||
+    order.status === 'COMPLETED' ||
+    order.status === 'PARTIALLY_REFUNDED';
 
   const isPaidTaxChanged = (order: Order): boolean =>
     (order.orderType === 'PAID_TAX_CHANGED' || !!order.isTaxChanged) &&
@@ -1447,7 +1453,7 @@ export function OrdersPage() {
                     {t('orders.actions.viewDetails')}
                   </button>
 
-                  {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                  {isRefundableOrder(order) && (
                     <div className="flex flex-col items-end">
                       <button
                         onClick={(e) => {
@@ -1595,7 +1601,7 @@ export function OrdersPage() {
                                 {t('orders.actions.viewDetails')}
                               </button>
 
-                              {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                              {isRefundableOrder(order) && (
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -1613,7 +1619,7 @@ export function OrdersPage() {
                                   {t('orders.actions.refundOrder')}
                                 </button>
                               )}
-                              {!canCancelReceipts && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                              {!canCancelReceipts && isRefundableOrder(order) && (
                                 <p className="px-3 py-1 text-[11px] font-semibold text-red-600">
                                   {t('orders.messages.noRefundPermission')}
                                 </p>
