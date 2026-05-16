@@ -116,7 +116,7 @@ export function SelectEstablishmentPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h1 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+            <h1 className="font-magilio text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
               {t('onboarding.selectLocation', { defaultValue: 'Select Location' })}
             </h1>
             <p className="text-sm sm:text-base font-sans text-gray-500 dark:text-gray-400 mt-2">
@@ -141,7 +141,7 @@ export function SelectEstablishmentPage() {
                 <Store size={32} className="text-gray-400 group-hover:text-PayMint-green transition-colors" />
               </div>
 
-              <h3 className="text-base font-sans font-bold text-gray-900 dark:text-white mb-2 px-2 leading-tight text-center tracking-normal" dir="auto">{est.name}</h3>
+              <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white mb-2 px-2 leading-tight text-center tracking-normal" dir="auto">{est.name}</h3>
 
               <div className="flex items-center gap-2.5 mb-8">
                 <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-sans font-bold text-gray-500">
@@ -171,7 +171,7 @@ export function SelectEstablishmentPage() {
               <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-PayMint-green/10 group-hover:border-PayMint-green transition-all">
                 <Plus size={28} className="text-gray-400 group-hover:text-PayMint-green transition-colors" />
               </div>
-              <h3 className="text-base font-sans font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
+              <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
             </motion.div>
           )}
         </div>
@@ -203,7 +203,7 @@ export function SelectEstablishmentPage() {
                 <Loader2 size={40} className="text-PayMint-green animate-spin" />
                 <div className="absolute inset-0 bg-PayMint-green/20 rounded-[2.5rem] animate-ping" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight">{t('common.loading')}</h2>
+              <h2 className="font-magilio text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight">{t('common.loading')}</h2>
               <p className="text-xs font-sans font-bold text-PayMint-green tracking-normal mt-2" dir="auto">{selectedName}</p>
 
               <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">

@@ -59,7 +59,7 @@ const WorkflowItem = ({
       </div>
 
       <div className="min-w-0 flex-1">
-        <h3 className="mb-1.5 text-[17px] font-bold leading-tight tracking-tight text-gray-900 transition-colors group-hover:text-paymint-green dark:text-white">
+        <h3 className="font-magilio mb-1.5 text-[17px] font-bold leading-tight tracking-tight text-gray-900 transition-colors group-hover:text-paymint-green dark:text-white">
           {feature.title}
         </h3>
         <p className="text-[14px] font-light leading-relaxed text-gray-600 dark:text-gray-400">

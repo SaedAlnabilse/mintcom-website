@@ -137,7 +137,7 @@ export const PricingDownload = () => {
               {/* ===== Left: Price + CTA ===== */}
               <div className="flex flex-col lg:border-r lg:border-gray-200/70 lg:pr-16 dark:lg:border-white/10">
                 {/* Plan name */}
-                <h3 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl">
+                <h3 className="font-magilio text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl">
                   {isYearly
                     ? t('landing.pricing.yearlyPlan')
                     : t('landing.pricing.monthlyPlan')}
@@ -271,7 +271,7 @@ export const PricingDownload = () => {
               {/* ===== Right: Included features ===== */}
               <div className="flex flex-col">
                 <div className="mb-8">
-                  <h4 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  <h4 className="font-magilio text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                     {t('landing.pricing.includedTitle', 'Everything you need')}
                   </h4>
                   <p className="mt-2 text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -342,7 +342,7 @@ export const PricingDownload = () => {
               <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-paymint-green/10">
                 <Check size={40} strokeWidth={3} className="text-paymint-green" />
               </div>
-              <h3 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
+              <h3 className="font-magilio mb-4 text-2xl font-bold text-gray-900 dark:text-white">
                 {t(
                   'landing.pricing.alreadySignedIn',
                   'You are already signed in'

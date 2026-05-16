@@ -139,7 +139,7 @@ export const SupportCategoryPage = () => {
           {/* Featured articles */}
           {featuredArticles.length > 0 && (
             <div className="mb-10">
-              <h2 className="mb-5 flex items-center gap-2 text-lg font-bold">
+              <h2 className="font-magilio mb-5 flex items-center gap-2 text-lg font-bold">
                 <Star size={16} className="text-amber-400" />
                 {t('support.articles.featuredTitle')}
               </h2>
@@ -151,7 +151,7 @@ export const SupportCategoryPage = () => {
                         <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl ${category.bgColor}/10`}>
                           <BookOpen size={20} className={category.color} />
                         </div>
-                        <h3 className="text-lg font-bold leading-tight tracking-tight transition-colors group-hover:text-paymint-green">{article.title}</h3>
+                        <h3 className="font-magilio text-lg font-bold leading-tight tracking-tight transition-colors group-hover:text-paymint-green">{article.title}</h3>
                       </div>
                       <p className="flex-1 text-sm font-light leading-relaxed text-gray-500 dark:text-gray-400 line-clamp-2">{article.excerpt}</p>
                       <div className="mt-4 flex items-center gap-4 text-xs font-medium text-gray-400">
@@ -167,7 +167,7 @@ export const SupportCategoryPage = () => {
 
           {/* All articles */}
           <div>
-            <h2 className="mb-5 text-lg font-bold">
+            <h2 className="font-magilio mb-5 text-lg font-bold">
               {searchQuery ? t('support.articles.searchResultCount', { count: filteredArticles.length }) : t('support.articles.allTitle')}
             </h2>
             <div className="space-y-3">
@@ -202,7 +202,7 @@ export const SupportCategoryPage = () => {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/10">
                   <HelpCircle size={28} className="text-gray-400" />
                 </div>
-                <h3 className="mb-2 text-xl font-bold">{searchQuery.trim() ? t('common.noResults') : t('support.articles.notFound')}</h3>
+                <h3 className="font-magilio mb-2 text-xl font-bold">{searchQuery.trim() ? t('common.noResults') : t('support.articles.notFound')}</h3>
                 <p className="mb-6 text-sm font-light text-gray-500 dark:text-gray-400">
                   {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No articles matching "{{query}}"' }) : t('support.articles.notFoundDesc')}
                 </p>

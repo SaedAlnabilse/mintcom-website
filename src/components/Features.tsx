@@ -66,7 +66,7 @@ const FeatureCard = ({
         </div>
       </div>
 
-      <h3 className="mb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
+      <h3 className="font-magilio mb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
         {feature.title}
       </h3>
 

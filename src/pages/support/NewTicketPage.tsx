@@ -208,7 +208,7 @@ export const NewTicketPage = () => {
                 >
                   <ArrowLeft size={20} />
                 </Link>
-                <h1 className="text-3xl font-black tracking-tight">{t('support.newTicket.title')}</h1>
+                <h1 className="font-magilio text-3xl font-black tracking-tight">{t('support.newTicket.title')}</h1>
               </div>
               <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors ml-11">
                 {t('support.newTicket.subtitle')}

@@ -52,6 +52,29 @@ interface Attribute {
 
 type StatusFilterValue = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
+const isArchivedRecord = (record: { deletedAt?: string | null; deactivatedAt?: string | null; isActive?: boolean }) =>
+  !!record?.deletedAt || !!record?.deactivatedAt || record?.isActive === false;
+
+const sortArchivedLastByNewest = <T extends { id?: string; deletedAt?: string | null; deactivatedAt?: string | null; isActive?: boolean }>(
+  records: T[],
+) =>
+  [...records].sort((a, b) => {
+    const aArchived = isArchivedRecord(a);
+    const bArchived = isArchivedRecord(b);
+
+    if (aArchived !== bArchived) {
+      return aArchived ? 1 : -1;
+    }
+
+    return (b.id || '').localeCompare(a.id || '');
+  });
+
+const normalizeAttributesForDisplay = (records: Attribute[]) =>
+  sortArchivedLastByNewest(records).map((attribute) => ({
+    ...attribute,
+    subAttributes: sortArchivedLastByNewest(Array.isArray(attribute.subAttributes) ? attribute.subAttributes : []),
+  }));
+
 export function AddonsPage() {
   const { t } = useTranslation();
   const { currentEstablishment } = useAuth();
@@ -77,6 +100,7 @@ export function AddonsPage() {
   const [filterRequirement, setFilterRequirement] = useState<string>('ALL');
   const [filterPricing, setFilterPricing] = useState<string>('ALL');
   const [filterStatus, setFilterStatus] = useState<StatusFilterValue>('ACTIVE');
+  const [recentlyArchivedAttributeIds, setRecentlyArchivedAttributeIds] = useState<Set<string>>(() => new Set());
 
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -124,7 +148,8 @@ export function AddonsPage() {
       const response = await api.get('/api/attributes', {
         params: { includeInactive: true },
       });
-      setAttributes(response.data || []);
+      setRecentlyArchivedAttributeIds(new Set());
+      setAttributes(normalizeAttributesForDisplay(Array.isArray(response.data) ? response.data : []));
     } catch {
       toast.error(t('attributes.errors.failedToLoad'));
     } finally {
@@ -147,7 +172,9 @@ export function AddonsPage() {
       const matchesRequirement = filterRequirement === 'ALL' || (filterRequirement === 'MANDATORY' ? attr.isRequired : !attr.isRequired);
       const matchesStatus =
         filterStatus === 'ALL' ||
-        (filterStatus === 'ACTIVE' ? isAttributeActive(attr) : !isAttributeActive(attr));
+        (filterStatus === 'ACTIVE'
+          ? isAttributeActive(attr) || recentlyArchivedAttributeIds.has(attr.id)
+          : !isAttributeActive(attr));
       
       const subAttributes = Array.isArray(attr.subAttributes) ? attr.subAttributes : [];
       const hasPaid = subAttributes.some(sub => Number(sub.price) > 0);
@@ -156,7 +183,7 @@ export function AddonsPage() {
 
       return matchesSearch && matchesSelection && matchesRequirement && matchesPricing && matchesStatus;
     });
-  }, [attributes, searchQuery, filterSelection, filterRequirement, filterPricing, filterStatus]);
+  }, [attributes, searchQuery, filterSelection, filterRequirement, filterPricing, filterStatus, recentlyArchivedAttributeIds]);
   const shouldShowStatusEmptyState =
     !searchQuery.trim() &&
     filterSelection === 'ALL' &&
@@ -402,9 +429,48 @@ export function AddonsPage() {
       type: 'danger',
       onConfirm: async () => {
         try {
-          await api.delete(`/api/attributes/${attribute.id}`);
+          const response = await api.delete(`/api/attributes/${attribute.id}`);
+          const archivedAt = new Date().toISOString();
+          const archivedAttribute = response.data as Partial<Attribute> | undefined;
+          const shouldKeepArchived =
+            !archivedAttribute ||
+            !!archivedAttribute.deletedAt ||
+            !!archivedAttribute.deactivatedAt ||
+            archivedAttribute.isActive === false;
+
+          if (shouldKeepArchived) {
+            setRecentlyArchivedAttributeIds((prev) => new Set(prev).add(attribute.id));
+            setAttributes((currentAttributes) =>
+              currentAttributes.map((currentAttribute) =>
+                currentAttribute.id === attribute.id
+                  ? {
+                      ...currentAttribute,
+                      ...archivedAttribute,
+                      deletedAt: archivedAttribute?.deletedAt ?? archivedAt,
+                      deactivatedAt: archivedAttribute?.deactivatedAt ?? archivedAt,
+                      isActive: false,
+                      subAttributes: (currentAttribute.subAttributes || []).map((subAttribute) => ({
+                        ...subAttribute,
+                        deletedAt: subAttribute.deletedAt ?? archivedAt,
+                        deactivatedAt: subAttribute.deactivatedAt ?? archivedAt,
+                        isActive: false,
+                        isAvailable: false,
+                      })),
+                    }
+                  : currentAttribute,
+              ),
+            );
+          } else {
+            setRecentlyArchivedAttributeIds((prev) => {
+              const next = new Set(prev);
+              next.delete(attribute.id);
+              return next;
+            });
+            setAttributes((currentAttributes) =>
+              currentAttributes.filter((currentAttribute) => currentAttribute.id !== attribute.id),
+            );
+          }
           toast.success(t('attributes.messages.groupDeleted'));
-          fetchAttributes();
         } catch {
           toast.error(t('attributes.errors.errorDeleting'));
         }
@@ -422,9 +488,36 @@ export function AddonsPage() {
       type: 'danger',
       onConfirm: async () => {
         try {
-          await api.delete(`/api/attributes/sub-attributes/${sub.id}`);
+          const response = await api.delete(`/api/attributes/sub-attributes/${sub.id}`);
+          const archivedAt = new Date().toISOString();
+          const archivedSubAttribute = response.data as Partial<SubAttribute> | undefined;
+          const shouldKeepArchived =
+            !archivedSubAttribute ||
+            !!archivedSubAttribute.deletedAt ||
+            !!archivedSubAttribute.deactivatedAt ||
+            archivedSubAttribute.isActive === false ||
+            archivedSubAttribute.isAvailable === false;
+
+          setAttributes((currentAttributes) =>
+            currentAttributes.map((attribute) => ({
+              ...attribute,
+              subAttributes: shouldKeepArchived
+                ? (attribute.subAttributes || []).map((currentSubAttribute) =>
+                    currentSubAttribute.id === sub.id
+                      ? {
+                          ...currentSubAttribute,
+                          ...archivedSubAttribute,
+                          deletedAt: archivedSubAttribute?.deletedAt ?? archivedAt,
+                          deactivatedAt: archivedSubAttribute?.deactivatedAt ?? archivedAt,
+                          isActive: false,
+                          isAvailable: false,
+                        }
+                      : currentSubAttribute,
+                  )
+                : (attribute.subAttributes || []).filter((currentSubAttribute) => currentSubAttribute.id !== sub.id),
+            })),
+          );
           toast.success(t('attributes.messages.optionDeleted'));
-          fetchAttributes();
         } catch {
           toast.error(t('attributes.errors.errorDeleting'));
         }

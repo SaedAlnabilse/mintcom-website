@@ -137,9 +137,9 @@
   },
   "attributes": {
     "confirm": {
-      "deleteGroupMessage": "Archive the \"{{name}}\" group and its active options? They will be hidden from new sales, while historical orders keep their original add-on names and prices.",
+      "deleteGroupMessage": "Are you sure you want to archive add-on group \"{{name}}\"? This will archive its options as well, remove it from POS add-on selection, and it can only be reactivated from Location Portal website (back-office).",
       "deleteGroupTitle": "Archive Add-on Group",
-      "deleteOptionMessage": "Archive the \"{{name}}\" option? It will be hidden from new sales, while previous orders keep the original option name and price.",
+      "deleteOptionMessage": "Are you sure you want to archive add-on option \"{{name}}\"? It will be removed from POS add-on selection and can only be reactivated from Location Portal website (back-office).",
       "deleteOptionTitle": "Archive Option"
     },
     "editAttribute": "Edit Add-on",
@@ -485,7 +485,7 @@
   "categories": {
     "delete": {
       "blocked": "This category has active products. Move or archive those products first; historical reports will stay protected.",
-      "message": "Archive this empty category? It will be hidden from new setup screens, while past order category snapshots stay unchanged.",
+      "message": "Are you sure you want to archive category \"{{name}}\"? It will be removed from POS category selection and can only be reactivated from Location Portal website (back-office).",
       "title": "Archive Category"
     },
     "editCategory": "Edit Category",
@@ -3571,7 +3571,7 @@
     "addProduct": "Add Product",
     "all": "All Categories",
     "delete": {
-      "message": "Archive \"{{name}}\"? It will be hidden from new sales, but past orders, receipts, and reports will keep the original item details.",
+      "message": "Are you sure you want to archive product \"{{name}}\"? The product will remain visible here briefly as inactive, then move to the end after you leave and return. Historical orders, receipts, and reports keep the original item details.",
       "title": "Archive Product"
     },
     "editProduct": "Edit Product",
@@ -3620,7 +3620,7 @@
       "createHere": "Create here",
       "deleted": "Product archived",
       "deleteFailed": "Failed to archive product",
-      "deleteMessage": "Archive \"{{name}}\"? It will be hidden from new sales, but past orders, receipts, and reports will keep the original item details.",
+      "deleteMessage": "Are you sure you want to archive product \"{{name}}\"? The product will remain visible here briefly as inactive, then move to the end after you leave and return. Historical orders, receipts, and reports keep the original item details.",
       "deleteTitle": "Archive Product",
       "discardConfirm": "Continue & discard",
       "discardMessage": "Navigating to the add-ons section will discard your current product details.",

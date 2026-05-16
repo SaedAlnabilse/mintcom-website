@@ -28,7 +28,7 @@ export const TermsPage = () => {
                         <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-6">
                             <Scale className="w-8 h-8 text-blue-500" />
                         </div>
-                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('legal.terms.title')}</h1>
+                        <h1 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('legal.terms.title')}</h1>
                         <p className="label-strong font-outfit">
                             {t('legal.terms.lastUpdated')}: {new Date('2025-02-05').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
                         </p>
@@ -46,7 +46,7 @@ export const TermsPage = () => {
                     <div className="space-y-12 text-gray-600 dark:text-gray-300">
                         {/* 1. Use of the Service */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s1')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s1')}</h2>
                             <p className="text-sm font-medium mb-4">
                                 {t('legal.terms.use.u1')}
                             </p>
@@ -57,7 +57,7 @@ export const TermsPage = () => {
 
                         {/* 2. Subscriptions & Payments */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s2')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s2')}</h2>
                             <p className="text-sm font-medium mb-4">
                                 {t('legal.terms.payments.p1')}
                             </p>
@@ -71,7 +71,7 @@ export const TermsPage = () => {
 
                         {/* 3. User Responsibilities */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s3')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s3')}</h2>
                             <p className="text-sm font-medium mb-4">{t('legal.terms.responsibilities.intro')}:</p>
                             <ul className="list-disc pr-5 pl-5 space-y-2 text-sm font-medium mb-6">
                                 <li>{t('legal.terms.responsibilities.r1')}</li>
@@ -85,7 +85,7 @@ export const TermsPage = () => {
 
                         {/* 4. Data & Privacy */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s4')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s4')}</h2>
                             <p className="text-sm font-medium">
                                 {t('legal.terms.privacy.p1')} <Link to="/legal/privacy" className="text-blue-500 hover:underline">{t('legal.privacy.title')}</Link>, {t('legal.terms.privacy.p2')}
                             </p>
@@ -93,7 +93,7 @@ export const TermsPage = () => {
 
                         {/* 5. Service Availability */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s5')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s5')}</h2>
                             <p className="text-sm font-medium">
                                 {t('legal.terms.availability.desc')}
                             </p>
@@ -101,7 +101,7 @@ export const TermsPage = () => {
 
                         {/* 6. Intellectual Property */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s6')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s6')}</h2>
                             <p className="text-sm font-medium">
                                 {t('legal.terms.ip.desc')}
                             </p>
@@ -109,7 +109,7 @@ export const TermsPage = () => {
 
                         {/* 7. Limitation of Liability */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s7')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s7')}</h2>
                             <p className="text-sm font-medium">
                                 {t('legal.terms.liability.desc')}
                             </p>
@@ -117,7 +117,7 @@ export const TermsPage = () => {
 
                         {/* 8. Termination */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s8')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s8')}</h2>
                             <p className="text-sm font-medium mb-4">
                                 {t('legal.terms.termination.desc')}
                             </p>
@@ -128,7 +128,7 @@ export const TermsPage = () => {
 
                         {/* 9. Governing Law */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s9')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s9')}</h2>
                             <p className="text-sm font-medium">
                                 {t('legal.terms.law.desc')}
                             </p>
@@ -136,7 +136,7 @@ export const TermsPage = () => {
 
                         {/* 10. Contact */}
                         <section className="bg-gray-50 dark:bg-white/5 p-8 rounded-3xl border border-gray-100 dark:border-white/5">
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s10')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s10')}</h2>
                             <p className="text-sm font-medium mb-4">
                                 {t('legal.terms.contact.desc')}
                             </p>

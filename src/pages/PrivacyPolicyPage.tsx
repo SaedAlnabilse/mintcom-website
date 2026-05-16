@@ -27,7 +27,7 @@ export const PrivacyPolicyPage = () => {
                         <div className="w-16 h-16 rounded-2xl bg-paymint-green/10 flex items-center justify-center mx-auto mb-6">
                             <Shield className="w-8 h-8 text-paymint-green" />
                         </div>
-                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('legal.privacy.title')}</h1>
+                        <h1 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('legal.privacy.title')}</h1>
                         <p className="label-strong font-outfit">
                             {t('legal.privacy.lastUpdated')}: {new Date('2025-02-05').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
                         </p>
@@ -49,11 +49,11 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 1. Information We Collect */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s1')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s1')}</h2>
                             <p className="text-sm font-medium mb-4">{t('legal.privacy.sections.s1_desc')}</p>
 
                             <div className={`mb-6 ${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-paymint-green/20`}>
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_1')}</h3>
+                                <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_1')}</h3>
                                 <p className="text-sm font-medium mb-2">{t('legal.privacy.sections.s1_1_desc')}:</p>
                                 <ul className="list-disc pr-5 pl-5 space-y-1 text-sm font-medium">
                                     <li>{t('legal.privacy.fields.fullName')}</li>
@@ -65,7 +65,7 @@ export const PrivacyPolicyPage = () => {
                             </div>
 
                             <div className={`mb-6 ${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-paymint-green/20`}>
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_2')}</h3>
+                                <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_2')}</h3>
                                 <p className="text-sm font-medium mb-2">{t('legal.privacy.sections.s1_2_desc')}:</p>
                                 <ul className="list-disc pr-5 pl-5 space-y-1 text-sm font-medium mb-4">
                                     <li>{t('legal.privacy.fields.cardDetails')}</li>
@@ -80,7 +80,7 @@ export const PrivacyPolicyPage = () => {
                             </div>
 
                             <div className={`mb-6 ${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-paymint-green/20`}>
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_3')}</h3>
+                                <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_3')}</h3>
                                 <p className="text-sm font-medium mb-2">{t('legal.privacy.sections.s1_3_desc')}:</p>
                                 <ul className="list-disc pr-5 pl-5 space-y-1 text-sm font-medium">
                                     <li>{t('legal.privacy.fields.sales')}</li>
@@ -92,7 +92,7 @@ export const PrivacyPolicyPage = () => {
                             </div>
 
                             <div className={`${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-paymint-green/20`}>
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_4')}</h3>
+                                <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_4')}</h3>
                                 <p className="text-sm font-medium mb-2">{t('legal.privacy.sections.s1_4_desc')}:</p>
                                 <ul className="list-disc pr-5 pl-5 space-y-1 text-sm font-medium">
                                     <li>{t('legal.privacy.fields.deviceInfo')}</li>
@@ -105,7 +105,7 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 2. How We Use Your Information */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s2')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s2')}</h2>
                             <p className="text-sm font-medium mb-4">{t('legal.privacy.sections.s2_desc')}:</p>
                             <ul className="list-disc pr-5 pl-5 space-y-2 text-sm font-medium mb-6">
                                 <li>{t('legal.privacy.usage.u1')}</li>
@@ -122,7 +122,7 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 3. Data Storage & Security */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s3')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s3')}</h2>
                             <p className="text-sm font-medium mb-4">{t('legal.privacy.sections.s3_desc')}:</p>
                             <ul className="list-disc pr-5 pl-5 space-y-2 text-sm font-medium mb-6">
                                 <li>{t('legal.privacy.security.sec1')}</li>
@@ -137,7 +137,7 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 4. Data Sharing & Third Parties */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s4')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s4')}</h2>
                             <p className="text-sm font-medium mb-4">{t('legal.privacy.sections.s4_desc')}:</p>
                             <ul className="list-disc pr-5 pl-5 space-y-2 text-sm font-medium mb-6">
                                 <li>{t('legal.privacy.sharing.sh1')}</li>
@@ -151,7 +151,7 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 5. Multi-Branch & Account Access */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s5')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s5')}</h2>
                             <p className="text-sm font-medium mb-4">{t('legal.privacy.sections.s5_desc')}:</p>
                             <ul className="list-disc pr-5 pl-5 space-y-2 text-sm font-medium">
                                 <li>{t('legal.privacy.branch.b1')}</li>
@@ -162,7 +162,7 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 6. Data Retention */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s6')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s6')}</h2>
                             <p className="text-sm font-medium mb-4">{t('legal.privacy.sections.s6_desc')}:</p>
                             <ul className="list-disc pr-5 pl-5 space-y-2 text-sm font-medium mb-6">
                                 <li>{t('legal.privacy.retention.r1')}</li>
@@ -174,7 +174,7 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 7. Your Rights */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s7')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s7')}</h2>
                             <p className="text-sm font-medium mb-4">{t('legal.privacy.sections.s7_desc')}:</p>
                             <ul className="list-disc pr-5 pl-5 space-y-2 text-sm font-medium mb-6">
                                 <li>{t('legal.privacy.rights.ri1')}</li>
@@ -189,7 +189,7 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 8. Cookies & Tracking Technologies */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s8')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s8')}</h2>
                             <p className="text-sm font-medium mb-4">{t('legal.privacy.sections.s8_desc')}:</p>
                             <ul className="list-disc pr-5 pl-5 space-y-2 text-sm font-medium mb-6">
                                 <li>{t('legal.privacy.cookies.c1')}</li>
@@ -201,7 +201,7 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 9. International Operations */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s9')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s9')}</h2>
                             <p className="text-sm font-medium">
                                 {t('legal.privacy.international.desc')}
                             </p>
@@ -209,7 +209,7 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 10. Children’s Privacy */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s10')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s10')}</h2>
                             <p className="text-sm font-medium">
                                 {t('legal.privacy.children.desc')}
                             </p>
@@ -217,7 +217,7 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 11. Changes to This Policy */}
                         <section>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s11')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s11')}</h2>
                             <p className="text-sm font-medium">
                                 {t('legal.privacy.changes.desc')}
                             </p>
@@ -225,7 +225,7 @@ export const PrivacyPolicyPage = () => {
 
                         {/* 12. Contact Us */}
                         <section className="bg-gray-50 dark:bg-white/5 p-8 rounded-3xl border border-gray-100 dark:border-white/5">
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s12')}</h2>
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s12')}</h2>
                             <p className="text-sm font-medium mb-4">
                                 {t('legal.privacy.contact.desc')}
                             </p>

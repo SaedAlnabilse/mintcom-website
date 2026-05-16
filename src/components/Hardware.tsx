@@ -248,7 +248,7 @@ export const Hardware = () => {
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    <h3 className="font-magilio text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                       {item.name}
                     </h3>
                     <p className="mt-1 text-sm font-light text-gray-500 dark:text-gray-400">
@@ -344,7 +344,7 @@ export const Hardware = () => {
                     <selectedHardware.icon size={22} className="text-black" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    <h3 className="font-magilio text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                       {selectedHardware.name}
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">

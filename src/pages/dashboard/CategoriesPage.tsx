@@ -59,6 +59,23 @@ interface Product {
 
 type StatusFilterValue = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
+const isArchivedRecord = (record: { deletedAt?: string | null; deactivatedAt?: string | null; isActive?: boolean }) =>
+  !!record?.deletedAt || !!record?.deactivatedAt || record?.isActive === false;
+
+const sortArchivedLastByNewest = <T extends { id?: string; deletedAt?: string | null; deactivatedAt?: string | null; isActive?: boolean }>(
+  records: T[],
+) =>
+  [...records].sort((a, b) => {
+    const aArchived = isArchivedRecord(a);
+    const bArchived = isArchivedRecord(b);
+
+    if (aArchived !== bArchived) {
+      return aArchived ? 1 : -1;
+    }
+
+    return (b.id || '').localeCompare(a.id || '');
+  });
+
 export function CategoriesPage() {
   const { t } = useTranslation();
   const { currentEstablishment } = useAuth();
@@ -83,6 +100,7 @@ export function CategoriesPage() {
   const [deleteBlockedCategory, setDeleteBlockedCategory] = useState<Category | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<StatusFilterValue>('ACTIVE');
+  const [recentlyArchivedCategoryIds, setRecentlyArchivedCategoryIds] = useState<Set<string>>(() => new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [showCsvImport, setShowCsvImport] = useState(false);
   const ITEMS_PER_PAGE = 12;
@@ -119,14 +137,32 @@ export function CategoriesPage() {
     fetchData();
   }, []);
 
-  const fetchData = async (silent = false) => {
+  const fetchData = async (silent = false, preserveCurrentOrder = false) => {
     try {
       if (!silent) setIsLoading(true);
       const [catsRes, prodsRes] = await Promise.all([
         api.get('/api/categories', { params: { includeInactive: true } }),
         api.get('/api/items')
       ]);
-      setCategories(catsRes.data || []);
+      const sortedCategories = sortArchivedLastByNewest(Array.isArray(catsRes.data) ? catsRes.data : []);
+      if (preserveCurrentOrder && recentlyArchivedCategoryIds.size > 0) {
+        setCategories((currentCategories) => {
+          const freshById = new Map(sortedCategories.map((category) => [category.id, category]));
+          const merged = currentCategories
+            .map((category) => {
+              const fresh = freshById.get(category.id);
+              if (!fresh) return null;
+              freshById.delete(category.id);
+              return fresh;
+            })
+            .filter((category): category is Category => Boolean(category));
+
+          return [...merged, ...Array.from(freshById.values())];
+        });
+      } else {
+        setRecentlyArchivedCategoryIds(new Set());
+        setCategories(sortedCategories);
+      }
       setProducts(prodsRes.data?.items || []);
     } catch {
       toast.error(t('categories.messages.loadFailed'));
@@ -147,12 +183,12 @@ export function CategoriesPage() {
 
     const unsubscribe = onRefresh((eventType) => {
       if (categoryEvents.includes(eventType as any)) {
-        fetchData(true);
+        fetchData(true, true);
       }
     });
 
     return unsubscribe;
-  }, [onRefresh, currentEstablishment?.id]);
+  }, [onRefresh, currentEstablishment?.id, recentlyArchivedCategoryIds]);
 
   const openCreateModal = () => {
     setEditingCategory(null);
@@ -276,7 +312,9 @@ export function CategoriesPage() {
     return (Array.isArray(categories) ? categories : []).filter(cat => {
       const matchesStatus =
         filterStatus === 'ALL' ||
-        (filterStatus === 'ACTIVE' ? isCategoryActive(cat) : !isCategoryActive(cat));
+        (filterStatus === 'ACTIVE'
+          ? isCategoryActive(cat) || recentlyArchivedCategoryIds.has(cat.id)
+          : !isCategoryActive(cat));
 
       if (!normalizedSearchQuery) return matchesStatus;
       return matchesStatus && (
@@ -284,7 +322,7 @@ export function CategoriesPage() {
         cat.description?.toLowerCase().includes(normalizedSearchQuery)
       );
     });
-  }, [categories, normalizedSearchQuery, filterStatus]);
+  }, [categories, normalizedSearchQuery, filterStatus, recentlyArchivedCategoryIds]);
   const shouldShowStatusEmptyState = !normalizedSearchQuery && filterStatus !== 'ALL';
   const categoriesEmptyTitle = shouldShowStatusEmptyState
     ? t(
@@ -404,14 +442,40 @@ export function CategoriesPage() {
         title: shouldDelete ? 'Delete category' : t('categories.delete.title'),
         message: shouldDelete
           ? `Delete "${category?.name || 'this category'}" permanently? It is not used in reports or active products.`
-          : `Archive "${category?.name || 'this category'}"? It appears in historical reports, so it will become inactive instead of being deleted.`,
+          : t('categories.delete.message', { name: category?.name || 'this category' }),
         type: 'danger',
         confirmText: shouldDelete ? t('common.delete', { defaultValue: 'Delete' }) : t('common.archive'),
         onConfirm: async () => {
           try {
-            await api.delete(`/api/categories/${categoryId}`);
+            const response = await api.delete(`/api/categories/${categoryId}`);
+            if (shouldDelete) {
+              setRecentlyArchivedCategoryIds((prev) => {
+                const next = new Set(prev);
+                next.delete(categoryId);
+                return next;
+              });
+              setCategories((currentCategories) =>
+                currentCategories.filter((currentCategory) => currentCategory.id !== categoryId),
+              );
+            } else {
+              const archivedAt = new Date().toISOString();
+              const archivedCategory = response.data as Partial<Category> | undefined;
+              setRecentlyArchivedCategoryIds((prev) => new Set(prev).add(categoryId));
+              setCategories((currentCategories) =>
+                currentCategories.map((currentCategory) =>
+                  currentCategory.id === categoryId
+                    ? {
+                        ...currentCategory,
+                        ...archivedCategory,
+                        deletedAt: archivedCategory?.deletedAt ?? archivedAt,
+                        deactivatedAt: archivedCategory?.deactivatedAt ?? archivedAt,
+                        isActive: false,
+                      }
+                    : currentCategory,
+                ),
+              );
+            }
             toast.success(t('categories.messages.deleted'));
-            fetchData();
           } catch (error: any) {
             const errorMessage = error.response?.data?.message || t('categories.messages.deleteFailed');
             if (errorMessage.includes('historical records') || errorMessage.includes('used in orders')) {

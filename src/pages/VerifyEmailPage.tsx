@@ -49,7 +49,7 @@ export function VerifyEmailPage() {
             <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto animate-pulse">
               <Loader2 className="w-10 h-10 text-paymint-green animate-spin" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.verifyEmail.verifyingTitle')}</h2>
+            <h2 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.verifyEmail.verifyingTitle')}</h2>
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.verifyEmail.verifyingSubtitle')}</p>
           </div>
         )}
@@ -59,7 +59,7 @@ export function VerifyEmailPage() {
             <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto">
               <CheckCircle className="w-10 h-10 text-paymint-green" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.verifyEmail.successTitle')}</h2>
+            <h2 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.verifyEmail.successTitle')}</h2>
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{message}</p>
             <Link
               to="/login"
@@ -75,7 +75,7 @@ export function VerifyEmailPage() {
             <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
               <XCircle className="w-10 h-10 text-accent" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.verifyEmail.linkExpiredTitle')}</h2>
+            <h2 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.verifyEmail.linkExpiredTitle')}</h2>
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
               {t('auth.verifyEmail.linkInvalidOrExpired')}
             </p>

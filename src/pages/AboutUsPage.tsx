@@ -46,7 +46,7 @@ export const AboutUsPage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-8">
+                        <h1 className="font-magilio text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-8">
                             {t('about.title')}
                         </h1>
                         <div className="prose prose-lg dark:prose-invert mx-auto">
@@ -71,7 +71,7 @@ export const AboutUsPage = () => {
             <div className="py-24 bg-gray-50 dark:bg-[#1E293B]/50 px-6">
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('about.values.title')}</h2>
+                        <h2 className="font-magilio text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('about.values.title')}</h2>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -87,7 +87,7 @@ export const AboutUsPage = () => {
                                 <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:bg-paymint-green/10">
                                     <value.icon className="w-7 h-7 text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors" />
                                 </div>
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{value.title}</h3>
+                                <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-3">{value.title}</h3>
                                 <p className="text-sm font-medium text-gray-500 leading-relaxed">
                                     {value.description}
                                 </p>
@@ -106,7 +106,7 @@ export const AboutUsPage = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
                     >
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+                        <h2 className="font-magilio text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
                             {t('about.story.title')}
                         </h2>
                         <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-6 leading-relaxed text-center max-w-3xl mx-auto">

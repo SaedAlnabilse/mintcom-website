@@ -66,6 +66,23 @@ interface Product {
 type ProductSortKey = keyof Product | 'category' | 'status';
 type StatusFilterValue = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
+const isArchivedRecord = (record: { deletedAt?: string | null; deactivatedAt?: string | null; isActive?: boolean }) =>
+    !!record?.deletedAt || !!record?.deactivatedAt || record?.isActive === false;
+
+const sortArchivedLastByNewest = <T extends { id?: string; deletedAt?: string | null; deactivatedAt?: string | null; isActive?: boolean }>(
+    records: T[],
+) =>
+    [...records].sort((a, b) => {
+        const aArchived = isArchivedRecord(a);
+        const bArchived = isArchivedRecord(b);
+
+        if (aArchived !== bArchived) {
+            return aArchived ? 1 : -1;
+        }
+
+        return (b.id || '').localeCompare(a.id || '');
+    });
+
 export function ProductsPage() {
     const { t } = useTranslation();
     usePermissionGuard(['manage_inventory']);
@@ -88,6 +105,7 @@ export function ProductsPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [stockFilter, setStockFilter] = useState<'all' | 'yellow' | 'red' | 'out'>('all');
     const [filterStatus, setFilterStatus] = useState<StatusFilterValue>('ACTIVE');
+    const [recentlyArchivedProductIds, setRecentlyArchivedProductIds] = useState<Set<string>>(() => new Set());
     const [showCsvImport, setShowCsvImport] = useState(false);
     const ITEMS_PER_PAGE = 10;
     const topRef = useRef<HTMLDivElement>(null);
@@ -149,7 +167,7 @@ export function ProductsPage() {
 
     const navigationStateChecked = useRef(false);
 
-    const fetchData = async (silent = false) => {
+    const fetchData = async (silent = false, preserveCurrentOrder = false) => {
         try {
             if (!silent) setIsLoading(true);
             const [productsRes, categoriesRes] = await Promise.all([
@@ -159,8 +177,28 @@ export function ProductsPage() {
             // Backend returns { items: [...], total, limit, offset } for paginated response
             // or an array directly for backwards compatibility
             const productsData = productsRes.data?.items ?? productsRes.data;
-            setProducts(Array.isArray(productsData) ? productsData : []);
-            setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
+            const sortedProducts = sortArchivedLastByNewest(Array.isArray(productsData) ? productsData : []);
+            const sortedCategories = sortArchivedLastByNewest(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
+
+            if (preserveCurrentOrder && recentlyArchivedProductIds.size > 0) {
+                setProducts((currentProducts) => {
+                    const freshById = new Map(sortedProducts.map((product) => [product.id, product]));
+                    const merged = currentProducts
+                        .map((product) => {
+                            const fresh = freshById.get(product.id);
+                            if (!fresh) return null;
+                            freshById.delete(product.id);
+                            return fresh;
+                        })
+                        .filter((product): product is Product => Boolean(product));
+
+                    return [...merged, ...Array.from(freshById.values())];
+                });
+            } else {
+                setRecentlyArchivedProductIds(new Set());
+                setProducts(sortedProducts);
+            }
+            setCategories(sortedCategories);
         } catch (err) {
             console.error('Failed to load data', err);
             toast.error(t('products.messages.loadFailed'));
@@ -182,12 +220,12 @@ export function ProductsPage() {
 
         const unsubscribe = onRefresh((eventType) => {
             if (productEvents.includes(eventType as any)) {
-                fetchData(true);
+                fetchData(true, true);
             }
         });
 
         return unsubscribe;
-    }, [onRefresh, currentEstablishment?.id]);
+    }, [onRefresh, currentEstablishment?.id, recentlyArchivedProductIds]);
 
     // Handle initial navigation state (once data is loaded)
     useEffect(() => {
@@ -253,9 +291,39 @@ export function ProductsPage() {
             confirmText: t('common.archive'),
             onConfirm: async () => {
                 try {
-                    await api.delete(`/api/items/${id}`);
+                    const response = await api.delete(`/api/items/${id}`);
+                    const archivedAt = new Date().toISOString();
+                    const archivedProduct = response.data as Partial<Product> | undefined;
+                    const shouldKeepArchived =
+                        !archivedProduct ||
+                        !!archivedProduct.deletedAt ||
+                        !!archivedProduct.deactivatedAt ||
+                        archivedProduct.isAvailable === false;
+
+                    if (shouldKeepArchived) {
+                        setRecentlyArchivedProductIds((prev) => new Set(prev).add(id));
+                        setProducts((currentProducts) =>
+                            currentProducts.map((product) =>
+                                product.id === id
+                                    ? {
+                                        ...product,
+                                        ...archivedProduct,
+                                        deletedAt: archivedProduct?.deletedAt ?? archivedAt,
+                                        deactivatedAt: archivedProduct?.deactivatedAt ?? archivedAt,
+                                        isAvailable: false,
+                                    }
+                                    : product,
+                            ),
+                        );
+                    } else {
+                        setRecentlyArchivedProductIds((prev) => {
+                            const next = new Set(prev);
+                            next.delete(id);
+                            return next;
+                        });
+                        setProducts((currentProducts) => currentProducts.filter((product) => product.id !== id));
+                    }
                     toast.success(t('products.messages.deleted'));
-                    fetchData(); // Refresh list
                     setShowModal(false); // Close modal if open
                 } catch (err) {
                     console.error('Archive error', err);
@@ -605,7 +673,7 @@ export function ProductsPage() {
         if (filterStatus !== 'ALL') {
             result = result.filter((product) =>
                 filterStatus === 'ACTIVE'
-                    ? isProductActive(product)
+                    ? isProductActive(product) || recentlyArchivedProductIds.has(product.id)
                     : !isProductActive(product),
             );
         }
@@ -672,7 +740,7 @@ export function ProductsPage() {
         }
 
         return result;
-    }, [products, selectedCategoryId, searchQuery, sortConfig, stockFilter, categories, filterStatus]);
+    }, [products, selectedCategoryId, searchQuery, sortConfig, stockFilter, categories, filterStatus, recentlyArchivedProductIds]);
 
     const totalPages = Math.ceil((Array.isArray(filteredProducts) ? filteredProducts : []).length / ITEMS_PER_PAGE);
     const paginatedProducts = useMemo(() => {

@@ -322,7 +322,7 @@ export const ArticlePage = () => {
         <Navbar />
         <main className="pt-28 pb-20">
           <div className="container mx-auto max-w-\[1280px\] px-6 md:px-10 text-center">
-            <h1 className="text-3xl font-black mb-4">{t('support.articles.notFound')}</h1>
+            <h1 className="font-magilio text-3xl font-black mb-4">{t('support.articles.notFound')}</h1>
             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-8">{t('support.articles.notFoundDescDetail')}</p>
             <Link to="/support" className="text-paymint-green font-bold hover:underline">
               ← {t('support.articles.backToHelp')}
@@ -372,7 +372,7 @@ export const ArticlePage = () => {
                 {t('support.articles.backTo')} {article.category}
               </Link>
 
-              <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-4">
+              <h1 className="font-magilio text-3xl md:text-4xl font-black tracking-tight mb-4">
                 {article.title}
               </h1>
 
@@ -402,14 +402,14 @@ export const ArticlePage = () => {
                 {article.content.map((paragraph, index) => {
                   if (paragraph.startsWith('## ')) {
                     return (
-                      <h2 key={index} className="text-2xl font-black mt-8 mb-4 first:mt-0">
+                      <h2 key={index} className="font-magilio text-2xl font-black mt-8 mb-4 first:mt-0">
                         {paragraph.replace('## ', '')}
                       </h2>
                     );
                   }
                   if (paragraph.startsWith('### ')) {
                     return (
-                      <h3 key={index} className="text-xl font-bold mt-6 mb-3">
+                      <h3 key={index} className="font-magilio text-xl font-bold mt-6 mb-3">
                         {paragraph.replace('### ', '')}
                       </h3>
                     );
@@ -501,7 +501,7 @@ export const ArticlePage = () => {
             {/* Related Articles */}
             {relatedArticleData.length > 0 && (
               <div>
-                <h2 className="text-xl font-bold mb-4">{t('support.articles.related')}</h2>
+                <h2 className="font-magilio text-xl font-bold mb-4">{t('support.articles.related')}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {relatedArticleData.map((related, index) => (
                     <motion.div
@@ -517,7 +517,7 @@ export const ArticlePage = () => {
                         <div className="w-10 h-10 bg-paymint-green/10 rounded-lg flex items-center justify-center mb-3">
                           <BookOpen size={18} className="text-paymint-green" />
                         </div>
-                        <h4 className="font-bold mb-2 group-hover:text-paymint-green transition-colors line-clamp-2">
+                        <h4 className="font-magilio font-bold mb-2 group-hover:text-paymint-green transition-colors line-clamp-2">
                           {related.title}
                         </h4>
                         <div className="flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">

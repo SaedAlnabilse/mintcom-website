@@ -256,7 +256,7 @@ export const SupportPage = () => {
                     <category.icon size={24} />
                   </div>
 
-                  <h3 className="mb-2 text-xl font-bold tracking-tight text-gray-900 transition-colors group-hover:text-paymint-green dark:text-white">
+                  <h3 className="font-magilio mb-2 text-xl font-bold tracking-tight text-gray-900 transition-colors group-hover:text-paymint-green dark:text-white">
                     {category.title}
                   </h3>
                   <p className="flex-1 text-sm font-light leading-relaxed text-gray-500 dark:text-gray-400">

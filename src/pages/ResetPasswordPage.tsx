@@ -84,7 +84,7 @@ export function ResetPasswordPage() {
           <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-8">
             <XCircle className="w-10 h-10 text-accent" />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('auth.resetPassword.invalidLinkTitle')}</h2>
+          <h2 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('auth.resetPassword.invalidLinkTitle')}</h2>
           <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
             {t('auth.resetPassword.invalidLinkSubtitle')}
           </p>
@@ -110,7 +110,7 @@ export function ResetPasswordPage() {
           <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
             <CheckCircle className="w-10 h-10 text-paymint-green" />
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('auth.resetPassword.successTitle')}</h2>
+          <h2 className="font-magilio text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('auth.resetPassword.successTitle')}</h2>
           <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
             {t('auth.resetPassword.passwordUpdatedShort')}
           </p>
@@ -133,7 +133,7 @@ export function ResetPasswordPage() {
         className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full shadow-lg shadow-gray-200/50 dark:shadow-none"
       >
         <div className="text-center mb-10">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
+          <h1 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
             {t('auth.resetPassword.resetTitle')} <span className="text-paymint-green">{t('auth.resetPassword.passwordHighlight')}</span>
           </h1>
           <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.resetPassword.enterNewPassword')}</p>

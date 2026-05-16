@@ -266,7 +266,7 @@ export const TicketsPage = () => {
                 >
                   <ArrowLeft size={20} />
                 </Link>
-                <h1 className="text-3xl font-black tracking-tight">{t('support.tickets.myTickets')}</h1>
+                <h1 className="font-magilio text-3xl font-black tracking-tight">{t('support.tickets.myTickets')}</h1>
               </div>
               <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors ml-11">
                 {t('support.tickets.subtitle')}
@@ -450,7 +450,7 @@ export const TicketsPage = () => {
                 <div className="w-20 h-20 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Inbox size={36} className="text-gray-400" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">{searchQuery.trim() ? t('common.noResults') : t('support.tickets.notFound')}</h3>
+                <h3 className="font-magilio text-xl font-bold mb-2">{searchQuery.trim() ? t('common.noResults') : t('support.tickets.notFound')}</h3>
                 <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-8 max-w-sm mx-auto">
                   {searchQuery.trim()
                     ? t('common.noMatchingResults', {
@@ -531,7 +531,7 @@ export const TicketsPage = () => {
                             </div>
 
                             {/* Subject */}
-                            <h3 className="text-base md:text-lg font-bold group-hover:text-paymint-green transition-colors mb-1.5 truncate">
+                            <h3 className="font-magilio text-base md:text-lg font-bold group-hover:text-paymint-green transition-colors mb-1.5 truncate">
                               {ticket.subject}
                             </h3>
 

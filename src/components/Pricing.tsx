@@ -84,7 +84,7 @@ export const Pricing = () => {
                     <span className="text-[#d4ff33] font-black tracking-[0.2em] text-xs uppercase mb-4 block">
                       {t('landing.pricing.fullAccess')}
                     </span>
-                    <h3 className="text-4xl font-bold text-white mb-10 transition-colors duration-300">
+                    <h3 className="font-magilio text-4xl font-bold text-white mb-10 transition-colors duration-300">
                       {isYearly ? t('landing.pricing.yearlyPlan') : t('landing.pricing.monthlyPlan')}
                     </h3>
 
@@ -168,7 +168,7 @@ export const Pricing = () => {
                 {/* Right Side: Features */}
                 <div className="flex-1 w-full">
                   <div className="mb-10">
-                    <h4 className="text-white font-bold text-2xl mb-2">
+                    <h4 className="font-magilio text-white font-bold text-2xl mb-2">
                       {t('landing.pricing.includedTitle', 'Everything you need')}
                     </h4>
                     <p className="text-gray-500 font-medium">
@@ -220,7 +220,7 @@ export const Pricing = () => {
               <div className="w-20 h-20 bg-[#d4ff33]/10 rounded-full flex items-center justify-center mx-auto mb-8">
                 <Check size={40} className="text-[#d4ff33] stroke-[3px]" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">
+              <h3 className="font-magilio text-2xl font-bold text-white mb-4">
                 {t('landing.pricing.alreadySignedIn', 'You are already signed in')}
               </h3>
               <p className="text-gray-400 mb-10 leading-relaxed font-medium">

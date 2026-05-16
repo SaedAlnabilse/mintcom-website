@@ -33,7 +33,7 @@ export function CookiePolicyPage() {
               <Shield size={24} />
               <span className="label-strong font-outfit uppercase">{t('legal.cookies.legalCenter')}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+            <h1 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
               {t('legal.cookies.title')}
             </h1>
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">
@@ -110,7 +110,7 @@ export function CookiePolicyPage() {
                   <div className="p-2 bg-paymint-green/10 dark:bg-paymint-green/ text-paymint-green rounded-lg">
                     <Lock size={20} />
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.essential')}</h3>
+                  <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.essential')}</h3>
                 </div>
                 <p className="text-xs font-bold text-gray-500 leading-relaxed">
                   {t('legal.cookies.cards.essentialDesc')}
@@ -122,7 +122,7 @@ export function CookiePolicyPage() {
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/20 text-blue-600 rounded-lg">
                     <BarChart3 size={20} />
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.analytics')}</h3>
+                  <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.analytics')}</h3>
                 </div>
                 <p className="text-xs font-bold text-gray-500 leading-relaxed">
                   {t('legal.cookies.cards.analyticsDesc')}
@@ -134,7 +134,7 @@ export function CookiePolicyPage() {
                   <div className="p-2 bg-purple-100 dark:bg-purple-900/20 text-purple-600 rounded-lg">
                     <Globe size={20} />
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.advertising')}</h3>
+                  <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.advertising')}</h3>
                 </div>
                 <p className="text-xs font-bold text-gray-500 leading-relaxed">
                   {t('legal.cookies.cards.advertisingDesc')}
@@ -160,7 +160,7 @@ export function CookiePolicyPage() {
               {t('legal.cookies.content.control_1')}
             </p>
             <div className="bg-paymint-green/10 border border-paymint-green/20 rounded-xl p-6 my-6">
-              <h4 className="text-paymint-green font-bold text-base mb-2 not-prose">{t('legal.cookies.preferenceCenterTitle')}</h4>
+              <h4 className="font-magilio text-paymint-green font-bold text-base mb-2 not-prose">{t('legal.cookies.preferenceCenterTitle')}</h4>
               <p className="text-gray-700 dark:text-gray-300 text-xs font-bold mb-4">
                 {t('legal.cookies.preferenceCenterSubtitle')}
               </p>
