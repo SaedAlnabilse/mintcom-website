@@ -41,6 +41,7 @@ export interface TicketMessage {
 
 export interface Ticket {
   id: string;
+  ticketNumber?: string;
   subject: string;
   category: string;
   status: TicketStatus;
@@ -50,6 +51,12 @@ export interface Ticket {
   description: string;
   messages: TicketMessage[];
   unreadReplies: number;
+  lastMessage?: {
+    content: string;
+    senderType: 'user' | 'support';
+    createdAt: string;
+  } | null;
+  needsCustomerReply?: boolean;
 }
 
 // ─── Storage helpers (fallback) ─────────────────────────────────────────────────────────────────────────────────────
@@ -141,6 +148,7 @@ export const TicketsPage = () => {
         // Map API response to local Ticket shape
         const apiTickets: Ticket[] = (res.data || []).map((t: Record<string, unknown>) => ({
           id: t.id as string,
+          ticketNumber: t.ticketNumber as string,
           subject: t.subject as string,
           category: t.category as string,
           status: (t.status as string || 'open').replace(/_/g, '_') as TicketStatus,
@@ -149,7 +157,9 @@ export const TicketsPage = () => {
           updatedAt: t.updatedAt as string,
           description: '',
           messages: [],
-          unreadReplies: 0,
+          unreadReplies: t.needsCustomerReply ? 1 : 0,
+          lastMessage: t.lastMessage as Ticket['lastMessage'],
+          needsCustomerReply: Boolean(t.needsCustomerReply),
         }));
         setTickets(apiTickets);
       } catch {
@@ -187,6 +197,8 @@ export const TicketsPage = () => {
         !q ||
         ticket.subject.toLowerCase().includes(q) ||
         ticket.id.toLowerCase().includes(q) ||
+        (ticket.ticketNumber || '').toLowerCase().includes(q) ||
+        (ticket.lastMessage?.content || '').toLowerCase().includes(q) ||
         ticket.description.toLowerCase().includes(q);
       const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
       const matchesPriority = priorityFilter === 'all' || ticket.priority === priorityFilter;
@@ -486,7 +498,7 @@ export const TicketsPage = () => {
                   const status = statusConfig[ticket.status];
                   const priority = priorityConfig[ticket.priority];
                   const StatusIcon = status.icon;
-                  const lastMsg = ticket.messages.length > 0 ? ticket.messages[ticket.messages.length - 1] : null;
+                  const lastMsg = ticket.lastMessage || (ticket.messages.length > 0 ? ticket.messages[ticket.messages.length - 1] : null);
 
                   return (
                     <motion.div
@@ -503,7 +515,7 @@ export const TicketsPage = () => {
                           <div className="flex-1 min-w-0">
                             {/* Top row: id + badges */}
                             <div className="flex items-center gap-2 mb-2 flex-wrap">
-                              <span className="text-xs font-bold text-gray-400 font-mono">{ticket.id}</span>
+                              <span className="text-xs font-bold text-gray-400 font-mono">{ticket.ticketNumber || ticket.id}</span>
                               <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${status.bg} ${status.color}`}>
                                 <StatusIcon size={12} className={ticket.status === 'in_progress' ? 'animate-spin' : ''} />
                                 {status.label}
@@ -513,7 +525,7 @@ export const TicketsPage = () => {
                               </span>
                               {ticket.unreadReplies > 0 && (
                                 <span className="px-2 py-1 bg-paymint-green text-black rounded-lg text-xs font-bold animate-pulse">
-                                  {ticket.unreadReplies} {t('support.tickets.newLabel')}
+                                  {t('support.tickets.newLabel')}
                                 </span>
                               )}
                             </div>
@@ -526,7 +538,7 @@ export const TicketsPage = () => {
                             {/* Last message preview */}
                             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors line-clamp-1">
                               {lastMsg
-                                ? `${lastMsg.sender === 'support' ? '© Support' : 'You'}: ${lastMsg.content}`
+                                ? `${'senderType' in lastMsg ? (lastMsg.senderType === 'support' ? 'Support' : 'You') : (lastMsg.sender === 'support' ? 'Support' : 'You')}: ${lastMsg.content}`
                                 : ticket.description}
                             </p>
                           </div>

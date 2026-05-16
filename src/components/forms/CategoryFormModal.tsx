@@ -242,7 +242,7 @@ export function CategoryFormModal({
                   <button
                     type="button"
                     onClick={() => onDelete(initialData.id)}
-                    title={t('common.archive')}
+                    title={t('common.delete', { defaultValue: 'Delete' })}
                     className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90"
                   >
                     <Trash2 size={24} className="group-hover:scale-110 transition-transform" />

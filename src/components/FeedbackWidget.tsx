@@ -15,10 +15,35 @@ export const FeedbackWidget = () => {
     const isRTL = t('common.locale') === 'ar';
     const [isOpen, setIsOpen] = useState(false);
     const [rating, setRating] = useState(0);
+    const [category, setCategory] = useState('general');
+    const [area, setArea] = useState('checkout');
     const [comment, setComment] = useState('');
+    const [contactConsent, setContactConsent] = useState(true);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+
+    const categoryOptions = [
+        { value: 'general', label: t('feedback.categories.general') },
+        { value: 'bug', label: t('feedback.categories.bug') },
+        { value: 'feature', label: t('feedback.categories.feature') },
+        { value: 'usability', label: t('feedback.categories.usability') },
+        { value: 'performance', label: t('feedback.categories.performance') },
+        { value: 'pricing', label: t('feedback.categories.pricing') },
+        { value: 'support', label: t('feedback.categories.support') },
+    ];
+
+    const areaOptions = [
+        { value: 'checkout', label: t('feedback.areas.checkout') },
+        { value: 'products', label: t('feedback.areas.products') },
+        { value: 'inventory', label: t('feedback.areas.inventory') },
+        { value: 'reports', label: t('feedback.areas.reports') },
+        { value: 'staff', label: t('feedback.areas.staff') },
+        { value: 'settings', label: t('feedback.areas.settings') },
+        { value: 'billing', label: t('feedback.areas.billing') },
+        { value: 'support', label: t('feedback.areas.support') },
+        { value: 'general', label: t('feedback.areas.general') },
+    ];
 
     // Only show on dashboard, owner, or brand routes
     const isAppRoute = location.pathname.startsWith('/dashboard') || 
@@ -63,10 +88,24 @@ export const FeedbackWidget = () => {
         setIsSubmitting(true);
 
         try {
+            let selectedEstablishmentId: string | undefined;
+            try {
+                const currentEstablishment = sessionStorage.getItem('currentEstablishment');
+                selectedEstablishmentId = currentEstablishment ? JSON.parse(currentEstablishment)?.id : undefined;
+            } catch {
+                selectedEstablishmentId = undefined;
+            }
+
             await api.post('/contact/feedback', {
                 rating,
+                category,
+                area,
                 comment: comment.trim(),
                 pageUrl: window.location.href,
+                route: location.pathname,
+                locale: t('common.locale'),
+                selectedEstablishmentId,
+                contactConsent,
                 userName: account
                     ? `${account.firstName || ''} ${account.lastName || ''}`.trim() || account.email
                     : undefined,
@@ -88,6 +127,12 @@ export const FeedbackWidget = () => {
                 // After modal closes, hide the tab entirely
                 setTimeout(() => {
                     setIsVisible(false);
+                    setIsSubmitted(false);
+                    setRating(0);
+                    setCategory('general');
+                    setArea('checkout');
+                    setComment('');
+                    setContactConsent(true);
                 }, 300);
             }, 3000);
         } catch (error) {
@@ -183,6 +228,38 @@ export const FeedbackWidget = () => {
                                             </div>
                                         </div>
 
+                                        <div className="grid grid-cols-1 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-sans font-normal text-gray-500 mb-3">{formatInputLabel(t('feedback.category'), t('common.locale'))}</label>
+                                                <select
+                                                    value={category}
+                                                    onChange={(e) => setCategory(e.target.value)}
+                                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                                                >
+                                                    {categoryOptions.map((option) => (
+                                                        <option key={option.value} value={option.value}>
+                                                            {option.label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-sans font-normal text-gray-500 mb-3">{formatInputLabel(t('feedback.area'), t('common.locale'))}</label>
+                                                <select
+                                                    value={area}
+                                                    onChange={(e) => setArea(e.target.value)}
+                                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                                                >
+                                                    {areaOptions.map((option) => (
+                                                        <option key={option.value} value={option.value}>
+                                                            {option.label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
+
                                         <div>
                                             <label className="block text-xs font-sans font-normal text-gray-500 mb-3">{formatInputLabel(t('feedback.comments'), t('common.locale'))}</label>
                                             <textarea maxLength={2000}
@@ -194,6 +271,16 @@ export const FeedbackWidget = () => {
                                                 placeholder={formatInputPlaceholder(t('feedback.placeholder'), t('common.locale'))}
                                             />
                                         </div>
+
+                                        <label className="flex items-start gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-xs font-bold text-gray-600 dark:bg-[#1E293B] dark:text-gray-300">
+                                            <input
+                                                type="checkbox"
+                                                checked={contactConsent}
+                                                onChange={(e) => setContactConsent(e.target.checked)}
+                                                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-paymint-green focus:ring-paymint-green"
+                                            />
+                                            <span>{t('feedback.contactConsent')}</span>
+                                        </label>
 
                                         <button
                                             type="submit"

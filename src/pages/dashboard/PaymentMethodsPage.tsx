@@ -28,6 +28,8 @@ import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { SelectInput } from '../../components/ui';
 import { OptimizedImage } from '../../components/OptimizedImage';
+import { useRealtime } from '../../hooks/useRealtime';
+import { DataChangeEventTypes } from '../../services/realtimeService';
 
 const paymentMethodSchema = z.object({
   name: z.string().min(1, 'common.required'),
@@ -62,6 +64,9 @@ export function PaymentMethodsPage() {
   usePermissionGuard(['manage_payment_methods']);
   const location = useLocation();
   const { currentEstablishment } = useAuth();
+  const { onRefresh } = useRealtime({
+    establishmentId: currentEstablishment?.id || null,
+  });
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [cardTypes, setCardTypes] = useState<CardType[]>([]);
   const [paymentMethodStatusFilter, setPaymentMethodStatusFilter] = useState<StatusFilterValue>('ACTIVE');
@@ -223,6 +228,17 @@ export function PaymentMethodsPage() {
       toast.error(t('paymentMethods.messages.failedToLoad'));
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = onRefresh((eventType) => {
+      if (eventType === DataChangeEventTypes.SETTINGS_UPDATED) {
+        fetchPaymentMethods();
+        fetchCardTypes();
+      }
+    });
+
+    return unsubscribe;
+  }, [onRefresh, currentEstablishment?.id]);
 
   const uploadImage = async (file: File, endpoint: string) => {
     const formData = new FormData();

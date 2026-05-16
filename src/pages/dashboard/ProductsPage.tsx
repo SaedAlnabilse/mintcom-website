@@ -33,6 +33,8 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 import { checkPermission, usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { useRealtime } from '../../hooks/useRealtime';
+import { DataChangeEventTypes } from '../../services/realtimeService';
 
 
 interface Category {
@@ -69,6 +71,9 @@ export function ProductsPage() {
     usePermissionGuard(['manage_inventory']);
     const { currencySymbol } = useCurrency();
     const { account , currentEstablishment } = useAuth();
+    const { onRefresh } = useRealtime({
+        establishmentId: currentEstablishment?.id || null,
+    });
     const location = useLocation();
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -163,6 +168,26 @@ export function ProductsPage() {
             if (!silent) setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        const productEvents = [
+            DataChangeEventTypes.ITEM_CREATED,
+            DataChangeEventTypes.ITEM_UPDATED,
+            DataChangeEventTypes.ITEM_DELETED,
+            DataChangeEventTypes.ITEM_STOCK_CHANGED,
+            DataChangeEventTypes.CATEGORY_CREATED,
+            DataChangeEventTypes.CATEGORY_UPDATED,
+            DataChangeEventTypes.CATEGORY_DELETED,
+        ];
+
+        const unsubscribe = onRefresh((eventType) => {
+            if (productEvents.includes(eventType as any)) {
+                fetchData(true);
+            }
+        });
+
+        return unsubscribe;
+    }, [onRefresh, currentEstablishment?.id]);
 
     // Handle initial navigation state (once data is loaded)
     useEffect(() => {

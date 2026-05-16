@@ -10,6 +10,8 @@ import { SearchInput, SelectInput, Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { useRealtime } from '../../hooks/useRealtime';
+import { DataChangeEventTypes } from '../../services/realtimeService';
 
 interface ApiError {
   response?: {
@@ -37,6 +39,9 @@ type StatusFilterValue = 'ALL' | 'ACTIVE' | 'INACTIVE';
 export function DiscountsPage() {
   const { t } = useTranslation();
     const { currentEstablishment } = useAuth();
+  const { onRefresh } = useRealtime({
+    establishmentId: currentEstablishment?.id || null,
+  });
   usePermissionGuard(['manage_discounts']);
   const { currencySymbol } = useCurrency();
   const [discounts, setDiscounts] = useState<Discount[]>([]);
@@ -95,6 +100,16 @@ export function DiscountsPage() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = onRefresh((eventType) => {
+      if (eventType === DataChangeEventTypes.SETTINGS_UPDATED) {
+        fetchDiscounts();
+      }
+    });
+
+    return unsubscribe;
+  }, [onRefresh, currentEstablishment?.id]);
 
   const handleSort = (key: SortKey) => {
     let direction: 'asc' | 'desc' = 'asc';

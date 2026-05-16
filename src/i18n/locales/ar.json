@@ -1500,7 +1500,30 @@
     }
   },
   "feedback": {
+    "area": "منطقة في النظام",
+    "areas": {
+      "billing": "الفوترة",
+      "checkout": "الدفع",
+      "general": "عام",
+      "inventory": "المخزون",
+      "products": "المنتجات",
+      "reports": "التقارير",
+      "settings": "الإعدادات",
+      "staff": "الموظفون",
+      "support": "الدعم"
+    },
+    "categories": {
+      "bug": "مشكلة أو خلل",
+      "feature": "فكرة ميزة",
+      "general": "ملاحظات عامة",
+      "performance": "السرعة أو الأداء",
+      "pricing": "الأسعار",
+      "support": "تجربة الدعم",
+      "usability": "صعوبة في الاستخدام"
+    },
+    "category": "نوع الملاحظة",
     "comments": "تعليقات",
+    "contactConsent": "يمكن لبيمنت التواصل معي بخصوص هذه الملاحظة إذا احتاج الفريق تفاصيل أكثر.",
     "placeholder": "أخبرنا برأيك...",
     "rateExperience": "قيم تجربتك",
     "send": "إرسال الملاحظات",

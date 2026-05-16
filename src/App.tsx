@@ -52,6 +52,7 @@ const ArticlePage = lazy(() => import('./pages/support/ArticlePage').then(m => (
 const AllArticlesPage = lazy(() => import('./pages/support/AllArticlesPage').then(m => ({ default: m.AllArticlesPage })));
 const SupportAdminPage = lazy(() => import('./pages/support/SupportAdminPage').then(m => ({ default: m.SupportAdminPage })));
 const SupportAdminDetailPage = lazy(() => import('./pages/support/SupportAdminDetailPage').then(m => ({ default: m.SupportAdminDetailPage })));
+const SupportFeedbackPage = lazy(() => import('./pages/support/SupportFeedbackPage').then(m => ({ default: m.SupportFeedbackPage })));
 
 // ============================================================================
 // Lazy Imports - Onboarding
@@ -326,6 +327,14 @@ const router = createBrowserRouter([
         element: (
           <PageSuspense>
             <SupportAdminPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/support/admin/feedback",
+        element: (
+          <PageSuspense>
+            <SupportFeedbackPage />
           </PageSuspense>
         ),
       },

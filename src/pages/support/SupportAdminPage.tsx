@@ -13,6 +13,7 @@ import {
   RefreshCw,
   Search,
   Shield,
+  Star,
   Tag,
   TimerReset,
   UserRound,
@@ -239,14 +240,23 @@ export const SupportAdminPage = () => {
                 Triage customer tickets, keep urgent requests visible, and reply as Paymint Support.
               </p>
             </div>
-            <button
-              onClick={fetchTickets}
-              disabled={loading}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-            >
-              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-              Refresh
-            </button>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button
+                onClick={fetchTickets}
+                disabled={loading}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+              >
+                <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+                Refresh
+              </button>
+              <button
+                onClick={() => navigate('/support/admin/feedback')}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-paymint-green px-4 py-3 text-sm font-black text-black transition-opacity hover:opacity-90"
+              >
+                <Star size={16} />
+                Feedback
+              </button>
+            </div>
           </div>
 
           <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

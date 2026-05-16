@@ -1483,7 +1483,30 @@
     }
   },
   "feedback": {
+    "area": "POS area",
+    "areas": {
+      "billing": "Billing",
+      "checkout": "Checkout",
+      "general": "General",
+      "inventory": "Inventory",
+      "products": "Products",
+      "reports": "Reports",
+      "settings": "Settings",
+      "staff": "Staff",
+      "support": "Support"
+    },
+    "categories": {
+      "bug": "Bug or problem",
+      "feature": "Feature idea",
+      "general": "General feedback",
+      "performance": "Speed or performance",
+      "pricing": "Pricing",
+      "support": "Support experience",
+      "usability": "Hard to use"
+    },
+    "category": "Feedback type",
     "comments": "Comments",
+    "contactConsent": "PayMint may contact me about this feedback if more detail is needed.",
     "placeholder": "Tell us what you think...",
     "rateExperience": "Rate your experience",
     "send": "Send Feedback",

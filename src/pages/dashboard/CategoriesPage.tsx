@@ -31,6 +31,8 @@ import { SearchInput, SelectInput, Pagination } from '../../components/ui';
 import { ThumbnailImage } from '../../components/OptimizedImage';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { useRealtime } from '../../hooks/useRealtime';
+import { DataChangeEventTypes } from '../../services/realtimeService';
 
 interface Category {
   id: string;
@@ -60,6 +62,9 @@ type StatusFilterValue = 'ALL' | 'ACTIVE' | 'INACTIVE';
 export function CategoriesPage() {
   const { t } = useTranslation();
   const { currentEstablishment } = useAuth();
+  const { onRefresh } = useRealtime({
+    establishmentId: currentEstablishment?.id || null,
+  });
   usePermissionGuard(['manage_inventory']);
   const { currencySymbol } = useCurrency();
   const { locationSlug } = useParams();
@@ -129,6 +134,25 @@ export function CategoriesPage() {
       if (!silent) setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const categoryEvents = [
+      DataChangeEventTypes.CATEGORY_CREATED,
+      DataChangeEventTypes.CATEGORY_UPDATED,
+      DataChangeEventTypes.CATEGORY_DELETED,
+      DataChangeEventTypes.ITEM_CREATED,
+      DataChangeEventTypes.ITEM_UPDATED,
+      DataChangeEventTypes.ITEM_DELETED,
+    ];
+
+    const unsubscribe = onRefresh((eventType) => {
+      if (categoryEvents.includes(eventType as any)) {
+        fetchData(true);
+      }
+    });
+
+    return unsubscribe;
+  }, [onRefresh, currentEstablishment?.id]);
 
   const openCreateModal = () => {
     setEditingCategory(null);
