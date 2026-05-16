@@ -310,12 +310,18 @@ export function PaymentMethodsPage() {
   };
 
   const handleDelete = async (methodId: string, name: string) => {
+    const impact = await api.get(`/app-settings/payment-methods/${methodId}/delete-impact`)
+      .then((res) => res.data)
+      .catch(() => ({ action: 'deactivate' }));
+    const shouldDelete = impact.action === 'delete';
     setConfirmConfig({
       isOpen: true,
-      title: t('paymentMethods.confirm.removeTitle'),
-      message: t('paymentMethods.confirm.removeMessage', { name }),
+      title: shouldDelete ? 'Delete Payment Method' : t('paymentMethods.confirm.removeTitle'),
+      message: shouldDelete
+        ? `Delete "${name}" permanently? It has no historical orders or reports.`
+        : `Deactivate "${name}"? It is used in historical orders, so it will remain in reports.`,
       type: 'danger',
-      confirmText: t('common.deactivate'),
+      confirmText: shouldDelete ? t('common.delete', { defaultValue: 'Delete' }) : t('common.deactivate'),
       onConfirm: async () => {
         try {
           await api.delete(`/app-settings/payment-methods/${methodId}`);
@@ -386,12 +392,18 @@ export function PaymentMethodsPage() {
   };
 
   const handleDeleteCardType = async (cardId: string, name: string) => {
+    const impact = await api.get(`/card-types/${cardId}/delete-impact`)
+      .then((res) => res.data)
+      .catch(() => ({ action: 'deactivate' }));
+    const shouldDelete = impact.action === 'delete';
     setConfirmConfig({
       isOpen: true,
-      title: t('paymentMethods.confirm.deleteCardTitle'),
-      message: t('paymentMethods.confirm.deleteCardMessage', { name }),
+      title: shouldDelete ? 'Delete Card Type' : t('paymentMethods.confirm.deleteCardTitle'),
+      message: shouldDelete
+        ? `Delete "${name}" permanently? It has no historical orders or reports.`
+        : `Deactivate "${name}"? It is used in historical orders, so it will remain in reports.`,
       type: 'danger',
-      confirmText: t('common.deactivate'),
+      confirmText: shouldDelete ? t('common.delete', { defaultValue: 'Delete' }) : t('common.deactivate'),
       onConfirm: async () => {
         try {
           await api.delete(`/card-types/${cardId}`);

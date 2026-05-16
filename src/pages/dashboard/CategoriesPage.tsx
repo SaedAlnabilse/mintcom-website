@@ -365,30 +365,24 @@ export function CategoriesPage() {
 
   const handleDelete = async (categoryId: string) => {
     try {
-      const [catsRes, prodsRes] = await Promise.all([
-        api.get('/api/categories', { params: { includeInactive: true } }),
-        api.get('/api/items')
-      ]);
+      const impact = await api.get(`/api/categories/${categoryId}/delete-impact`).then((res) => res.data);
+      const category = categories.find((c) => c.id === categoryId) || null;
 
-      const freshCategories = catsRes.data || [];
-      const freshProducts = prodsRes.data?.items || [];
-
-      const category = freshCategories.find((c: Category) => c.id === categoryId);
-      const categoryItems = freshProducts.filter((p: Product) => p.categoryId === categoryId);
-
-      if (categoryItems.length > 0) {
-        setCategories(freshCategories);
-        setProducts(freshProducts);
+      if (impact.action === 'block') {
         setDeleteBlockedCategory(category || null);
         return;
       }
 
+      const shouldDelete = impact.action === 'delete';
+
       setConfirmConfig({
         isOpen: true,
-        title: t('categories.delete.title'),
-        message: t('categories.delete.message'),
+        title: shouldDelete ? 'Delete category' : t('categories.delete.title'),
+        message: shouldDelete
+          ? `Delete "${category?.name || 'this category'}" permanently? It is not used in reports or active products.`
+          : `Archive "${category?.name || 'this category'}"? It appears in historical reports, so it will become inactive instead of being deleted.`,
         type: 'danger',
-        confirmText: t('common.archive'),
+        confirmText: shouldDelete ? t('common.delete', { defaultValue: 'Delete' }) : t('common.archive'),
         onConfirm: async () => {
           try {
             await api.delete(`/api/categories/${categoryId}`);

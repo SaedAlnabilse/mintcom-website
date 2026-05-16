@@ -187,6 +187,7 @@ export function RecipesPage() {
     message: string;
     onConfirm: () => void;
     type?: 'danger' | 'success' | 'warning';
+    confirmText?: string;
   }>({
     isOpen: false,
     title: '',
@@ -327,13 +328,20 @@ export function RecipesPage() {
   };
 
   const handleDeleteMaterial = async (id: string, name: string) => {
+    const impact = await api.get(`/api/manufacturing/raw-materials/${id}/delete-impact`)
+      .then((res) => res.data)
+      .catch(() => ({ action: 'archive' }));
+    const shouldDelete = impact.action === 'delete';
     setConfirmConfig({
       isOpen: true,
-      title: t('inventory.messages.removeTitle', {defaultValue: 'Archive Ingredient'}),
-      message: t('inventory.messages.deleteConfirm', { name, defaultValue: `Archive ${name}? If it has recipe or stock history, it will become inactive instead of being deleted.` }),
-      type: 'warning',
+      title: shouldDelete ? 'Delete Ingredient' : t('inventory.messages.removeTitle', {defaultValue: 'Archive Ingredient'}),
+      message: shouldDelete
+        ? `Delete "${name}" permanently? It is not used in recipes, stock, sales, or reports.`
+        : `Archive "${name}"? It has usage or history, so it will become inactive instead of being deleted.`,
+      type: 'danger',
+      confirmText: shouldDelete ? t('common.delete', { defaultValue: 'Delete' }) : t('common.archive', { defaultValue: 'Archive' }),
       onConfirm: async () => {
-        try { await api.delete(`/api/manufacturing/raw-materials/${id}`); toast.success(t('inventory.messages.removed', {defaultValue: 'Archived successfully'})); fetchData(); } catch { toast.error(t('inventory.messages.deleteFailed', {defaultValue: 'Failed to archive'})); }
+        try { await api.delete(`/api/manufacturing/raw-materials/${id}`); toast.success(shouldDelete ? 'Deleted successfully' : t('inventory.messages.removed', {defaultValue: 'Archived successfully'})); fetchData(); } catch { toast.error(t('inventory.messages.deleteFailed', {defaultValue: 'Failed to remove'})); }
       }
     });
   };
@@ -499,14 +507,22 @@ export function RecipesPage() {
   };
 
   const handleDeleteRecipe = async (id: string, type: 'sub' | 'final') => {
+    const segment = type === 'sub' ? 'sub-recipes' : 'final-recipes';
+    const impact = await api.get(`/api/manufacturing/${segment}/${id}/delete-impact`)
+      .then((res) => res.data)
+      .catch(() => ({ action: 'archive' }));
+    const shouldDelete = impact.action === 'delete';
     setConfirmConfig({
       isOpen: true,
-      title: t('common.archive', { defaultValue: 'Archive' }),
-      message: t('manufacturing.messages.deleteConfirm', { defaultValue: 'Archive this recipe operation? If it has sales, stock, or recipe history, it will become inactive instead of being deleted.' }),
-      type: 'warning',
+      title: shouldDelete ? t('common.delete', { defaultValue: 'Delete' }) : t('common.archive', { defaultValue: 'Archive' }),
+      message: shouldDelete
+        ? 'Delete this recipe operation permanently? It is not used in recipes, stock, sales, or reports.'
+        : 'Archive this recipe operation? It has usage or history, so it will become inactive instead of being deleted.',
+      type: 'danger',
+      confirmText: shouldDelete ? t('common.delete', { defaultValue: 'Delete' }) : t('common.archive', { defaultValue: 'Archive' }),
       onConfirm: async () => {
         try {
-          await api.delete(`/api/manufacturing/${type === 'sub' ? 'sub-recipes' : 'final-recipes'}/${id}`);
+          await api.delete(`/api/manufacturing/${segment}/${id}`);
           toast.success(t('manufacturing.messages.removed'));
           fetchData();
         } catch (error) {
@@ -1608,6 +1624,7 @@ export function RecipesPage() {
         title={confirmConfig.title}
         message={confirmConfig.message}
         type={confirmConfig.type}
+        confirmText={confirmConfig.confirmText}
       />
     </div>
   );
