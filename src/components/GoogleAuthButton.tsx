@@ -68,6 +68,11 @@ declare global {
 // Get Google Client ID from environment
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
+type GoogleCredentialCallback = (credential: string) => void;
+
+let initializedGoogleClientId: string | null = null;
+let activeGoogleCredentialCallback: GoogleCredentialCallback | null = null;
+
 export interface GoogleAuthButtonHandle {
   triggerPrompt: () => void;
 }
@@ -121,23 +126,33 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
     useEffect(() => {
       if (!isScriptLoaded || !window.google || !GOOGLE_CLIENT_ID) return;
 
+      const credentialCallback: GoogleCredentialCallback = (credential) => {
+        setIsLoading(false);
+        onSuccess(credential);
+      };
+
       // Small delay to ensure the buttonRef div is rendered in the DOM
       const timeoutId = setTimeout(() => {
         try {
-          window.google!.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
-            callback: (response) => {
-              if (response.credential) {
-                setIsLoading(false);
-                onSuccess(response.credential);
-              }
-            },
-            auto_select: false,
-            cancel_on_tap_outside: true,
-          });
+          activeGoogleCredentialCallback = credentialCallback;
+
+          if (initializedGoogleClientId !== GOOGLE_CLIENT_ID) {
+            window.google!.accounts.id.initialize({
+              client_id: GOOGLE_CLIENT_ID,
+              callback: (response) => {
+                if (response.credential) {
+                  activeGoogleCredentialCallback?.(response.credential);
+                }
+              },
+              auto_select: false,
+              cancel_on_tap_outside: true,
+            });
+            initializedGoogleClientId = GOOGLE_CLIENT_ID;
+          }
 
           // Use renderButton for correct incognito/strict cookie support
           if (buttonRef.current) {
+            buttonRef.current.replaceChildren();
             window.google!.accounts.id.renderButton(
               buttonRef.current,
               {
@@ -158,7 +173,15 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
         }
       }, 100);
 
-      return () => clearTimeout(timeoutId);
+      return () => {
+        clearTimeout(timeoutId);
+        if (activeGoogleCredentialCallback === credentialCallback) {
+          activeGoogleCredentialCallback = null;
+        }
+        if (buttonRef.current) {
+          buttonRef.current.replaceChildren();
+        }
+      };
     }, [isScriptLoaded, onSuccess, onError, t, text, i18n.language, resolvedTheme]);
 
     // We can no longer trigger the popup programmatically with standard GIS.

@@ -3,6 +3,15 @@ interface Env {
     API_TARGET?: string;
 }
 
+const PRODUCTION_WEB_ORIGINS = [
+    'https://mintcompos.com',
+    'https://www.mintcompos.com',
+];
+
+const PRODUCTION_WEB_HOSTS = new Set(
+    PRODUCTION_WEB_ORIGINS.map((origin) => new URL(origin).host),
+);
+
 const SECURITY_HEADERS: Record<string, string> = {
     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
     'X-Content-Type-Options': 'nosniff',
@@ -18,7 +27,7 @@ const SECURITY_HEADERS: Record<string, string> = {
         "form-action 'self'",
         "img-src 'self' data: blob: https://mintcompos.com https://www.mintcompos.com https://upload.wikimedia.org https://cdn-icons-png.flaticon.com",
         "font-src 'self' data: https://fonts.gstatic.com",
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com",
         "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://accounts.google.com https://apis.google.com",
         "connect-src 'self' https://grateful-liberation-production-d036.up.railway.app wss://grateful-liberation-production-d036.up.railway.app https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://connect.facebook.net",
         "frame-src https://player.vimeo.com https://accounts.google.com",
@@ -28,6 +37,42 @@ const SECURITY_HEADERS: Record<string, string> = {
         'upgrade-insecure-requests',
     ].join('; '),
 };
+
+function shouldForceHttps(url: URL): boolean {
+    return url.protocol === 'http:' && PRODUCTION_WEB_HOSTS.has(url.host);
+}
+
+function isAllowedProxyOrigin(origin: string | null, requestUrl: URL): boolean {
+    if (!origin) {
+        return true;
+    }
+
+    try {
+        const parsedOrigin = new URL(origin).origin;
+        return parsedOrigin === requestUrl.origin || PRODUCTION_WEB_ORIGINS.includes(parsedOrigin);
+    } catch {
+        return false;
+    }
+}
+
+function createProxyRequest(request: Request, targetUrl: URL): Request {
+    const headers = new Headers(request.headers);
+
+    // The browser calls this Worker same-origin. Forwarding that browser Origin
+    // to Railway makes the backend CORS middleware reject otherwise valid proxy
+    // requests, especially from http://mintcompos.com before HTTPS redirect.
+    headers.delete('Origin');
+    headers.delete('Host');
+    headers.set('X-Forwarded-Host', new URL(request.url).host);
+    headers.set('X-Forwarded-Proto', new URL(request.url).protocol.replace(':', ''));
+
+    return new Request(targetUrl, {
+        method: request.method,
+        headers,
+        body: request.body,
+        redirect: 'follow',
+    });
+}
 
 function withSecurityHeaders(response: Response, noIndex = false): Response {
     const secured = new Response(response.body, response);
@@ -53,36 +98,33 @@ export default {
                 return new Response('Internal server error', { status: 500 });
             }
 
+            if (shouldForceHttps(url)) {
+                url.protocol = 'https:';
+                return Response.redirect(url.toString(), 308);
+            }
+
             const targetBase = env.API_TARGET || 'https://grateful-liberation-production-d036.up.railway.app';
             const noIndexPath = /^\/(api|uploads|files|dashboard|owner|brand|login|signup|verify-email|forgot-password|reset-password|select-establishment)(\/|$)/.test(url.pathname);
+            const isProxyPath = url.pathname.startsWith('/api/') || url.pathname.startsWith('/reports/') || url.pathname.startsWith('/app-settings/') || url.pathname.startsWith('/files/') || url.pathname.startsWith('/customers/') || url.pathname.startsWith('/uploads/');
+            const isRealtimePath = url.pathname.startsWith('/realtime') || url.pathname.startsWith('/socket.io/');
+
+            if ((isProxyPath || isRealtimePath) && !isAllowedProxyOrigin(request.headers.get('Origin'), url)) {
+                return withSecurityHeaders(new Response('Forbidden', { status: 403 }), true);
+            }
 
             // 0. WebSocket Proxy (Forward /realtime WebSocket requests to Railway)
-            if (url.pathname.startsWith('/realtime') || url.pathname.startsWith('/socket.io/')) {
+            if (isRealtimePath) {
                 const newUrl = new URL(url.pathname + url.search, targetBase);
-                
-                // Create a new request with the target URL
-                const proxyRequest = new Request(newUrl, {
-                    method: request.method,
-                    headers: request.headers,
-                    body: request.body,
-                });
 
                 // Fetch from the backend - this will handle WebSocket upgrade automatically
-                return await fetch(proxyRequest);
+                return await fetch(createProxyRequest(request, newUrl));
             }
 
             // 1. Api Proxy (Forward /api requests to Railway)
-            if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/reports/') || url.pathname.startsWith('/app-settings/') || url.pathname.startsWith('/files/') || url.pathname.startsWith('/customers/') || url.pathname.startsWith('/uploads/')) {
+            if (isProxyPath) {
                 const newUrl = new URL(url.pathname + url.search, targetBase);
 
-                const proxyRequest = new Request(newUrl, {
-                    method: request.method,
-                    headers: request.headers,
-                    body: request.body,
-                    redirect: 'follow'
-                });
-
-                return withSecurityHeaders(await fetch(proxyRequest), true);
+                return withSecurityHeaders(await fetch(createProxyRequest(request, newUrl)), true);
             }
 
             // 3. Try to fetch the asset

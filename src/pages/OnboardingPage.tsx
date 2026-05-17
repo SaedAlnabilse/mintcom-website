@@ -50,6 +50,13 @@ import { useAuth } from '../context/AuthContext';
 import { QuickInfo } from '../components/QuickInfo';
 import { formatCurrencyCode } from '../utils/currency';
 import { ANDROID_DOWNLOAD_URL, IOS_DOWNLOAD_URL, isDirectInstallerDownload } from '../config/downloads';
+import {
+  BILLING_CYCLES,
+  type BillingCycle,
+  getMintcomPrice,
+  getMintcomYearlySavings,
+  MINTCOM_PRICING,
+} from '../config/pricing';
 
 // Mintcom Logo imports
 import MintcomLogoGreen from '../assets/green-full-logo.svg';
@@ -64,10 +71,6 @@ export function OnboardingPage() {
   const isRTL = t('common.locale') === 'ar';
   const hasAndroidDownload = Boolean(ANDROID_DOWNLOAD_URL);
   const hasIosDownload = Boolean(IOS_DOWNLOAD_URL);
-  const formatUsd = (amount: number) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
   const formatWholeUsd = (amount: number) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
@@ -121,18 +124,20 @@ export function OnboardingPage() {
   }, []);
 
   const [useSavedCard, setUseSavedCard] = useState(true); // Default to using saved card if available
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>(MINTCOM_PRICING.defaultBillingCycle);
 
-  // Pricing constants
-  const MONTHLY_PRICE = 20;
-  const YEARLY_PRICE = 210;
-  const MONTHLY_ADDITIONAL = 17;
-  const YEARLY_ADDITIONAL = 180;
   const isAdditionalLocation = establishments.length > 0;
-  const currentMonthlyPrice = isAdditionalLocation ? MONTHLY_ADDITIONAL : MONTHLY_PRICE;
-  const currentYearlyPrice = isAdditionalLocation ? YEARLY_ADDITIONAL : YEARLY_PRICE;
-  const displayPrice = billingCycle === 'yearly' ? currentYearlyPrice : currentMonthlyPrice;
-  const yearlySavings = (currentMonthlyPrice * 12) - currentYearlyPrice;
+  const currentMonthlyPrice = getMintcomPrice(BILLING_CYCLES.MONTHLY, isAdditionalLocation);
+  const currentYearlyPrice = getMintcomPrice(BILLING_CYCLES.YEARLY, isAdditionalLocation);
+  const displayPrice = getMintcomPrice(billingCycle, isAdditionalLocation);
+  const yearlySavings = getMintcomYearlySavings(isAdditionalLocation);
+  const selectedPeriodLabel = billingCycle === BILLING_CYCLES.YEARLY
+    ? t('landing.pricing.perYear')
+    : t('landing.pricing.perMonth');
+  const selectedPlanLabel = billingCycle === BILLING_CYCLES.YEARLY
+    ? t('onboarding.step2.yearly')
+    : t('onboarding.step2.monthly');
+  const selectedPriceWithPeriod = `${formatWholeUsd(displayPrice)} ${selectedPeriodLabel}`;
 
   // Password Visibility State
   const [showEstablishmentPassword, setShowEstablishmentPassword] = useState(false);
@@ -425,7 +430,7 @@ export function OnboardingPage() {
         establishmentPassword: formData.establishmentPassword, // User-provided password
         paymentMethodToken: paymentMethodToken,
         savedCardId: savedCardId,
-        billingCycle: billingCycle || 'monthly',
+        billingCycle: billingCycle || MINTCOM_PRICING.defaultBillingCycle,
         monthlyPrice: currentMonthlyPrice,
         yearlyPrice: currentYearlyPrice,
         // Duplication params
@@ -1107,7 +1112,7 @@ export function OnboardingPage() {
                         <span className="bg-yellow-400 text-black text-xs font-sans font-bold px-2 py-0.5 rounded">{t('onboarding.step2.freeDays')}</span>
                       ) : (
                         <span className="bg-mintcom-green text-black text-xs font-sans font-bold px-2 py-0.5 rounded">
-                          {billingCycle === 'yearly' ? `${formatWholeUsd(currentYearlyPrice)}${t('onboarding.step2.yearly')}` : `${formatWholeUsd(currentMonthlyPrice)}${t('onboarding.step2.monthly')}`}
+                          {selectedPriceWithPeriod}
                         </span>
                       )}
                     </div>
@@ -1115,12 +1120,14 @@ export function OnboardingPage() {
                   <p className="text-sm font-sans text-gray-600 dark:text-gray-300">
                     {isTrialFlow
                       ? t('onboarding.step2.trialDesc')
-                      : t('onboarding.step2.activateDesc', { amount: formatUsd(displayPrice) })
+                      : t('onboarding.step2.activateDesc', { amount: selectedPriceWithPeriod })
                     }
                   </p>
                   {isAdditionalLocation && !isTrialFlow && (
                     <div className="mt-3 px-3 py-2 bg-blue-500/10 text-blue-500 text-xs font-sans rounded-xl border border-blue-500/20">
-                      💰 Discounted rate for additional locations
+                      {t('onboarding.step2.discountedAdditionalLocation', {
+                        defaultValue: 'Discounted rate for additional locations',
+                      })}
                     </div>
                   )}
                 </div>
@@ -1132,8 +1139,8 @@ export function OnboardingPage() {
                       <div className="inline-flex items-center gap-1.5 bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-2xl p-1">
                         <button
                           type="button"
-                          onClick={() => setBillingCycle('monthly')}
-                          className={`px-8 py-2.5 rounded-xl text-xs font-sans font-bold transition-all duration-300 ${billingCycle === 'monthly'
+                          onClick={() => setBillingCycle(BILLING_CYCLES.MONTHLY)}
+                          className={`px-8 py-2.5 rounded-xl text-xs font-sans font-bold transition-all duration-300 ${billingCycle === BILLING_CYCLES.MONTHLY
                             ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
                             : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                             }`}
@@ -1142,14 +1149,14 @@ export function OnboardingPage() {
                         </button>
                         <button
                           type="button"
-                          onClick={() => setBillingCycle('yearly')}
-                          className={`px-8 py-2.5 rounded-xl text-xs font-sans font-bold transition-all duration-300 relative ${billingCycle === 'yearly'
+                          onClick={() => setBillingCycle(BILLING_CYCLES.YEARLY)}
+                          className={`px-8 py-2.5 rounded-xl text-xs font-sans font-bold transition-all duration-300 relative ${billingCycle === BILLING_CYCLES.YEARLY
                             ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
                             : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                             }`}
                         >
                           {t('onboarding.step2.yearly')}
-                          <span className={`absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full text-[8px] font-sans font-bold ${billingCycle === 'yearly' ? 'bg-black text-mintcom-green' : 'bg-mintcom-green text-black'
+                          <span className={`absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full text-[8px] font-sans font-bold ${billingCycle === BILLING_CYCLES.YEARLY ? 'bg-black text-mintcom-green' : 'bg-mintcom-green text-black'
                             } shadow`}>
                             {t('common.save', { defaultValue: 'Save' })}
                           </span>
@@ -1163,26 +1170,22 @@ export function OnboardingPage() {
                       <span className="text-xs text-gray-400">{t('onboarding.step2.totalDue')}</span>
                       <span className="font-magilio text-xl font-bold text-gray-900 dark:text-white">
                         {isTrialFlow
-                          ? formatUsd(0)
-                          : formatUsd(displayPrice)
+                          ? formatWholeUsd(0)
+                          : formatWholeUsd(displayPrice)
                         }
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-xs font-sans text-gray-500">
-                      <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : (billingCycle === 'yearly' ? t('onboarding.step2.yearly') : t('onboarding.step2.monthly'))}</span>
-                      <span>
-                        {billingCycle === 'yearly' 
-                          ? `${formatWholeUsd(currentYearlyPrice)}${t('onboarding.step2.yearly')}` 
-                          : `${formatUsd(currentMonthlyPrice)}${t('onboarding.step2.monthly')}`}
-                      </span>
+                      <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : selectedPlanLabel}</span>
+                      <span>{selectedPriceWithPeriod}</span>
                     </div>
-                    {billingCycle === 'yearly' && !isTrialFlow && (
+                    {billingCycle === BILLING_CYCLES.YEARLY && !isTrialFlow && (
                       <div className="mt-3 flex items-center justify-center gap-2">
                         <Sparkles size={12} className="text-mintcom-green" />
                         <span className="text-xs font-bold text-mintcom-green tracking-wider uppercase">
-                          SAVE {formatWholeUsd(yearlySavings)}/{t('onboarding.step2.yearly')}
+                          {t('landing.pricing.save')} {formatWholeUsd(yearlySavings)} {t('landing.pricing.perYear')}
                         </span>
-                        <span className="text-xs text-gray-400 line-through">{formatWholeUsd(currentMonthlyPrice * 12)}{t('onboarding.step2.yearly')}</span>
+                        <span className="text-xs text-gray-400 line-through">{formatWholeUsd(currentMonthlyPrice * 12)} {t('landing.pricing.perYear')}</span>
                       </div>
                     )}
                   </div>
@@ -1640,7 +1643,7 @@ export function OnboardingPage() {
                     className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5 h-full"
                   >
                     <div className="flex items-center gap-3 mb-5">
-                      <div className="w-10 h-10 bg-mintcom-green/ rounded-lg flex items-center justify-center">
+                      <div className="w-10 h-10 bg-mintcom-green/10 rounded-lg flex items-center justify-center">
                         <BookOpen size={20} className="text-mintcom-green" />
                       </div>
                       <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.resourcesAndHelp')}</h3>
@@ -1709,7 +1712,7 @@ export function OnboardingPage() {
                         rel="noopener noreferrer"
                         className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all"
                       >
-                        <div className="w-10 h-10 bg-mintcom-green/ rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <div className="w-10 h-10 bg-mintcom-green/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Shield size={20} className="text-mintcom-green" />
                         </div>
                         <h4 className="font-magilio font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.privacy')}</h4>

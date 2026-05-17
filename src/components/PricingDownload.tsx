@@ -4,22 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import { Check, ArrowRight, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { BILLING_CYCLES, getMintcomPrice, MINTCOM_PRICING } from '../config/pricing';
 
 export const PricingDownload = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
-    const [isYearly, setIsYearly] = useState(false);
+    const [isYearly, setIsYearly] = useState(MINTCOM_PRICING.defaultBillingCycle === BILLING_CYCLES.YEARLY);
 
-    // Pricing constants
-    const MONTHLY_PRICE = 20;
-    const YEARLY_PRICE = 210;
-    const MONTHLY_ADDITIONAL = 17;
-    const YEARLY_ADDITIONAL = 180;
-
-    const currentPrice = isYearly ? YEARLY_PRICE : MONTHLY_PRICE;
+    const currentBillingCycle = isYearly ? BILLING_CYCLES.YEARLY : BILLING_CYCLES.MONTHLY;
+    const currentPrice = getMintcomPrice(currentBillingCycle);
     const currentPeriod = isYearly ? t('landing.pricing.perYear') : t('landing.pricing.perMonth');
-    const currentAdditionalPrice = isYearly ? YEARLY_ADDITIONAL : MONTHLY_ADDITIONAL;
+    const currentAdditionalPrice = getMintcomPrice(currentBillingCycle, true);
 
     const features = [
         t('landing.pricing.features.pos'),
@@ -59,11 +55,7 @@ export const PricingDownload = () => {
                         {t('landing.pricing.title')}
                     </h2>
                     <p className="text-xl lg:text-2xl text-mintcom-green font-black max-w-2xl mx-auto">
-                        {t('common.locale') === 'ar' ? (
-                            <>لحظة <span className="text-mintcom-green">"aha"</span> الخاصة بك على بعد دقائق فقط.</>
-                        ) : (
-                            <>Your <span className="text-mintcom-green">"aha"</span> moment is just minutes away.</>
-                        )}
+                        {t('landing.pricing.subtitle')}
                     </p>
                 </motion.div>
 
