@@ -302,7 +302,7 @@ export const SupportPage = () => {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════
-          CATEGORIES — 2×2 grid with bold left-border accent
+          CATEGORIES — large horizontal cards with progress bar
          ══════════════════════════════════════════════════════════════ */}
       <section className="bg-gray-50 py-16 dark:bg-[#0a0a0a]">
         <div className="container mx-auto max-w-[1280px] px-6 md:px-10">
@@ -321,45 +321,89 @@ export const SupportPage = () => {
             </Link>
           </motion.div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {categories.map((category, index) => {
+          {/* top row: 2 wide cards */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mb-4">
+            {categories.slice(0, 2).map((category, index) => {
               const acc = categoryAccent[category.id];
+              const maxArticles = 10;
+              const pct = Math.round((category.articles / maxArticles) * 100);
               return (
                 <motion.div key={category.id}
                   initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                  transition={{ delay: index * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                  whileHover={{ y: -4 }}>
+                  transition={{ delay: index * 0.08, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -3 }}>
                   <Link to={`/support/category/${category.id}`}
-                    className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-white p-6 transition-all duration-400 dark:bg-white/[0.03] ${acc.border} ${acc.glow} shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] dark:shadow-none`}>
-                    {/* top accent line */}
-                    <div className={`absolute inset-x-0 top-0 h-0.5 ${acc.iconBg} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
-
-                    <div className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl ${acc.iconBg} text-white shadow-sm transition-transform duration-300 group-hover:scale-110`}>
-                      <category.icon size={20} />
+                    className={`group relative flex h-full items-center gap-6 overflow-hidden rounded-2xl border bg-white p-6 transition-all duration-300 dark:bg-white/[0.03] ${acc.border} ${acc.glow} shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] dark:shadow-none`}>
+                    {/* left color strip */}
+                    <div className={`absolute inset-y-0 start-0 w-1 ${acc.iconBg} rounded-full opacity-60 transition-opacity group-hover:opacity-100`} />
+                    {/* icon */}
+                    <div className={`ms-2 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl ${acc.iconBg} text-white shadow-md transition-transform duration-300 group-hover:scale-105`}>
+                      <category.icon size={26} />
                     </div>
-
-                    <h3 className="font-barlow mb-1.5 text-base font-bold tracking-tight text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
-                      {category.title}
-                    </h3>
-                    <p className="flex-1 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-                      {category.description}
-                    </p>
-
-                    <div className="mt-5 flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-400">
-                        <span className={`h-1.5 w-1.5 rounded-full ${acc.dot}`} />
-                        {t('support.articles.count', { count: category.articles })}
-                      </span>
-                      <span className={`flex h-7 w-7 items-center justify-center rounded-lg bg-gray-100 text-gray-400 transition-all group-hover:text-black dark:bg-white/5 ${acc.iconBg} group-hover:opacity-100 opacity-0 group-hover:opacity-100`}
-                        style={{ background: 'transparent' }}>
-                        <ChevronRight size={14} className={`transition-all group-hover:text-mintcom-green ${isRtl ? 'rotate-180' : ''}`} />
-                      </span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-barlow text-lg font-bold tracking-tight text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
+                        {category.title}
+                      </h3>
+                      <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{category.description}</p>
+                      {/* progress bar */}
+                      <div className="mt-3 flex items-center gap-3">
+                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
+                          <motion.div
+                            initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }}
+                            transition={{ delay: 0.3 + index * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                            className={`h-full rounded-full ${acc.iconBg}`}
+                          />
+                        </div>
+                        <span className="text-xs font-bold text-gray-400">{category.articles} articles</span>
+                      </div>
                     </div>
+                    <ChevronRight size={18} className={`flex-shrink-0 text-gray-300 transition-all group-hover:text-mintcom-green group-hover:translate-x-1 ${isRtl ? 'rotate-180' : ''}`} />
                   </Link>
                 </motion.div>
               );
             })}
           </div>
+
+          {/* bottom row: 2 wide cards */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {categories.slice(2).map((category, index) => {
+              const acc = categoryAccent[category.id];
+              const maxArticles = 10;
+              const pct = Math.round((category.articles / maxArticles) * 100);
+              return (
+                <motion.div key={category.id}
+                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                  transition={{ delay: (index + 2) * 0.08, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -3 }}>
+                  <Link to={`/support/category/${category.id}`}
+                    className={`group relative flex h-full items-center gap-6 overflow-hidden rounded-2xl border bg-white p-6 transition-all duration-300 dark:bg-white/[0.03] ${acc.border} ${acc.glow} shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] dark:shadow-none`}>
+                    <div className={`absolute inset-y-0 start-0 w-1 ${acc.iconBg} rounded-full opacity-60 transition-opacity group-hover:opacity-100`} />
+                    <div className={`ms-2 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl ${acc.iconBg} text-white shadow-md transition-transform duration-300 group-hover:scale-105`}>
+                      <category.icon size={26} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-barlow text-lg font-bold tracking-tight text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
+                        {category.title}
+                      </h3>
+                      <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{category.description}</p>
+                      <div className="mt-3 flex items-center gap-3">
+                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
+                          <motion.div
+                            initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }}
+                            transition={{ delay: 0.3 + (index + 2) * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                            className={`h-full rounded-full ${acc.iconBg}`}
+                          />
+                        </div>
+                        <span className="text-xs font-bold text-gray-400">{category.articles} articles</span>
+                      </div>
+                    </div>
+                    <ChevronRight size={18} className={`flex-shrink-0 text-gray-300 transition-all group-hover:text-mintcom-green group-hover:translate-x-1 ${isRtl ? 'rotate-180' : ''}`} />
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+
         </div>
       </section>
 
@@ -383,21 +427,57 @@ export const SupportPage = () => {
                 </Link>
               </div>
 
+              {/* featured first article */}
+              {popularArticles[0] && (() => {
+                const article = popularArticles[0];
+                const acc = categoryAccent[article.categoryId];
+                return (
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className="mb-3">
+                    <Link to={`/support/article/${article.id}`}
+                      className={`group relative flex items-center gap-5 overflow-hidden rounded-2xl border bg-white p-5 transition-all duration-300 hover:shadow-[0_8px_30px_-10px_rgba(125,198,162,0.3)] dark:bg-white/[0.03] ${acc.border} dark:border-white/8`}>
+                      {/* accent bg blob */}
+                      <div className={`pointer-events-none absolute -end-10 -top-10 h-32 w-32 rounded-full ${acc.iconBg} opacity-[0.06] blur-2xl transition-opacity group-hover:opacity-[0.12]`} />
+                      <div className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl ${acc.iconBg} text-white shadow-md transition-transform group-hover:scale-105`}>
+                        <BookOpen size={24} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="mb-1 flex items-center gap-2">
+                          <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white ${acc.iconBg}`}>{article.category}</span>
+                          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Most Popular</span>
+                        </div>
+                        <p className="text-base font-bold text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
+                          {article.title}
+                        </p>
+                        <div className="mt-1.5 flex items-center gap-3 text-xs text-gray-400">
+                          <span className="flex items-center gap-1"><Clock size={11} /> {article.readTime}</span>
+                          <span className="flex items-center gap-1"><Eye size={11} /> {article.views}</span>
+                        </div>
+                      </div>
+                      <ChevronRight size={16} className={`flex-shrink-0 text-gray-300 transition-all group-hover:text-mintcom-green group-hover:translate-x-1 ${isRtl ? 'rotate-180' : ''}`} />
+                    </Link>
+                  </motion.div>
+                );
+              })()}
+
+              {/* remaining articles as compact rows */}
               <div className="space-y-2">
-                {popularArticles.map((article, index) => {
+                {popularArticles.slice(1).map((article, index) => {
                   const acc = categoryAccent[article.categoryId];
                   return (
                     <motion.div key={article.id}
-                      initial={{ opacity: 0, x: isRtl ? 16 : -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                      transition={{ delay: index * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}>
+                      initial={{ opacity: 0, x: isRtl ? 12 : -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                      transition={{ delay: index * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}>
                       <Link to={`/support/article/${article.id}`}
-                        className="group flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-4 transition-all duration-300 hover:border-mintcom-green/25 hover:shadow-[0_4px_20px_-8px_rgba(125,198,162,0.25)] dark:border-white/8 dark:bg-white/[0.025] dark:hover:border-mintcom-green/20">
-                        {/* number badge */}
-                        <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-gray-100 text-xs font-black text-gray-400 transition-all group-hover:bg-mintcom-green group-hover:text-black dark:bg-white/5">
-                          {String(index + 1).padStart(2, '0')}
-                        </span>
+                        className="group flex items-center gap-4 rounded-xl border border-gray-100 bg-white px-4 py-3.5 transition-all duration-300 hover:border-mintcom-green/20 hover:shadow-[0_4px_16px_-6px_rgba(125,198,162,0.2)] dark:border-white/8 dark:bg-white/[0.025]">
+                        {/* colored index dot */}
+                        <div className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg ${acc.iconBg} text-white text-[11px] font-black`}>
+                          {index + 2}
+                        </div>
                         <div className="flex-1 min-w-0">
-                          <p className="truncate text-sm font-semibold text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
+                          <p className="text-sm font-semibold text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white truncate">
                             {article.title}
                           </p>
                           <div className="mt-0.5 flex items-center gap-2">
@@ -405,7 +485,7 @@ export const SupportPage = () => {
                             <span className="text-xs text-gray-400">{article.category}</span>
                           </div>
                         </div>
-                        <div className="hidden items-center gap-3 text-xs text-gray-400 md:flex">
+                        <div className="hidden items-center gap-3 text-xs text-gray-400 sm:flex">
                           <span className="flex items-center gap-1"><Clock size={11} /> {article.readTime}</span>
                           <span className="flex items-center gap-1"><Eye size={11} /> {article.views}</span>
                         </div>
