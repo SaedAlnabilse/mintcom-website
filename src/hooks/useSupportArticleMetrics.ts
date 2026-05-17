@@ -84,6 +84,15 @@ export const useSupportArticleMetrics = (articleIds: string[]) => {
         if (cancelled) return;
         setMetrics((current) => {
           const next = { ...current };
+          const requestedIds = idsKey.split(',').filter(Boolean);
+          for (const articleId of requestedIds) {
+            next[articleId] = {
+              articleId,
+              totalViews: 0,
+              usefulCount: 0,
+              notUsefulCount: 0,
+            };
+          }
           for (const metric of res.data.metrics || []) {
             next[metric.articleId] = metric;
           }
