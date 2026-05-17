@@ -14,7 +14,7 @@ interface CookiePreferences {
 
 const defaultPreferences: CookiePreferences = {
   essential: true, // Always true and disabled
-  analytics: true,
+  analytics: false,
   marketing: false,
   functional: true,
 };

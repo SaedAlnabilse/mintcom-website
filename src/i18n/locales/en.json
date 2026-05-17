@@ -1083,7 +1083,7 @@
   "cookies": {
     "banner": {
       "acceptAll": "Accept All",
-      "description": "We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking \"Accept All\", you consent to our use of cookies.",
+      "description": "We use essential cookies to run the site and, with your choice, analytics and marketing cookies to measure traffic and improve our advertising. By clicking \"Accept All\", you consent to all optional cookies.",
       "policyLink": "Cookie Policy",
       "preferences": "Manage Preferences",
       "rejectAll": "Reject All",
@@ -1092,18 +1092,18 @@
     "policy": {
       "declaration": "Cookie Declaration",
       "p1": "This Cookie Policy explains how Mintcom LLC (\"we\", \"us\", or \"our\") uses cookies and similar technologies on our website and services.",
-      "p2": "By continuing to browse our site, you agree to the use of cookies as described in this policy."
+      "p2": "Non-essential analytics and marketing cookies are used only after you accept them or save matching preferences."
     },
     "preferences": {
       "alwaysActive": "Always Active",
       "manage": "Manage Cookie Preferences",
       "save": "Save Preferences",
-      "subtitle": "Choose which types of cookies you want to allow. essential cookies cannot be disabled as they are necessary for the site to function",
+      "subtitle": "Choose which types of cookies you want to allow. Essential cookies cannot be disabled because they are necessary for the site to function.",
       "title": "Cookie Preferences"
     },
     "types": {
       "analytics": {
-        "description": "These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously.",
+        "description": "These cookies help us understand how visitors interact with our website, including pages visited, traffic sources, and basic usage trends.",
         "title": "Analytics Cookies"
       },
       "essential": {
@@ -1111,7 +1111,7 @@
         "title": "Essential Cookies"
       },
       "marketing": {
-        "description": "These cookies may be set through our site by our advertising partners to build a profile of your interests and show you relevant ads.",
+        "description": "These cookies may be set through our site by advertising partners such as Meta to measure campaigns and show relevant ads.",
         "title": "Marketing Cookies"
       }
     }
@@ -2032,9 +2032,9 @@
       },
       "cards": {
         "advertising": "Advertising (Targeting)",
-        "advertisingDesc": "Used to deliver personalized advertisements based on your browsing habits and interests.",
-        "analytics": "Analytics & Customization",
-        "analyticsDesc": "Help us understand how visitors interact with our website by collecting anonymous statistical data.",
+        "advertisingDesc": "Used only with your consent to measure advertising campaigns and support relevant ads through services such as Meta Pixel.",
+        "analytics": "Analytics",
+        "analyticsDesc": "Used only with your consent to understand page visits, traffic sources, and site performance trends.",
         "essential": "Essential Cookies",
         "essentialDesc": "Required for the website to function properly. These cookies enable basic features like page navigation and access to secure areas."
       },
@@ -2048,7 +2048,7 @@
         "gaDesc": "Used to collect anonymous data about how visitors use our site, including pages visited, time spent, and traffic sources.",
         "questionsDesc": "If you have any questions about our use of cookies, please contact us at info@mintcompos.com",
         "questionsTitle": "Questions About Cookies",
-        "thirdParty_1": "We may use third-party cookies from services like Google Analytics and Facebook to help us analyze traffic and improve our services.",
+        "thirdParty_1": "If configured and accepted, we may use third-party technologies from Google Analytics and Meta Pixel to measure site traffic, campaign performance, and advertising effectiveness.",
         "thirdPartyTitle": "Third-Party Services",
         "typesTitle": "Types Of Cookies",
         "updates_1": "We may update this Cookie Policy from time to time to reflect changes in our practices or for operational, legal, or regulatory reasons.",
@@ -2057,7 +2057,7 @@
         "whatAre_1": "Cookies are small text files stored on your device when you visit a website. They are widely used to make websites work more efficiently and provide information to site owners.",
         "whatAre_2": "Cookies can be \"persistent\" (remaining on your device until deleted) or \"session\" cookies (deleted when you close your browser).",
         "whatAreTitle": "What Are Cookies?",
-        "whyUse_1": "We use cookies to ensure the proper functioning of our website, remember your preferences, analyze site usage, and personalize your experience.",
+        "whyUse_1": "We use cookies and similar technologies to run the website, remember consent and interface preferences, keep authenticated sessions working, measure site usage when accepted, and support marketing when accepted.",
         "whyUseTitle": "Why Do We Use Them?"
       },
       "intro": "Cookie Policy",
@@ -2081,7 +2081,7 @@
         "whatAre": "What are cookies?",
         "whyUse": "Why do we use them?"
       },
-      "subtitle": "We believe in being transparent about how we use your data. this policy explains how we use cookies and similar technologies to recognize you when you visit our website",
+      "subtitle": "This policy explains how Mintcom uses cookies and similar technologies, including local storage and session storage, across the website and product.",
       "title": "Cookie Statement",
       "types": {
         "analytics": {
@@ -2101,9 +2101,9 @@
     "privacy": {
       "agreement": "By using Mintcom, you agree to the collection and use of information in accordance with this Privacy Policy.",
       "branch": {
-        "b1": "Amman, Jordan - Headquarters",
-        "b2": "Dubai, UAE - Regional Office",
-        "b3": "Riyadh, Saudi Arabia - Regional Office"
+        "b1": "Owner and brand portals can manage multiple business locations from one account",
+        "b2": "Location dashboards use the selected establishment to isolate sales, staff, product, customer, and reporting data",
+        "b3": "Admins and employees receive role-based permissions for the locations they are allowed to access"
       },
       "changes": {
         "desc": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date."
@@ -2124,13 +2124,13 @@
         "analytics": "Usage analytics and interaction data",
         "billingAddress": "Billing and shipping addresses",
         "businessInfo": "Business name, type, and registration details",
-        "cardDetails": "Payment card details (stored securely via PCI-compliant processors)",
+        "cardDetails": "Payment card details submitted for subscription billing and stored or tokenized by payment infrastructure where enabled",
         "cookies": "Cookie identifiers and tracking data",
         "credentials": "Login credentials (passwords stored as hashed values)",
         "deviceInfo": "Device type, operating system, and browser information",
         "email": "Email address",
         "fullName": "Full name",
-        "ipAddress": "IP address and geolocation data",
+        "ipAddress": "IP address and approximate location derived from network data",
         "loyalty": "Loyalty program participation and points",
         "phone": "Phone number",
         "products": "Product and inventory data",
@@ -2145,10 +2145,10 @@
       "intro": "Mintcom LLC (\"we\", \"us\", or \"our\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our services.",
       "lastUpdated": "LAST UPDATED",
       "retention": {
-        "deletionRequest": "You may request deletion of your personal data at any time by contacting us or using the account deletion feature in your settings.",
+        "deletionRequest": "You may request deletion of your personal data by contacting us or using the account deletion feature where available. Some records may be retained when needed for legal, billing, security, or audit purposes.",
         "r1": "Account data: Retained for the duration of your account plus 30 days after deletion request",
         "r2": "Transaction records: Retained for 7 years as required by financial regulations",
-        "r3": "Analytics data: Retained in anonymized form indefinitely"
+        "r3": "Analytics and diagnostic data: retained in aggregated or de-identified form where practical"
       },
       "rights": {
         "contact": "To exercise any of these rights, please contact us at info@mintcompos.com",
@@ -2163,12 +2163,12 @@
         "s1_1": "1.1 Personal Information",
         "s1_1_desc": "We collect information you provide directly, such as when you create an account, make a purchase, or contact us for support.",
         "s1_2": "1.2 Payment Information",
-        "s1_2_desc": "We automatically collect certain information about your device and usage patterns when you interact with our services.",
+        "s1_2_desc": "We collect billing and payment information when you subscribe, add a payment method, or manage invoices.",
         "s1_2_note": "We never sell your personal information to third parties.",
         "s1_3": "1.3 Business & Operational Data",
-        "s1_3_desc": "We may receive information about you from third-party services you connect to your Mintcom account.",
+        "s1_3_desc": "We process the operational data you enter or generate while using the POS, dashboard, owner portal, and support tools.",
         "s1_4": "1.4 Technical & Usage Data",
-        "s1_4_desc": "We collect transaction data processed through our point-of-sale system to provide our services.",
+        "s1_4_desc": "We automatically collect technical and usage information when you interact with the website and services.",
         "s1_desc": "We collect several types of information to provide and improve our services.",
         "s10": "10. Children's Privacy",
         "s11": "11. Changes to This Policy",
@@ -2176,27 +2176,27 @@
         "s2": "2. How We Use Your Information",
         "s2_desc": "We use the information we collect to operate, maintain, and improve our services, process transactions, and communicate with you.",
         "s3": "3. Data Storage & Security",
-        "s3_desc": "We do not sell your personal information. We may share your data with service providers who assist us in operating our platform, subject to confidentiality obligations.",
+        "s3_desc": "We use technical and organizational safeguards designed to protect your information, including secure transport, access controls, and restricted administrative access.",
         "s4": "4. Data Sharing & Third Parties",
-        "s4_desc": "We implement industry-standard security measures including encryption, access controls, and regular security audits to protect your information.",
+        "s4_desc": "We do not sell your personal information. We may share data with service providers who help us operate the platform, subject to appropriate confidentiality and security obligations.",
         "s5": "5. Multi-Branch & Account Access",
-        "s5_desc": "We retain your information only as long as necessary to fulfill the purposes outlined in this policy, unless a longer retention period is required by law.",
+        "s5_desc": "Mintcom supports multiple locations, brands, owners, admins, and employees. Access to operational data depends on account role, selected establishment, and assigned permissions.",
         "s6": "6. Data Retention",
-        "s6_desc": "Depending on your location, you may have certain rights regarding your personal information, including the right to access, correct, or delete your data.",
+        "s6_desc": "We retain information for as long as needed to provide the services, maintain business records, resolve disputes, enforce agreements, and meet legal or tax obligations.",
         "s7": "7. Your Rights",
-        "s7_desc": "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the updated policy on our website.",
+        "s7_desc": "Depending on your location, you may have rights regarding your personal information, including access, correction, deletion, restriction, objection, and portability.",
         "s8": "8. Cookies & Tracking Technologies",
-        "s8_desc": "If you have any questions about this Privacy Policy, please contact us at info@mintcompos.com",
+        "s8_desc": "We use essential cookies and similar storage for site functionality, authentication, language, theme, and consent preferences. Analytics and marketing technologies are controlled through the cookie banner and preference center.",
         "s9": "9. International Operations",
         "subtitle": "How We Protect Your Data",
         "title": "Privacy Policy"
       },
       "security": {
         "noAbsoluteSecurity": "While we strive to protect your personal information, no method of transmission over the Internet or electronic storage is 100% secure.",
-        "sec1": "AES-256 encryption for all data at rest",
-        "sec2": "TLS 1.3 encryption for all data in transit",
-        "sec3": "PCI DSS Level 1 compliance for payment data",
-        "sec4": "Regular third-party security audits and penetration testing"
+        "sec1": "Encrypted HTTPS transport for website and API traffic",
+        "sec2": "HttpOnly authentication cookies for server-managed sessions",
+        "sec3": "Role-based access controls for owner, admin, employee, brand, and establishment data",
+        "sec4": "Operational safeguards such as audit/activity logs, restricted access, and secure cloud infrastructure"
       },
       "sharing": {
         "obligation": "We may disclose your information if required to do so by law or in response to valid legal processes.",
@@ -2230,7 +2230,7 @@
       },
       "lastUpdated": "LAST UPDATED",
       "law": {
-        "desc": "These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which Mintcom LLC is registered."
+        "desc": "These Terms are governed by the laws applicable to Mintcom LLC and the jurisdiction where it is registered, unless mandatory local law provides otherwise."
       },
       "liability": {
         "desc": "To the maximum extent permitted by law, Mintcom LLC shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of our services."
@@ -4309,7 +4309,7 @@
         "li4": "Cancel anytime from your billing settings",
         "li5": "Credit and debit cards accepted",
         "li6": "Automatic recurring billing",
-        "li7": "Secure PCI-compliant processing",
+        "li7": "Secure payment processing through supported billing and payment infrastructure",
         "li8": "Multiple cards supported",
         "li9": "Invoices generated automatically each billing cycle",
         "note_desc": "Keep your payment method up to date to avoid service interruptions.",
@@ -4353,7 +4353,7 @@
         "li13": "View real-time sales dashboards with key metrics",
         "li14": "Generate detailed reports on sales, staff, and inventory",
         "li15": "Export reports as CSV for further analysis",
-        "li2_desc": "Accept cash, cards, and digital wallets with secure, PCI-compliant processing.",
+        "li2_desc": "Accept cash, cards, and digital wallets through supported payment workflows and configured providers.",
         "li2_label": "Multiple Payment Methods",
         "li3_desc": "Create and apply percentage or fixed-amount discounts to orders.",
         "li3_label": "Discounts & Promotions",
@@ -4692,7 +4692,7 @@
         "question": "How long do payouts take?"
       },
       "q5": {
-        "answer": "Yes. We use secure authentication, role-based access, encrypted connections, and activity logs to protect your account and business data.",
+        "answer": "Yes. Mintcom uses safeguards such as encrypted transport, role-based access controls, restricted administrative access, and secure payment and billing infrastructure. No online service can be guaranteed 100% secure, so account owners should also protect credentials, devices, and staff permissions.",
         "question": "Is Mintcom secure?"
       },
       "q6": {

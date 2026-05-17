@@ -21,6 +21,30 @@ declare global {
   }
 }
 
+type ConsentValue = 'granted' | 'denied';
+
+const getGtag = () => {
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || ((...args: any[]) => {
+    window.dataLayer.push(args);
+  });
+
+  return window.gtag;
+};
+
+const updateGoogleConsent = (prefs: { analytics: boolean; marketing: boolean }) => {
+  const gtag = getGtag();
+  const analyticsStorage: ConsentValue = prefs.analytics ? 'granted' : 'denied';
+  const marketingStorage: ConsentValue = prefs.marketing ? 'granted' : 'denied';
+
+  gtag('consent', 'update', {
+    analytics_storage: analyticsStorage,
+    ad_storage: marketingStorage,
+    ad_user_data: marketingStorage,
+    ad_personalization: marketingStorage,
+  });
+};
+
 /**
  * Initialize Google Analytics (GA4)
  */
@@ -42,10 +66,13 @@ const loadGoogleAnalytics = () => {
   document.head.appendChild(script);
 
   // 2. Initialize the command queue
-  window.dataLayer = window.dataLayer || [];
-  function gtag(...args: any[]) {
-    window.dataLayer.push(args);
-  }
+  const gtag = getGtag();
+  gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+  });
   gtag('js', new Date());
   gtag('config', GA_MEASUREMENT_ID);
 };
@@ -102,6 +129,8 @@ export const updateConsentState = (prefs: { analytics: boolean; marketing: boole
     removeScript('ga-script');
     // Optional: reload page to ensure clean state if critical
   }
+
+  updateGoogleConsent(prefs);
 
   // 2. Marketing
   if (prefs.marketing) {
