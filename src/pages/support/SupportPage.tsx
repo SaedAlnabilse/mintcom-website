@@ -84,20 +84,36 @@ export const SupportPage = () => {
     { id: 'gs-4', title: t('support.articles.gs4'),                 category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
     { id: 'gs-5', title: t('support.articles.gs5'),                 category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
     { id: 'gs-6', title: t('support.articles.gs6'),                 category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
+    { id: 'gs-7', title: t('support.articles.gs7'),                 category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
+    { id: 'gs-8', title: t('support.articles.gs8'),                 category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
     { id: 'bl-1', title: t('support.articles.bl1'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
     { id: 'bl-2', title: t('support.popularArticles.payment'),      category: t('support.categories.billing'),        categoryId: 'billing' },
     { id: 'bl-3', title: t('support.articles.bl3'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
     { id: 'bl-4', title: t('support.articles.bl4'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
+    { id: 'bl-5', title: t('support.articles.bl5'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
+    { id: 'bl-6', title: t('support.articles.bl6'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
+    { id: 'bl-7', title: t('support.articles.bl7'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
+    { id: 'bl-8', title: t('support.articles.bl8'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
     { id: 'tc-1', title: t('support.popularArticles.printer'),      category: t('support.categories.technical'),      categoryId: 'technical' },
     { id: 'tc-2', title: t('support.articles.tc2'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
     { id: 'tc-3', title: t('support.articles.tc3'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
     { id: 'tc-4', title: t('support.articles.tc4'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
     { id: 'tc-5', title: t('support.articles.tc5'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
+    { id: 'tc-6', title: t('support.articles.tc6'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
+    { id: 'tc-7', title: t('support.articles.tc7'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
+    { id: 'tc-8', title: t('support.articles.tc8'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
+    { id: 'tc-9', title: t('support.articles.tc9'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
+    { id: 'tc-10', title: t('support.articles.tc10'),               category: t('support.categories.technical'),      categoryId: 'technical' },
     { id: 'ft-1', title: t('support.popularArticles.reports'),      category: t('support.categories.features'),       categoryId: 'features' },
     { id: 'ft-2', title: t('support.articles.ft2'),                 category: t('support.categories.features'),       categoryId: 'features' },
     { id: 'ft-3', title: t('support.articles.ft3'),                 category: t('support.categories.features'),       categoryId: 'features' },
     { id: 'ft-4', title: t('support.articles.ft4'),                 category: t('support.categories.features'),       categoryId: 'features' },
     { id: 'ft-5', title: t('support.articles.ft5'),                 category: t('support.categories.features'),       categoryId: 'features' },
+    { id: 'ft-6', title: t('support.articles.ft6'),                 category: t('support.categories.features'),       categoryId: 'features' },
+    { id: 'ft-7', title: t('support.articles.ft7'),                 category: t('support.categories.features'),       categoryId: 'features' },
+    { id: 'ft-8', title: t('support.articles.ft8'),                 category: t('support.categories.features'),       categoryId: 'features' },
+    { id: 'ft-9', title: t('support.articles.ft9'),                 category: t('support.categories.features'),       categoryId: 'features' },
+    { id: 'ft-10', title: t('support.articles.ft10'),               category: t('support.categories.features'),       categoryId: 'features' },
   ];
 
   const searchResults = searchQuery.trim() === ''
@@ -296,7 +312,7 @@ export const SupportPage = () => {
                 {/* bottom strip */}
                 <div className="mt-5 flex items-center gap-2 rounded-xl bg-mintcom-green/8 p-3 dark:bg-mintcom-green/10">
                   <HelpCircle size={15} className="text-mintcom-green" />
-                  <p className="text-xs font-medium text-mintcom-green">36+ articles ready to help</p>
+                  <p className="text-xs font-medium text-mintcom-green">36 articles ready to help</p>
                 </div>
               </div>
               {/* decorative floating pill */}
@@ -304,7 +320,7 @@ export const SupportPage = () => {
                 animate={{ y: [0, -8, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute -bottom-5 -start-8 flex items-center gap-2 rounded-2xl border border-gray-100 bg-white px-4 py-2.5 shadow-lg dark:border-white/10 dark:bg-[#111]">
                 <div className="h-2 w-2 rounded-full bg-mintcom-green" />
-                <span className="text-xs font-bold text-gray-700 dark:text-gray-200">Avg. reply in 2h</span>
+                <span className="text-xs font-bold text-gray-700 dark:text-gray-200">Ticket support available</span>
               </motion.div>
             </motion.div>
 
