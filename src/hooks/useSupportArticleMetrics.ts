@@ -52,15 +52,18 @@ export const getArticleViews = (
   articleId: string,
   fallbackViews: string,
 ) => {
-  const realViews = metrics[articleId]?.totalViews ?? 0;
-  return formatSupportArticleViews(Math.max(realViews, parseSeedViews(fallbackViews)));
+  const metric = metrics[articleId];
+  return formatSupportArticleViews(metric ? metric.totalViews : parseSeedViews(fallbackViews));
 };
 
 export const getArticleViewsNumber = (
   metrics: MetricsById,
   articleId: string,
   fallbackViews: string,
-) => Math.max(metrics[articleId]?.totalViews ?? 0, parseSeedViews(fallbackViews));
+) => {
+  const metric = metrics[articleId];
+  return metric ? metric.totalViews : parseSeedViews(fallbackViews);
+};
 
 export const useSupportArticleMetrics = (articleIds: string[]) => {
   const [metrics, setMetrics] = useState<MetricsById>({});
