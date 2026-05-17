@@ -82,7 +82,7 @@ export function CookiePolicyPage() {
         </aside>
 
         {/* Article Content */}
-        <article className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-mintcom-green">
+        <article className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-magilio prose-headings:font-bold prose-headings:tracking-tight prose-a:text-mintcom-green">
 
           <section id="what-are-cookies" className="scroll-mt-28">
             <h2>{t('legal.cookies.sections.whatAre')}</h2>

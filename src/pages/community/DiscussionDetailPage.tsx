@@ -181,7 +181,7 @@ export const DiscussionDetailPage = () => {
                                         </div>
                                     </div>
 
-                                    <h1 className="text-3xl font-black tracking-tight mb-6">
+                                    <h1 className="font-magilio text-3xl font-black tracking-tight mb-6">
                                         {discussion.title}
                                     </h1>
 
@@ -223,7 +223,7 @@ export const DiscussionDetailPage = () => {
                                 <section>
                                     <div className="flex items-center gap-3 mb-6">
                                         <MessageSquare size={24} className="text-Mintcom-green" />
-                                        <h2 className="text-2xl font-black">{discussion.repliesCount} {t('community.labels.replies', 'Replies')}</h2>
+                                        <h2 className="font-magilio text-2xl font-black">{discussion.repliesCount} {t('community.labels.replies', 'Replies')}</h2>
                                     </div>
 
                                     {/* Reply Input */}
@@ -313,7 +313,7 @@ export const DiscussionDetailPage = () => {
                                 <div className="sticky top-28 space-y-6">
                                     {/* Activity Stats */}
                                     <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-6 shadow-sm">
-                                        <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-6 italic">{t('community.labels.activity', 'Thread Activity')}</h3>
+                                        <h3 className="font-magilio text-xs font-black uppercase tracking-widest text-gray-400 mb-6 italic">{t('community.labels.activity', 'Thread Activity')}</h3>
                                         <div className="space-y-6">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3 text-gray-500">
@@ -342,7 +342,7 @@ export const DiscussionDetailPage = () => {
                                     {/* Join Discussion */}
                                     <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl p-6 text-white relative overflow-hidden shadow-xl shadow-purple-500/20">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-                                        <h4 className="font-black text-lg mb-3 relative z-10">{t('community.cta.joinHero', 'Join this conversation')}</h4>
+                                        <h4 className="font-magilio font-black text-lg mb-3 relative z-10">{t('community.cta.joinHero', 'Join this conversation')}</h4>
                                         <p className="text-xs text-white/70 font-medium mb-6 relative z-10">{t('community.cta.joinHeroDesc', 'Share your thoughts and help Michael build a better multi-location business.')}</p>
                                         <button
                                             onClick={() => !isAuthenticated && navigate('/login')}

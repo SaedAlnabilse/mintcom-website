@@ -2,52 +2,50 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import {
-  Send,
-  Mail,
-  Phone,
-  CheckCircle2,
-  Loader2,
-  Clock,
-  MessageCircle,
-} from 'lucide-react';
+import { Send, Mail, Phone, CheckCircle2, Loader2 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
-import {
-  formatInputPlaceholder,
-  formatInputLabel,
-} from '../utils/textCase';
 
-/* -----------------------------------------------------------
-   Contact — Apple-style split panel
-   - Left: pitch with contact details + soft gradient panel
-   - Right: glass form with floating-label-style inputs
-   - Animated success state
------------------------------------------------------------ */
+const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
+  return (
+    <span className={className}>
+      {text.split(' ').map((word, i) => {
+        const isMintcom = word.toLowerCase().includes('mintcom');
+        return (
+          <span
+            key={i}
+            className={isMintcom ? 'text-mintcom-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-mintcom-green')}
+          >
+            {word}{' '}
+          </span>
+        );
+      })}
+    </span>
+  );
+};
 
 export const Contact = () => {
   const { t } = useTranslation();
-  const isRtl = t('common.locale') === 'ar';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  // Form states
   const [formData, setFormData] = useState({
     fullName: '',
     businessName: '',
     email: '',
-    message: '',
+    message: ''
   });
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+
     try {
       await api.post('/api/contact', formData);
       setIsSuccess(true);
@@ -56,325 +54,152 @@ export const Contact = () => {
       setTimeout(() => setIsSuccess(false), 5000);
     } catch (error: any) {
       console.error('Contact form error:', error);
-      toast.error(
-        error.response?.data?.message ||
-          t('landing.contact.messageSentError')
-      );
+      toast.error(error.response?.data?.message || t('landing.contact.messageSentError'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <section
-      id="contact"
-      dir={isRtl ? 'rtl' : 'ltr'}
-      className="relative overflow-hidden bg-white py-24 transition-colors duration-300 dark:bg-[#050505] lg:py-32"
-    >
-      {/* Background ambient */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 left-[10%] h-[400px] w-[400px] rounded-full bg-mintcom-green/8 blur-[120px]" />
-        <div className="absolute -bottom-20 right-[10%] h-[400px] w-[400px] rounded-full bg-emerald-400/5 blur-[120px]" />
-      </div>
+    <section id="contact" className="py-16 lg:py-20 bg-white dark:bg-[#050505] relative overflow-hidden transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="container mx-auto px-8 md:px-16 lg:px-24 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-stretch bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none">
 
-      <div className="container relative z-10 mx-auto max-w-[1280px] px-6 md:px-10">
-        <div className="mx-auto max-w-6xl">
-          {/* Badge — above the card */}
-          <div className="mb-6 flex justify-center">
-            <div className="inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
-              <MessageCircle size={12} />
-              <span>{t('landing.contact.titleHighlight')}</span>
-            </div>
-          </div>
-
-          {/* Gradient halo border */}
-          <div className="relative">
-            <div
-              aria-hidden
-              className="absolute -inset-px -z-10 rounded-[2.5rem] bg-gradient-to-tr from-mintcom-green/30 via-transparent to-mintcom-green/30 opacity-50 blur-2xl"
-            />
-
-            <div className="relative overflow-hidden rounded-[2.5rem] border border-gray-200/70 bg-white/90 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.4)]">
-              <div className="grid grid-cols-1 lg:grid-cols-12">
-                {/* ====== Left: Pitch / contact info ====== */}
-                <div className="relative overflow-hidden bg-gradient-to-br from-mintcom-green/5 via-white to-white p-10 dark:from-mintcom-green/10 dark:via-transparent dark:to-transparent lg:col-span-5 lg:p-14">
-                  {/* Decorative grid */}
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 opacity-[0.07] dark:opacity-[0.1]"
-                    style={{
-                      backgroundImage:
-                        'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
-                      backgroundSize: '40px 40px',
-                      color: '#7dc6a2',
-                      maskImage:
-                        'radial-gradient(ellipse at top left, black 30%, transparent 75%)',
-                      WebkitMaskImage:
-                        'radial-gradient(ellipse at top left, black 30%, transparent 75%)',
-                    }}
-                  />
-
-                  <div className="relative">
-
-                    <h2 className="font-magilio text-4xl font-bold leading-[1.05] tracking-tight md:text-5xl lg:text-[56px] lg:leading-[1.02]">
-                      <span className="block text-gray-900 dark:text-white">
-                        {t('landing.contact.title')}
-                      </span>
-                      <span className="block bg-gradient-to-r from-mintcom-green via-emerald-400 to-mintcom-green bg-clip-text text-transparent">
-                        {t('landing.contact.titleHighlight')}
-                      </span>
-                    </h2>
-
-                    <p className="mt-6 max-w-md text-lg font-light leading-relaxed text-gray-600 dark:text-gray-400 md:text-xl">
-                      {t('landing.contact.subtitle')}
-                    </p>
-
-                    <div className="mt-10 space-y-5">
-                      {[
-                        {
-                          icon: Mail,
-                          label: t('common.email'),
-                          value: 'support@mintcompos.com',
-                        },
-                        {
-                          icon: Phone,
-                          label: t('common.phone'),
-                          value: '+962 7XXXXXXXX',
-                        },
-                      ].map((item, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, x: -10 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.2 + i * 0.1 }}
-                          className="group flex items-start gap-4"
-                        >
-                          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-mintcom-green/20 bg-white shadow-sm transition-all group-hover:border-mintcom-green/40 group-hover:bg-mintcom-green group-hover:shadow-md dark:bg-white/5">
-                            <item.icon
-                              size={18}
-                              className="text-mintcom-green transition-colors group-hover:text-black"
-                            />
-                          </div>
-                          <div>
-                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
-                              {item.label}
-                            </p>
-                            <p className="mt-0.5 text-base font-bold text-gray-900 dark:text-white">
-                              {item.value}
-                            </p>
-                          </div>
-                        </motion.div>
-                      ))}
+            {/* Contact Info Sidebar */}
+            <div className="lg:w-2/5 bg-gray-100 dark:bg-gray-900 p-12 lg:p-16 relative overflow-hidden flex flex-col justify-between">
+              <div className="relative z-10">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
+                  <SplitText text={t('landing.contact.title') + ' ' + t('landing.contact.titleHighlight')} />
+                </h2>
+                <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed mb-12 font-light">
+                  {t('landing.contact.subtitle')}
+                </p>
+                <div className="space-y-8">
+                  {[
+                    { icon: Mail, label: t('common.email'), value: 'support@mintcompos.com', color: 'text-mintcom-green' },
+                    { icon: Phone, label: t('common.phone'), value: '+962 7XXXXXXXX', color: 'text-mintcom-green' },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-4 group">
+                      <div className="w-12 h-12 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center transition-transform duration-500 shadow-sm dark:shadow-none shrink-0 aspect-square">
+                        <item.icon size={20} className={item.color} />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-widest mb-1">{item.label}</p>
+                        <p className="text-lg font-bold text-gray-900 dark:text-white">{item.value}</p>
+                      </div>
                     </div>
-
-                    {/* Response time tag */}
-                    <div className="mt-10 inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white/70 px-4 py-2 text-xs font-semibold text-gray-600 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-gray-300">
-                      <Clock size={12} className="text-mintcom-green" />
-                      <span>{t('landing.contact.responseTime')}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ====== Right: Form ====== */}
-                <div className="relative bg-white p-10 dark:bg-transparent lg:col-span-7 lg:p-14">
-                  <AnimatePresence mode="wait">
-                    {isSuccess ? (
-                      <motion.div
-                        key="success"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="flex h-full flex-col items-center justify-center space-y-6 py-16 text-center"
-                      >
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{
-                            type: 'spring',
-                            stiffness: 200,
-                            damping: 15,
-                          }}
-                          className="flex h-24 w-24 items-center justify-center rounded-full bg-mintcom-green/15 ring-4 ring-mintcom-green/20"
-                        >
-                          <CheckCircle2
-                            size={48}
-                            strokeWidth={2}
-                            className="text-mintcom-green"
-                          />
-                        </motion.div>
-                        <div>
-                          <h3 className="font-magilio text-3xl font-bold text-gray-900 dark:text-white">
-                            {t('landing.contact.success')}
-                          </h3>
-                          <p className="mt-2 font-light text-gray-600 dark:text-gray-400">
-                            {t('landing.contact.responseTime')}
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => setIsSuccess(false)}
-                          className="text-xs font-bold uppercase tracking-[0.18em] text-mintcom-green hover:underline"
-                        >
-                          {t('landing.contact.sendAnother')}
-                        </button>
-                      </motion.div>
-                    ) : (
-                      <motion.form
-                        key="form"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        onSubmit={handleSubmit}
-                        className="space-y-5"
-                      >
-                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                          <div className="space-y-2">
-                            <label className="ml-1 text-[12px] font-bold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
-                              {formatInputLabel(
-                                t('landing.contact.fullName'),
-                                t('common.locale')
-                              )}
-                            </label>
-                            <input
-                              maxLength={255}
-                              required
-                              type="text"
-                              name="fullName"
-                              value={formData.fullName}
-                              onChange={handleInputChange}
-                              className="w-full rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-mintcom-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
-                              placeholder={formatInputPlaceholder(
-                                t('landing.contact.placeholder.name'),
-                                t('common.locale')
-                              )}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <label className="ml-1 text-[12px] font-bold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
-                              {formatInputLabel(
-                                t('landing.contact.businessName'),
-                                t('common.locale')
-                              )}
-                            </label>
-                            <input
-                              maxLength={255}
-                              required
-                              type="text"
-                              name="businessName"
-                              value={formData.businessName}
-                              onChange={handleInputChange}
-                              className="w-full rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-mintcom-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
-                              placeholder={formatInputPlaceholder(
-                                t('landing.contact.placeholder.business'),
-                                t('common.locale')
-                              )}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="ml-1 text-[12px] font-bold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
-                            {formatInputLabel(
-                              t('landing.contact.emailAddress'),
-                              t('common.locale')
-                            )}
-                          </label>
-                          <input
-                            maxLength={255}
-                            required
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            className="w-full rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-mintcom-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
-                            placeholder={formatInputPlaceholder(
-                              t('landing.contact.placeholder.email'),
-                              t('common.locale')
-                            )}
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="ml-1 text-[12px] font-bold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
-                            {formatInputLabel(
-                              t('landing.contact.yourMessage'),
-                              t('common.locale')
-                            )}
-                          </label>
-                          <textarea
-                            maxLength={2000}
-                            required
-                            name="message"
-                            value={formData.message}
-                            onChange={handleInputChange}
-                            rows={4}
-                            className="w-full resize-none rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-mintcom-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
-                            placeholder={formatInputPlaceholder(
-                              t('landing.contact.placeholder.message'),
-                              t('common.locale')
-                            )}
-                          />
-                        </div>
-
-                        <div className="flex items-start gap-3 py-1">
-                          <input
-                            required
-                            id="terms"
-                            type="checkbox"
-                            className="mt-1 h-4 w-4 cursor-pointer rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green dark:border-white/20"
-                          />
-                          <label
-                            htmlFor="terms"
-                            className="text-sm leading-relaxed text-gray-500 dark:text-gray-400"
-                          >
-                            {t('landing.contact.termsAgree')}{' '}
-                            <Link
-                              to="/legal/privacy"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="font-bold text-mintcom-green hover:underline"
-                            >
-                              {t('landing.contact.privacyPolicy')}
-                            </Link>{' '}
-                            {t('common.and')}{' '}
-                            <Link
-                              to="/legal/terms"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="font-bold text-mintcom-green hover:underline"
-                            >
-                              {t('landing.contact.termsOfService')}
-                            </Link>
-                            .
-                          </label>
-                        </div>
-
-                        <motion.button
-                          whileHover={{ y: -2 }}
-                          whileTap={{ scale: 0.97 }}
-                          type="submit"
-                          disabled={isSubmitting}
-                          className="group relative inline-flex h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-2xl bg-mintcom-green text-base font-black text-black shadow-[0_15px_40px_-12px_rgba(124,195,159,0.7)] transition-shadow hover:shadow-[0_20px_50px_-12px_rgba(124,195,159,0.8)] disabled:opacity-60"
-                        >
-                          <span
-                            aria-hidden
-                            className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-                          />
-                          {isSubmitting ? (
-                            <Loader2 className="animate-spin" size={18} />
-                          ) : (
-                            <Send size={18} />
-                          )}
-                          <span className="relative">
-                            {isSubmitting
-                              ? t('landing.contact.sending')
-                              : t('landing.contact.sendMessage')}
-                          </span>
-                        </motion.button>
-                      </motion.form>
-                    )}
-                  </AnimatePresence>
+                  ))}
                 </div>
               </div>
+            </div>
+
+            {/* Contact Form */}
+            <div className="lg:w-3/5 p-12 lg:p-16 bg-white dark:bg-transparent">
+              <AnimatePresence mode="wait">
+                {isSuccess ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="h-full flex flex-col items-center justify-center text-center space-y-6"
+                  >
+                    <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center">
+                      <CheckCircle2 size={48} className="text-mintcom-green" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold font-magilio text-gray-900 dark:text-white mb-2">{t('landing.contact.success')}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 font-medium">{t('landing.contact.responseTime')}</p>
+                    </div>
+                    <button
+                      onClick={() => setIsSuccess(false)}
+                      className="text-mintcom-green font-bold tracking-widest text-xs hover:underline"
+                    >
+                      {t('landing.contact.sendAnother')}
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    onSubmit={handleSubmit}
+                    className="space-y-6"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.fullName')}</label>
+                        <input maxLength={255}
+                          required
+                          type="text"
+                          name="fullName"
+                          value={formData.fullName}
+                          onChange={handleInputChange}
+                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
+                          placeholder={t('landing.contact.placeholder.name')}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.businessName')}</label>
+                        <input maxLength={255}
+                          required
+                          type="text"
+                          name="businessName"
+                          value={formData.businessName}
+                          onChange={handleInputChange}
+                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
+                          placeholder={t('landing.contact.placeholder.business')}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.emailAddress')}</label>
+                      <input maxLength={255}
+                        required
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
+                        placeholder={t('landing.contact.placeholder.email')}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.yourMessage')}</label>
+                      <textarea maxLength={2000}
+                        required
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        rows={4}
+                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all resize-none"
+                        placeholder={t('landing.contact.placeholder.message')}
+                      />
+                    </div>
+
+                    <div className="flex items-start gap-3 py-2">
+                      <input
+                        required
+                        id="terms"
+                        type="checkbox"
+                        className="mt-1.5 w-4 h-4 rounded border-gray-300 dark:border-white/20 text-mintcom-green focus:ring-mintcom-green cursor-pointer"
+                      />
+                      <label htmlFor="terms" className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                        {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-mintcom-green font-bold hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-mintcom-green font-bold hover:underline">{t('landing.contact.termsOfService')}</Link>.
+                      </label>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full py-5 bg-mintcom-green text-black font-black text-xl rounded-xl hover:bg-mintcom-green/90 transition-all shadow-xl shadow-mintcom-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
+                    >
+                      {isSubmitting ? <Loader2 className="animate-spin" size={24} /> : <Send size={24} />}
+                      {t('landing.contact.sendMessage')}
+                    </button>
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -382,3 +207,4 @@ export const Contact = () => {
     </section>
   );
 };
+

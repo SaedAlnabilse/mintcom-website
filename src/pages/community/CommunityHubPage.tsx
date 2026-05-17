@@ -145,7 +145,7 @@ export const CommunityHubPage = () => {
                     </div>
 
                     <div>
-                        <h3 className="px-4 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Categories</h3>
+                        <h3 className="font-magilio px-4 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Categories</h3>
                         <div className="space-y-1">
                             {categories.map(cat => (
                                 <button
@@ -242,7 +242,7 @@ export const CommunityHubPage = () => {
                             <div className="p-2 bg-gray-100 dark:bg-white/10 rounded-lg">
                                 <Hash size={20} className="text-gray-600 dark:text-gray-300" />
                             </div>
-                            <h2 className="text-2xl font-black">{selectedCategory === 'all' ? 'All Discussions' : categories.find(c => c.id === selectedCategory)?.label}</h2>
+                            <h2 className="font-magilio text-2xl font-black">{selectedCategory === 'all' ? 'All Discussions' : categories.find(c => c.id === selectedCategory)?.label}</h2>
                         </div>
                         <button
                             onClick={() => {
@@ -305,7 +305,7 @@ export const CommunityHubPage = () => {
                                                 )}
 
                                                 <div>
-                                                    <h3 className="text-lg font-bold mb-2 group-hover:text-Mintcom-green transition-colors">{topic.title}</h3>
+                                                    <h3 className="font-magilio text-lg font-bold mb-2 group-hover:text-Mintcom-green transition-colors">{topic.title}</h3>
                                                     <div className="flex items-center gap-2 mb-3">
                                                         {topic.tags.map(tag => (
                                                             <span key={tag} className="px-2 py-0.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-md text-xs font-bold">#{tag}</span>

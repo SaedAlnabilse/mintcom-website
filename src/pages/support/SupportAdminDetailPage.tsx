@@ -285,7 +285,7 @@ export const SupportAdminDetailPage = () => {
                 <Navbar />
                 <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0a0a0a] pt-24">
                     <div className="text-center">
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Ticket Not Found</h1>
+                        <h1 className="font-magilio text-2xl font-bold text-gray-900 dark:text-white mb-2">Ticket Not Found</h1>
                         <Link to="/support/admin" className="text-mintcom-green font-bold hover:underline">
                             ← Back to Admin Portal
                         </Link>
@@ -339,7 +339,7 @@ export const SupportAdminDetailPage = () => {
                                         {currentPriority.label}
                                     </span>
                                 </div>
-                                <h1 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{ticket.subject}</h1>
+                                <h1 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-1">{ticket.subject}</h1>
                                 <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 flex-wrap">
                                     <span className="flex items-center gap-1"><Tag className="w-3 h-3" />{ticket.category}</span>
                                     <span>•</span>
@@ -409,7 +409,7 @@ export const SupportAdminDetailPage = () => {
                     <div className="bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 rounded-xl overflow-hidden">
                         <div className="p-4 border-b border-gray-100 dark:border-white/5 flex items-center gap-2">
                             <MessageSquare className="w-4 h-4 text-gray-400" />
-                            <h2 className="text-sm font-bold text-gray-900 dark:text-white">
+                            <h2 className="font-magilio text-sm font-bold text-gray-900 dark:text-white">
                                 Conversation ({ticket.messages.length} messages)
                             </h2>
                         </div>

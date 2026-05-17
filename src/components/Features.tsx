@@ -1,140 +1,102 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import {
-  ShieldCheck,
-  Zap,
-  Settings,
-  Store,
-  Play,
-  Sparkles,
-  ArrowUpRight,
-} from 'lucide-react';
+import { ShieldCheck, Zap, Settings, Store, Play, Sparkles } from 'lucide-react';
 
-/* -----------------------------------------------------------
-   Features — Apple-style "bento" canvas
-   - Centered eyebrow + oversized headline
-   - Cinematic showcase video as the marquee piece
-   - Asymmetric bento grid for the four feature cards
-   - Subtle parallax + reveal motion
------------------------------------------------------------ */
-
-type FeatureItem = {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  tone: 'default' | 'accent';
+const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
+  return (
+    <span className={className}>
+      {text.split(' ').map((word, i) => {
+        const isMintcom = word.toLowerCase().includes('mintcom');
+        return (
+          <span
+            key={i}
+            className={isMintcom ? 'text-mintcom-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-mintcom-green')}
+          >
+            {word}{' '}
+          </span>
+        );
+      })}
+    </span>
+  );
 };
 
-const FeatureCard = ({
-  feature,
-  index,
-  t,
-}: {
-  feature: FeatureItem;
-  index: number;
-  t: any;
-}) => {
+const FeatureCard = ({ feature, index, t }: { feature: any, index: number, t: any }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const description = feature.description;
+  const description = feature.description as string;
   const shouldTruncate = description.length > 120;
-  const isAccent = feature.tone === 'accent';
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 24 }}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.7, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -6 }}
-      className={`group relative flex flex-col overflow-hidden rounded-3xl p-8 lg:p-10 ${
-        isAccent
-          ? 'bg-gradient-to-br from-mintcom-green/15 via-mintcom-green/5 to-transparent border border-mintcom-green/25 dark:from-mintcom-green/20 dark:via-mintcom-green/8'
-          : 'bg-white border border-gray-100 dark:bg-white/[0.03] dark:border-white/10'
-      } shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] dark:shadow-none transition-all duration-500 hover:border-mintcom-green/40 hover:shadow-[0_10px_30px_-10px_rgba(124,195,159,0.2)]`}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, duration: 0.5 }}
+      whileHover={{ y: -8, scale: 1.02 }}
+      className="flex flex-col p-8 rounded-xl bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 hover:border-mintcom-green/30 shadow-xl shadow-gray-200/20 dark:shadow-none hover:shadow-2xl hover:shadow-mintcom-green/10 transition-all duration-500 group relative overflow-hidden"
     >
-      {/* Decorative glow that follows hover */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-mintcom-green/10 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
-      />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-      {/* Icon tile */}
-      <div className="relative mb-7 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-mintcom-green/10 ring-1 ring-mintcom-green/25 backdrop-blur-sm transition-all duration-500 group-hover:bg-mintcom-green group-hover:ring-mintcom-green/60 group-hover:shadow-[0_10px_30px_-8px_rgba(124,195,159,0.6)]">
-        <div className="text-mintcom-green transition-colors duration-500 group-hover:text-black">
+      <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-mintcom-green/10 dark:bg-white/5 flex items-center justify-center mb-6 group-hover:bg-mintcom-green group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-inner">
+        <div className="text-mintcom-green group-hover:text-white transition-colors duration-500">
           {feature.icon}
         </div>
       </div>
 
-      <h3 className="font-magilio mb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">
+      <h3 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-mintcom-green transition-colors leading-tight tracking-tight">
         {feature.title}
       </h3>
 
       <div className="flex-1 flex flex-col justify-between">
-        <p className={`text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium transition-all duration-300 ${!isExpanded && shouldTruncate ? 'line-clamp-4' : ''}`}>
-          {description}
-        </p>
+        <div className="relative">
+          <p className={`text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium transition-all duration-300 ${!isExpanded && shouldTruncate ? 'line-clamp-4' : ''}`}>
+            {description}
+          </p>
+        </div>
 
         {shouldTruncate && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-mintcom-green hover:text-mintcom-green/80 self-start transition-colors focus:outline-none"
+            className="mt-4 text-sm font-bold text-mintcom-green hover:text-mintcom-green/80 self-start transition-colors focus:outline-none"
           >
-            {isExpanded
-              ? t('landing.features.readLess', 'Read less')
-              : t('landing.features.readMore', 'Read more')}
-            <ArrowUpRight
-              size={14}
-              className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
-            />
+            {isExpanded ? t('landing.features.readLess', 'Read less') : t('landing.features.readMore', 'Read more')}
           </button>
         )}
       </div>
-    </motion.article>
+    </motion.div>
   );
 };
 
 export const Features = () => {
   const { t } = useTranslation();
-  const sectionRef = useRef<HTMLElement>(null);
   const [isVideoVisible, setIsVideoVisible] = useState(false);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLDivElement>(null);
-  const isRtl = t('common.locale') === 'ar';
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-  const bgY = useTransform(scrollYProgress, [0, 1], ['-10%', '10%']);
-
-  const features: FeatureItem[] = [
+  const features = [
     {
-      icon: <Store className="h-7 w-7" />,
+      icon: <Store className="w-6 h-6" />,
       title: t('landing.features.cards.complete.title'),
-      description: t('landing.features.cards.complete.description'),
-      tone: 'accent',
+      description: t('landing.features.cards.complete.description')
     },
     {
-      icon: <Zap className="h-7 w-7" />,
+      icon: <Zap className="w-6 h-6" />,
       title: t('landing.features.cards.realUsers.title'),
-      description: t('landing.features.cards.realUsers.description'),
-      tone: 'default',
+      description: t('landing.features.cards.realUsers.description')
     },
     {
-      icon: <ShieldCheck className="h-7 w-7" />,
+      icon: <ShieldCheck className="w-6 h-6" />,
       title: t('landing.features.cards.security.title'),
-      description: t('landing.features.cards.security.description'),
-      tone: 'default',
+      description: t('landing.features.cards.security.description')
     },
     {
-      icon: <Settings className="h-7 w-7" />,
+      icon: <Settings className="w-6 h-6" />,
       title: t('landing.features.cards.multiBranch.title'),
-      description: t('landing.features.cards.multiBranch.description'),
-      tone: 'accent',
-    },
+      description: t('landing.features.cards.multiBranch.description')
+    }
   ];
 
+  // Lazy load video when section comes into view
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -148,127 +110,123 @@ export const Features = () => {
       },
       { rootMargin: '200px', threshold: 0 }
     );
-    if (videoRef.current) observer.observe(videoRef.current);
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
     return () => observer.disconnect();
   }, [isVideoLoaded]);
 
   return (
-    <section
-      id="features"
-      ref={sectionRef}
-      dir={isRtl ? 'rtl' : 'ltr'}
-      className="relative overflow-hidden bg-gradient-to-b from-white via-gray-50 to-white py-24 dark:from-[#050505] dark:via-[#0a0a0a] dark:to-[#050505] lg:py-32"
-    >
-      {/* Background ambient blobs */}
-      <motion.div
-        aria-hidden
-        style={{ y: bgY }}
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-      >
-        <div className="absolute -top-40 right-[-10%] h-[600px] w-[600px] rounded-full bg-mintcom-green/8 blur-[140px]" />
-        <div className="absolute bottom-[-20%] left-[-10%] h-[500px] w-[500px] rounded-full bg-mintcom-green/5 blur-[120px]" />
-      </motion.div>
+    <section id="features" className="py-16 lg:py-20 bg-gray-50 dark:bg-[#0f0f0f] overflow-hidden relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-mintcom-green/5 rounded-full blur-[120px] -z-10" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-mintcom-green/3 rounded-full blur-[100px] -z-10" />
 
-      <div className="container relative z-10 mx-auto max-w-[1280px] px-6 md:px-10">
-        {/* Header */}
-        <motion.header
+      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
+
+        {/* Header Section */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mx-auto mb-14 max-w-3xl text-center lg:mb-20"
+          className="text-center mb-12 lg:mb-16"
         >
-          <div className="mb-6 inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-white/60 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
-            <Sparkles size={12} />
-            <span>{t('landing.features.badge')}</span>
-          </div>
-
-          <h2 className="font-magilio text-5xl font-bold leading-[1.05] tracking-tight text-gray-900 dark:text-white md:text-6xl lg:text-[72px]">
-            {t('landing.features.title')}{' '}
-            <span className="bg-gradient-to-r from-mintcom-green via-emerald-400 to-mintcom-green bg-clip-text text-transparent">
-              {t('landing.features.titleHighlight')}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="group relative inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[12px] bg-mintcom-green/5 dark:bg-mintcom-green/10 text-mintcom-green font-bold text-xs mb-8 border border-mintcom-green/20 backdrop-blur-md shadow-[0_0_15px_rgba(124,195,159,0.05)] hover:border-mintcom-green/40 transition-all duration-300 mx-auto"
+          >
+            <div className="relative flex items-center justify-center w-5 h-5 rounded-[6px] bg-mintcom-green/20 text-mintcom-green overflow-hidden">
+              <Sparkles size={11} className="relative z-10" />
+              <motion.div
+                animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute inset-0 bg-mintcom-green/30"
+              />
+            </div>
+            <span className="tracking-widest uppercase text-[10px] md:text-[11px] leading-none">
+              {t('landing.features.badge')}
             </span>
+          </motion.div>
+
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
+            <SplitText text={t('landing.features.title') + ' ' + t('landing.features.titleHighlight')} />
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg font-light leading-relaxed text-gray-600 dark:text-gray-400 md:text-xl">
+          <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto font-light">
             {t('landing.features.subtitle')}
           </p>
-        </motion.header>
-
-        {/* Showcase video — Apple-style cinematic frame */}
-        <motion.div
-          ref={videoRef}
-          initial={{ opacity: 0, scale: 0.95, y: 40 }}
-          whileInView={{ opacity: 1, scale: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto mb-20 w-full max-w-6xl lg:mb-24"
-        >
-          {/* Halo */}
-          <div
-            aria-hidden
-            className="absolute inset-0 -z-10 scale-[0.95] rounded-[2.5rem] bg-gradient-to-tr from-mintcom-green/30 via-transparent to-mintcom-green/10 blur-3xl"
-          />
-
-          <div className="group relative aspect-video overflow-hidden rounded-[2rem] border border-gray-200/80 bg-gray-900 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.18)] dark:border-white/10 dark:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.5)]">
-            {isVideoVisible ? (
-              <iframe
-                src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"
-                className="absolute inset-0 h-full w-full scale-[1.04] transition-transform duration-1000 group-hover:scale-100"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-                style={{ pointerEvents: 'none' }}
-                loading="lazy"
-                title={t('landing.features.videoTitle')}
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gray-900">
-                <div className="text-center">
-                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-mintcom-green/20">
-                    <Play className="h-10 w-10 text-mintcom-green" fill="currentColor" />
-                  </div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/60">
-                    {t('common.loadingVideo')}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Subtle vignette */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent"
-            />
-
-            {/* Corner watermark / live indicator */}
-            <div className="pointer-events-none absolute left-6 top-6 z-10 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/40 px-3 py-1.5 backdrop-blur-md">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-mintcom-green opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-mintcom-green" />
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/90">
-                {t('landing.features.liveDemo')}
-              </span>
-            </div>
-
-            {/* Bottom caption */}
-            <div className="absolute bottom-0 left-0 right-0 z-10 p-8 md:p-12">
-              <h3 className="font-magilio text-3xl font-bold tracking-tight text-white md:text-5xl">
-                {t('landing.features.seeInAction')}
-              </h3>
-              <p className="mt-2 max-w-xl text-base font-light text-white/75 md:text-lg">
-                {t('landing.features.seamlessSync')}
-              </p>
-            </div>
-          </div>
         </motion.div>
 
-        {/* Bento Feature Grid */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 items-start">
-          {features.map((feature, index) => (
-            <FeatureCard key={index} feature={feature} index={index} t={t} />
-          ))}
+        {/* Redesigned Layout: Cards First, then Video or vice-versa */}
+        <div className="flex flex-col gap-16 lg:gap-24">
+
+          {/* Feature Cards Grid - Spans full width 4 columns */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
+            {features.map((feature, index) => (
+              <FeatureCard key={index} feature={feature} index={index} t={t} />
+            ))}
+          </div>
+
+          {/* Video Section */}
+          <motion.div
+            ref={videoRef}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.7 }}
+            className="w-full max-w-7xl mx-auto"
+          >
+            <div className="relative rounded-xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-white/10 aspect-video bg-gray-900 group">
+              {isVideoVisible ? (
+                <iframe
+                  src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"
+                  className="w-full h-full scale-[1.02] group-hover:scale-100 transition-transform duration-1000"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  style={{ pointerEvents: 'none' }}
+                  loading="lazy"
+                  title={t('landing.features.videoTitle')}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-900">
+                  <div className="text-center">
+                    <div className="w-20 h-20 rounded-full bg-mintcom-green/20 flex items-center justify-center mx-auto mb-6">
+                      <Play className="w-10 h-10 text-mintcom-green" fill="currentColor" />
+                    </div>
+                    <p className="text-white/60 text-sm font-bold uppercase tracking-widest">{t('common.loadingVideo')}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Overlay Content */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+
+              <div className="absolute bottom-8 left-8 right-8 md:bottom-12 md:left-12 text-white z-10 pointer-events-none">
+                <div className="flex items-end justify-between gap-4">
+                  <div>
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 mb-4 shadow-lg">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mintcom-green opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-mintcom-green"></span>
+                      </span>
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/90">{t('landing.features.liveDemo')}</span>
+                    </div>
+                    <h4 className="font-bold font-magilio text-3xl md:text-5xl mb-2 tracking-tighter">{t('landing.features.seeInAction')}</h4>
+                    <p className="text-base md:text-lg text-white/70 font-medium">{t('landing.features.seamlessSync')}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
         </div>
       </div>
     </section>
   );
 };
+

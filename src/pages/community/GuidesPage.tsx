@@ -185,7 +185,7 @@ export const GuidesPage = () => {
               >
                 <ArrowLeft size={20} />
               </Link>
-              <h1 className="text-3xl font-black tracking-tight">
+              <h1 className="font-magilio text-3xl font-black tracking-tight">
                 {t('community.guides.title', 'Guides & Tutorials')}
               </h1>
             </div>
@@ -196,7 +196,7 @@ export const GuidesPage = () => {
 
           {/* Featured Guides */}
           <div className="mb-12">
-            <h2 className="text-xl font-bold mb-6">
+            <h2 className="font-magilio text-xl font-bold mb-6">
               {t('community.guides.featured', 'Featured Guides')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -232,7 +232,7 @@ export const GuidesPage = () => {
                       </div>
 
                       <div className="p-5">
-                        <h3 className="font-bold text-lg mb-2 group-hover:text-Mintcom-green transition-colors">
+                        <h3 className="font-magilio font-bold text-lg mb-2 group-hover:text-Mintcom-green transition-colors">
                           {guide.title}
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4">
@@ -261,7 +261,7 @@ export const GuidesPage = () => {
             {/* Sidebar */}
             <div className="lg:w-64 flex-shrink-0">
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-4 sticky top-28">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">
+                <h3 className="font-magilio text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">
                   {t('community.labels.categories', 'Categories')}
                 </h3>
                 <div className="space-y-1">
@@ -285,7 +285,7 @@ export const GuidesPage = () => {
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/10">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">
+                  <h3 className="font-magilio text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">
                     {t('community.labels.difficulty', 'Difficulty')}
                   </h3>
                   <div className="space-y-1">
@@ -359,7 +359,7 @@ export const GuidesPage = () => {
                               {difficulty.label}
                             </span>
                           </div>
-                          <h3 className="font-bold group-hover:text-Mintcom-green transition-colors truncate">
+                          <h3 className="font-magilio font-bold group-hover:text-Mintcom-green transition-colors truncate">
                             {guide.title}
                           </h3>
                           <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
@@ -388,7 +388,7 @@ export const GuidesPage = () => {
                   <div className="w-16 h-16 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <BookOpen size={32} className="text-gray-400" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">
+                  <h3 className="font-magilio text-xl font-bold mb-2">
                     {searchQuery.trim() ? t('common.noResults') : t('community.guides.empty_title', 'No guides found')}
                   </h3>
                   <p className="text-gray-500 dark:text-gray-400">

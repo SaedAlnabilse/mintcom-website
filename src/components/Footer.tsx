@@ -143,7 +143,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
 
             {/* Product */}
             <div>
-              <h4 className="mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
+      <h4 className="font-magilio mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
                 {t('footer.product')}
               </h4>
               <ul className="space-y-3">
@@ -157,7 +157,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
 
             {/* Company */}
             <div>
-              <h4 className="mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
+              <h4 className="font-magilio mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
                 {t('footer.company')}
               </h4>
               <ul className="space-y-3">
@@ -171,7 +171,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
 
             {/* Resources + Contact */}
             <div>
-              <h4 className="mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
+              <h4 className="font-magilio mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
                 {t('footer.resources')}
               </h4>
 

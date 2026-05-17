@@ -155,7 +155,7 @@ export const SupportFeedbackPage = () => {
                 <ArrowLeft size={16} />
                 Back to tickets
               </Link>
-              <h1 className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">
+              <h1 className="font-magilio text-3xl font-black tracking-tight text-gray-900 dark:text-white">
                 Feedback Insights
               </h1>
               <p className="mt-2 max-w-2xl text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -246,7 +246,7 @@ export const SupportFeedbackPage = () => {
           ) : feedback.length === 0 ? (
             <div className="rounded-2xl border border-gray-100 bg-white p-16 text-center dark:border-white/10 dark:bg-white/[0.03]">
               <Inbox className="mx-auto mb-4 h-14 w-14 text-gray-300 dark:text-gray-600" />
-              <h3 className="mb-2 text-lg font-black text-gray-900 dark:text-white">No feedback found</h3>
+              <h3 className="font-magilio mb-2 text-lg font-black text-gray-900 dark:text-white">No feedback found</h3>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Try a different filter or clear the search.</p>
             </div>
           ) : (

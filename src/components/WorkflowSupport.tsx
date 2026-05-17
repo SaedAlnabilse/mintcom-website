@@ -1,70 +1,47 @@
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import {
-  CreditCard,
-  Package,
-  Users,
-  BarChart3,
-  TrendingUp,
-  Layers,
-} from 'lucide-react';
+import { CreditCard, Package, Users, BarChart3, TrendingUp } from 'lucide-react';
 
-/* -----------------------------------------------------------
-   WorkflowSupport — Apple "feature ribbon" treatment
-   - Sticky / parallax phone showcase on one side
-   - Concise feature list with icon-numbered items on the other
-   - Smooth reveal animations + subtle gradient frames
------------------------------------------------------------ */
+const WorkflowFeatureCard = ({ feature, index, t }: { feature: any, index: number, t: any }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const description = feature.description as string;
+  const shouldTruncate = description.length > 70;
 
-type WFItem = {
-  title: string;
-  description: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
-};
-
-const WorkflowItem = ({
-  feature,
-  index,
-}: {
-  feature: WFItem;
-  index: number;
-}) => {
-  const Icon = feature.icon;
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{
-        duration: 0.6,
-        delay: index * 0.08,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      whileHover={{ x: 4 }}
-      className="group relative flex items-start gap-5 rounded-2xl border border-transparent p-5 transition-all duration-300 hover:border-mintcom-green/20 hover:bg-white/60 dark:hover:bg-white/[0.04]"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, duration: 0.5 }}
+      whileHover={{ scale: 1.02 }}
+      className="group flex flex-col h-full p-5 rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 hover:border-mintcom-green/30 hover:shadow-lg hover:shadow-mintcom-green/5 transition-all duration-300"
     >
-      {/* Icon tile */}
-      <div className="relative flex-shrink-0">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-mintcom-green/15 to-mintcom-green/5 ring-1 ring-mintcom-green/25 transition-all duration-500 group-hover:from-mintcom-green group-hover:to-emerald-400 group-hover:ring-mintcom-green/60 group-hover:shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)]">
-          <Icon
-            size={20}
-            className="text-mintcom-green transition-colors duration-500 group-hover:text-black"
-          />
+      <div className="flex items-start gap-4 mb-3">
+        <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-mintcom-green/10 dark:bg-mintcom-green/20 flex items-center justify-center group-hover:bg-mintcom-green group-hover:scale-110 transition-all duration-300">
+          <feature.icon size={20} className="text-mintcom-green group-hover:text-white transition-colors" />
         </div>
-        {/* Step number */}
-        <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-black text-gray-900 shadow ring-1 ring-gray-200 dark:bg-mintcom-dark dark:text-white dark:ring-white/10">
-          {String(index + 1).padStart(2, '0')}
-        </span>
-      </div>
-
-      <div className="min-w-0 flex-1">
-        <h3 className="font-magilio mb-1.5 text-[17px] font-bold leading-tight tracking-tight text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
+        <h3 className="font-magilio text-gray-900 dark:text-white font-bold text-base mt-2 group-hover:text-mintcom-green transition-colors leading-tight">
           {feature.title}
         </h3>
-        <p className="text-[14px] font-light leading-relaxed text-gray-600 dark:text-gray-400">
-          {feature.description}
+      </div>
+      
+      <div className="flex-1 flex flex-col justify-between">
+        <p className={`text-gray-500 dark:text-gray-400 text-sm leading-relaxed transition-all duration-300 ${!isExpanded && shouldTruncate ? 'line-clamp-2' : ''}`}>
+          {description}
         </p>
+
+        {shouldTruncate && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setIsExpanded(!isExpanded);
+            }}
+            className="mt-2 text-xs font-bold text-mintcom-green hover:text-mintcom-green/80 self-start transition-colors focus:outline-none"
+          >
+            {isExpanded ? t('landing.features.readLess', 'Read less') : t('landing.features.readMore', 'Read more')}
+          </button>
+        )}
       </div>
     </motion.div>
   );
@@ -72,17 +49,8 @@ const WorkflowItem = ({
 
 export const WorkflowSupport = () => {
   const { t } = useTranslation();
-  const isRtl = t('common.locale') === 'ar';
-  const sectionRef = useRef<HTMLElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-  const phoneY = useTransform(scrollYProgress, [0, 1], [60, -60]);
-  const phoneRotate = useTransform(scrollYProgress, [0, 1], [-2, 2]);
-
-  const workflowFeatures: WFItem[] = [
+  const workflowFeatures = [
     {
       title: t('landing.workflow.pointOfSale.title'),
       description: t('landing.workflow.pointOfSale.description'),
@@ -107,91 +75,74 @@ export const WorkflowSupport = () => {
       title: t('landing.workflow.production.title'),
       description: t('landing.workflow.production.description'),
       icon: TrendingUp,
-    },
+    }
   ];
 
   return (
-    <section
-      id="workflow"
-      ref={sectionRef}
-      dir={isRtl ? 'rtl' : 'ltr'}
-      className="relative overflow-hidden bg-white py-24 dark:bg-[#050505] lg:py-32"
-    >
-      {/* Background ambient */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 left-[10%] h-[400px] w-[400px] rounded-full bg-mintcom-green/8 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-5%] h-[500px] w-[500px] rounded-full bg-emerald-400/5 blur-[120px]" />
-      </div>
+    <>
+      <section className="py-16 lg:py-20 bg-white dark:bg-[#0f0f0f] overflow-hidden relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+        {/* Background Decor */}
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-mintcom-green/5 rounded-full blur-[120px] -z-10" />
+        <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-mintcom-green/5 rounded-full blur-[100px] -z-10" />
 
-      <div className="container relative z-10 mx-auto max-w-[1280px] px-6 md:px-10">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
-          {/* ---------- Phone showcase (sticky on desktop) ---------- */}
-          <motion.div
-            style={{ y: phoneY, rotate: phoneRotate }}
-            className="relative order-2 flex items-center justify-center lg:order-1 lg:col-span-5"
-          >
-            {/* Halo */}
-            <div
-              aria-hidden
-              className="absolute left-1/2 top-1/2 -z-10 h-[110%] w-[110%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-gradient-to-tr from-mintcom-green/25 via-transparent to-mintcom-green/10 blur-3xl"
-            />
+        <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
 
+            {/* Left Side: Content */}
             <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative w-full max-w-md"
-            >
-              <img
-                src="/phone_notifications_showcase.png"
-                alt={t('landing.workflow.title')}
-                className="w-full select-none drop-shadow-[0_30px_50px_rgba(0,0,0,0.18)] dark:drop-shadow-[0_30px_50px_rgba(0,0,0,0.6)]"
-                draggable={false}
-              />
-            </motion.div>
-
-            {/* Floating labels around the phone */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="absolute left-2 top-12 hidden items-center gap-2 rounded-full border border-white/60 bg-white/85 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-lg backdrop-blur-xl sm:inline-flex dark:border-white/10 dark:bg-white/5"
+              transition={{ duration: 0.8 }}
+              className="w-full lg:w-1/2"
             >
-              <Layers size={12} />
-              <span>{t('landing.workflow.titleHighlight')}</span>
-            </motion.div>
-          </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="mb-12"
+              >
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
+                  <span className="text-gray-900 dark:text-white">{t('landing.workflow.title')} </span>
+                  <span className="text-mintcom-green">{t('landing.workflow.titleHighlight')}</span>
+                </h2>
+                <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed font-light">
+                  {t('landing.workflow.subtitle')}
+                </p>
+              </motion.div>
 
-          {/* ---------- Content ---------- */}
-          <div className="order-1 lg:order-2 lg:col-span-7">
+              {/* Feature Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+                {workflowFeatures.map((feature, index) => (
+                  <WorkflowFeatureCard key={index} feature={feature} index={index} t={t} />
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Right Side: Dashboard Mockup */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="mb-10"
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="w-full lg:w-1/2 relative"
             >
-              <h2 className="font-magilio text-4xl font-bold leading-[1.05] tracking-tight md:text-5xl lg:text-[64px] lg:leading-[1.02]">
-                <span className="text-gray-900 dark:text-white">
-                  {t('landing.workflow.title')}{' '}
-                </span>
-                <span className="bg-gradient-to-r from-mintcom-green via-emerald-400 to-mintcom-green bg-clip-text text-transparent">
-                  {t('landing.workflow.titleHighlight')}
-                </span>
-              </h2>
-              <p className="mt-6 max-w-xl text-lg font-light leading-relaxed text-gray-600 dark:text-gray-400 md:text-xl">
-                {t('landing.workflow.subtitle')}
-              </p>
+              <div className="relative group w-full flex items-center justify-center">
+                <img 
+                  src="/phone_notifications_showcase.png" 
+                  alt="Workflow and Notifications Showcase" 
+                  className="w-full max-w-lg lg:max-w-full h-auto object-contain drop-shadow-2xl transform transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
             </motion.div>
 
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {workflowFeatures.map((feature, i) => (
-                <WorkflowItem key={i} feature={feature} index={i} />
-              ))}
-            </div>
           </div>
         </div>
-      </div>
-    </section>
+
+
+      </section>
+    </>
   );
 };
+

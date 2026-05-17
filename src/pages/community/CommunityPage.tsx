@@ -107,7 +107,7 @@ export const CommunityPage = () => {
               {t('community.hub.title', 'Community Hub')}
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6">
+            <h1 className="font-magilio text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6">
               {t('community.hub.hero.title_part1', 'Learn, Share,')}{' '}
               <span className="text-Mintcom-green">{t('community.hub.hero.title_part2', 'Grow')}</span>{' '}
               {t('community.hub.hero.title_part3', 'Together')}
@@ -177,7 +177,7 @@ export const CommunityPage = () => {
               <div className="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform">
                 <MessageCircle size={28} />
               </div>
-              <h3 className="text-2xl font-black mb-3 group-hover:text-blue-500 transition-colors">
+              <h3 className="font-magilio text-2xl font-black mb-3 group-hover:text-blue-500 transition-colors">
                 {t('community.discussions.title', 'Discussions')}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
@@ -197,7 +197,7 @@ export const CommunityPage = () => {
               <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform">
                 <Lightbulb size={28} />
               </div>
-              <h3 className="text-2xl font-black mb-3 group-hover:text-yellow-500 transition-colors">
+              <h3 className="font-magilio text-2xl font-black mb-3 group-hover:text-yellow-500 transition-colors">
                 {t('community.ideas.title', 'Feature Ideas')}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
@@ -217,7 +217,7 @@ export const CommunityPage = () => {
               <div className="w-14 h-14 bg-Mintcom-green rounded-2xl flex items-center justify-center text-black mb-6 group-hover:scale-110 transition-transform">
                 <BookOpen size={28} />
               </div>
-              <h3 className="text-2xl font-black mb-3 group-hover:text-Mintcom-green transition-colors">
+              <h3 className="font-magilio text-2xl font-black mb-3 group-hover:text-Mintcom-green transition-colors">
                 {t('community.guides.title', 'Guides & Tutorials')}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
@@ -237,7 +237,7 @@ export const CommunityPage = () => {
         <div className="container mx-auto px-8 md:px-16 lg:px-24">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-2">
+              <h2 className="font-magilio text-2xl md:text-3xl font-black tracking-tight mb-2">
                 {t('community.discussions.trending', 'Trending Discussions')}
               </h2>
               <p className="text-gray-500">{t('community.discussions.trending_subtitle', 'Popular conversations in the community')}</p>
@@ -268,7 +268,7 @@ export const CommunityPage = () => {
                       {t('community.labels.hot', 'Hot')}
                     </div>
                   )}
-                  <h3 className="font-bold text-lg mb-3 group-hover:text-Mintcom-green transition-colors">
+                  <h3 className="font-magilio font-bold text-lg mb-3 group-hover:text-Mintcom-green transition-colors">
                     {discussion.title}
                   </h3>
                   <p className="text-sm text-gray-500 mb-4">{discussion.category}</p>
@@ -298,7 +298,7 @@ export const CommunityPage = () => {
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-2">
+                <h2 className="font-magilio text-2xl md:text-3xl font-black tracking-tight mb-2">
                   {t('community.ideas.top', 'Top Feature Ideas')}
                 </h2>
                 <p className="text-gray-500">{t('community.ideas.top_subtitle', 'Vote to help prioritize what we build next')}</p>
@@ -327,7 +327,7 @@ export const CommunityPage = () => {
                     </button>
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-bold">{idea.title}</h4>
+                    <h4 className="font-magilio font-bold">{idea.title}</h4>
                   </div>
                   <div>
                     <span className={`px-3 py-1 rounded-full text-xs font-bold ${idea.status === 'planned' ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-600' :
@@ -352,7 +352,7 @@ export const CommunityPage = () => {
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-2">
+                <h2 className="font-magilio text-2xl md:text-3xl font-black tracking-tight mb-2">
                   {t('community.guides.popular', 'Popular Guides')}
                 </h2>
                 <p className="text-gray-500">{t('community.guides.popular_subtitle', 'Most-read tutorials from the community')}</p>
@@ -379,7 +379,7 @@ export const CommunityPage = () => {
                     <BookOpen size={20} className="text-Mintcom-green" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-bold group-hover:text-Mintcom-green transition-colors">
+                    <h4 className="font-magilio font-bold group-hover:text-Mintcom-green transition-colors">
                       {guide.title}
                     </h4>
                     <div className="flex items-center gap-4 text-sm text-gray-400 mt-1">
@@ -411,7 +411,7 @@ export const CommunityPage = () => {
                 <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Award size={32} />
                 </div>
-                <h2 className="text-3xl md:text-4xl font-black mb-4">
+                <h2 className="font-magilio text-3xl md:text-4xl font-black mb-4">
                   {t('community.cta.title', 'Become a Community Champion')}
                 </h2>
                 <p className="text-white/80 font-medium mb-8 max-w-lg mx-auto">

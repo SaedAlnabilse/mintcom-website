@@ -192,7 +192,7 @@ export const IdeasPage = () => {
                 >
                   <ArrowLeft size={20} />
                 </Link>
-                <h1 className="text-3xl font-black tracking-tight">
+                <h1 className="font-magilio text-3xl font-black tracking-tight">
                   {t('community.ideas.title', 'Feature Ideas')}
                 </h1>
               </div>
@@ -385,7 +385,7 @@ export const IdeasPage = () => {
                       </div>
 
                       <Link to={`/community/ideas/${idea.id}`}>
-                        <h3 className="text-lg font-bold mb-2 hover:text-Mintcom-green transition-colors cursor-pointer group-hover:text-Mintcom-green">
+                        <h3 className="font-magilio text-lg font-bold mb-2 hover:text-Mintcom-green transition-colors cursor-pointer group-hover:text-Mintcom-green">
                           {idea.title}
                         </h3>
                       </Link>
@@ -416,7 +416,7 @@ export const IdeasPage = () => {
               <div className="w-16 h-16 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Lightbulb size={32} className="text-gray-400" />
               </div>
-              <h3 className="text-xl font-bold mb-2">
+              <h3 className="font-magilio text-xl font-bold mb-2">
                 {searchQuery.trim() ? t('common.noResults') : t('community.ideas.empty_title', 'No ideas found')}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">

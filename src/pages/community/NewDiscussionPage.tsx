@@ -80,7 +80,7 @@ export const NewDiscussionPage = () => {
                             <div className="w-20 h-20 bg-Mintcom-green/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-Mintcom-green/20">
                                 <Lock size={36} className="text-Mintcom-green" />
                             </div>
-                            <h1 className="text-3xl font-black mb-4 tracking-tight">Members Only Space</h1>
+                            <h1 className="font-magilio text-3xl font-black mb-4 tracking-tight">Members Only Space</h1>
                             <p className="text-gray-500 dark:text-gray-400 font-medium mb-10">
                                 Starting a discussion requires a Mintcom account. Sign in to share your thoughts or ask questions.
                             </p>
@@ -124,7 +124,7 @@ export const NewDiscussionPage = () => {
                                 >
                                     <ArrowLeft size={20} />
                                 </Link>
-                                <h1 className="text-3xl font-black tracking-tight">{t('community.discussions.submitTitle', 'Start a Discussion')}</h1>
+                                <h1 className="font-magilio text-3xl font-black tracking-tight">{t('community.discussions.submitTitle', 'Start a Discussion')}</h1>
                             </div>
                             <p className="text-gray-500 dark:text-gray-400 font-medium ml-11">
                                 {t('community.discussions.submitSubtitle', 'Connect with other business owners and share your expertise.')}
