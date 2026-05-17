@@ -9,6 +9,7 @@ import {
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { getArticleViews, getArticleViewsNumber, useSupportArticleMetrics } from '../../hooks/useSupportArticleMetrics';
 
 export const AllArticlesPage = () => {
   const { t } = useTranslation();
@@ -39,6 +40,7 @@ export const AllArticlesPage = () => {
     { id: 'ft-4', title: t('support.articles.ft4'), category: t('support.categories.features'), categoryId: 'features', readTime: '15 min', views: '4.2k' },
     { id: 'ft-5', title: t('support.articles.ft5'), category: t('support.categories.features'), categoryId: 'features', readTime: '10 min', views: '3.8k' },
   ];
+  const { metrics } = useSupportArticleMetrics(allArticles.map((article) => article.id));
 
   const categories = [
     { id: 'all', label: t('support.categories.all'), icon: BookOpen },
@@ -54,7 +56,11 @@ export const AllArticlesPage = () => {
       const matchesCategory = selectedCategory === 'all' || a.categoryId === selectedCategory;
       return matchesSearch && matchesCategory;
     })
-    .sort((a, b) => sortBy === 'views' ? parseFloat(b.views) - parseFloat(a.views) : 0);
+    .sort((a, b) =>
+      sortBy === 'views'
+        ? getArticleViewsNumber(metrics, b.id, b.views) - getArticleViewsNumber(metrics, a.id, a.views)
+        : 0
+    );
 
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
@@ -150,7 +156,7 @@ export const AllArticlesPage = () => {
                       <div className="flex items-center gap-4">
                         <div className="hidden items-center gap-4 text-xs font-medium text-gray-400 md:flex">
                           <span className="flex items-center gap-1.5"><Clock size={12} /> {article.readTime}</span>
-                          <span className="flex items-center gap-1.5"><Eye size={12} /> {article.views}</span>
+                          <span className="flex items-center gap-1.5"><Eye size={12} /> {getArticleViews(metrics, article.id, article.views)}</span>
                         </div>
                         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 text-gray-400 transition-all group-hover:bg-mintcom-green group-hover:text-black dark:bg-white/5 dark:group-hover:bg-mintcom-green">
                           <ChevronRight size={14} className={isRtl ? 'rotate-180' : ''} />

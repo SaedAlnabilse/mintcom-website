@@ -10,6 +10,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { LoginRequiredModal } from '../../components/LoginRequiredModal';
 import { useAuth } from '../../context/AuthContext';
+import { getArticleViews, useSupportArticleMetrics } from '../../hooks/useSupportArticleMetrics';
 
 const accentMap: Record<string, { bg: string; light: string; border: string; text: string; glow: string }> = {
   'getting-started': { bg: 'bg-blue-500',    light: 'bg-blue-50 dark:bg-blue-500/10',    border: 'border-blue-200 dark:border-blue-500/20',   text: 'text-blue-600 dark:text-blue-400',   glow: 'rgba(96,165,250,0.25)'  },
@@ -92,6 +93,7 @@ export const SupportCategoryPage = () => {
   const category  = categoryId ? categoryConfig[categoryId]      : null;
   const acc       = categoryId ? accentMap[categoryId]            : null;
   const articles  = categoryId ? articlesByCategory[categoryId] || [] : [];
+  const { metrics } = useSupportArticleMetrics(articles.map((article) => article.id));
   const filtered  = articles.filter(a =>
     a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     a.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
@@ -226,7 +228,7 @@ export const SupportCategoryPage = () => {
                       <div className="mt-4 flex items-center justify-between">
                         <div className="flex items-center gap-3 text-xs text-gray-400">
                           <span className="flex items-center gap-1"><Clock size={11} /> {article.readTime}</span>
-                          <span className="flex items-center gap-1"><Eye size={11} /> {article.views}</span>
+                          <span className="flex items-center gap-1"><Eye size={11} /> {getArticleViews(metrics, article.id, article.views)}</span>
                         </div>
                         <span className={`flex h-7 w-7 items-center justify-center rounded-lg ${acc.light} ${acc.text} transition-transform group-hover:translate-x-0.5`}>
                           <ChevronRight size={14} className={isRtl ? 'rotate-180' : ''} />
@@ -283,7 +285,7 @@ export const SupportCategoryPage = () => {
                       </div>
                       <div className="hidden items-center gap-3 text-xs text-gray-400 sm:flex">
                         <span className="flex items-center gap-1"><Clock size={11} /> {article.readTime}</span>
-                        <span className="flex items-center gap-1"><Eye size={11} /> {article.views}</span>
+                        <span className="flex items-center gap-1"><Eye size={11} /> {getArticleViews(metrics, article.id, article.views)}</span>
                       </div>
                       <ChevronRight size={14} className={`flex-shrink-0 text-gray-300 transition-all group-hover:${acc.text} ${isRtl ? 'rotate-180' : ''}`} />
                     </Link>

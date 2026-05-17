@@ -12,6 +12,7 @@ import { Footer } from '../../components/Footer';
 import { LoginRequiredModal } from '../../components/LoginRequiredModal';
 import { useAuth } from '../../context/AuthContext';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { getArticleViews, getArticleViewsNumber, useSupportArticleMetrics } from '../../hooks/useSupportArticleMetrics';
 
 /* ─── tiny helpers ─────────────────────────────────────────────────────── */
 const categoryAccent: Record<string, { border: string; glow: string; iconBg: string; dot: string }> = {
@@ -106,13 +107,17 @@ export const SupportPage = () => {
         a.category.toLowerCase().includes(searchQuery.toLowerCase())
       ).slice(0, 5);
 
-  const popularArticles = [
+  const popularArticleSeeds = [
     { id: 'tc-1', title: t('support.popularArticles.printer'),      category: t('support.categories.technical'),      categoryId: 'technical',       views: '5.6k', readTime: '8 min'  },
     { id: 'gs-1', title: t('support.popularArticles.account'),      category: t('support.categories.gettingStarted'), categoryId: 'getting-started', views: '8.2k', readTime: '5 min'  },
     { id: 'ft-1', title: t('support.popularArticles.reports'),      category: t('support.categories.features'),       categoryId: 'features',        views: '6.2k', readTime: '12 min' },
     { id: 'gs-2', title: t('support.popularArticles.establishment'),category: t('support.categories.gettingStarted'), categoryId: 'getting-started', views: '6.5k', readTime: '8 min'  },
     { id: 'bl-2', title: t('support.popularArticles.payment'),      category: t('support.categories.billing'),        categoryId: 'billing',         views: '3.8k', readTime: '3 min'  },
   ];
+  const { metrics } = useSupportArticleMetrics(popularArticleSeeds.map((article) => article.id));
+  const popularArticles = [...popularArticleSeeds].sort(
+    (a, b) => getArticleViewsNumber(metrics, b.id, b.views) - getArticleViewsNumber(metrics, a.id, a.views),
+  );
 
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
@@ -466,7 +471,7 @@ export const SupportPage = () => {
                         </p>
                         <div className="mt-1.5 flex items-center gap-3 text-xs text-gray-400">
                           <span className="flex items-center gap-1"><Clock size={11} /> {article.readTime}</span>
-                          <span className="flex items-center gap-1"><Eye size={11} /> {article.views}</span>
+                          <span className="flex items-center gap-1"><Eye size={11} /> {getArticleViews(metrics, article.id, article.views)}</span>
                         </div>
                       </div>
                       <ChevronRight size={16} className={`flex-shrink-0 text-gray-300 transition-all group-hover:text-mintcom-green group-hover:translate-x-1 ${isRtl ? 'rotate-180' : ''}`} />
@@ -500,7 +505,7 @@ export const SupportPage = () => {
                         </div>
                         <div className="hidden items-center gap-3 text-xs text-gray-400 sm:flex">
                           <span className="flex items-center gap-1"><Clock size={11} /> {article.readTime}</span>
-                          <span className="flex items-center gap-1"><Eye size={11} /> {article.views}</span>
+                          <span className="flex items-center gap-1"><Eye size={11} /> {getArticleViews(metrics, article.id, article.views)}</span>
                         </div>
                         <ChevronRight size={14} className={`flex-shrink-0 text-gray-300 transition-all group-hover:text-mintcom-green ${isRtl ? 'rotate-180' : ''}`} />
                       </Link>

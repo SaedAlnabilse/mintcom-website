@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -12,6 +12,7 @@ import { Footer } from '../../components/Footer';
 import { LoginRequiredModal } from '../../components/LoginRequiredModal';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import { getArticleViews, useSupportArticleMetrics } from '../../hooks/useSupportArticleMetrics';
 
 const catAccent: Record<string, { bg: string; light: string; border: string; text: string }> = {
   'getting-started': { bg: 'bg-blue-500',     light: 'bg-blue-50 dark:bg-blue-500/10',     border: 'border-blue-200 dark:border-blue-500/20',    text: 'text-blue-600 dark:text-blue-400'    },
@@ -143,6 +144,25 @@ export const ArticlePage = () => {
   const acc     = article ? catAccent[article.categoryId]  : null;
   const CatIcon = article ? catIcon[article.categoryId]    : BookOpen;
   const related = article ? article.relatedArticles.map(id => allArticles[id]).filter(Boolean) : [];
+  const { metrics, recordView, submitFeedback } = useSupportArticleMetrics(Object.keys(allArticles));
+  const displayedViews = article ? getArticleViews(metrics, article.id, article.views) : '';
+
+  useEffect(() => {
+    if (article?.id) {
+      recordView(article.id);
+    }
+  }, [article?.id, recordView]);
+
+  const handleHelpfulVote = async (vote: 'yes' | 'no') => {
+    if (!article) return;
+
+    try {
+      await submitFeedback(article.id, vote === 'yes' ? 'useful' : 'not_useful');
+      setHelpful(vote);
+    } catch {
+      toast.error(t('support.articles.feedbackFailed', 'Could not save feedback. Please try again.'));
+    }
+  };
 
   if (!article || !acc) {
     return (
@@ -187,7 +207,7 @@ export const ArticlePage = () => {
             {/* meta row */}
             <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-400 dark:text-gray-500">
               <span className="flex items-center gap-1.5"><Clock size={13} /> {article.readTime} {t('support.articles.read')}</span>
-              <span className="flex items-center gap-1.5"><Eye size={13} /> {article.views} {t('support.articles.views')}</span>
+              <span className="flex items-center gap-1.5"><Eye size={13} /> {displayedViews} {t('support.articles.views')}</span>
               <span className="flex items-center gap-1.5"><Calendar size={13} /> {t('support.articles.updated')} {article.lastUpdated}</span>
             </div>
           </motion.div>
@@ -212,11 +232,11 @@ export const ArticlePage = () => {
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <p className="font-semibold text-gray-900 dark:text-white">{t('support.articles.helpfulQuestion')}</p>
                     <div className="flex gap-2">
-                      <button onClick={() => setHelpful('yes')}
+                      <button onClick={() => handleHelpfulVote('yes')}
                         className="inline-flex items-center gap-2 rounded-xl bg-mintcom-green/10 px-5 py-2 text-sm font-bold text-mintcom-green transition-colors hover:bg-mintcom-green/20">
                         <ThumbsUp size={15} /> {t('support.articles.helpfulYes')}
                       </button>
-                      <button onClick={() => setHelpful('no')}
+                      <button onClick={() => handleHelpfulVote('no')}
                         className="inline-flex items-center gap-2 rounded-xl bg-gray-100 px-5 py-2 text-sm font-bold text-gray-600 transition-colors hover:bg-gray-200 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15">
                         <ThumbsDown size={15} /> {t('support.articles.helpfulNo')}
                       </button>
@@ -294,7 +314,7 @@ export const ArticlePage = () => {
                   <div className="mt-4 space-y-2.5 border-t border-gray-100 pt-4 dark:border-white/8">
                     {[
                       { icon: Clock,    label: t('support.articles.read'),    value: article.readTime    },
-                      { icon: Eye,      label: t('support.articles.views'),   value: article.views       },
+                      { icon: Eye,      label: t('support.articles.views'),   value: displayedViews      },
                       { icon: Calendar, label: t('support.articles.updated'), value: article.lastUpdated },
                     ].map(({ icon: Icon, label, value }) => (
                       <div key={label} className="flex items-center justify-between text-xs">
