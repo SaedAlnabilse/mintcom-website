@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { LoginRequiredModal } from '../../components/LoginRequiredModal';
+import { useAuth } from '../../context/AuthContext';
 import { formatInputPlaceholder } from '../../utils/textCase';
 
 /* ─── tiny helpers ─────────────────────────────────────────────────────── */
@@ -41,10 +43,21 @@ const categoryAccent: Record<string, { border: string; glow: string; iconBg: str
 
 export const SupportPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const isRtl = t('common.locale') === 'ar';
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const { isAuthenticated } = useAuth();
+
+  const handleSubmitTicket = () => {
+    if (isAuthenticated) {
+      navigate('/support/tickets/new');
+    } else {
+      setShowLoginModal(true);
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -229,11 +242,11 @@ export const SupportPage = () => {
 
               {/* CTA row */}
               <div className="mt-6 flex flex-wrap items-center gap-3">
-                <Link to="/support/tickets/new"
+                <button onClick={handleSubmitTicket}
                   className="inline-flex items-center gap-2 rounded-xl bg-mintcom-green px-5 py-2.5 text-sm font-bold text-black shadow-[0_4px_20px_-4px_rgba(125,198,162,0.55)] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_28px_-4px_rgba(125,198,162,0.65)]">
                   <Ticket size={15} />
                   {t('support.quickLinks.submitTicket')}
-                </Link>
+                </button>
                 <Link to="/support/tickets"
                   className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10">
                   <MessageSquare size={15} />
@@ -545,6 +558,7 @@ export const SupportPage = () => {
       </section>
 
       <Footer />
+      <LoginRequiredModal open={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </div>
   );
 };

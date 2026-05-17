@@ -10,7 +10,6 @@ import {
   ChevronRight,
   HelpCircle,
   Ticket,
-  MapPin,
 } from 'lucide-react';
 import { Logo } from './Logo';
 
