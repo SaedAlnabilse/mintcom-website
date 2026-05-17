@@ -161,7 +161,7 @@ export function BillingPage() {
       })
     : t('common.noData');
   const statusTone = billingInfo?.subscriptionStatus === 'ACTIVE'
-    ? 'bg-paymint-green/20 border-paymint-green/30 text-paymint-green'
+    ? 'bg-mintcom-green/20 border-mintcom-green/30 text-mintcom-green'
     : billingInfo?.subscriptionStatus === 'TRIAL'
       ? 'bg-blue-500/15 border-blue-500/30 text-blue-400'
       : billingInfo?.subscriptionStatus === 'PAST_DUE' || billingInfo?.subscriptionStatus === 'SUSPENDED'
@@ -192,7 +192,7 @@ export function BillingPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('owner.billing.managePayments', { name: currentEstablishment?.name })}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                                 {currentEstablishment.name}
                             </span>
                         )}
@@ -204,12 +204,12 @@ export function BillingPage() {
         {/* Subscription Info */}
         <div className="lg:col-span-2 space-y-8">
           <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 border border-gray-800 shadow-2xl">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-mintcom-green/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
             <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center justify-between mb-8">
               <div className="flex items-center gap-5">
                 <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/10">
-                  <DollarSign className="w-8 h-8 text-paymint-green" />
+                  <DollarSign className="w-8 h-8 text-mintcom-green" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white">{t('owner.billing.plan')}</h3>
@@ -232,7 +232,7 @@ export function BillingPage() {
                   <span className="text-4xl font-black text-white">
                     {(billingInfo ? (isYearly ? YEARLY_PRICE : totalMonthly) : 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
                   </span>
-                  <span className="text-sm font-bold text-paymint-green">{currencySymbol}</span>
+                  <span className="text-sm font-bold text-mintcom-green">{currencySymbol}</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
                   {billingInfo ? (isYearly ? t('common.yearly') : t('common.monthly')) : t('common.noData')}
@@ -252,9 +252,9 @@ export function BillingPage() {
 
             {/* Upgrade to yearly banner (show only if monthly) */}
             {billingInfo && !isYearly && (
-              <div className="relative z-10 mb-6 p-4 rounded-2xl bg-paymint-green/10 border border-paymint-green/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="relative z-10 mb-6 p-4 rounded-2xl bg-mintcom-green/10 border border-mintcom-green/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <Sparkles size={18} className="text-paymint-green" />
+                  <Sparkles size={18} className="text-mintcom-green" />
                   <div>
                     <p className="text-sm font-bold text-white">Switch to Yearly & Save {formatUsd(yearlySavings, 0)}/yr</p>
                     <p className="text-xs text-gray-400">Pay {formatUsd(210, 0)}/year instead of {formatUsd(240, 0)} - that's {formatUsd(17.5)}/mo</p>
@@ -262,7 +262,7 @@ export function BillingPage() {
                 </div>
                 <button
                   onClick={() => setShowUpgradeModal(true)}
-                  className="px-5 py-2.5 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 tracking-widest flex items-center gap-2 whitespace-nowrap"
+                  className="px-5 py-2.5 bg-mintcom-green text-black font-black text-xs rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-mintcom-green/20 tracking-widest flex items-center gap-2 whitespace-nowrap"
                 >
                   UPGRADE
                   <ArrowRight size={14} />
@@ -274,7 +274,7 @@ export function BillingPage() {
               {billingInfo && !isYearly && (
                 <button
                   onClick={() => setShowUpgradeModal(true)}
-                  className="flex-1 px-8 py-4 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 tracking-widest flex items-center justify-center gap-2"
+                  className="flex-1 px-8 py-4 bg-mintcom-green text-black font-black text-xs rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-mintcom-green/20 tracking-widest flex items-center justify-center gap-2"
                 >
                   <Zap size={16} /> {t('owner.billing.upgrade')}
                 </button>
@@ -308,7 +308,7 @@ export function BillingPage() {
                       <p className="text-xs font-bold text-gray-500">{formatDate(invoice.date)}</p>
                     </div>
                     <span className={`inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-black tracking-wider rounded-lg border ${invoice.status === 'Paid'
-                      ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                      ? 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'
                       : 'bg-red-500/10 text-red-500 border-red-500/20'
                       }`}>
                       {invoice.status === 'Paid' ? <CheckCircle2 size={10} /> : <AlertCircle size={10} />}
@@ -341,7 +341,7 @@ export function BillingPage() {
                       <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-black">{invoice.amount}</td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-black tracking-wider rounded-lg border ${invoice.status === 'Paid'
-                          ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                          ? 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'
                           : 'bg-red-500/10 text-red-500 border-red-500/20'
                           }`}>
                           {invoice.status === 'Paid' ? <CheckCircle2 size={10} /> : <AlertCircle size={10} />}
@@ -370,10 +370,10 @@ export function BillingPage() {
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Plans Overview</h3>
 
             <div className="space-y-3">
-              <div className="p-3 rounded-xl bg-paymint-green/5 border border-paymint-green/10">
+              <div className="p-3 rounded-xl bg-mintcom-green/5 border border-mintcom-green/10">
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-xs font-black text-gray-600 dark:text-gray-300">First Location</span>
-                  <span className="text-xs font-black text-paymint-green">
+                  <span className="text-xs font-black text-mintcom-green">
                     {formatUsd(isYearly ? YEARLY_PRICE : MONTHLY_PRICE, 0)}{isYearly ? '/yr' : '/mo'}
                   </span>
                 </div>
@@ -393,9 +393,9 @@ export function BillingPage() {
               </div>
 
               {isYearly && (
-                <div className="p-2 rounded-lg bg-paymint-green/10 flex items-center gap-2">
-                  <Sparkles size={12} className="text-paymint-green" />
-                  <span className="text-[10px] font-bold text-paymint-green">Yearly plan active - saving {formatUsd(yearlySavings, 0)}/yr</span>
+                <div className="p-2 rounded-lg bg-mintcom-green/10 flex items-center gap-2">
+                  <Sparkles size={12} className="text-mintcom-green" />
+                  <span className="text-[10px] font-bold text-mintcom-green">Yearly plan active - saving {formatUsd(yearlySavings, 0)}/yr</span>
                 </div>
               )}
             </div>
@@ -405,7 +405,7 @@ export function BillingPage() {
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">{t('owner.billing.payment')}</h3>
 
             <div className="space-y-4">
-              <div className="p-4 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-200 dark:border-white/5 flex items-center justify-between group hover:border-paymint-green/30 transition-colors">
+              <div className="p-4 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-200 dark:border-white/5 flex items-center justify-between group hover:border-mintcom-green/30 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white dark:bg-white/5 rounded-lg flex items-center justify-center border border-gray-200 dark:border-white/5">
                     <CreditCard className="w-5 h-5 text-gray-400" />
@@ -420,26 +420,26 @@ export function BillingPage() {
                   </div>
                 </div>
                 {defaultCard && (
-                  <button className="label-strong font-outfit text-paymint-green opacity-0 group-hover:opacity-100 transition-opacity hover:underline">{t('common.edit')}</button>
+                  <button className="label-strong font-outfit text-mintcom-green opacity-0 group-hover:opacity-100 transition-opacity hover:underline">{t('common.edit')}</button>
                 )}
               </div>
 
-              <button className="w-full flex flex-col items-center gap-2 p-6 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all group">
+              <button className="w-full flex flex-col items-center gap-2 p-6 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all group">
                 <div className="w-10 h-10 bg-white dark:bg-white/5 rounded-full flex items-center justify-center transition-transform group-hover:scale-110 border border-gray-200 dark:border-white/5">
-                  <CreditCard className="w-5 h-5 text-gray-400 group-hover:text-paymint-green transition-colors" />
+                  <CreditCard className="w-5 h-5 text-gray-400 group-hover:text-mintcom-green transition-colors" />
                 </div>
-                <span className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest group-hover:text-paymint-green transition-colors">{t('owner.billing.addCard')}</span>
+                <span className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest group-hover:text-mintcom-green transition-colors">{t('owner.billing.addCard')}</span>
               </button>
             </div>
           </div>
 
           {/* Support Card */}
-          <div className="bg-paymint-green/5 border border-paymint-green/20 rounded-2xl p-6">
+          <div className="bg-mintcom-green/5 border border-mintcom-green/20 rounded-2xl p-6">
             <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('owner.billing.needHelp')}</h4>
             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-4">
               {t('owner.billing.billingQuestions')}
             </p>
-            <button className="w-full py-3 bg-white dark:bg-white/5 border border-paymint-green/20 text-paymint-green font-bold rounded-xl text-xs tracking-widest hover:bg-paymint-green hover:text-black transition-all shadow-sm">
+            <button className="w-full py-3 bg-white dark:bg-white/5 border border-mintcom-green/20 text-mintcom-green font-bold rounded-xl text-xs tracking-widest hover:bg-mintcom-green hover:text-black transition-all shadow-sm">
               {t('owner.billing.contactSupport')}
             </button>
           </div>
@@ -464,8 +464,8 @@ export function BillingPage() {
               className="relative z-10 bg-white dark:bg-[#1a1a1a] rounded-3xl max-w-md w-full p-8 border border-gray-200 dark:border-white/10 shadow-2xl"
             >
               <div className="text-center mb-6">
-                <div className="w-16 h-16 mx-auto bg-paymint-green/10 rounded-2xl flex items-center justify-center mb-4">
-                  <Sparkles size={28} className="text-paymint-green" />
+                <div className="w-16 h-16 mx-auto bg-mintcom-green/10 rounded-2xl flex items-center justify-center mb-4">
+                  <Sparkles size={28} className="text-mintcom-green" />
                 </div>
                 <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Switch to Yearly</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 font-bold">
@@ -481,15 +481,15 @@ export function BillingPage() {
                   </div>
                   <span className="text-lg font-black text-gray-400 line-through">{formatUsd(MONTHLY_PRICE * 12, 0)}/yr</span>
                 </div>
-                <div className="flex justify-between items-center p-4 rounded-xl bg-paymint-green/5 border-2 border-paymint-green/30">
+                <div className="flex justify-between items-center p-4 rounded-xl bg-mintcom-green/5 border-2 border-mintcom-green/30">
                   <div>
                     <p className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                       Yearly
-                      <span className="px-2 py-0.5 bg-paymint-green text-black rounded text-[9px] font-black">RECOMMENDED</span>
+                      <span className="px-2 py-0.5 bg-mintcom-green text-black rounded text-[9px] font-black">RECOMMENDED</span>
                     </p>
-                    <p className="text-xs text-paymint-green font-bold">~{formatUsd(YEARLY_PRICE / 12)}/mo effective rate</p>
+                    <p className="text-xs text-mintcom-green font-bold">~{formatUsd(YEARLY_PRICE / 12)}/mo effective rate</p>
                   </div>
-                  <span className="text-lg font-black text-paymint-green">{formatUsd(YEARLY_PRICE, 0)}/yr</span>
+                  <span className="text-lg font-black text-mintcom-green">{formatUsd(YEARLY_PRICE, 0)}/yr</span>
                 </div>
               </div>
 
@@ -505,7 +505,7 @@ export function BillingPage() {
                     toast.success('Yearly plan upgrade requested');
                     setShowUpgradeModal(false);
                   }}
-                  className="flex-1 py-3 rounded-xl bg-paymint-green text-black font-black text-sm hover:bg-paymint-green/90 transition-colors shadow-lg shadow-paymint-green/20"
+                  className="flex-1 py-3 rounded-xl bg-mintcom-green text-black font-black text-sm hover:bg-mintcom-green/90 transition-colors shadow-lg shadow-mintcom-green/20"
                 >
                   Upgrade Now
                 </button>

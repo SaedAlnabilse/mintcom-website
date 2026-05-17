@@ -1,7 +1,7 @@
 import {
   FALLBACK_RESPONSES,
   FALLBACK_RESPONSES_AR,
-  PAYMINT_KNOWLEDGE,
+  MINTCOM_KNOWLEDGE,
 } from '../../data/chatbotKnowledge';
 import type { KnowledgeEntry } from '../../data/chatbotKnowledge';
 import type {
@@ -363,7 +363,7 @@ export function findBestMatch(query: string, context: ChatbotNavigationContext):
     return null;
   }
 
-  const scored = PAYMINT_KNOWLEDGE.map((entry) => ({
+  const scored = MINTCOM_KNOWLEDGE.map((entry) => ({
     entry,
     score: calculateRelevance(query, entry, context),
   })).filter((item) => item.score > 0);
@@ -394,7 +394,7 @@ export function getRelatedSuggestions(
 
   if (entry.relatedTopics) {
     for (const topic of entry.relatedTopics) {
-      const related = PAYMINT_KNOWLEDGE.find((item) => item.id === topic);
+      const related = MINTCOM_KNOWLEDGE.find((item) => item.id === topic);
       if (!related) {
         continue;
       }
@@ -406,7 +406,7 @@ export function getRelatedSuggestions(
     }
   }
 
-  const sameCategory = PAYMINT_KNOWLEDGE.filter(
+  const sameCategory = MINTCOM_KNOWLEDGE.filter(
     (item) => item.category === entry.category && item.id !== entry.id,
   ).slice(0, 2);
 

@@ -89,8 +89,8 @@ export function SecurityVerificationModal({
                     warning: t('security.modes.deleteCustomer.warning', { name: targetName }),
                     buttonText: t('security.modes.deleteCustomer.button'),
                     icon: ShieldAlert,
-                    color: 'text-paymint-red',
-                    bg: 'bg-paymint-red/10',
+                    color: 'text-mintcom-red',
+                    bg: 'bg-mintcom-red/10',
                     endpoint: `/api/customers/${targetId}`,
                     method: 'delete'
                 };
@@ -100,8 +100,8 @@ export function SecurityVerificationModal({
                     warning: t('security.modes.cancel.warning', { name: targetName }),
                     buttonText: t('security.modes.cancel.button'),
                     icon: ShieldAlert,
-                    color: 'text-paymint-red',
-                    bg: 'bg-paymint-red/10',
+                    color: 'text-mintcom-red',
+                    bg: 'bg-mintcom-red/10',
                     endpoint: `/api/accounts/subscriptions/${targetId}/cancel`,
                     method: 'post'
                 };
@@ -122,8 +122,8 @@ export function SecurityVerificationModal({
                     warning: t('security.modes.deleteCard.warning', { name: targetName }),
                     buttonText: t('security.modes.deleteCard.button'),
                     icon: CreditCard,
-                    color: 'text-paymint-red',
-                    bg: 'bg-paymint-red/10',
+                    color: 'text-mintcom-red',
+                    bg: 'bg-mintcom-red/10',
                     endpoint: `/api/accounts/cards/${targetId}`,
                     method: 'delete'
                 };
@@ -144,8 +144,8 @@ export function SecurityVerificationModal({
                     warning: t('security.modes.deleteEmployee.warning', { name: targetName }),
                     buttonText: t('security.modes.deleteEmployee.button'),
                     icon: ShieldAlert,
-                    color: 'text-paymint-red',
-                    bg: 'bg-paymint-red/10',
+                    color: 'text-mintcom-red',
+                    bg: 'bg-mintcom-red/10',
                     endpoint: `/api/users/${targetId}`,
                     method: 'delete'
                 };
@@ -155,8 +155,8 @@ export function SecurityVerificationModal({
                     warning: t('security.modes.dissolveEstablishment.warning', { name: targetName }),
                     buttonText: t('security.modes.dissolveEstablishment.button'),
                     icon: Building2,
-                    color: 'text-paymint-red',
-                    bg: 'bg-paymint-red/10',
+                    color: 'text-mintcom-red',
+                    bg: 'bg-mintcom-red/10',
                     endpoint: `/api/establishments/${targetId}/dissolve`,
                     method: 'delete'
                 };
@@ -168,8 +168,8 @@ export function SecurityVerificationModal({
                         : t('security.modes.reactivate.warningRestart', { name: targetName, price: price?.toFixed(2) || '20.00' }),
                     buttonText: t('security.modes.reactivate.button'),
                     icon: ShieldCheck,
-                    color: 'text-paymint-green',
-                    bg: 'bg-paymint-green/10',
+                    color: 'text-mintcom-green',
+                    bg: 'bg-mintcom-green/10',
                     endpoint: `/api/accounts/subscriptions/${targetId}/resume`,
                     method: 'post'
                 };
@@ -179,8 +179,8 @@ export function SecurityVerificationModal({
                     warning: t('security.modes.reactivateAccount.warning'),
                     buttonText: t('security.modes.reactivateAccount.button'),
                     icon: ShieldCheck,
-                    color: 'text-paymint-green',
-                    bg: 'bg-paymint-green/10',
+                    color: 'text-mintcom-green',
+                    bg: 'bg-mintcom-green/10',
                     endpoint: `/api/accounts/me/restore`,
                     method: 'post'
                 };
@@ -245,7 +245,7 @@ export function SecurityVerificationModal({
             {isOpen && (
                 <div
                     dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                    className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 font-sans selection:bg-paymint-green selection:text-black"
+                    className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 font-sans selection:bg-mintcom-green selection:text-black"
                 >
                     {/* Backdrop */}
                     <motion.div
@@ -277,7 +277,7 @@ export function SecurityVerificationModal({
                             <div className="space-y-3">
                                 <button
                                     onClick={() => setShowCreatePassword(true)}
-                                    className="w-full py-4 bg-paymint-green text-black rounded-xl text-sm font-black shadow-lg shadow-paymint-green/20 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2"
+                                    className="w-full py-4 bg-mintcom-green text-black rounded-xl text-sm font-black shadow-lg shadow-mintcom-green/20 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2"
                                 >
                                     <Lock size={18} strokeWidth={3} />
                                     {t('security.createMasterKey', 'Create Master Access Key')}
@@ -341,10 +341,10 @@ export function SecurityVerificationModal({
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: 'auto' }}
                                                 exit={{ opacity: 0, height: 0 }}
-                                                className="p-4 rounded-xl bg-paymint-red/10 border border-paymint-red/20 flex items-center gap-3.5"
+                                                className="p-4 rounded-xl bg-mintcom-red/10 border border-mintcom-red/20 flex items-center gap-3.5"
                                             >
-                                                <ShieldAlert className="text-paymint-red shrink-0" size={20} />
-                                                <p className="text-[13px] font-black text-paymint-red">
+                                                <ShieldAlert className="text-mintcom-red shrink-0" size={20} />
+                                                <p className="text-[13px] font-black text-mintcom-red">
                                                     {errors.general || t('security.errorBanner')}
                                                 </p>
                                             </motion.div>
@@ -368,7 +368,7 @@ export function SecurityVerificationModal({
                                                 {formatInputLabel(t('security.identityLabel'), t('common.locale'))}
                                             </label>
                                             <div className="relative group">
-                                                <Mail className={`absolute left-5 top-1/2 -translate-y-1/2 ${errors.email || errors.general?.toLowerCase().includes('email') ? 'text-paymint-red' : 'text-gray-400 group-focus-within:text-paymint-green'} transition-colors`} size={18} />
+                                                <Mail className={`absolute left-5 top-1/2 -translate-y-1/2 ${errors.email || errors.general?.toLowerCase().includes('email') ? 'text-mintcom-red' : 'text-gray-400 group-focus-within:text-mintcom-green'} transition-colors`} size={18} />
                                                 <input maxLength={255}
                                                     type="email"
                                                     value={email}
@@ -377,12 +377,12 @@ export function SecurityVerificationModal({
                                                         if (errors.email || errors.general) setErrors({});
                                                     }}
                                                     placeholder={formatInputPlaceholder(t('auth.login.emailPlaceholder'), t('common.locale'))}
-                                                    className={`w-full pl-12 pr-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email || errors.general?.toLowerCase().includes('email') ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/5'} rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all shadow-sm`}
+                                                    className={`w-full pl-12 pr-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email || errors.general?.toLowerCase().includes('email') ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/5'} rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 transition-all shadow-sm`}
                                                     disabled={isSubmitting}
                                                 />
                                             </div>
                                             {(errors.email || (errors.general && errors.general.toLowerCase().includes('email'))) && (
-                                                <p className="px-1 text-[11px] font-black text-paymint-red flex items-center gap-1.5 animate-pulse">
+                                                <p className="px-1 text-[11px] font-black text-mintcom-red flex items-center gap-1.5 animate-pulse">
                                                     <X size={12} strokeWidth={3} />
                                                     {errors.email || errors.general}
                                                 </p>
@@ -399,7 +399,7 @@ export function SecurityVerificationModal({
                                                     <QuickInfo text={t('security.masterKeyInfo.description')} />
                                                 </div>
                                                 <div className="relative group">
-                                                    <Lock className={`absolute left-5 top-1/2 -translate-y-1/2 ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'text-paymint-red' : 'text-gray-400 group-focus-within:text-paymint-green'} transition-colors`} size={18} />
+                                                    <Lock className={`absolute left-5 top-1/2 -translate-y-1/2 ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'text-mintcom-red' : 'text-gray-400 group-focus-within:text-mintcom-green'} transition-colors`} size={18} />
                                                     <input maxLength={255}
                                                         type={showPassword ? 'text' : 'password'}
                                                         value={password}
@@ -410,7 +410,7 @@ export function SecurityVerificationModal({
                                                         required
                                                         autoFocus
                                                         disabled={isSubmitting}
-                                                        className={`w-full pl-12 pr-12 py-4 bg-gray-50 dark:bg-black/20 border ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 transition-all shadow-sm`}
+                                                        className={`w-full pl-12 pr-12 py-4 bg-gray-50 dark:bg-black/20 border ${errors.password || (errors.general && !errors.general.toLowerCase().includes('email')) ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 transition-all shadow-sm`}
                                                         placeholder={formatInputPlaceholder("********", t('common.locale'))}
                                                     />
                                                     <button
@@ -423,7 +423,7 @@ export function SecurityVerificationModal({
                                                     </button>
                                                 </div>
                                                 {(errors.password || (errors.general && !errors.general.toLowerCase().includes('email'))) && (
-                                                    <p className="px-1 text-[11px] font-black text-paymint-red flex items-center gap-1.5 animate-pulse">
+                                                    <p className="px-1 text-[11px] font-black text-mintcom-red flex items-center gap-1.5 animate-pulse">
                                                         <X size={12} strokeWidth={3} />
                                                         {errors.password || errors.general}
                                                     </p>
@@ -463,7 +463,7 @@ export function SecurityVerificationModal({
                                     type="submit"
                                     form="security-verify-form"
                                     disabled={isSubmitting || !password}
-                                    className={`flex-[1.5] py-4 rounded-xl text-white font-black text-[11px] tracking-[0.15em] uppercase hover:brightness-110 transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 active:scale-95 ${config.color === 'text-paymint-red' ? 'bg-paymint-red shadow-paymint-red/20' : 'bg-paymint-green text-black shadow-paymint-green/20'}`}
+                                    className={`flex-[1.5] py-4 rounded-xl text-white font-black text-[11px] tracking-[0.15em] uppercase hover:brightness-110 transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 active:scale-95 ${config.color === 'text-mintcom-red' ? 'bg-mintcom-red shadow-mintcom-red/20' : 'bg-mintcom-green text-black shadow-mintcom-green/20'}`}
                                 >
                                     {isSubmitting ? (
                                         <Loader2 className="animate-spin" size={20} strokeWidth={3} />

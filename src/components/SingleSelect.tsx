@@ -208,13 +208,13 @@ export function SingleSelect({
                                 type="button"
                                 onClick={() => handleSelect(null)}
                                 data-selected={!value}
-                                className={`w-full px-5 py-3.5 text-start flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${!value ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-900 dark:text-gray-200'
+                                className={`w-full px-5 py-3.5 text-start flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${!value ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-gray-900 dark:text-gray-200'
                                     }`}
                             >
                                 <span className={`text-sm ${!value ? 'font-normal' : 'font-normal'}`}>
                                     {effectiveAllLabel}
                                 </span>
-                                {!value && <Check size={16} className="text-paymint-green" />}
+                                {!value && <Check size={16} className="text-mintcom-green" />}
                             </button>
                         )}
 
@@ -231,23 +231,23 @@ export function SingleSelect({
                                         type="button"
                                         onClick={() => handleSelect(opt.value)}
                                         data-selected={isSelected}
-                                        className={`w-full px-5 py-3.5 text-start flex items-start justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${isSelected ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-900 dark:text-gray-200'
+                                        className={`w-full px-5 py-3.5 text-start flex items-start justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${isSelected ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-gray-900 dark:text-gray-200'
                                             }`}
                                     >
                                         <div className="flex items-center gap-3 min-w-0">
                                             {opt.icon && (
-                                                <div className={`p-2 rounded-lg shrink-0 ${isSelected ? 'bg-paymint-green/20' : 'bg-gray-100 dark:bg-white/5'}`}>
+                                                <div className={`p-2 rounded-lg shrink-0 ${isSelected ? 'bg-mintcom-green/20' : 'bg-gray-100 dark:bg-white/5'}`}>
                                                     {opt.icon}
                                                 </div>
                                             )}
                                             <div className="flex flex-col">
                                                 <span className={`text-sm ${isSelected ? 'font-normal' : 'font-normal'}`}>{opt.label}</span>
                                                 {opt.subtitle && (
-                                                    <span className={`text-xs mt-0.5 ${isSelected ? 'text-paymint-green/80' : 'text-gray-500 dark:text-gray-400'}`}>{opt.subtitle}</span>
+                                                    <span className={`text-xs mt-0.5 ${isSelected ? 'text-mintcom-green/80' : 'text-gray-500 dark:text-gray-400'}`}>{opt.subtitle}</span>
                                                 )}
                                             </div>
                                         </div>
-                                        {isSelected && <Check size={16} className="text-paymint-green shrink-0 mt-1" />}
+                                        {isSelected && <Check size={16} className="text-mintcom-green shrink-0 mt-1" />}
                                     </button>
                                 );
                             })
@@ -271,9 +271,9 @@ export function SingleSelect({
                 type="button"
                 onClick={toggleOpen}
                 className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-start flex items-center transition-[color,background-color,border-color,box-shadow,ring] outline-none shadow-sm
-                    ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
-                    ${isOpen || isFilterActive ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-paymint-green/5 dark:bg-paymint-green/10' : ''
-                    } ${buttonClassName} ${isOpen || isFilterActive ? '!bg-paymint-green/5 dark:!bg-paymint-green/10 !border-paymint-green !text-paymint-green !ring-[3px] !ring-paymint-green/10' : ''} ${buttonClassName.includes('justify-center') ? 'justify-center' : 'justify-between'}`}
+                    ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:border-mintcom-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
+                    ${isOpen || isFilterActive ? 'ring-[3px] ring-mintcom-green/10 border-mintcom-green bg-mintcom-green/5 dark:bg-mintcom-green/10' : ''
+                    } ${buttonClassName} ${isOpen || isFilterActive ? '!bg-mintcom-green/5 dark:!bg-mintcom-green/10 !border-mintcom-green !text-mintcom-green !ring-[3px] !ring-mintcom-green/10' : ''} ${buttonClassName.includes('justify-center') ? 'justify-center' : 'justify-between'}`}
             >
                 <div className={`flex items-center gap-2 overflow-hidden ${buttonClassName.includes('justify-center') ? 'flex-none' : 'flex-1'}`}>
                      {selectedOption?.icon && (
@@ -298,7 +298,7 @@ export function SingleSelect({
                 </div>
                 <ChevronDown
                     size={18}
-                    className={`transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''} ${isOpen || isFilterActive ? 'text-paymint-green' : 'text-gray-400'} ${buttonClassName.includes('justify-center') ? 'absolute right-5' : ''}`}
+                    className={`transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''} ${isOpen || isFilterActive ? 'text-mintcom-green' : 'text-gray-400'} ${buttonClassName.includes('justify-center') ? 'absolute right-5' : ''}`}
                 />
             </button>
 

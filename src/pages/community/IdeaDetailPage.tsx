@@ -85,7 +85,7 @@ export const IdeaDetailPage = () => {
                     },
                     {
                         id: 2,
-                        author: 'PayMint Team',
+                        author: 'Mintcom Team',
                         content: "Great suggestion, Alex! We've added this to our upcoming roadmap. We're currently exploring different color palettes to ensure high accessibility.",
                         createdAt: '5 days ago',
                         likes: 45,
@@ -150,14 +150,14 @@ export const IdeaDetailPage = () => {
         under_review: { label: t('community.status.under_review', 'Under Review'), color: 'text-gray-600', bg: 'bg-gray-100 dark:bg-gray-500/20', icon: Eye },
         planned: { label: t('community.status.planned', 'Planned'), color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: Clock },
         in_progress: { label: t('community.status.in_progress', 'In Progress'), color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Flame },
-        completed: { label: t('community.status.completed', 'Completed'), color: 'text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2 },
+        completed: { label: t('community.status.completed', 'Completed'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10 dark:bg-mintcom-green/', icon: CheckCircle2 },
         declined: { label: t('community.status.declined', 'Declined'), color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20', icon: Lock }
     };
 
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-PayMint-green border-t-transparent rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-Mintcom-green border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -179,7 +179,7 @@ export const IdeaDetailPage = () => {
                         {/* Back Link */}
                         <Link
                             to="/community/ideas"
-                            className="inline-flex items-center gap-2 text-gray-500 hover:text-PayMint-green font-bold mb-8 transition-colors group"
+                            className="inline-flex items-center gap-2 text-gray-500 hover:text-Mintcom-green font-bold mb-8 transition-colors group"
                         >
                             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                             {t('community.ideas.backToList', 'Back to Ideas')}
@@ -195,8 +195,8 @@ export const IdeaDetailPage = () => {
                                             <button
                                                 onClick={handleVote}
                                                 className={`w-16 h-20 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all ${idea.hasVoted
-                                                    ? 'bg-PayMint-green text-black scale-105 shadow-lg shadow-PayMint-green/20'
-                                                    : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-PayMint-green/20 hover:text-PayMint-green'
+                                                    ? 'bg-Mintcom-green text-black scale-105 shadow-lg shadow-Mintcom-green/20'
+                                                    : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-Mintcom-green/20 hover:text-Mintcom-green'
                                                     }`}
                                             >
                                                 <ChevronUp size={28} />
@@ -243,7 +243,7 @@ export const IdeaDetailPage = () => {
                                         </div>
 
                                         <div className="flex gap-2">
-                                            <button className="p-3 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-400 hover:text-PayMint-green">
+                                            <button className="p-3 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-400 hover:text-Mintcom-green">
                                                 <Share2 size={20} />
                                             </button>
                                             <button className="p-3 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-400">
@@ -256,12 +256,12 @@ export const IdeaDetailPage = () => {
                                 {/* Comments Section */}
                                 <section>
                                     <div className="flex items-center gap-3 mb-6">
-                                        <MessageSquare size={24} className="text-PayMint-green" />
+                                        <MessageSquare size={24} className="text-Mintcom-green" />
                                         <h2 className="text-2xl font-black">{idea.commentsCount} {t('community.labels.comments', 'Comments')}</h2>
                                     </div>
 
                                     {/* Post Comment */}
-                                    <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-6 mb-10 shadow-sm transition-all focus-within:border-PayMint-green/50">
+                                    <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-6 mb-10 shadow-sm transition-all focus-within:border-Mintcom-green/50">
                                         <form onSubmit={handlePostComment} className="relative">
                                             <textarea maxLength={2000}
                                                 value={commentText}
@@ -277,7 +277,7 @@ export const IdeaDetailPage = () => {
                                                 </p>
                                                 <button
                                                     type="submit"
-                                                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-PayMint-green text-black rounded-xl font-black hover:opacity-90 transition-all disabled:opacity-50"
+                                                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-Mintcom-green text-black rounded-xl font-black hover:opacity-90 transition-all disabled:opacity-50"
                                                     disabled={!isAuthenticated || !commentText.trim()}
                                                 >
                                                     <Send size={18} />
@@ -291,7 +291,7 @@ export const IdeaDetailPage = () => {
                                                     <button
                                                         type="button"
                                                         onClick={() => navigate('/login')}
-                                                        className="text-xs font-black text-PayMint-green hover:underline uppercase tracking-widest"
+                                                        className="text-xs font-black text-Mintcom-green hover:underline uppercase tracking-widest"
                                                     >
                                                         Sign in to join the conversation
                                                     </button>
@@ -308,20 +308,20 @@ export const IdeaDetailPage = () => {
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 className={`p-6 rounded-3xl border ${comment.isOfficial
-                                                    ? 'bg-PayMint-green/[0.03] border-PayMint-green/20'
+                                                    ? 'bg-Mintcom-green/[0.03] border-Mintcom-green/20'
                                                     : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/10'
                                                     }`}
                                             >
                                                 <div className="flex items-center justify-between mb-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${comment.isOfficial ? 'bg-PayMint-green text-black' : 'bg-gray-100 dark:bg-white/10'}`}>
+                                                        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${comment.isOfficial ? 'bg-Mintcom-green text-black' : 'bg-gray-100 dark:bg-white/10'}`}>
                                                             <User size={16} />
                                                         </div>
                                                         <div>
                                                             <div className="flex items-center gap-2">
                                                                 <span className="font-black text-sm">{comment.author}</span>
                                                                 {comment.isOfficial && (
-                                                                    <span className="px-1.5 py-0.5 bg-PayMint-green/20 text-PayMint-green text-[10px] font-black uppercase tracking-widest rounded-md">
+                                                                    <span className="px-1.5 py-0.5 bg-Mintcom-green/20 text-Mintcom-green text-[10px] font-black uppercase tracking-widest rounded-md">
                                                                         Official
                                                                     </span>
                                                                 )}
@@ -329,7 +329,7 @@ export const IdeaDetailPage = () => {
                                                             <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">{comment.createdAt}</span>
                                                         </div>
                                                     </div>
-                                                    <button className="flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-PayMint-green transition-colors">
+                                                    <button className="flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-Mintcom-green transition-colors">
                                                         <Heart size={14} />
                                                         {comment.likes}
                                                     </button>
@@ -382,7 +382,7 @@ export const IdeaDetailPage = () => {
                                         <button
                                             onClick={handleVote}
                                             className={`w-full mt-8 py-4 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-2 ${idea.hasVoted
-                                                ? 'bg-PayMint-green text-black hover:opacity-90'
+                                                ? 'bg-Mintcom-green text-black hover:opacity-90'
                                                 : 'bg-gray-900 dark:bg-white text-white dark:text-black hover:scale-[1.02]'
                                                 }`}
                                         >
@@ -397,7 +397,7 @@ export const IdeaDetailPage = () => {
                                         <div className="space-y-4">
                                             {[1, 2].map(i => (
                                                 <Link key={i} to="/community/ideas" className="block group">
-                                                    <p className="text-sm font-bold group-hover:text-PayMint-green transition-colors mb-2 line-clamp-2">
+                                                    <p className="text-sm font-bold group-hover:text-Mintcom-green transition-colors mb-2 line-clamp-2">
                                                         {i === 1 ? 'Customer-facing display support' : 'QR code ordering for tables'}
                                                     </p>
                                                     <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-gray-400">

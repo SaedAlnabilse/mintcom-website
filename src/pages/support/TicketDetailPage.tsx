@@ -230,7 +230,7 @@ export const TicketDetailPage = () => {
   const statusConfig: Record<TicketStatus, { label: string; color: string; bg: string; icon: React.ElementType; dotColor: string }> = {
     open: { label: t('support.tickets.status.open'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: AlertCircle, dotColor: 'bg-blue-500' },
     in_progress: { label: t('support.tickets.status.inProgress'), color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/15', icon: Loader2, dotColor: 'bg-amber-500' },
-    resolved: { label: t('support.tickets.status.resolved'), color: 'text-paymint-green dark:text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2, dotColor: 'bg-paymint-green' },
+    resolved: { label: t('support.tickets.status.resolved'), color: 'text-mintcom-green dark:text-mintcom-green', bg: 'bg-mintcom-green/10 dark:bg-mintcom-green/', icon: CheckCircle2, dotColor: 'bg-mintcom-green' },
     closed: { label: t('support.tickets.status.closed'), color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-500/15', icon: XCircle, dotColor: 'bg-gray-400' },
   };
 
@@ -295,7 +295,7 @@ export const TicketDetailPage = () => {
               </p>
               <Link
                 to="/support/tickets"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
               >
                 <ArrowLeft size={18} />
                 Back to Tickets
@@ -334,7 +334,7 @@ export const TicketDetailPage = () => {
                 className="flex items-center gap-1.5 text-sm font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors font-mono"
               >
                 {ticket.id}
-                {copiedId ? <Check size={14} className="text-paymint-green" /> : <Copy size={14} />}
+                {copiedId ? <Check size={14} className="text-mintcom-green" /> : <Copy size={14} />}
               </button>
             </div>
 
@@ -417,13 +417,13 @@ export const TicketDetailPage = () => {
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${message.sender === 'user'
                       ? 'bg-gray-200 dark:bg-white/10'
-                      : 'bg-paymint-green/20'
+                      : 'bg-mintcom-green/20'
                       }`}
                   >
                     {message.sender === 'user' ? (
                       <User size={18} className="text-gray-600 dark:text-gray-400" />
                     ) : (
-                      <Headphones size={18} className="text-paymint-green" />
+                      <Headphones size={18} className="text-mintcom-green" />
                     )}
                   </div>
 
@@ -437,7 +437,7 @@ export const TicketDetailPage = () => {
                     <div
                       className={`p-4 rounded-2xl ${message.sender === 'user'
                         ? 'bg-gray-50 dark:bg-white/5'
-                        : 'bg-paymint-green/5 border border-paymint-green/10'
+                        : 'bg-mintcom-green/5 border border-mintcom-green/10'
                         }`}
                     >
                       <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
@@ -456,7 +456,7 @@ export const TicketDetailPage = () => {
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   download={!isImage ? att.name : undefined}
-                                  className="inline-flex items-center gap-2 px-3 py-2 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-medium hover:border-paymint-green/30 transition-colors"
+                                  className="inline-flex items-center gap-2 px-3 py-2 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-medium hover:border-mintcom-green/30 transition-colors"
                                 >
                                   {isImage ? <ImageIcon size={14} /> : <Download size={14} />}
                                   <span className="truncate max-w-[150px]">{att.name}</span>
@@ -483,7 +483,7 @@ export const TicketDetailPage = () => {
                   </p>
                   <button
                     onClick={() => handleChangeStatus('open')}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] text-sm"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] text-sm"
                   >
                     Reopen Ticket
                   </button>
@@ -497,7 +497,7 @@ export const TicketDetailPage = () => {
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder={formatInputPlaceholder(t('support.tickets.replyPlaceholder'), t('common.locale'))}
                       rows={4}
-                      className="w-full p-4 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none"
+                      className="w-full p-4 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all resize-none"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                           handleSendMessage(e);
@@ -511,7 +511,7 @@ export const TicketDetailPage = () => {
                     <button
                       type="submit"
                       disabled={!newMessage.trim() || isSending}
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] disabled:opacity-50 shadow-lg shadow-paymint-green/20"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] disabled:opacity-50 shadow-lg shadow-mintcom-green/20"
                     >
                       {isSending ? (
                         <Loader2 size={18} className="animate-spin" />

@@ -39,14 +39,14 @@ export const RealtimeStatusIndicator: React.FC = () => {
         return {
           icon: (
             <div className="relative flex h-2 w-2 mx-0.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mintcom-green opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-mintcom-green"></span>
             </div>
           ),
           text: t('common.status.live'),
-          color: 'text-paymint-green',
-          bgColor: 'bg-paymint-green/10',
-          borderColor: 'border-paymint-green/20',
+          color: 'text-mintcom-green',
+          bgColor: 'bg-mintcom-green/10',
+          borderColor: 'border-mintcom-green/20',
         };
       case 'connecting':
         return {

@@ -32,7 +32,7 @@ export const SupportPage = () => {
     { id: 'getting-started', icon: Zap, title: t('support.categories.gettingStarted'), description: t('support.categories.gettingStartedDesc'), articles: 8, color: 'bg-blue-500' },
     { id: 'billing', icon: CreditCard, title: t('support.categories.billing'), description: t('support.categories.billingDesc'), articles: 8, color: 'bg-purple-500' },
     { id: 'technical', icon: Settings, title: t('support.categories.technical'), description: t('support.categories.technicalDesc'), articles: 10, color: 'bg-orange-500' },
-    { id: 'features', icon: BookOpen, title: t('support.categories.features'), description: t('support.categories.featuresDesc'), articles: 10, color: 'bg-paymint-green' },
+    { id: 'features', icon: BookOpen, title: t('support.categories.features'), description: t('support.categories.featuresDesc'), articles: 10, color: 'bg-mintcom-green' },
   ];
 
   const allArticles = [
@@ -87,7 +87,7 @@ export const SupportPage = () => {
           <motion.div
             animate={{ scale: [1, 1.1, 1], opacity: [0.35, 0.55, 0.35] }}
             transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-paymint-green/10 blur-[140px]"
+            className="absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-mintcom-green/10 blur-[140px]"
           />
           <div className="absolute bottom-0 right-[10%] h-[300px] w-[300px] rounded-full bg-emerald-400/5 blur-[100px]" />
           {/* Faint grid */}
@@ -97,7 +97,7 @@ export const SupportPage = () => {
             style={{
               backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
               backgroundSize: '48px 48px',
-              color: '#7CC39F',
+              color: '#7dc6a2',
               maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
               WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
             }}
@@ -112,14 +112,14 @@ export const SupportPage = () => {
             className="mx-auto max-w-3xl text-center"
           >
             {/* Badge */}
-            <div className="mb-6 inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-paymint-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
               <HelpCircle size={12} />
               <span>{t('support.hero.badge')}</span>
             </div>
 
             <h1 className="font-magilio text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-[72px]">
               {t('support.hero.titlePart1')}{' '}
-              <span className="bg-gradient-to-r from-paymint-green via-emerald-400 to-paymint-green bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-mintcom-green via-emerald-400 to-mintcom-green bg-clip-text text-transparent">
                 {t('support.hero.titleHighlight')}
               </span>{' '}
               {t('support.hero.titlePart2')}
@@ -133,7 +133,7 @@ export const SupportPage = () => {
             <div className="relative mx-auto mt-10 max-w-2xl" ref={searchContainerRef}>
               <Search
                 size={20}
-                className={`absolute start-5 top-1/2 -translate-y-1/2 transition-colors ${isSearchFocused ? 'text-paymint-green' : 'text-gray-400'}`}
+                className={`absolute start-5 top-1/2 -translate-y-1/2 transition-colors ${isSearchFocused ? 'text-mintcom-green' : 'text-gray-400'}`}
               />
               <input
                 maxLength={255}
@@ -142,7 +142,7 @@ export const SupportPage = () => {
                 onFocus={() => setIsSearchFocused(true)}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={formatInputPlaceholder(t('support.hero.searchPlaceholder'), t('common.locale'))}
-                className="w-full rounded-2xl border border-gray-200/80 bg-white/90 py-5 pe-14 ps-14 text-base font-medium shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] backdrop-blur-xl transition-all focus:border-paymint-green/40 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500"
+                className="w-full rounded-2xl border border-gray-200/80 bg-white/90 py-5 pe-14 ps-14 text-base font-medium shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] backdrop-blur-xl transition-all focus:border-mintcom-green/40 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500"
               />
               {searchQuery && (
                 <button
@@ -174,16 +174,16 @@ export const SupportPage = () => {
                             className="group flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
                             onClick={() => setIsSearchFocused(false)}
                           >
-                            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-paymint-green/10 text-paymint-green transition-transform group-hover:scale-110">
+                            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 text-mintcom-green transition-transform group-hover:scale-110">
                               <BookOpen size={15} />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="truncate font-bold text-gray-900 transition-colors group-hover:text-paymint-green dark:text-white">
+                              <p className="truncate font-bold text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
                                 {article.title}
                               </p>
                               <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{article.category}</p>
                             </div>
-                            <ChevronRight size={15} className="flex-shrink-0 text-gray-300 transition-all group-hover:translate-x-0.5 group-hover:text-paymint-green dark:text-gray-600" />
+                            <ChevronRight size={15} className="flex-shrink-0 text-gray-300 transition-all group-hover:translate-x-0.5 group-hover:text-mintcom-green dark:text-gray-600" />
                           </Link>
                         ))}
                       </div>
@@ -204,7 +204,7 @@ export const SupportPage = () => {
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
                 to="/support/tickets/new"
-                className="group inline-flex items-center gap-2 rounded-xl bg-paymint-green px-5 py-2.5 text-sm font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
+                className="group inline-flex items-center gap-2 rounded-xl bg-mintcom-green px-5 py-2.5 text-sm font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
               >
                 <Ticket size={15} />
                 {t('support.quickLinks.submitTicket')}
@@ -249,14 +249,14 @@ export const SupportPage = () => {
               >
                 <Link
                   to={`/support/category/${category.id}`}
-                  className="group flex h-full flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white p-8 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] transition-all duration-500 hover:border-paymint-green/30 hover:shadow-[0_10px_30px_-10px_rgba(124,195,159,0.2)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none"
+                  className="group flex h-full flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white p-8 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] transition-all duration-500 hover:border-mintcom-green/30 hover:shadow-[0_10px_30px_-10px_rgba(124,195,159,0.2)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none"
                 >
                   {/* Icon */}
                   <div className={`mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl ${category.color} text-white shadow-[0_8px_20px_-8px_rgba(0,0,0,0.2)] transition-all duration-500 group-hover:scale-110 group-hover:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.3)]`}>
                     <category.icon size={24} />
                   </div>
 
-                  <h3 className="font-magilio mb-2 text-xl font-bold tracking-tight text-gray-900 transition-colors group-hover:text-paymint-green dark:text-white">
+                  <h3 className="font-magilio mb-2 text-xl font-bold tracking-tight text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
                     {category.title}
                   </h3>
                   <p className="flex-1 text-sm font-light leading-relaxed text-gray-500 dark:text-gray-400">
@@ -267,7 +267,7 @@ export const SupportPage = () => {
                     <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                       {t('support.articles.count', { count: category.articles })}
                     </span>
-                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 text-gray-400 transition-all group-hover:bg-paymint-green group-hover:text-black dark:bg-white/5 dark:group-hover:bg-paymint-green">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 text-gray-400 transition-all group-hover:bg-mintcom-green group-hover:text-black dark:bg-white/5 dark:group-hover:bg-mintcom-green">
                       <ChevronRight size={15} className={`transition-transform group-hover:translate-x-0.5 ${isRtl ? 'rotate-180' : ''}`} />
                     </span>
                   </div>
@@ -285,14 +285,14 @@ export const SupportPage = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-3xl border border-paymint-green/20 bg-gradient-to-br from-paymint-green/8 via-white to-white p-8 dark:from-paymint-green/10 dark:via-transparent dark:to-transparent md:p-12"
+            className="relative overflow-hidden rounded-3xl border border-mintcom-green/20 bg-gradient-to-br from-mintcom-green/8 via-white to-white p-8 dark:from-mintcom-green/10 dark:via-transparent dark:to-transparent md:p-12"
           >
             {/* Decorative glow */}
-            <div aria-hidden className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-paymint-green/15 blur-3xl" />
+            <div aria-hidden className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-mintcom-green/15 blur-3xl" />
 
             <div className="relative flex flex-col items-center justify-between gap-10 lg:flex-row">
               <div className="flex-1 text-center lg:text-start">
-                <div className="mb-4 inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-paymint-green backdrop-blur-xl dark:bg-white/5">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-mintcom-green backdrop-blur-xl dark:bg-white/5">
                   <FileText size={12} />
                   {t('support.manual.subtitle')}
                 </div>
@@ -312,9 +312,9 @@ export const SupportPage = () => {
               </div>
 
               <a
-                href="/docs/paymint-user-manual.pdf"
+                href="/docs/mintcom-user-manual.pdf"
                 download
-                className="group inline-flex items-center gap-3 rounded-2xl bg-paymint-green px-8 py-5 text-base font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all hover:shadow-[0_12px_32px_-8px_rgba(124,195,159,0.7)] hover:-translate-y-1"
+                className="group inline-flex items-center gap-3 rounded-2xl bg-mintcom-green px-8 py-5 text-base font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all hover:shadow-[0_12px_32px_-8px_rgba(124,195,159,0.7)] hover:-translate-y-1"
               >
                 <Download size={20} />
                 {t('support.manual.downloadButton')}
@@ -334,7 +334,7 @@ export const SupportPage = () => {
               </h2>
               <Link
                 to="/support/articles"
-                className="group inline-flex items-center gap-1.5 text-sm font-bold text-paymint-green hover:underline"
+                className="group inline-flex items-center gap-1.5 text-sm font-bold text-mintcom-green hover:underline"
               >
                 {t('support.articles.viewAll')}
                 <ArrowRight size={14} className={`transition-transform ${isRtl ? 'rotate-180 group-hover:-translate-x-0.5' : 'group-hover:translate-x-0.5'}`} />
@@ -352,14 +352,14 @@ export const SupportPage = () => {
                 >
                   <Link
                     to={`/support/article/${article.id}`}
-                    className="group flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.04)] transition-all duration-300 hover:border-paymint-green/30 hover:shadow-[0_6px_20px_-8px_rgba(124,195,159,0.2)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none"
+                    className="group flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.04)] transition-all duration-300 hover:border-mintcom-green/30 hover:shadow-[0_6px_20px_-8px_rgba(124,195,159,0.2)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gray-100 transition-all group-hover:bg-paymint-green/10 dark:bg-white/5">
-                        <BookOpen size={17} className="text-gray-500 transition-colors group-hover:text-paymint-green dark:text-gray-400" />
+                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gray-100 transition-all group-hover:bg-mintcom-green/10 dark:bg-white/5">
+                        <BookOpen size={17} className="text-gray-500 transition-colors group-hover:text-mintcom-green dark:text-gray-400" />
                       </div>
                       <div>
-                        <p className="font-bold text-gray-900 transition-colors group-hover:text-paymint-green dark:text-white">
+                        <p className="font-bold text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
                           {article.title}
                         </p>
                         <p className="mt-0.5 text-xs font-medium text-gray-500 dark:text-gray-400">{article.category}</p>
@@ -374,7 +374,7 @@ export const SupportPage = () => {
                           <Eye size={12} /> {article.views}
                         </span>
                       </div>
-                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 text-gray-400 transition-all group-hover:bg-paymint-green group-hover:text-black dark:bg-white/5 dark:group-hover:bg-paymint-green">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 text-gray-400 transition-all group-hover:bg-mintcom-green group-hover:text-black dark:bg-white/5 dark:group-hover:bg-mintcom-green">
                         <ChevronRight size={14} className={isRtl ? 'rotate-180' : ''} />
                       </span>
                     </div>

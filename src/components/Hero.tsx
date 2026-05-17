@@ -8,11 +8,11 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
   return (
     <span className={className}>
       {text.split(' ').map((word, i) => {
-        const isPaymint = word.toLowerCase().includes('paymint');
+        const isMintcom = word.toLowerCase().includes('mintcom');
         return (
           <span
             key={i}
-            className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
+            className={isMintcom ? 'text-mintcom-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-mintcom-green')}
           >
             {word}{' '}
           </span>
@@ -47,7 +47,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             y: [0, 30, 0]
           }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-paymint-green/20 rounded-full blur-[120px]"
+          className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-mintcom-green/20 rounded-full blur-[120px]"
         />
         <motion.div
           animate={{
@@ -57,7 +57,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             y: [0, -50, 0]
           }}
           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-paymint-green/10 rounded-full blur-[100px]"
+          className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-mintcom-green/10 rounded-full blur-[100px]"
         />
       </div>
 
@@ -75,7 +75,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-white/60 dark:bg-white/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-paymint-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl mb-6"
+              className="inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-white/60 dark:bg-white/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl mb-6"
             >
               <Zap size={12} fill="currentColor" />
               <span>
@@ -97,7 +97,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCtaClick}
-                className="bg-paymint-green text-black px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 group"
+                className="bg-mintcom-green text-black px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 group"
               >
                 {isAuthenticated ? t('nav.dashboard', 'Go to Dashboard') : t('landing.hero.cta')}
                 <ArrowRight size={20} className={`transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} />
@@ -108,7 +108,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                 onClick={() => setIsVideoOpen(true)}
                 className="bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-3"
               >
-                <Play size={20} fill="currentColor" className="text-paymint-green" />
+                <Play size={20} fill="currentColor" className="text-mintcom-green" />
                 {t('landing.hero.watchVideo')}
               </motion.button>
             </div>
@@ -126,9 +126,9 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             <div className="relative w-full aspect-square sm:aspect-[4/3] flex items-center justify-center">
               
               {/* Decorative Background Glow */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-paymint-green/20 via-transparent to-paymint-green/5 rounded-full blur-3xl -z-20" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-mintcom-green/20 via-transparent to-mintcom-green/5 rounded-full blur-3xl -z-20" />
 
-              {/* Generated PayMint POS System Image - mix-blend-multiply removes white bg in all modes */}
+              {/* Generated Mintcom POS System Image - mix-blend-multiply removes white bg in all modes */}
               <motion.div
                 className="relative w-[140%] sm:w-[135%] max-w-[1100px] scale-110 origin-center lg:origin-left"
                 style={{ isolation: 'auto' }}
@@ -137,8 +137,8 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               >
                 <div className="bg-transparent rounded-2xl overflow-hidden">
                   <img 
-                    src="/paymint-pos-hero.png" 
-                    alt="PayMint All-in-One POS System" 
+                    src="/mintcom-pos-hero.png" 
+                    alt="Mintcom All-in-One POS System" 
                     className="w-full h-auto object-contain"
                   />
                 </div>

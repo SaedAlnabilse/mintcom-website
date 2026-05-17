@@ -3,7 +3,7 @@ const PLACEHOLDER_DOWNLOAD_PATTERNS = [
   /example\./i,
   /YOUR_/i,
   /placeholder/i,
-  /paymint-android\.apk\.apps\.googleusercontent\.com/i,
+  /mintcom-android\.apk\.apps\.googleusercontent\.com/i,
 ];
 
 const isSafeDownloadUrl = (value?: string): value is string => {

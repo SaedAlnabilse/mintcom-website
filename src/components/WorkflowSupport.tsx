@@ -42,24 +42,24 @@ const WorkflowItem = ({
         ease: [0.22, 1, 0.36, 1],
       }}
       whileHover={{ x: 4 }}
-      className="group relative flex items-start gap-5 rounded-2xl border border-transparent p-5 transition-all duration-300 hover:border-paymint-green/20 hover:bg-white/60 dark:hover:bg-white/[0.04]"
+      className="group relative flex items-start gap-5 rounded-2xl border border-transparent p-5 transition-all duration-300 hover:border-mintcom-green/20 hover:bg-white/60 dark:hover:bg-white/[0.04]"
     >
       {/* Icon tile */}
       <div className="relative flex-shrink-0">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-paymint-green/15 to-paymint-green/5 ring-1 ring-paymint-green/25 transition-all duration-500 group-hover:from-paymint-green group-hover:to-emerald-400 group-hover:ring-paymint-green/60 group-hover:shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)]">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-mintcom-green/15 to-mintcom-green/5 ring-1 ring-mintcom-green/25 transition-all duration-500 group-hover:from-mintcom-green group-hover:to-emerald-400 group-hover:ring-mintcom-green/60 group-hover:shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)]">
           <Icon
             size={20}
-            className="text-paymint-green transition-colors duration-500 group-hover:text-black"
+            className="text-mintcom-green transition-colors duration-500 group-hover:text-black"
           />
         </div>
         {/* Step number */}
-        <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-black text-gray-900 shadow ring-1 ring-gray-200 dark:bg-paymint-dark dark:text-white dark:ring-white/10">
+        <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-black text-gray-900 shadow ring-1 ring-gray-200 dark:bg-mintcom-dark dark:text-white dark:ring-white/10">
           {String(index + 1).padStart(2, '0')}
         </span>
       </div>
 
       <div className="min-w-0 flex-1">
-        <h3 className="font-magilio mb-1.5 text-[17px] font-bold leading-tight tracking-tight text-gray-900 transition-colors group-hover:text-paymint-green dark:text-white">
+        <h3 className="font-magilio mb-1.5 text-[17px] font-bold leading-tight tracking-tight text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
           {feature.title}
         </h3>
         <p className="text-[14px] font-light leading-relaxed text-gray-600 dark:text-gray-400">
@@ -119,7 +119,7 @@ export const WorkflowSupport = () => {
     >
       {/* Background ambient */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 left-[10%] h-[400px] w-[400px] rounded-full bg-paymint-green/8 blur-[120px]" />
+        <div className="absolute -top-20 left-[10%] h-[400px] w-[400px] rounded-full bg-mintcom-green/8 blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-5%] h-[500px] w-[500px] rounded-full bg-emerald-400/5 blur-[120px]" />
       </div>
 
@@ -133,7 +133,7 @@ export const WorkflowSupport = () => {
             {/* Halo */}
             <div
               aria-hidden
-              className="absolute left-1/2 top-1/2 -z-10 h-[110%] w-[110%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-gradient-to-tr from-paymint-green/25 via-transparent to-paymint-green/10 blur-3xl"
+              className="absolute left-1/2 top-1/2 -z-10 h-[110%] w-[110%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-gradient-to-tr from-mintcom-green/25 via-transparent to-mintcom-green/10 blur-3xl"
             />
 
             <motion.div
@@ -155,7 +155,7 @@ export const WorkflowSupport = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="absolute left-2 top-12 hidden items-center gap-2 rounded-full border border-white/60 bg-white/85 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-paymint-green shadow-lg backdrop-blur-xl sm:inline-flex dark:border-white/10 dark:bg-white/5"
+              className="absolute left-2 top-12 hidden items-center gap-2 rounded-full border border-white/60 bg-white/85 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-lg backdrop-blur-xl sm:inline-flex dark:border-white/10 dark:bg-white/5"
             >
               <Layers size={12} />
               <span>{t('landing.workflow.titleHighlight')}</span>
@@ -175,7 +175,7 @@ export const WorkflowSupport = () => {
                 <span className="text-gray-900 dark:text-white">
                   {t('landing.workflow.title')}{' '}
                 </span>
-                <span className="bg-gradient-to-r from-paymint-green via-emerald-400 to-paymint-green bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-mintcom-green via-emerald-400 to-mintcom-green bg-clip-text text-transparent">
                   {t('landing.workflow.titleHighlight')}
                 </span>
               </h2>

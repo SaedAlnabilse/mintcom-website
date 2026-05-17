@@ -455,7 +455,7 @@ export function CustomRoleFormModal({
       setErrors(newErrors);
       // Scroll to the first field that has an error
       setTimeout(() => {
-        const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red, .ring-paymint-red\\/20');
+        const firstErrorField = scrollRef.current?.querySelector('.border-mintcom-red, .ring-mintcom-red\\/20');
         if (firstErrorField) {
           firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
@@ -544,9 +544,9 @@ export function CustomRoleFormModal({
                     value={name}
                     onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                     placeholder={formatInputPlaceholder(t('roles.form.roleNamePlaceholder'), t('common.locale'))}
-                    className={`w-full bg-transparent border-b-2 ${errors.name ? 'border-paymint-red' : 'border-gray-200 dark:border-gray-700'} py-2 text-lg font-bold text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:border-paymint-green transition-colors`}
+                    className={`w-full bg-transparent border-b-2 ${errors.name ? 'border-mintcom-red' : 'border-gray-200 dark:border-gray-700'} py-2 text-lg font-bold text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:border-mintcom-green transition-colors`}
                   />
-                  {errors.name && <p className="absolute -bottom-5 left-0 text-xs font-bold text-paymint-red">{errors.name}</p>}
+                  {errors.name && <p className="absolute -bottom-5 left-0 text-xs font-bold text-mintcom-red">{errors.name}</p>}
                 </div>
 
                 {/* Base Role Selection */}
@@ -555,7 +555,7 @@ export function CustomRoleFormModal({
                   <select
                     value={baseRole}
                     onChange={(e) => setBaseRole(e.target.value as CustomRole['baseRole'])}
-                    className="w-full bg-transparent border-b-2 border-gray-200 dark:border-gray-700 py-2 text-lg font-bold text-gray-900 dark:text-white focus:outline-none focus:border-paymint-green transition-colors appearance-none cursor-pointer"
+                    className="w-full bg-transparent border-b-2 border-gray-200 dark:border-gray-700 py-2 text-lg font-bold text-gray-900 dark:text-white focus:outline-none focus:border-mintcom-green transition-colors appearance-none cursor-pointer"
                   >
                     <option value="USER" className="dark:bg-[#1E293B]">{t('staff.roles.user')}</option>
                     <option value="CASHIER" className="dark:bg-[#1E293B]">{t('staff.roles.cashier')}</option>
@@ -582,7 +582,7 @@ export function CustomRoleFormModal({
                   </div>
                   <button
                     type="button"
-                    className={`w-14 h-8 rounded-full transition-all duration-300 relative ${posAccess ? 'bg-paymint-green shadow-inner' : 'bg-gray-300 dark:bg-gray-600'}`}
+                    className={`w-14 h-8 rounded-full transition-all duration-300 relative ${posAccess ? 'bg-mintcom-green shadow-inner' : 'bg-gray-300 dark:bg-gray-600'}`}
                   >
                     <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-sm transition-all duration-300 ${posAccess ? 'left-[calc(100%-1.75rem)]' : 'left-1'}`} />
                   </button>
@@ -598,12 +598,12 @@ export function CustomRoleFormModal({
                     >
                       <div className="p-5 space-y-6">
                         {/* POS Defaults Info */}
-                        <div className="px-3 py-2.5 rounded-xl bg-paymint-green/5 border border-paymint-green/10 flex items-start gap-2.5">
-                          <div className="w-5 h-5 rounded-full bg-paymint-green/10 text-paymint-green flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <div className="px-3 py-2.5 rounded-xl bg-mintcom-green/5 border border-mintcom-green/10 flex items-start gap-2.5">
+                          <div className="w-5 h-5 rounded-full bg-mintcom-green/10 text-mintcom-green flex items-center justify-center flex-shrink-0 mt-0.5">
                             <Check size={12} strokeWidth={3} />
                           </div>
                           <div>
-                            <p className="text-[11px] font-black text-paymint-green uppercase tracking-wider mb-0.5">{t('roles.form.includedByDefault')}</p>
+                            <p className="text-[11px] font-black text-mintcom-green uppercase tracking-wider mb-0.5">{t('roles.form.includedByDefault')}</p>
                             <p className="text-xs text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
                               {t('roles.pos.includedDefaults')}
                             </p>
@@ -619,7 +619,7 @@ export function CustomRoleFormModal({
                               onClick={() => togglePermission(perm.id)}
                             >
                               <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${permissions.includes(perm.id)
-                                ? 'bg-paymint-green border-paymint-green shadow-sm'
+                                ? 'bg-mintcom-green border-mintcom-green shadow-sm'
                                 : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
                                 }`}>
                                 {permissions.includes(perm.id) && <Check size={14} className="text-white" />}
@@ -643,7 +643,7 @@ export function CustomRoleFormModal({
                               className="flex items-center justify-between py-2 cursor-pointer group"
                               onClick={() => setShowDiscountsDropdown(!showDiscountsDropdown)}
                             >
-                              <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{t('roles.form.allowedDiscounts')}</p>
+                              <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">{t('roles.form.allowedDiscounts')}</p>
                               <div className="flex items-center gap-2">
                                 <span className="text-xs font-medium text-gray-500 bg-white dark:bg-white/5 px-2 py-1 rounded-md border border-gray-200 dark:border-white/10">
                                   {allDiscountsSelected ? t('roles.form.allAllowed') : t('roles.form.selectedCount', { count: allowedDiscounts.length })}
@@ -668,7 +668,7 @@ export function CustomRoleFormModal({
                                     }}
                                   >
                                     <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${allDiscountsSelected
-                                      ? 'bg-paymint-green border-paymint-green shadow-sm'
+                                      ? 'bg-mintcom-green border-mintcom-green shadow-sm'
                                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
                                       }`}>
                                       {allDiscountsSelected && <Check size={14} className="text-white" />}
@@ -683,7 +683,7 @@ export function CustomRoleFormModal({
                                       onClick={() => toggleDiscount(discount.id)}
                                     >
                                       <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${allowedDiscounts.includes(discount.id)
-                                        ? 'bg-paymint-green border-paymint-green shadow-sm'
+                                        ? 'bg-mintcom-green border-mintcom-green shadow-sm'
                                         : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
                                         }`}>
                                         {allowedDiscounts.includes(discount.id) && <Check size={14} className="text-white" />}
@@ -729,7 +729,7 @@ export function CustomRoleFormModal({
                   </div>
                   <button
                     type="button"
-                    className={`w-14 h-8 rounded-full transition-all duration-300 relative ${backofficeAccess ? 'bg-paymint-green shadow-inner' : 'bg-gray-300 dark:bg-gray-600'}`}
+                    className={`w-14 h-8 rounded-full transition-all duration-300 relative ${backofficeAccess ? 'bg-mintcom-green shadow-inner' : 'bg-gray-300 dark:bg-gray-600'}`}
                   >
                     <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-sm transition-all duration-300 ${backofficeAccess ? 'left-[calc(100%-1.75rem)]' : 'left-1'}`} />
                   </button>
@@ -745,12 +745,12 @@ export function CustomRoleFormModal({
                     >
                       <div className="p-5 space-y-3">
                         {/* Backoffice Defaults Info */}
-                        <div className="px-3 py-2.5 rounded-xl bg-paymint-green/5 border border-paymint-green/10 flex items-start gap-2.5 mb-4">
-                          <div className="w-5 h-5 rounded-full bg-paymint-green/10 text-paymint-green flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <div className="px-3 py-2.5 rounded-xl bg-mintcom-green/5 border border-mintcom-green/10 flex items-start gap-2.5 mb-4">
+                          <div className="w-5 h-5 rounded-full bg-mintcom-green/10 text-mintcom-green flex items-center justify-center flex-shrink-0 mt-0.5">
                             <Check size={12} strokeWidth={3} />
                           </div>
                           <div>
-                            <p className="text-[11px] font-black text-paymint-green uppercase tracking-wider mb-0.5">{t('roles.form.includedByDefault')}</p>
+                            <p className="text-[11px] font-black text-mintcom-green uppercase tracking-wider mb-0.5">{t('roles.form.includedByDefault')}</p>
                             <p className="text-xs text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
                               {t('roles.backoffice.includedDefaults')}
                             </p>
@@ -764,7 +764,7 @@ export function CustomRoleFormModal({
                               onClick={() => toggleBackofficePermission(perm.id)}
                             >
                               <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(perm.id)
-                                ? 'bg-paymint-green border-paymint-green shadow-sm'
+                                ? 'bg-mintcom-green border-mintcom-green shadow-sm'
                                 : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
                                 }`}>
                                 {backofficePermissions.includes(perm.id) && <Check size={14} className="text-white" />}
@@ -779,7 +779,7 @@ export function CustomRoleFormModal({
                               <motion.div
                                 initial={{ height: 0, opacity: 0 }}
                                 animate={{ height: 'auto', opacity: 1 }}
-                                className="ml-8 mt-2 space-y-2 border-l-2 border-paymint-green/20 pl-4 mb-4"
+                                className="ml-8 mt-2 space-y-2 border-l-2 border-mintcom-green/20 pl-4 mb-4"
                               >
                                 {SETTINGS_SUB_PERMISSIONS.map(sub => (
                                   <div
@@ -788,7 +788,7 @@ export function CustomRoleFormModal({
                                     onClick={() => toggleBackofficePermission(sub.id)}
                                   >
                                     <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(sub.id)
-                                      ? 'bg-paymint-green border-paymint-green shadow-sm'
+                                      ? 'bg-mintcom-green border-mintcom-green shadow-sm'
                                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
                                       }`}>
                                       {backofficePermissions.includes(sub.id) && <Check size={12} className="text-white" />}
@@ -824,7 +824,7 @@ export function CustomRoleFormModal({
               type="submit"
               form="role-form"
               disabled={isSubmitting}
-              className="flex-1 h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center"
+              className="flex-1 h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-mintcom-green/20 disabled:opacity-50 flex items-center justify-center"
             >
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />

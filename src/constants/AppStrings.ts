@@ -1,9 +1,9 @@
 export const AppStrings = {
   BRAND: {
-    NAME: "PayMint",
+    NAME: "Mintcom",
     TAGLINE: "Enterprise",
     VERSION: "v2.0",
-    COPYRIGHT: "© 2026 PayMint. All rights reserved.",
+    COPYRIGHT: "© 2026 Mintcom. All rights reserved.",
   },
   COMMON: {
     LOADING: "Loading...",
@@ -164,7 +164,7 @@ export const AppStrings = {
     },
     SIGNUP: {
       TITLE: "Create Account",
-      SUBTITLE: "Get started with PayMint",
+      SUBTITLE: "Get started with Mintcom",
       BUTTON: "Create Account",
       HAS_ACCOUNT: "Already have an account?",
       SIGN_IN: "Sign in",

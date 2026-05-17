@@ -29,7 +29,7 @@ export function BottomNavigation({ onMenuClick, items }: BottomNavigationProps) 
   return (
     <div
       dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-      className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white dark:bg-paymint-surface border-t border-gray-200 dark:border-white/10 pb-safe"
+      className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white dark:bg-mintcom-surface border-t border-gray-200 dark:border-white/10 pb-safe"
     >
       <nav className="flex items-center justify-around h-16">
         {displayItems.map((item) => {
@@ -48,18 +48,18 @@ export function BottomNavigation({ onMenuClick, items }: BottomNavigationProps) 
                     {isActive && (
                       <motion.div
                         layoutId="bottomNavIndicator"
-                        className="absolute -inset-2 bg-paymint-green/10 rounded-xl"
+                        className="absolute -inset-2 bg-mintcom-green/10 rounded-xl"
                         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                       />
                     )}
                     <Icon
                       size={22}
-                      className={`relative z-10 transition-colors ${isActive ? 'text-paymint-green' : 'text-gray-400'
+                      className={`relative z-10 transition-colors ${isActive ? 'text-mintcom-green' : 'text-gray-400'
                         }`}
                     />
                   </div>
                   <span
-                    className={`mt-1 label-strong font-outfit transition-colors ${isActive ? 'text-paymint-green' : 'text-gray-400'
+                    className={`mt-1 label-strong font-outfit transition-colors ${isActive ? 'text-mintcom-green' : 'text-gray-400'
                       }`}
                   >
                     {item.label}
@@ -74,7 +74,7 @@ export function BottomNavigation({ onMenuClick, items }: BottomNavigationProps) 
         <a
           href="#"
           aria-label={t('dashboard.menu.getMobileApp')}
-          className="flex flex-col items-center justify-center flex-1 h-full touch-target text-gray-400 hover:text-paymint-green transition-colors"
+          className="flex flex-col items-center justify-center flex-1 h-full touch-target text-gray-400 hover:text-mintcom-green transition-colors"
         >
           <Smartphone size={22} />
           <span className="mt-1 label-strong font-outfit">{t('common.app')}</span>

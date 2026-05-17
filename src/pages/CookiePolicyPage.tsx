@@ -29,7 +29,7 @@ export function CookiePolicyPage() {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="flex items-center gap-3 text-paymint-green mb-4">
+            <div className="flex items-center gap-3 text-mintcom-green mb-4">
               <Shield size={24} />
               <span className="label-strong font-outfit uppercase">{t('legal.cookies.legalCenter')}</span>
             </div>
@@ -65,7 +65,7 @@ export function CookiePolicyPage() {
               <a
                 key={link.id}
                 href={`#${link.id}`}
-                className="block py-2 px-4 rounded-lg text-xs font-bold text-gray-500 hover:text-paymint-green hover:bg-paymint-green/5 transition-all"
+                className="block py-2 px-4 rounded-lg text-xs font-bold text-gray-500 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-all"
               >
                 {link.label}
               </a>
@@ -82,7 +82,7 @@ export function CookiePolicyPage() {
         </aside>
 
         {/* Article Content */}
-        <article className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-paymint-green">
+        <article className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-mintcom-green">
 
           <section id="what-are-cookies" className="scroll-mt-28">
             <h2>{t('legal.cookies.sections.whatAre')}</h2>
@@ -107,7 +107,7 @@ export function CookiePolicyPage() {
             <div className="not-prose grid gap-6 mt-6 mb-8">
               <div className="p-6 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
                 <div className="flex items-center gap-3 mb-3 text-gray-900 dark:text-white">
-                  <div className="p-2 bg-paymint-green/10 dark:bg-paymint-green/ text-paymint-green rounded-lg">
+                  <div className="p-2 bg-mintcom-green/10 dark:bg-mintcom-green/ text-mintcom-green rounded-lg">
                     <Lock size={20} />
                   </div>
                   <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.essential')}</h3>
@@ -159,8 +159,8 @@ export function CookiePolicyPage() {
             <p>
               {t('legal.cookies.content.control_1')}
             </p>
-            <div className="bg-paymint-green/10 border border-paymint-green/20 rounded-xl p-6 my-6">
-              <h4 className="font-magilio text-paymint-green font-bold text-base mb-2 not-prose">{t('legal.cookies.preferenceCenterTitle')}</h4>
+            <div className="bg-mintcom-green/10 border border-mintcom-green/20 rounded-xl p-6 my-6">
+              <h4 className="font-magilio text-mintcom-green font-bold text-base mb-2 not-prose">{t('legal.cookies.preferenceCenterTitle')}</h4>
               <p className="text-gray-700 dark:text-gray-300 text-xs font-bold mb-4">
                 {t('legal.cookies.preferenceCenterSubtitle')}
               </p>
@@ -168,7 +168,7 @@ export function CookiePolicyPage() {
                 onClick={() => {
                    window.dispatchEvent(new Event('open-cookie-preferences'));
                 }}
-                className="px-6 py-2.5 bg-paymint-green text-black label-strong font-outfit rounded-lg hover:bg-[#68B390] transition-colors shadow-sm"
+                className="px-6 py-2.5 bg-mintcom-green text-black label-strong font-outfit rounded-lg hover:bg-[#5fa888] transition-colors shadow-sm"
               >
                 {t('legal.cookies.openSettings')}
               </button>
@@ -191,7 +191,7 @@ export function CookiePolicyPage() {
           <section className="scroll-mt-28 pt-8 border-t border-gray-200 dark:border-white/10 mt-12">
             <h3>{t('legal.cookies.questions')}</h3>
             <p>
-              {t('legal.cookies.content.questionsDesc')} <a href="mailto:privacy@paymintpos.net" className="text-paymint-green hover:underline">privacy@paymintpos.net</a>.
+              {t('legal.cookies.content.questionsDesc')} <a href="mailto:info@mintcompos.com" className="text-mintcom-green hover:underline">info@mintcompos.com</a>.
             </p>
           </section>
 

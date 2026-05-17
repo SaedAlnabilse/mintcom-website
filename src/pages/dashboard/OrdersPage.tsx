@@ -918,13 +918,13 @@ export function OrdersPage() {
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
+        return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
       case 'PENDING':
       case 'HELD':
         return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       case 'REFUNDED':
       case 'PARTIALLY_REFUNDED':
-        return 'bg-paymint-red/10 text-paymint-red border-paymint-red/20';
+        return 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20';
       default:
         return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
     }
@@ -977,7 +977,7 @@ export function OrdersPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('orders.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -1001,7 +1001,7 @@ export function OrdersPage() {
                   ...(shiftStatus?.shiftStatus === 'ACTIVE' ? [{
                     label: t('dashboard.viewMode.currentShift'),
                     value: 'current_shift',
-                    icon: <PlayCircle size={18} className="text-paymint-green" />,
+                    icon: <PlayCircle size={18} className="text-mintcom-green" />,
                     subtitle: shiftStatus?.activeShift?.startTime ? t('dashboard.shiftStatus.started', { time: format(new Date(shiftStatus.activeShift.startTime), 'h:mm a') }) : t('dashboard.shiftStatus.live')
                   }] : []),
                   ...(lastShiftSnapshot ? [{
@@ -1127,7 +1127,7 @@ export function OrdersPage() {
       {(selectedDateRange === 'current_shift' || selectedDateRange === 'previous_shift') && (
         <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
           <div className="flex items-center gap-3">
-            <span className="text-paymint-green">
+            <span className="text-mintcom-green">
               {selectedDateRange === 'current_shift' ? <PlayCircle size={16} /> : <History size={16} />}
             </span>
             <div>
@@ -1157,8 +1157,8 @@ export function OrdersPage() {
               ? t('orders.status.onHold')
               : t('dashboard.stats.completedOrders', { defaultValue: 'Completed orders' }),
             icon: TrendingUp,
-            color: 'text-paymint-green',
-            bg: 'bg-paymint-green/10',
+            color: 'text-mintcom-green',
+            bg: 'bg-mintcom-green/10',
             onClick: undefined,
             active: false
           },
@@ -1194,8 +1194,8 @@ export function OrdersPage() {
             className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink 
               ${stat.onClick ? 'cursor-pointer' : 'cursor-default'} 
               ${stat.active
-                ? 'border-paymint-green ring-1 ring-paymint-green/30 bg-paymint-green/[0.02]'
-                : 'border-gray-200 dark:border-white/[0.03] hover:border-paymint-green/30'}`}
+                ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
+                : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'}`}
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg} ${stat.active ? 'opacity-20' : 'group-hover:opacity-10'}`} />
             <div className="relative z-10 flex items-center gap-3 sm:gap-4">
@@ -1213,7 +1213,7 @@ export function OrdersPage() {
 
             {/* Active Indicator Dot */}
             {stat.active && (
-              <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-paymint-green animate-pulse" />
+              <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-mintcom-green animate-pulse" />
             )}
 
             {/* Clickable Indicator Icon */}
@@ -1368,7 +1368,7 @@ export function OrdersPage() {
         {isLoading && orders.length === 0 && (
           <div className="py-20 text-center">
             <div className="flex flex-col items-center justify-center">
-              <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+              <div className="w-12 h-12 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin mb-4" />
               <p className="text-xs font-black text-gray-400">{t('orders.messages.loading')}</p>
             </div>
           </div>
@@ -1463,7 +1463,7 @@ export function OrdersPage() {
                         }}
                         disabled={!canCancelReceipts}
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
-                          ? 'text-paymint-red hover:bg-paymint-red/10'
+                          ? 'text-mintcom-red hover:bg-mintcom-red/10'
                           : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
                           }`}
                       >
@@ -1492,7 +1492,7 @@ export function OrdersPage() {
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
                   <th
-                    className={`px-6 py-4 text-left label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'date' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-left label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'date' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                     onClick={() => requestSort('date')}
                   >
                     <div className="flex items-center gap-2">
@@ -1501,7 +1501,7 @@ export function OrdersPage() {
                     </div>
                   </th>
                   <th
-                    className={`px-6 py-4 text-center label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'customer' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-center label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'customer' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                     onClick={() => requestSort('customer')}
                   >
                     <div className="flex items-center justify-center gap-2">
@@ -1510,7 +1510,7 @@ export function OrdersPage() {
                     </div>
                   </th>
                   <th
-                    className={`px-6 py-4 text-center label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'total' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-center label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'total' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                     onClick={() => requestSort('total')}
                   >
                     <div className="flex items-center justify-center gap-2">
@@ -1519,7 +1519,7 @@ export function OrdersPage() {
                     </div>
                   </th>
                   <th
-                    className={`px-6 py-4 text-center label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'status' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-center label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'status' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                     onClick={() => requestSort('status')}
                   >
                     <div className="flex items-center justify-center gap-2">
@@ -1540,7 +1540,7 @@ export function OrdersPage() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-paymint-green transition-colors">
+                        <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-mintcom-green transition-colors">
                           <ShoppingCart size={16} />
                         </div>
                         <div>
@@ -1574,8 +1574,8 @@ export function OrdersPage() {
                             aria-label="Order actions"
                             aria-expanded={activeActionMenu === order.id}
                             className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors ${activeActionMenu === order.id
-                              ? 'text-paymint-green bg-gray-100 dark:bg-white/5'
-                              : 'text-gray-400 hover:text-paymint-green hover:bg-gray-100 dark:hover:bg-white/5'
+                              ? 'text-mintcom-green bg-gray-100 dark:bg-white/5'
+                              : 'text-gray-400 hover:text-mintcom-green hover:bg-gray-100 dark:hover:bg-white/5'
                               }`}
                           >
                             <MoreVertical size={18} />
@@ -1611,7 +1611,7 @@ export function OrdersPage() {
                                   }}
                                   disabled={!canCancelReceipts}
                                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
-                                    ? 'text-paymint-red hover:bg-paymint-red/10'
+                                    ? 'text-mintcom-red hover:bg-mintcom-red/10'
                                     : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
                                     }`}
                                 >
@@ -1627,7 +1627,7 @@ export function OrdersPage() {
                             </div>
                           </PortalDropdown>
                         </div>
-                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-all">
+                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center text-gray-400 group-hover:text-mintcom-green group-hover:border-mintcom-green/30 transition-all">
                           <ChevronRight size={14} />
                         </div>
                       </div>
@@ -1695,7 +1695,7 @@ export function OrdersPage() {
                 }}
                 placeholder={formatInputPlaceholder("Enter refund reason", t('common.locale'))}
                 rows={4}
-                className="w-full rounded-xl border border-gray-300 dark:border-white/15 bg-white dark:bg-[#0F172A] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-paymint-green/40"
+                className="w-full rounded-xl border border-gray-300 dark:border-white/15 bg-white dark:bg-[#0F172A] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-mintcom-green/40"
               />
               {refundReasonError && (
                 <p className="mt-2 text-sm text-red-600">{refundReasonError}</p>
@@ -1718,7 +1718,7 @@ export function OrdersPage() {
               <button
                 onClick={submitRefundWithReason}
                 disabled={isRefundSubmitting}
-                className="flex-1 rounded-xl bg-paymint-red px-4 py-2.5 text-sm font-semibold text-white hover:bg-paymint-red/90 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="flex-1 rounded-xl bg-mintcom-red px-4 py-2.5 text-sm font-semibold text-white hover:bg-mintcom-red/90 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isRefundSubmitting ? t('common.loading') : t('orders.actions.refund')}
               </button>

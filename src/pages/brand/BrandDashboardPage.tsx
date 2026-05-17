@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -82,7 +82,7 @@ type DateRangePreset = DatePeriod;
 
 
 
-const CHART_COLORS = ['#7CC39F', '#8B5CF6', '#F59E0B', '#EF4444', '#3B82F6', '#EC4899'];
+const CHART_COLORS = ['#7dc6a2', '#8B5CF6', '#F59E0B', '#EF4444', '#3B82F6', '#EC4899'];
 
 export function BrandDashboardPage() {
     const { t } = useTranslation();
@@ -332,7 +332,7 @@ export function BrandDashboardPage() {
         <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10 relative">
             {/* Premium Glow effect for top brand */}
             {isTopBrand && (
-                <div className="absolute -top-24 -left-24 w-96 h-96 bg-paymint-green/10 rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-mintcom-green/10 rounded-full blur-[120px] pointer-events-none" />
             )}
 
             {/* Header */}
@@ -369,7 +369,7 @@ export function BrandDashboardPage() {
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">
 
                             {/* Sector 1: Quick Period Dropdown */}
-                            <div className={`flex-none w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'border-transparent'}`}>
+                            <div className={`flex-none w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-mintcom-green/5 border-mintcom-green ring-1 ring-mintcom-green shadow-lg shadow-mintcom-green/10' : 'border-transparent'}`}>
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
                                     onChange={(val) => setQuickDate(val as DateRangePreset || 'today')}
@@ -377,7 +377,7 @@ export function BrandDashboardPage() {
                                     showAllOption={false}
                                     placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                                     className="w-full"
-                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
+                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-mintcom-green' : ''}`}
                                 />
                             </div>
 
@@ -412,8 +412,8 @@ export function BrandDashboardPage() {
                                         {/* Time Input Group */}
                                         <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
                                             <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
-                                                ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
-                                                : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-paymint-green/50'
+                                                ? 'bg-mintcom-green/5 border-mintcom-green ring-2 ring-mintcom-green shadow-lg shadow-mintcom-green/10'
+                                                : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-mintcom-green/50'
                                                 }`}>
                                                 <div className="flex items-center gap-2 justify-between relative">
                                                     <CustomTimePicker
@@ -423,7 +423,7 @@ export function BrandDashboardPage() {
                                                         showIcon={true}
                                                         isActive={isTimeFiltered}
                                                     />
-                                                    <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                                                    <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7dc6a2]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
                                                     <CustomTimePicker
                                                         value={endTime}
                                                         onChange={(val) => { setEndTime(val); }}
@@ -451,8 +451,8 @@ export function BrandDashboardPage() {
                         value: formatCurrency(stats?.totalRevenue || 0),
                         change: null,
                         icon: DollarSign,
-                        color: 'text-paymint-green',
-                        bg: 'bg-paymint-green/'
+                        color: 'text-mintcom-green',
+                        bg: 'bg-mintcom-green/'
                     },
                     {
                         label: t('brand.dashboard.totalOrders'),
@@ -485,7 +485,7 @@ export function BrandDashboardPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
                         className={`relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border shadow-sm overflow-hidden ${isTopBrand
-                            ? 'border-paymint-green/30 shadow-paymint-green/5'
+                            ? 'border-mintcom-green/30 shadow-mintcom-green/5'
                             : 'border-gray-200 dark:border-white/5'
                             }`}
                     >
@@ -498,7 +498,7 @@ export function BrandDashboardPage() {
                                 </div>
                                 {stat.change !== null && (
                                     <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
-                                        ? 'bg-paymint-green/10 text-paymint-green dark:bg-paymint-green/ dark:text-paymint-green'
+                                        ? 'bg-mintcom-green/10 text-mintcom-green dark:bg-mintcom-green/ dark:text-mintcom-green'
                                         : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
                                         }`}>
                                         {stat.change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
@@ -527,7 +527,7 @@ export function BrandDashboardPage() {
                     </div>
                     <button
                         onClick={() => navigate(`/brand/${brandId}/locations`)}
-                        className="text-xs font-bold text-paymint-green hover:underline tracking-wide mt-1.5 flex items-center gap-1"
+                        className="text-xs font-bold text-mintcom-green hover:underline tracking-wide mt-1.5 flex items-center gap-1"
                     >
                         {t('brand.dashboard.viewAll')}
                         <ChevronRight size={14} />
@@ -560,7 +560,7 @@ export function BrandDashboardPage() {
                                 {/* Location Info */}
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-3">
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate">
+                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors truncate">
                                             {loc.name}
                                         </h4>
 
@@ -599,12 +599,12 @@ export function BrandDashboardPage() {
                                             initial={{ width: 0 }}
                                             animate={{ width: `${(loc.revenue / (locations[0]?.revenue || 1)) * 100}%` }}
                                             transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
-                                            className="h-full bg-paymint-green rounded-full"
+                                            className="h-full bg-mintcom-green rounded-full"
                                         />
                                     </div>
                                 </div>
 
-                                <ChevronRight size={20} className="text-gray-400 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
+                                <ChevronRight size={20} className="text-gray-400 group-hover:text-mintcom-green group-hover:translate-x-1 transition-all" />
                             </div>
                         ))}
                     </div>
@@ -627,7 +627,7 @@ export function BrandDashboardPage() {
                     </div>
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-paymint-green" />
+                                <div className="w-3 h-3 rounded-full bg-mintcom-green" />
                                 <span className="text-xs font-medium tracking-wider text-gray-500">{t('brand.dashboard.revenue')}</span>
                             </div>
                             <div className="flex items-center gap-2">
@@ -643,8 +643,8 @@ export function BrandDashboardPage() {
                                 <ComposedChart data={revenueData}>
                                     <defs>
                                         <linearGradient id="brandRevenue" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.2} />
-                                            <stop offset="95%" stopColor="#7CC39F" stopOpacity={0} />
+                                            <stop offset="5%" stopColor="#7dc6a2" stopOpacity={0.2} />
+                                            <stop offset="95%" stopColor="#7dc6a2" stopOpacity={0} />
                                         </linearGradient>
                                         <linearGradient id="brandOrders" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.1} />
@@ -668,7 +668,7 @@ export function BrandDashboardPage() {
                                         dx={-10}
                                     />
                                     <Tooltip
-                                        cursor={revenueData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
+                                        cursor={revenueData.length > 1 ? { stroke: '#7dc6a2', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                                         contentStyle={{
                                             backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                             borderColor: '#E5E7EB',
@@ -703,7 +703,7 @@ export function BrandDashboardPage() {
                                             <Area
                                                 type="monotone"
                                                 dataKey="value"
-                                                stroke="#7CC39F"
+                                                stroke="#7dc6a2"
                                                 strokeWidth={2.5}
                                                 fillOpacity={1}
                                                 fill="url(#brandRevenue)"
@@ -840,7 +840,7 @@ export function BrandDashboardPage() {
                             {action.title}
                         </h4>
                         <p className="text-sm font-medium text-gray-500">{action.description}</p>
-                        <div className="flex items-center gap-1 mt-4 text-xs font-bold text-paymint-green">
+                        <div className="flex items-center gap-1 mt-4 text-xs font-bold text-mintcom-green">
                             <span>{action.linkLabel}</span>
                             <ArrowRight size={14} />
                         </div>

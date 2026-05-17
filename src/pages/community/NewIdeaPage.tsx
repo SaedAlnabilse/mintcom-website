@@ -83,12 +83,12 @@ export const NewIdeaPage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             className="max-w-xl mx-auto text-center"
                         >
-                            <div className="w-20 h-20 bg-PayMint-green/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-PayMint-green/20">
-                                <Lock size={36} className="text-PayMint-green" />
+                            <div className="w-20 h-20 bg-Mintcom-green/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-Mintcom-green/20">
+                                <Lock size={36} className="text-Mintcom-green" />
                             </div>
                             <h1 className="text-3xl font-black mb-4 tracking-tight">Members Only Community</h1>
                             <p className="text-gray-500 dark:text-gray-400 font-medium mb-10">
-                                Sharing new ideas is a privilege for PayMint members. Please log in to contribute your thoughts to the community.
+                                Sharing new ideas is a privilege for Mintcom members. Please log in to contribute your thoughts to the community.
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -140,7 +140,7 @@ export const NewIdeaPage = () => {
                         <form onSubmit={handleSubmit}>
                             {/* Category Selection */}
                             <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-8 mb-6 shadow-sm overflow-hidden relative">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-PayMint-green/5 rounded-full -mr-16 -mt-16 blur-2xl pointer-events-none" />
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-Mintcom-green/5 rounded-full -mr-16 -mt-16 blur-2xl pointer-events-none" />
 
                                 <label className="block text-sm font-normal mb-6 text-gray-500  tracking-normal">
                                     {t('community.ideas.categoryLabel', 'Select Category')} <span className="text-red-500">*</span>
@@ -156,12 +156,12 @@ export const NewIdeaPage = () => {
                                                 setErrors({ ...errors, category: '' });
                                             }}
                                             className={`flex items-start gap-4 p-5 rounded-2xl border-2 transition-all text-left group ${formData.category === category.id
-                                                ? 'border-PayMint-green bg-PayMint-green/5'
-                                                : 'border-gray-100 dark:border-white/10 hover:border-PayMint-green/30 hover:bg-gray-50 dark:hover:bg-white/[0.02]'
+                                                ? 'border-Mintcom-green bg-Mintcom-green/5'
+                                                : 'border-gray-100 dark:border-white/10 hover:border-Mintcom-green/30 hover:bg-gray-50 dark:hover:bg-white/[0.02]'
                                                 }`}
                                         >
                                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${formData.category === category.id
-                                                ? 'bg-PayMint-green text-black scale-110'
+                                                ? 'bg-Mintcom-green text-black scale-110'
                                                 : 'bg-gray-100 dark:bg-white/5 text-gray-500 group-hover:scale-105'
                                                 }`}>
                                                 <category.icon size={24} />
@@ -197,7 +197,7 @@ export const NewIdeaPage = () => {
                                                 setErrors({ ...errors, title: '' });
                                             }}
                                             placeholder={formatInputPlaceholder(t('community.ideas.titlePlaceholder', 'e.g. Dark mode for the merchant portal'), t('common.locale'))}
-                                            className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-2xl font-bold text-lg focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all ${errors.title ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
+                                            className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-2xl font-bold text-lg focus:outline-none focus:ring-2 focus:ring-Mintcom-green/50 transition-all ${errors.title ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                                                 }`}
                                             maxLength={100}
                                         />
@@ -224,7 +224,7 @@ export const NewIdeaPage = () => {
                                             }}
                                             placeholder={formatInputPlaceholder(t('community.ideas.descriptionPlaceholder', 'Describe the problem this solves and how you envision it working...'), t('common.locale'))}
                                             rows={8}
-                                            className={`w-full p-5 bg-gray-50 dark:bg-white/5 border rounded-2xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all resize-none ${errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
+                                            className={`w-full p-5 bg-gray-50 dark:bg-white/5 border rounded-2xl font-medium focus:outline-none focus:ring-2 focus:ring-Mintcom-green/50 transition-all resize-none ${errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                                                 }`}
                                         />
                                         {errors.description && (
@@ -253,7 +253,7 @@ export const NewIdeaPage = () => {
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-10 py-4 bg-PayMint-green text-black rounded-2xl font-black text-lg hover:opacity-90 transition-all disabled:opacity-50 shadow-xl shadow-PayMint-green/20"
+                                        className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-10 py-4 bg-Mintcom-green text-black rounded-2xl font-black text-lg hover:opacity-90 transition-all disabled:opacity-50 shadow-xl shadow-Mintcom-green/20"
                                     >
                                         {isSubmitting ? (
                                             <>

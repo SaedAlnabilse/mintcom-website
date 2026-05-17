@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -11,13 +11,13 @@
 @tailwind utilities;
 
 /* ============================================
-   PAYMINT UNIFIED TYPOGRAPHY SYSTEM
+   MINTCOM UNIFIED TYPOGRAPHY SYSTEM
    Matched to POS App Design System
    ============================================ */
 
 :root {
   --label-font-size: 13px;
-  --paymint-green: #7CC39F;
+  --mintcom-green: #7dc6a2;
   --accent: #D55263;
 }
 
@@ -53,9 +53,9 @@
   }
 
   body {
-    @apply font-sans text-text-primary bg-cream-50 dark:text-paymint-text dark:bg-paymint-dark antialiased transition-colors duration-300;
+    @apply font-sans text-text-primary bg-cream-50 dark:text-mintcom-text dark:bg-mintcom-dark antialiased transition-colors duration-300;
     font-feature-settings: 'kern' 1, 'liga' 1;
-    accent-color: #7CC39F;
+    accent-color: #7dc6a2;
   }
 
   /* Enforce a single font family across dashboard surfaces and popups */
@@ -89,52 +89,52 @@
   }
 
   ::selection {
-    background-color: #7CC39F;
+    background-color: #7dc6a2;
     color: #000000;
   }
 
   ::-moz-selection {
-    background-color: #7CC39F;
+    background-color: #7dc6a2;
     color: #000000;
   }
 
   /* Headings - POS Style */
   h1 {
-    @apply font-magilio text-heading-1 text-text-primary dark:text-paymint-text;
+    @apply font-magilio text-heading-1 text-text-primary dark:text-mintcom-text;
   }
 
   h2 {
-    @apply font-magilio text-heading-2 text-text-primary dark:text-paymint-text;
+    @apply font-magilio text-heading-2 text-text-primary dark:text-mintcom-text;
   }
 
   h3 {
-    @apply font-outfit text-heading-3 text-text-primary dark:text-paymint-text font-bold tracking-tight;
+    @apply font-outfit text-heading-3 text-text-primary dark:text-mintcom-text font-bold tracking-tight;
   }
 
   h4 {
-    @apply font-outfit text-heading-4 text-text-primary dark:text-paymint-text font-bold tracking-tight;
+    @apply font-outfit text-heading-4 text-text-primary dark:text-mintcom-text font-bold tracking-tight;
   }
 
   h5 {
-    @apply font-outfit text-subheading text-text-primary dark:text-paymint-text font-bold;
+    @apply font-outfit text-subheading text-text-primary dark:text-mintcom-text font-bold;
   }
 
   h6 {
-    @apply font-outfit text-body-lg font-bold text-text-primary dark:text-paymint-text;
+    @apply font-outfit text-body-lg font-bold text-text-primary dark:text-mintcom-text;
   }
 
   /* Body text defaults */
   p {
-    @apply text-body text-text-secondary dark:text-paymint-textSecondary leading-body;
+    @apply text-body text-text-secondary dark:text-mintcom-textSecondary leading-body;
   }
 
   /* Labels and small text */
   label {
-    @apply text-label text-text-secondary dark:text-paymint-textSecondary;
+    @apply text-label text-text-secondary dark:text-mintcom-textSecondary;
   }
 
   small {
-    @apply text-body-sm text-text-tertiary dark:text-paymint-gray;
+    @apply text-body-sm text-text-tertiary dark:text-mintcom-gray;
   }
 
   /* Links */
@@ -144,7 +144,7 @@
 
   /* Keep plain text links styled without affecting class-based buttons/nav links */
   a:not([class]) {
-    @apply text-paymint-green;
+    @apply text-mintcom-green;
   }
 
   /* Chrome, Safari, Edge, Opera */
@@ -163,19 +163,19 @@
   input,
   textarea,
   select {
-    @apply font-sans text-body text-text-primary dark:text-paymint-text;
+    @apply font-sans text-body text-text-primary dark:text-mintcom-text;
     font-weight: 400 !important;
   }
 
   input::placeholder,
   textarea::placeholder {
-    @apply text-text-placeholder dark:text-paymint-gray;
+    @apply text-text-placeholder dark:text-mintcom-gray;
     font-weight: 400 !important;
   }
 }
 
 /* ============================================
-   PAYMINT COMPONENT TYPOGRAPHY CLASSES
+   MINTCOM COMPONENT TYPOGRAPHY CLASSES
    ============================================ */
 
 @layer components {
@@ -256,15 +256,15 @@
 
   /* Card Values - Used for stat card values */
   .card-value {
-    @apply text-value font-bold text-text-primary dark:text-paymint-text tracking-tight;
+    @apply text-value font-bold text-text-primary dark:text-mintcom-text tracking-tight;
   }
 
   .card-value-lg {
-    @apply text-value-lg font-bold text-text-primary dark:text-paymint-text tracking-tight;
+    @apply text-value-lg font-bold text-text-primary dark:text-mintcom-text tracking-tight;
   }
 
   .card-value-xl {
-    @apply text-value-xl font-bold text-text-primary dark:text-paymint-text tracking-tight;
+    @apply text-value-xl font-bold text-text-primary dark:text-mintcom-text tracking-tight;
   }
 
   /* Unified stat-card typography across dashboard, owner, and brand portals */
@@ -348,20 +348,20 @@
 
   /* Section titles */
   .section-title {
-    @apply font-outfit text-heading-3 text-text-primary dark:text-paymint-text font-bold tracking-tight;
+    @apply font-outfit text-heading-3 text-text-primary dark:text-mintcom-text font-bold tracking-tight;
   }
 
   .section-subtitle {
-    @apply text-body text-text-secondary dark:text-paymint-textSecondary;
+    @apply text-body text-text-secondary dark:text-mintcom-textSecondary;
   }
 
   /* Chart labels */
   .chart-title {
-    @apply text-chart-title text-text-primary dark:text-paymint-text;
+    @apply text-chart-title text-text-primary dark:text-mintcom-text;
   }
 
   .chart-legend {
-    @apply text-legend text-text-muted dark:text-paymint-gray;
+    @apply text-legend text-text-muted dark:text-mintcom-gray;
   }
 
   .table-header-row {
@@ -384,11 +384,11 @@
 
   /* Table cells */
   .table-cell {
-    @apply text-body text-text-primary dark:text-paymint-text;
+    @apply text-body text-text-primary dark:text-mintcom-text;
   }
 
   .table-cell-muted {
-    @apply text-body text-text-secondary dark:text-paymint-textSecondary;
+    @apply text-body text-text-secondary dark:text-mintcom-textSecondary;
   }
 
   /* Button text */
@@ -409,11 +409,11 @@
 
   /* Empty state text */
   .empty-title {
-    @apply text-body-lg font-bold text-text-primary dark:text-paymint-text tracking-wide;
+    @apply text-body-lg font-bold text-text-primary dark:text-mintcom-text tracking-wide;
   }
 
   .empty-description {
-    @apply text-body text-text-muted dark:text-paymint-gray;
+    @apply text-body text-text-muted dark:text-mintcom-gray;
   }
 
   /* Tooltip text */
@@ -430,7 +430,7 @@
   }
 
   .popup-surface {
-    @apply font-sans text-text-primary dark:text-paymint-text;
+    @apply font-sans text-text-primary dark:text-mintcom-text;
     background-color: rgb(15 23 42 / 0.24);
     -webkit-backdrop-filter: blur(14px) saturate(115%);
     backdrop-filter: blur(14px) saturate(115%);
@@ -554,20 +554,20 @@
   }
   /* Nav items */
   .nav-item {
-    @apply text-body font-semibold text-text-secondary dark:text-paymint-textSecondary;
+    @apply text-body font-semibold text-text-secondary dark:text-mintcom-textSecondary;
   }
 
   .nav-item-active {
-    @apply text-body font-bold text-paymint-green;
+    @apply text-body font-bold text-mintcom-green;
   }
 
   /* Dropdown items */
   .dropdown-item {
-    @apply text-body font-medium text-text-primary dark:text-paymint-text;
+    @apply text-body font-medium text-text-primary dark:text-mintcom-text;
   }
 
   .dropdown-description {
-    @apply text-body-sm text-text-muted dark:text-paymint-gray;
+    @apply text-body-sm text-text-muted dark:text-mintcom-gray;
   }
 }
 
@@ -666,15 +666,15 @@
 
   /* Text color utilities matching POS */
   .text-primary-pos {
-    @apply text-text-primary dark:text-paymint-text;
+    @apply text-text-primary dark:text-mintcom-text;
   }
 
   .text-secondary-pos {
-    @apply text-text-secondary dark:text-paymint-textSecondary;
+    @apply text-text-secondary dark:text-mintcom-textSecondary;
   }
 
   .text-muted-pos {
-    @apply text-text-muted dark:text-paymint-gray;
+    @apply text-text-muted dark:text-mintcom-gray;
   }
 
   /* Value colors - for positive/negative numbers */
@@ -683,7 +683,7 @@
   }
 
   .text-negative {
-    @apply text-paymint-red;
+    @apply text-mintcom-red;
   }
 
   /* Mobile card hover/active states for touch */
@@ -748,7 +748,7 @@
 
   /* Sticky bottom actions for modals/forms on mobile */
   .sticky-bottom-actions {
-    @apply sticky bottom-0 left-0 right-0 bg-white dark:bg-paymint-surface border-t border-gray-200 dark:border-white/10 p-4 pb-safe;
+    @apply sticky bottom-0 left-0 right-0 bg-white dark:bg-mintcom-surface border-t border-gray-200 dark:border-white/10 p-4 pb-safe;
   }
 
   /* Mobile filter chip */
@@ -757,12 +757,12 @@
   }
 
   .filter-chip-active {
-    @apply bg-paymint-green/10 text-paymint-green border border-paymint-green/30;
+    @apply bg-mintcom-green/10 text-mintcom-green border border-mintcom-green/30;
   }
 
   /* Mobile-optimized input */
   .mobile-input {
-    @apply w-full h-12 px-4 text-base rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 transition-all;
+    @apply w-full h-12 px-4 text-base rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 transition-all;
   }
 
   /* Do not dim interactive controls on hover */
@@ -787,7 +787,7 @@
 
 .dark select option:hover,
 .dark select option:checked {
-  background-color: #7CC39F;
+  background-color: #7dc6a2;
   color: #000000;
 }
 
@@ -802,7 +802,7 @@
 
 .dark .category-pill-select button {
   background-color: rgba(255, 255, 255, 0.05) !important;
-  --paymint-green: #7CC39F;
+  --mintcom-green: #7dc6a2;
   --accent: #D55263;
   }
 
@@ -830,10 +830,10 @@
   display: block;
   }
 
-  .cursor-paymint-wait {
+  .cursor-mintcom-wait {
   cursor: url('./assets/green-loading-cursor.svg') 16 16, wait;
   }
-@keyframes paymint-spin {
+@keyframes mintcom-spin {
   from {
     transform: rotate(0deg);
   }
@@ -846,11 +846,11 @@
 
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(124, 195, 159, 0.4);
+    box-shadow: 0 0 0 0 rgba(125, 198, 18, 0.4);
   }
 
   50% {
-    box-shadow: 0 0 0 8px rgba(124, 195, 159, 0);
+    box-shadow: 0 0 0 8px rgba(125, 198, 18, 0);
   }
 }
 
@@ -870,13 +870,13 @@
 
 
 .custom-scrollbar-modal::-webkit-scrollbar-thumb {
-  background: rgba(124, 195, 159, 0.2);
+  background: rgba(125, 198, 18, 0.2);
   border-radius: 10px;
   transition: background 0.3s ease;
 }
 
 .custom-scrollbar-modal:hover::-webkit-scrollbar-thumb {
-  background: rgba(124, 195, 159, 0.4);
+  background: rgba(125, 198, 18, 0.4);
 }
 
 .dark .custom-scrollbar-modal::-webkit-scrollbar-thumb {

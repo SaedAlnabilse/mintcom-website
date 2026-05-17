@@ -14,7 +14,7 @@ const updateTranslations = () => {
     title1: "Earn More.",
     title2: "Manage Better.",
     title3: "Work Smarter.",
-    description: "PayMint is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
+    description: "Mintcom is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
     cta: "Start Free Trial",
     watchVideo: "See how it works",
     freeTrial: ""
@@ -36,16 +36,16 @@ const updateTranslations = () => {
   en.landing.features = {
     ...en.landing.features,
     title: "Why",
-    titleHighlight: "PayMint?",
-    subtitle: "At PayMint, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing.",
+    titleHighlight: "Mintcom?",
+    subtitle: "At Mintcom, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing.",
     cards: {
       complete: {
         title: "A Complete Solution — No Hidden Costs",
-        description: "PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more—all included in one fixed monthly plan."
+        description: "Mintcom is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more—all included in one fixed monthly plan."
       },
       realUsers: {
         title: "Designed for Real Users",
-        description: "PayMint is built for business owners, cashiers, and managers—not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes."
+        description: "Mintcom is built for business owners, cashiers, and managers—not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes."
       },
       security: {
         title: "Enterprise-Grade Security",
@@ -53,7 +53,7 @@ const updateTranslations = () => {
       },
       multiBranch: {
         title: "Multi-Branch Management",
-        description: "Run one store or many—PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel."
+        description: "Run one store or many—Mintcom supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel."
       }
     }
   };
@@ -144,7 +144,7 @@ const updateTranslations = () => {
     title1: "Full Visibility.",
     title2: "Full Control.",
     title3: "From Your Pocket.",
-    description: "With the PayMint Admin Mobile App, you can monitor and manage your business anytime, anywhere—right from your phone.",
+    description: "With the Mintcom Admin Mobile App, you can monitor and manage your business anytime, anywhere—right from your phone.",
     shiftAlerts: "Shift Alerts",
     stockAlerts: "Stock Alerts",
     liveReports: "Live Sales & Performance Reports"

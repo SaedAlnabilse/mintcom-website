@@ -1,5 +1,5 @@
 /**
- * PayMint AI Chatbot Knowledge Base
+ * Mintcom AI Chatbot Knowledge Base
  * Comprehensive information from User Manual v6.1 and application structure
  * This creates a friendly, helpful AI assistant named Minto
  */
@@ -19,14 +19,14 @@ export interface KnowledgeEntry {
   contexts?: string[];
 }
 
-export const PAYMINT_KNOWLEDGE: KnowledgeEntry[] = [
+export const MINTCOM_KNOWLEDGE: KnowledgeEntry[] = [
   // ========== GETTING STARTED ==========
   {
     id: 'welcome',
     keywords: ['start', 'begin', 'new', 'first', 'getting started', 'how to use', 'introduction', 'hello', 'hi', 'help', 'بدء', 'جديد', 'أول', 'كيف أبدأ', 'كيف ابدا', 'مقدمة', 'مساعدة', 'ابدأ'],
-    question: 'How do I get started with PayMint?',
-    questionAr: 'كيف أبدأ مع بيمنت؟',
-    answer: `Great question! Getting started with PayMint is easy. Here's what you need to do:
+    question: 'How do I get started with Mintcom?',
+    questionAr: 'كيف أبدأ مع مينتكوم؟',
+    answer: `Great question! Getting started with Mintcom is easy. Here's what you need to do:
 
 1. **Sign Up** - Create your account on our website
 2. **Verify Email** - Check your inbox and click the verification link
@@ -35,7 +35,7 @@ export const PAYMINT_KNOWLEDGE: KnowledgeEntry[] = [
 5. **Start Selling** - You're ready to process your first order!
 
 The whole process takes just a few minutes. What would you like help with first?`,
-    answerAr: `البدء مع بيمنت سهل جداً! إليك الخطوات:
+    answerAr: `البدء مع مينتكوم سهل جداً! إليك الخطوات:
 
 1. **إنشاء حساب** - سجل في موقعنا
 2. **تأكيد البريد** - افتح بريدك واضغط على رابط التأكيد
@@ -49,11 +49,11 @@ The whole process takes just a few minutes. What would you like help with first?
     relatedTopics: ['signup', 'onboarding', 'products']
   },
   {
-    id: 'what-is-PayMint',
-    keywords: ['what is PayMint', 'about PayMint', 'PayMint features', 'what does PayMint do', 'explain PayMint', 'ما هو بيمنت', 'عن بيمنت', 'ميزات بيمنت', 'ماذا يفعل بيمنت', 'ايش بيمنت'],
-    question: 'What is PayMint?',
-    questionAr: 'ما هو بيمنت؟',
-    answer: `PayMint is a cloud Point of Sale (POS) and business management platform for restaurants, cafes, and retail businesses.
+    id: 'what-is-Mintcom',
+    keywords: ['what is Mintcom', 'about Mintcom', 'Mintcom features', 'what does Mintcom do', 'explain Mintcom', 'ما هو مينتكوم', 'عن مينتكوم', 'ميزات مينتكوم', 'ماذا يفعل مينتكوم', 'ايش مينتكوم'],
+    question: 'What is Mintcom?',
+    questionAr: 'ما هو مينتكوم؟',
+    answer: `Mintcom is a cloud Point of Sale (POS) and business management platform for restaurants, cafes, and retail businesses.
 
 **Key Features:**
 - Multi-location support from one owner dashboard
@@ -66,7 +66,7 @@ The whole process takes just a few minutes. What would you like help with first?
 - Offline sales that sync when the connection returns
 
 It is built to keep daily operations organized and fast.`,
-    answerAr: `بيمنت هو منصة سحابية لنقاط البيع وإدارة الأعمال للمطاعم والمقاهي ومحلات التجزئة.
+    answerAr: `مينتكوم هو منصة سحابية لنقاط البيع وإدارة الأعمال للمطاعم والمقاهي ومحلات التجزئة.
 
 **الميزات الرئيسية:**
 - دعم مواقع متعددة من لوحة مالك واحدة
@@ -85,9 +85,9 @@ It is built to keep daily operations organized and fast.`,
   {
     id: 'signup',
     keywords: ['sign up', 'signup', 'register', 'create account', 'new account', 'join', 'تسجيل', 'إنشاء حساب', 'حساب جديد', 'انضمام', 'اشتراك'],
-    question: 'How do I create a PayMint account?',
-    questionAr: 'كيف أنشئ حساب بيمنت؟',
-    answer: `Creating your PayMint account is quick and easy!
+    question: 'How do I create a Mintcom account?',
+    questionAr: 'كيف أنشئ حساب مينتكوم؟',
+    answer: `Creating your Mintcom account is quick and easy!
 
 1. Click **"Sign Up"** or visit the signup page
 2. Enter your **email address** and create a strong password
@@ -96,7 +96,7 @@ It is built to keep daily operations organized and fast.`,
 5. Check your email and click the **verification link**
 
 Once verified, you'll go through our onboarding wizard to set up your first establishment. New users get a **14-day free trial** with full access to all features!`,
-    answerAr: `إنشاء حساب بيمنت سريع وسهل!
+    answerAr: `إنشاء حساب مينتكوم سريع وسهل!
 
 1. اضغط **"تسجيل"** أو زر صفحة التسجيل
 2. أدخل **بريدك الإلكتروني** وأنشئ كلمة مرور قوية
@@ -377,7 +377,7 @@ Your product is now ready to sell!`,
     keywords: ['recipe operations', 'stock', 'track stock', 'low stock', 'out of stock', 'quantity', 'stock levels', 'مخزون', 'تتبع عمليات الوصفات', 'مخزون منخفض', 'نفاد عمليات الوصفات', 'كمية', 'جرد'],
     question: 'How do I track recipe operations?',
     questionAr: 'كيف أتتبع عمليات الوصفات؟',
-    answer: `PayMint makes recipe operations tracking automatic!
+    answer: `Mintcom makes recipe operations tracking automatic!
 
 **Enabling Stock Tracking:**
 1. Go to **Products** and edit a product
@@ -393,7 +393,7 @@ Your product is now ready to sell!`,
 
 **Updating Stock:**
 Go to **Settings > Stock Management**, find the product, and adjust the quantity.`,
-    answerAr: `بيمنت يجعل تتبع عمليات الوصفات تلقائياً!
+    answerAr: `مينتكوم يجعل تتبع عمليات الوصفات تلقائياً!
 
 **تفعيل تتبع عمليات الوصفات:**
 1. اذهب إلى **المنتجات** وعدّل المنتج
@@ -499,13 +499,13 @@ Go to **Dashboard > Materials** and **Dashboard > Recipes** to get started!`,
     keywords: ['split payment', 'split bill', 'multiple payments', 'share bill', 'pay separately', 'تقسيم الدفع', 'دفع مشترك', 'دفعات متعددة', 'تقسيم الفاتورة'],
     question: 'How do I handle split payments?',
     questionAr: 'كيف أتعامل مع الدفع المقسم؟',
-    answer: `PayMint makes split payments easy!
+    answer: `Mintcom makes split payments easy!
 
 1. During checkout, tap **"Split Payment"**
 2. Choose split type: **By Amount** or **By Item**
 3. **Process each payment** separately
 4. Complete when all payments collected!`,
-    answerAr: `بيمنت يجعل تقسيم الدفع سهلاً!
+    answerAr: `مينتكوم يجعل تقسيم الدفع سهلاً!
 
 1. أثناء الدفع، اضغط **"تقسيم الدفع"**
 2. اختر نوع التقسيم: **حسب المبلغ** أو **حسب الصنف**
@@ -614,14 +614,14 @@ You can also apply item-level discounts!`,
     keywords: ['loyalty', 'rewards', 'points', 'loyalty program', 'customer rewards', 'enroll customer', 'ولاء', 'مكافآت', 'نقاط', 'برنامج ولاء', 'نقاط العملاء', 'مكافأة'],
     question: 'How does the loyalty program work?',
     questionAr: 'كيف يعمل برنامج الولاء؟',
-    answer: `PayMint has a built-in loyalty program!
+    answer: `Mintcom has a built-in loyalty program!
 
 **Setup:** Go to Dashboard > Loyalty, enable, set earning rules and rewards.
 **Enroll:** Tap "Loyalty" on sales screen, add new customer with name and phone.
 **Redeem:** During checkout, tap "Loyalty", search customer, select reward to redeem.
 
 Points are automatically earned on each purchase!`,
-    answerAr: `بيمنت يحتوي على برنامج ولاء مدمج!
+    answerAr: `مينتكوم يحتوي على برنامج ولاء مدمج!
 
 **الإعداد:** اذهب إلى لوحة التحكم > الولاء، فعّله، حدد قواعد الكسب والمكافآت.
 **تسجيل العميل:** اضغط "الولاء" على شاشة البيع، أضف عميلاً جديداً بالاسم والهاتف.
@@ -700,7 +700,7 @@ Their data is preserved but they can no longer log in. Can be reactivated later.
     keywords: ['report', 'reports', 'analytics', 'data', 'statistics', 'insights', 'sales report', 'تقرير', 'تقارير', 'تحليلات', 'بيانات', 'إحصائيات', 'تقرير مبيعات'],
     question: 'What reports are available?',
     questionAr: 'ما التقارير المتاحة؟',
-    answer: `PayMint offers comprehensive reporting!
+    answer: `Mintcom offers comprehensive reporting!
 
 **Types:** General Reports, Item Reports, Order History, Staff Reports, Shift Reports, Peak Hours, Discount Reports, Tax Reports.
 
@@ -709,7 +709,7 @@ Their data is preserved but they can no longer log in. Can be reactivated later.
 **Export:** PDF download, email, or print.
 
 Go to **Dashboard > Reports** to explore!`,
-    answerAr: `بيمنت يقدم تقارير شاملة!
+    answerAr: `مينتكوم يقدم تقارير شاملة!
 
 **الأنواع:** تقارير عامة، تقارير الأصناف، سجل الطلبات، تقارير الموظفين، تقارير الورديات، ساعات الذروة، تقارير الخصومات، تقارير الضرائب.
 
@@ -933,10 +933,10 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
     questionAr: 'التطبيق يقول "فشل الاتصال". ماذا أفعل؟',
     answer: `Quick fixes: Check Wi-Fi, restart the app, restart router. Still not working? Clear app cache, close other apps, try mobile data.
 
-**Offline Mode:** PayMint can work offline for basic cash sales! Data syncs when you reconnect.`,
+**Offline Mode:** Mintcom can work offline for basic cash sales! Data syncs when you reconnect.`,
     answerAr: `حلول سريعة: تحقق من الواي فاي، أعد تشغيل التطبيق، أعد تشغيل الراوتر. لا يزال لا يعمل؟ امسح ذاكرة التطبيق المؤقتة، أغلق التطبيقات الأخرى، جرب بيانات الجوال.
 
-**وضع عدم الاتصال:** بيمنت يعمل بدون إنترنت للمبيعات النقدية الأساسية! البيانات تتزامن عند الاتصال مجدداً.`,
+**وضع عدم الاتصال:** مينتكوم يعمل بدون إنترنت للمبيعات النقدية الأساسية! البيانات تتزامن عند الاتصال مجدداً.`,
     category: 'troubleshooting'
   },
   {
@@ -1011,8 +1011,8 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
     keywords: ['support', 'help', 'contact', 'customer service', 'issue', 'problem', 'email support', 'دعم', 'مساعدة', 'تواصل', 'خدمة عملاء', 'مشكلة'],
     question: 'How do I contact support?',
     questionAr: 'كيف أتواصل مع الدعم؟',
-    answer: `Email us at **support@paymintpos.net**. Include: error message, steps taken, device info, screenshots. We respond within 24 hours!`,
-    answerAr: `راسلنا على **support@paymintpos.net**. أرفق: رسالة الخطأ، الخطوات المتخذة، معلومات الجهاز، لقطات شاشة. نرد خلال 24 ساعة!`,
+    answer: `Email us at **support@mintcompos.com**. Include: error message, steps taken, device info, screenshots. We respond within 24 hours!`,
+    answerAr: `راسلنا على **support@mintcompos.com**. أرفق: رسالة الخطأ، الخطوات المتخذة، معلومات الجهاز، لقطات شاشة. نرد خلال 24 ساعة!`,
     category: 'technical'
   },
   {
@@ -1047,19 +1047,19 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
 
 // Friendly greeting responses - varied and warm
 export const GREETINGS = [
-  "Hey there! 👋 I'm Minto, your PayMint assistant. What can I help you with today?",
-  "Hi! Welcome! I'm Minto, here to help you get the most out of PayMint. What's on your mind?",
-  "Hello! 👋 Great to see you! I'm Minto - ask me anything about PayMint!",
-  "Hey! I'm Minto, your friendly PayMint guide. How can I make your day easier?",
+  "Hey there! 👋 I'm Minto, your Mintcom assistant. What can I help you with today?",
+  "Hi! Welcome! I'm Minto, here to help you get the most out of Mintcom. What's on your mind?",
+  "Hello! 👋 Great to see you! I'm Minto - ask me anything about Mintcom!",
+  "Hey! I'm Minto, your friendly Mintcom guide. How can I make your day easier?",
   "Hi there! 😊 I'm Minto. Whether it's products, orders, or settings - I've got you covered!",
 ];
 
 // Arabic greeting responses
 export const GREETINGS_AR = [
-  "أهلاً! 👋 أنا مينتو، مساعد بيمنت. كيف يمكنني مساعدتك اليوم؟",
-  "مرحباً! أهلاً وسهلاً! أنا مينتو، هنا لمساعدتك في كل ما يخص بيمنت. ماذا تحتاج؟",
-  "مرحباً! 👋 سعيد برؤيتك! أنا مينتو - اسألني أي شيء عن بيمنت!",
-  "أهلاً! أنا مينتو، دليلك في بيمنت. كيف أستطيع مساعدتك؟",
+  "أهلاً! 👋 أنا مينتو، مساعد مينتكوم. كيف يمكنني مساعدتك اليوم؟",
+  "مرحباً! أهلاً وسهلاً! أنا مينتو، هنا لمساعدتك في كل ما يخص مينتكوم. ماذا تحتاج؟",
+  "مرحباً! 👋 سعيد برؤيتك! أنا مينتو - اسألني أي شيء عن مينتكوم!",
+  "أهلاً! أنا مينتو، دليلك في مينتكوم. كيف أستطيع مساعدتك؟",
   "مرحباً! 😊 أنا مينتو. سواء كان عن المنتجات أو الطلبات أو الإعدادات - أنا جاهز!",
 ];
 
@@ -1068,7 +1068,7 @@ export const FALLBACK_RESPONSES = [
   "Hmm, I'm not quite sure about that one! Could you try rephrasing? Or ask me about things like products, orders, staff, reports, or settings - I know a lot about those! 😊",
   "That's a good question! I don't have specific info on that, but I'd love to help with something else. What about adding products, processing sales, or managing your team?",
   "I couldn't find an exact answer for that. Try asking things like 'How do I add a product?' or 'How do I process a refund?' - I'm great with those!",
-  "Interesting question! I might need more context. Could you be more specific? In the meantime, feel free to ask about any PayMint features!",
+  "Interesting question! I might need more context. Could you be more specific? In the meantime, feel free to ask about any Mintcom features!",
   "I'm still learning! 🤓 I don't have info on that specific topic, but I can help with sales, recipe operations, reports, staff management, and more!",
 ];
 

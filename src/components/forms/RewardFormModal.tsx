@@ -94,7 +94,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
       setErrors(newErrors);
       // Scroll to the first field that has an error
       setTimeout(() => {
-        const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red, .ring-paymint-red\\/20');
+        const firstErrorField = scrollRef.current?.querySelector('.border-mintcom-red, .ring-mintcom-red\\/20');
         if (firstErrorField) {
           firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
@@ -136,7 +136,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
 
           <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200 dark:border-white/10 flex items-center justify-between bg-white dark:bg-[#1E293B]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
                 <Award size={22} strokeWidth={2.5} />
               </div>
               <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -171,7 +171,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                     }`}
                 >
                   {type === 'DISCOUNT' && (
-                    <motion.div layoutId="active-reward-type" className="absolute inset-0 bg-paymint-green rounded-lg -z-10 shadow-sm" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
+                    <motion.div layoutId="active-reward-type" className="absolute inset-0 bg-mintcom-green rounded-lg -z-10 shadow-sm" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
                   )}
                   {t('rewards.form.valueOff')}
                 </button>
@@ -182,7 +182,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                     }`}
                 >
                   {type === 'FREE_ITEM' && (
-                    <motion.div layoutId="active-reward-type" className="absolute inset-0 bg-paymint-green rounded-lg -z-10 shadow-sm" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
+                    <motion.div layoutId="active-reward-type" className="absolute inset-0 bg-mintcom-green rounded-lg -z-10 shadow-sm" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
                   )}
                   {t('rewards.form.freeItem')}
                 </button>
@@ -209,14 +209,14 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                       if (errors.pointsRequired) setErrors({ ...errors, pointsRequired: '' });
                     }
                   }}
-                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all group-hover:border-paymint-green/50 shadow-sm`}
+                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all group-hover:border-mintcom-green/50 shadow-sm`}
                   placeholder={formatInputPlaceholder(t('rewards.form.pointsCostPlaceholder'), t('common.locale'))}
                 />
-                <div className="absolute right-5 top-1/2 -translate-y-1/2 text-paymint-green">
+                <div className="absolute right-5 top-1/2 -translate-y-1/2 text-mintcom-green">
                   <Award size={20} strokeWidth={2.5} />
                 </div>
               </div>
-              {errors.pointsRequired && <p className="mt-1 px-1 text-xs font-bold text-paymint-red">{errors.pointsRequired}</p>}
+              {errors.pointsRequired && <p className="mt-1 px-1 text-xs font-bold text-mintcom-red">{errors.pointsRequired}</p>}
             </div>
 
             {/* Dynamic Fields - Height Stabilized */}
@@ -236,21 +236,21 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                           if (errors.discountPercentage) setErrors({ ...errors, discountPercentage: '' });
                         }
                       }}
-                      className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all group-hover:border-paymint-green/50 shadow-sm`}
+                      className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all group-hover:border-mintcom-green/50 shadow-sm`}
                       placeholder={formatInputPlaceholder(t('common.zero'), t('common.locale'))}
                     />
-                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg group-focus-within:text-paymint-green transition-colors">{t('common.percent')}</div>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg group-focus-within:text-mintcom-green transition-colors">{t('common.percent')}</div>
                   </div>
-                  <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
-                  {errors.discountPercentage && <p className="mt-1 px-1 text-xs font-bold text-paymint-red">{errors.discountPercentage}</p>}
+                  <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
+                  {errors.discountPercentage && <p className="mt-1 px-1 text-xs font-bold text-mintcom-red">{errors.discountPercentage}</p>}
                 </motion.div>
               ) : (
                 <motion.div key="category" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
                   <label className="label-strong block flex items-center justify-between gap-1">
                     <span>{t('rewards.form.categoryLabel')}</span>
-                    {errors.freeCategoryId && <span className="text-paymint-red normal-case tracking-normal font-bold text-[10px]">{errors.freeCategoryId}</span>}
+                    {errors.freeCategoryId && <span className="text-mintcom-red normal-case tracking-normal font-bold text-[10px]">{errors.freeCategoryId}</span>}
                   </label>
-                  <div className={errors.freeCategoryId ? 'ring-2 ring-paymint-red/20 rounded-2xl' : ''}>
+                  <div className={errors.freeCategoryId ? 'ring-2 ring-mintcom-red/20 rounded-2xl' : ''}>
                     <CustomSelect
                       value={freeCategoryId}
                       onChange={(val) => {
@@ -286,7 +286,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             <button
               type="submit"
               form="reward-form"
-              className="flex-[2] h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+              className="flex-[2] h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
             >
               <Check size={18} strokeWidth={3} />
               {initialData ? t('common.save') : t('common.add')}

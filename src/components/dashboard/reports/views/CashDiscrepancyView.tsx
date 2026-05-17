@@ -194,7 +194,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
           className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] transition-all duration-300"
         >
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
               <AlertCircle size={20} />
             </div>
             <span className="dashboard-stat-title">{t('orders.reports.cashGap.accuracyRate')}</span>
@@ -211,7 +211,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
       {/* Discrepancy Breakdown Chart */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+          <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
             <TrendingUp size={20} />
           </div>
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.cashGap.overview')}</h3>
@@ -245,7 +245,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
         <div className="p-6 border-b border-gray-200 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
               <Scale size={20} />
             </div>
             <div>
@@ -338,7 +338,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                       >
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-xs">
+                            <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black text-xs">
                               <User size={14} />
                             </div>
                             <span className="font-bold text-gray-900 dark:text-white text-sm">
@@ -420,11 +420,11 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
       </div>
 
       {/* Summary Note */}
-      <div className="bg-paymint-green/5 dark:bg-paymint-green/5 border border-paymint-green/20 dark:border-paymint-green/10 rounded-xl p-4 flex items-start gap-3">
-        <AlertCircle size={20} className="text-paymint-green flex-shrink-0 mt-0.5" />
+      <div className="bg-mintcom-green/5 dark:bg-mintcom-green/5 border border-mintcom-green/20 dark:border-mintcom-green/10 rounded-xl p-4 flex items-start gap-3">
+        <AlertCircle size={20} className="text-mintcom-green flex-shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-bold text-paymint-green dark:text-paymint-green">{t('orders.reports.cashGap.understandingTitle')}</p>
-          <p className="text-xs text-paymint-green dark:text-paymint-green/70 mt-1">
+          <p className="text-sm font-bold text-mintcom-green dark:text-mintcom-green">{t('orders.reports.cashGap.understandingTitle')}</p>
+          <p className="text-xs text-mintcom-green dark:text-mintcom-green/70 mt-1">
             {t('orders.reports.cashGap.understandingDesc')}
           </p>
         </div>

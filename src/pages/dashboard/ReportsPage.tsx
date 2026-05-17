@@ -449,7 +449,7 @@ export function ReportsPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('dashboard.trackingPerformance')}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                                 {currentEstablishment.name}
                             </span>
                         )}
@@ -507,12 +507,12 @@ export function ReportsPage() {
                   }
                 }}
                 className={`relative flex-none lg:flex-1 flex flex-col xl:flex-row items-center justify-center gap-1.5 xl:gap-2 px-3 py-2.5 xl:py-3 rounded-xl transition-none isolate min-w-[60px] lg:min-w-0 ${isSelected
-                  ? 'text-black shadow-lg shadow-paymint-green/20'
+                  ? 'text-black shadow-lg shadow-mintcom-green/20'
                   : 'bg-white dark:bg-[#1E293B] text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 border border-gray-200 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/20'
                   }`}
               >
                 {isSelected && (
-                  <div className="absolute inset-0 bg-[#7CC39F] rounded-xl" />
+                  <div className="absolute inset-0 bg-[#7dc6a2] rounded-xl" />
                 )}
                 <div className="flex items-center justify-center relative z-10">
                   <type.icon size={14} className={isSelected ? 'text-black' : 'text-gray-400'} />
@@ -576,7 +576,7 @@ export function ReportsPage() {
                 placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                 className="w-full h-full"
                 buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
-                  ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
+                  ? '!bg-mintcom-green/5 !border-mintcom-green !text-mintcom-green ring-2 ring-mintcom-green shadow-lg shadow-mintcom-green/10'
                   : '!bg-white dark:!bg-[#1E293B] !border-gray-200 dark:!border-white/10 hover:!bg-gray-50 dark:hover:!bg-white/10'
                   }`}
               />
@@ -605,8 +605,8 @@ export function ReportsPage() {
               return (
                 <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
                   <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
-                    ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
-                    : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-paymint-green/50'
+                    ? 'bg-mintcom-green/5 border-mintcom-green ring-2 ring-mintcom-green shadow-lg shadow-mintcom-green/10'
+                    : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-mintcom-green/50'
                     }`}>
                     <div className="flex items-center gap-2 justify-between relative">
                       <CustomTimePicker
@@ -616,7 +616,7 @@ export function ReportsPage() {
                         showIcon={true}
                         isActive={isTimeFiltered}
                       />
-                      <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                      <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7dc6a2]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
                       <CustomTimePicker
                         value={endTime}
                         onChange={(val) => { setEndTime(val); setSelectedShiftId(null); }}
@@ -645,7 +645,7 @@ export function ReportsPage() {
                 placeholder={formatInputPlaceholder(t('common.allStaff'), t('common.locale'))}
                 className="w-full h-full"
                 buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedEmployeeId
-                  ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
+                  ? '!bg-mintcom-green/5 !border-mintcom-green !text-mintcom-green ring-2 ring-mintcom-green shadow-lg shadow-mintcom-green/10'
                   : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
                   }`}
               />
@@ -660,7 +660,7 @@ export function ReportsPage() {
                 placeholder={formatInputPlaceholder(t('common.selectShift'), t('common.locale'))}
                 className="w-full h-full"
                 buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedShiftId
-                  ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
+                  ? '!bg-mintcom-green/5 !border-mintcom-green !text-mintcom-green ring-2 ring-mintcom-green shadow-lg shadow-mintcom-green/10'
                   : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
                   }`}
               />
@@ -674,7 +674,7 @@ export function ReportsPage() {
       <AnimatePresence mode="wait">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-32">
-            <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+            <div className="w-16 h-16 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin mb-4" />
             <p className="label-strong font-outfit">{t('dashboard.processing')}</p>
           </div>
         ) : (

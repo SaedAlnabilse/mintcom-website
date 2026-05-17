@@ -1,4 +1,4 @@
-name: PayMint Frontend CI
+name: Mintcom Frontend CI
 
 on:
   push:

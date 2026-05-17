@@ -15,13 +15,13 @@ export function LogoutOverlay() {
         >
           {/* Pulsing background circle */}
           <motion.div
-            className="absolute inset-0 bg-paymint-red/20 rounded-full"
+            className="absolute inset-0 bg-mintcom-red/20 rounded-full"
             animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
 
-          <div className="w-24 h-24 bg-paymint-red/10 rounded-full flex items-center justify-center relative z-10">
-            <LogOut className="w-10 h-10 text-paymint-red" />
+          <div className="w-24 h-24 bg-mintcom-red/10 rounded-full flex items-center justify-center relative z-10">
+            <LogOut className="w-10 h-10 text-mintcom-red" />
           </div>
         </motion.div>
 

@@ -95,11 +95,11 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
 
   return (
     <div id="tour-revenue-chart" className="lg:col-span-2 p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm transition-all duration-300 group relative overflow-hidden">
-      <div className="absolute top-0 end-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      <div className="absolute top-0 end-0 w-64 h-64 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10">
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green transition-transform duration-300 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green transition-transform duration-300 shrink-0">
               <TrendingUp size={20} />
             </div>
             <div className="pt-0.5">
@@ -108,7 +108,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
             </div>
           </div>
           <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-            <Activity size={12} className="text-paymint-green" />
+            <Activity size={12} className="text-mintcom-green" />
             <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.revenueChart.realtime')}</span>
           </div>
         </div>
@@ -155,9 +155,9 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                     >
                         <defs>
                         <linearGradient id="colorRevenuePremium" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.4} />
-                            <stop offset="60%" stopColor="#7CC39F" stopOpacity={0.1} />
-                            <stop offset="100%" stopColor="#7CC39F" stopOpacity={0} />
+                            <stop offset="5%" stopColor="#7dc6a2" stopOpacity={0.4} />
+                            <stop offset="60%" stopColor="#7dc6a2" stopOpacity={0.1} />
+                            <stop offset="100%" stopColor="#7dc6a2" stopOpacity={0} />
                         </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="0 0" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
@@ -185,7 +185,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                         />
                         <YAxis hide domain={[0, maxY]} />
                         <Tooltip
-                        cursor={chartData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
+                        cursor={chartData.length > 1 ? { stroke: '#7dc6a2', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                         formatter={(val: any) => [Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }), t('dashboard.revenueChart.revenue')]}
                         contentStyle={{
                             backgroundColor: isDark ? '#0B1120' : '#fff',
@@ -194,7 +194,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                             boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
                             padding: '12px'
                         }}
-                        itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'capitalize' }}
+                        itemStyle={{ color: '#7dc6a2', fontWeight: '900', fontSize: '12px', textTransform: 'capitalize' }}
                         labelStyle={{ fontWeight: '900', color: isDark ? '#fff' : '#000', marginBottom: '8px', fontSize: '10px' }}
                         labelFormatter={(val) => {
                             const dateLocale = getDateLocale(t('common.locale'));
@@ -229,7 +229,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                           <Area
                             type="monotone"
                             dataKey="revenue"
-                            stroke="#7CC39F"
+                            stroke="#7dc6a2"
                             strokeWidth={6}
                             fillOpacity={1}
                             fill="url(#colorRevenuePremium)"
@@ -247,9 +247,9 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                     >
                         <defs>
                         <linearGradient id="colorRevenuePremium" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.4} />
-                            <stop offset="60%" stopColor="#7CC39F" stopOpacity={0.1} />
-                            <stop offset="100%" stopColor="#7CC39F" stopOpacity={0} />
+                            <stop offset="5%" stopColor="#7dc6a2" stopOpacity={0.4} />
+                            <stop offset="60%" stopColor="#7dc6a2" stopOpacity={0.1} />
+                            <stop offset="100%" stopColor="#7dc6a2" stopOpacity={0} />
                         </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="0 0" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
@@ -273,7 +273,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                         />
                         <YAxis hide domain={[0, maxY]} />
                         <Tooltip
-                        cursor={chartData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
+                        cursor={chartData.length > 1 ? { stroke: '#7dc6a2', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                         formatter={(val: any) => [Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }), t('dashboard.revenueChart.revenue')]}
                         contentStyle={{
                             backgroundColor: isDark ? '#0B1120' : '#fff',
@@ -282,7 +282,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                             boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
                             padding: '12px'
                         }}
-                        itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'capitalize' }}
+                        itemStyle={{ color: '#7dc6a2', fontWeight: '900', fontSize: '12px', textTransform: 'capitalize' }}
                         labelStyle={{ fontWeight: '900', color: isDark ? '#fff' : '#000', marginBottom: '8px', fontSize: '10px' }}
                         labelFormatter={(val, payload) => {
                             const dateLocale = getDateLocale(t('common.locale'));
@@ -318,7 +318,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                           <Area
                             type="monotone"
                             dataKey="revenue"
-                            stroke="#7CC39F"
+                            stroke="#7dc6a2"
                             strokeWidth={6}
                             fillOpacity={1}
                             fill="url(#colorRevenuePremium)"

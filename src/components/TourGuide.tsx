@@ -87,7 +87,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div id="paymint-tour-guide-active" className="fixed inset-0 z-[9999] overflow-hidden font-sans">
+        <div id="mintcom-tour-guide-active" className="fixed inset-0 z-[9999] overflow-hidden font-sans">
           {/* Backdrop with cutout using SVG mask */}
           <div className="absolute inset-0 w-full h-full pointer-events-none">
             {targetRect && (
@@ -121,7 +121,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                   height={targetRect.height + (HIGHLIGHT_PADDING * 2)}
                   rx="20"
                   fill="none"
-                  stroke="#00D084" // paymint-green
+                  stroke="#00D084" // mintcom-green
                   strokeWidth="2"
                   className="animate-pulse"
                 />
@@ -172,7 +172,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
               }}
             >
               <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2 text-paymint-green">
+                <div className="flex items-center gap-2 text-mintcom-green">
                   <HelpCircle size={18} />
                   <span className="text-xs font-sans font-bold">{t('common.guide')}</span>
                 </div>
@@ -197,7 +197,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                   {steps.map((_, idx) => (
                     <div
                       key={idx}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentStepIndex ? 'w-6 bg-paymint-green' : 'w-1.5 bg-gray-200 dark:bg-white/10'
+                      className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentStepIndex ? 'w-6 bg-mintcom-green' : 'w-1.5 bg-gray-200 dark:bg-white/10'
                         }`}
                     />
                   ))}
@@ -220,7 +220,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                   )}
                   <button
                     onClick={handleNext}
-                    className="flex items-center gap-2 px-4 py-2 bg-paymint-green text-black font-bold text-sm rounded-xl hover:bg-paymint-green/90 transition-all shadow-lg shadow-paymint-green/20"
+                    className="flex items-center gap-2 px-4 py-2 bg-mintcom-green text-black font-bold text-sm rounded-xl hover:bg-mintcom-green/90 transition-all shadow-lg shadow-mintcom-green/20"
                   >
                     {isRTL && !isLastStep && <ChevronLeft size={16} />}
                     {isLastStep ? t('common.finish') : t('common.next')}

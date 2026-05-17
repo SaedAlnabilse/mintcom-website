@@ -945,7 +945,7 @@ export function EmployeeFormModal({
       setErrors(newErrors);
       // Scroll to the first field that has an error
       setTimeout(() => {
-        const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red, .ring-paymint-red\\/20');
+        const firstErrorField = scrollRef.current?.querySelector('.border-mintcom-red, .ring-mintcom-red\\/20');
         if (firstErrorField) {
           firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
@@ -1086,22 +1086,22 @@ export function EmployeeFormModal({
               {/* Name */}
               <div className="space-y-2">
                 <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
-                  {t('staff.form.nameLabel')} <span className="text-paymint-red">*</span>
+                  {t('staff.form.nameLabel')} <span className="text-mintcom-red">*</span>
                 </label>
                 <input maxLength={255}
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                   placeholder={formatInputPlaceholder(t('staff.form.namePlaceholder'), t('common.locale'))}
-                  className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
+                  className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
                 />
-                {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
+                {errors.name && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.name}</p>}
               </div>
 
               {/* Username */}
               <div className="space-y-2">
                 <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
-                  {t('staff.form.usernameLabel')} <span className="text-paymint-red">*</span>
+                  {t('staff.form.usernameLabel')} <span className="text-mintcom-red">*</span>
                 </label>
                 <input maxLength={255}
                   type="text"
@@ -1112,10 +1112,10 @@ export function EmployeeFormModal({
                     if (errors.username) setErrors({ ...errors, username: '' });
                   }}
                   placeholder={formatInputPlaceholder(t('staff.form.usernamePlaceholder'), t('common.locale'))}
-                  className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.username || usernameAvailabilityError ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
+                  className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.username || usernameAvailabilityError ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
                 />
                 {(errors.username || usernameAvailabilityError) && (
-                  <p className="mt-1 text-xs font-bold text-paymint-red">
+                  <p className="mt-1 text-xs font-bold text-mintcom-red">
                     {errors.username || usernameAvailabilityError}
                   </p>
                 )}
@@ -1129,16 +1129,16 @@ export function EmployeeFormModal({
               {/* Email */}
               <div className="space-y-2">
                 <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
-                  {t('staff.form.emailLabel')} {role === 'ADMIN' ? <span className="text-paymint-red">*</span> : t('staff.form.emailOptional')}
+                  {t('staff.form.emailLabel')} {role === 'ADMIN' ? <span className="text-mintcom-red">*</span> : t('staff.form.emailOptional')}
                 </label>
                 <input maxLength={255}
                   type="email"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors({ ...errors, email: '' }); }}
                   placeholder={formatInputPlaceholder(t('staff.form.emailPlaceholder'), t('common.locale'))}
-                  className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
+                  className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.email ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
                 />
-                {errors.email && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.email}</p>}
+                {errors.email && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.email}</p>}
               </div>
 
               {/* Phone */}
@@ -1151,7 +1151,7 @@ export function EmployeeFormModal({
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder={formatInputPlaceholder(t('staff.form.phonePlaceholder'), t('common.locale'))}
-                  className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors"
+                  className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors"
                 />
               </div>
 
@@ -1159,13 +1159,13 @@ export function EmployeeFormModal({
               {establishments && (
                 <div className="relative space-y-2">
                   <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
-                    {t('staff.form.accessLabel')} <span className="text-paymint-red">*</span>
+                    {t('staff.form.accessLabel')} <span className="text-mintcom-red">*</span>
                   </label>
                   <button
                     ref={establishmentButtonRef}
                     type="button"
                     onClick={() => setActiveDropdown(activeDropdown === 'ESTABLISHMENT' ? null : 'ESTABLISHMENT')}
-                    className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.establishments ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors`}
+                    className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.establishments ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors`}
                   >
                     <span className={`text-sm font-bold ${selectedEstablishmentIds.length ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>
                       {selectedEstablishmentIds.length === 0
@@ -1176,7 +1176,7 @@ export function EmployeeFormModal({
                     </span>
                     <ChevronDown size={16} className={`text-gray-400 transition-transform ${activeDropdown === 'ESTABLISHMENT' ? 'rotate-180' : ''}`} />
                   </button>
-                  {errors.establishments && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.establishments}</p>}
+                  {errors.establishments && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.establishments}</p>}
 
                   {/* Portal Dropdown */}
                   <AnimatePresence>
@@ -1235,12 +1235,12 @@ export function EmployeeFormModal({
                                         : [...prev, est.id];
                                     });
                                   }}
-                                  className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${isSelected ? 'bg-paymint-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                  className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${isSelected ? 'bg-mintcom-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
                                 >
-                                  <span className={`text-xs font-bold ${isSelected ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                  <span className={`text-xs font-bold ${isSelected ? 'text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`}>
                                     {est.name}
                                   </span>
-                                  {isSelected && <Check size={14} className="text-paymint-green" />}
+                                  {isSelected && <Check size={14} className="text-mintcom-green" />}
                                 </button>
                               );
                             })}
@@ -1253,7 +1253,7 @@ export function EmployeeFormModal({
                           <button
                             type="button"
                             onClick={() => setActiveDropdown(null)}
-                            className="w-full py-2.5 bg-paymint-green text-black font-black text-xs tracking-wide rounded-lg hover:bg-paymint-green/90 transition-colors shadow-sm"
+                            className="w-full py-2.5 bg-mintcom-green text-black font-black text-xs tracking-wide rounded-lg hover:bg-mintcom-green/90 transition-colors shadow-sm"
                           >
                             {t('common.done')}
                           </button>
@@ -1267,9 +1267,9 @@ export function EmployeeFormModal({
               {/* Role Selection - Now uses Role Template dropdown */}
               <div className="relative space-y-2">
                 <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 flex items-center justify-between tracking-normal">
-                  <span className="flex items-center gap-1">{t('staff.form.roleLabel')} <span className="text-paymint-red">*</span></span>
+                  <span className="flex items-center gap-1">{t('staff.form.roleLabel')} <span className="text-mintcom-red">*</span></span>
                   {isModifiedFromTemplate() && (
-                    <span className="text-paymint-red lowercase font-bold tracking-normal">{t('staff.form.modified')}</span>
+                    <span className="text-mintcom-red lowercase font-bold tracking-normal">{t('staff.form.modified')}</span>
                   )}
                 </label>
                 {/* Show hint if no establishments selected in owner mode */}
@@ -1311,7 +1311,7 @@ export function EmployeeFormModal({
                               });
                             }
                           }}
-                          className="h-4 w-4 accent-paymint-green"
+                          className="h-4 w-4 accent-mintcom-green"
                         />
                         <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
                           {t('staff.form.sameRoleForAll', { defaultValue: 'Same role for all locations' })}
@@ -1351,7 +1351,7 @@ export function EmployeeFormModal({
                     {/* Dashboard Mode: Show current establishment name under role selection */}
                     {!establishments && currentEstablishment?.name && (
                       <div className="flex items-center gap-1.5 mt-1.5 px-1 opacity-80">
-                        <MapPin size={10} className="text-paymint-green" />
+                        <MapPin size={10} className="text-mintcom-green" />
                         <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-tight">{currentEstablishment.name}</span>
                       </div>
                     )}
@@ -1439,15 +1439,15 @@ export function EmployeeFormModal({
                                           key={customRole.id}
                                           type="button"
                                           onClick={() => handleTemplateSelect(customRole)}
-                                          className={`w-full flex items-center justify-between p-3 pl-5 rounded-lg text-left transition-colors ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'bg-paymint-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                          className={`w-full flex items-center justify-between p-3 pl-5 rounded-lg text-left transition-colors ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'bg-mintcom-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
                                         >
                                           <div>
-                                            <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                            <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`}>
                                               {customRole.name}
                                             </span>
                                             <p className="text-xs font-bold text-gray-500 mt-0.5">{t('staff.form.permissionsCount', { count: customRole.permissions.length + (customRole.backofficePermissions?.length || 0) })}</p>
                                           </div>
-                                          {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-paymint-green" />}
+                                          {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-mintcom-green" />}
                                         </button>
                                       ))}
                                     </motion.div>
@@ -1492,15 +1492,15 @@ export function EmployeeFormModal({
                                             key={customRole.id}
                                             type="button"
                                             onClick={() => handleTemplateSelect(customRole)}
-                                            className={`w-full flex items-center justify-between p-3 pl-5 rounded-lg text-left transition-colors ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'bg-paymint-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                            className={`w-full flex items-center justify-between p-3 pl-5 rounded-lg text-left transition-colors ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'bg-mintcom-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
                                           >
                                             <div>
-                                              <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                              <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`}>
                                                 {customRole.name}
                                               </span>
                                               <p className="text-xs font-bold text-gray-500 mt-0.5">{t('staff.form.permissionsCount', { count: customRole.permissions.length + (customRole.backofficePermissions?.length || 0) })}</p>
                                             </div>
-                                            {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-paymint-green" />}
+                                            {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-mintcom-green" />}
                                           </button>
                                         ))}
                                       </motion.div>
@@ -1524,13 +1524,13 @@ export function EmployeeFormModal({
                   </>
                 )}
                 {errors.role && (
-                  <p className="text-paymint-red text-xs font-bold mt-2">{errors.role}</p>
+                  <p className="text-mintcom-red text-xs font-bold mt-2">{errors.role}</p>
                 )}
 
                 {/* UX Improvement: Location Disclaimer */}
                 {!establishments && (
                   <div className="mt-4 p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 text-mintcom-green flex items-center justify-center shrink-0">
                       <MapPin size={16} />
                     </div>
                     <p className="text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -1542,7 +1542,7 @@ export function EmployeeFormModal({
                             href="/owner/employees"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-paymint-green hover:underline cursor-pointer"
+                            className="text-mintcom-green hover:underline cursor-pointer"
                           />
                         ]}
                       />
@@ -1553,7 +1553,7 @@ export function EmployeeFormModal({
               {/* Password wrapper start (to match existing indentation/structure) */}
               <div className="pt-4 border-t border-gray-100 dark:border-white/5 space-y-2">
                 <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
-                  {initialData ? t('staff.form.newPasswordOptional') : t('staff.form.passwordLabel')} {(!initialData) && <span className="text-paymint-red">*</span>}
+                  {initialData ? t('staff.form.newPasswordOptional') : t('staff.form.passwordLabel')} {(!initialData) && <span className="text-mintcom-red">*</span>}
                 </label>
                 <div className="relative">
                   <input maxLength={255}
@@ -1561,7 +1561,7 @@ export function EmployeeFormModal({
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors({ ...errors, password: '' }); }}
                     placeholder={formatInputPlaceholder(initialData ? t('staff.form.leaveBlank') : t('staff.form.passwordPlaceholder'), t('common.locale'))}
-                    className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
+                    className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.password ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
                   />
                   <button
                     type="button"
@@ -1576,12 +1576,12 @@ export function EmployeeFormModal({
                     defaultValue: 'At least 8 characters with uppercase, lowercase, and a number.',
                   })}
                 </p>
-                {errors.password && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.password}</p>}
+                {errors.password && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.password}</p>}
               </div>
 
               <div className="space-y-2">
                 <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
-                  {t('staff.form.confirmPasswordLabel')} {(!initialData || password) && <span className="text-paymint-red">*</span>}
+                  {t('staff.form.confirmPasswordLabel')} {(!initialData || password) && <span className="text-mintcom-red">*</span>}
                 </label>
                 <div className="relative">
                   <input maxLength={255}
@@ -1589,7 +1589,7 @@ export function EmployeeFormModal({
                     value={confirmPassword}
                     onChange={(e) => { setConfirmPassword(e.target.value); if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: '' }); }}
                     placeholder={formatInputPlaceholder(t('staff.form.confirmPasswordPlaceholder'), t('common.locale'))}
-                    className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.confirmPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
+                    className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.confirmPassword ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
                   />
                   <button
                     type="button"
@@ -1599,7 +1599,7 @@ export function EmployeeFormModal({
                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                {errors.confirmPassword && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.confirmPassword}</p>}
+                {errors.confirmPassword && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.confirmPassword}</p>}
               </div>
 
             </form>
@@ -1612,7 +1612,7 @@ export function EmployeeFormModal({
                 type="button"
                 onClick={() => onDelete(initialData.id)}
                 title={t('common.deactivate')}
-                className="w-14 h-14 flex items-center justify-center bg-paymint-red/10 text-paymint-red rounded-xl hover:bg-paymint-red/20 transition-colors border border-paymint-red/20"
+                className="w-14 h-14 flex items-center justify-center bg-mintcom-red/10 text-mintcom-red rounded-xl hover:bg-mintcom-red/20 transition-colors border border-mintcom-red/20"
               >
                 <Trash2 size={20} />
               </button>
@@ -1628,7 +1628,7 @@ export function EmployeeFormModal({
               type="submit"
               form="employee-form"
               disabled={isSubmitting}
-              className="flex-1 h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center"
+              className="flex-1 h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-mintcom-green/20 disabled:opacity-50 flex items-center justify-center"
             >
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />

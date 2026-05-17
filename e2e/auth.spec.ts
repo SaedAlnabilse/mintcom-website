@@ -4,7 +4,7 @@ test.describe('Authentication Flows', () => {
   test.beforeEach(async ({ page }) => {
     // Inject cookie consent to avoid the banner intercepting clicks
     await page.addInitScript(() => {
-      window.localStorage.setItem('paymint-cookie-consent', JSON.stringify({
+      window.localStorage.setItem('mintcom-cookie-consent', JSON.stringify({
         essential: true,
         analytics: true,
         marketing: true,

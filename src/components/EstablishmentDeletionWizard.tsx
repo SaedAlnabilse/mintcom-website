@@ -194,7 +194,7 @@ export function EstablishmentDeletionWizard({
         return createPortal(
             <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans p-4">
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-200 dark:border-white/5 shadow-xl">
-                    <div className="w-12 h-12 border-4 border-paymint-red/10 border-t-paymint-red rounded-full animate-spin mx-auto" />
+                    <div className="w-12 h-12 border-4 border-mintcom-red/10 border-t-mintcom-red rounded-full animate-spin mx-auto" />
                     <p className="label-strong font-outfit mt-4 text-center">{t('security.deletion.loading')}</p>
                 </div>
             </div>,
@@ -221,9 +221,9 @@ export function EstablishmentDeletionWizard({
 
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10 flex-shrink-0">
-                    <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-red/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
+                    <div className="absolute top-0 right-0 w-48 h-48 bg-mintcom-red/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-paymint-red/10 flex items-center justify-center text-paymint-red">
+                        <div className="w-10 h-10 rounded-xl bg-mintcom-red/10 flex items-center justify-center text-mintcom-red">
                             <Trash2 size={20} />
                         </div>
                         <div>
@@ -248,9 +248,9 @@ export function EstablishmentDeletionWizard({
                             <div key={s} className="flex items-center">
                                 <div
                                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-colors ${step === s
-                                        ? 'bg-paymint-red text-white shadow-sm'
+                                        ? 'bg-mintcom-red text-white shadow-sm'
                                         : ['warning', 'export', 'confirm'].indexOf(step) > i
-                                            ? 'bg-paymint-red/20 text-paymint-red'
+                                            ? 'bg-mintcom-red/20 text-mintcom-red'
                                             : 'bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-gray-500'
                                         }`}
                                 >
@@ -259,7 +259,7 @@ export function EstablishmentDeletionWizard({
                                 {i < 2 && (
                                     <div
                                         className={`w-12 h-0.5 mx-2 ${['warning', 'export', 'confirm'].indexOf(step) > i
-                                            ? 'bg-paymint-red/30'
+                                            ? 'bg-mintcom-red/30'
                                             : 'bg-gray-200 dark:bg-white/10'
                                             }`}
                                     />
@@ -281,14 +281,14 @@ export function EstablishmentDeletionWizard({
                                 exit={{ opacity: 0, x: -20 }}
                                 className="space-y-6"
                             >
-                                <div className="bg-paymint-red/10 dark:bg-paymint-red/10 border border-red-200 dark:border-paymint-red/20 rounded-2xl p-4">
+                                <div className="bg-mintcom-red/10 dark:bg-mintcom-red/10 border border-red-200 dark:border-mintcom-red/20 rounded-2xl p-4">
                                     <div className="flex items-center gap-3">
-                                        <AlertTriangle className="text-paymint-red flex-shrink-0" size={20} />
+                                        <AlertTriangle className="text-mintcom-red flex-shrink-0" size={20} />
                                         <div>
-                                            <h3 className="font-bold text-red-700 dark:text-paymint-red leading-none">
+                                            <h3 className="font-bold text-red-700 dark:text-mintcom-red leading-none">
                                                 {t('security.deletion.warning.title')}
                                             </h3>
-                                            <p className="text-paymint-red dark:text-red-300 text-sm mt-1.5 leading-none">
+                                            <p className="text-mintcom-red dark:text-red-300 text-sm mt-1.5 leading-none">
                                                 {t('security.deletion.warning.subtitle')}
                                             </p>
                                         </div>
@@ -442,7 +442,7 @@ export function EstablishmentDeletionWizard({
                                     <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
                                         {t('security.deletion.confirm.deletionDate')}
                                     </p>
-                                    <p className="text-2xl font-bold text-paymint-red">
+                                    <p className="text-2xl font-bold text-mintcom-red">
                                         {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', {
                                             weekday: 'long',
                                             year: 'numeric',
@@ -461,7 +461,7 @@ export function EstablishmentDeletionWizard({
                                         type="text"
                                         value={establishmentLoginId}
                                         onChange={(e) => setEstablishmentLoginId(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
+                                        className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
                                     />
                                 </div>
 
@@ -469,7 +469,7 @@ export function EstablishmentDeletionWizard({
                                 <div>
                                     <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
-                                            <Lock size={14} className="text-paymint-red" />
+                                            <Lock size={14} className="text-mintcom-red" />
                                             {t('security.deletion.confirm.locationPassword')}
                                         </div>
                                     </label>
@@ -478,7 +478,7 @@ export function EstablishmentDeletionWizard({
                                             type={showEstablishmentPassword ? 'text' : 'password'}
                                             value={establishmentPassword}
                                             onChange={(e) => setEstablishmentPassword(e.target.value)}
-                                            className="w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
+                                            className="w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
                                         />
                                         <button
                                             type="button"
@@ -494,7 +494,7 @@ export function EstablishmentDeletionWizard({
                                 <div>
                                     <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
-                                            <Mail size={14} className="text-paymint-red" />
+                                            <Mail size={14} className="text-mintcom-red" />
                                             {t('security.deletion.confirm.yourEmail')}
                                         </div>
                                     </label>
@@ -502,7 +502,7 @@ export function EstablishmentDeletionWizard({
                                         type="email"
                                         value={accountEmail}
                                         onChange={(e) => setAccountEmail(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
+                                        className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
                                     />
                                 </div>
 
@@ -510,7 +510,7 @@ export function EstablishmentDeletionWizard({
                                 <div>
                                     <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
-                                            <Lock size={14} className="text-paymint-red" />
+                                            <Lock size={14} className="text-mintcom-red" />
                                             {t('security.deletion.confirm.yourPassword')}
                                         </div>
                                         <QuickInfo text={t('security.deletion.confirm.confirmYou')} />
@@ -521,8 +521,8 @@ export function EstablishmentDeletionWizard({
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             className={`w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none transition-colors ${password.length >= 6
-                                                ? 'border-paymint-green focus:border-paymint-green'
-                                                : 'border-gray-300 dark:border-gray-700 focus:border-paymint-red'
+                                                ? 'border-mintcom-green focus:border-mintcom-green'
+                                                : 'border-gray-300 dark:border-gray-700 focus:border-mintcom-red'
                                                 }`}
                                         />
                                         <button
@@ -534,7 +534,7 @@ export function EstablishmentDeletionWizard({
                                         </button>
                                     </div>
                                     {password.length >= 6 && (
-                                        <p className="text-paymint-green text-sm mt-2 flex items-center gap-1">
+                                        <p className="text-mintcom-green text-sm mt-2 flex items-center gap-1">
                                             <Check size={14} /> {t('security.deletion.confirm.passwordEntered')}
                                         </p>
                                     )}
@@ -567,7 +567,7 @@ export function EstablishmentDeletionWizard({
                             onClick={() =>
                                 setStep(step === 'warning' ? 'export' : 'confirm')
                             }
-                            className="px-6 py-3 bg-paymint-red text-white rounded-xl font-bold hover:bg-paymint-red transition-colors flex items-center gap-2"
+                            className="px-6 py-3 bg-mintcom-red text-white rounded-xl font-bold hover:bg-mintcom-red transition-colors flex items-center gap-2"
                         >
                             {t('common.continue')}
                             <ChevronRight size={18} />
@@ -582,7 +582,7 @@ export function EstablishmentDeletionWizard({
                                 password.length < 6 ||
                                 isSubmitting
                             }
-                            className="px-6 py-3 bg-paymint-red text-white rounded-xl font-bold hover:bg-paymint-red transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-6 py-3 bg-mintcom-red text-white rounded-xl font-bold hover:bg-mintcom-red transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? (
                                 <>
@@ -617,7 +617,7 @@ function StatCard({
     const { t } = useTranslation();
     return (
         <div className="bg-gray-100 dark:bg-white/5 rounded-xl p-4 text-center">
-            <Icon size={20} className="text-paymint-red mx-auto mb-2" />
+            <Icon size={20} className="text-mintcom-red mx-auto mb-2" />
             <div className="text-2xl font-bold text-gray-900 dark:text-white tracking-tighter">
                 {value.toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
             </div>
@@ -655,7 +655,7 @@ function ExportOption({
                 checked={checked}
                 onChange={(e) => !disabled && onChange(e.target.checked)}
                 disabled={disabled}
-                className={`w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                className={`w-5 h-5 rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
             />
             <FileSpreadsheet size={20} className="text-gray-400" />
             <div className="flex-1">
@@ -707,7 +707,7 @@ export function PendingDeletionBanner({
         <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-paymint-red to-paymint-red rounded-2xl p-6 text-white mb-8"
+            className="bg-gradient-to-r from-mintcom-red to-mintcom-red rounded-2xl p-6 text-white mb-8"
         >
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-4">
@@ -729,7 +729,7 @@ export function PendingDeletionBanner({
                     <button
                         onClick={onCancelDeletion}
                         disabled={isCancelling}
-                        className="px-6 py-3 bg-white text-paymint-red font-bold rounded-xl hover:bg-white/90 transition-colors flex items-center gap-2 disabled:opacity-50"
+                        className="px-6 py-3 bg-white text-mintcom-red font-bold rounded-xl hover:bg-white/90 transition-colors flex items-center gap-2 disabled:opacity-50"
                     >
                         {isCancelling ? (
                             <>

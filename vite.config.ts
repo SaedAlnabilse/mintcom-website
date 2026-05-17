@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'paymint-logo.svg', 'paymint-logo.png', 'pwa-icon-192.png', 'pwa-icon-512.png'],
+      includeAssets: ['mintcom-leaf.svg', 'mintcom-logo.png', 'pwa-icon-192.png', 'pwa-icon-512.png'],
       manifestFilename: 'manifest.webmanifest',
       workbox: {
         navigateFallback: '/index.html',
@@ -17,10 +17,10 @@ export default defineConfig({
         clientsClaim: true,
       },
       manifest: {
-        name: 'PayMint POS',
-        short_name: 'PayMint',
+        name: 'Mintcom POS',
+        short_name: 'Mintcom',
         description: 'All-in-One Cloud POS & Business Management',
-        theme_color: '#7CC39F',
+        theme_color: '#7dc6a2',
         background_color: '#ffffff',
         display: 'standalone',
         start_url: '/',

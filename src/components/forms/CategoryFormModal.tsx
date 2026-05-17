@@ -105,7 +105,7 @@ export function CategoryFormModal({
       setErrors({ name: t('categories.errors.nameRequired') });
       // Scroll to the first field that has an error
       setTimeout(() => {
-        const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red');
+        const firstErrorField = scrollRef.current?.querySelector('.border-mintcom-red');
         if (firstErrorField) {
           firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
@@ -139,7 +139,7 @@ export function CategoryFormModal({
 
           {/* Header */}
           <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-mintcom-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
               <div>
                 <h2 className="text-xl font-medium text-gray-900 dark:text-white tracking-tight">
                   {initialData ? t('categories.editCategory') : t('categories.newCategory')}
@@ -168,7 +168,7 @@ export function CategoryFormModal({
               {/* Name */}
               <div className="space-y-2">
                 <label className="label-strong block flex items-center gap-1">
-                  {t('categories.form.nameLabel')} <span className="text-paymint-red">*</span>
+                  {t('categories.form.nameLabel')} <span className="text-mintcom-red">*</span>
                   <QuickInfo text={t('categories.form.nameTip')} />
                 </label>
                 <input maxLength={255}
@@ -176,9 +176,9 @@ export function CategoryFormModal({
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                   placeholder={formatInputPlaceholder(t('categories.form.namePlaceholder'), t('common.locale'))}
-                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name || (externalError && externalError.toLowerCase().includes('already exists')) ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name || (externalError && externalError.toLowerCase().includes('already exists')) ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
                 />
-                {errors.name && <p className="mt-1.5 px-1 text-xs font-medium text-paymint-red">{errors.name}</p>}
+                {errors.name && <p className="mt-1.5 px-1 text-xs font-medium text-mintcom-red">{errors.name}</p>}
               </div>
 
               {/* Icon Grid */}
@@ -197,8 +197,8 @@ export function CategoryFormModal({
                         type="button"
                         onClick={() => setSelectedIcon(icon)}
                         className={`aspect-square flex items-center justify-center rounded-xl border-2 transition-all duration-300 ${isSelected
-                          ? 'bg-paymint-green border-paymint-green shadow-lg shadow-paymint-green/10 scale-110 z-10'
-                          : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+                          ? 'bg-mintcom-green border-mintcom-green shadow-lg shadow-mintcom-green/10 scale-110 z-10'
+                          : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-mintcom-green/30'
                           }`}
                       >
                         <IconComp
@@ -230,7 +230,7 @@ export function CategoryFormModal({
                   type="button"
                   onClick={() => initialData && onReactivate?.(initialData.id)}
                   disabled={isSubmitting}
-                  className="flex-1 h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                  className="flex-1 h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
                 >
                   <RotateCcw size={18} />
                   <span>{t('common.reactivate', { defaultValue: 'Reactivate' })}</span>
@@ -243,7 +243,7 @@ export function CategoryFormModal({
                     type="button"
                     onClick={() => onDelete(initialData.id)}
                     title={t('common.delete', { defaultValue: 'Delete' })}
-                    className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90"
+                    className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-mintcom-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90"
                   >
                     <Trash2 size={24} className="group-hover:scale-110 transition-transform" />
                   </button>
@@ -259,7 +259,7 @@ export function CategoryFormModal({
                   type="submit"
                   form="category-form"
                   disabled={isSubmitting}
-                  className="flex-[2] h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                  className="flex-[2] h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
                 >
                   {isSubmitting ? (
                     <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />

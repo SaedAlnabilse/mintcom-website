@@ -177,7 +177,7 @@ export const NewTicketPage = () => {
           <div className="container mx-auto max-w-[1280px] px-6 md:px-10">
             <div className="max-w-3xl mx-auto">
               <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-10 text-center">
-                <Loader2 size={28} className="animate-spin mx-auto mb-3 text-paymint-green" />
+                <Loader2 size={28} className="animate-spin mx-auto mb-3 text-mintcom-green" />
                 <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">Loading account...</p>
               </div>
             </div>
@@ -232,12 +232,12 @@ export const NewTicketPage = () => {
                         setErrors({ ...errors, category: '' });
                       }}
                       className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${formData.category === category.id
-                        ? 'border-paymint-green bg-paymint-green/5'
+                        ? 'border-mintcom-green bg-mintcom-green/5'
                         : 'border-gray-100 dark:border-white/10 hover:border-gray-200 dark:hover:border-white/20'
                         }`}
                     >
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${formData.category === category.id
-                        ? 'bg-paymint-green text-black'
+                        ? 'bg-mintcom-green text-black'
                         : 'bg-gray-100 dark:bg-white/10 text-gray-500'
                         }`}>
                         <category.icon size={20} />
@@ -271,7 +271,7 @@ export const NewTicketPage = () => {
                       type="button"
                       onClick={() => setFormData({ ...formData, priority: priority.id })}
                       className={`p-4 rounded-xl border-2 transition-all text-center ${formData.priority === priority.id
-                        ? 'border-paymint-green bg-paymint-green/5'
+                        ? 'border-mintcom-green bg-mintcom-green/5'
                         : `${priority.color} border-transparent`
                         }`}
                     >
@@ -295,7 +295,7 @@ export const NewTicketPage = () => {
                     setErrors({ ...errors, subject: '' });
                   }}
                   placeholder={formatInputPlaceholder(t('support.newTicket.subjectPlaceholder'), t('common.locale'))}
-                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green/50 ${errors.subject ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
+                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 ${errors.subject ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                     }`}
                   maxLength={100}
                 />
@@ -325,7 +325,7 @@ export const NewTicketPage = () => {
                   }}
                   placeholder={formatInputPlaceholder(t('support.newTicket.descriptionPlaceholder'), t('common.locale'))}
                   rows={6}
-                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green/50 resize-none ${errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
+                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 resize-none ${errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                     }`}
                   maxLength={2000}
                 />
@@ -385,7 +385,7 @@ export const NewTicketPage = () => {
               <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                 <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
                   {t('support.newTicket.privacyAgreement')}{' '}
-                  <a href="/legal/privacy" className="text-paymint-green hover:underline">{t('common.privacyPolicy')}</a>
+                  <a href="/legal/privacy" className="text-mintcom-green hover:underline">{t('common.privacyPolicy')}</a>
                 </p>
 
                 <div className="flex gap-3">
@@ -398,7 +398,7 @@ export const NewTicketPage = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] disabled:opacity-50 shadow-lg shadow-paymint-green/20"
+                    className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] disabled:opacity-50 shadow-lg shadow-mintcom-green/20"
                   >
                     {isSubmitting ? (
                       <>

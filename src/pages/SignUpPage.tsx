@@ -16,8 +16,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { Spinner } from '../components/ui/Spinner';
-import PaymintLogoGreen from '../assets/green-full-logo.svg';
-import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
+import MintcomLogoGreen from '../assets/green-full-logo.svg';
+import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 import { getSignUpSchema, type SignUpFormData } from '../utils/validation';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
@@ -135,10 +135,10 @@ export function SignUpPage() {
 
   /* ── Input base classes ── */
   const inputBase = (hasError: boolean) =>
-    `w-full rounded-2xl border bg-gray-50/70 px-5 py-4 text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:bg-white/10 ${
+    `w-full rounded-2xl border bg-gray-50/70 px-5 py-4 text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:bg-white/10 ${
       hasError
         ? 'border-red-400 dark:border-red-500'
-        : 'border-gray-200 dark:border-white/10 focus:border-paymint-green/40'
+        : 'border-gray-200 dark:border-white/10 focus:border-mintcom-green/40'
     }`;
 
   /* ── Success screen ── */
@@ -155,9 +155,9 @@ export function SignUpPage() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
-            className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-paymint-green/15 ring-4 ring-paymint-green/20"
+            className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-mintcom-green/15 ring-4 ring-mintcom-green/20"
           >
-            <Check size={40} strokeWidth={2.5} className="text-paymint-green" />
+            <Check size={40} strokeWidth={2.5} className="text-mintcom-green" />
           </motion.div>
           <h2 className="font-magilio text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
             {t('auth.signup.checkEmail')}
@@ -174,7 +174,7 @@ export function SignUpPage() {
                 type="button"
                 onClick={handleResendVerification}
                 disabled={isResendingVerification}
-                className="font-bold text-paymint-green hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+                className="font-bold text-mintcom-green hover:underline disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isResendingVerification ? t('common.sending', 'Sending...') : t('auth.signup.resendVerification')}
               </button>
@@ -182,7 +182,7 @@ export function SignUpPage() {
           </div>
           <Link
             to="/login"
-            className="group mt-8 inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-paymint-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(124,195,159,0.7)]"
+            className="group mt-8 inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(124,195,159,0.7)]"
           >
             {t('auth.signup.goToLogin')}
             <ArrowRight size={16} className={isRtl ? 'rotate-180' : ''} />
@@ -232,8 +232,8 @@ export function SignUpPage() {
       {/* ── Minimal top bar ── */}
       <div className="absolute inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-4 md:px-10">
         <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <img src={PaymintLogoGreen} alt="PayMint" className="h-8 w-auto object-contain dark:hidden" />
-          <img src={PaymintLogoWhite} alt="PayMint" className="hidden h-8 w-auto object-contain dark:block" />
+          <img src={MintcomLogoGreen} alt="Mintcom" className="h-8 w-auto object-contain dark:hidden" />
+          <img src={MintcomLogoWhite} alt="Mintcom" className="hidden h-8 w-auto object-contain dark:block" />
         </Link>
         <div className="flex items-center gap-3">
           <LanguageSwitcher />
@@ -271,7 +271,7 @@ export function SignUpPage() {
           {/* Glass card */}
           <div className="relative overflow-hidden rounded-3xl border border-gray-200/70 bg-white/90 p-8 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
             {/* Subtle corner glow */}
-            <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-paymint-green/10 blur-3xl" />
+            <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-mintcom-green/10 blur-3xl" />
 
             <form onSubmit={handleSubmit(onSubmit)} className="relative space-y-5">
               {/* Name row */}
@@ -412,11 +412,11 @@ export function SignUpPage() {
                 {criteria.map((item, i) => (
                   <div key={i} className="flex items-center gap-2">
                     {item.met ? (
-                      <CheckCircle2 size={13} className="flex-shrink-0 text-paymint-green" />
+                      <CheckCircle2 size={13} className="flex-shrink-0 text-mintcom-green" />
                     ) : (
                       <div className="h-3.5 w-3.5 flex-shrink-0 rounded-full border-2 border-gray-300 dark:border-white/10" />
                     )}
-                    <span className={`text-[10px] font-bold ${item.met ? 'text-paymint-green' : 'text-gray-400'}`}>
+                    <span className={`text-[10px] font-bold ${item.met ? 'text-mintcom-green' : 'text-gray-400'}`}>
                       {item.label}
                     </span>
                   </div>
@@ -432,13 +432,13 @@ export function SignUpPage() {
                     type="checkbox"
                     aria-invalid={!!errors.agreeToTerms}
                     aria-describedby={errors.agreeToTerms ? 'agreeToTerms-error' : undefined}
-                    className={`mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-paymint-green focus:ring-paymint-green dark:border-white/20 ${errors.agreeToTerms ? 'border-red-400' : ''}`}
+                    className={`mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green dark:border-white/20 ${errors.agreeToTerms ? 'border-red-400' : ''}`}
                   />
                   <label htmlFor="agreeToTerms" className="cursor-pointer text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {t('landing.contact.termsAgree')}{' '}
-                    <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="font-bold text-paymint-green hover:underline">{t('landing.contact.privacyPolicy')}</Link>{' '}
+                    <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="font-bold text-mintcom-green hover:underline">{t('landing.contact.privacyPolicy')}</Link>{' '}
                     {t('common.and')}{' '}
-                    <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="font-bold text-paymint-green hover:underline">{t('landing.contact.termsOfService')}</Link>.
+                    <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="font-bold text-mintcom-green hover:underline">{t('landing.contact.termsOfService')}</Link>.
                   </label>
                 </div>
                 {errors.agreeToTerms && (
@@ -450,7 +450,7 @@ export function SignUpPage() {
                     type="checkbox"
                     checked={subscribeToNews}
                     onChange={(e) => setSubscribeToNews(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-paymint-green focus:ring-paymint-green dark:border-white/20"
+                    className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green dark:border-white/20"
                   />
                   <label htmlFor="subscribeToNews" className="cursor-pointer text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {formatInputLabel(t('auth.signup.subscribeToNews'), t('common.locale'))}
@@ -464,7 +464,7 @@ export function SignUpPage() {
                 whileTap={{ scale: 0.97 }}
                 type="submit"
                 disabled={isSubmitting}
-                className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-paymint-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(124,195,159,0.7)] disabled:opacity-60"
+                className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(124,195,159,0.7)] disabled:opacity-60"
               >
                 <span aria-hidden className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 <span className="relative">{isSubmitting ? t('auth.signup.creatingAccount') : t('auth.signup.signUpButton')}</span>
@@ -493,7 +493,7 @@ export function SignUpPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {t('auth.signup.haveAccount')}{' '}
-                <Link to="/login" className="font-bold text-paymint-green hover:underline">
+                <Link to="/login" className="font-bold text-mintcom-green hover:underline">
                   {t('auth.signup.logIn')}
                 </Link>
               </p>
@@ -502,9 +502,9 @@ export function SignUpPage() {
             <div className="mt-6 border-t border-gray-100 pt-5 dark:border-white/5">
               <p className="text-center text-[10px] leading-relaxed text-gray-400 dark:text-gray-500">
                 {t('auth.signup.disclaimerPrefix')}{' '}
-                <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.termsOfService')}</Link>{' '}
+                <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-mintcom-green hover:underline">{t('footer.termsOfService')}</Link>{' '}
                 {t('common.and')}{' '}
-                <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.privacyPolicy')}</Link>.
+                <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-mintcom-green hover:underline">{t('footer.privacyPolicy')}</Link>.
               </p>
             </div>
           </div>
@@ -515,7 +515,7 @@ export function SignUpPage() {
       <div className="relative hidden overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 lg:flex lg:flex-1 lg:items-center lg:justify-center dark:from-[#050505] dark:via-[#0a0a0a] dark:to-[#050505]">
         {/* Background ambient */}
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-20 right-[10%] h-[400px] w-[400px] rounded-full bg-paymint-green/10 blur-[120px]" />
+          <div className="absolute -top-20 right-[10%] h-[400px] w-[400px] rounded-full bg-mintcom-green/10 blur-[120px]" />
           <div className="absolute -bottom-20 left-[10%] h-[400px] w-[400px] rounded-full bg-emerald-400/5 blur-[120px]" />
           {/* Faint grid */}
           <div
@@ -524,7 +524,7 @@ export function SignUpPage() {
             style={{
               backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
               backgroundSize: '48px 48px',
-              color: '#7CC39F',
+              color: '#7dc6a2',
               maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
               WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
             }}
@@ -538,14 +538,14 @@ export function SignUpPage() {
           className="relative z-10 w-full max-w-lg px-10"
         >
           {/* Badge */}
-          <div className="mb-8 inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-paymint-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
+          <div className="mb-8 inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
             <Zap size={12} fill="currentColor" />
             <span>{t('auth.signup.allFeaturesIncluded')}</span>
           </div>
 
           <h2 className="font-magilio text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 dark:text-white lg:text-5xl">
             {t('landing.features.title')}{' '}
-            <span className="bg-gradient-to-r from-paymint-green via-emerald-400 to-paymint-green bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-mintcom-green via-emerald-400 to-mintcom-green bg-clip-text text-transparent">
               {t('landing.features.titleHighlight')}
             </span>
           </h2>
@@ -570,10 +570,10 @@ export function SignUpPage() {
                 initial={{ opacity: 0, x: 16 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="group flex items-start gap-4 rounded-2xl border border-transparent p-3 transition-all duration-300 hover:border-paymint-green/15 hover:bg-paymint-green/5"
+                className="group flex items-start gap-4 rounded-2xl border border-transparent p-3 transition-all duration-300 hover:border-mintcom-green/15 hover:bg-mintcom-green/5"
               >
-                <span className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-paymint-green/10 ring-1 ring-paymint-green/20 transition-all group-hover:bg-paymint-green group-hover:ring-paymint-green/40">
-                  <Check size={15} strokeWidth={3} className="text-paymint-green transition-colors group-hover:text-black" />
+                <span className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 ring-1 ring-mintcom-green/20 transition-all group-hover:bg-mintcom-green group-hover:ring-mintcom-green/40">
+                  <Check size={15} strokeWidth={3} className="text-mintcom-green transition-colors group-hover:text-black" />
                 </span>
                 <div className="min-w-0">
                   <p className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{item.title}</p>
@@ -604,8 +604,8 @@ export function SignUpPage() {
               className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
             >
               <div className="mb-8 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-paymint-green/10">
-                  <ShieldCheck size={28} className="text-paymint-green" />
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-mintcom-green/10">
+                  <ShieldCheck size={28} className="text-mintcom-green" />
                 </div>
                 <h3 className="font-magilio text-2xl font-bold text-gray-900 dark:text-white">
                   {t('common.security')}
@@ -617,7 +617,7 @@ export function SignUpPage() {
 
               <div className="space-y-4">
                 <div
-                  className="flex cursor-pointer items-start gap-3 rounded-2xl border border-gray-100 bg-gray-50/70 p-4 transition-colors hover:border-paymint-green/20 dark:border-white/5 dark:bg-white/[0.03]"
+                  className="flex cursor-pointer items-start gap-3 rounded-2xl border border-gray-100 bg-gray-50/70 p-4 transition-colors hover:border-mintcom-green/20 dark:border-white/5 dark:bg-white/[0.03]"
                   onClick={() => setModalAgreed(!modalAgreed)}
                 >
                   <input
@@ -625,18 +625,18 @@ export function SignUpPage() {
                     type="checkbox"
                     checked={modalAgreed}
                     readOnly
-                    className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-paymint-green focus:ring-paymint-green dark:border-white/20"
+                    className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green dark:border-white/20"
                   />
                   <div className="text-xs leading-relaxed text-gray-600 dark:text-gray-300" onClick={(e) => e.stopPropagation()}>
                     {t('landing.contact.termsAgree')}{' '}
-                    <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="font-bold text-paymint-green hover:underline">{t('landing.contact.privacyPolicy')}</Link>{' '}
+                    <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="font-bold text-mintcom-green hover:underline">{t('landing.contact.privacyPolicy')}</Link>{' '}
                     {t('common.and')}{' '}
-                    <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="font-bold text-paymint-green hover:underline">{t('landing.contact.termsOfService')}</Link>.
+                    <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="font-bold text-mintcom-green hover:underline">{t('landing.contact.termsOfService')}</Link>.
                   </div>
                 </div>
 
                 <div
-                  className="flex cursor-pointer items-start gap-3 rounded-2xl border border-gray-100 bg-gray-50/70 p-4 transition-colors hover:border-paymint-green/20 dark:border-white/5 dark:bg-white/[0.03]"
+                  className="flex cursor-pointer items-start gap-3 rounded-2xl border border-gray-100 bg-gray-50/70 p-4 transition-colors hover:border-mintcom-green/20 dark:border-white/5 dark:bg-white/[0.03]"
                   onClick={() => setModalSubscribeToNews(!modalSubscribeToNews)}
                 >
                   <input
@@ -644,7 +644,7 @@ export function SignUpPage() {
                     type="checkbox"
                     checked={modalSubscribeToNews}
                     readOnly
-                    className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-paymint-green focus:ring-paymint-green dark:border-white/20"
+                    className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green dark:border-white/20"
                   />
                   <div className="text-xs leading-relaxed text-gray-600 dark:text-gray-300" onClick={(e) => e.stopPropagation()}>
                     {t('auth.signup.subscribeToNews')}

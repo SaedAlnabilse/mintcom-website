@@ -1,11 +1,11 @@
-# robots.txt for PayMint Website
+# robots.txt for Mintcom Website
 # Allow all search engines to crawl and index
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://paymintpos.net/sitemap.xml
+Sitemap: https://mintcompos.com/sitemap.xml
 
 # Allow all crawlers
 User-agent: Googlebot

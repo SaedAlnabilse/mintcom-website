@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useScrollLock } from '../hooks/useScrollLock';
-import PaymintLeafIcon from '../assets/small-logo.svg';
+import MintcomLeafIcon from '../assets/small-logo.svg';
 import AppStoreBadge from '../assets/App_Store_(iOS)-Badge-Logo.wine.svg';
 import GooglePlayBadge from '../assets/Google_Play-Badge-Logo.wine.svg';
 
@@ -124,7 +124,7 @@ export function MobileAppModal({ isOpen, onClose }: MobileAppModalProps) {
                   {/* Center logo placeholder */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-md border border-gray-100">
-                      <img src={PaymintLeafIcon} alt="PayMint" className="w-6 h-6 object-contain" />
+                      <img src={MintcomLeafIcon} alt="Mintcom" className="w-6 h-6 object-contain" />
                     </div>
                   </div>
                 </div>
@@ -133,7 +133,7 @@ export function MobileAppModal({ isOpen, onClose }: MobileAppModalProps) {
               {/* Text & Badges */}
               <div className="text-center">
                 <p className="text-base font-bold text-gray-900 dark:text-white leading-tight mb-4">
-                  {t('dashboard.menu.scanToDownload')} <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
+                  {t('dashboard.menu.scanToDownload')} <span className="text-mintcom-green">{t('brand.name')} {t('common.app')}</span>
                 </p>
                 <div className="flex flex-row items-center justify-center gap-3">
                   <a

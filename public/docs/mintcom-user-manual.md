@@ -1,4 +1,4 @@
-# PayMint User Manual
+# Mintcom User Manual
 
 **Version:** 7.0  
 **Last Updated:** May 15, 2026  
@@ -21,7 +21,7 @@
 
 ## 1. Overview
 
-PayMint is a cloud POS and business management system for restaurants, cafes, bakeries, and retail businesses.
+Mintcom is a cloud POS and business management system for restaurants, cafes, bakeries, and retail businesses.
 
 What you can do:
 
@@ -40,7 +40,7 @@ Use the onboarding flow when you create a brand new location.
 
 Steps:
 
-1. Create your PayMint account.
+1. Create your Mintcom account.
 2. Verify your email address.
 3. Complete the onboarding wizard.
 4. Enter your business name, address, currency, and location details.
@@ -71,7 +71,7 @@ If you already have a brand and just want to add another branch, use the owner p
 
 ### Split payments
 
-PayMint supports split payments when a customer uses more than one payment method. You can divide the order by amount or by items, depending on the checkout flow enabled for the location.
+Mintcom supports split payments when a customer uses more than one payment method. You can divide the order by amount or by items, depending on the checkout flow enabled for the location.
 
 ### Hold and resume orders
 
@@ -125,7 +125,7 @@ Attach the modifier group to the products that should display those options.
 
 ## 5. Recipes and Stock Tracking
 
-PayMint supports stock tracking and recipe operations for items that need ingredients or production steps.
+Mintcom supports stock tracking and recipe operations for items that need ingredients or production steps.
 
 Use this when you want to:
 
@@ -191,7 +191,7 @@ Billing tips:
 
 ## 9. Hardware and Settings
 
-PayMint supports common store hardware, including:
+Mintcom supports common store hardware, including:
 
 - Thermal receipt printers
 - Barcode scanners
@@ -210,7 +210,7 @@ Settings you should review:
 
 ## 10. Offline Mode and Sync
 
-If the internet connection drops, PayMint can continue taking basic sales.
+If the internet connection drops, Mintcom can continue taking basic sales.
 
 What happens offline:
 
@@ -259,15 +259,15 @@ Best practice:
 
 ## 12. Support
 
-Support email: `support@paymintpos.net`
+Support email: `support@mintcompos.com`
 
-Security reports: `security@paymintpos.net`
+Security reports: `admin@mintcompos.com`
 
-Privacy requests: `privacy@paymintpos.net`
+Privacy requests: `info@mintcompos.com`
 
-Terms questions: `legal@paymintpos.net`
+Terms questions: `info@mintcompos.com`
 
-Help center: `https://paymintpos.net/support`
+Help center: `https://mintcompos.com/support`
 
 When contacting support, include:
 

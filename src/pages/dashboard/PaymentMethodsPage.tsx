@@ -489,7 +489,7 @@ export function PaymentMethodsPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('paymentMethods.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -499,10 +499,10 @@ export function PaymentMethodsPage() {
 
       {/* Card Types Section */}
       <section className="bg-white dark:bg-[#1E293B] rounded-[32px] border border-gray-200 dark:border-white/[0.03] p-8 sm:p-10 shadow-sm overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-mintcom-green/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
         
         <div className="flex items-start gap-5 mb-12 relative z-10">
-          <div className="w-14 h-14 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shrink-0 border border-paymint-green/20">
+          <div className="w-14 h-14 rounded-2xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shrink-0 border border-mintcom-green/20">
             <CreditCard size={28} />
           </div>
           <div className="flex flex-col gap-1.5 flex-1">
@@ -525,7 +525,7 @@ export function PaymentMethodsPage() {
                   <button
                     onClick={handleSeedDefaults}
                     disabled={isSubmitting}
-                    className="px-4 py-2 bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest uppercase rounded-lg border border-paymint-green/20 hover:bg-paymint-green/20 transition-all flex items-center gap-2"
+                    className="px-4 py-2 bg-mintcom-green/10 text-mintcom-green text-[10px] font-black tracking-widest uppercase rounded-lg border border-mintcom-green/20 hover:bg-mintcom-green/20 transition-all flex items-center gap-2"
                   >
                     <Star size={12} fill="currentColor" />
                     {t('paymentMethods.setupDefaults', 'Setup Defaults')}
@@ -577,8 +577,8 @@ export function PaymentMethodsPage() {
                     <h3 className="text-base font-bold text-gray-900 dark:text-white truncate px-1">{card.name}</h3>
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide ${
                       card.isActive === false
-                        ? 'bg-paymint-red/10 text-paymint-red'
-                        : 'bg-paymint-green/10 text-paymint-green'
+                        ? 'bg-mintcom-red/10 text-mintcom-red'
+                        : 'bg-mintcom-green/10 text-mintcom-green'
                     }`}>
                       {card.isActive === false ? t('common.inactive', 'Inactive') : t('common.active', 'Active')}
                     </span>
@@ -587,14 +587,14 @@ export function PaymentMethodsPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => { setEditingCard(card); setNewCardName(card.name); setCardImagePreview(card.imageUrl || card.logo || null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
-                      className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-500 hover:text-paymint-green hover:bg-paymint-green/10 border border-gray-100 dark:border-white/5 transition-all font-bold text-xs active:scale-95"
+                      className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-500 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-gray-100 dark:border-white/5 transition-all font-bold text-xs active:scale-95"
                     >
                       <Edit2 size={16} /> {t('common.edit')}
                     </button>
                     {card.isActive === false ? (
                       <button
                         onClick={() => reactivateCardType(card.id)}
-                        className="p-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 border border-gray-100 dark:border-white/5 transition-all active:scale-90"
+                        className="p-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-gray-100 dark:border-white/5 transition-all active:scale-90"
                         title={t('common.reactivate', { defaultValue: 'Reactivate' })}
                       >
                         <RotateCcw size={18} />
@@ -619,10 +619,10 @@ export function PaymentMethodsPage() {
             <motion.button
               layout
               onClick={openCreateCardTypeModal}
-              className="group relative aspect-square sm:aspect-auto sm:min-h-[220px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-[24px] p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-4"
+              className="group relative aspect-square sm:aspect-auto sm:min-h-[220px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-[24px] p-6 cursor-pointer hover:border-mintcom-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-4"
             >
-              <div className="w-14 h-14 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
-                <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+              <div className="w-14 h-14 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-mintcom-green/10 group-hover:border-mintcom-green transition-all shadow-sm">
+                <Plus size={24} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
               </div>
               <span className="text-sm font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{t('paymentMethods.addBrand')}</span>
             </motion.button>
@@ -632,10 +632,10 @@ export function PaymentMethodsPage() {
 
       {/* Main Section */}
       <section className="bg-white dark:bg-[#1E293B] rounded-[32px] border border-gray-200 dark:border-white/[0.03] p-8 sm:p-10 shadow-sm overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-mintcom-green/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
         
         <div className="flex items-start gap-5 mb-12 relative z-10">
-          <div className="w-14 h-14 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shrink-0 border border-paymint-green/20">
+          <div className="w-14 h-14 rounded-2xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shrink-0 border border-mintcom-green/20">
             <Wallet size={28} />
           </div>
           <div className="flex flex-col gap-1.5 flex-1">
@@ -658,7 +658,7 @@ export function PaymentMethodsPage() {
                   <button
                     onClick={handleSeedDefaults}
                     disabled={isSubmitting}
-                    className="px-4 py-2 bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest uppercase rounded-lg border border-paymint-green/20 hover:bg-paymint-green/20 transition-all flex items-center gap-2"
+                    className="px-4 py-2 bg-mintcom-green/10 text-mintcom-green text-[10px] font-black tracking-widest uppercase rounded-lg border border-mintcom-green/20 hover:bg-mintcom-green/20 transition-all flex items-center gap-2"
                   >
                     <Star size={12} fill="currentColor" />
                     {t('paymentMethods.setupDefaults', 'Setup Defaults')}
@@ -722,8 +722,8 @@ export function PaymentMethodsPage() {
                     <h3 className="text-base font-bold text-gray-900 dark:text-white truncate px-1">{method.name}</h3>
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide ${
                       method.isActive
-                        ? 'bg-paymint-green/10 text-paymint-green'
-                        : 'bg-paymint-red/10 text-paymint-red'
+                        ? 'bg-mintcom-green/10 text-mintcom-green'
+                        : 'bg-mintcom-red/10 text-mintcom-red'
                     }`}>
                       {method.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                     </span>
@@ -734,7 +734,7 @@ export function PaymentMethodsPage() {
                       <>
                         <button
                           onClick={() => { setEditingMethod(method); reset({ name: method.name, isActive: method.isActive }); setImagePreview(method.imageUrl || null); setShowModal(true); }}
-                          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-500 hover:text-paymint-green hover:bg-paymint-green/10 border border-gray-100 dark:border-white/5 transition-all font-bold text-xs"
+                          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-500 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-gray-100 dark:border-white/5 transition-all font-bold text-xs"
                         >
                           <Edit2 size={14} /> {t('common.edit')}
                         </button>
@@ -749,7 +749,7 @@ export function PaymentMethodsPage() {
                         ) : (
                           <button
                             onClick={() => reactivatePaymentMethod(method.id)}
-                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 border border-gray-100 dark:border-white/5 transition-all"
+                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-gray-100 dark:border-white/5 transition-all"
                             title={t('common.reactivate', { defaultValue: 'Reactivate' })}
                           >
                             <RotateCcw size={14} />
@@ -771,10 +771,10 @@ export function PaymentMethodsPage() {
               <motion.button
                 layout
                 onClick={openCreatePaymentMethodModal}
-                className="group relative aspect-square sm:aspect-auto sm:min-h-[220px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-[24px] p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-4"
+                className="group relative aspect-square sm:aspect-auto sm:min-h-[220px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-[24px] p-6 cursor-pointer hover:border-mintcom-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-4"
               >
-                <div className="w-14 h-14 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
-                  <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+                <div className="w-14 h-14 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-mintcom-green/10 group-hover:border-mintcom-green transition-all shadow-sm">
+                  <Plus size={24} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
                 </div>
                 <span className="text-sm font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{t('paymentMethods.addPayment')}</span>
               </motion.button>
@@ -812,7 +812,7 @@ export function PaymentMethodsPage() {
 
               <div className="px-8 py-6 border-b border-gray-50 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                  <div className="w-12 h-12 rounded-2xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
                     <Wallet size={24} />
                   </div>
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -829,7 +829,7 @@ export function PaymentMethodsPage() {
 
               <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all hover:border-paymint-green/50">
+                  <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all hover:border-mintcom-green/50">
                     {imagePreview ? (
                       <>
                         <img src={imagePreview} alt="Preview" className="w-full h-full object-contain p-4" loading="lazy" decoding="async" />
@@ -857,15 +857,15 @@ export function PaymentMethodsPage() {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <label className="block text-[10px] font-normal text-gray-400 tracking-[0.2em]  px-1 flex items-center gap-2">
-                      {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
+                      {t('paymentMethods.form.nameLabel')} <span className="text-mintcom-red">*</span>
                     </label>
                     <input maxLength={255}
                       type="text"
                       {...register('name')}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm`}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm`}
                       placeholder={formatInputPlaceholder(t('paymentMethods.form.namePlaceholder'), t('common.locale'))}
                     />
-                    {errors.name && <p className="text-paymint-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{errors.name.message}</p>}
+                    {errors.name && <p className="text-mintcom-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{errors.name.message}</p>}
                   </div>
                 </div>
 
@@ -884,7 +884,7 @@ export function PaymentMethodsPage() {
                         type="button"
                         onClick={() => reactivatePaymentMethod(editingMethod.id)}
                         disabled={isSubmitting}
-                        className="flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg shadow-paymint-green/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100"
+                        className="flex-1 py-4 bg-mintcom-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg shadow-mintcom-green/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100"
                       >
                         <RotateCcw size={16} />
                         {t('common.reactivate', { defaultValue: 'Reactivate' })}
@@ -900,7 +900,7 @@ export function PaymentMethodsPage() {
                             handleDelete(editingMethod.id, editingMethod.name);
                           }}
                           disabled={isSubmitting}
-                          className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                          className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                           <Trash2 size={16} />
                           {t('common.deactivate')}
@@ -909,7 +909,7 @@ export function PaymentMethodsPage() {
                       <button
                         type="submit"
                         disabled={isSubmitting || !watchName?.trim()}
-                        className={`flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${watchName?.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
+                        className={`flex-1 py-4 bg-mintcom-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${watchName?.trim() ? 'shadow-mintcom-green/20' : 'shadow-black/5'}`}
                       >
                         {isSubmitting ? (
                           <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
@@ -957,7 +957,7 @@ export function PaymentMethodsPage() {
 
               <div className="px-8 py-6 border-b border-gray-50 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                  <div className="w-12 h-12 rounded-2xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
                     <CreditCard size={24} />
                   </div>
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -974,7 +974,7 @@ export function PaymentMethodsPage() {
 
               <div className="p-8 space-y-8">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all hover:border-paymint-green/50">
+                  <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all hover:border-mintcom-green/50">
                     {cardImagePreview ? (
                       <>
                         <img src={cardImagePreview} alt="Preview" className="w-full h-full object-contain p-4" loading="lazy" decoding="async" />
@@ -1002,7 +1002,7 @@ export function PaymentMethodsPage() {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <label className="block text-[10px] font-normal text-gray-400 tracking-[0.2em]  px-1 flex items-center gap-2">
-                      {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red">*</span>
+                      {t('paymentMethods.form.nameLabel')} <span className="text-mintcom-red">*</span>
                     </label>
                     <input maxLength={255}
                       type="text"
@@ -1011,10 +1011,10 @@ export function PaymentMethodsPage() {
                         setNewCardName(e.target.value);
                         if (cardErrors.cardName) setCardErrors({ ...cardErrors, cardName: '' });
                       }}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${cardErrors.cardName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm`}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${cardErrors.cardName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm`}
                       placeholder={formatInputPlaceholder(t('paymentMethods.form.brandPlaceholder'), t('common.locale'))}
                     />
-                    {cardErrors.cardName && <p className="text-paymint-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{cardErrors.cardName}</p>}
+                    {cardErrors.cardName && <p className="text-mintcom-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{cardErrors.cardName}</p>}
                   </div>
                 </div>
 
@@ -1033,7 +1033,7 @@ export function PaymentMethodsPage() {
                         type="button"
                         onClick={() => reactivateCardType(editingCard.id)}
                         disabled={isSubmitting}
-                        className="flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100"
+                        className="flex-1 py-4 bg-mintcom-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-mintcom-green/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100"
                       >
                         <RotateCcw size={16} />
                         {t('common.reactivate', { defaultValue: 'Reactivate' })}
@@ -1049,7 +1049,7 @@ export function PaymentMethodsPage() {
                             handleDeleteCardType(editingCard.id, editingCard.name);
                           }}
                           disabled={isSubmitting}
-                          className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                          className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                           <Trash2 size={16} />
                           {t('common.deactivate')}
@@ -1058,7 +1058,7 @@ export function PaymentMethodsPage() {
                       <button
                         onClick={handleAddCardType}
                         disabled={isSubmitting || !newCardName.trim()}
-                        className={`flex-1 py-4 bg-paymint-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${newCardName.trim() ? 'shadow-paymint-green/20' : 'shadow-black/5'}`}
+                        className={`flex-1 py-4 bg-mintcom-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${newCardName.trim() ? 'shadow-mintcom-green/20' : 'shadow-black/5'}`}
                       >
                         {isSubmitting ? (
                           <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />

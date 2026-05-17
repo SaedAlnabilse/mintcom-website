@@ -70,8 +70,8 @@ export function ForgotPasswordPage() {
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-8 lg:p-12 border border-gray-200 dark:border-white/10"
             >
               <div className="text-center mb-10">
-                <div className="w-16 h-16 bg-paymint-green/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <Mail className="text-paymint-green" size={32} />
+                <div className="w-16 h-16 bg-mintcom-green/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Mail className="text-mintcom-green" size={32} />
                 </div>
                 <h1 className="font-magilio text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">{t('auth.forgotPassword.title')}</h1>
                 <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mt-2">{t('auth.forgotPassword.subtitle')}</p>
@@ -81,11 +81,11 @@ export function ForgotPasswordPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight ml-1">{formatInputLabel(t('auth.forgotPassword.emailLabel'), t('common.locale'))}</label>
                   <div className="relative group">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                     <input maxLength={255}
                       type="email"
                       {...register('email')}
-                      className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                      className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                       placeholder={formatInputPlaceholder(t('auth.login.emailPlaceholder'), t('common.locale'))}
                     />
                   </div>
@@ -97,7 +97,7 @@ export function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-5 bg-paymint-green text-black label-strong font-outfit rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 disabled:cursor-paymint-wait flex items-center justify-center gap-3"
+                  className="w-full py-5 bg-mintcom-green text-black label-strong font-outfit rounded-xl hover:bg-mintcom-green/90 transition-all shadow-md shadow-mintcom-green/20 disabled:opacity-50 disabled:cursor-mintcom-wait flex items-center justify-center gap-3"
                 >
                   {isSubmitting ? <Loader2 className="animate-spin" size={24} /> : null}
                   {t('auth.forgotPassword.sendLink')}
@@ -111,8 +111,8 @@ export function ForgotPasswordPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-8 lg:p-12 border border-gray-200 dark:border-white/10 text-center"
             >
-              <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                <CheckCircle2 className="text-paymint-green" size={40} />
+              <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
+                <CheckCircle2 className="text-mintcom-green" size={40} />
               </div>
               <h2 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.forgotPassword.emailSent')}</h2>
               <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mt-4">
@@ -126,7 +126,7 @@ export function ForgotPasswordPage() {
                   {t('auth.forgotPassword.didntReceive')}{' '}
                   <button
                     onClick={() => setIsSuccess(false)}
-                    className="text-sm font-bold text-paymint-green hover:underline"
+                    className="text-sm font-bold text-mintcom-green hover:underline"
                   >
                     {t('auth.forgotPassword.tryAnotherEmail')}
                   </button>
@@ -135,7 +135,7 @@ export function ForgotPasswordPage() {
 
               <Link
                 to="/login"
-                className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-paymint-green transition-colors"
+                className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-mintcom-green transition-colors"
               >
                 <ArrowLeft size={16} />
                 {t('auth.forgotPassword.backToLogin')}

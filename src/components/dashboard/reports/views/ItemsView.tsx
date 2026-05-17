@@ -406,7 +406,7 @@ export const ItemsView = React.memo(function ItemsView({
               <button
                 onClick={() => setItemReportTab('items')}
                 className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'items'
-                  ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                  ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
                   : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                   }`}
               >
@@ -415,7 +415,7 @@ export const ItemsView = React.memo(function ItemsView({
               <button
                 onClick={() => setItemReportTab('categories')}
                 className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'categories'
-                  ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                  ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
                   : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                   }`}
               >
@@ -427,7 +427,7 @@ export const ItemsView = React.memo(function ItemsView({
               <button
                 onClick={() => setItemReportTab('modifiers')}
                 className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'modifiers'
-                  ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                  ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
                   : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                   }`}
               >
@@ -436,7 +436,7 @@ export const ItemsView = React.memo(function ItemsView({
               <button
                 onClick={() => setItemReportTab('attributes')}
                 className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'attributes'
-                  ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                  ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
                   : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                   }`}
               >
@@ -454,7 +454,7 @@ export const ItemsView = React.memo(function ItemsView({
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
                 <th
-                  className={`px-8 py-5 text-start label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-start label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                   onClick={() => requestSort('name')}
                 >
                   <div className="flex items-center gap-2">
@@ -463,7 +463,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                 </th>
                 <th
-                  className={`px-8 py-5 text-end label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-end label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                   onClick={() => requestSort('quantity')}
                 >
                   <div className="flex items-center justify-end gap-2">
@@ -472,7 +472,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                 </th>
                 <th
-                  className={`px-8 py-5 text-end label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-end label-strong font-outfit cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                   onClick={() => requestSort('revenue')}
                 >
                   <div className="flex items-center justify-end gap-2">
@@ -573,7 +573,7 @@ export const ItemsView = React.memo(function ItemsView({
                         <td className="px-8 py-5 text-end font-bold text-gray-700 dark:text-gray-300">
                           {item.quantity.toLocaleString(t('common.locale'))}
                         </td>
-                        <td className="px-8 py-5 text-end font-bold text-paymint-green">
+                        <td className="px-8 py-5 text-end font-bold text-mintcom-green">
                           {formatCurrency((item.totalSales || item.revenue) || 0)}
                         </td>
                       </motion.tr>
@@ -695,7 +695,7 @@ export const ItemsView = React.memo(function ItemsView({
                             <Calendar size={12} />
                             {format(new Date(history.createdAt), 'PPpp', { locale: getDateLocale(t('common.locale')) })}
                           </div>
-                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-wider">
+                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-mintcom-green/10 text-mintcom-green text-[10px] font-black uppercase tracking-wider">
                             <Info size={10} />
                             {t('reports.history.updatedLabel', { defaultValue: 'Updated' })}
                           </div>
@@ -725,7 +725,7 @@ export const ItemsView = React.memo(function ItemsView({
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
                               {t('reports.history.from', { defaultValue: 'Old value' })}
                             </p>
-                            <div className={(history.field || 'price') === 'price' ? 'text-lg font-bold text-gray-500 line-through decoration-paymint-red/40' : 'flex justify-center'}>
+                            <div className={(history.field || 'price') === 'price' ? 'text-lg font-bold text-gray-500 line-through decoration-mintcom-red/40' : 'flex justify-center'}>
                               {renderHistoryValue(history, 'old')}
                             </div>
                           </div>
@@ -811,7 +811,7 @@ export const ItemsView = React.memo(function ItemsView({
                 {/* Header */}
                 <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                    <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
                       <LayoutGrid size={20} />
                     </div>
                     <div>
@@ -835,7 +835,7 @@ export const ItemsView = React.memo(function ItemsView({
                 <div className="p-6 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
                   {isFetchingBreakdown ? (
                     <div className="py-20 flex flex-col items-center justify-center">
-                      <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+                      <div className="w-10 h-10 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin mb-4" />
                       <p className="text-sm font-bold text-gray-400">{t('common.loading')}</p>
                     </div>
                   ) : filteredBreakdown.length > 0 ? (
@@ -843,10 +843,10 @@ export const ItemsView = React.memo(function ItemsView({
                       {filteredBreakdown.map((item, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 group hover:border-paymint-green/30 transition-all"
+                          className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 group hover:border-mintcom-green/30 transition-all"
                         >
                           <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 border border-gray-100 dark:border-white/10 shadow-sm group-hover:text-paymint-green transition-colors">
+                            <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 border border-gray-100 dark:border-white/10 shadow-sm group-hover:text-mintcom-green transition-colors">
                               <ShoppingBag size={18} />
                             </div>
                             <div className="flex flex-col">
@@ -857,7 +857,7 @@ export const ItemsView = React.memo(function ItemsView({
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-paymint-green text-base">
+                            <p className="font-bold text-mintcom-green text-base">
                               {formatCurrency((item.totalSales || item.revenue) || 0)}
                             </p>
                           </div>
@@ -885,7 +885,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                   <div className="flex flex-col gap-0.5 items-end">
                     <span className="text-xs font-bold text-gray-400">{t('dashboard.stats.revenue')}:</span>
-                    <span className="text-xl font-bold text-paymint-green">
+                    <span className="text-xl font-bold text-mintcom-green">
                       {formatCurrency(filteredBreakdown.reduce((acc, curr) => acc + ((curr.totalSales || curr.revenue) || 0), 0))}
                     </span>
                   </div>

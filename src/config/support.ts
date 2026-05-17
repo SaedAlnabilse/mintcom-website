@@ -1,6 +1,6 @@
 import { env } from './env';
 
-const DEFAULT_SUPPORT_ADMIN_EMAILS = ['support@paymint.app', 'support@paymintpos.net'];
+const DEFAULT_SUPPORT_ADMIN_EMAILS = ['support@mintcompos.com'];
 
 export const SUPPORT_ADMIN_EMAILS = (
   env.VITE_SUPPORT_ADMIN_EMAILS

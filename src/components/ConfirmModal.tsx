@@ -71,12 +71,12 @@ export function ConfirmModal({
       default:
         return {
           icon: CheckCircle2,
-          color: 'text-paymint-green',
-          bgColor: 'bg-paymint-green/10',
-          borderColor: 'border-paymint-green/30',
-          buttonBg: 'bg-paymint-green text-black',
+          color: 'text-mintcom-green',
+          bgColor: 'bg-mintcom-green/10',
+          borderColor: 'border-mintcom-green/30',
+          buttonBg: 'bg-mintcom-green text-black',
           glow: '',
-          iconRing: 'ring-paymint-green/20'
+          iconRing: 'ring-mintcom-green/20'
         };
     }
   };
@@ -89,7 +89,7 @@ export function ConfirmModal({
       {isOpen && (
         <div
           dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-          className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-paymint-green selection:text-black"
+          className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-mintcom-green selection:text-black"
         >
           {/* Backdrop */}
           <motion.div

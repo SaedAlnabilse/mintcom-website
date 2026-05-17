@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -162,7 +162,7 @@ export function OwnerOverviewPage() {
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0">
 
                             {/* Sector 1: Quick Period Dropdown */}
-                            <div className={`flex-none w-full xl:w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'border-transparent'}`}>
+                            <div className={`flex-none w-full xl:w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-mintcom-green/5 border-mintcom-green ring-1 ring-mintcom-green shadow-lg shadow-mintcom-green/10' : 'border-transparent'}`}>
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
                                     onChange={(val) => setQuickDate(val || 'today')}
@@ -170,7 +170,7 @@ export function OwnerOverviewPage() {
                                     showAllOption={false}
                                     placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                                     className="w-full"
-                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold !justify-center xl:!justify-between ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
+                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold !justify-center xl:!justify-between ${selectedDateRange !== 'custom' ? '!text-mintcom-green' : ''}`}
                                 />
                             </div>
 
@@ -206,8 +206,8 @@ export function OwnerOverviewPage() {
                                         {/* Time Input Group */}
                                         <div className={`w-full md:w-auto md:min-w-[180px] relative z-[55]`}>
                                             <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
-                                                ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
-                                                : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-paymint-green/50'
+                                                ? 'bg-mintcom-green/5 border-mintcom-green ring-2 ring-mintcom-green shadow-lg shadow-mintcom-green/10'
+                                                : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-mintcom-green/50'
                                                 }`}>
                                                 <div className="flex items-center gap-2 justify-center md:justify-between relative">
                                                     <CustomTimePicker
@@ -218,7 +218,7 @@ export function OwnerOverviewPage() {
                                                         showIcon={true}
                                                         isActive={isTimeFiltered}
                                                     />
-                                                    <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                                                    <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7dc6a2]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
                                                     <CustomTimePicker
                                                         value={endTime}
                                                         onChange={(val) => { setEndTime(val); }}
@@ -247,8 +247,8 @@ export function OwnerOverviewPage() {
                         value: formatCurrency(stats.totalRevenue),
                         change: stats.revenueChange,
                         icon: DollarSign,
-                        color: 'text-paymint-green',
-                        bg: 'bg-paymint-green/10',
+                        color: 'text-mintcom-green',
+                        bg: 'bg-mintcom-green/10',
                         hideChange: true
                     },
                     {
@@ -256,8 +256,8 @@ export function OwnerOverviewPage() {
                         value: formatCurrency(stats.totalProfit),
                         change: stats.profitChange,
                         icon: TrendingUp,
-                        color: 'text-paymint-green',
-                        bg: 'bg-paymint-green/10',
+                        color: 'text-mintcom-green',
+                        bg: 'bg-mintcom-green/10',
                         hideChange: true
                     },
                     {
@@ -323,7 +323,7 @@ export function OwnerOverviewPage() {
                             <p className="card-subtitle">{t('owner.overview.period')}: {selectedFilterLabel}</p>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5">
-                            <div className="w-2 h-2 rounded-full bg-paymint-green" />
+                            <div className="w-2 h-2 rounded-full bg-mintcom-green" />
                             <span className="text-xs font-medium tracking-wider text-gray-600 dark:text-gray-400">{t('owner.overview.totalRevenue')}</span>
                         </div>
                     </div>
@@ -334,8 +334,8 @@ export function OwnerOverviewPage() {
                                 <ComposedChart data={chartData}>
                                     <defs>
                                         <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.2} />
-                                            <stop offset="95%" stopColor="#7CC39F" stopOpacity={0} />
+                                            <stop offset="5%" stopColor="#7dc6a2" stopOpacity={0.2} />
+                                            <stop offset="95%" stopColor="#7dc6a2" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" strokeOpacity={0.3} />
@@ -355,7 +355,7 @@ export function OwnerOverviewPage() {
                                         dx={-5}
                                     />
                                     <Tooltip
-                                        cursor={chartData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
+                                        cursor={chartData.length > 1 ? { stroke: '#7dc6a2', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                                         contentStyle={{
                                             backgroundColor: '#1E293B',
                                             borderColor: 'rgba(255,255,255,0.05)',
@@ -378,7 +378,7 @@ export function OwnerOverviewPage() {
                                         <Area
                                             type="monotone"
                                             dataKey="value"
-                                            stroke="#7CC39F"
+                                            stroke="#7dc6a2"
                                             strokeWidth={2.5}
                                             fillOpacity={1}
                                             fill="url(#revenueGradient)"
@@ -409,10 +409,10 @@ export function OwnerOverviewPage() {
                     transition={{ delay: 0.3 }}
                     className="space-y-4"
                 >
-                    <div className="p-6 bg-paymint-green/10 rounded-2xl border border-paymint-green/20 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <div className="p-6 bg-mintcom-green/10 rounded-2xl border border-mintcom-green/20 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                         <div className="relative z-10">
-                            <div className="w-12 h-12 rounded-xl bg-paymint-green flex items-center justify-center text-black mb-4">
+                            <div className="w-12 h-12 rounded-xl bg-mintcom-green flex items-center justify-center text-black mb-4">
                                 <Zap size={24} />
                             </div>
                             <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">{t('owner.overview.growBusiness')}</h3>
@@ -420,7 +420,7 @@ export function OwnerOverviewPage() {
                             <div className="space-y-3">
                                 <button
                                     onClick={() => navigate('/onboarding')}
-                                    className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl text-sm hover:bg-[#68B390] transition-all shadow-sm"
+                                    className="w-full py-3 bg-mintcom-green text-black font-bold rounded-xl text-sm hover:bg-[#5fa888] transition-all shadow-sm"
                                 >
                                     {t('owner.overview.addLocation')}
                                 </button>
@@ -456,12 +456,12 @@ export function OwnerOverviewPage() {
                                     className="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all group/btn"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center">
+                                        <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
                                             <Store size={16} />
                                         </div>
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.overview.manageLocations')}</span>
                                     </div>
-                                    <Activity size={14} className="text-gray-400 group-hover/btn:text-paymint-green transition-colors" />
+                                    <Activity size={14} className="text-gray-400 group-hover/btn:text-mintcom-green transition-colors" />
                                 </button>
                             </div>
                         </div>

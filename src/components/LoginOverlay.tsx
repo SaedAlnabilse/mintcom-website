@@ -24,7 +24,7 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
         >
           {/* Pulsing background circle */}
           <motion.div
-            className="absolute inset-0 bg-paymint-green/20 rounded-full"
+            className="absolute inset-0 bg-mintcom-green/20 rounded-full"
             animate={{ 
               scale: showSuccess ? [1, 1.2, 1] : [1, 1.5, 1],
               opacity: showSuccess ? [0.5, 0.8, 0.5] : [0.5, 0, 0.5] 
@@ -32,15 +32,15 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
             transition={{ duration: 2, repeat: Infinity }}
           />
           
-          <div className="w-24 h-24 bg-paymint-green/5 rounded-full flex items-center justify-center relative z-10">
+          <div className="w-24 h-24 bg-mintcom-green/5 rounded-full flex items-center justify-center relative z-10">
             {showSuccess ? (
               <motion.div
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                className="w-16 h-16 bg-paymint-green/10 rounded-full flex items-center justify-center"
+                className="w-16 h-16 bg-mintcom-green/10 rounded-full flex items-center justify-center"
               >
-                <Check className="w-8 h-8 text-paymint-green" strokeWidth={3} />
+                <Check className="w-8 h-8 text-mintcom-green" strokeWidth={3} />
               </motion.div>
             ) : (
               <div className="relative">
@@ -48,7 +48,7 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
                 <motion.div 
                   animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-12 h-12 border-2 border-paymint-green/30 rounded-full absolute -inset-2" 
+                  className="w-12 h-12 border-2 border-mintcom-green/30 rounded-full absolute -inset-2" 
                 />
                 
                 {/* Main rotating ring - High Resolution SVG */}
@@ -59,12 +59,12 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
                 >
                   <svg className="w-full h-full" viewBox="0 0 100 100">
                     {/* Background Track */}
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" className="text-paymint-green/20" />
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" className="text-mintcom-green/20" />
                     {/* High Precision Arc */}
                     <path
                       d="M50 10 A 40 40 0 0 1 90 50"
                       fill="none"
-                      stroke="#7CC39F"
+                      stroke="#7dc6a2"
                       strokeWidth="8"
                       strokeLinecap="round"
                     />
@@ -75,7 +75,7 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
                 <motion.div 
                   animate={{ scale: [0.8, 1, 0.8], opacity: [0.5, 0.8, 0.5] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-3 h-3 bg-paymint-green rounded-full absolute inset-0 m-auto"
+                  className="w-3 h-3 bg-mintcom-green rounded-full absolute inset-0 m-auto"
                 />
               </div>
             )}

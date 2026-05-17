@@ -40,19 +40,19 @@ interface ActivityLog {
 
 const actionColors: Record<string, string> = {
   // Inventory
-  'Added product': 'bg-paymint-green/ text-paymint-green border-paymint-green/',
+  'Added product': 'bg-mintcom-green/ text-mintcom-green border-mintcom-green/',
   'Updated product': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-  'Deleted product': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
-  'Archived product': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Deleted product': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
+  'Archived product': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
   'Removed product image': 'bg-orange-500/10 text-orange-500 border-orange-500/20',
-  'Deleted all products': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
-  'Archived all products': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
-  'Added category': 'bg-paymint-green/ text-paymint-green border-paymint-green/',
+  'Deleted all products': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
+  'Archived all products': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
+  'Added category': 'bg-mintcom-green/ text-mintcom-green border-mintcom-green/',
   'Updated category': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-  'Deleted category': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
-  'Archived category': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
-  'Archived attribute group': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
-  'Archived sub-attribute': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Deleted category': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
+  'Archived category': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
+  'Archived attribute group': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
+  'Archived sub-attribute': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
 
   // Staff
   'Added employee': 'bg-purple-500/10 text-purple-500 border-purple-500/20',
@@ -71,12 +71,12 @@ const actionColors: Record<string, string> = {
   // Payments & Discounts
   'Added discount': 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
   'Updated discount': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-  'Deleted discount': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
-  'Deactivated discount': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Deleted discount': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
+  'Deactivated discount': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
   'Added payment method': 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
   'Updated payment method': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-  'Deleted payment method': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
-  'Deactivated payment method': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Deleted payment method': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
+  'Deactivated payment method': 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
 };
 
 export function ActivityLogsPage() {
@@ -274,7 +274,7 @@ export function ActivityLogsPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('activity.subtitle')}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                                 {currentEstablishment.name}
                             </span>
                         )}
@@ -304,7 +304,7 @@ export function ActivityLogsPage() {
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
               placeholder={formatInputPlaceholder(t('activity.searchPlaceholder'), t('common.locale'))}
-              className="w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+              className="w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
             />
             {searchQuery && (
               <button
@@ -405,7 +405,7 @@ export function ActivityLogsPage() {
             {isLoading ? (
               <div className="py-32 text-center">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin" />
+                  <div className="w-10 h-10 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin" />
                   <p className="label-strong font-outfit">{t('activity.loading')}</p>
                 </div>
               </div>
@@ -439,7 +439,7 @@ export function ActivityLogsPage() {
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black">
+                      <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black">
                         {getActorInitial(log)}
                       </div>
                       <div>
@@ -468,7 +468,7 @@ export function ActivityLogsPage() {
                     {log.metadata && (
                       <button
                         onClick={() => setSelectedLog(log)}
-                        className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green transition-all"
+                        className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green transition-all"
                       >
                         <FileText size={16} />
                       </button>
@@ -496,7 +496,7 @@ export function ActivityLogsPage() {
                   <tr>
                     <td colSpan={5} className="py-32 text-center">
                       <div className="flex flex-col items-center gap-4">
-                        <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin" />
+                        <div className="w-10 h-10 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin" />
                         <p className="label-strong font-outfit">{t('activity.loading')}</p>
                       </div>
                     </td>
@@ -543,7 +543,7 @@ export function ActivityLogsPage() {
                       </td>
                       <td className="px-8 py-4 text-center">
                         <div className="flex items-center justify-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black group-hover:scale-110 transition-transform">
+                          <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black group-hover:scale-110 transition-transform">
                             {getActorInitial(log)}
                           </div>
                           <div>
@@ -567,7 +567,7 @@ export function ActivityLogsPage() {
                           <div className="flex justify-center">
                             <button
                               onClick={() => setSelectedLog(log)}
-                              className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green transition-all"
+                              className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green transition-all"
                             >
                               <FileText size={16} />
                             </button>
@@ -605,12 +605,12 @@ export function ActivityLogsPage() {
                 </div>
               <div className="p-8 border-b border-gray-200 dark:border-white/5 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-[1.25rem] bg-paymint-green/10 text-paymint-green flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-[1.25rem] bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
                     <Shield size={24} />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('activity.logDetails')}</h2>
-                    <p className="label-strong font-outfit text-paymint-green">{selectedLog.action ? getActionLabel(selectedLog.action) : ''}</p>
+                    <p className="label-strong font-outfit text-mintcom-green">{selectedLog.action ? getActionLabel(selectedLog.action) : ''}</p>
                   </div>
                 </div>
                 <button onClick={() => setSelectedLog(null)} className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-black dark:hover:text-white transition-colors">
@@ -632,7 +632,7 @@ export function ActivityLogsPage() {
 
                 <div>
                   <p className="label-strong font-outfit mb-3">{t('activity.data')}</p>
-                  <pre className="bg-gray-50 dark:bg-black/40 p-6 rounded-[1.5rem] overflow-x-auto text-xs text-gray-700 dark:text-paymint-green font-mono leading-relaxed border border-gray-200 dark:border-white/5">
+                  <pre className="bg-gray-50 dark:bg-black/40 p-6 rounded-[1.5rem] overflow-x-auto text-xs text-gray-700 dark:text-mintcom-green font-mono leading-relaxed border border-gray-200 dark:border-white/5">
                     {JSON.stringify(selectedLog.metadata, null, 2)}
                   </pre>
                 </div>

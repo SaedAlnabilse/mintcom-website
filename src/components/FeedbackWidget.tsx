@@ -158,7 +158,7 @@ export const FeedbackWidget = () => {
                         style={{ opacity: 1 }}
                         className={`fixed ${isRTL ? 'left-0 border-y border-r rounded-r-2xl' : 'right-0 border-y border-l rounded-l-2xl'} top-[40%] -translate-y-1/2 z-[9999] !bg-white dark:!bg-[#0F172A] !bg-opacity-100 !opacity-100 border-gray-200 dark:border-white/10 py-4 px-2 shadow-2xl hover:bg-gray-50 dark:hover:!bg-[#334155] transition-all flex flex-col items-center gap-3 group ring-1 ring-black/5`}
                     >
-                        <MessageSquare size={18} className="text-paymint-green group-hover:scale-110 transition-transform" />
+                        <MessageSquare size={18} className="text-mintcom-green group-hover:scale-110 transition-transform" />
                         <span className="text-xs font-bold text-gray-800 dark:text-gray-100 [writing-mode:vertical-rl] rotate-180">{t('feedback.tab')}</span>
                     </motion.button>
                 )}
@@ -197,7 +197,7 @@ export const FeedbackWidget = () => {
                             <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
                                 {isSubmitted ? (
                                     <div className="h-full flex flex-col items-center justify-center text-center space-y-6">
-                                        <div className="w-16 h-16 bg-paymint-green/10 text-paymint-green rounded-2xl flex items-center justify-center shadow-inner">
+                                        <div className="w-16 h-16 bg-mintcom-green/10 text-mintcom-green rounded-2xl flex items-center justify-center shadow-inner">
                                             <CheckCircle2 size={32} strokeWidth={2.5} />
                                         </div>
                                         <div>
@@ -218,7 +218,7 @@ export const FeedbackWidget = () => {
                                                         type="button"
                                                         onClick={() => setRating(s)}
                                                         className={`flex-1 aspect-square rounded-xl flex items-center justify-center transition-all duration-200 ${rating >= s
-                                                                ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20'
+                                                                ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20'
                                                                 : 'bg-gray-50 dark:bg-[#1E293B] text-gray-300 hover:bg-gray-100 dark:hover:bg-[#334155]'
                                                             }`}
                                                     >
@@ -234,7 +234,7 @@ export const FeedbackWidget = () => {
                                                 <select
                                                     value={category}
                                                     onChange={(e) => setCategory(e.target.value)}
-                                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
                                                 >
                                                     {categoryOptions.map((option) => (
                                                         <option key={option.value} value={option.value}>
@@ -249,7 +249,7 @@ export const FeedbackWidget = () => {
                                                 <select
                                                     value={area}
                                                     onChange={(e) => setArea(e.target.value)}
-                                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
                                                 >
                                                     {areaOptions.map((option) => (
                                                         <option key={option.value} value={option.value}>
@@ -267,7 +267,7 @@ export const FeedbackWidget = () => {
                                                 value={comment}
                                                 onChange={(e) => setComment(e.target.value)}
                                                 rows={6}
-                                                className="w-full px-4 py-4 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none placeholder:text-gray-400 placeholder:font-sans placeholder:font-bold"
+                                                className="w-full px-4 py-4 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all resize-none placeholder:text-gray-400 placeholder:font-sans placeholder:font-bold"
                                                 placeholder={formatInputPlaceholder(t('feedback.placeholder'), t('common.locale'))}
                                             />
                                         </div>
@@ -277,7 +277,7 @@ export const FeedbackWidget = () => {
                                                 type="checkbox"
                                                 checked={contactConsent}
                                                 onChange={(e) => setContactConsent(e.target.checked)}
-                                                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-paymint-green focus:ring-paymint-green"
+                                                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green"
                                             />
                                             <span>{t('feedback.contactConsent')}</span>
                                         </label>

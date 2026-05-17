@@ -37,7 +37,7 @@ export function FullScreenLoader({
 }: BaseLoadingProps) {
   return (
     <div
-      className={`min-h-screen bg-cream-50 dark:bg-paymint-dark text-gray-900 dark:text-paymint-text transition-colors duration-300 flex items-center justify-center ${className}`}
+      className={`min-h-screen bg-cream-50 dark:bg-mintcom-dark text-gray-900 dark:text-mintcom-text transition-colors duration-300 flex items-center justify-center ${className}`}
     >
       <LoadingIndicator message={message} spinnerSize={spinnerSize} />
     </div>

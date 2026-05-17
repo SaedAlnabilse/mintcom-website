@@ -88,7 +88,7 @@ export const AllArticlesPage = () => {
                       onClick={() => setSelectedCategory(cat.id)}
                       className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
                         selectedCategory === cat.id
-                          ? 'bg-paymint-green text-black'
+                          ? 'bg-mintcom-green text-black'
                           : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/10'
                       }`}
                     >
@@ -112,7 +112,7 @@ export const AllArticlesPage = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={formatInputPlaceholder(t('common.searchArticles'), t('common.locale'))}
-                      className="w-full rounded-2xl border border-gray-200/80 bg-gray-50/70 py-3 pe-11 ps-11 text-sm transition-all focus:border-paymint-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
+                      className="w-full rounded-2xl border border-gray-200/80 bg-gray-50/70 py-3 pe-11 ps-11 text-sm transition-all focus:border-mintcom-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
                     />
                     {searchQuery && (
                       <button type="button" onClick={() => setSearchQuery('')} className="absolute end-3 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-xl border border-gray-200 bg-gray-50 text-gray-400 transition-colors hover:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10">
@@ -137,13 +137,13 @@ export const AllArticlesPage = () => {
               <div className="space-y-3">
                 {filteredArticles.map((article, index) => (
                   <motion.div key={article.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.03 }}>
-                    <Link to={`/support/article/${article.id}`} className="group flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.04)] transition-all duration-300 hover:border-paymint-green/30 hover:shadow-[0_6px_20px_-8px_rgba(124,195,159,0.2)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
+                    <Link to={`/support/article/${article.id}`} className="group flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.04)] transition-all duration-300 hover:border-mintcom-green/30 hover:shadow-[0_6px_20px_-8px_rgba(124,195,159,0.2)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
                       <div className="flex items-center gap-4">
-                        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-paymint-green/10 transition-all group-hover:bg-paymint-green/20">
-                          <BookOpen size={17} className="text-paymint-green" />
+                        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 transition-all group-hover:bg-mintcom-green/20">
+                          <BookOpen size={17} className="text-mintcom-green" />
                         </div>
                         <div>
-                          <p className="font-bold transition-colors group-hover:text-paymint-green">{article.title}</p>
+                          <p className="font-bold transition-colors group-hover:text-mintcom-green">{article.title}</p>
                           <p className="mt-0.5 text-xs font-medium text-gray-500 dark:text-gray-400">{article.category}</p>
                         </div>
                       </div>
@@ -152,7 +152,7 @@ export const AllArticlesPage = () => {
                           <span className="flex items-center gap-1.5"><Clock size={12} /> {article.readTime}</span>
                           <span className="flex items-center gap-1.5"><Eye size={12} /> {article.views}</span>
                         </div>
-                        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 text-gray-400 transition-all group-hover:bg-paymint-green group-hover:text-black dark:bg-white/5 dark:group-hover:bg-paymint-green">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 text-gray-400 transition-all group-hover:bg-mintcom-green group-hover:text-black dark:bg-white/5 dark:group-hover:bg-mintcom-green">
                           <ChevronRight size={14} className={isRtl ? 'rotate-180' : ''} />
                         </span>
                       </div>
@@ -169,7 +169,7 @@ export const AllArticlesPage = () => {
                     <p className="mb-6 text-sm font-light text-gray-500 dark:text-gray-400">
                       {t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No articles matching "{{query}}"' })}
                     </p>
-                    <button onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }} className="font-bold text-paymint-green hover:underline">
+                    <button onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }} className="font-bold text-mintcom-green hover:underline">
                       {t('support.articles.clearFilters')}
                     </button>
                   </div>

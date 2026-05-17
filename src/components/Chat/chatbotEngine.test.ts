@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { resolveChatbotPageContext } from '../../data/chatbotPageContexts';
-import { PAYMINT_KNOWLEDGE } from '../../data/chatbotKnowledge';
+import { MINTCOM_KNOWLEDGE } from '../../data/chatbotKnowledge';
 import {
   findBestMatch,
   getFallbackResponse,
@@ -82,7 +82,7 @@ describe('chatbot engine', () => {
   });
 
   it('resolves dashboard knowledge navigation with the active location slug', () => {
-    const entry = PAYMINT_KNOWLEDGE.find((item) => item.id === 'add-product');
+    const entry = MINTCOM_KNOWLEDGE.find((item) => item.id === 'add-product');
 
     expect(entry).toBeTruthy();
     expect(

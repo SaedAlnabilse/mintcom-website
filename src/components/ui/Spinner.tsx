@@ -15,7 +15,7 @@ interface SpinnerProps {
  */
 export const Spinner: React.FC<SpinnerProps> = ({
   size = 32,
-  color = '#7CC39F',
+  color = '#7dc6a2',
   className = '',
   trackOpacity = 0.15,
   strokeWidth = 3.5,
@@ -26,7 +26,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
       style={{ 
         width: size, 
         height: size,
-        animation: 'paymint-spin 0.8s linear infinite',
+        animation: 'mintcom-spin 0.8s linear infinite',
         willChange: 'transform'
       }}
     >

@@ -1,4 +1,4 @@
-﻿import { Users, Activity, TrendingUp, ShoppingBag, Star } from 'lucide-react';
+import { Users, Activity, TrendingUp, ShoppingBag, Star } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { Shift, ShiftOption } from '../../../../types';
 import { motion } from 'framer-motion';
@@ -43,7 +43,7 @@ interface StaffViewProps {
   employeeShifts: ShiftOption[];
 }
 
-const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+const COLORS = ['#7dc6a2', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 export const StaffView = React.memo(function StaffView({ shifts, selectedEmployeeId, employees, employeeShifts }: StaffViewProps) {
   const { t } = useTranslation();
@@ -141,7 +141,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
       {/* Overview Cards */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+          <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
             <Users size={20} />
           </div>
           <div>
@@ -193,7 +193,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
             onClick={() => navigate(`/dashboard/${activeSlug}/reports/shifts`)}
             className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden cursor-pointer group"
           >
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 group-hover:text-paymint-green transition-colors tracking-wide mb-1 truncate">{t('orders.reports.staff.totalVariances')}</p>
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 group-hover:text-mintcom-green transition-colors tracking-wide mb-1 truncate">{t('orders.reports.staff.totalVariances')}</p>
             <div className="flex flex-wrap items-center gap-1.5 mb-1 leading-none">
               <span className="text-xl font-bold text-amber-500 tracking-tight">+{positiveVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               <span className="text-gray-300 dark:text-white/20 font-light text-xl">/</span>
@@ -284,7 +284,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="relative overflow-hidden p-5 rounded-[24px] border border-transparent shadow-xl flex flex-col justify-between bg-gradient-to-br from-[#7CC39F] via-[#5FAF87] to-[#3A8A61]"
+                className="relative overflow-hidden p-5 rounded-[24px] border border-transparent shadow-xl flex flex-col justify-between bg-gradient-to-br from-[#7dc6a2] via-[#5fa888] to-[#3A8A61]"
               >
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
@@ -381,7 +381,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                       return (
                         <tr key={emp.username} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
                           <td className="px-6 py-4 text-start">
-                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs ${idx === 0 ? 'bg-[#7CC39F]/20 text-[#7CC39F]' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs ${idx === 0 ? 'bg-[#7dc6a2]/20 text-[#7dc6a2]' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
                               {((staffPage - 1) * itemsPerPage + idx + 1).toLocaleString(t('common.locale'))}
                             </div>
                           </td>
@@ -394,7 +394,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                           <td className="px-6 py-4 text-end">
                             <div className="flex items-center justify-end gap-2">
                               <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-                                <div className="h-full bg-paymint-green rounded-full" style={{ width: `${sharePercent}%` }} />
+                                <div className="h-full bg-mintcom-green rounded-full" style={{ width: `${sharePercent}%` }} />
                               </div>
                               <span className="text-xs font-bold text-gray-500">
                                 {shareRatio.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}

@@ -1,4 +1,4 @@
-﻿import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -550,7 +550,7 @@ export function CategoriesPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('categories.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -562,12 +562,12 @@ export function CategoriesPage() {
             onClick={() => setShowCsvImport(true)}
             className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
           >
-            <Upload size={18} className="group-hover:text-paymint-green transition-colors" />
+            <Upload size={18} className="group-hover:text-mintcom-green transition-colors" />
             <span className="font-bold text-xs sm:text-sm hidden sm:inline">Import CSV</span>
           </button>
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-[#68B390] transition-all shadow-sm"
+            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-mintcom-green text-black font-bold text-xs sm:text-sm hover:bg-[#5fa888] transition-all shadow-sm"
           >
             <Plus size={18} />
             <span className="hidden xs:inline">{t('categories.newCategory')}</span>
@@ -579,7 +579,7 @@ export function CategoriesPage() {
       <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 scrollbar-none snap-x snap-mandatory">
         {[
           { label: t('categories.stats.totalCategories'), value: stats.total, icon: Layers, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: t('categories.stats.totalItems'), value: stats.products, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+          { label: t('categories.stats.totalItems'), value: stats.products, icon: Package, color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
           { label: t('categories.stats.topCategory'), value: stats.top?.name || t('common.notAvailable'), sub: `${stats.top?._count?.items || 0} ${t('dashboard.menu.products')}`, icon: TrendingUp, color: 'text-purple-500', bg: 'bg-purple-500/10' },
         ].map((stat, i) => (
           <motion.div
@@ -637,13 +637,13 @@ export function CategoriesPage() {
           <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/5 shrink-0">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
           >
             <Grid size={18} />
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+            className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
           >
             <List size={18} />
           </button>
@@ -653,7 +653,7 @@ export function CategoriesPage() {
 
       {isLoading ? (
         <div className="py-24 flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
+          <div className="w-12 h-12 border-4 border-mintcom-green/30 border-t-mintcom-green rounded-full animate-spin mb-4" />
           <p className="text-xs font-black text-gray-400">{t('categories.messages.loading')}</p>
         </div>
       ) : filteredCategories.length === 0 ? (
@@ -680,26 +680,26 @@ export function CategoriesPage() {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: idx * 0.05 }}
                       onClick={() => setViewingCategory(category)}
-                      className="group relative bg-white dark:bg-[#1E293B] p-4 sm:p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all cursor-pointer overflow-hidden duration-300"
+                      className="group relative bg-white dark:bg-[#1E293B] p-4 sm:p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-mintcom-green/50 hover:shadow-xl transition-all cursor-pointer overflow-hidden duration-300"
                     >
-                      <div className="absolute top-0 left-0 w-1 h-full bg-paymint-green opacity-0 group-hover:opacity-100 transition-all duration-300" />
-                      <div className="absolute -right-6 -top-6 w-24 h-24 bg-paymint-green/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                      <div className="absolute top-0 left-0 w-1 h-full bg-mintcom-green opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                      <div className="absolute -right-6 -top-6 w-24 h-24 bg-mintcom-green/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                       <div className="flex justify-between items-start mb-6 relative z-10">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-paymint-green group-hover:text-black transition-all duration-300 shadow-sm">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-mintcom-green group-hover:text-black transition-all duration-300 shadow-sm">
                           <IconComponent size={24} />
                         </div>
                         <div className="flex gap-1">
                           <button
                             onClick={(e) => openEditModal(e, category)}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-green transition-colors"
+                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-mintcom-green transition-colors"
                           >
                             <Edit2 size={16} />
                           </button>
                           {isCategoryActive(category) ? (
                             <button
                               onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
-                              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-red transition-colors"
+                              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-mintcom-red transition-colors"
                               title={t('common.archive')}
                             >
                               <Trash2 size={16} />
@@ -707,7 +707,7 @@ export function CategoriesPage() {
                           ) : (
                             <button
                               onClick={(e) => { e.stopPropagation(); handleReactivate(category); }}
-                              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-green transition-colors"
+                              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-mintcom-green transition-colors"
                               title={t('common.reactivate', { defaultValue: 'Reactivate' })}
                             >
                               <RotateCcw size={16} />
@@ -716,15 +716,15 @@ export function CategoriesPage() {
                         </div>
                       </div>
 
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors leading-tight truncate relative z-10">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors leading-tight truncate relative z-10">
                         {category.name}
                       </h3>
 
                       <div className="mt-3 relative z-10">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
                           isCategoryActive(category)
-                            ? 'bg-paymint-green/10 text-paymint-green'
-                            : 'bg-paymint-red/10 text-paymint-red'
+                            ? 'bg-mintcom-green/10 text-mintcom-green'
+                            : 'bg-mintcom-red/10 text-mintcom-red'
                         }`}>
                           {isCategoryActive(category) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                         </span>
@@ -732,10 +732,10 @@ export function CategoriesPage() {
 
                       <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
                         <div className="flex items-center gap-2">
-                          <Package size={14} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+                          <Package size={14} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
                           <span className="dashboard-card-meta group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">{t('categories.itemsCount', { count: category._count?.items || 0 })}</span>
                         </div>
-                        <ChevronRight size={16} className="text-gray-300 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
+                        <ChevronRight size={16} className="text-gray-300 group-hover:text-mintcom-green group-hover:translate-x-1 transition-all" />
                       </div>
                     </motion.div>
                   );
@@ -773,18 +773,18 @@ export function CategoriesPage() {
                           className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
                         >
                           <td className="px-6 py-4 text-center">
-                            <div className="w-10 h-10 mx-auto rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 group-hover:bg-paymint-green group-hover:text-black transition-colors">
+                            <div className="w-10 h-10 mx-auto rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 group-hover:bg-mintcom-green group-hover:text-black transition-colors">
                               <IconComponent size={20} />
                             </div>
                           </td>
                           <td className="px-6 py-4 text-left">
-                            <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{category.name}</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">{category.name}</p>
                           </td>
                           <td className="px-6 py-4 text-center">
                             <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
                               isCategoryActive(category)
-                                ? 'bg-paymint-green/10 text-paymint-green'
-                                : 'bg-paymint-red/10 text-paymint-red'
+                                ? 'bg-mintcom-green/10 text-mintcom-green'
+                                : 'bg-mintcom-red/10 text-mintcom-red'
                             }`}>
                               {isCategoryActive(category) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                             </span>
@@ -799,14 +799,14 @@ export function CategoriesPage() {
                             <div className="flex items-center justify-center gap-2">
                               <button
                                 onClick={(e) => openEditModal(e, category)}
-                                className="p-2 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"
+                                className="p-2 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"
                               >
                                 <Edit2 size={16} />
                               </button>
                               {isCategoryActive(category) ? (
                                 <button
                                   onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
-                                  className="p-2 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"
+                                  className="p-2 text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 rounded-lg transition-colors"
                                   title={t('common.archive')}
                                 >
                                   <Trash2 size={16} />
@@ -814,7 +814,7 @@ export function CategoriesPage() {
                               ) : (
                                 <button
                                   onClick={(e) => { e.stopPropagation(); handleReactivate(category); }}
-                                  className="p-2 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"
+                                  className="p-2 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"
                                   title={t('common.reactivate', { defaultValue: 'Reactivate' })}
                                 >
                                   <RotateCcw size={16} />
@@ -871,19 +871,19 @@ export function CategoriesPage() {
 
                 <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-paymint-green/10 text-paymint-green">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-mintcom-green/10 text-mintcom-green">
                       <ViewingIcon size={24} />
                     </div>
                     <div>
                       <h2 className="dashboard-card-value leading-none">{viewingCategory.name}</h2>
-                      <p className="text-[11px] font-medium text-paymint-green mt-1.5">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
+                      <p className="text-[11px] font-medium text-mintcom-green mt-1.5">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     {isCategoryActive(viewingCategory) ? (
                       <button
                         onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                        className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-paymint-green transition-colors"
+                        className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-mintcom-green transition-colors"
                         title={t('common.add')}
                       >
                         <Plus size={20} />
@@ -891,7 +891,7 @@ export function CategoriesPage() {
                     ) : (
                       <button
                         onClick={() => handleReactivate(viewingCategory)}
-                        className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-paymint-green transition-colors"
+                        className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-mintcom-green transition-colors"
                         title={t('common.reactivate', { defaultValue: 'Reactivate' })}
                       >
                         <RotateCcw size={20} />
@@ -917,7 +917,7 @@ export function CategoriesPage() {
                       {isCategoryActive(viewingCategory) ? (
                         <button
                           onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                          className="px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-colors flex items-center gap-2 shadow-sm"
+                          className="px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-colors flex items-center gap-2 shadow-sm"
                         >
                           <Plus size={18} />
                           {t('common.add')}
@@ -925,7 +925,7 @@ export function CategoriesPage() {
                       ) : (
                         <button
                           onClick={() => handleReactivate(viewingCategory)}
-                          className="px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-colors flex items-center gap-2 shadow-sm"
+                          className="px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-colors flex items-center gap-2 shadow-sm"
                         >
                           <RotateCcw size={18} />
                           {t('common.reactivate', { defaultValue: 'Reactivate' })}
@@ -940,7 +940,7 @@ export function CategoriesPage() {
                         <div
                           key={p.id}
                           onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { productId: p.id, categoryId: viewingCategory.id } })}
-                          className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-paymint-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
+                          className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-mintcom-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
                         >
                           <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">
                             <ThumbnailImage
@@ -952,7 +952,7 @@ export function CategoriesPage() {
                           </div>
                           <div className="min-w-0">
                             <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
-                            <p className="text-sm font-bold text-paymint-green mt-0.5">
+                            <p className="text-sm font-bold text-mintcom-green mt-0.5">
                               {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                             </p>
                           </div>
@@ -961,13 +961,13 @@ export function CategoriesPage() {
                       {isCategoryActive(viewingCategory) && (
                         <div
                           onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                          className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-dashed border-gray-300 dark:border-white/20 rounded-xl group hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4 shadow-sm"
+                          className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-dashed border-gray-300 dark:border-white/20 rounded-xl group hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4 shadow-sm"
                         >
                           <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center shrink-0">
-                             <Plus size={20} className="text-gray-400 group-hover:text-paymint-green group-hover:scale-110 transition-all" />
+                             <Plus size={20} className="text-gray-400 group-hover:text-mintcom-green group-hover:scale-110 transition-all" />
                           </div>
                           <div className="min-w-0">
-                            <p className="font-bold text-sm text-gray-600 dark:text-gray-300 group-hover:text-paymint-green transition-colors truncate">{t('common.add')}</p>
+                            <p className="font-bold text-sm text-gray-600 dark:text-gray-300 group-hover:text-mintcom-green transition-colors truncate">{t('common.add')}</p>
                             <p className="text-xs font-medium text-gray-400 dark:text-white/40 mt-0.5">
                               New Product
                             </p>
@@ -1070,7 +1070,7 @@ export function CategoriesPage() {
                       <div
                         key={p.id}
                         onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { productId: p.id, categoryId: deleteBlockedCategory.id } })}
-                        className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-paymint-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
+                        className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-mintcom-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
                       >
                         <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">
                           <ThumbnailImage
@@ -1082,7 +1082,7 @@ export function CategoriesPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
-                          <p className="text-xs font-black text-paymint-green mt-0.5">
+                          <p className="text-xs font-black text-mintcom-green mt-0.5">
                             {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                           </p>
                         </div>

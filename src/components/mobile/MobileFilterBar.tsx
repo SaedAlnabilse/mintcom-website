@@ -57,7 +57,7 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${activeCount > 0
-              ? 'bg-paymint-green/5 border-paymint-green text-paymint-green'
+              ? 'bg-mintcom-green/5 border-mintcom-green text-mintcom-green'
               : 'bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300'
             }`}
         >
@@ -65,7 +65,7 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
             <Filter size={18} />
             <span className="text-sm font-bold">{t('common.filters')}</span>
             {activeCount > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-paymint-green text-black label-strong font-outfit">
+              <span className="px-2 py-0.5 rounded-full bg-mintcom-green text-black label-strong font-outfit">
                 {activeCount}
               </span>
             )}
@@ -94,7 +94,7 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
                       key={filter.id}
                       onClick={() => setActiveFilterSheet(filter.id)}
                       className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all touch-target ${filter.value !== null
-                          ? 'bg-paymint-green/10 text-paymint-green border border-paymint-green/30'
+                          ? 'bg-mintcom-green/10 text-mintcom-green border border-mintcom-green/30'
                           : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-transparent'
                         }`}
                     >
@@ -145,7 +145,7 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-[101] bg-white dark:bg-paymint-surface rounded-t-3xl shadow-2xl md:hidden max-h-[70vh] overflow-hidden flex flex-col"
+              className="fixed bottom-0 left-0 right-0 z-[101] bg-white dark:bg-mintcom-surface rounded-t-3xl shadow-2xl md:hidden max-h-[70vh] overflow-hidden flex flex-col"
             >
               {/* Handle */}
               <div className="flex justify-center py-3">
@@ -185,15 +185,15 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
                           setActiveFilterSheet(null);
                         }}
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-left transition-all touch-target ${isSelected
-                            ? 'bg-paymint-green/10'
+                            ? 'bg-mintcom-green/10'
                             : 'hover:bg-gray-50 dark:hover:bg-white/5'
                           }`}
                       >
-                        <span className={`text-sm font-bold ${isSelected ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
+                        <span className={`text-sm font-bold ${isSelected ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>
                           {option.label}
                         </span>
                         {isSelected && (
-                          <Check size={18} className="text-paymint-green" />
+                          <Check size={18} className="text-mintcom-green" />
                         )}
                       </button>
                     );
@@ -224,7 +224,7 @@ export function FilterChip({ label, value, isActive, onClick, onClear }: FilterC
     <button
       onClick={onClick}
       className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all touch-target ${active
-          ? 'bg-paymint-green/10 text-paymint-green border border-paymint-green/30'
+          ? 'bg-mintcom-green/10 text-mintcom-green border border-mintcom-green/30'
           : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-transparent'
         }`}
     >

@@ -198,7 +198,7 @@ api.interceptors.response.use(
     ) {
       const errorMessage =
         error.response?.data?.message ||
-        'Subscription is required to continue using Paymint.';
+        'Subscription is required to continue using Mintcom.';
 
       window.dispatchEvent(new CustomEvent('subscription-required', {
         detail: { message: errorMessage }

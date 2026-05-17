@@ -73,7 +73,7 @@ export const Contact = () => {
     >
       {/* Background ambient */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 left-[10%] h-[400px] w-[400px] rounded-full bg-paymint-green/8 blur-[120px]" />
+        <div className="absolute -top-20 left-[10%] h-[400px] w-[400px] rounded-full bg-mintcom-green/8 blur-[120px]" />
         <div className="absolute -bottom-20 right-[10%] h-[400px] w-[400px] rounded-full bg-emerald-400/5 blur-[120px]" />
       </div>
 
@@ -81,7 +81,7 @@ export const Contact = () => {
         <div className="mx-auto max-w-6xl">
           {/* Badge — above the card */}
           <div className="mb-6 flex justify-center">
-            <div className="inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-paymint-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
+            <div className="inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
               <MessageCircle size={12} />
               <span>{t('landing.contact.titleHighlight')}</span>
             </div>
@@ -91,13 +91,13 @@ export const Contact = () => {
           <div className="relative">
             <div
               aria-hidden
-              className="absolute -inset-px -z-10 rounded-[2.5rem] bg-gradient-to-tr from-paymint-green/30 via-transparent to-paymint-green/30 opacity-50 blur-2xl"
+              className="absolute -inset-px -z-10 rounded-[2.5rem] bg-gradient-to-tr from-mintcom-green/30 via-transparent to-mintcom-green/30 opacity-50 blur-2xl"
             />
 
             <div className="relative overflow-hidden rounded-[2.5rem] border border-gray-200/70 bg-white/90 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.4)]">
               <div className="grid grid-cols-1 lg:grid-cols-12">
                 {/* ====== Left: Pitch / contact info ====== */}
-                <div className="relative overflow-hidden bg-gradient-to-br from-paymint-green/5 via-white to-white p-10 dark:from-paymint-green/10 dark:via-transparent dark:to-transparent lg:col-span-5 lg:p-14">
+                <div className="relative overflow-hidden bg-gradient-to-br from-mintcom-green/5 via-white to-white p-10 dark:from-mintcom-green/10 dark:via-transparent dark:to-transparent lg:col-span-5 lg:p-14">
                   {/* Decorative grid */}
                   <div
                     aria-hidden
@@ -106,7 +106,7 @@ export const Contact = () => {
                       backgroundImage:
                         'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
                       backgroundSize: '40px 40px',
-                      color: '#7CC39F',
+                      color: '#7dc6a2',
                       maskImage:
                         'radial-gradient(ellipse at top left, black 30%, transparent 75%)',
                       WebkitMaskImage:
@@ -120,7 +120,7 @@ export const Contact = () => {
                       <span className="block text-gray-900 dark:text-white">
                         {t('landing.contact.title')}
                       </span>
-                      <span className="block bg-gradient-to-r from-paymint-green via-emerald-400 to-paymint-green bg-clip-text text-transparent">
+                      <span className="block bg-gradient-to-r from-mintcom-green via-emerald-400 to-mintcom-green bg-clip-text text-transparent">
                         {t('landing.contact.titleHighlight')}
                       </span>
                     </h2>
@@ -134,7 +134,7 @@ export const Contact = () => {
                         {
                           icon: Mail,
                           label: t('common.email'),
-                          value: 'support@paymintpos.net',
+                          value: 'support@mintcompos.com',
                         },
                         {
                           icon: Phone,
@@ -150,10 +150,10 @@ export const Contact = () => {
                           transition={{ delay: 0.2 + i * 0.1 }}
                           className="group flex items-start gap-4"
                         >
-                          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-paymint-green/20 bg-white shadow-sm transition-all group-hover:border-paymint-green/40 group-hover:bg-paymint-green group-hover:shadow-md dark:bg-white/5">
+                          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-mintcom-green/20 bg-white shadow-sm transition-all group-hover:border-mintcom-green/40 group-hover:bg-mintcom-green group-hover:shadow-md dark:bg-white/5">
                             <item.icon
                               size={18}
-                              className="text-paymint-green transition-colors group-hover:text-black"
+                              className="text-mintcom-green transition-colors group-hover:text-black"
                             />
                           </div>
                           <div>
@@ -170,7 +170,7 @@ export const Contact = () => {
 
                     {/* Response time tag */}
                     <div className="mt-10 inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white/70 px-4 py-2 text-xs font-semibold text-gray-600 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-gray-300">
-                      <Clock size={12} className="text-paymint-green" />
+                      <Clock size={12} className="text-mintcom-green" />
                       <span>{t('landing.contact.responseTime')}</span>
                     </div>
                   </div>
@@ -195,12 +195,12 @@ export const Contact = () => {
                             stiffness: 200,
                             damping: 15,
                           }}
-                          className="flex h-24 w-24 items-center justify-center rounded-full bg-paymint-green/15 ring-4 ring-paymint-green/20"
+                          className="flex h-24 w-24 items-center justify-center rounded-full bg-mintcom-green/15 ring-4 ring-mintcom-green/20"
                         >
                           <CheckCircle2
                             size={48}
                             strokeWidth={2}
-                            className="text-paymint-green"
+                            className="text-mintcom-green"
                           />
                         </motion.div>
                         <div>
@@ -213,7 +213,7 @@ export const Contact = () => {
                         </div>
                         <button
                           onClick={() => setIsSuccess(false)}
-                          className="text-xs font-bold uppercase tracking-[0.18em] text-paymint-green hover:underline"
+                          className="text-xs font-bold uppercase tracking-[0.18em] text-mintcom-green hover:underline"
                         >
                           {t('landing.contact.sendAnother')}
                         </button>
@@ -241,7 +241,7 @@ export const Contact = () => {
                               name="fullName"
                               value={formData.fullName}
                               onChange={handleInputChange}
-                              className="w-full rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-paymint-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
+                              className="w-full rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-mintcom-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
                               placeholder={formatInputPlaceholder(
                                 t('landing.contact.placeholder.name'),
                                 t('common.locale')
@@ -262,7 +262,7 @@ export const Contact = () => {
                               name="businessName"
                               value={formData.businessName}
                               onChange={handleInputChange}
-                              className="w-full rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-paymint-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
+                              className="w-full rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-mintcom-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
                               placeholder={formatInputPlaceholder(
                                 t('landing.contact.placeholder.business'),
                                 t('common.locale')
@@ -285,7 +285,7 @@ export const Contact = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className="w-full rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-paymint-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
+                            className="w-full rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-mintcom-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
                             placeholder={formatInputPlaceholder(
                               t('landing.contact.placeholder.email'),
                               t('common.locale')
@@ -307,7 +307,7 @@ export const Contact = () => {
                             value={formData.message}
                             onChange={handleInputChange}
                             rows={4}
-                            className="w-full resize-none rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-paymint-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
+                            className="w-full resize-none rounded-2xl border border-gray-200 bg-gray-50/70 px-5 py-4 text-gray-900 transition-all placeholder:text-gray-400 focus:border-mintcom-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
                             placeholder={formatInputPlaceholder(
                               t('landing.contact.placeholder.message'),
                               t('common.locale')
@@ -320,7 +320,7 @@ export const Contact = () => {
                             required
                             id="terms"
                             type="checkbox"
-                            className="mt-1 h-4 w-4 cursor-pointer rounded border-gray-300 text-paymint-green focus:ring-paymint-green dark:border-white/20"
+                            className="mt-1 h-4 w-4 cursor-pointer rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green dark:border-white/20"
                           />
                           <label
                             htmlFor="terms"
@@ -331,7 +331,7 @@ export const Contact = () => {
                               to="/legal/privacy"
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="font-bold text-paymint-green hover:underline"
+                              className="font-bold text-mintcom-green hover:underline"
                             >
                               {t('landing.contact.privacyPolicy')}
                             </Link>{' '}
@@ -340,7 +340,7 @@ export const Contact = () => {
                               to="/legal/terms"
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="font-bold text-paymint-green hover:underline"
+                              className="font-bold text-mintcom-green hover:underline"
                             >
                               {t('landing.contact.termsOfService')}
                             </Link>
@@ -353,7 +353,7 @@ export const Contact = () => {
                           whileTap={{ scale: 0.97 }}
                           type="submit"
                           disabled={isSubmitting}
-                          className="group relative inline-flex h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-2xl bg-paymint-green text-base font-black text-black shadow-[0_15px_40px_-12px_rgba(124,195,159,0.7)] transition-shadow hover:shadow-[0_20px_50px_-12px_rgba(124,195,159,0.8)] disabled:opacity-60"
+                          className="group relative inline-flex h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-2xl bg-mintcom-green text-base font-black text-black shadow-[0_15px_40px_-12px_rgba(124,195,159,0.7)] transition-shadow hover:shadow-[0_20px_50px_-12px_rgba(124,195,159,0.8)] disabled:opacity-60"
                         >
                           <span
                             aria-hidden

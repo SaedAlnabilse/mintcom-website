@@ -187,11 +187,11 @@ export function MultiSelect({
                                         type="button"
                                         onClick={() => handleSelect(opt.value)}
                                         data-selected={isSelected}
-                                        className={`w-full px-4 py-3 text-start flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${isSelected ? 'bg-paymint-green/5' : ''
+                                        className={`w-full px-4 py-3 text-start flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${isSelected ? 'bg-mintcom-green/5' : ''
                                             }`}
                                     >
-                                        <span className={`text-xs ${isSelected ? 'font-normal text-paymint-green' : 'font-normal text-gray-700 dark:text-gray-300'}`}>{opt.label}</span>
-                                        {isSelected && <Check size={14} className="text-paymint-green" />}
+                                        <span className={`text-xs ${isSelected ? 'font-normal text-mintcom-green' : 'font-normal text-gray-700 dark:text-gray-300'}`}>{opt.label}</span>
+                                        {isSelected && <Check size={14} className="text-mintcom-green" />}
                                     </button>
                                 );
                             })
@@ -214,7 +214,7 @@ export function MultiSelect({
                 ref={buttonRef}
                 type="button"
                 onClick={toggleOpen}
-                className={`w-full px-4 py-3 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-xl text-start flex items-center justify-between transition-all outline-none ${isOpen ? 'ring-2 ring-paymint-green/20 border-paymint-green/50' : ''
+                className={`w-full px-4 py-3 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-xl text-start flex items-center justify-between transition-all outline-none ${isOpen ? 'ring-2 ring-mintcom-green/20 border-mintcom-green/50' : ''
                     }`}
             >
                 <div className="flex items-center gap-2 overflow-hidden">

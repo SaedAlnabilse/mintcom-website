@@ -239,8 +239,8 @@ export function PasswordResetOtpModal({
                     {/* Header */}
                     <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/[0.05]">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
-                                <Shield className="w-5 h-5 text-paymint-green" />
+                            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center">
+                                <Shield className="w-5 h-5 text-mintcom-green" />
                             </div>
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {title}
@@ -281,7 +281,7 @@ export function PasswordResetOtpModal({
                                 <button
                                     onClick={handleRequestOtp}
                                     disabled={isLoading}
-                                    className="w-full py-3 px-4 bg-paymint-green hover:bg-paymint-green/90 text-black font-bold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="w-full py-3 px-4 bg-mintcom-green hover:bg-mintcom-green/90 text-black font-bold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                                 >
                                     {isLoading ? (
                                         <>
@@ -302,8 +302,8 @@ export function PasswordResetOtpModal({
                         {step === 'verify' && (
                             <div className="space-y-6">
                                 <div className="text-center">
-                                    <div className="w-16 h-16 rounded-full bg-paymint-green/10 flex items-center justify-center mx-auto mb-4">
-                                        <Shield className="w-8 h-8 text-paymint-green" />
+                                    <div className="w-16 h-16 rounded-full bg-mintcom-green/10 flex items-center justify-center mx-auto mb-4">
+                                        <Shield className="w-8 h-8 text-mintcom-green" />
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                                         {t('passwordReset.steps.enterCodeTitle')}
@@ -326,7 +326,7 @@ export function PasswordResetOtpModal({
                                             value={digit}
                                             onChange={(e) => handleOtpChange(index, e.target.value)}
                                             onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                                            className="w-12 h-14 text-center text-xl font-bold rounded-xl border-2 border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
+                                            className="w-12 h-14 text-center text-xl font-bold rounded-xl border-2 border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 outline-none transition-all"
                                         />
                                     ))}
                                 </div>
@@ -341,7 +341,7 @@ export function PasswordResetOtpModal({
                                 <button
                                     onClick={handleVerifyOtp}
                                     disabled={isLoading || otp.join('').length !== 6}
-                                    className="w-full py-3 px-4 bg-paymint-green hover:bg-paymint-green/90 text-black font-bold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="w-full py-3 px-4 bg-mintcom-green hover:bg-mintcom-green/90 text-black font-bold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                                 >
                                     {isLoading ? (
                                         <>
@@ -356,7 +356,7 @@ export function PasswordResetOtpModal({
                                 <button
                                     onClick={handleRequestOtp}
                                     disabled={isLoading}
-                                    className="w-full py-2 text-sm text-gray-500 hover:text-paymint-green transition-colors"
+                                    className="w-full py-2 text-sm text-gray-500 hover:text-mintcom-green transition-colors"
                                 >
                                     {t('passwordReset.form.resend')}
                                 </button>
@@ -387,7 +387,7 @@ export function PasswordResetOtpModal({
                                             type={showPassword ? 'text' : 'password'}
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
-                                            className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
+                                            className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 outline-none transition-all"
                                             placeholder={formatInputPlaceholder(t('passwordReset.form.passwordPlaceholder'), t('common.locale'))}
                                         />
                                         <button
@@ -407,7 +407,7 @@ export function PasswordResetOtpModal({
                                             type={showConfirmPassword ? 'text' : 'password'}
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
+                                            className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 outline-none transition-all"
                                             placeholder={formatInputPlaceholder(t('passwordReset.form.confirmPlaceholder'), t('common.locale'))}
                                         />
                                         <button
@@ -424,11 +424,11 @@ export function PasswordResetOtpModal({
                                     {criteria.map((item, index) => (
                                         <div key={index} className="flex items-center gap-2">
                                             {item.met ? (
-                                                <CheckCircle2 size={14} className="text-paymint-green flex-shrink-0" />
+                                                <CheckCircle2 size={14} className="text-mintcom-green flex-shrink-0" />
                                             ) : (
                                                 <div className="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-white/10 flex-shrink-0" />
                                             )}
-                                            <span className={`text-[10px] font-bold ${item.met ? 'text-paymint-green' : 'text-gray-400'}`}>
+                                            <span className={`text-[10px] font-bold ${item.met ? 'text-mintcom-green' : 'text-gray-400'}`}>
                                                 {item.label}
                                             </span>
                                         </div>
@@ -445,7 +445,7 @@ export function PasswordResetOtpModal({
                                 <button
                                     onClick={handleResetPassword}
                                     disabled={isLoading || !newPassword || !confirmPassword}
-                                    className="w-full py-3 px-4 bg-paymint-green hover:bg-paymint-green/90 text-black font-bold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="w-full py-3 px-4 bg-mintcom-green hover:bg-mintcom-green/90 text-black font-bold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                                 >
                                     {isLoading ? (
                                         <>
@@ -462,8 +462,8 @@ export function PasswordResetOtpModal({
                         {/* Step 4: Success */}
                         {step === 'success' && (
                             <div className="space-y-6 text-center">
-                                <div className="w-20 h-20 rounded-full bg-paymint-green/ flex items-center justify-center mx-auto">
-                                    <CheckCircle2 className="w-10 h-10 text-paymint-green" />
+                                <div className="w-20 h-20 rounded-full bg-mintcom-green/ flex items-center justify-center mx-auto">
+                                    <CheckCircle2 className="w-10 h-10 text-mintcom-green" />
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
@@ -476,7 +476,7 @@ export function PasswordResetOtpModal({
 
                                 <button
                                     onClick={handleClose}
-                                    className="w-full py-3 px-4 bg-paymint-green hover:bg-paymint-green/90 text-black font-bold rounded-xl transition-all"
+                                    className="w-full py-3 px-4 bg-mintcom-green hover:bg-mintcom-green/90 text-black font-bold rounded-xl transition-all"
                                 >
                                     {t('common.done')}
                                 </button>

@@ -278,7 +278,7 @@ export function OwnerRolesPage() {
       case 'CASHIER':
         return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       default:
-        return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
+        return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
     }
   };
 
@@ -294,7 +294,7 @@ export function OwnerRolesPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
           >
             <Plus size={18} />
             <span>{t('owner.roles.createNew')}</span>
@@ -316,14 +316,14 @@ export function OwnerRolesPage() {
         <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[44px]">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
             title={t('common.view')}
           >
             <Grid3X3 size={18} />
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
             title={t('common.view')}
           >
             <List size={18} />
@@ -335,7 +335,7 @@ export function OwnerRolesPage() {
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32">
-            <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
+            <div className="w-12 h-12 border-4 border-mintcom-green/30 border-t-mintcom-green rounded-full animate-spin mb-4" />
             <p className="label-strong font-outfit">{t('owner.roles.loading')}</p>
           </div>
         ) : filteredRoles.length === 0 ? (
@@ -357,12 +357,12 @@ export function OwnerRolesPage() {
                     key={role.id}
                     className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-6 transition-all shadow-sm overflow-hidden"
                   >
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
 
                       {/* Header */}
                       <div className="flex items-start justify-between mb-6 relative z-10">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300">
+                          <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center transition-transform duration-300">
                             <Shield size={24} />
                           </div>
                           <div>
@@ -397,8 +397,8 @@ export function OwnerRolesPage() {
                           <span className="label-strong block mb-2">{t('owner.roles.permissions')}</span>
                           <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
-                              <span className="text-xs font-bold text-paymint-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
+                              <span className="w-1.5 h-1.5 rounded-full bg-mintcom-green"></span>
+                              <span className="text-xs font-bold text-mintcom-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
@@ -436,7 +436,7 @@ export function OwnerRolesPage() {
                     >
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
                               <Shield size={20} />
                             </div>
                             <div>
@@ -467,7 +467,7 @@ export function OwnerRolesPage() {
                           <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
                             <span className="text-gray-500 block mb-1">{t('owner.roles.permissions')}</span>
                             <div className="flex gap-2">
-                              <span className="font-bold text-paymint-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
+                              <span className="font-bold text-mintcom-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
                               <span className="font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
                             </div>
                           </div>
@@ -488,7 +488,7 @@ export function OwnerRolesPage() {
                     <thead className="bg-gray-50 dark:bg-white/[0.02]">
                       <tr className="border-b border-gray-200 dark:border-white/5">
                         <th
-                          className="px-6 py-4 text-left label-strong cursor-pointer hover:text-paymint-green transition-colors"
+                          className="px-6 py-4 text-left label-strong cursor-pointer hover:text-mintcom-green transition-colors"
                           onClick={() => handleSort('name')}
                         >
                           <div className="flex items-center gap-1">
@@ -497,7 +497,7 @@ export function OwnerRolesPage() {
                           </div>
                         </th>
                         <th
-                          className="px-6 py-4 text-center label-strong cursor-pointer hover:text-paymint-green transition-colors"
+                          className="px-6 py-4 text-center label-strong cursor-pointer hover:text-mintcom-green transition-colors"
                           onClick={() => handleSort('baseRole')}
                         >
                           <div className="flex items-center justify-center gap-1 text-center">
@@ -507,7 +507,7 @@ export function OwnerRolesPage() {
                         </th>
                         <th className="px-6 py-4 text-center label-strong flex justify-center">{t('staff.form.accessLabel')}</th>
                         <th
-                          className="px-6 py-4 text-center label-strong cursor-pointer hover:text-paymint-green transition-colors"
+                          className="px-6 py-4 text-center label-strong cursor-pointer hover:text-mintcom-green transition-colors"
                           onClick={() => handleSort('createdAt')}
                         >
                           <div className="flex items-center justify-center gap-1 text-center">
@@ -526,7 +526,7 @@ export function OwnerRolesPage() {
                         >
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                                   <Shield size={20} />
                                 </div>
                                 <div>
@@ -545,7 +545,7 @@ export function OwnerRolesPage() {
                             <td className="px-6 py-4 text-center">
                               <div className="flex flex-col items-center gap-1 justify-center">
                                 <div className="flex items-center gap-2">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
+                                  <span className="w-1.5 h-1.5 rounded-full bg-mintcom-green"></span>
                                   <span className="text-xs text-gray-500 font-medium">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -570,7 +570,7 @@ export function OwnerRolesPage() {
                                 </button>
                                 <button
                                   onClick={() => handleDeleteClick(role)}
-                                  className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-red/60 hover:text-paymint-red hover:bg-paymint-red/5 transition-all shadow-sm active:scale-90"
+                                  className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-mintcom-red/60 hover:text-mintcom-red hover:bg-mintcom-red/5 transition-all shadow-sm active:scale-90"
                                   title={t('owner.roles.deleteRole')}
                                 >
                                   <Trash2 size={16} />

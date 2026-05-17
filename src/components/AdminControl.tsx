@@ -64,7 +64,7 @@ const FloatingNotification = ({
           {body}
         </div>
       </div>
-      <span className="text-[10px] font-bold text-paymint-green">now</span>
+      <span className="text-[10px] font-bold text-mintcom-green">now</span>
     </motion.div>
   </motion.div>
 );
@@ -81,7 +81,7 @@ export const AdminControl = () => {
     >
       {/* Background blobs */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 left-[5%] h-[420px] w-[420px] rounded-full bg-paymint-green/8 blur-[120px]" />
+        <div className="absolute -top-20 left-[5%] h-[420px] w-[420px] rounded-full bg-mintcom-green/8 blur-[120px]" />
         <div className="absolute -bottom-20 right-[10%] h-[420px] w-[420px] rounded-full bg-emerald-400/8 blur-[120px]" />
       </div>
 
@@ -99,19 +99,19 @@ export const AdminControl = () => {
             {/* Halo */}
             <div
               aria-hidden
-              className="absolute left-1/2 top-1/2 -z-10 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-paymint-green/30 via-transparent to-paymint-green/10 blur-3xl"
+              className="absolute left-1/2 top-1/2 -z-10 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-mintcom-green/30 via-transparent to-mintcom-green/10 blur-3xl"
             />
 
             {/* Decorative orbit ring */}
             <div
               aria-hidden
-              className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-paymint-green/15"
+              className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-mintcom-green/15"
             />
             <motion.div
               aria-hidden
               animate={{ rotate: 360 }}
               transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-              className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-paymint-green/10"
+              className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-mintcom-green/10"
             />
 
             {/* iPhone Frame (Back) */}
@@ -131,14 +131,14 @@ export const AdminControl = () => {
                     <p className="mb-0.5 text-[8px] font-medium text-gray-400">Good morning,</p>
                     <p className="text-[11px] font-bold text-white">Owner</p>
                   </div>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full border border-paymint-green/20 bg-paymint-green/10">
-                    <User size={11} className="text-paymint-green" />
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full border border-mintcom-green/20 bg-mintcom-green/10">
+                    <User size={11} className="text-mintcom-green" />
                   </div>
                 </div>
 
-                <div className="relative overflow-hidden rounded-xl border border-paymint-green/20 bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 p-3">
+                <div className="relative overflow-hidden rounded-xl border border-mintcom-green/20 bg-gradient-to-br from-mintcom-green/20 to-mintcom-green/5 p-3">
                   <div className="mb-1.5 flex items-center gap-1.5">
-                    <BarChart2 size={9} className="text-paymint-green" />
+                    <BarChart2 size={9} className="text-mintcom-green" />
                     <span className="text-[9px] font-semibold text-white/90">
                       {t('landing.admin.dailyRevenue')}
                     </span>
@@ -180,7 +180,7 @@ export const AdminControl = () => {
                         whileInView={{ height: `${h}%` }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.5 + i * 0.05, duration: 0.6 }}
-                        className="w-full rounded-t-sm bg-gradient-to-t from-paymint-green/40 to-paymint-green"
+                        className="w-full rounded-t-sm bg-gradient-to-t from-mintcom-green/40 to-mintcom-green"
                       />
                     ))}
                   </div>
@@ -205,21 +205,21 @@ export const AdminControl = () => {
                     <p className="mb-0.5 text-[10px] font-medium text-gray-400">Welcome back,</p>
                     <p className="text-xs font-bold text-white">Admin Dashboard</p>
                   </div>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full border border-paymint-green/20 bg-paymint-green/10">
-                    <User size={14} className="text-paymint-green" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full border border-mintcom-green/20 bg-mintcom-green/10">
+                    <User size={14} className="text-mintcom-green" />
                   </div>
                 </div>
 
-                <div className="relative overflow-hidden rounded-xl border border-paymint-green/20 bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 p-4">
-                  <div className="absolute right-0 top-0 h-20 w-20 rounded-full bg-paymint-green/20 blur-2xl" />
+                <div className="relative overflow-hidden rounded-xl border border-mintcom-green/20 bg-gradient-to-br from-mintcom-green/20 to-mintcom-green/5 p-4">
+                  <div className="absolute right-0 top-0 h-20 w-20 rounded-full bg-mintcom-green/20 blur-2xl" />
                   <div className="relative z-10 mb-3 flex items-start justify-between">
                     <div className="flex items-center gap-2">
-                      <BarChart2 size={12} className="text-paymint-green" />
+                      <BarChart2 size={12} className="text-mintcom-green" />
                       <span className="text-[11px] font-semibold text-white/90">
                         {t('landing.admin.dailyRevenue')}
                       </span>
                     </div>
-                    <span className="rounded-full border border-paymint-green/20 bg-paymint-green/10 px-2 py-0.5 text-[9px] font-bold text-paymint-green">
+                    <span className="rounded-full border border-mintcom-green/20 bg-mintcom-green/10 px-2 py-0.5 text-[9px] font-bold text-mintcom-green">
                       +14.2%
                     </span>
                   </div>
@@ -263,7 +263,7 @@ export const AdminControl = () => {
             {/* Floating live alert cards */}
             <FloatingNotification
               icon={Activity}
-              iconBg="bg-gradient-to-br from-paymint-green to-emerald-500"
+              iconBg="bg-gradient-to-br from-mintcom-green to-emerald-500"
               title={t('landing.admin.shiftAlerts')}
               body={t('landing.admin.alerts.shiftStarted', {
                 location: 'Downtown',
@@ -293,7 +293,7 @@ export const AdminControl = () => {
             transition={{ duration: 0.8 }}
             className="order-1 lg:order-2 lg:col-span-6"
           >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-white/60 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-paymint-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-white/60 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
               <Laptop size={12} />
               <span>{t('landing.admin.badge')}</span>
             </div>
@@ -305,7 +305,7 @@ export const AdminControl = () => {
               <span className="block text-gray-900 dark:text-white">
                 {t('landing.admin.title2')}
               </span>
-              <span className="block bg-gradient-to-r from-paymint-green via-emerald-400 to-paymint-green bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-mintcom-green via-emerald-400 to-mintcom-green bg-clip-text text-transparent">
                 {t('landing.admin.title3')}
               </span>
             </h2>
@@ -332,7 +332,7 @@ export const AdminControl = () => {
               />
               <div className="h-8 w-px bg-gray-200 dark:bg-white/15" />
               <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
-                <Smartphone size={16} className="text-paymint-green" />
+                <Smartphone size={16} className="text-mintcom-green" />
                 <span>{t('landing.admin.adminApp')}</span>
               </div>
             </div>
@@ -354,13 +354,13 @@ export const AdminControl = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 + i * 0.1, duration: 0.5 }}
-                  className="group flex items-center gap-4 rounded-2xl border border-transparent p-3 transition-all duration-300 hover:border-paymint-green/20 hover:bg-paymint-green/5"
+                  className="group flex items-center gap-4 rounded-2xl border border-transparent p-3 transition-all duration-300 hover:border-mintcom-green/20 hover:bg-mintcom-green/5"
                 >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-paymint-green/15 ring-1 ring-paymint-green/30 transition-all group-hover:bg-paymint-green group-hover:ring-paymint-green/50">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-mintcom-green/15 ring-1 ring-mintcom-green/30 transition-all group-hover:bg-mintcom-green group-hover:ring-mintcom-green/50">
                     <Check
                       size={16}
                       strokeWidth={3}
-                      className="text-paymint-green transition-colors group-hover:text-black"
+                      className="text-mintcom-green transition-colors group-hover:text-black"
                     />
                   </span>
                   <span className="text-base font-semibold tracking-tight text-gray-800 dark:text-gray-100 md:text-lg">

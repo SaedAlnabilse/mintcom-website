@@ -38,10 +38,10 @@ import {
   ShoppingBag
 } from 'lucide-react';
 
-// Paymint Logo imports
-import PaymintLogoGreen from '../assets/green-full-logo.svg';
-import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
-import PaymintLeafIcon from '../assets/small-logo.svg';
+// Mintcom Logo imports
+import MintcomLogoGreen from '../assets/green-full-logo.svg';
+import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
+import MintcomLeafIcon from '../assets/small-logo.svg';
 import { ConfirmModal } from './ConfirmModal';
 import { getBusinessTypeIcon } from '../utils/businessTypeIcons';
 import { RealtimeStatusIndicator } from './RealtimeStatusIndicator';
@@ -391,7 +391,7 @@ export function DashboardLayout() {
               >
                 <ArrowLeft size={16} className="text-gray-400 mr-2 group-hover:-translate-x-1 transition-transform" />
                 <img
-                  src={PaymintLogoGreen}
+                  src={MintcomLogoGreen}
                   alt={t('brand.name')}
                   width={160}
                   height={40}
@@ -400,7 +400,7 @@ export function DashboardLayout() {
                   className="h-10 w-auto object-contain dark:hidden transition-transform"
                 />
                 <img
-                  src={PaymintLogoWhite}
+                  src={MintcomLogoWhite}
                   alt={t('brand.name')}
                   width={160}
                   height={40}
@@ -421,10 +421,10 @@ export function DashboardLayout() {
                 className="mx-auto"
               >
                 <button
-                  className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 text-paymint-green transition-all group relative"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-mintcom-green/20 to-mintcom-green/5 border border-mintcom-green/20 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
                   onClick={() => setSidebarOpen(true)}
                 >
-                  <img src={PaymintLeafIcon} width={32} height={32} className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} loading="eager" decoding="async" />
+                  <img src={MintcomLeafIcon} width={32} height={32} className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} loading="eager" decoding="async" />
                   <PanelLeft
                     size={24}
                     className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
@@ -440,7 +440,7 @@ export function DashboardLayout() {
           {sidebarOpen && (
             <button
               onClick={() => setSidebarOpen(false)}
-              className="p-2 rounded-xl text-gray-400 hover:text-paymint-green hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+              className="p-2 rounded-xl text-gray-400 hover:text-mintcom-green hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
             >
               <PanelLeftClose size={20} />
             </button>
@@ -451,20 +451,20 @@ export function DashboardLayout() {
         {sidebarOpen ? (
           <div className="px-2 pb-2 pt-0">
             <div
-              className="p-3.5 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer transition-all duration-300 hover:border-paymint-green/30"
+              className="p-3.5 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer transition-all duration-300 hover:border-mintcom-green/30"
               onClick={() => navigate('/select-establishment')}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 dark:bg-paymint-green/10 rounded-full blur-3xl pointer-events-none transition-transform duration-1000" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 dark:bg-mintcom-green/10 rounded-full blur-3xl pointer-events-none transition-transform duration-1000" />
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-2.5">
-                  <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center flex-shrink-0">
                     {(() => {
                       const Icon = getBusinessTypeIcon(currentEstablishment?.type || '');
-                      return <Icon size={18} className="text-paymint-green" />;
+                      return <Icon size={18} className="text-mintcom-green" />;
                     })()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="label-strong font-outfit text-paymint-green mb-0.5">{t('dashboard.menu.activeLocation')}</p>
+                    <p className="label-strong font-outfit text-mintcom-green mb-0.5">{t('dashboard.menu.activeLocation')}</p>
                     <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
                       {currentEstablishment?.name || t('common.loading')}
                     </h2>
@@ -527,12 +527,12 @@ export function DashboardLayout() {
                       flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group relative
                       ${sidebarOpen ? 'w-full' : ''}
                       ${isActive
-                        ? (!sidebarOpen ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20' : 'bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white')
+                        ? (!sidebarOpen ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20' : 'bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white')
                         : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
                       ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}
                     `}
                   >
-                    <Icon size={!sidebarOpen ? 24 : 20} className={isActive && !sidebarOpen ? 'text-black' : (isActive ? 'text-paymint-green' : '')} />
+                    <Icon size={!sidebarOpen ? 24 : 20} className={isActive && !sidebarOpen ? 'text-black' : (isActive ? 'text-mintcom-green' : '')} />
 
                     {sidebarOpen && (
                       <>
@@ -558,7 +558,7 @@ export function DashboardLayout() {
                               onClick={() => setSidebarOpen(false)}
                               className={({ isActive }) =>
                                 `flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
-                                  ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20 active-menu-item'
+                                  ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20 active-menu-item'
                                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
                                 }`
                               }
@@ -600,7 +600,7 @@ export function DashboardLayout() {
                   className={({ isActive }) =>
                     `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
                     ${isActive
-                      ? 'bg-paymint-green text-black font-semibold shadow-lg shadow-paymint-green/20 active-menu-item'
+                      ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20 active-menu-item'
                       : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
                     ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
                   }
@@ -632,7 +632,7 @@ export function DashboardLayout() {
                 onMouseLeave={scheduleHideCollapsedNavOverlay}
               >
                 <div className="px-4 py-2 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
-                  <p className="text-xs font-semibold text-paymint-green tracking-normal">{collapsedNavOverlay.label}</p>
+                  <p className="text-xs font-semibold text-mintcom-green tracking-normal">{collapsedNavOverlay.label}</p>
                 </div>
                 <div className="px-2 py-2 space-y-1">
                   {collapsedNavOverlay.items?.map((subItem) => (
@@ -645,7 +645,7 @@ export function DashboardLayout() {
                       }}
                       className={({ isActive }) =>
                         `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive
-                          ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20 active-menu-item'
+                          ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20 active-menu-item'
                           : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
                         }`
                       }
@@ -683,7 +683,7 @@ export function DashboardLayout() {
         <div className="p-3 border-t border-gray-100 dark:border-white/5 relative shrink-0">
           {sidebarOpen ? (
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20 outline outline-2 outline-white dark:outline-black">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-mintcom-green/20 outline outline-2 outline-white dark:outline-black">
                 <span className="text-black font-bold text-xs">
                   {account?.firstName?.charAt(0).toUpperCase()}
                 </span>
@@ -714,7 +714,7 @@ export function DashboardLayout() {
               <button
                 onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
                 className={`w-12 h-12 flex items-center justify-center rounded-xl transition-all relative group ${settingsMenuOpen
-                  ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                  ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
                   : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
                   }`}
               >
@@ -742,7 +742,7 @@ export function DashboardLayout() {
                     >
                       {/* Header */}
                       <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-[12px]">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
                           {account?.firstName?.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
@@ -818,7 +818,7 @@ export function DashboardLayout() {
           </button>
 
           <div className="flex items-center gap-2">
-            <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
+            <img src={MintcomLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
             <span className="font-bold text-gray-900 dark:text-white">{t('dashboard.title')}</span>
           </div>
 
@@ -826,7 +826,7 @@ export function DashboardLayout() {
         </div>
 
         {/* Content Landscape */}
-        <main className="flex-1 relative bg-gray-50 dark:bg-paymint-dark overflow-hidden">
+        <main className="flex-1 relative bg-gray-50 dark:bg-mintcom-dark overflow-hidden">
           <div ref={mainContentRef} className="h-full overflow-y-auto relative z-10 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
             <div className="p-4 md:p-6 lg:p-8 pb-24 max-w-[1920px] mx-auto">
               <Outlet context={{ sidebarOpen }} />
@@ -848,7 +848,7 @@ export function DashboardLayout() {
             {/* Close Button */}
             <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100 dark:border-white/5">
               <div className="flex items-center gap-3">
-                <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
+                <img src={MintcomLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
                 <span className="font-bold text-gray-900 dark:text-white">{t('brand.name')}</span>
               </div>
               <button
@@ -875,7 +875,7 @@ export function DashboardLayout() {
                             onClick={() => setMobileMenuOpen(false)}
                             className={({ isActive }) =>
                               `flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
-                                ? 'bg-paymint-green text-black font-bold shadow-md shadow-paymint-green/20'
+                                ? 'bg-mintcom-green text-black font-bold shadow-md shadow-mintcom-green/20'
                                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'
                               }`
                             }
@@ -900,7 +900,7 @@ export function DashboardLayout() {
                       onClick={() => setMobileMenuOpen(false)}
                       className={({ isActive }) =>
                         `flex items-center gap-3 p-3.5 rounded-xl transition-all ${isActive
-                          ? 'bg-paymint-green text-black font-semibold shadow-lg shadow-paymint-green/20'
+                          ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20'
                           : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'
                         }`
                       }
@@ -916,7 +916,7 @@ export function DashboardLayout() {
             {/* Footer */}
             <div className="p-4 border-t border-gray-100 dark:border-white/5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center">
                   <span className="text-black font-bold">{account?.firstName?.charAt(0).toUpperCase()}</span>
                 </div>
                 <div className="flex-1">

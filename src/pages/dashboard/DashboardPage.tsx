@@ -49,7 +49,7 @@ type ViewMode = 'current_shift' | 'previous_shift' | 'last_24_hours';
 const AUTO_REFRESH_INTERVAL = 60 * 60 * 1000;
 const NEW_LOCATION_WELCOME_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 const DASHBOARD_SETUP_STORAGE_VERSION = 'v6';
-const DASHBOARD_WELCOME_OVERLAY_ID = 'paymint-dashboard-welcome-popup';
+const DASHBOARD_WELCOME_OVERLAY_ID = 'mintcom-dashboard-welcome-popup';
 
 export const DashboardPage = () => {
   const { t } = useTranslation();
@@ -125,9 +125,9 @@ export const DashboardPage = () => {
     if (dashboardSetupKey && locationStorageKeys.length > 0) {
       try {
         const primaryLocationKey = currentEstablishment?.id || locationSlug || dashboardSetupKey;
-        const sessionDismissedKey = `paymint.dashboard.setup.session.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${primaryLocationKey}`;
+        const sessionDismissedKey = `mintcom.dashboard.setup.session.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${primaryLocationKey}`;
         const hasPendingWelcome = locationStorageKeys.some(
-          (key) => localStorage.getItem(`paymint.dashboard.welcome.pending.${key}`) === 'true',
+          (key) => localStorage.getItem(`mintcom.dashboard.welcome.pending.${key}`) === 'true',
         );
         const hasDismissedThisTab = sessionStorage.getItem(sessionDismissedKey) === 'true';
         const shouldShowWelcome =
@@ -154,15 +154,15 @@ export const DashboardPage = () => {
           showWelcomePopup,
         };
 
-        console.log('[PayMint Setup Debug]', debugState);
-        (window as any).__paymintSetupDebug = debugState;
-        (window as any).__paymintShowSetupPopup = () => {
+        console.log('[Mintcom Setup Debug]', debugState);
+        (window as any).__mintcomSetupDebug = debugState;
+        (window as any).__mintcomShowSetupPopup = () => {
           welcomeHandledRef.current = false;
           setShowWelcomePopup(true);
         };
 
         if (shouldShowWelcome) {
-          console.log('[PayMint Setup Debug] opening welcome popup now');
+          console.log('[Mintcom Setup Debug] opening welcome popup now');
           setShowWelcomePopup(true);
         }
       } catch (e) {
@@ -191,10 +191,10 @@ export const DashboardPage = () => {
     }
 
     document.body.classList.remove('app-loading');
-    console.log('[PayMint Setup Debug] showWelcomePopup state is true');
+    console.log('[Mintcom Setup Debug] showWelcomePopup state is true');
     const timer = window.setTimeout(() => {
-      console.log('[PayMint Setup Debug] popup DOM render check', {
-        exists: Boolean(document.getElementById('paymint-dashboard-welcome-popup')),
+      console.log('[Mintcom Setup Debug] popup DOM render check', {
+        exists: Boolean(document.getElementById('mintcom-dashboard-welcome-popup')),
         bodyClass: document.body.className,
       });
     }, 50);
@@ -254,10 +254,10 @@ export const DashboardPage = () => {
     icon.style.marginBottom = '16px';
     icon.style.fontSize = '30px';
     icon.style.fontWeight = '800';
-    icon.style.color = '#7CC39F';
+    icon.style.color = '#7dc6a2';
     icon.style.background = 'rgba(124, 195, 159, 0.14)';
     icon.innerHTML = `
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7CC39F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7dc6a2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M5.8 11.3 2 22l10.7-3.79" />
         <path d="M4 3h.01" />
         <path d="M22 8h.01" />
@@ -302,7 +302,7 @@ export const DashboardPage = () => {
     startButton.style.border = '0';
     startButton.style.borderRadius = '14px';
     startButton.style.padding = '14px 16px';
-    startButton.style.background = '#7CC39F';
+    startButton.style.background = '#7dc6a2';
     startButton.style.color = '#07110B';
     startButton.style.fontWeight = '800';
     startButton.style.cursor = 'pointer';
@@ -331,7 +331,7 @@ export const DashboardPage = () => {
     overlay.append(card);
     document.body.append(overlay);
 
-    console.log('[PayMint Setup Debug] imperative overlay appended', {
+    console.log('[Mintcom Setup Debug] imperative overlay appended', {
       exists: Boolean(document.getElementById(DASHBOARD_WELCOME_OVERLAY_ID)),
     });
 
@@ -362,16 +362,16 @@ export const DashboardPage = () => {
     if (locationStorageKeys.length > 0) {
       const primaryLocationKey = currentEstablishment?.id || locationSlug || dashboardSetupKey;
       sessionStorage.setItem(
-        `paymint.dashboard.setup.session.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${primaryLocationKey}`,
+        `mintcom.dashboard.setup.session.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${primaryLocationKey}`,
         'true',
       );
       locationStorageKeys.forEach((key) => {
         localStorage.setItem(
-          `paymint.dashboard.setup.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${key}`,
+          `mintcom.dashboard.setup.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${key}`,
           'true',
         );
-        localStorage.setItem(`paymint.dashboard.visited.${key}`, 'true');
-        localStorage.removeItem(`paymint.dashboard.welcome.pending.${key}`);
+        localStorage.setItem(`mintcom.dashboard.visited.${key}`, 'true');
+        localStorage.removeItem(`mintcom.dashboard.welcome.pending.${key}`);
       });
     }
 
@@ -421,7 +421,7 @@ export const DashboardPage = () => {
 
   const handleStartTasks = () => {
     handleCloseWelcome();
-    window.dispatchEvent(new Event('paymint-open-tasks'));
+    window.dispatchEvent(new Event('mintcom-open-tasks'));
     void waitForTasksGuideTargets();
   };
 
@@ -786,7 +786,7 @@ export const DashboardPage = () => {
                 <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
                   {/* Real Shift Status Badge */}
                   <span className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold tracking-wide border ${shiftStatus?.shiftStatus === 'ACTIVE'
-                    ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                    ? 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'
                     : 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20'
                     }`}>
                     {shiftStatus?.shiftStatus === 'ACTIVE'
@@ -801,7 +801,7 @@ export const DashboardPage = () => {
                   {currentEstablishment?.name && (
                       <>
                           <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20 hidden sm:block" />
-                          <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+                          <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                               {currentEstablishment.name}
                           </span>
                       </>
@@ -815,7 +815,7 @@ export const DashboardPage = () => {
                 <div id="tour-view-mode" className="relative flex-1 sm:flex-none" ref={viewModeRef}>
                   <button
                     onClick={() => setIsViewModeOpen(!isViewModeOpen)}
-                    className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-[color,background-color,border-color,box-shadow,ring] min-w-[180px] ${isViewModeOpen ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-gray-50' : ''}`}
+                    className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-[color,background-color,border-color,box-shadow,ring] min-w-[180px] ${isViewModeOpen ? 'ring-[3px] ring-mintcom-green/10 border-mintcom-green bg-gray-50' : ''}`}
                   >
                     {currentViewModeInfo?.icon}
                     <span className="flex-1 text-left">{currentViewModeInfo?.label}</span>
@@ -837,12 +837,12 @@ export const DashboardPage = () => {
                               setViewMode(mode.mode);
                               setIsViewModeOpen(false);
                             }}
-                            className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${viewMode === mode.mode ? 'bg-paymint-green/10' : ''
+                            className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${viewMode === mode.mode ? 'bg-mintcom-green/10' : ''
                               }`}
                           >
-                            <span className={viewMode === mode.mode ? 'text-paymint-green' : 'text-gray-400'}>{mode.icon}</span>
+                            <span className={viewMode === mode.mode ? 'text-mintcom-green' : 'text-gray-400'}>{mode.icon}</span>
                             <div className="flex-1 text-left">
-                              <p className={`text-sm font-bold ${viewMode === mode.mode ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
+                              <p className={`text-sm font-bold ${viewMode === mode.mode ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>
                                 {mode.label}
                               </p>
                               <p className="text-xs text-gray-500 dark:text-gray-400">{mode.description}</p>
@@ -861,7 +861,7 @@ export const DashboardPage = () => {
                       onClick={() => navigate(`/dashboard/${locationSlug}/reports/sales`)}
                       className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
                     >
-                      <FileBarChart size={18} className="text-paymint-green" />
+                      <FileBarChart size={18} className="text-mintcom-green" />
                       <span className="hidden xs:inline">{t('dashboard.menu.salesAndReporting')}</span>
                     </button>
                   )}
@@ -873,7 +873,7 @@ export const DashboardPage = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm shadow-gray-200/70 dark:shadow-black/20 ring-1 ring-gray-200/60 dark:ring-white/5">
               <div className="flex items-center gap-3">
                 {currentViewModeInfo?.icon && (
-                  <span className="text-paymint-green">{currentViewModeInfo.icon}</span>
+                  <span className="text-mintcom-green">{currentViewModeInfo.icon}</span>
                 )}
                 <div>
                   <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">

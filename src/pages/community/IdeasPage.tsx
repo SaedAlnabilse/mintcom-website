@@ -47,7 +47,7 @@ export const IdeasPage = () => {
     under_review: { label: t('community.status.under_review', 'Under Review'), color: 'text-gray-600', bg: 'bg-gray-100 dark:bg-gray-500/20', icon: Eye },
     planned: { label: t('community.status.planned', 'Planned'), color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: Clock },
     in_progress: { label: t('community.status.in_progress', 'In Progress'), color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Zap },
-    completed: { label: t('community.status.completed', 'Completed'), color: 'text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2 },
+    completed: { label: t('community.status.completed', 'Completed'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10 dark:bg-mintcom-green/', icon: CheckCircle2 },
     declined: { label: t('community.status.declined', 'Declined'), color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20', icon: Lightbulb }
   };
 
@@ -197,14 +197,14 @@ export const IdeasPage = () => {
                 </h1>
               </div>
               <p className="text-gray-500 dark:text-gray-400 font-medium ml-11">
-                {t('community.ideas.subtitle', 'Vote and help shape the future of PayMint')}
+                {t('community.ideas.subtitle', 'Vote and help shape the future of Mintcom')}
               </p>
             </div>
 
             {isAuthenticated ? (
               <Link
                 to="/community/ideas/new"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-PayMint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-PayMint-green/20"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-Mintcom-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-Mintcom-green/20"
               >
                 <Plus size={18} />
                 {t('community.ideas.submit', 'Submit Idea')}
@@ -266,8 +266,8 @@ export const IdeasPage = () => {
             </div>
             <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-paymint-green/10 dark:bg-paymint-green/ rounded-xl flex items-center justify-center">
-                  <CheckCircle2 size={20} className="text-paymint-green" />
+                <div className="w-10 h-10 bg-mintcom-green/10 dark:bg-mintcom-green/ rounded-xl flex items-center justify-center">
+                  <CheckCircle2 size={20} className="text-mintcom-green" />
                 </div>
                 <div>
                   <p className="text-xl font-black">{ideas.filter(i => i.status === 'completed').length}</p>
@@ -289,7 +289,7 @@ export const IdeasPage = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={formatInputPlaceholder(t('community.ideas.search_placeholder', 'Search ideas...'), t('common.locale'))}
-                  className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all"
+                  className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-Mintcom-green/50 transition-all"
                 />
                 {searchQuery && (
                   <button
@@ -309,8 +309,8 @@ export const IdeasPage = () => {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className={`px-4 py-2 rounded-lg text-sm font-bold focus:outline-none transition-all ${
                     selectedCategory !== 'all'
-                      ? 'bg-paymint-green/5 dark:bg-paymint-green/10 border border-paymint-green text-paymint-green ring-2 ring-paymint-green/10'
-                      : 'bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-paymint-green/50'
+                      ? 'bg-mintcom-green/5 dark:bg-mintcom-green/10 border border-mintcom-green text-mintcom-green ring-2 ring-mintcom-green/10'
+                      : 'bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-mintcom-green/50'
                   }`}
                 >
                   {categories.map(cat => (
@@ -323,8 +323,8 @@ export const IdeasPage = () => {
                   onChange={(e) => setSelectedStatus(e.target.value)}
                   className={`px-4 py-2 rounded-lg text-sm font-bold focus:outline-none transition-all ${
                     selectedStatus !== 'all'
-                      ? 'bg-paymint-green/5 dark:bg-paymint-green/10 border border-paymint-green text-paymint-green ring-2 ring-paymint-green/10'
-                      : 'bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-paymint-green/50'
+                      ? 'bg-mintcom-green/5 dark:bg-mintcom-green/10 border border-mintcom-green text-mintcom-green ring-2 ring-mintcom-green/10'
+                      : 'bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-mintcom-green/50'
                   }`}
                 >
                   {statusFilters.map(status => (
@@ -355,7 +355,7 @@ export const IdeasPage = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 hover:border-PayMint-green/30 transition-all"
+                  className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 hover:border-Mintcom-green/30 transition-all"
                 >
                   <div className="flex gap-6">
                     {/* Vote Button */}
@@ -363,8 +363,8 @@ export const IdeasPage = () => {
                       <button
                         onClick={() => handleVote(idea.id)}
                         className={`w-16 h-20 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${idea.hasVoted
-                          ? 'bg-PayMint-green text-black'
-                          : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-PayMint-green/20 hover:text-PayMint-green'
+                          ? 'bg-Mintcom-green text-black'
+                          : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-Mintcom-green/20 hover:text-Mintcom-green'
                           }`}
                       >
                         <ChevronUp size={24} />
@@ -385,7 +385,7 @@ export const IdeasPage = () => {
                       </div>
 
                       <Link to={`/community/ideas/${idea.id}`}>
-                        <h3 className="text-lg font-bold mb-2 hover:text-PayMint-green transition-colors cursor-pointer group-hover:text-PayMint-green">
+                        <h3 className="text-lg font-bold mb-2 hover:text-Mintcom-green transition-colors cursor-pointer group-hover:text-Mintcom-green">
                           {idea.title}
                         </h3>
                       </Link>
@@ -425,7 +425,7 @@ export const IdeasPage = () => {
               {isAuthenticated ? (
                 <Link
                   to="/community/ideas/new"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-PayMint-green text-black rounded-xl font-bold hover:opacity-90 transition-all"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-Mintcom-green text-black rounded-xl font-bold hover:opacity-90 transition-all"
                 >
                   <Plus size={18} />
                   {t('community.ideas.submit_first', 'Submit the First Idea')}

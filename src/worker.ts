@@ -16,7 +16,7 @@ const SECURITY_HEADERS: Record<string, string> = {
         "object-src 'none'",
         "frame-ancestors 'none'",
         "form-action 'self'",
-        "img-src 'self' data: blob: https://paymintpos.net https://www.paymintpos.net https://upload.wikimedia.org https://cdn-icons-png.flaticon.com",
+        "img-src 'self' data: blob: https://mintcompos.com https://www.mintcompos.com https://upload.wikimedia.org https://cdn-icons-png.flaticon.com",
         "font-src 'self' data: https://fonts.gstatic.com",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://accounts.google.com https://apis.google.com",

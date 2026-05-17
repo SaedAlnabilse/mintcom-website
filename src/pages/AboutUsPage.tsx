@@ -35,9 +35,9 @@ export const AboutUsPage = () => {
             </Helmet>
             <Navbar />
 
-            {/* About PayMint - Main Introduction */}
+            {/* About Mintcom - Main Introduction */}
             <div className="relative pt-32 pb-20 px-6 overflow-hidden">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-paymint-green/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-mintcom-green/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
                 <div className="max-w-4xl mx-auto text-center relative z-10">
@@ -82,10 +82,10 @@ export const AboutUsPage = () => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: index * 0.1 }}
-                                className="bg-white dark:bg-[#0F172A] p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-white/5 hover:border-paymint-green/30 transition-all group"
+                                className="bg-white dark:bg-[#0F172A] p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-white/5 hover:border-mintcom-green/30 transition-all group"
                             >
-                                <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:bg-paymint-green/10">
-                                    <value.icon className="w-7 h-7 text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors" />
+                                <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:bg-mintcom-green/10">
+                                    <value.icon className="w-7 h-7 text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors" />
                                 </div>
                                 <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-3">{value.title}</h3>
                                 <p className="text-sm font-medium text-gray-500 leading-relaxed">

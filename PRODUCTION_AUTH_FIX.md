@@ -5,7 +5,7 @@ When deploying to production, users are immediately redirected back to the login
 
 ## Root Cause
 This is a **cross-origin cookie issue**. Your frontend and backend are on different domains:
-- Frontend: `paymint.app` on Cloudflare
+- Frontend: `mintcom.app` on Cloudflare
 - Backend: `grateful-liberation-production-d036.up.railway.app`
 
 Browsers block third-party cookies by default in cross-origin scenarios. The `HttpOnly` cookie set by your backend during login is not being sent with subsequent API requests.
@@ -40,7 +40,7 @@ The frontend fixes alone won't solve the issue. Your backend MUST be configured 
 ```javascript
 // Express.js example
 app.use(cors({
-  origin: 'https://paymint.app', // Your actual Cloudflare frontend URL
+  origin: 'https://mintcom.app', // Your actual Cloudflare frontend URL
   credentials: true, // REQUIRED: Allow cookies to be sent
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Establishment-Id'],

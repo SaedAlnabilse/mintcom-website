@@ -650,9 +650,9 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
       'أنت الآن في صفحة الدعم. أستطيع مساعدتك في العثور على المقال المناسب أو توضيح سير العمل أو إرشادك للخطوة التالية.',
     ),
     defaultSuggestions: [
-      text('How do I get started with PayMint?', 'كيف أبدأ مع بيمنت؟'),
+      text('How do I get started with Mintcom?', 'كيف أبدأ مع مينتكوم؟'),
       text('How do I contact support?', 'كيف أتواصل مع الدعم؟'),
-      text('How do I create a PayMint account?', 'كيف أنشئ حساب بيمنت؟'),
+      text('How do I create a Mintcom account?', 'كيف أنشئ حساب مينتكوم؟'),
     ],
     quickActions: [
       {
@@ -682,7 +682,7 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
     ),
     defaultSuggestions: [
       text('How does the onboarding process work?', 'كيف تعمل عملية الإعداد؟'),
-      text('How do I get started with PayMint?', 'كيف أبدأ مع بيمنت؟'),
+      text('How do I get started with Mintcom?', 'كيف أبدأ مع مينتكوم؟'),
       text('How do I create a new location?', 'كيف أنشئ موقعاً جديداً؟'),
     ],
     quickActions: [
@@ -743,8 +743,8 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
       'أنت الآن في صفحة إنشاء الحساب. أستطيع مساعدتك في إنشاء الحساب وشرح التجربة الأولى وخطوات الإعداد الأساسية.',
     ),
     defaultSuggestions: [
-      text('How do I create a PayMint account?', 'كيف أنشئ حساب بيمنت؟'),
-      text('How do I get started with PayMint?', 'كيف أبدأ مع بيمنت؟'),
+      text('How do I create a Mintcom account?', 'كيف أنشئ حساب مينتكوم؟'),
+      text('How do I get started with Mintcom?', 'كيف أبدأ مع مينتكوم؟'),
       text('How does billing work?', 'كيف تعمل الفوترة؟'),
     ],
     quickActions: [
@@ -753,7 +753,7 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
         label: text('Create account', 'إنشاء حساب'),
         icon: 'star',
         type: 'ask',
-        query: text('How do I create a PayMint account?', 'كيف أنشئ حساب بيمنت؟'),
+        query: text('How do I create a Mintcom account?', 'كيف أنشئ حساب مينتكوم؟'),
       },
       {
         id: 'signup-login',
@@ -767,15 +767,15 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
   {
     id: 'public-home',
     match: ['/'],
-    title: text('PayMint', 'بيمنت'),
-    launcherPrompt: text('Need help exploring PayMint?', 'هل تحتاج مساعدة في استكشاف بيمنت؟'),
+    title: text('Mintcom', 'مينتكوم'),
+    launcherPrompt: text('Need help exploring Mintcom?', 'هل تحتاج مساعدة في استكشاف مينتكوم؟'),
     welcomeMessage: text(
-      "You're on the main site. I can help you understand PayMint, create an account, and find the right place to start.",
-      'أنت الآن في الموقع الرئيسي. أستطيع مساعدتك في فهم بيمنت وإنشاء حساب والعثور على أفضل نقطة للبداية.',
+      "You're on the main site. I can help you understand Mintcom, create an account, and find the right place to start.",
+      'أنت الآن في الموقع الرئيسي. أستطيع مساعدتك في فهم مينتكوم وإنشاء حساب والعثور على أفضل نقطة للبداية.',
     ),
     defaultSuggestions: [
-      text('What is PayMint?', 'ما هو بيمنت؟'),
-      text('How do I get started with PayMint?', 'كيف أبدأ مع بيمنت؟'),
+      text('What is Mintcom?', 'ما هو مينتكوم؟'),
+      text('How do I get started with Mintcom?', 'كيف أبدأ مع مينتكوم؟'),
       text('How does billing work?', 'كيف تعمل الفوترة؟'),
     ],
     quickActions: [
@@ -952,9 +952,9 @@ function getSignedInPublicHomeContext(
 
   return {
     id: 'public-home',
-    title: localize(text('PayMint', 'بيمنت'), useArabic),
+    title: localize(text('Mintcom', 'مينتكوم'), useArabic),
     launcherPrompt: localize(
-      text('Need help getting back into PayMint?', 'هل تحتاج مساعدة في العودة إلى بيمنت؟'),
+      text('Need help getting back into Mintcom?', 'هل تحتاج مساعدة في العودة إلى مينتكوم؟'),
       useArabic,
     ),
     welcomeMessage: localize(welcomeMessage, useArabic),

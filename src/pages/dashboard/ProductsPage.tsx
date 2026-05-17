@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -138,7 +138,7 @@ export function ProductsPage() {
         const r = redLimit ?? 2;
         const y = yellowLimit ?? 5;
         if (stock <= 0) return 'text-slate-500';
-        if (stock <= r) return 'text-paymint-red';
+        if (stock <= r) return 'text-mintcom-red';
         if (stock <= y) return 'text-amber-500';
         return isList ? 'text-gray-600 dark:text-gray-300' : 'text-gray-900 dark:text-white';
     };
@@ -839,7 +839,7 @@ export function ProductsPage() {
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('products.subtitle')}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                                 {currentEstablishment.name}
                             </span>
                         )}
@@ -852,7 +852,7 @@ export function ProductsPage() {
                         className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
                         title={t('orders.export')}
                     >
-                        <Download size={18} className="group-hover:text-paymint-green transition-colors" />
+                        <Download size={18} className="group-hover:text-mintcom-green transition-colors" />
                         <span className="font-bold text-xs sm:text-sm hidden sm:inline">{t('orders.export')}</span>
                     </button>
                     <button
@@ -860,12 +860,12 @@ export function ProductsPage() {
                         className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
                         title="Import from CSV"
                     >
-                        <Upload size={18} className="group-hover:text-paymint-green transition-colors" />
+                        <Upload size={18} className="group-hover:text-mintcom-green transition-colors" />
                         <span className="font-bold text-xs sm:text-sm hidden sm:inline">Import CSV</span>
                     </button>
                     <button
                         onClick={handleCreateNew}
-                        className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-[#68B390] transition-all shadow-sm"
+                        className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-mintcom-green text-black font-bold text-xs sm:text-sm hover:bg-[#5fa888] transition-all shadow-sm"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         <span className="hidden xs:inline">{t('products.addProduct')}</span>
@@ -909,8 +909,8 @@ export function ProductsPage() {
                             onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
                             className={`w-full text-sm font-bold rounded-xl px-4 py-3 flex items-center justify-between focus:outline-none transition-all shadow-sm ${
                                 isCategoryFilterActive || showCategoryDropdown
-                                    ? 'bg-paymint-green/5 dark:bg-paymint-green/10 border border-paymint-green text-gray-900 dark:text-white ring-2 ring-paymint-green/10'
-                                    : 'bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green'
+                                    ? 'bg-mintcom-green/5 dark:bg-mintcom-green/10 border border-mintcom-green text-gray-900 dark:text-white ring-2 ring-mintcom-green/10'
+                                    : 'bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green'
                             }`}
                         >
                             <span>
@@ -920,7 +920,7 @@ export function ProductsPage() {
                             </span>
                             <ChevronDown
                                 size={16}
-                                className={`transition-transform duration-200 ${showCategoryDropdown ? 'rotate-180' : ''} ${isCategoryFilterActive ? 'text-paymint-green' : 'text-gray-400'}`}
+                                className={`transition-transform duration-200 ${showCategoryDropdown ? 'rotate-180' : ''} ${isCategoryFilterActive ? 'text-mintcom-green' : 'text-gray-400'}`}
                             />
                         </button>
 
@@ -942,7 +942,7 @@ export function ProductsPage() {
                                                 value={categorySearchQuery}
                                                 onChange={(e) => setCategorySearchQuery(e.target.value)}
                                                 onClick={(e) => e.stopPropagation()}
-                                                className="w-full pl-8 pr-9 py-1.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green"
+                                                className="w-full pl-8 pr-9 py-1.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green"
                                                 autoFocus
                                             />
                                             {categorySearchQuery && (
@@ -964,7 +964,7 @@ export function ProductsPage() {
                                                 setShowCategoryDropdown(false);
                                             }}
                                             className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold flex items-center justify-between transition-colors ${selectedCategoryId === 'all'
-                                                ? 'bg-paymint-green/10 text-paymint-green'
+                                                ? 'bg-mintcom-green/10 text-mintcom-green'
                                                 : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5'
                                                 }`}
                                         >
@@ -983,7 +983,7 @@ export function ProductsPage() {
                                                         setCategorySearchQuery('');
                                                     }}
                                                     className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold flex items-center justify-between transition-colors ${selectedCategoryId === cat.id
-                                                        ? 'bg-paymint-green/10 text-paymint-green'
+                                                        ? 'bg-mintcom-green/10 text-mintcom-green'
                                                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5'
                                                         }`}
                                                 >
@@ -1001,13 +1001,13 @@ export function ProductsPage() {
                     <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/5 shrink-0">
                         <button
                             onClick={() => setViewMode('grid')}
-                            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                         >
                             <Grid size={18} />
                         </button>
                         <button
                             onClick={() => setViewMode('list')}
-                            className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                            className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                         >
                             <List size={18} />
                         </button>
@@ -1139,7 +1139,7 @@ export function ProductsPage() {
                     {!hasAnyProducts && (
                         <button
                             onClick={handleCreateNew}
-                            className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black font-bold text-xs rounded-xl hover:bg-[#68B390] transition-all tracking-widest"
+                            className="flex items-center gap-2 px-6 py-3 bg-mintcom-green text-black font-bold text-xs rounded-xl hover:bg-[#5fa888] transition-all tracking-widest"
                         >
                             <Plus size={16} />
                             {t('products.messages.addFirst')}
@@ -1156,7 +1156,7 @@ export function ProductsPage() {
                                         key={p.id || `prod-${p.name}`}
                                         className={`group bg-white dark:bg-[#1E293B] rounded-2xl border transition-all overflow-hidden flex flex-col cursor-pointer h-full ${
                                             isProductActive(p)
-                                                ? 'border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl'
+                                                ? 'border-gray-200 dark:border-white/5 hover:border-mintcom-green/50 hover:shadow-xl'
                                                 : 'border-gray-200 dark:border-white/5 opacity-70'
                                         }`}
                                         onClick={() => handleEdit(p)}
@@ -1169,11 +1169,11 @@ export function ProductsPage() {
                                                 objectFit="cover"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-end justify-between p-3">
-                                                <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors shadow-sm"><Edit2 size={18} /></button>
+                                                <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-mintcom-green hover:text-black transition-colors shadow-sm"><Edit2 size={18} /></button>
                                                 {isProductActive(p) ? (
-                                                    <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors shadow-sm"><Trash2 size={18} /></button>
+                                                    <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-mintcom-red hover:bg-red-500 hover:text-white transition-colors shadow-sm"><Trash2 size={18} /></button>
                                                 ) : (
-                                                    <button onClick={(e) => { e.stopPropagation(); handleReactivate(p.id, p.name); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-green hover:bg-paymint-green hover:text-black transition-colors shadow-sm"><RotateCcw size={18} /></button>
+                                                    <button onClick={(e) => { e.stopPropagation(); handleReactivate(p.id, p.name); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-mintcom-green hover:bg-mintcom-green hover:text-black transition-colors shadow-sm"><RotateCcw size={18} /></button>
                                                 )}
                                             </div>
                                         </div>
@@ -1187,8 +1187,8 @@ export function ProductsPage() {
                                                         </span>
                                                         <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
                                                             isProductActive(p)
-                                                                ? 'bg-paymint-green/10 text-paymint-green'
-                                                                : 'bg-paymint-red/10 text-paymint-red'
+                                                                ? 'bg-mintcom-green/10 text-mintcom-green'
+                                                                : 'bg-mintcom-red/10 text-mintcom-red'
                                                         }`}>
                                                             {isProductActive(p) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                                                         </span>
@@ -1203,7 +1203,7 @@ export function ProductsPage() {
                                             <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto gap-2">
                                                 <div className="min-w-0 flex-1">
                                                     <p className="text-[10px] font-bold text-gray-400 mb-0.5 truncate">{t('products.table.price')}</p>
-                                                    <p className="text-sm font-bold text-paymint-green truncate">
+                                                    <p className="text-sm font-bold text-mintcom-green truncate">
                                                         {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                                                     </p>
                                                 </div>
@@ -1242,7 +1242,7 @@ export function ProductsPage() {
                                         <tr>
                                             <th className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 w-16">{t('products.table.image')}</th>
                                             <th
-                                                className="px-6 py-4 text-left text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-left text-[11px] font-bold text-gray-400 cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('name')}
                                             >
                                                 <div className="flex items-center gap-1">
@@ -1251,7 +1251,7 @@ export function ProductsPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('category')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -1260,7 +1260,7 @@ export function ProductsPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('status')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -1269,7 +1269,7 @@ export function ProductsPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('availableStock')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -1278,7 +1278,7 @@ export function ProductsPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('price')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -1315,8 +1315,8 @@ export function ProductsPage() {
                                                 <td className="px-6 py-4 text-center">
                                                     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
                                                         isProductActive(p)
-                                                            ? 'bg-paymint-green/10 text-paymint-green'
-                                                            : 'bg-paymint-red/10 text-paymint-red'
+                                                            ? 'bg-mintcom-green/10 text-mintcom-green'
+                                                            : 'bg-mintcom-red/10 text-mintcom-red'
                                                     }`}>
                                                         {isProductActive(p) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                                                     </span>
@@ -1339,11 +1339,11 @@ export function ProductsPage() {
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
                                                     <div className="flex items-center justify-center gap-1 sm:gap-2">
-                                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
+                                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
                                                         {isProductActive(p) ? (
-                                                            <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
+                                                            <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
                                                         ) : (
-                                                            <button onClick={(e) => { e.stopPropagation(); handleReactivate(p.id, p.name); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><RotateCcw size={18} /></button>
+                                                            <button onClick={(e) => { e.stopPropagation(); handleReactivate(p.id, p.name); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"><RotateCcw size={18} /></button>
                                                         )}
                                                     </div>
                                                 </td>

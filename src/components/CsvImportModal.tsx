@@ -379,8 +379,8 @@ export function CsvImportModal({
                     {/* Header */}
                     <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 dark:border-white/5">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
-                                <FileSpreadsheet size={20} className="text-paymint-green" />
+                            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center">
+                                <FileSpreadsheet size={20} className="text-mintcom-green" />
                             </div>
                             <div>
                                 <h2 className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h2>
@@ -422,17 +422,17 @@ export function CsvImportModal({
                                             <span
                                                 key={col.key}
                                                 className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${col.required
-                                                    ? 'bg-paymint-green/10 text-paymint-green border border-paymint-green/20'
+                                                    ? 'bg-mintcom-green/10 text-mintcom-green border border-mintcom-green/20'
                                                     : 'bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10'
                                                     }`}
                                             >
                                                 {col.label}
-                                                {col.required && <span className="text-paymint-red text-[10px]">*</span>}
+                                                {col.required && <span className="text-mintcom-red text-[10px]">*</span>}
                                             </span>
                                         ))}
                                     </div>
                                     <p className="mt-2 text-[10px] text-gray-400 font-medium">
-                                        <span className="text-paymint-red">*</span> = Required field. Max {maxRows} rows per import.
+                                        <span className="text-mintcom-red">*</span> = Required field. Max {maxRows} rows per import.
                                     </p>
                                 </div>
 
@@ -443,8 +443,8 @@ export function CsvImportModal({
                                     onDrop={handleDrop}
                                     onClick={() => fileInputRef.current?.click()}
                                     className={`relative cursor-pointer border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center transition-all duration-300 ${dragOver
-                                        ? 'border-paymint-green bg-paymint-green/5 scale-[1.02]'
-                                        : 'border-gray-200 dark:border-white/10 hover:border-paymint-green/50 hover:bg-gray-50 dark:hover:bg-white/[0.02]'
+                                        ? 'border-mintcom-green bg-mintcom-green/5 scale-[1.02]'
+                                        : 'border-gray-200 dark:border-white/10 hover:border-mintcom-green/50 hover:bg-gray-50 dark:hover:bg-white/[0.02]'
                                         }`}
                                 >
                                     <input
@@ -454,7 +454,7 @@ export function CsvImportModal({
                                         onChange={handleFileSelect}
                                         className="hidden"
                                     />
-                                    <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center transition-all ${dragOver ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'
+                                    <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center transition-all ${dragOver ? 'bg-mintcom-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'
                                         }`}>
                                         <Upload size={28} />
                                     </div>
@@ -492,8 +492,8 @@ export function CsvImportModal({
                                 {/* File Info */}
                                 <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg bg-paymint-green/10 flex items-center justify-center">
-                                            <FileSpreadsheet size={18} className="text-paymint-green" />
+                                        <div className="w-10 h-10 rounded-lg bg-mintcom-green/10 flex items-center justify-center">
+                                            <FileSpreadsheet size={18} className="text-mintcom-green" />
                                         </div>
                                         <div>
                                             <p className="text-sm font-bold text-gray-900 dark:text-white">{fileName}</p>
@@ -587,13 +587,13 @@ export function CsvImportModal({
                             <div className="space-y-5">
                                 {/* Result Summary */}
                                 <div className={`p-6 rounded-2xl text-center ${importResult.failed === 0
-                                    ? 'bg-paymint-green/10 dark:bg-paymint-green/ border border-paymint-green/20 dark:border-paymint-green/'
+                                    ? 'bg-mintcom-green/10 dark:bg-mintcom-green/ border border-mintcom-green/20 dark:border-mintcom-green/'
                                     : importResult.success === 0
                                         ? 'bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20'
                                         : 'bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-500/20'
                                     }`}>
                                     <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center ${importResult.failed === 0
-                                        ? 'bg-paymint-green/ text-paymint-green'
+                                        ? 'bg-mintcom-green/ text-mintcom-green'
                                         : importResult.success === 0
                                             ? 'bg-red-500/10 text-red-500'
                                             : 'bg-amber-500/10 text-amber-500'
@@ -620,9 +620,9 @@ export function CsvImportModal({
 
                                 {/* Stats Grid */}
                                 <div className="grid grid-cols-2 gap-3">
-                                    <div className="p-4 rounded-xl bg-paymint-green/10 dark:bg-paymint-green/ border border-paymint-green/20 dark:border-paymint-green/ text-center">
-                                        <p className="text-2xl font-black text-paymint-green">{importResult.success}</p>
-                                        <p className="text-xs font-bold text-paymint-green dark:text-paymint-green mt-1">Successful</p>
+                                    <div className="p-4 rounded-xl bg-mintcom-green/10 dark:bg-mintcom-green/ border border-mintcom-green/20 dark:border-mintcom-green/ text-center">
+                                        <p className="text-2xl font-black text-mintcom-green">{importResult.success}</p>
+                                        <p className="text-xs font-bold text-mintcom-green dark:text-mintcom-green mt-1">Successful</p>
                                     </div>
                                     <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-center">
                                         <p className="text-2xl font-black text-red-500">{importResult.failed}</p>
@@ -689,7 +689,7 @@ export function CsvImportModal({
                                 <button
                                     onClick={handleImport}
                                     disabled={isImporting || parsedData.length === 0}
-                                    className="flex-[2] h-12 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                                    className="flex-[2] h-12 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
                                 >
                                     {isImporting ? (
                                         <>
@@ -709,7 +709,7 @@ export function CsvImportModal({
                         {step === 'result' && (
                             <button
                                 onClick={handleClose}
-                                className="flex-1 h-12 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20"
+                                className="flex-1 h-12 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] active:scale-[0.98] transition-all shadow-lg shadow-mintcom-green/20"
                             >
                                 Done
                             </button>

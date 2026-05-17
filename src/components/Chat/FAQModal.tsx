@@ -24,7 +24,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
     function handleClickOutside(event: MouseEvent) {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         // Ignore clicks on the launcher switcher bar
-        const isSwitcher = (event.target as Element).closest('#paymint-launcher-switcher');
+        const isSwitcher = (event.target as Element).closest('#mintcom-launcher-switcher');
         if (!isSwitcher) {
           onClose();
         }
@@ -41,7 +41,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
     products: { label: t('support.qa.categories.products'), icon: <Package size={14} />, color: 'text-purple-500 bg-purple-500/10', activeChip: 'bg-purple-500 text-white' },
     orders: { label: t('support.qa.categories.orders'), icon: <ClipboardList size={14} />, color: 'text-orange-500 bg-orange-500/10', activeChip: 'bg-orange-500 text-white' },
     staff: { label: t('support.qa.categories.staff'), icon: <Users size={14} />, color: 'text-cyan-500 bg-cyan-500/10', activeChip: 'bg-cyan-500 text-white' },
-    billing: { label: t('support.qa.categories.billing'), icon: <CreditCard size={14} />, color: 'text-paymint-green bg-paymint-green/', activeChip: 'bg-paymint-green text-white' },
+    billing: { label: t('support.qa.categories.billing'), icon: <CreditCard size={14} />, color: 'text-mintcom-green bg-mintcom-green/', activeChip: 'bg-mintcom-green text-white' },
     technical: { label: t('support.qa.categories.technical'), icon: <Wrench size={14} />, color: 'text-yellow-500 bg-yellow-500/10', activeChip: 'bg-yellow-500 text-white' },
     account: { label: t('support.qa.categories.account'), icon: <UserCircle size={14} />, color: 'text-pink-500 bg-pink-500/10', activeChip: 'bg-pink-500 text-white' },
   }), [t]);
@@ -239,8 +239,8 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
           <div className="p-3 bg-gray-50 dark:bg-white/[0.02] border-t border-gray-100 dark:border-white/5">
             <p className="text-center text-xs text-gray-400">
               {t('support.qa.needMoreHelp')}{' '}
-              <a href="mailto:support@paymintpos.net" className="text-indigo-500 font-medium hover:underline">
-                support@paymintpos.net
+              <a href="mailto:support@mintcompos.com" className="text-indigo-500 font-medium hover:underline">
+                support@mintcompos.com
               </a>
             </p>
           </div>

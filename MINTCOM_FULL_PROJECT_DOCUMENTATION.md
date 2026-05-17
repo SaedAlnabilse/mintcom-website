@@ -1,4 +1,4 @@
-# PayMint Project Documentation (The Product Bible)
+# Mintcom Project Documentation (The Product Bible)
 
 **Version:** 2.0  
 **Last Updated:** January 2026  
@@ -8,7 +8,7 @@
 
 ## 1. Executive Summary
 
-PayMint is a state-of-the-art, cloud-native Point of Sale (POS) and business management platform designed for the modern hospitality and retail sectors. Unlike legacy systems that are clunky and hardware-dependent, PayMint offers a "software-first" approach—running seamlessly on standard consumer tablets (iPad/Android) while providing enterprise-grade power.
+Mintcom is a state-of-the-art, cloud-native Point of Sale (POS) and business management platform designed for the modern hospitality and retail sectors. Unlike legacy systems that are clunky and hardware-dependent, Mintcom offers a "software-first" approach—running seamlessly on standard consumer tablets (iPad/Android) while providing enterprise-grade power.
 
 It unifies **Sales**, **Inventory**, **Staff Management**, **Customer Loyalty**, and **Multi-Location Analytics** into a single, intuitive dashboard.
 
@@ -127,9 +127,9 @@ The application is divided into distinct "Portals" to manage complexity:
 *   **Scanners:** HID-mode barcode scanners (act as keyboard input).
 
 ### 7.2 Widget Integration
-External websites can embed PayMint features (e.g., online ordering) via:
+External websites can embed Mintcom features (e.g., online ordering) via:
 ```html
-<script src="https://sa3d100-PayMint-test.hf.space/widget.js"></script>
+<script src="https://sa3d100-Mintcom-test.hf.space/widget.js"></script>
 ```
 
 ---
@@ -150,6 +150,6 @@ External websites can embed PayMint features (e.g., online ordering) via:
 
 ## 9. Support Resources
 
-*   **User Manual:** See `public/docs/PayMint-user-manual.md`.
-*   **Admin Contact:** `support@PayMint.io`.
+*   **User Manual:** See `public/docs/Mintcom-user-manual.md`.
+*   **Admin Contact:** `support@Mintcom.io`.
 *   **Emergency:** In-app "Contact Support" triggers high-priority ticket.

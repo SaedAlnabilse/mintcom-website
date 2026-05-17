@@ -6,9 +6,9 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-// PayMint Logo imports
-import PaymintLogoGreen from '../assets/green-full-logo.svg';
-import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
+// Mintcom Logo imports
+import MintcomLogoGreen from '../assets/green-full-logo.svg';
+import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
 
 
 
@@ -90,13 +90,13 @@ export function SelectEstablishmentPage() {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <img
-              src={PaymintLogoGreen}
-              alt="PayMint"
+              src={MintcomLogoGreen}
+              alt="Mintcom"
               className="h-10 w-auto object-contain dark:hidden"
             />
             <img
-              src={PaymintLogoWhite}
-              alt="PayMint"
+              src={MintcomLogoWhite}
+              alt="Mintcom"
               className="h-10 w-auto object-contain hidden dark:block"
             />
           </div>
@@ -135,10 +135,10 @@ export function SelectEstablishmentPage() {
               onMouseEnter={() => setHoveredId(est.id)}
               onMouseLeave={() => setHoveredId(null)}
               onClick={() => handleSelect(est)}
-              className="group relative bg-white dark:bg-[#1E293B] rounded-[2.5rem] border-2 border-gray-100 dark:border-white/[0.05] p-8 cursor-pointer hover:border-PayMint-green shadow-xl shadow-gray-200/50 dark:shadow-none transition-all flex flex-col items-center text-center"
+              className="group relative bg-white dark:bg-[#1E293B] rounded-[2.5rem] border-2 border-gray-100 dark:border-white/[0.05] p-8 cursor-pointer hover:border-mintcom-green shadow-xl shadow-gray-200/50 dark:shadow-none transition-all flex flex-col items-center text-center"
             >
-              <div className="w-20 h-20 bg-gray-50 dark:bg-white/[0.03] rounded-[1.5rem] flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transition-transform duration-500 group-hover:scale-110 group-hover:bg-PayMint-green/10">
-                <Store size={32} className="text-gray-400 group-hover:text-PayMint-green transition-colors" />
+              <div className="w-20 h-20 bg-gray-50 dark:bg-white/[0.03] rounded-[1.5rem] flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transition-transform duration-500 group-hover:scale-110 group-hover:bg-mintcom-green/10">
+                <Store size={32} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
               </div>
 
               <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white mb-2 px-2 leading-tight text-center tracking-normal" dir="auto">{est.name}</h3>
@@ -147,12 +147,12 @@ export function SelectEstablishmentPage() {
                 <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-sans font-bold text-gray-500">
                   {est.currency?.toUpperCase()}
                 </span>
-                <span className="px-2.5 py-1 rounded-lg bg-PayMint-green/10 text-[10px] font-sans font-bold text-PayMint-green border border-PayMint-green/20">
+                <span className="px-2.5 py-1 rounded-lg bg-mintcom-green/10 text-[10px] font-sans font-bold text-mintcom-green border border-mintcom-green/20">
                   {t(`common.status.${est.subscriptionStatus.toLowerCase()}`, { defaultValue: est.subscriptionStatus }).toUpperCase()}
                 </span>
               </div>
 
-              <div className={`flex items-center gap-2 text-[13.5px] font-sans font-bold transition-all ${hoveredId === est.id ? 'text-PayMint-green' : 'text-gray-400'}`}>
+              <div className={`flex items-center gap-2 text-[13.5px] font-sans font-bold transition-all ${hoveredId === est.id ? 'text-mintcom-green' : 'text-gray-400'}`}>
                 {t('dashboard.menu.overview').charAt(0).toUpperCase() + t('dashboard.menu.overview').slice(1).toLowerCase()}
                 <ChevronRight size={14} className={t('common.locale') === 'ar' ? 'rotate-180' : ''} />
               </div>
@@ -166,10 +166,10 @@ export function SelectEstablishmentPage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: establishments.length * 0.05 }}
               onClick={() => navigate('/onboarding')}
-              className="bg-gray-100/50 dark:bg-white/[0.02] border-2 border-dashed border-gray-300 dark:border-white/[0.1] rounded-[2.5rem] p-8 cursor-pointer hover:border-PayMint-green hover:bg-white dark:hover:bg-white/[0.05] transition-all flex flex-col items-center justify-center group min-h-[280px]"
+              className="bg-gray-100/50 dark:bg-white/[0.02] border-2 border-dashed border-gray-300 dark:border-white/[0.1] rounded-[2.5rem] p-8 cursor-pointer hover:border-mintcom-green hover:bg-white dark:hover:bg-white/[0.05] transition-all flex flex-col items-center justify-center group min-h-[280px]"
             >
-              <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-PayMint-green/10 group-hover:border-PayMint-green transition-all">
-                <Plus size={28} className="text-gray-400 group-hover:text-PayMint-green transition-colors" />
+              <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-mintcom-green/10 group-hover:border-mintcom-green transition-all">
+                <Plus size={28} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
               </div>
               <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
             </motion.div>
@@ -180,8 +180,8 @@ export function SelectEstablishmentPage() {
       {/* Footer Info */}
       <div className="p-12 text-center relative z-10">
         <div className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 text-gray-400 text-xs font-sans font-bold shadow-sm">
-          <CheckCircle2 size={14} className="text-PayMint-green" />
-          PayMint v2.0
+          <CheckCircle2 size={14} className="text-mintcom-green" />
+          Mintcom v2.0
         </div>
       </div>
 
@@ -199,19 +199,19 @@ export function SelectEstablishmentPage() {
               animate={{ scale: 1, opacity: 1 }}
               className="flex flex-col items-center"
             >
-              <div className="w-20 h-20 bg-PayMint-green/10 rounded-[2.5rem] flex items-center justify-center mb-8 relative">
-                <Loader2 size={40} className="text-PayMint-green animate-spin" />
-                <div className="absolute inset-0 bg-PayMint-green/20 rounded-[2.5rem] animate-ping" />
+              <div className="w-20 h-20 bg-mintcom-green/10 rounded-[2.5rem] flex items-center justify-center mb-8 relative">
+                <Loader2 size={40} className="text-mintcom-green animate-spin" />
+                <div className="absolute inset-0 bg-mintcom-green/20 rounded-[2.5rem] animate-ping" />
               </div>
               <h2 className="font-magilio text-2xl sm:text-3xl font-sans font-bold text-gray-900 dark:text-white tracking-tight">{t('common.loading')}</h2>
-              <p className="text-xs font-sans font-bold text-PayMint-green tracking-normal mt-2" dir="auto">{selectedName}</p>
+              <p className="text-xs font-sans font-bold text-mintcom-green tracking-normal mt-2" dir="auto">{selectedName}</p>
 
               <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ x: '-100%' }}
                   animate={{ x: '0%' }}
                   transition={{ duration: 0.8, ease: "easeInOut" }}
-                  className="h-full bg-PayMint-green shadow-[0_0_15px_#7CC39F]"
+                  className="h-full bg-mintcom-green shadow-[0_0_15px_#7dc6a2]"
                 />
               </div>
             </motion.div>

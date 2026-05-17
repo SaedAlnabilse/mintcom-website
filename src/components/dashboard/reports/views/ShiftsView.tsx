@@ -80,14 +80,14 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
             {totalVariance > 0 && <span className={`text-2xl font-bold text-amber-500 tracking-tight`}>+</span>}
             <CurrencyAmount 
               amount={totalVariance} 
-              color={totalVariance < -0.01 ? 'text-red-500' : totalVariance > 0.01 ? 'text-amber-500' : 'text-paymint-green'} 
+              color={totalVariance < -0.01 ? 'text-red-500' : totalVariance > 0.01 ? 'text-amber-500' : 'text-mintcom-green'} 
             />
           </div>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.shifts.totalOverShort')}</p>
         </div>
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
               <Clock size={20} />
             </div>
             <p className="dashboard-stat-title">{t('dashboard.menu.shiftsReports')}</p>
@@ -121,7 +121,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                   >
                     <td className="px-5 py-5">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-xs">
+                        <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black text-xs">
                           {shift.user?.username?.charAt(0).toUpperCase()}
                         </div>
                         <span className="font-bold text-gray-900 dark:text-white text-sm">{shift.user?.username || t('common.unknown')}</span>
@@ -140,12 +140,12 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                     <td className="px-5 py-5 text-end font-medium text-gray-500">
                       <FormatCurrency value={shift.openingBalance} />
                     </td>
-                    <td className="px-5 py-5 text-end font-bold text-paymint-green">
+                    <td className="px-5 py-5 text-end font-bold text-mintcom-green">
                       <FormatCurrency value={shift.totalSales} />
                     </td>
                     <td className="px-5 py-5 text-end">
                       {shift.status === 'CLOSED' ? (
-                        <span className="font-bold text-paymint-green">
+                        <span className="font-bold text-mintcom-green">
                           {shift.closingBalance !== null && shift.closingBalance !== undefined
                             ? <FormatCurrency value={shift.closingBalance} />
                             : '—'}
@@ -180,7 +180,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                     </td>
                     <td className="px-5 py-5 text-center">
                       <span className={`px-2.5 py-1 rounded-lg label-strong font-outfit border transition-all ${shift.status === 'OPEN'
-                        ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                        ? 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'
                         : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
                         }`}>
                         {shift.status === 'OPEN' ? t('orders.reports.shifts.active') : t('orders.status.completed')}

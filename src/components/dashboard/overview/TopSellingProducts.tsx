@@ -29,11 +29,11 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({
 
   return (
     <div id="tour-top-products" className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm transition-all duration-300">
-      <div className="absolute top-0 end-0 w-40 h-40 bg-paymint-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
+      <div className="absolute top-0 end-0 w-40 h-40 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10">
         <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green transition-transform duration-300">
+            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green transition-transform duration-300">
               <Package size={20} />
             </div>
             <div>
@@ -46,7 +46,7 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({
           {canViewReports && (
             <button
               onClick={() => navigate(`/dashboard/${locationSlug}/reports/items`)}
-              className="text-xs font-bold text-paymint-green hover:underline tracking-wide"
+              className="text-xs font-bold text-mintcom-green hover:underline tracking-wide"
             >
               {t('orders.reports.sales.viewAll')}
             </button>
@@ -62,14 +62,14 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="p-3 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between group/item hover:bg-white dark:hover:bg-white/5 hover:border-paymint-green/30 transition-all"
+                className="p-3 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between group/item hover:bg-white dark:hover:bg-white/5 hover:border-mintcom-green/30 transition-all"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-xs font-black text-gray-500 group-hover/item:text-paymint-green transition-colors border border-gray-100 dark:border-white/5">
+                  <div className="w-6 h-6 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-xs font-black text-gray-500 group-hover/item:text-mintcom-green transition-colors border border-gray-100 dark:border-white/5">
                     {index + 1}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/item:text-paymint-green transition-colors truncate max-w-[120px]">{item.name}</p>
+                    <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/item:text-mintcom-green transition-colors truncate max-w-[120px]">{item.name}</p>
                     <p className="text-xs text-gray-500 font-medium">{item.orders.toLocaleString(t('common.locale'))} {t('dashboard.stats.sold')}</p>
                   </div>
                 </div>

@@ -56,7 +56,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
             </p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.taxes.taxableSalesDesc')}</p>
           </div>
-          <div className="absolute end-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
+          <div className="absolute end-0 top-0 w-32 h-32 bg-mintcom-green/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
         </div>
 
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
@@ -69,7 +69,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
             </p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.taxes.avgRateDesc')}</p>
           </div>
-          <div className="absolute end-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
+          <div className="absolute end-0 top-0 w-32 h-32 bg-mintcom-green/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
         </div>
       </div>
 

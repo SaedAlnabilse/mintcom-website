@@ -60,7 +60,7 @@ export const PricingDownload = () => {
           aria-hidden
           animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.6, 0.4] }}
           transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-paymint-green/10 blur-[140px]"
+          className="absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-mintcom-green/10 blur-[140px]"
         />
         <div
           aria-hidden
@@ -69,7 +69,7 @@ export const PricingDownload = () => {
             backgroundImage:
               'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
             backgroundSize: '64px 64px',
-            color: '#7CC39F',
+            color: '#7dc6a2',
             maskImage:
               'radial-gradient(ellipse at center, black 30%, transparent 75%)',
             WebkitMaskImage:
@@ -87,7 +87,7 @@ export const PricingDownload = () => {
           transition={{ duration: 0.7 }}
           className="mx-auto mb-14 max-w-3xl text-center lg:mb-20"
         >
-          <div className="mb-6 inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-white/60 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-paymint-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-white/60 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
             <Wallet size={12} />
             <span>{t('landing.pricing.fullAccess')}</span>
           </div>
@@ -98,11 +98,11 @@ export const PricingDownload = () => {
           <p className="mx-auto mt-6 max-w-2xl text-lg font-light leading-relaxed text-gray-600 dark:text-gray-400 md:text-xl">
             {isRtl ? (
               <>
-                لحظة <span className="font-semibold text-paymint-green">"aha"</span> الخاصة بك على بعد دقائق فقط.
+                لحظة <span className="font-semibold text-mintcom-green">"aha"</span> الخاصة بك على بعد دقائق فقط.
               </>
             ) : (
               <>
-                Your <span className="font-semibold text-paymint-green">"aha"</span> moment is just minutes away.
+                Your <span className="font-semibold text-mintcom-green">"aha"</span> moment is just minutes away.
               </>
             )}
           </p>
@@ -119,14 +119,14 @@ export const PricingDownload = () => {
           {/* Gradient halo border */}
           <div
             aria-hidden
-            className="absolute -inset-px -z-10 rounded-[2.5rem] bg-gradient-to-tr from-paymint-green/40 via-transparent to-paymint-green/40 opacity-60 blur-2xl"
+            className="absolute -inset-px -z-10 rounded-[2.5rem] bg-gradient-to-tr from-mintcom-green/40 via-transparent to-mintcom-green/40 opacity-60 blur-2xl"
           />
 
           <div className="relative overflow-hidden rounded-[2.5rem] border border-gray-200/70 bg-white/90 p-8 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.4)] md:p-12 lg:p-16">
             {/* Decorative corner glow */}
             <div
               aria-hidden
-              className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-paymint-green/15 blur-3xl"
+              className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-mintcom-green/15 blur-3xl"
             />
             <div
               aria-hidden
@@ -167,8 +167,8 @@ export const PricingDownload = () => {
                     <span
                       className={`rounded-full px-2 py-0.5 text-[9px] font-black tracking-wider transition-all ${
                         isYearly
-                          ? 'bg-black text-paymint-green'
-                          : 'bg-paymint-green text-black'
+                          ? 'bg-black text-mintcom-green'
+                          : 'bg-mintcom-green text-black'
                       }`}
                     >
                       {t('landing.pricing.save')}
@@ -188,7 +188,7 @@ export const PricingDownload = () => {
                         ? 'translateX(100%)'
                         : 'translateX(0%)',
                     }}
-                    className="absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-paymint-green shadow-lg shadow-paymint-green/40 transition-transform duration-300 ease-out"
+                    className="absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-mintcom-green shadow-lg shadow-mintcom-green/40 transition-transform duration-300 ease-out"
                   />
                 </div>
 
@@ -227,7 +227,7 @@ export const PricingDownload = () => {
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={handleCtaAction}
-                  className="group relative mt-10 inline-flex h-16 w-full items-center justify-center gap-3 overflow-hidden rounded-2xl bg-paymint-green text-lg font-black text-black shadow-[0_15px_40px_-12px_rgba(124,195,159,0.7)] transition-shadow hover:shadow-[0_20px_50px_-12px_rgba(124,195,159,0.8)]"
+                  className="group relative mt-10 inline-flex h-16 w-full items-center justify-center gap-3 overflow-hidden rounded-2xl bg-mintcom-green text-lg font-black text-black shadow-[0_15px_40px_-12px_rgba(124,195,159,0.7)] transition-shadow hover:shadow-[0_20px_50px_-12px_rgba(124,195,159,0.8)]"
                 >
                   <span
                     aria-hidden
@@ -247,9 +247,9 @@ export const PricingDownload = () => {
                 </motion.button>
 
                 {/* Additional locations hint */}
-                <div className="mt-6 flex items-start gap-3 rounded-2xl border border-paymint-green/20 bg-paymint-green/5 p-4">
-                  <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-paymint-green/15 ring-1 ring-paymint-green/30">
-                    <Tag size={14} className="text-paymint-green" />
+                <div className="mt-6 flex items-start gap-3 rounded-2xl border border-mintcom-green/20 bg-mintcom-green/5 p-4">
+                  <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-mintcom-green/15 ring-1 ring-mintcom-green/30">
+                    <Tag size={14} className="text-mintcom-green" />
                   </span>
                   <div className="text-sm font-semibold leading-relaxed text-gray-700 dark:text-gray-200">
                     <Trans
@@ -292,11 +292,11 @@ export const PricingDownload = () => {
                       transition={{ delay: i * 0.05, duration: 0.4 }}
                       className="group flex items-center gap-4"
                     >
-                      <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-paymint-green/15 ring-1 ring-paymint-green/25 transition-all group-hover:bg-paymint-green group-hover:ring-paymint-green/40">
+                      <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-mintcom-green/15 ring-1 ring-mintcom-green/25 transition-all group-hover:bg-mintcom-green group-hover:ring-mintcom-green/40">
                         <Check
                           size={14}
                           strokeWidth={4}
-                          className="text-paymint-green transition-colors group-hover:text-black"
+                          className="text-mintcom-green transition-colors group-hover:text-black"
                         />
                       </span>
                       <span className="text-base font-semibold text-gray-700 dark:text-gray-200">
@@ -339,8 +339,8 @@ export const PricingDownload = () => {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               className="relative z-10 w-full max-w-sm overflow-hidden rounded-3xl border border-gray-100 bg-white p-12 text-center shadow-2xl dark:border-white/10 dark:bg-[#1a1a1a]"
             >
-              <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-paymint-green/10">
-                <Check size={40} strokeWidth={3} className="text-paymint-green" />
+              <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-mintcom-green/10">
+                <Check size={40} strokeWidth={3} className="text-mintcom-green" />
               </div>
               <h3 className="font-magilio mb-4 text-2xl font-bold text-gray-900 dark:text-white">
                 {t(
@@ -357,7 +357,7 @@ export const PricingDownload = () => {
               <div className="space-y-3">
                 <button
                   onClick={() => navigate('/owner')}
-                  className="w-full rounded-2xl bg-paymint-green py-4 text-lg font-black text-black shadow-lg shadow-paymint-green/30 transition-all hover:bg-paymint-green/90"
+                  className="w-full rounded-2xl bg-mintcom-green py-4 text-lg font-black text-black shadow-lg shadow-mintcom-green/30 transition-all hover:bg-mintcom-green/90"
                 >
                   {t('landing.pricing.goToDashboard', 'Go to Dashboard')}
                 </button>

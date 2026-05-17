@@ -20,8 +20,8 @@ export function toSentenceCase(value: string, locale = 'en'): string {
     })
     .join('');
 
-  // Always preserve PayMint capitalization
-  return result.replace(/paymint/gi, 'PayMint');
+  // Always preserve Mintcom capitalization
+  return result.replace(/mintcom/gi, 'Mintcom');
 }
 
 
@@ -35,7 +35,7 @@ const TITLE_CASE_SMALL_WORDS = new Set([
 
 function capitalizeWord(word: string): string {
   const capitalized = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-  return capitalized.replace(/paymint/gi, 'PayMint');
+  return capitalized.replace(/mintcom/gi, 'Mintcom');
 }
 
 export function toTitleCase(value: string | null | undefined, locale = 'en'): string {
@@ -63,7 +63,7 @@ export function toTitleCase(value: string | null | undefined, locale = 'en'): st
     .join(' ');
 
   // Double check the whole string for any missed occurrences (though capitalizeWord should handle it)
-  return result.replace(/paymint/gi, 'PayMint');
+  return result.replace(/mintcom/gi, 'Mintcom');
 }
 
 export function formatInputLabel(value: string | null | undefined, locale = 'en'): string {

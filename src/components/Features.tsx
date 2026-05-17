@@ -49,24 +49,24 @@ const FeatureCard = ({
       whileHover={{ y: -6 }}
       className={`group relative flex flex-col overflow-hidden rounded-3xl p-8 lg:p-10 ${
         isAccent
-          ? 'bg-gradient-to-br from-paymint-green/15 via-paymint-green/5 to-transparent border border-paymint-green/25 dark:from-paymint-green/20 dark:via-paymint-green/8'
+          ? 'bg-gradient-to-br from-mintcom-green/15 via-mintcom-green/5 to-transparent border border-mintcom-green/25 dark:from-mintcom-green/20 dark:via-mintcom-green/8'
           : 'bg-white border border-gray-100 dark:bg-white/[0.03] dark:border-white/10'
-      } shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] dark:shadow-none transition-all duration-500 hover:border-paymint-green/40 hover:shadow-[0_10px_30px_-10px_rgba(124,195,159,0.2)]`}
+      } shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] dark:shadow-none transition-all duration-500 hover:border-mintcom-green/40 hover:shadow-[0_10px_30px_-10px_rgba(124,195,159,0.2)]`}
     >
       {/* Decorative glow that follows hover */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-paymint-green/10 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+        className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-mintcom-green/10 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
       />
 
       {/* Icon tile */}
-      <div className="relative mb-7 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-paymint-green/10 ring-1 ring-paymint-green/25 backdrop-blur-sm transition-all duration-500 group-hover:bg-paymint-green group-hover:ring-paymint-green/60 group-hover:shadow-[0_10px_30px_-8px_rgba(124,195,159,0.6)]">
-        <div className="text-paymint-green transition-colors duration-500 group-hover:text-black">
+      <div className="relative mb-7 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-mintcom-green/10 ring-1 ring-mintcom-green/25 backdrop-blur-sm transition-all duration-500 group-hover:bg-mintcom-green group-hover:ring-mintcom-green/60 group-hover:shadow-[0_10px_30px_-8px_rgba(124,195,159,0.6)]">
+        <div className="text-mintcom-green transition-colors duration-500 group-hover:text-black">
           {feature.icon}
         </div>
       </div>
 
-      <h3 className="font-magilio mb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
+      <h3 className="font-magilio mb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">
         {feature.title}
       </h3>
 
@@ -78,7 +78,7 @@ const FeatureCard = ({
         {shouldTruncate && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-paymint-green hover:text-paymint-green/80 self-start transition-colors focus:outline-none"
+            className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-mintcom-green hover:text-mintcom-green/80 self-start transition-colors focus:outline-none"
           >
             {isExpanded
               ? t('landing.features.readLess', 'Read less')
@@ -165,8 +165,8 @@ export const Features = () => {
         style={{ y: bgY }}
         className="pointer-events-none absolute inset-0 overflow-hidden"
       >
-        <div className="absolute -top-40 right-[-10%] h-[600px] w-[600px] rounded-full bg-paymint-green/8 blur-[140px]" />
-        <div className="absolute bottom-[-20%] left-[-10%] h-[500px] w-[500px] rounded-full bg-paymint-green/5 blur-[120px]" />
+        <div className="absolute -top-40 right-[-10%] h-[600px] w-[600px] rounded-full bg-mintcom-green/8 blur-[140px]" />
+        <div className="absolute bottom-[-20%] left-[-10%] h-[500px] w-[500px] rounded-full bg-mintcom-green/5 blur-[120px]" />
       </motion.div>
 
       <div className="container relative z-10 mx-auto max-w-[1280px] px-6 md:px-10">
@@ -178,14 +178,14 @@ export const Features = () => {
           transition={{ duration: 0.6 }}
           className="mx-auto mb-14 max-w-3xl text-center lg:mb-20"
         >
-          <div className="mb-6 inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-white/60 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-paymint-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-white/60 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
             <Sparkles size={12} />
             <span>{t('landing.features.badge')}</span>
           </div>
 
           <h2 className="font-magilio text-5xl font-bold leading-[1.05] tracking-tight text-gray-900 dark:text-white md:text-6xl lg:text-[72px]">
             {t('landing.features.title')}{' '}
-            <span className="bg-gradient-to-r from-paymint-green via-emerald-400 to-paymint-green bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-mintcom-green via-emerald-400 to-mintcom-green bg-clip-text text-transparent">
               {t('landing.features.titleHighlight')}
             </span>
           </h2>
@@ -206,7 +206,7 @@ export const Features = () => {
           {/* Halo */}
           <div
             aria-hidden
-            className="absolute inset-0 -z-10 scale-[0.95] rounded-[2.5rem] bg-gradient-to-tr from-paymint-green/30 via-transparent to-paymint-green/10 blur-3xl"
+            className="absolute inset-0 -z-10 scale-[0.95] rounded-[2.5rem] bg-gradient-to-tr from-mintcom-green/30 via-transparent to-mintcom-green/10 blur-3xl"
           />
 
           <div className="group relative aspect-video overflow-hidden rounded-[2rem] border border-gray-200/80 bg-gray-900 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.18)] dark:border-white/10 dark:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.5)]">
@@ -223,8 +223,8 @@ export const Features = () => {
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gray-900">
                 <div className="text-center">
-                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-paymint-green/20">
-                    <Play className="h-10 w-10 text-paymint-green" fill="currentColor" />
+                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-mintcom-green/20">
+                    <Play className="h-10 w-10 text-mintcom-green" fill="currentColor" />
                   </div>
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/60">
                     {t('common.loadingVideo')}
@@ -242,8 +242,8 @@ export const Features = () => {
             {/* Corner watermark / live indicator */}
             <div className="pointer-events-none absolute left-6 top-6 z-10 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/40 px-3 py-1.5 backdrop-blur-md">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-paymint-green opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-paymint-green" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-mintcom-green opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-mintcom-green" />
               </span>
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/90">
                 {t('landing.features.liveDemo')}

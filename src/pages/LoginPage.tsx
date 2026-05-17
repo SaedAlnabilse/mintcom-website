@@ -15,8 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { ThemeToggle } from '../components/ThemeToggle';
-import PaymintLogoGreen from '../assets/green-full-logo.svg';
-import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
+import MintcomLogoGreen from '../assets/green-full-logo.svg';
+import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 export function LoginPage() {
@@ -103,10 +103,10 @@ export function LoginPage() {
   };
 
   const inputBase = (hasError: boolean) =>
-    `w-full rounded-2xl border bg-gray-50/70 px-5 py-4 text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:bg-white/10 ${
+    `w-full rounded-2xl border bg-gray-50/70 px-5 py-4 text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:bg-white/10 ${
       hasError
         ? 'border-red-400 dark:border-red-500'
-        : 'border-gray-200 dark:border-white/10 focus:border-paymint-green/40'
+        : 'border-gray-200 dark:border-white/10 focus:border-mintcom-green/40'
     }`;
 
   return (
@@ -123,7 +123,7 @@ export function LoginPage() {
 
       {/* Background ambient */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-paymint-green/8 blur-[140px]" />
+        <div className="absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-mintcom-green/8 blur-[140px]" />
         <div className="absolute -bottom-20 right-[10%] h-[300px] w-[300px] rounded-full bg-emerald-400/5 blur-[100px]" />
         {/* Faint grid */}
         <div
@@ -132,7 +132,7 @@ export function LoginPage() {
           style={{
             backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
             backgroundSize: '48px 48px',
-            color: '#7CC39F',
+            color: '#7dc6a2',
             maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
             WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
           }}
@@ -142,8 +142,8 @@ export function LoginPage() {
       {/* Minimal top bar */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-4 md:px-10">
         <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="pointer-events-auto">
-          <img src={PaymintLogoGreen} alt="PayMint" className="h-8 w-auto object-contain dark:hidden" />
-          <img src={PaymintLogoWhite} alt="PayMint" className="hidden h-8 w-auto object-contain dark:block" />
+          <img src={MintcomLogoGreen} alt="Mintcom" className="h-8 w-auto object-contain dark:hidden" />
+          <img src={MintcomLogoWhite} alt="Mintcom" className="hidden h-8 w-auto object-contain dark:block" />
         </Link>
         <div className="pointer-events-auto flex items-center gap-3">
           <LanguageSwitcher />
@@ -178,7 +178,7 @@ export function LoginPage() {
 
         {/* Glass card */}
         <div className="relative overflow-hidden rounded-3xl border border-gray-200/70 bg-white/90 p-8 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
-          <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-paymint-green/10 blur-3xl" />
+          <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-mintcom-green/10 blur-3xl" />
 
           <div className="relative">
             {/* Google */}
@@ -222,7 +222,7 @@ export function LoginPage() {
                   </label>
                   <Link
                     to="/forgot-password"
-                    className="text-[12px] font-bold text-paymint-green hover:underline"
+                    className="text-[12px] font-bold text-mintcom-green hover:underline"
                   >
                     {t('auth.login.forgotPassword')}
                   </Link>
@@ -257,7 +257,7 @@ export function LoginPage() {
                 <input
                   type="checkbox"
                   id="keepLoggedIn"
-                  className="h-4 w-4 cursor-pointer rounded border-gray-300 text-paymint-green focus:ring-paymint-green dark:border-white/20"
+                  className="h-4 w-4 cursor-pointer rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green dark:border-white/20"
                 />
                 <label htmlFor="keepLoggedIn" className="cursor-pointer text-sm font-medium text-gray-600 dark:text-gray-300">
                   {t('auth.login.keepLoggedIn')}
@@ -270,7 +270,7 @@ export function LoginPage() {
                 whileTap={{ scale: 0.97 }}
                 type="submit"
                 disabled={isSubmitting}
-                className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-paymint-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(124,195,159,0.7)] disabled:opacity-60"
+                className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(124,195,159,0.7)] disabled:opacity-60"
               >
                 <span aria-hidden className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 <span className="relative">{isSubmitting ? t('auth.login.loggingIn') : t('auth.login.loginButton')}</span>
@@ -281,7 +281,7 @@ export function LoginPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {t('auth.login.noAccount')}{' '}
-                <Link to="/signup" className="font-bold text-paymint-green hover:underline">
+                <Link to="/signup" className="font-bold text-mintcom-green hover:underline">
                   {t('auth.login.signUp')}
                 </Link>
               </p>
@@ -334,7 +334,7 @@ export function LoginPage() {
                   whileTap={{ scale: 0.97 }}
                   onClick={handleResendVerification}
                   disabled={isResending}
-                  className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-paymint-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all disabled:opacity-60"
+                  className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all disabled:opacity-60"
                 >
                   <span aria-hidden className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                   {isResending ? (

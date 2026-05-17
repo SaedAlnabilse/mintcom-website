@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Percent, DollarSign, Trash2, Edit2, Tag, ShieldAlert, Award, Grid3X3, List, ArrowUpDown, RotateCcw } from 'lucide-react';
 import api from '../../config/api';
@@ -324,7 +324,7 @@ export function DiscountsPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('discounts.subtitle')}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                                 {currentEstablishment.name}
                             </span>
                         )}
@@ -334,7 +334,7 @@ export function DiscountsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
           >
             <Plus size={18} />
             <span>{t('discounts.newDiscount')}</span>
@@ -370,14 +370,14 @@ export function DiscountsPage() {
           <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[44px]">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
               title={t('common.view')}
             >
               <Grid3X3 size={18} />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
               title={t('common.view')}
             >
               <List size={18} />
@@ -416,7 +416,7 @@ export function DiscountsPage() {
       {/* Discounts Content */}
       {isLoading ? (
         <div className="flex items-center justify-center py-24">
-          <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
+          <div className="w-12 h-12 border-4 border-mintcom-green/30 border-t-mintcom-green rounded-full animate-spin" />
         </div>
       ) : discounts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
@@ -432,7 +432,7 @@ export function DiscountsPage() {
               setEditingDiscount(null);
               setShowModal(true);
             }}
-            className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold text-sm hover:bg-[#68B390] hover:scale-105 active:scale-95 transition-all shadow-sm"
+            className="flex items-center gap-2 px-6 py-3 bg-mintcom-green text-black rounded-xl font-bold text-sm hover:bg-[#5fa888] hover:scale-105 active:scale-95 transition-all shadow-sm"
           >
             <Plus size={18} />
             {t('discounts.newDiscount')}
@@ -459,8 +459,8 @@ export function DiscountsPage() {
                     key={discount.id}
                     className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 overflow-hidden"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-mintcom-green/0 via-transparent to-mintcom-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                     <div className="flex justify-between items-start mb-6 relative z-10">
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
@@ -477,7 +477,7 @@ export function DiscountsPage() {
                         {discount.isActive ? (
                           <button
                             onClick={() => handleDelete(discount.id, discount.name)}
-                            className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-paymint-red/10 hover:text-paymint-red rounded-lg transition-colors text-gray-600 dark:text-white"
+                            className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-mintcom-red/10 hover:text-mintcom-red rounded-lg transition-colors text-gray-600 dark:text-white"
                             title={t('common.deactivate')}
                           >
                             <Trash2 size={16} />
@@ -485,7 +485,7 @@ export function DiscountsPage() {
                         ) : (
                           <button
                             onClick={() => handleReactivate(discount)}
-                            className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-paymint-green/10 hover:text-paymint-green rounded-lg transition-colors text-gray-600 dark:text-white"
+                            className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-mintcom-green/10 hover:text-mintcom-green rounded-lg transition-colors text-gray-600 dark:text-white"
                             title={t('common.reactivate', { defaultValue: 'Reactivate' })}
                           >
                             <RotateCcw size={16} />
@@ -495,13 +495,13 @@ export function DiscountsPage() {
                     </div>
 
                     <div className="relative z-10">
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-mintcom-green transition-colors" title={discount.name}>{discount.name}</h3>
                       <div className="flex items-center justify-between gap-3 mb-4">
-                        <p className="text-3xl font-black text-paymint-green tracking-tight">{formatValue(discount)}</p>
+                        <p className="text-3xl font-black text-mintcom-green tracking-tight">{formatValue(discount)}</p>
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
                           discount.isActive
-                            ? 'bg-paymint-green/10 text-paymint-green'
-                            : 'bg-paymint-red/10 text-paymint-red'
+                            ? 'bg-mintcom-green/10 text-mintcom-green'
+                            : 'bg-mintcom-red/10 text-mintcom-red'
                         }`}>
                           {discount.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                         </span>
@@ -539,7 +539,7 @@ export function DiscountsPage() {
                   <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
                     <tr>
                       <th
-                        className="px-6 py-4 text-left label-strong font-outfit cursor-pointer hover:text-paymint-green transition-colors"
+                        className="px-6 py-4 text-left label-strong font-outfit cursor-pointer hover:text-mintcom-green transition-colors"
                         onClick={() => handleSort('name')}
                       >
                         <div className="flex items-center gap-1">
@@ -548,7 +548,7 @@ export function DiscountsPage() {
                         </div>
                       </th>
                       <th
-                        className="px-6 py-4 text-center label-strong font-outfit cursor-pointer hover:text-paymint-green transition-colors"
+                        className="px-6 py-4 text-center label-strong font-outfit cursor-pointer hover:text-mintcom-green transition-colors"
                         onClick={() => handleSort('value')}
                       >
                         <div className="flex items-center justify-center gap-1">
@@ -557,7 +557,7 @@ export function DiscountsPage() {
                         </div>
                       </th>
                       <th
-                        className="px-6 py-4 text-center label-strong font-outfit cursor-pointer hover:text-paymint-green transition-colors"
+                        className="px-6 py-4 text-center label-strong font-outfit cursor-pointer hover:text-mintcom-green transition-colors"
                         onClick={() => handleSort('status')}
                       >
                         <div className="flex items-center justify-center gap-1">
@@ -566,7 +566,7 @@ export function DiscountsPage() {
                         </div>
                       </th>
                       <th
-                        className="px-6 py-4 text-center label-strong font-outfit cursor-pointer hover:text-paymint-green transition-colors"
+                        className="px-6 py-4 text-center label-strong font-outfit cursor-pointer hover:text-mintcom-green transition-colors"
                         onClick={() => handleSort('adminOnly')}
                       >
                         <div className="flex items-center justify-center gap-1">
@@ -594,13 +594,13 @@ export function DiscountsPage() {
                             </div>
                           </td>
                           <td className="px-6 py-4 text-center">
-                            <span className="text-lg font-black text-paymint-green">{formatValue(discount)}</span>
+                            <span className="text-lg font-black text-mintcom-green">{formatValue(discount)}</span>
                           </td>
                           <td className="px-6 py-4 text-center">
                             <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
                               discount.isActive
-                                ? 'bg-paymint-green/10 text-paymint-green'
-                                : 'bg-paymint-red/10 text-paymint-red'
+                                ? 'bg-mintcom-green/10 text-mintcom-green'
+                                : 'bg-mintcom-red/10 text-mintcom-red'
                             }`}>
                               {discount.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                             </span>
@@ -629,7 +629,7 @@ export function DiscountsPage() {
                               {discount.isActive ? (
                                 <button
                                   onClick={() => handleDelete(discount.id, discount.name)}
-                                  className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-red/60 hover:text-paymint-red hover:bg-paymint-red/5 transition-all shadow-sm active:scale-90"
+                                  className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-mintcom-red/60 hover:text-mintcom-red hover:bg-mintcom-red/5 transition-all shadow-sm active:scale-90"
                                   title={t('common.deactivate')}
                                 >
                                   <Trash2 size={16} />
@@ -637,7 +637,7 @@ export function DiscountsPage() {
                               ) : (
                                 <button
                                   onClick={() => handleReactivate(discount)}
-                                  className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-green/70 hover:text-paymint-green hover:bg-paymint-green/10 transition-all shadow-sm active:scale-90"
+                                  className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-mintcom-green/70 hover:text-mintcom-green hover:bg-mintcom-green/10 transition-all shadow-sm active:scale-90"
                                   title={t('common.reactivate', { defaultValue: 'Reactivate' })}
                                 >
                                   <RotateCcw size={16} />

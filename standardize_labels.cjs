@@ -32,24 +32,24 @@ const replacements = [
     regex: /text-xs font-black tracking-widest text-gray-400/g,
     replacement: 'label-strong font-outfit'
   },
-  // 2. text-xs font-black text-paymint-green tracking-widest -> label-strong text-paymint-green
+  // 2. text-xs font-black text-mintcom-green tracking-widest -> label-strong text-mintcom-green
   {
-    regex: /text-xs font-black text-paymint-green tracking-widest/gi,
-    replacement: 'label-strong font-outfit text-paymint-green'
+    regex: /text-xs font-black text-mintcom-green tracking-widest/gi,
+    replacement: 'label-strong font-outfit text-mintcom-green'
   },
-  // 3. text-xs font-black tracking-widest text-paymint-green -> label-strong text-paymint-green
+  // 3. text-xs font-black tracking-widest text-mintcom-green -> label-strong text-mintcom-green
   {
-    regex: /text-xs font-black tracking-widest text-paymint-green/gi,
-    replacement: 'label-strong font-outfit text-paymint-green'
+    regex: /text-xs font-black tracking-widest text-mintcom-green/gi,
+    replacement: 'label-strong font-outfit text-mintcom-green'
   },
-  // Variant with PayMint capital (found in grep)
+  // Variant with Mintcom capital (found in grep)
   {
-    regex: /text-xs font-black text-PayMint-green tracking-widest/gi,
-    replacement: 'label-strong font-outfit text-paymint-green'
+    regex: /text-xs font-black text-Mintcom-green tracking-widest/gi,
+    replacement: 'label-strong font-outfit text-mintcom-green'
   },
   {
-    regex: /text-xs font-black tracking-widest text-PayMint-green/gi,
-    replacement: 'label-strong font-outfit text-paymint-green'
+    regex: /text-xs font-black tracking-widest text-Mintcom-green/gi,
+    replacement: 'label-strong font-outfit text-mintcom-green'
   },
   // 5. Any remaining "text-xs font-black tracking-widest" with "label-strong"
   {
@@ -66,8 +66,8 @@ const extraReplacements = [
         replacement: 'label-strong font-outfit'
     },
     {
-        regex: /text-paymint-green text-xs font-black tracking-widest/gi,
-        replacement: 'label-strong font-outfit text-paymint-green'
+        regex: /text-mintcom-green text-xs font-black tracking-widest/gi,
+        replacement: 'label-strong font-outfit text-mintcom-green'
     }
 ];
 

@@ -19,7 +19,7 @@ export const SupportCategoryPage = () => {
     'getting-started': { title: t('support.categories.gettingStarted'), description: t('support.categories.gettingStartedDesc'), icon: Zap, color: 'text-blue-600', bgColor: 'bg-blue-500' },
     'billing': { title: t('support.categories.billing'), description: t('support.categories.billingDesc'), icon: CreditCard, color: 'text-purple-600', bgColor: 'bg-purple-500' },
     'technical': { title: t('support.categories.technical'), description: t('support.categories.technicalDesc'), icon: Settings, color: 'text-orange-600', bgColor: 'bg-orange-500' },
-    'features': { title: t('support.categories.features'), description: t('support.categories.featuresDesc'), icon: BookOpen, color: 'text-paymint-green', bgColor: 'bg-paymint-green' },
+    'features': { title: t('support.categories.features'), description: t('support.categories.featuresDesc'), icon: BookOpen, color: 'text-mintcom-green', bgColor: 'bg-mintcom-green' },
   };
 
   const articlesByCategory: Record<string, Array<{ id: string; title: string; excerpt: string; readTime: string; views: string; featured?: boolean }>> = {
@@ -86,7 +86,7 @@ export const SupportCategoryPage = () => {
           <div className="container mx-auto max-w-[1280px] px-6 text-center md:px-10">
             <h1 className="font-magilio mb-4 text-3xl font-bold">{t('support.categories.notFound')}</h1>
             <p className="mb-8 text-gray-500">{t('support.categories.notFoundDesc')}</p>
-            <Link to="/support" className="font-bold text-paymint-green hover:underline">← {t('support.articles.backToHelp')}</Link>
+            <Link to="/support" className="font-bold text-mintcom-green hover:underline">← {t('support.articles.backToHelp')}</Link>
           </div>
         </main>
         <Footer />
@@ -127,7 +127,7 @@ export const SupportCategoryPage = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('support.categories.searchInCategory', { category: category.title })}
-              className="w-full rounded-2xl border border-gray-200/80 bg-gray-50/70 py-3.5 pe-11 ps-11 text-sm transition-all focus:border-paymint-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
+              className="w-full rounded-2xl border border-gray-200/80 bg-gray-50/70 py-3.5 pe-11 ps-11 text-sm transition-all focus:border-mintcom-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
             />
             {searchQuery && (
               <button type="button" onClick={() => setSearchQuery('')} className="absolute end-3 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-xl border border-gray-200 bg-gray-50 text-gray-400 transition-colors hover:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10">
@@ -146,12 +146,12 @@ export const SupportCategoryPage = () => {
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 {featuredArticles.map((article, index) => (
                   <motion.div key={article.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }}>
-                    <Link to={`/support/article/${article.id}`} className="group flex h-full flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white p-7 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] transition-all duration-300 hover:border-paymint-green/30 hover:shadow-[0_8px_24px_-8px_rgba(124,195,159,0.2)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
+                    <Link to={`/support/article/${article.id}`} className="group flex h-full flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white p-7 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] transition-all duration-300 hover:border-mintcom-green/30 hover:shadow-[0_8px_24px_-8px_rgba(124,195,159,0.2)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
                       <div className="mb-4 flex items-start gap-4">
                         <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl ${category.bgColor}/10`}>
                           <BookOpen size={20} className={category.color} />
                         </div>
-                        <h3 className="font-magilio text-lg font-bold leading-tight tracking-tight transition-colors group-hover:text-paymint-green">{article.title}</h3>
+                        <h3 className="font-magilio text-lg font-bold leading-tight tracking-tight transition-colors group-hover:text-mintcom-green">{article.title}</h3>
                       </div>
                       <p className="flex-1 text-sm font-light leading-relaxed text-gray-500 dark:text-gray-400 line-clamp-2">{article.excerpt}</p>
                       <div className="mt-4 flex items-center gap-4 text-xs font-medium text-gray-400">
@@ -173,13 +173,13 @@ export const SupportCategoryPage = () => {
             <div className="space-y-3">
               {regularArticles.map((article, index) => (
                 <motion.div key={article.id} initial={{ opacity: 0, x: isRtl ? 16 : -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.05 }}>
-                  <Link to={`/support/article/${article.id}`} className="group flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.04)] transition-all duration-300 hover:border-paymint-green/30 hover:shadow-[0_6px_20px_-8px_rgba(124,195,159,0.2)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
+                  <Link to={`/support/article/${article.id}`} className="group flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.04)] transition-all duration-300 hover:border-mintcom-green/30 hover:shadow-[0_6px_20px_-8px_rgba(124,195,159,0.2)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
                     <div className="flex items-center gap-4">
-                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gray-100 transition-all group-hover:bg-paymint-green/10 dark:bg-white/5">
-                        <BookOpen size={17} className="text-gray-500 transition-colors group-hover:text-paymint-green dark:text-gray-400" />
+                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gray-100 transition-all group-hover:bg-mintcom-green/10 dark:bg-white/5">
+                        <BookOpen size={17} className="text-gray-500 transition-colors group-hover:text-mintcom-green dark:text-gray-400" />
                       </div>
                       <div>
-                        <p className="font-bold transition-colors group-hover:text-paymint-green">{article.title}</p>
+                        <p className="font-bold transition-colors group-hover:text-mintcom-green">{article.title}</p>
                         <p className="mt-0.5 line-clamp-1 text-xs font-light text-gray-500 dark:text-gray-400">{article.excerpt}</p>
                       </div>
                     </div>
@@ -188,7 +188,7 @@ export const SupportCategoryPage = () => {
                         <span className="flex items-center gap-1.5"><Clock size={12} /> {article.readTime}</span>
                         <span className="flex items-center gap-1.5"><Eye size={12} /> {article.views}</span>
                       </div>
-                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 text-gray-400 transition-all group-hover:bg-paymint-green group-hover:text-black dark:bg-white/5 dark:group-hover:bg-paymint-green">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 text-gray-400 transition-all group-hover:bg-mintcom-green group-hover:text-black dark:bg-white/5 dark:group-hover:bg-mintcom-green">
                         <ChevronRight size={14} className={isRtl ? 'rotate-180' : ''} />
                       </span>
                     </div>
@@ -206,19 +206,19 @@ export const SupportCategoryPage = () => {
                 <p className="mb-6 text-sm font-light text-gray-500 dark:text-gray-400">
                   {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No articles matching "{{query}}"' }) : t('support.articles.notFoundDesc')}
                 </p>
-                <button onClick={() => setSearchQuery('')} className="font-bold text-paymint-green hover:underline">{t('support.articles.clearSearch')}</button>
+                <button onClick={() => setSearchQuery('')} className="font-bold text-mintcom-green hover:underline">{t('support.articles.clearSearch')}</button>
               </div>
             )}
           </div>
 
           {/* Help CTA */}
-          <div className="mt-12 overflow-hidden rounded-3xl border border-paymint-green/20 bg-gradient-to-br from-paymint-green/5 via-white to-white p-8 dark:from-paymint-green/10 dark:via-transparent dark:to-transparent">
+          <div className="mt-12 overflow-hidden rounded-3xl border border-mintcom-green/20 bg-gradient-to-br from-mintcom-green/5 via-white to-white p-8 dark:from-mintcom-green/10 dark:via-transparent dark:to-transparent">
             <div className="flex flex-col items-start justify-between gap-5 md:flex-row md:items-center">
               <div>
                 <h3 className="font-magilio text-2xl font-bold text-gray-900 dark:text-white">{t('support.cta.stillNeedHelp')}</h3>
                 <p className="mt-1 text-sm font-light text-gray-500 dark:text-gray-400">{t('support.cta.stillNeedHelpDesc')}</p>
               </div>
-              <Link to="/support/tickets/new" className="inline-flex items-center gap-2 rounded-xl bg-paymint-green px-6 py-3 font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] whitespace-nowrap">
+              <Link to="/support/tickets/new" className="inline-flex items-center gap-2 rounded-xl bg-mintcom-green px-6 py-3 font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] whitespace-nowrap">
                 {t('support.quickLinks.submitTicket')}
               </Link>
             </div>

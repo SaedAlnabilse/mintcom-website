@@ -883,7 +883,7 @@ const arTranslations = {
       },
       changes: { desc: 'قد نقوم بتحديث سياسة الخصوصية من وقت لآخر.' },
       children: { desc: 'خدماتنا غير مخصصة للأطفال دون سن 16.' },
-      contact: { desc: 'تواصل معنا عبر privacy@paymint.app' },
+      contact: { desc: 'تواصل معنا عبر privacy@mintcom.app' },
       cookies: {
         c1: 'ملفات تعريف ارتباط أساسية للمصادقة',
         c2: 'ملفات تعريف ارتباط تحليلية لأنماط الاستخدام',
@@ -917,7 +917,7 @@ const arTranslations = {
         r3: 'التحليلات: مجهولة الهوية، حتى سنتين'
       },
       rights: {
-        contact: 'تواصل عبر privacy@paymint.app لممارسة حقوقك.',
+        contact: 'تواصل عبر privacy@mintcom.app لممارسة حقوقك.',
         ri1: 'الوصول: طلب نسخة من بياناتك',
         ri2: 'التصحيح: تحديث المعلومات غير الدقيقة',
         ri3: 'الحذف: طلب إزالة البيانات',
@@ -936,7 +936,7 @@ const arTranslations = {
         s5_desc: 'لديك الحق في الوصول إلى بياناتك وتصحيحها وحذفها أو تصديرها.',
         s6_desc: 'نحتفظ بالبيانات فقط للمدة الضرورية.',
         s7_desc: 'نستخدم ملفات تعريف الارتباط لتحسين تجربتك.',
-        s8_desc: 'تواصل معنا عبر privacy@paymint.app'
+        s8_desc: 'تواصل معنا عبر privacy@mintcom.app'
       },
       security: {
         noAbsoluteSecurity: 'لا توجد طريقة إلكترونية آمنة بنسبة 100%.',
@@ -966,8 +966,8 @@ const arTranslations = {
     terms: {
       intro: 'تحكم هذه الشروط استخدامك لمنصة بيمنت.',
       availability: { desc: 'نسعى لتوفير 99.9% وقت تشغيل لكن لا نضمن الوصول المتواصل.' },
-      contact: { desc: 'تواصل عبر legal@paymint.app للأسئلة.' },
-      ip: { desc: 'جميع المحتويات مملوكة لشركة PayMint LLC ومحمية بقوانين الملكية الفكرية.' },
+      contact: { desc: 'تواصل عبر legal@mintcom.app للأسئلة.' },
+      ip: { desc: 'جميع المحتويات مملوكة لشركة Mintcom LLC ومحمية بقوانين الملكية الفكرية.' },
       law: { desc: 'تخضع لقوانين ولاية ديلاوير.' },
       liability: { desc: 'لا تتحمل بيمنت المسؤولية عن الأضرار غير المباشرة.' },
       payments: {
@@ -1004,7 +1004,7 @@ const arTranslations = {
         fbDesc: 'قياس الإعلانات على فيسبوك.',
         ga: 'تحليلات جوجل',
         gaDesc: 'إحصائيات مجهولة عن استخدام الموقع.',
-        questionsDesc: 'تواصل عبر privacy@paymint.app للأسئلة.',
+        questionsDesc: 'تواصل عبر privacy@mintcom.app للأسئلة.',
         thirdParty_1: 'نستخدم خدمات الطرف الثالث التالية:',
         updates_1: 'قد نحدث سياسة ملفات تعريف الارتباط دورياً.',
         updates_2: 'التغييرات ستُنشر على هذه الصفحة.',

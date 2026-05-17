@@ -162,7 +162,7 @@ export function CustomSelect({
                                     onChange(opt.value);
                                     setIsOpen(false);
                                 }}
-                                className={`w-full px-5 py-3.5 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${value === opt.value ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-900 dark:text-gray-200'
+                                className={`w-full px-5 py-3.5 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${value === opt.value ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-gray-900 dark:text-gray-200'
                                     }`}
                             >
                                 <span className={`text-sm ${value === opt.value ? 'font-normal' : 'font-normal'}`}>{opt.label}</span>
@@ -171,7 +171,7 @@ export function CustomSelect({
                                         initial={{ scale: 0.5, opacity: 0 }}
                                         animate={{ scale: 1, opacity: 1 }}
                                     >
-                                        <Check size={16} className="text-paymint-green" />
+                                        <Check size={16} className="text-mintcom-green" />
                                     </motion.div>
                                 )}
                             </button>
@@ -186,7 +186,7 @@ export function CustomSelect({
         <div className={`relative ${className}`} ref={containerRef}>
             {label && (
                 <label className="block label-strong font-outfit mb-3 px-1">
-                    {formatInputLabel(label, t('common.locale'))} {required && <span className="text-paymint-red">*</span>}
+                    {formatInputLabel(label, t('common.locale'))} {required && <span className="text-mintcom-red">*</span>}
                 </label>
             )}
 
@@ -198,11 +198,11 @@ export function CustomSelect({
                 className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-left flex items-center justify-between transition-[color,background-color,border-color,box-shadow,ring] outline-none shadow-sm
                     ${disabled
                         ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-white/[0.01]'
-                        : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
+                        : 'hover:border-mintcom-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
                     ${error
-                        ? 'ring-2 ring-paymint-red border-paymint-red'
+                        ? 'ring-2 ring-mintcom-red border-mintcom-red'
                         : isOpen || isFilterActive
-                            ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-paymint-green/5 dark:bg-paymint-green/10 !ring-[3px] !ring-paymint-green/10 !border-paymint-green !bg-paymint-green/5 dark:!bg-paymint-green/10'
+                            ? 'ring-[3px] ring-mintcom-green/10 border-mintcom-green bg-mintcom-green/5 dark:bg-mintcom-green/10 !ring-[3px] !ring-mintcom-green/10 !border-mintcom-green !bg-mintcom-green/5 dark:!bg-mintcom-green/10'
                             : ''
                     }`}
             >
@@ -211,14 +211,14 @@ export function CustomSelect({
                 </span>
                 <ChevronDown
                     size={18}
-                    className={`transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''} ${isOpen || isFilterActive ? 'text-paymint-green' : 'text-gray-400'}`}
+                    className={`transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''} ${isOpen || isFilterActive ? 'text-mintcom-green' : 'text-gray-400'}`}
                 />
             </button>
 
             {/* Portal the dropdown to body to escape overflow:hidden containers */}
             {typeof document !== 'undefined' && createPortal(dropdownContent, document.body)}
 
-            {error && <p className="mt-1 text-xs font-normal text-paymint-red px-1">{error}</p>}
+            {error && <p className="mt-1 text-xs font-normal text-mintcom-red px-1">{error}</p>}
         </div>
     );
 }

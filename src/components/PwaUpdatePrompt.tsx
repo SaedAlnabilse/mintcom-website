@@ -19,13 +19,13 @@ export function PwaUpdatePrompt() {
     >
       <RefreshCw className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#2D7A55]" aria-hidden="true" />
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-semibold">New PayMint version ready</p>
+        <p className="text-sm font-semibold">New Mintcom version ready</p>
         <p className="mt-1 text-sm text-slate-600">
           Update now to reload the latest cached app version.
         </p>
         <button
           type="button"
-          className="mt-3 rounded-md bg-[#2D7A55] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#236244] focus:outline-none focus:ring-2 focus:ring-[#7CC39F] focus:ring-offset-2"
+          className="mt-3 rounded-md bg-[#2D7A55] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#236244] focus:outline-none focus:ring-2 focus:ring-[#7dc6a2] focus:ring-offset-2"
           onClick={() => void updateServiceWorker(true)}
         >
           Update and reload
@@ -34,7 +34,7 @@ export function PwaUpdatePrompt() {
       <button
         type="button"
         aria-label="Dismiss update prompt"
-        className="rounded-md p-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#7CC39F]"
+        className="rounded-md p-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#7dc6a2]"
         onClick={() => setNeedRefresh(false)}
       >
         <X className="h-4 w-4" aria-hidden="true" />

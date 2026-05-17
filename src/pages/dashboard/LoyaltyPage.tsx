@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBlocker } from 'react-router-dom';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -399,7 +399,7 @@ export function LoyaltyPage() {
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('rewards.subtitle')}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                                 {currentEstablishment.name}
                             </span>
                         )}
@@ -408,7 +408,7 @@ export function LoyaltyPage() {
                 {hasChanges && (
                     <button
                         onClick={saveConfig}
-                        className="px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
+                        className="px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
                     >
                         {t('common.save')}
                     </button>
@@ -419,7 +419,7 @@ export function LoyaltyPage() {
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 shadow-sm">
                     <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/5 pb-8">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
+                            <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
                                 <Award className="w-6 h-6" />
                             </div>
                             <div>
@@ -433,7 +433,7 @@ export function LoyaltyPage() {
                     <div className={`space-y-10 transition-all duration-500`}>
                         <div className="space-y-5 pt-4">
                             <div className="flex items-center gap-2">
-                                <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
+                                <div className="w-1.5 h-6 bg-mintcom-green rounded-full" />
                                 <h4 className="text-sm font-bold text-gray-900 dark:text-white px-1">{t('rewards.earningRules')}</h4>
                             </div>
                             <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
@@ -443,9 +443,9 @@ export function LoyaltyPage() {
                                         <div className="flex items-center gap-3">
                                             <span className="text-sm font-bold text-gray-900 dark:text-white px-1">{t('rewards.forEvery')}</span>
                                         </div>
-                                        <div className="flex items-stretch bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
+                                        <div className="flex items-stretch bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-mintcom-green/10 focus-within:border-mintcom-green transition-all group/field">
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
-                                                <span className="text-sm font-black text-paymint-green">{currency}</span>
+                                                <span className="text-sm font-black text-mintcom-green">{currency}</span>
                                             </div>
                                             <input maxLength={255}
                                                 type="text"
@@ -467,15 +467,15 @@ export function LoyaltyPage() {
                                         <div className="flex items-center gap-3">
                                             <span className="text-sm font-bold text-gray-900 dark:text-white px-1 opacity-0 lg:block hidden">Spacer</span>
                                         </div>
-                                        <div className="flex items-stretch bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
+                                        <div className="flex items-stretch bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-mintcom-green/10 focus-within:border-mintcom-green transition-all group/field">
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
-                                                <span className="text-sm font-black text-paymint-green">{t('rewards.points')}</span>
+                                                <span className="text-sm font-black text-mintcom-green">{t('rewards.points')}</span>
                                             </div>
                                             <input maxLength={255}
                                                 type="text"
                                                 value={pointsPerCurrencyDisplay}
                                                 onChange={handlePointsPerCurrencyChange}
-                                                className="flex-1 w-full bg-transparent font-normal text-3xl text-paymint-green focus:outline-none transition-all px-6 py-4"
+                                                className="flex-1 w-full bg-transparent font-normal text-3xl text-mintcom-green focus:outline-none transition-all px-6 py-4"
                                                 placeholder={formatInputPlaceholder("0", t('common.locale'))}
                                             />
                                         </div>
@@ -484,7 +484,7 @@ export function LoyaltyPage() {
 
                                 <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
                                     <div className="flex items-center gap-4 bg-white dark:bg-[#1E293B] px-6 py-4 rounded-2xl border border-gray-100 dark:border-white/[0.03] shadow-sm">
-                                        <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
+                                        <div className="w-2 h-2 rounded-full bg-mintcom-green animate-pulse" />
                                         <p className="text-sm font-bold text-gray-900 dark:text-white">
                                             {t('rewards.activeRule', { points: pointsPerCurrencyDisplay, amount: currencyPerPointDisplay, currency: currency })}
                                         </p>
@@ -497,16 +497,16 @@ export function LoyaltyPage() {
                         <div className="space-y-6 pt-4">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
+                                    <div className="w-1.5 h-6 bg-mintcom-green rounded-full" />
                                     <h4 className="text-sm font-bold text-gray-900 dark:text-white px-1">{t('dashboard.menu.loyalty')}</h4>
                                 </div>
-                                <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl font-outfit hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
+                                <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-mintcom-green/10 text-mintcom-green rounded-xl font-outfit hover:bg-mintcom-green/20 transition-all border border-mintcom-green/20">
                                     <Plus size={14} /> <span className="label-strong inline-block">{t('rewards.addPattern')}</span>
                                 </button>
                             </div>
                             {rewards.length === 0 ? (
                                 <div className="text-center py-16 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-gray-50/50 dark:bg-black/5">
-                                    <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-paymint-green shadow-sm">
+                                    <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-mintcom-green shadow-sm">
                                         <Award size={24} />
                                     </div>
                                     <p className="text-sm font-bold text-gray-500">{t('rewards.catalogEmpty')}</p>
@@ -523,14 +523,14 @@ export function LoyaltyPage() {
                                                 key={reward.id}
                                                 className="group relative flex items-center justify-between p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 transition-all duration-300 hover:shadow-lg overflow-hidden"
                                             >
-                                                <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                                <div className="absolute inset-0 bg-gradient-to-br from-mintcom-green/0 via-transparent to-mintcom-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                                                 <div className="relative z-10 flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                                    <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm group-hover:scale-110 transition-transform duration-300">
                                                         {reward.type === 'DISCOUNT' ? <Percent size={22} /> : <Gift size={22} />}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">
+                                                        <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-mintcom-green transition-colors">
                                                             {reward.type === 'DISCOUNT'
                                                                 ? t('rewards.items.discount', {
                                                                     percentage: (reward.discountPercentage || 0).toLocaleString(t('common.locale'), {
@@ -547,7 +547,7 @@ export function LoyaltyPage() {
                                                             {reward.type !== 'DISCOUNT' && (
                                                                 <>
                                                                     <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
-                                                                    <span className="text-xs text-paymint-green font-black tracking-widest">
+                                                                    <span className="text-xs text-mintcom-green font-black tracking-widest">
                                                                         {reward.freeCategoryName ? t('rewards.freeFrom', { category: reward.freeCategoryName }) : t('rewards.freeProduct')}
                                                                     </span>
                                                                 </>
@@ -556,7 +556,7 @@ export function LoyaltyPage() {
                                                     </div>
                                                 </div>
                                                 <div className="relative z-10 flex gap-1 transition-all translate-x-0">
-                                                    <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+                                                    <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
                                                         <Edit2 size={16} />
                                                     </button>
                                                     <button type="button" onClick={() => handleDeleteReward(reward.id)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 border border-gray-200 dark:border-white/5 transition-colors shadow-sm">

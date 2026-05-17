@@ -324,7 +324,7 @@ export const ArticlePage = () => {
           <div className="container mx-auto max-w-\[1280px\] px-6 md:px-10 text-center">
             <h1 className="font-magilio text-3xl font-black mb-4">{t('support.articles.notFound')}</h1>
             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-8">{t('support.articles.notFoundDescDetail')}</p>
-            <Link to="/support" className="text-paymint-green font-bold hover:underline">
+            <Link to="/support" className="text-mintcom-green font-bold hover:underline">
               ← {t('support.articles.backToHelp')}
             </Link>
           </div>
@@ -347,11 +347,11 @@ export const ArticlePage = () => {
           <div className="max-w-4xl mx-auto">
             {/* Breadcrumb */}
             <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-6">
-              <Link to="/support" className="hover:text-paymint-green transition-colors">
+              <Link to="/support" className="hover:text-mintcom-green transition-colors">
                 {t('support.hero.badge')}
               </Link>
               <ChevronRight size={14} className="text-gray-400" />
-              <Link to={`/support/category/${article.categoryId}`} className="hover:text-paymint-green transition-colors">
+              <Link to={`/support/category/${article.categoryId}`} className="hover:text-mintcom-green transition-colors">
                 {article.category}
               </Link>
               <ChevronRight size={14} className="text-gray-400" />
@@ -366,7 +366,7 @@ export const ArticlePage = () => {
             >
               <Link
                 to={`/support/category/${article.categoryId}`}
-                className="inline-flex items-center gap-2 text-sm font-bold text-paymint-green hover:underline mb-4"
+                className="inline-flex items-center gap-2 text-sm font-bold text-mintcom-green hover:underline mb-4"
               >
                 <ArrowLeft size={16} />
                 {t('support.articles.backTo')} {article.category}
@@ -450,7 +450,7 @@ export const ArticlePage = () => {
                   <div className="flex gap-3">
                     <button
                       onClick={() => setHelpful('yes')}
-                      className="inline-flex items-center gap-2 px-6 py-2 bg-paymint-green/10 dark:bg-paymint-green/ text-paymint-green dark:text-paymint-green rounded-lg font-bold hover:bg-paymint-green/20 dark:hover:bg-[#68B390]/30 transition-colors"
+                      className="inline-flex items-center gap-2 px-6 py-2 bg-mintcom-green/10 dark:bg-mintcom-green/ text-mintcom-green dark:text-mintcom-green rounded-lg font-bold hover:bg-mintcom-green/20 dark:hover:bg-[#5fa888]/30 transition-colors"
                     >
                       <ThumbsUp size={16} />
                       {t('support.articles.helpfulYes')}
@@ -465,7 +465,7 @@ export const ArticlePage = () => {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 text-paymint-green">
+                <div className="flex items-center gap-3 text-mintcom-green">
                   <CheckCircle2 size={20} />
                   <p className="font-bold">
                     {helpful === 'yes'
@@ -512,12 +512,12 @@ export const ArticlePage = () => {
                     >
                       <Link
                         to={`/support/article/${related.id}`}
-                        className="block p-4 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:border-paymint-green/30 transition-all group h-full"
+                        className="block p-4 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:border-mintcom-green/30 transition-all group h-full"
                       >
-                        <div className="w-10 h-10 bg-paymint-green/10 rounded-lg flex items-center justify-center mb-3">
-                          <BookOpen size={18} className="text-paymint-green" />
+                        <div className="w-10 h-10 bg-mintcom-green/10 rounded-lg flex items-center justify-center mb-3">
+                          <BookOpen size={18} className="text-mintcom-green" />
                         </div>
-                        <h4 className="font-magilio font-bold mb-2 group-hover:text-paymint-green transition-colors line-clamp-2">
+                        <h4 className="font-magilio font-bold mb-2 group-hover:text-mintcom-green transition-colors line-clamp-2">
                           {related.title}
                         </h4>
                         <div className="flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">

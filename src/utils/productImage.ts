@@ -288,7 +288,7 @@ function buildPalette(seed: string) {
   }
 
   const palettes = [
-    ['#0F172A', '#1E293B', '#7CC39F', '#DCFCE7'],
+    ['#0F172A', '#1E293B', '#7dc6a2', '#DCFCE7'],
     ['#111827', '#1F2937', '#38BDF8', '#E0F2FE'],
     ['#172554', '#1E3A8A', '#60A5FA', '#DBEAFE'],
     ['#14532D', '#166534', '#4ADE80', '#DCFCE7'],

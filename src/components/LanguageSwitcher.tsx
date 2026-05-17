@@ -100,7 +100,7 @@ export const LanguageSwitcher = ({
                 onClick={() => changeLanguage(lang.code)}
                 className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl label-strong font-outfit transition-all ${
                   normalizedLanguage === lang.code
-                    ? 'bg-paymint-green/10 text-paymint-green'
+                    ? 'bg-mintcom-green/10 text-mintcom-green'
                     : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
@@ -108,7 +108,7 @@ export const LanguageSwitcher = ({
                   <span className="opacity-70">{lang.shortName}</span>
                   <span>{lang.nativeName}</span>
                 </div>
-                {normalizedLanguage === lang.code && <Check size={16} className="text-paymint-green" />}
+                {normalizedLanguage === lang.code && <Check size={16} className="text-mintcom-green" />}
               </button>
             ))}
           </motion.div>

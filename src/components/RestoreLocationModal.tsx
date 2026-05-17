@@ -57,7 +57,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                     <div className="p-6 sm:p-8">
                         <div className="flex items-center justify-between mb-8">
                             <div className="flex items-center gap-3">
-                                <div className="p-2.5 rounded-2xl bg-paymint-green/10 text-paymint-green">
+                                <div className="p-2.5 rounded-2xl bg-mintcom-green/10 text-mintcom-green">
                                     <RefreshCw size={24} />
                                 </div>
                                 <div>
@@ -94,7 +94,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                             {formatInputLabel(t('security.restore.ownerEmail'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors">
                                                 <User size={18} />
                                             </div>
                                             <input
@@ -103,7 +103,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                                 value={formData.accountEmail}
                                                 onChange={(e) => setFormData({ ...formData, accountEmail: e.target.value })}
                                                 placeholder={formatInputPlaceholder("owner@example.com", t('common.locale'))}
-                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                             />
                                         </div>
                                     </div>
@@ -113,7 +113,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                             {formatInputLabel(t('security.restore.ownerPassword'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors">
                                                 <Lock size={18} />
                                             </div>
                                             <input
@@ -122,7 +122,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                                 value={formData.password}
                                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                                 placeholder={formatInputPlaceholder("••••••••", t('common.locale'))}
-                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                             />
                                         </div>
                                     </div>
@@ -130,7 +130,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
 
                                 <button
                                     type="submit"
-                                    className="w-full py-4 bg-paymint-green text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-[#68B390] transition-all shadow-lg flex items-center justify-center gap-2"
+                                    className="w-full py-4 bg-mintcom-green text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-[#5fa888] transition-all shadow-lg flex items-center justify-center gap-2"
                                 >
                                     {t('common.next')}
                                     <ArrowRight size={16} />
@@ -153,7 +153,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                             {formatInputLabel(t('security.restore.newLoginId'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors">
                                                 <User size={18} />
                                             </div>
                                             <input
@@ -162,7 +162,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                                 value={formData.newLocationLoginId}
                                                 onChange={(e) => setFormData({ ...formData, newLocationLoginId: e.target.value })}
                                                 placeholder={formatInputPlaceholder("E.g. shop_01", t('common.locale'))}
-                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                             />
                                         </div>
                                     </div>
@@ -172,7 +172,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                             {formatInputLabel(t('security.restore.newPassword'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors">
                                                 <Lock size={18} />
                                             </div>
                                             <input
@@ -181,7 +181,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                                 value={formData.newLocationPassword}
                                                 onChange={(e) => setFormData({ ...formData, newLocationPassword: e.target.value })}
                                                 placeholder={formatInputPlaceholder("••••••••", t('common.locale'))}
-                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                             />
                                         </div>
                                     </div>
@@ -198,7 +198,7 @@ export function RestoreLocationModal({ isOpen, onClose, onRestore, isRestoring }
                                     <button
                                         type="submit"
                                         disabled={isRestoring}
-                                        className="flex-[2] py-4 bg-paymint-green text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-[#68B390] transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
+                                        className="flex-[2] py-4 bg-mintcom-green text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-[#5fa888] transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
                                     >
                                         {isRestoring ? (
                                             <RefreshCw size={16} className="animate-spin" />

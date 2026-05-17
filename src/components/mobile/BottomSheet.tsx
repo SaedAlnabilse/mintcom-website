@@ -97,7 +97,7 @@ export function BottomSheet({
             dragElastic={{ top: 0, bottom: 0.5 }}
             onDragEnd={handleDragEnd}
             dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-            className={`fixed bottom-0 left-0 right-0 z-[101] bg-white dark:bg-paymint-surface rounded-t-3xl shadow-2xl flex flex-col ${getHeightClass()}`}
+            className={`fixed bottom-0 left-0 right-0 z-[101] bg-white dark:bg-mintcom-surface rounded-t-3xl shadow-2xl flex flex-col ${getHeightClass()}`}
             style={{ touchAction: 'none' }}
           >
             {/* Handle bar (drag indicator) */}

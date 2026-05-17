@@ -1,6 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, Instagram, Youtube, ArrowUpRight } from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  Instagram,
+  Youtube,
+  ArrowUpRight,
+  BookOpen,
+  ChevronRight,
+  HelpCircle,
+  Ticket,
+} from 'lucide-react';
 import { Logo } from './Logo';
 
 /* -----------------------------------------------------------
@@ -33,7 +43,6 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
   ];
 
   const resourceLinks: FooterLink[] = [
-    { name: t('footer.helpCenter'), href: '/support' },
     { name: t('footer.privacyPolicy'), href: '/legal/privacy', target: '_blank' },
     { name: t('footer.termsOfService'), href: '/legal/terms', target: '_blank' },
   ];
@@ -54,7 +63,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
               }
             }
           }}
-          className="group inline-flex items-center gap-1 text-sm font-medium text-gray-500 transition-colors hover:text-paymint-green dark:text-gray-400 dark:hover:text-paymint-green"
+          className="group inline-flex items-center gap-1 text-sm font-medium text-gray-500 transition-colors hover:text-mintcom-green dark:text-gray-400 dark:hover:text-mintcom-green"
         >
           {link.name}
           {link.target === '_blank' && (
@@ -69,7 +78,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
     return (
       <button
         onClick={link.action}
-        className="text-sm font-medium text-gray-500 transition-colors hover:text-paymint-green dark:text-gray-400 dark:hover:text-paymint-green"
+        className="text-sm font-medium text-gray-500 transition-colors hover:text-mintcom-green dark:text-gray-400 dark:hover:text-mintcom-green"
       >
         {link.name}
       </button>
@@ -86,7 +95,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
       {/* Gradient accent line at the top */}
       <div
         aria-hidden
-        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-paymint-green/40 to-transparent"
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-mintcom-green/40 to-transparent"
       />
 
       <div className="container mx-auto max-w-[1280px] px-6 md:px-10">
@@ -96,11 +105,11 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
             <Logo size="lg" />
             <div className="flex items-center gap-6">
               <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                <Mail size={14} className="text-paymint-green" />
-                <span dir="ltr">support@paymintpos.net</span>
+                <Mail size={14} className="text-mintcom-green" />
+                <span dir="ltr">support@mintcompos.com</span>
               </span>
               <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                <Phone size={14} className="text-paymint-green" />
+                <Phone size={14} className="text-mintcom-green" />
                 <span dir="ltr">+962 790 000 000</span>
               </span>
             </div>
@@ -124,7 +133,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-all hover:border-paymint-green hover:bg-paymint-green hover:text-black dark:border-white/10 dark:bg-white/5 dark:text-gray-400"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-all hover:border-mintcom-green hover:bg-mintcom-green hover:text-black dark:border-white/10 dark:bg-white/5 dark:text-gray-400"
                   >
                     <social.Icon size={16} />
                   </a>
@@ -165,7 +174,48 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
               <h4 className="mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
                 {t('footer.resources')}
               </h4>
-              <ul className="space-y-3">
+
+              <Link
+                to="/support"
+                className="group flex items-start gap-3 rounded-lg border border-mintcom-green/20 bg-mintcom-green/5 p-3 transition-all hover:border-mintcom-green/40 hover:bg-mintcom-green/10 dark:border-mintcom-green/20 dark:bg-mintcom-green/10 dark:hover:bg-mintcom-green/15"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-mintcom-green/15 text-mintcom-green transition-colors group-hover:bg-mintcom-green group-hover:text-black">
+                  <HelpCircle size={17} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center justify-between gap-2 text-sm font-bold text-gray-800 transition-colors group-hover:text-mintcom-green dark:text-gray-100">
+                    {t('footer.helpCenter')}
+                    <ChevronRight
+                      size={14}
+                      className={`shrink-0 text-mintcom-green transition-transform ${
+                        isRtl ? 'rotate-180 group-hover:-translate-x-0.5' : 'group-hover:translate-x-0.5'
+                      }`}
+                    />
+                  </span>
+                  <span className="mt-1 block text-xs font-medium leading-5 text-gray-500 dark:text-gray-400">
+                    {t('footer.helpCenterDesc')}
+                  </span>
+                </span>
+              </Link>
+
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <Link
+                  to="/support/articles"
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-600 transition-colors hover:border-mintcom-green/40 hover:text-mintcom-green dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:border-mintcom-green/40 dark:hover:text-mintcom-green"
+                >
+                  <BookOpen size={13} />
+                  <span>{t('footer.browseArticles')}</span>
+                </Link>
+                <Link
+                  to="/support/tickets/new"
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-mintcom-green px-3 py-2 text-xs font-bold text-black transition-all hover:bg-mintcom-green/90"
+                >
+                  <Ticket size={13} />
+                  <span>{t('footer.submitTicket')}</span>
+                </Link>
+              </div>
+
+              <ul className="mt-5 space-y-3">
                 {resourceLinks.map((link) => (
                   <li key={link.name}>
                     <FooterLinkItem link={link} />
@@ -175,14 +225,14 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
 
               <div className="mt-8 space-y-3">
                 <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-gray-400">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-paymint-green/10">
-                    <Mail size={12} className="text-paymint-green" />
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-mintcom-green/10">
+                    <Mail size={12} className="text-mintcom-green" />
                   </div>
-                  <span dir="ltr">support@paymintpos.net</span>
+                  <span dir="ltr">support@mintcompos.com</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-gray-400">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-paymint-green/10">
-                    <Phone size={12} className="text-paymint-green" />
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-mintcom-green/10">
+                    <Phone size={12} className="text-mintcom-green" />
                   </div>
                   <span dir="ltr">+962 790 000 000</span>
                 </div>
@@ -203,21 +253,21 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 md:justify-end">
             <Link
               to="/about"
-              className="text-sm text-gray-400 transition-colors hover:text-paymint-green dark:text-gray-500"
+              className="text-sm text-gray-400 transition-colors hover:text-mintcom-green dark:text-gray-500"
             >
               {t('footer.aboutUs')}
             </Link>
             <a
               href="/legal/privacy"
               target="_blank"
-              className="text-sm text-gray-400 transition-colors hover:text-paymint-green dark:text-gray-500"
+              className="text-sm text-gray-400 transition-colors hover:text-mintcom-green dark:text-gray-500"
             >
               {t('footer.privacyPolicy')}
             </a>
             <a
               href="/legal/terms"
               target="_blank"
-              className="text-sm text-gray-400 transition-colors hover:text-paymint-green dark:text-gray-500"
+              className="text-sm text-gray-400 transition-colors hover:text-mintcom-green dark:text-gray-500"
             >
               {t('footer.termsOfService')}
             </a>
@@ -225,7 +275,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
               onClick={() =>
                 window.dispatchEvent(new CustomEvent('open-feedback'))
               }
-              className="text-sm text-gray-400 transition-colors hover:text-paymint-green dark:text-gray-500"
+              className="text-sm text-gray-400 transition-colors hover:text-mintcom-green dark:text-gray-500"
             >
               Feedback
             </button>

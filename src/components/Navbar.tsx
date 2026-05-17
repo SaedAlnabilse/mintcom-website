@@ -99,7 +99,7 @@ export const Navbar = () => {
       {/* Shadow layer */}
       <div
         aria-hidden
-        className={`pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-paymint-green/40 to-transparent transition-opacity duration-500 ${
+        className={`pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-mintcom-green/40 to-transparent transition-opacity duration-500 ${
           isScrolled && !isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
         }`}
       />
@@ -157,7 +157,7 @@ export const Navbar = () => {
                   >
                     {link.name}
                     {/* Animated underline */}
-                    <span className="absolute inset-x-3 -bottom-0.5 h-[2px] origin-left scale-x-0 rounded-full bg-paymint-green transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                    <span className="absolute inset-x-3 -bottom-0.5 h-[2px] origin-left scale-x-0 rounded-full bg-mintcom-green transition-transform duration-300 ease-out group-hover:scale-x-100" />
                   </Link>
                 ))}
               </div>
@@ -180,7 +180,7 @@ export const Navbar = () => {
                   to="/owner"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-paymint-green px-4 py-2 text-[13px] font-bold text-black shadow-[0_2px_12px_-2px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_4px_20px_-4px_rgba(124,195,159,0.7)]"
+                  className="inline-flex items-center gap-2 rounded-xl bg-mintcom-green px-4 py-2 text-[13px] font-bold text-black shadow-[0_2px_12px_-2px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_4px_20px_-4px_rgba(124,195,159,0.7)]"
                 >
                   <User size={14} />
                   {t('nav.dashboard', 'Dashboard')}
@@ -200,11 +200,11 @@ export const Navbar = () => {
                   className="group relative overflow-hidden rounded-xl px-4 py-2 text-[13px] font-semibold text-gray-600 transition-all duration-300 hover:bg-gray-100/70 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/[0.06] dark:hover:text-white"
                 >
                   {t('nav.login')}
-                  <span className="absolute inset-x-3 bottom-1 h-[2px] origin-left scale-x-0 rounded-full bg-paymint-green/60 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                  <span className="absolute inset-x-3 bottom-1 h-[2px] origin-left scale-x-0 rounded-full bg-mintcom-green/60 transition-transform duration-300 ease-out group-hover:scale-x-100" />
                 </Link>
                 <Link
                   to="/signup"
-                  className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-xl bg-paymint-green px-5 py-2.5 text-[13px] font-bold text-black shadow-[0_2px_12px_-2px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_6px_24px_-4px_rgba(124,195,159,0.7)] active:scale-[0.97]"
+                  className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-xl bg-mintcom-green px-5 py-2.5 text-[13px] font-bold text-black shadow-[0_2px_12px_-2px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_6px_24px_-4px_rgba(124,195,159,0.7)] active:scale-[0.97]"
                 >
                   {/* Shine sweep on hover */}
                   <span
@@ -305,7 +305,7 @@ export const Navbar = () => {
                             }
                           }
                         }}
-                        className="font-magilio text-3xl font-bold tracking-tight text-gray-900 transition-colors hover:text-paymint-green dark:text-white sm:text-4xl"
+                        className="font-magilio text-3xl font-bold tracking-tight text-gray-900 transition-colors hover:text-mintcom-green dark:text-white sm:text-4xl"
                       >
                         {link.name}
                       </Link>
@@ -331,7 +331,7 @@ export const Navbar = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex w-full items-center justify-center gap-3 rounded-2xl bg-paymint-green py-5 text-center text-xl font-black tracking-tight text-black shadow-xl shadow-paymint-green/30 transition-transform hover:scale-[1.02] active:scale-95"
+                      className="flex w-full items-center justify-center gap-3 rounded-2xl bg-mintcom-green py-5 text-center text-xl font-black tracking-tight text-black shadow-xl shadow-mintcom-green/30 transition-transform hover:scale-[1.02] active:scale-95"
                     >
                       <User size={20} />
                       {t('nav.dashboard', 'Dashboard')}
@@ -359,7 +359,7 @@ export const Navbar = () => {
                     <Link
                       to="/signup"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full rounded-2xl bg-paymint-green py-5 text-center text-xl font-black tracking-tight text-black shadow-xl shadow-paymint-green/30"
+                      className="w-full rounded-2xl bg-mintcom-green py-5 text-center text-xl font-black tracking-tight text-black shadow-xl shadow-mintcom-green/30"
                     >
                       {t('nav.getStarted')}
                     </Link>

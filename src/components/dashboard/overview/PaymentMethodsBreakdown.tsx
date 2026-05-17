@@ -10,7 +10,7 @@ interface PaymentMethodsBreakdownProps {
   viewMode: 'current_shift' | 'previous_shift' | 'last_24_hours';
 }
 
-const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899'];
+const COLORS = ['#7dc6a2', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899'];
 
 export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdown({ paymentMethodBreakdown }: PaymentMethodsBreakdownProps) {
   const { t } = useTranslation();
@@ -21,11 +21,11 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
 
   return (
     <div id="tour-capital-sources" className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col transition-all duration-300 overflow-hidden">
-      <div className="absolute top-0 end-0 w-40 h-40 bg-paymint-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
+      <div className="absolute top-0 end-0 w-40 h-40 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10">
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green transition-transform duration-300 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green transition-transform duration-300 shrink-0">
               <Wallet size={20} />
             </div>
             <div className="pt-0.5">
@@ -35,7 +35,7 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
           </div>
           <button
             onClick={() => navigate(`/dashboard/${locationSlug}/reports/payments`)}
-            className="text-xs font-bold text-paymint-green hover:underline tracking-wide mt-1.5"
+            className="text-xs font-bold text-mintcom-green hover:underline tracking-wide mt-1.5"
           >
             {t('common.viewAll')}
           </button>

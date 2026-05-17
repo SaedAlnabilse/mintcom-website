@@ -60,7 +60,7 @@ export interface Ticket {
 }
 
 // ─── Storage helpers (fallback) ─────────────────────────────────────────────────────────────────────────────────────
-const TICKETS_STORAGE_KEY = 'paymint_support_tickets';
+const TICKETS_STORAGE_KEY = 'mintcom_support_tickets';
 
 export function loadTickets(): Ticket[] {
   try {
@@ -178,7 +178,7 @@ export const TicketsPage = () => {
   const statusConfig: Record<TicketStatus, { label: string; color: string; bg: string; icon: React.ElementType; dotColor: string }> = useMemo(() => ({
     open: { label: t('support.tickets.status.open'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: Inbox, dotColor: 'bg-blue-500' },
     in_progress: { label: t('support.tickets.status.inProgress'), color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/15', icon: Loader2, dotColor: 'bg-amber-500' },
-    resolved: { label: t('support.tickets.status.resolved'), color: 'text-paymint-green dark:text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2, dotColor: 'bg-paymint-green' },
+    resolved: { label: t('support.tickets.status.resolved'), color: 'text-mintcom-green dark:text-mintcom-green', bg: 'bg-mintcom-green/10 dark:bg-mintcom-green/', icon: CheckCircle2, dotColor: 'bg-mintcom-green' },
     closed: { label: t('support.tickets.status.closed'), color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-500/15', icon: XCircle, dotColor: 'bg-gray-400' }
   }), [t]);
 
@@ -275,7 +275,7 @@ export const TicketsPage = () => {
 
             <Link
               to="/support/tickets/new"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
             >
               <Plus size={18} />
               {t('support.tickets.new')}
@@ -287,7 +287,7 @@ export const TicketsPage = () => {
             {[
               { key: 'open' as const, icon: Inbox, value: stats.open, label: t('support.tickets.stats.open'), iconColor: 'text-blue-500', bgColor: 'bg-blue-50 dark:bg-blue-500/10' },
               { key: 'inProgress' as const, icon: Clock, value: stats.inProgress, label: t('support.tickets.stats.inProgress'), iconColor: 'text-amber-500', bgColor: 'bg-amber-50 dark:bg-amber-500/10' },
-              { key: 'resolved' as const, icon: CheckCircle2, value: stats.resolved, label: t('support.tickets.stats.resolved'), iconColor: 'text-paymint-green', bgColor: 'bg-paymint-green/10 dark:bg-paymint-green/' },
+              { key: 'resolved' as const, icon: CheckCircle2, value: stats.resolved, label: t('support.tickets.stats.resolved'), iconColor: 'text-mintcom-green', bgColor: 'bg-mintcom-green/10 dark:bg-mintcom-green/' },
               { key: 'total' as const, icon: BarChart3, value: stats.total, label: t('support.tickets.stats.total'), iconColor: 'text-purple-500', bgColor: 'bg-purple-50 dark:bg-purple-500/10' },
             ].map((stat) => (
               <motion.div
@@ -320,7 +320,7 @@ export const TicketsPage = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={formatInputPlaceholder(t('support.tickets.searchPlaceholder'), t('common.locale'))}
-                  className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
+                  className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-mintcom-green/50"
                 />
                 {searchQuery && (
                   <button
@@ -338,7 +338,7 @@ export const TicketsPage = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-paymint-green/50 appearance-none"
+                className="px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 appearance-none"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -356,7 +356,7 @@ export const TicketsPage = () => {
                 <Filter size={18} />
                 {t('common.filters')}
                 {activeFilters > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-paymint-green text-black text-xs font-black rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-mintcom-green text-black text-xs font-black rounded-full flex items-center justify-center">
                     {activeFilters}
                   </span>
                 )}
@@ -477,7 +477,7 @@ export const TicketsPage = () => {
                 ) : (
                   <Link
                     to="/support/tickets/new"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
                   >
                     <Plus size={18} />
                     {t('support.tickets.createFirst')}
@@ -509,7 +509,7 @@ export const TicketsPage = () => {
                     >
                       <Link
                         to={`/support/tickets/${ticket.id}`}
-                        className="block rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-5 md:p-6 hover:border-paymint-green/30 hover:shadow-lg hover:shadow-paymint-green/5 transition-all group"
+                        className="block rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-5 md:p-6 hover:border-mintcom-green/30 hover:shadow-lg hover:shadow-mintcom-green/5 transition-all group"
                       >
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                           <div className="flex-1 min-w-0">
@@ -524,14 +524,14 @@ export const TicketsPage = () => {
                                 {priority.label}
                               </span>
                               {ticket.unreadReplies > 0 && (
-                                <span className="px-2 py-1 bg-paymint-green text-black rounded-lg text-xs font-bold animate-pulse">
+                                <span className="px-2 py-1 bg-mintcom-green text-black rounded-lg text-xs font-bold animate-pulse">
                                   {t('support.tickets.newLabel')}
                                 </span>
                               )}
                             </div>
 
                             {/* Subject */}
-                            <h3 className="font-magilio text-base md:text-lg font-bold group-hover:text-paymint-green transition-colors mb-1.5 truncate">
+                            <h3 className="font-magilio text-base md:text-lg font-bold group-hover:text-mintcom-green transition-colors mb-1.5 truncate">
                               {ticket.subject}
                             </h3>
 
@@ -565,7 +565,7 @@ export const TicketsPage = () => {
 
                             <ChevronRight
                               size={20}
-                              className="text-gray-400 group-hover:text-paymint-green group-hover:translate-x-1 transition-all hidden md:block"
+                              className="text-gray-400 group-hover:text-mintcom-green group-hover:translate-x-1 transition-all hidden md:block"
                             />
                           </div>
                         </div>

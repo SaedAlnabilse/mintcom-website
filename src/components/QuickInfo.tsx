@@ -49,7 +49,7 @@ export function QuickInfo({ text }: { text: string }) {
         ref={iconRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="inline-flex items-center justify-center ml-1.5 align-middle cursor-help text-gray-400 dark:text-gray-500 hover:text-paymint-green transition-colors group"
+        className="inline-flex items-center justify-center ml-1.5 align-middle cursor-help text-gray-400 dark:text-gray-500 hover:text-mintcom-green transition-colors group"
       >
         <Info size={14} />
       </div>

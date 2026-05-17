@@ -14,20 +14,24 @@ export default {
       },
       colors: {
         mint: {
-          DEFAULT: '#7CC39F',
-          light: '#9DD4B5',
-          dark: '#5FAF87',
+          DEFAULT: '#7dc6a2',
+          light: '#ace2bf',
+          dark: '#5fa888',
         },
-        paymint: {
-          green: '#7CC39F',
-          dark: '#0F172A', // Main background (matched to POS)
-          light: '#FFFFFF', // Main text
-          gray: '#94A3B8', // Subtitles (matched to POS textTertiary)
-          surface: '#1E293B', // Cards/Sections (matched to POS)
-          tertiary: '#334155', // Tertiary background (matched to POS)
-          red: '#D55263', // System Error/Delete
-          text: '#F8FAFC', // Primary text in dark mode (matched to POS)
-          textSecondary: '#CBD5E1', // Secondary text (matched to POS)
+        mintcom: {
+          green: '#7dc6a2',
+          greenDark: '#5fa888',
+          greenLight: '#ace2bf',
+          greenTint: '#eef7ec',
+          yellow: '#f8b30a',
+          dark: '#0F172A',
+          light: '#FFFFFF',
+          gray: '#94A3B8',
+          surface: '#1E293B',
+          tertiary: '#334155',
+          red: '#D55263',
+          text: '#F8FAFC',
+          textSecondary: '#CBD5E1',
         },
         dark: {
           DEFAULT: '#0F172A',
@@ -72,7 +76,7 @@ export default {
       fontFamily: {
         sans: ['Inter', 'Noto Sans Arabic', 'sans-serif'],
         barlow: ['Barlow', 'system-ui', 'sans-serif'],
-        paymint: ['Crimson Text', 'serif'],
+        mintcom: ['Crimson Text', 'serif'],
         poppins: ['Poppins', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
         magilio: ['Magilio', 'serif'],

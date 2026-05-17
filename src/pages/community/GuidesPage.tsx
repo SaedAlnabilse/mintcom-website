@@ -39,7 +39,7 @@ const mockGuides: Guide[] = [
   {
     id: 1,
     title: 'Complete Setup Guide for New Users',
-    description: 'Everything you need to know to get started with PayMint, from account creation to your first sale.',
+    description: 'Everything you need to know to get started with Mintcom, from account creation to your first sale.',
     category: 'Getting Started',
     type: 'tutorial',
     readTime: '15 min',
@@ -140,7 +140,7 @@ export const GuidesPage = () => {
   ];
 
   const difficultyConfig = {
-    beginner: { label: t('community.difficulty.beginner', 'Beginner'), color: 'text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/' },
+    beginner: { label: t('community.difficulty.beginner', 'Beginner'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10 dark:bg-mintcom-green/' },
     intermediate: { label: t('community.difficulty.intermediate', 'Intermediate'), color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20' },
     advanced: { label: t('community.difficulty.advanced', 'Advanced'), color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20' }
   };
@@ -190,7 +190,7 @@ export const GuidesPage = () => {
               </h1>
             </div>
             <p className="text-gray-500 dark:text-gray-400 font-medium ml-11">
-              {t('community.guides.subtitle', 'Learn everything about PayMint with our comprehensive guides')}
+              {t('community.guides.subtitle', 'Learn everything about Mintcom with our comprehensive guides')}
             </p>
           </div>
 
@@ -213,11 +213,11 @@ export const GuidesPage = () => {
                   >
                     <Link
                       to={`/community/guides/${guide.id}`}
-                      className="block bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl overflow-hidden hover:border-PayMint-green/30 hover:shadow-xl transition-all group h-full"
+                      className="block bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl overflow-hidden hover:border-Mintcom-green/30 hover:shadow-xl transition-all group h-full"
                     >
                       {/* Thumbnail */}
-                      <div className="h-32 bg-gradient-to-br from-PayMint-green/20 to-blue-500/20 flex items-center justify-center relative">
-                        <BookOpen size={48} className="text-PayMint-green/50" />
+                      <div className="h-32 bg-gradient-to-br from-Mintcom-green/20 to-blue-500/20 flex items-center justify-center relative">
+                        <BookOpen size={48} className="text-Mintcom-green/50" />
                         <div className="absolute top-3 left-3">
                           <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-bold bg-white/90 dark:bg-black/50 ${difficulty.color}`}>
                             {difficulty.label}
@@ -232,7 +232,7 @@ export const GuidesPage = () => {
                       </div>
 
                       <div className="p-5">
-                        <h3 className="font-bold text-lg mb-2 group-hover:text-PayMint-green transition-colors">
+                        <h3 className="font-bold text-lg mb-2 group-hover:text-Mintcom-green transition-colors">
                           {guide.title}
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4">
@@ -247,7 +247,7 @@ export const GuidesPage = () => {
                               <Star size={14} /> {guide.reads}
                             </span>
                           </div>
-                          <ChevronRight size={16} className="group-hover:text-PayMint-green group-hover:translate-x-1 transition-all" />
+                          <ChevronRight size={16} className="group-hover:text-Mintcom-green group-hover:translate-x-1 transition-all" />
                         </div>
                       </div>
                     </Link>
@@ -271,7 +271,7 @@ export const GuidesPage = () => {
                       onClick={() => setSelectedCategory(category.id)}
                       className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-bold transition-all ${
                         selectedCategory === category.id
-                          ? 'bg-PayMint-green text-black'
+                          ? 'bg-Mintcom-green text-black'
                           : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
                       }`}
                     >
@@ -317,7 +317,7 @@ export const GuidesPage = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={formatInputPlaceholder(t('community.guides.search_placeholder', 'Search guides...'), t('common.locale'))}
-                  className="w-full pl-12 pr-11 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all"
+                  className="w-full pl-12 pr-11 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-Mintcom-green/50 transition-all"
                 />
                 {searchQuery && (
                   <button
@@ -346,10 +346,10 @@ export const GuidesPage = () => {
                     >
                       <Link
                         to={`/community/guides/${guide.id}`}
-                        className="flex items-center gap-4 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl p-4 hover:border-PayMint-green/30 transition-all group"
+                        className="flex items-center gap-4 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl p-4 hover:border-Mintcom-green/30 transition-all group"
                       >
-                        <div className="w-14 h-14 bg-PayMint-green/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                          <TypeIcon size={24} className="text-PayMint-green" />
+                        <div className="w-14 h-14 bg-Mintcom-green/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <TypeIcon size={24} className="text-Mintcom-green" />
                         </div>
 
                         <div className="flex-1 min-w-0">
@@ -359,7 +359,7 @@ export const GuidesPage = () => {
                               {difficulty.label}
                             </span>
                           </div>
-                          <h3 className="font-bold group-hover:text-PayMint-green transition-colors truncate">
+                          <h3 className="font-bold group-hover:text-Mintcom-green transition-colors truncate">
                             {guide.title}
                           </h3>
                           <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
@@ -376,7 +376,7 @@ export const GuidesPage = () => {
                           </span>
                         </div>
 
-                        <ChevronRight size={20} className="text-gray-400 group-hover:text-PayMint-green group-hover:translate-x-1 transition-all flex-shrink-0" />
+                        <ChevronRight size={20} className="text-gray-400 group-hover:text-Mintcom-green group-hover:translate-x-1 transition-all flex-shrink-0" />
                       </Link>
                     </motion.div>
                   );

@@ -27,7 +27,7 @@ export function CookieConsent() {
 
   // Lazy initialization of preferences from localStorage
   const [preferences, setPreferences] = useState<CookiePreferences>(() => {
-    const savedConsent = localStorage.getItem('paymint-cookie-consent');
+    const savedConsent = localStorage.getItem('mintcom-cookie-consent');
     if (savedConsent) {
       try {
         const parsed = JSON.parse(savedConsent);
@@ -43,7 +43,7 @@ export function CookieConsent() {
 
   useEffect(() => {
     // Check if user has already consented
-    const savedConsent = localStorage.getItem('paymint-cookie-consent');
+    const savedConsent = localStorage.getItem('mintcom-cookie-consent');
     if (!savedConsent) {
       // Delay showing the banner slightly for better UX
       const timer = setTimeout(() => setShowBanner(true), 1000);
@@ -81,7 +81,7 @@ export function CookieConsent() {
   };
 
   const savePreferences = (prefs: CookiePreferences) => {
-    localStorage.setItem('paymint-cookie-consent', JSON.stringify(prefs));
+    localStorage.setItem('mintcom-cookie-consent', JSON.stringify(prefs));
     setPreferences(prefs);
     setShowBanner(false);
     setShowPreferences(false);
@@ -120,7 +120,7 @@ export function CookieConsent() {
                     to="/legal/cookie-policy"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-paymint-green hover:underline font-bold inline-flex items-center gap-0.5"
+                    className="text-mintcom-green hover:underline font-bold inline-flex items-center gap-0.5"
                   >
                     {t('cookies.banner.policyLink')}
                   </Link>.
@@ -141,7 +141,7 @@ export function CookieConsent() {
                 </button>
                 <button
                   onClick={handleAcceptAll}
-                  className="px-6 py-2.5 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] shadow-lg shadow-paymint-green/20 transition-all hover:scale-105"
+                  className="px-6 py-2.5 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] shadow-lg shadow-mintcom-green/20 transition-all hover:scale-105"
                 >
                   {t('cookies.banner.acceptAll')}
                 </button>
@@ -199,13 +199,13 @@ export function CookieConsent() {
                       className="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-white/[0.02] hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-paymint-green/10 text-paymint-green">
+                        <div className="p-2 rounded-lg bg-mintcom-green/10 text-mintcom-green">
                           <Shield size={20} />
                         </div>
                         <span className="font-bold text-gray-900 dark:text-white text-sm">{t('cookies.types.essential.title')}</span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold text-paymint-green uppercase tracking-wider">{t('cookies.preferences.alwaysActive')}</span>
+                        <span className="text-xs font-bold text-mintcom-green uppercase tracking-wider">{t('cookies.preferences.alwaysActive')}</span>
                         {expandedSection === 'essential' ? <ChevronDown size={18} className="text-gray-400" /> : <ChevronRight size={18} className="text-gray-400" />}
                       </div>
                     </button>
@@ -246,7 +246,7 @@ export function CookieConsent() {
                           onChange={() => togglePreference('analytics')}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm transition-colors"></div>
+                        <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm transition-colors"></div>
                       </label>
                     </div>
                     <AnimatePresence>
@@ -286,7 +286,7 @@ export function CookieConsent() {
                           onChange={() => togglePreference('marketing')}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm transition-colors"></div>
+                        <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm transition-colors"></div>
                       </label>
                     </div>
                     <AnimatePresence>

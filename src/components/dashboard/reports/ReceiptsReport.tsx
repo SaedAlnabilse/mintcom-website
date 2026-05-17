@@ -155,9 +155,9 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
 
     const getStatusStyle = (status: string) => {
         switch (status) {
-            case 'COMPLETED': return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
+            case 'COMPLETED': return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
             case 'PENDING': return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
-            case 'REFUNDED': return 'bg-paymint-red/10 text-paymint-red border-paymint-red/20';
+            case 'REFUNDED': return 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20';
             default: return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
         }
     };
@@ -187,7 +187,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
             {/* Sub-Header / KPI - Optional, to give some context inside the tab */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                    { label: t('orders.reports.receipts.revenueSelected'), value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)), icon: Wallet, color: 'text-paymint-green', bg: 'bg-paymint-green/' },
+                    { label: t('orders.reports.receipts.revenueSelected'), value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)), icon: Wallet, color: 'text-mintcom-green', bg: 'bg-mintcom-green/' },
                     { label: t('orders.reports.receipts.receiptsCount'), value: orders.length, icon: Receipt, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: t('orders.reports.receipts.refundsHeld'), value: orders.filter(o => o.status === 'HELD' || o.paymentStatus === 'REFUNDED').length, icon: Undo2, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
@@ -213,7 +213,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
 
             {/* Local Filters (Search & Status) */}
             <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1 relative group bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/[0.05] hover:border-paymint-green/50 transition-all p-1">
+                <div className="flex-1 relative group bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/[0.05] hover:border-mintcom-green/50 transition-all p-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input maxLength={255}
                         type="text"
@@ -253,7 +253,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                             onClick={handleExport}
                             className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.05] text-gray-900 dark:text-white font-bold text-xs hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
                         >
-                            <Download size={16} className="text-paymint-green" />
+                            <Download size={16} className="text-mintcom-green" />
                             <span>{t('orders.export')}</span>
                         </button>
                     )}
@@ -264,7 +264,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]">
                 {isLoading ? (
                     <div className="flex-1 flex flex-col items-center justify-center py-20">
-                        <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+                        <div className="w-10 h-10 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin mb-4" />
                         <p className="text-xs font-bold text-gray-400">{t('common.loading')}</p>
                     </div>
                 ) : orders.length === 0 ? (
@@ -302,7 +302,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                             >
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-9 h-9 rounded-lg bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                                                        <div className="w-9 h-9 rounded-lg bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
                                                             <Receipt size={16} />
                                                         </div>
                                                         <div>
@@ -325,7 +325,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <button className="text-xs font-bold text-paymint-green hover:underline">{t('common.viewDetails')}</button>
+                                                    <button className="text-xs font-bold text-mintcom-green hover:underline">{t('common.viewDetails')}</button>
                                                 </td>
                                             </motion.tr>
                                         ))}

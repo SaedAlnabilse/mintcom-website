@@ -24,10 +24,10 @@ import {
 import api from '../config/api';
 import { FullScreenLoader } from './LoadingState';
 
-// Paymint Logo imports
-import PaymintLogoGreen from '../assets/green-full-logo.svg';
-import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
-import PaymintLeafIcon from '../assets/small-logo.svg';
+// Mintcom Logo imports
+import MintcomLogoGreen from '../assets/green-full-logo.svg';
+import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
+import MintcomLeafIcon from '../assets/small-logo.svg';
 import { ConfirmModal } from './ConfirmModal';
 
 interface Brand {
@@ -201,7 +201,7 @@ export function BrandLayout() {
                                 onClick={() => navigate('/')}
                             >
                                 <img
-                                    src={PaymintLogoGreen}
+                                    src={MintcomLogoGreen}
                                     alt={t('brand.name')}
                                     width={160}
                                     height={40}
@@ -210,7 +210,7 @@ export function BrandLayout() {
                                     className="h-10 w-auto object-contain dark:hidden transition-transform"
                                 />
                                 <img
-                                    src={PaymintLogoWhite}
+                                    src={MintcomLogoWhite}
                                     alt={t('brand.name')}
                                     width={160}
                                     height={40}
@@ -228,10 +228,10 @@ export function BrandLayout() {
                                 className="mx-auto"
                             >
                                 <button
-                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 text-paymint-green transition-all group relative"
+                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-mintcom-green/20 to-mintcom-green/5 border border-mintcom-green/20 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
                                     onClick={() => setSidebarOpen(true)}
                                 >
-                                    <img src={PaymintLeafIcon} width={32} height={32} loading="eager" decoding="async" className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} />
+                                    <img src={MintcomLeafIcon} width={32} height={32} loading="eager" decoding="async" className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} />
                                     <PanelLeft
                                         size={24}
                                         className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
@@ -247,7 +247,7 @@ export function BrandLayout() {
                     {sidebarOpen && (
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="p-2 rounded-xl text-gray-400 hover:text-paymint-green hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                            className="p-2 rounded-xl text-gray-400 hover:text-mintcom-green hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
                         >
                             <PanelLeftClose size={20} />
                         </button>
@@ -259,11 +259,11 @@ export function BrandLayout() {
                     {sidebarOpen ? (
                         <button
                             onClick={goBackToOwner}
-                            className="w-full flex items-center gap-3 p-3.5 rounded-xl text-gray-500 hover:text-paymint-green hover:bg-paymint-green/5 transition-all group border border-transparent hover:border-paymint-green/20"
+                            className="w-full flex items-center gap-3 p-3.5 rounded-xl text-gray-500 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-all group border border-transparent hover:border-mintcom-green/20"
                         >
                             <ArrowLeft size={18} className={`transition-transform ${isRtl ? 'rotate-180 group-hover:translate-x-1' : 'group-hover:-translate-x-1'}`} />
                             <div className="flex-1 min-w-0 text-left rtl:text-right">
-                                <p className="text-[10px] font-black uppercase tracking-[0.15em] text-gray-400 group-hover:text-paymint-green/70 transition-colors leading-none mb-1.5">
+                                <p className="text-[10px] font-black uppercase tracking-[0.15em] text-gray-400 group-hover:text-mintcom-green/70 transition-colors leading-none mb-1.5">
                                     {t('brand.menu.backToBrands')}
                                 </p>
                                 <h2 className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white truncate">
@@ -314,7 +314,7 @@ export function BrandLayout() {
                                 className={({ isActive }) =>
                                     `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
                                     ${isActive
-                                        ? 'bg-paymint-green text-black font-semibold shadow-lg shadow-paymint-green/20 active-menu-item'
+                                        ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20 active-menu-item'
                                         : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
                                     ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
                                 }
@@ -350,7 +350,7 @@ export function BrandLayout() {
                         <div className="space-y-1">
                             {/* Profile Header */}
                             <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-xl">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
                                     {account?.firstName?.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="min-w-0">
@@ -457,7 +457,7 @@ export function BrandLayout() {
                     </button>
 
                     <div className="flex items-center gap-2">
-                        <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
+                        <img src={MintcomLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
                         <span className="text-lg font-bold text-gray-900 dark:text-white">{brand?.name}</span>
                     </div>
 
@@ -465,7 +465,7 @@ export function BrandLayout() {
                 </div>
 
                 {/* Content Landscape */}
-                <main className="flex-1 relative bg-gray-50 dark:bg-paymint-dark overflow-hidden">
+                <main className="flex-1 relative bg-gray-50 dark:bg-mintcom-dark overflow-hidden">
                     <div ref={mainContentRef} className="h-full overflow-y-auto relative z-10 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
                         <div className="p-4 md:p-6 lg:p-8 max-w-[1920px] mx-auto">
                             <Outlet context={{ brand }} />
@@ -487,7 +487,7 @@ export function BrandLayout() {
                         {/* Close Button */}
                         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100 dark:border-white/5">
                             <div className="flex items-center gap-3">
-                                <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
+                                <img src={MintcomLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
                                 <span className="font-bold text-gray-900 dark:text-white">{t('brand.name')}</span>
                             </div>
                             <button
@@ -502,11 +502,11 @@ export function BrandLayout() {
                         <div className="p-4">
                             <div className="p-4 bg-gradient-to-br from-gray-900 to-black rounded-xl">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-lg bg-paymint-green/20 flex items-center justify-center">
-                                        <Building2 size={20} className="text-paymint-green" />
+                                    <div className="w-10 h-10 rounded-lg bg-mintcom-green/20 flex items-center justify-center">
+                                        <Building2 size={20} className="text-mintcom-green" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-paymint-green">{t('brand.menu.activeBrand')}</p>
+                                        <p className="text-xs font-bold text-mintcom-green">{t('brand.menu.activeBrand')}</p>
                                         <h2 className="text-sm font-bold text-white truncate">{brand?.name}</h2>
                                     </div>
                                 </div>
@@ -517,7 +517,7 @@ export function BrandLayout() {
                         <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
                             <button
                                 onClick={goBackToOwner}
-                                className="w-full flex items-center gap-3 p-3 rounded-xl text-gray-500 hover:text-paymint-green hover:bg-paymint-green/5 transition-all group mb-4"
+                                className="w-full flex items-center gap-3 p-3 rounded-xl text-gray-500 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-all group mb-4"
                             >
                                 <ArrowLeft size={18} className={`transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:translate-x-1' : 'group-hover:-translate-x-1'}`} />
                                 <span className="text-sm font-bold">{t('brand.menu.backToBrands')}</span>
@@ -535,7 +535,7 @@ export function BrandLayout() {
                                         className={`
                                             flex items-center gap-3 p-3.5 rounded-xl transition-all
                                             ${isActive
-                                                ? 'bg-paymint-green text-black font-semibold shadow-lg shadow-paymint-green/20'
+                                                ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20'
                                                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'}
                                         `}
                                     >
@@ -558,7 +558,7 @@ export function BrandLayout() {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center">
                                     <span className="text-black font-bold">{account?.firstName?.charAt(0).toUpperCase()}</span>
                                 </div>
                                 <div className="flex-1">

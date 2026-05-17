@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -69,7 +69,7 @@ const MAX_EMPLOYEES_PER_ACCOUNT = 50;
 const MAX_DELETE_PASSWORD_ATTEMPTS = 3;
 const EMPLOYEE_LIMIT_POPUP_MESSAGE =
     `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
-    `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact PayMint support at support@paymintpos.net with your account email. Never send your password to support.`;
+    `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact Mintcom support at support@mintcompos.com with your account email. Never send your password to support.`;
 
 const getDisplayInitial = (firstName?: string, username?: string) =>
     (firstName?.trim()?.charAt(0) || username?.trim()?.charAt(0) || '?').toUpperCase();
@@ -381,7 +381,7 @@ export function OwnerEmployeesPage() {
             case 'MANAGER':
                 return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
             default:
-                return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
+                return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
         }
     };
 
@@ -401,25 +401,25 @@ export function OwnerEmployeesPage() {
     const getStatusBadge = (isActive: boolean | undefined) => {
         if (isActive) {
             return (
-                <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide bg-paymint-green/10 text-paymint-green">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide bg-mintcom-green/10 text-mintcom-green">
                     {t('common.active', 'Active')}
                 </span>
             );
         }
         return (
-            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide bg-paymint-red/10 text-paymint-red">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide bg-mintcom-red/10 text-mintcom-red">
                 {t('common.inactive', 'Inactive')}
             </span>
         );
     };
 
     const getAccountStatusContent = (hasActiveShift: boolean | undefined) => (
-        <div className={`flex items-center justify-center gap-2 font-medium text-xs tracking-wide ${hasActiveShift ? 'text-paymint-green' : 'text-gray-400'}`}>
+        <div className={`flex items-center justify-center gap-2 font-medium text-xs tracking-wide ${hasActiveShift ? 'text-mintcom-green' : 'text-gray-400'}`}>
             {hasActiveShift ? (
                 <>
                     <div className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mintcom-green opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-mintcom-green"></span>
                     </div>
                     <span>{t('staff.status.online')}</span>
                 </>
@@ -462,7 +462,7 @@ export function OwnerEmployeesPage() {
                     <button
                         id="tour-add-employee-btn"
                         onClick={handleOpenAddEmployeeModal}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
                     >
                         <UserPlus size={18} />
                         <span>{t('staff.newEmployee')}</span>
@@ -474,7 +474,7 @@ export function OwnerEmployeesPage() {
             <div id="tour-stats-grid" className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {[
                     { label: t('owner.staff.totalUsers'), info: t('owner.staff.usersInfo'), value: stats.total, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: t('owner.staff.activeNow'), info: t('owner.staff.activeInfo'), value: stats.active, icon: UserCheck, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+                    { label: t('owner.staff.activeNow'), info: t('owner.staff.activeInfo'), value: stats.active, icon: UserCheck, color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
                     { label: t('owner.staff.admins'), info: t('owner.staff.adminsInfo'), value: stats.admins, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
                     { label: t('owner.staff.standardUsers'), info: t('owner.staff.standardInfo'), value: stats.staff, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
@@ -540,13 +540,13 @@ export function OwnerEmployeesPage() {
                     <div id="tour-view-toggle" className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-12">
                         <button
                             onClick={() => setViewMode('grid')}
-                            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                         >
                             <Grid3X3 size={18} />
                         </button>
                         <button
                             onClick={() => setViewMode('list')}
-                            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                         >
                             <List size={18} />
                         </button>
@@ -585,7 +585,7 @@ export function OwnerEmployeesPage() {
                                                     <span className="text-gray-900 dark:text-white font-bold text-xl">
                                                         {getDisplayInitial(emp.firstName, emp.username)}
                                                     </span>
-                                                    <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-[#0A0A0A] ${emp.isActive ? 'bg-paymint-green' : 'bg-paymint-red'}`} />
+                                                    <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-[#0A0A0A] ${emp.isActive ? 'bg-mintcom-green' : 'bg-mintcom-red'}`} />
                                                 </div>
                                                 <div>
                                                     <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
@@ -683,9 +683,9 @@ export function OwnerEmployeesPage() {
                                                 <button
                                                     type="button"
                                                     onClick={() => setAccessModalEmployee(emp)}
-                                                    className="inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-paymint-green transition-colors"
+                                                    className="inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-mintcom-green transition-colors"
                                                 >
-                                                    <MapPin size={14} className="text-paymint-green" />
+                                                    <MapPin size={14} className="text-mintcom-green" />
                                                     {t('owner.staff.locationsCount', {
                                                         count: accessCount,
                                                         defaultValue: accessCount === 1 ? '1 location' : '{{count}} locations',
@@ -715,7 +715,7 @@ export function OwnerEmployeesPage() {
                                         >
                                             <div className="flex items-start justify-between mb-3">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm">
+                                                    <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black text-sm">
                                                         {getDisplayInitial(emp.firstName, emp.username)}
                                                     </div>
                                                     <div>
@@ -763,9 +763,9 @@ export function OwnerEmployeesPage() {
                                                     <button
                                                         type="button"
                                                         onClick={() => setAccessModalEmployee(emp)}
-                                                        className="inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-paymint-green transition-colors"
+                                                        className="inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-mintcom-green transition-colors"
                                                     >
-                                                        <MapPin size={14} className="text-paymint-green" />
+                                                        <MapPin size={14} className="text-mintcom-green" />
                                                         {t('owner.staff.locationsCount', {
                                                             count: accessCount,
                                                             defaultValue: accessCount === 1 ? '1 location' : '{{count}} locations',
@@ -787,7 +787,7 @@ export function OwnerEmployeesPage() {
                                                 <button
                                                     onClick={() => handleDeleteEmployee(emp.id)}
                                                     disabled={isOwnerEmployee(emp)}
-                                                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border transition-all text-xs font-bold touch-target ${isOwnerEmployee(emp) ? 'border-amber-200 text-amber-600 cursor-not-allowed opacity-70' : 'border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
+                                                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border transition-all text-xs font-bold touch-target ${isOwnerEmployee(emp) ? 'border-amber-200 text-amber-600 cursor-not-allowed opacity-70' : 'border-red-200 dark:border-red-500/20 text-mintcom-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
                                                 >
                                                     <Trash2 size={14} />
                                                     {isOwnerEmployee(emp)
@@ -804,7 +804,7 @@ export function OwnerEmployeesPage() {
                                     <thead className="bg-gray-50 dark:bg-white/[0.02]">
                                         <tr className="border-b border-gray-200 dark:border-white/5">
                                             <th
-                                                className="px-6 py-4 text-left dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-left dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('name')}
                                             >
                                                 <div className="flex items-center gap-1">
@@ -813,7 +813,7 @@ export function OwnerEmployeesPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('role')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -823,7 +823,7 @@ export function OwnerEmployeesPage() {
                                             </th>
                                             <th className="px-6 py-4 text-center dashboard-card-label">{t('staff.table.contact')}</th>
                                             <th
-                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('status')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -832,7 +832,7 @@ export function OwnerEmployeesPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('accountStatus')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -841,7 +841,7 @@ export function OwnerEmployeesPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('access')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -864,7 +864,7 @@ export function OwnerEmployeesPage() {
                                                 >
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-4">
-                                                            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
+                                                            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
                                                                 {getDisplayInitial(emp.firstName, emp.username)}
                                                             </div>
                                                             <div>
@@ -908,9 +908,9 @@ export function OwnerEmployeesPage() {
                                                         <button
                                                             type="button"
                                                             onClick={() => setAccessModalEmployee(emp)}
-                                                            className="inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-paymint-green transition-colors"
+                                                            className="inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-mintcom-green transition-colors"
                                                         >
-                                                            <MapPin size={14} className="text-paymint-green" />
+                                                            <MapPin size={14} className="text-mintcom-green" />
                                                             {t('owner.staff.locationsCount', {
                                                                 count: accessCount,
                                                                 defaultValue: accessCount === 1 ? '1 location' : '{{count}} locations',
@@ -937,7 +937,7 @@ export function OwnerEmployeesPage() {
                                                                     }}
                                                                     aria-label={t('common.actions')}
                                                                     aria-expanded={activeMenu === emp.id}
-                                                                    className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeMenu === emp.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
+                                                                    className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeMenu === emp.id ? 'bg-mintcom-green text-black border-mintcom-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
                                                                 >
                                                                     <MoreVertical size={18} />
                                                                 </button>
@@ -965,7 +965,7 @@ export function OwnerEmployeesPage() {
                                                                             handleDeleteEmployee(emp.id);
                                                                         }}
                                                                         disabled={isOwnerEmployee(emp)}
-                                                                        className={`w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit transition-colors text-left border-t border-gray-100 dark:border-white/5 ${isOwnerEmployee(emp) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
+                                                                        className={`w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit transition-colors text-left border-t border-gray-100 dark:border-white/5 ${isOwnerEmployee(emp) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-mintcom-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
                                                                     >
                                                                         <Trash2 size={14} />
                                                                         <span>
@@ -1039,7 +1039,7 @@ export function OwnerEmployeesPage() {
                     >
                         <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-gray-100 dark:border-white/5">
                             <div>
-                                <p className="text-xs font-black tracking-[0.18em] uppercase text-paymint-green mb-2">
+                                <p className="text-xs font-black tracking-[0.18em] uppercase text-mintcom-green mb-2">
                                     {t('owner.staff.accessRights', 'Access Rights')}
                                 </p>
                                 <h3 className="text-xl font-black text-gray-900 dark:text-white">
@@ -1060,12 +1060,12 @@ export function OwnerEmployeesPage() {
                         <div className="px-6 py-5 space-y-4">
                             <div className="flex items-center justify-between rounded-2xl bg-gray-50 dark:bg-white/5 px-4 py-3 border border-gray-200 dark:border-white/5">
                                 <div className="flex items-center gap-3">
-                                    <MapPin size={16} className="text-paymint-green" />
+                                    <MapPin size={16} className="text-mintcom-green" />
                                     <span className="text-sm font-bold text-gray-900 dark:text-white">
                                         {t('owner.staff.accessLocations', 'Accessible Locations')}
                                     </span>
                                 </div>
-                                <span className="text-sm font-black text-paymint-green">
+                                <span className="text-sm font-black text-mintcom-green">
                                     {t('owner.staff.locationsCount', {
                                         count: getActiveAssignments(accessModalEmployee).length,
                                         defaultValue:

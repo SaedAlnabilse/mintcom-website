@@ -7,11 +7,11 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
   return (
     <span className={className}>
       {text.split(' ').map((word, i) => {
-        const isPaymint = word.toLowerCase().includes('paymint');
+        const isMintcom = word.toLowerCase().includes('mintcom');
         return (
           <span
             key={i}
-            className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
+            className={isMintcom ? 'text-mintcom-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-mintcom-green')}
           >
             {word}{' '}
           </span>
@@ -28,7 +28,7 @@ export const DownloadApp = () => {
   return (
     <section id="download" className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] relative overflow-hidden" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Background Decor */}
-      <div className="absolute top-1/2 right-[-10%] w-[600px] h-[600px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
+      <div className="absolute top-1/2 right-[-10%] w-[600px] h-[600px] bg-mintcom-green/5 rounded-full blur-[120px] -z-10" />
       <div className="absolute bottom-0 left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
 
       <div className="container mx-auto px-8 md:px-16 lg:px-24 max-w-7xl">
@@ -47,14 +47,14 @@ export const DownloadApp = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="group relative inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[12px] bg-paymint-green/5 dark:bg-paymint-green/10 text-paymint-green font-bold text-xs mb-8 border border-paymint-green/20 backdrop-blur-md shadow-[0_0_15px_rgba(124,195,159,0.05)] hover:border-paymint-green/40 transition-all duration-300"
+              className="group relative inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[12px] bg-mintcom-green/5 dark:bg-mintcom-green/10 text-mintcom-green font-bold text-xs mb-8 border border-mintcom-green/20 backdrop-blur-md shadow-[0_0_15px_rgba(124,195,159,0.05)] hover:border-mintcom-green/40 transition-all duration-300"
             >
-              <div className="relative flex items-center justify-center w-5 h-5 rounded-[6px] bg-paymint-green/20 text-paymint-green overflow-hidden">
+              <div className="relative flex items-center justify-center w-5 h-5 rounded-[6px] bg-mintcom-green/20 text-mintcom-green overflow-hidden">
                 <Smartphone size={11} className="relative z-10" />
                 <motion.div
                   animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute inset-0 bg-paymint-green/30"
+                  className="absolute inset-0 bg-mintcom-green/30"
                 />
               </div>
               <span className="tracking-widest uppercase text-[10px] md:text-[11px] leading-none">
@@ -78,7 +78,7 @@ export const DownloadApp = () => {
                 t('landing.download.platforms')
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                  <CheckCircle2 size={20} className="text-paymint-green flex-shrink-0" />
+                  <CheckCircle2 size={20} className="text-mintcom-green flex-shrink-0" />
                   <span>{item}</span>
                 </div>
               ))}
@@ -160,7 +160,7 @@ export const DownloadApp = () => {
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
               className="absolute top-20 left-0 bg-white dark:bg-[#252525] p-4 rounded-2xl shadow-xl z-30 flex items-center gap-3 border border-gray-100 dark:border-white/5"
             >
-              <div className="bg-paymint-green/20 p-2 rounded-lg text-paymint-green">
+              <div className="bg-mintcom-green/20 p-2 rounded-lg text-mintcom-green">
                 <Tablet size={20} />
               </div>
               <div>

@@ -63,7 +63,7 @@ export const DiscussionDetailPage = () => {
             setDiscussion({
                 id: Number(discussionId),
                 title: t('community.discussions.item_1.title', 'Best practices for managing multiple locations'),
-                content: t('community.discussions.item_1.excerpt', 'I recently expanded to 3 locations and looking for tips on how to manage inventory and staff across all of them efficiently. Specifically, I am struggling with how to handle stock transfers and real-time reporting across different time zones. Any advice on how to best utilize the PayMint dashboard for this?'),
+                content: t('community.discussions.item_1.excerpt', 'I recently expanded to 3 locations and looking for tips on how to manage inventory and staff across all of them efficiently. Specifically, I am struggling with how to handle stock transfers and real-time reporting across different time zones. Any advice on how to best utilize the Mintcom dashboard for this?'),
                 author: { name: 'Michael Chen', badge: 'Champion' },
                 category: 'Tips & Tricks',
                 repliesCount: 24,
@@ -90,7 +90,7 @@ export const DiscussionDetailPage = () => {
                     },
                     {
                         id: 3,
-                        author: { name: 'PayMint Support', badge: 'Official' },
+                        author: { name: 'Mintcom Support', badge: 'Official' },
                         content: "Hi Michael! We recommend setting up 'Brand Levels' in your organizational structure. This allows for top-down reporting while keeping individual location data separate. Reach out if you need a walk-through!",
                         createdAt: '20 mins ago',
                         likes: 120,
@@ -133,7 +133,7 @@ export const DiscussionDetailPage = () => {
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-PayMint-green border-t-transparent rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-Mintcom-green border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -152,7 +152,7 @@ export const DiscussionDetailPage = () => {
                         {/* Back */}
                         <Link
                             to="/community/discussions"
-                            className="inline-flex items-center gap-2 text-gray-500 hover:text-PayMint-green font-bold mb-8 transition-colors group"
+                            className="inline-flex items-center gap-2 text-gray-500 hover:text-Mintcom-green font-bold mb-8 transition-colors group"
                         >
                             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                             {t('community.discussions.back', 'Back to Discussions')}
@@ -199,7 +199,7 @@ export const DiscussionDetailPage = () => {
                                                 <div className="flex items-center gap-2">
                                                     <p className="font-black">{discussion.author.name}</p>
                                                     {discussion.author.badge && (
-                                                        <span className="px-2 py-0.5 bg-PayMint-green/20 text-PayMint-green text-[10px] font-black uppercase tracking-widest rounded">
+                                                        <span className="px-2 py-0.5 bg-Mintcom-green/20 text-Mintcom-green text-[10px] font-black uppercase tracking-widest rounded">
                                                             {discussion.author.badge}
                                                         </span>
                                                     )}
@@ -222,12 +222,12 @@ export const DiscussionDetailPage = () => {
                                 {/* Replies Container */}
                                 <section>
                                     <div className="flex items-center gap-3 mb-6">
-                                        <MessageSquare size={24} className="text-PayMint-green" />
+                                        <MessageSquare size={24} className="text-Mintcom-green" />
                                         <h2 className="text-2xl font-black">{discussion.repliesCount} {t('community.labels.replies', 'Replies')}</h2>
                                     </div>
 
                                     {/* Reply Input */}
-                                    <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-6 mb-10 shadow-sm relative focus-within:border-PayMint-green/50 transition-all">
+                                    <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-6 mb-10 shadow-sm relative focus-within:border-Mintcom-green/50 transition-all">
                                         <form onSubmit={handlePostComment}>
                                             <textarea maxLength={2000}
                                                 value={commentText}
@@ -243,7 +243,7 @@ export const DiscussionDetailPage = () => {
                                                 </span>
                                                 <button
                                                     type="submit"
-                                                    className="inline-flex items-center gap-2 px-8 py-3 bg-PayMint-green text-black rounded-xl font-black hover:opacity-90 transition-all disabled:opacity-50"
+                                                    className="inline-flex items-center gap-2 px-8 py-3 bg-Mintcom-green text-black rounded-xl font-black hover:opacity-90 transition-all disabled:opacity-50"
                                                     disabled={!isAuthenticated || !commentText.trim()}
                                                 >
                                                     <Send size={18} />
@@ -273,20 +273,20 @@ export const DiscussionDetailPage = () => {
                                                 initial={{ opacity: 0, y: 15 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 className={`p-8 rounded-3xl border ${comment.isOfficial
-                                                        ? 'bg-PayMint-green/[0.03] border-PayMint-green/30'
+                                                        ? 'bg-Mintcom-green/[0.03] border-Mintcom-green/30'
                                                         : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/10'
                                                     }`}
                                             >
                                                 <div className="flex items-center justify-between mb-4">
                                                     <div className="flex items-center gap-4">
-                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${comment.isOfficial ? 'bg-PayMint-green text-black' : 'bg-gray-100 dark:bg-white/10'}`}>
+                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${comment.isOfficial ? 'bg-Mintcom-green text-black' : 'bg-gray-100 dark:bg-white/10'}`}>
                                                             <User size={20} />
                                                         </div>
                                                         <div>
                                                             <div className="flex items-center gap-2">
                                                                 <span className="font-black">{comment.author.name}</span>
                                                                 {comment.author.badge && (
-                                                                    <span className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-widest rounded ${comment.isOfficial ? 'bg-PayMint-green/20 text-PayMint-green' : 'bg-gray-100 dark:bg-white/20 text-gray-400'
+                                                                    <span className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-widest rounded ${comment.isOfficial ? 'bg-Mintcom-green/20 text-Mintcom-green' : 'bg-gray-100 dark:bg-white/20 text-gray-400'
                                                                         }`}>
                                                                         {comment.author.badge}
                                                                     </span>
@@ -295,7 +295,7 @@ export const DiscussionDetailPage = () => {
                                                             <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">{comment.createdAt}</span>
                                                         </div>
                                                     </div>
-                                                    <button className="flex items-center gap-2 text-xs font-black text-gray-400 hover:text-PayMint-green transition-all">
+                                                    <button className="flex items-center gap-2 text-xs font-black text-gray-400 hover:text-Mintcom-green transition-all">
                                                         <Heart size={16} /> {comment.likes}
                                                     </button>
                                                 </div>
@@ -334,7 +334,7 @@ export const DiscussionDetailPage = () => {
                                                     <Award size={18} />
                                                     <span className="text-sm font-bold">Karma</span>
                                                 </div>
-                                                <span className="font-black text-PayMint-green">+240</span>
+                                                <span className="font-black text-Mintcom-green">+240</span>
                                             </div>
                                         </div>
                                     </div>

@@ -24,7 +24,7 @@ const newContent = `
           {/* Active Status & Quick Select */}
           <div className="flex items-center gap-1 bg-gray-100/50 dark:bg-white/5 rounded-full p-1 pl-2">
             <div className="flex items-center gap-1.5 pr-2 border-r border-gray-200 dark:border-white/10 mr-1">
-               <div className={\`w-2 h-2 rounded-full \${isLoading ? 'bg-amber-400 animate-pulse' : 'bg-paymint-green shadow-[0_0_8px_rgba(16,185,129,0.5)]'}\`} />
+               <div className={\`w-2 h-2 rounded-full \${isLoading ? 'bg-amber-400 animate-pulse' : 'bg-mintcom-green shadow-[0_0_8px_rgba(16,185,129,0.5)]'}\`} />
                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">
                   {isLoading ? 'SYNCING' : 'LIVE'}
                </span>
@@ -55,7 +55,7 @@ const newContent = `
           {/* Date & Time Controls - Minimalist Text Inputs */}
           <div className="flex items-center gap-4 flex-1 justify-center lg:justify-start">
              <div className="flex items-center gap-2 group cursor-pointer">
-                <Filter size={12} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+                <Filter size={12} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
                 <div className="flex items-center gap-1 bg-transparent hover:bg-gray-100 dark:hover:bg-white/5 px-2 py-0.5 rounded-lg transition-colors">
                   <input
                     type="date"
@@ -76,7 +76,7 @@ const newContent = `
              <div className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
 
              <div className="flex items-center gap-2 group cursor-pointer">
-                <Clock size={12} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+                <Clock size={12} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
                 <div className="flex items-center gap-1 bg-transparent hover:bg-gray-100 dark:hover:bg-white/5 px-2 py-0.5 rounded-lg transition-colors">
                   <input
                       type="time"

@@ -74,8 +74,8 @@ export const DiscussionsPage = () => {
     },
     {
       id: 3,
-      title: t('community.discussions.item_3.title', 'Integrating PayMint with our inventory system'),
-      excerpt: t('community.discussions.item_3.excerpt', 'Has anyone successfully integrated PayMint with a third-party inventory management system? Looking for recommendations...'),
+      title: t('community.discussions.item_3.title', 'Integrating Mintcom with our inventory system'),
+      excerpt: t('community.discussions.item_3.excerpt', 'Has anyone successfully integrated Mintcom with a third-party inventory management system? Looking for recommendations...'),
       author: { name: 'David Kim' },
       category: 'Integrations',
       replies: 12,
@@ -171,7 +171,7 @@ export const DiscussionsPage = () => {
             {isAuthenticated ? (
               <Link
                 to="/community/discussions/new"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-PayMint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-PayMint-green/20"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-Mintcom-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-Mintcom-green/20"
               >
                 <Plus size={18} />
                 {t('community.discussions.new', 'New Discussion')}
@@ -203,7 +203,7 @@ export const DiscussionsPage = () => {
                       key={category.id}
                       onClick={() => setSelectedCategory(category.id)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-bold transition-all ${selectedCategory === category.id
-                        ? 'bg-PayMint-green text-black'
+                        ? 'bg-Mintcom-green text-black'
                         : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
                         }`}
                     >
@@ -228,7 +228,7 @@ export const DiscussionsPage = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={formatInputPlaceholder(t('community.discussions.search_placeholder', 'Search discussions...'), t('common.locale'))}
-                      className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all"
+                      className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-Mintcom-green/50 transition-all"
                     />
                     {searchQuery && (
                       <button
@@ -271,7 +271,7 @@ export const DiscussionsPage = () => {
                   >
                     <Link
                       to={`/community/discussions/${discussion.id}`}
-                      className="block bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 hover:border-PayMint-green/30 hover:shadow-lg transition-all group"
+                      className="block bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 hover:border-Mintcom-green/30 hover:shadow-lg transition-all group"
                     >
                       <div className="flex gap-4">
                         {/* Author Avatar */}
@@ -295,7 +295,7 @@ export const DiscussionsPage = () => {
                               </span>
                             )}
                             {discussion.isSolved && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-paymint-green/10 dark:bg-paymint-green/ text-paymint-green rounded text-xs font-bold">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-mintcom-green/10 dark:bg-mintcom-green/ text-mintcom-green rounded text-xs font-bold">
                                 <CheckCircle2 size={10} /> {t('community.labels.solved', 'Solved')}
                               </span>
                             )}
@@ -306,7 +306,7 @@ export const DiscussionsPage = () => {
 
                           {/* Title */}
                           <Link to={`/community/discussions/${discussion.id}`}>
-                            <h3 className="text-xl font-black mb-2 hover:text-PayMint-green transition-colors cursor-pointer group-hover:text-PayMint-green">
+                            <h3 className="text-xl font-black mb-2 hover:text-Mintcom-green transition-colors cursor-pointer group-hover:text-Mintcom-green">
                               {discussion.title}
                             </h3>
                           </Link>
@@ -321,7 +321,7 @@ export const DiscussionsPage = () => {
                             <div className="flex items-center gap-2">
                               <span className="font-bold">{discussion.author.name}</span>
                               {discussion.author.badge && (
-                                <span className="px-1.5 py-0.5 bg-PayMint-green/10 text-PayMint-green rounded text-xs font-bold">
+                                <span className="px-1.5 py-0.5 bg-Mintcom-green/10 text-Mintcom-green rounded text-xs font-bold">
                                   {discussion.author.badge}
                                 </span>
                               )}
@@ -341,7 +341,7 @@ export const DiscussionsPage = () => {
                           </div>
                         </div>
 
-                        <ChevronRight size={20} className="text-gray-400 group-hover:text-PayMint-green group-hover:translate-x-1 transition-all hidden md:block" />
+                        <ChevronRight size={20} className="text-gray-400 group-hover:text-Mintcom-green group-hover:translate-x-1 transition-all hidden md:block" />
                       </div>
                     </Link>
                   </motion.div>

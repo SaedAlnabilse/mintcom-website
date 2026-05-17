@@ -7,7 +7,7 @@
   <script>
     (() => {
       try {
-        const storageKey = 'paymint-ui-theme';
+        const storageKey = 'mintcom-ui-theme';
         const storedTheme = localStorage.getItem(storageKey) || 'system';
         const resolvedTheme = storedTheme === 'system'
           ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
@@ -23,17 +23,19 @@
   </script>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="/paymint-logo.svg" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/paymint-logo.png" />
+  <link rel="icon" type="image/svg+xml" href="/mintcom-leaf.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="security" href="/.well-known/security.txt" />
 
   <!-- Primary Meta Tags -->
-  <title>PayMint | All-in-One Cloud POS & Business Management</title>
-  <meta name="title" content="PayMint | All-in-One Cloud POS & Business Management" />
-  <meta name="description" content="Simplify your business with PayMint. Fast sales, real-time inventory, and powerful analytics on any device. Start your 14-day free trial today." />
+  <title>Mintcom | All-in-One Cloud POS & Business Management</title>
+  <meta name="title" content="Mintcom | All-in-One Cloud POS & Business Management" />
+  <meta name="description" content="Simplify your business with Mintcom. Fast sales, real-time inventory, and powerful analytics on any device. Start your 14-day free trial today." />
 
   <meta name="keywords" content="POS system, point of sale, restaurant POS, retail POS, inventory management, staff management, business software, payment processing" />
-  <meta name="author" content="PayMint" />
+  <meta name="author" content="Mintcom" />
 
   <!-- Allow Search Engine Indexing -->
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -41,39 +43,39 @@
   <meta name="bingbot" content="index, follow" />
 
   <!-- Canonical URL -->
-  <link rel="canonical" href="https://paymintpos.net/" />
+  <link rel="canonical" href="https://mintcompos.com/" />
 
   <!-- Theme Colors -->
-  <meta name="theme-color" content="#7CC39F" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#7dc6a2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#0F172A" media="(prefers-color-scheme: dark)" />
 
   <!-- iOS Web App -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="PayMint" />
+  <meta name="apple-mobile-web-app-title" content="Mintcom" />
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://paymintpos.net/" />
-  <meta property="og:title" content="PayMint POS - Smart, Simple & Secure" />
-  <meta property="og:description" content="PayMint is a modern POS system designed for fast, secure, and scalable business operations. Packed with advanced features at no extra cost." />
-  <meta property="og:image" content="https://paymintpos.net/paymint-logo.png" />
-  <meta property="og:site_name" content="PayMint" />
+  <meta property="og:url" content="https://mintcompos.com/" />
+  <meta property="og:title" content="Mintcom POS - Smart, Simple & Secure" />
+  <meta property="og:description" content="Mintcom is a modern POS system designed for fast, secure, and scalable business operations. Packed with advanced features at no extra cost." />
+  <meta property="og:image" content="https://mintcompos.com/og-image.png" />
+  <meta property="og:site_name" content="Mintcom" />
   <meta property="og:locale" content="en_US" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://paymintpos.net/" />
-  <meta name="twitter:title" content="PayMint POS - Smart, Simple & Secure" />
-  <meta name="twitter:description" content="PayMint is a modern POS system designed for fast, secure, and scalable business operations." />
-  <meta name="twitter:image" content="https://paymintpos.net/paymint-logo.png" />
+  <meta name="twitter:url" content="https://mintcompos.com/" />
+  <meta name="twitter:title" content="Mintcom POS - Smart, Simple & Secure" />
+  <meta name="twitter:description" content="Mintcom is a modern POS system designed for fast, secure, and scalable business operations." />
+  <meta name="twitter:image" content="https://mintcompos.com/og-image.png" />
 
   <!-- Structured Data for SEO -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "PayMint POS",
+    "name": "Mintcom POS",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web, Android, iOS",
     "offers": {
@@ -82,18 +84,18 @@
       "priceCurrency": "USD",
       "description": "14-day free trial"
     },
-    "description": "PayMint is a complete 360 degree POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations from one simple system.",
-    "url": "https://paymintpos.net",
-    "image": "https://paymintpos.net/paymint-logo.png",
+    "description": "Mintcom is a complete 360 degree POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations from one simple system.",
+    "url": "https://mintcompos.com",
+    "image": "https://mintcompos.com/og-image.png",
     "author": {
       "@type": "Organization",
-      "name": "PayMint",
-      "url": "https://paymintpos.net",
-      "email": "support@paymintpos.net",
+      "name": "Mintcom",
+      "url": "https://mintcompos.com",
+      "email": "support@mintcompos.com",
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "customer support",
-        "email": "support@paymintpos.net",
+        "email": "support@mintcompos.com",
         "availableLanguage": ["English", "Arabic"]
       }
     }

@@ -12,8 +12,8 @@ const envSchema = z.object({
   VITE_SUPPORT_ADMIN_EMAILS: z.string().optional(),
   VITE_ANDROID_DOWNLOAD_URL: z.string().optional(),
   VITE_IOS_DOWNLOAD_URL: z.string().optional(),
-  VITE_APP_NAME: z.string().default('PayMint'),
-  VITE_SITE_URL: z.string().url().default('https://paymintpos.net'),
+  VITE_APP_NAME: z.string().default('Mintcom'),
+  VITE_SITE_URL: z.string().url().default('https://mintcompos.com'),
   PROD: z.boolean(),
   DEV: z.boolean(),
 });

@@ -4,7 +4,7 @@ import { HelpCircle, X, ClipboardCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import PaymintLeafIcon from '../../assets/small-logo.svg';
+import MintcomLeafIcon from '../../assets/small-logo.svg';
 import { useChatPageContext } from '../../hooks/useChatPageContext';
 
 interface DualLauncherProps {
@@ -61,7 +61,7 @@ export function DualLauncher({
   }
 
   // Final key includes user ID for per-user settings
-  const storageKey = `paymint.chatbot.tooltip_dismissed.${account?.id || 'anon'}.${contextId}`;
+  const storageKey = `mintcom.chatbot.tooltip_dismissed.${account?.id || 'anon'}.${contextId}`;
 
   const [showTooltip, setShowTooltip] = useState(() => {
     if (typeof window === 'undefined') return true;
@@ -89,7 +89,7 @@ export function DualLauncher({
     return (
       <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900]`} dir={isRTL ? 'rtl' : 'ltr'}>
         <motion.div
-          id="paymint-launcher-switcher"
+          id="mintcom-launcher-switcher"
           initial={{ opacity: 0, y: 10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -105,11 +105,11 @@ export function DualLauncher({
               }}
               aria-pressed={isChatOpen}
               className={`h-11 w-full flex items-center justify-center gap-2 px-3 rounded-xl font-bold text-sm transition-all ${isChatOpen
-                  ? 'bg-[#E6F4EA] text-[#3C8E4C] shadow-sm border border-[#7CC39F]/20'
+                  ? 'bg-[#E6F4EA] text-[#3C8E4C] shadow-sm border border-[#7dc6a2]/20'
                   : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10'
                 }`}
             >
-              <img src={PaymintLeafIcon} alt="" className={`w-5 h-5 object-contain scale-x-[-1] ${isChatOpen ? '' : 'brightness-0 dark:invert opacity-50'}`} />
+              <img src={MintcomLeafIcon} alt="" className={`w-5 h-5 object-contain scale-x-[-1] ${isChatOpen ? '' : 'brightness-0 dark:invert opacity-50'}`} />
               <span>{t('chat.launcher.ask')}</span>
             </button>
 
@@ -139,7 +139,7 @@ export function DualLauncher({
                 }}
                 aria-pressed={isTasksOpen}
                 className={`h-11 w-full flex items-center justify-center gap-2 px-3 rounded-xl font-bold text-sm transition-all ${isTasksOpen
-                    ? 'bg-[#E6F4EA] text-[#3C8E4C] shadow-sm border border-[#7CC39F]/20'
+                    ? 'bg-[#E6F4EA] text-[#3C8E4C] shadow-sm border border-[#7dc6a2]/20'
                     : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10'
                   }`}
               >
@@ -177,7 +177,7 @@ export function DualLauncher({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onOpenTasks && onOpenTasks()}
-            className="group relative flex items-center justify-center w-12 h-12 rounded-xl bg-[#E6F4EA] dark:bg-[#7CC39F]/10 text-[#3C8E4C] shadow-lg shadow-[#7CC39F]/20 hover:shadow-[#7CC39F]/40 transition-all border border-[#7CC39F]/20"
+            className="group relative flex items-center justify-center w-12 h-12 rounded-xl bg-[#E6F4EA] dark:bg-[#7dc6a2]/10 text-[#3C8E4C] shadow-lg shadow-[#7dc6a2]/20 hover:shadow-[#7dc6a2]/40 transition-all border border-[#7dc6a2]/20"
           >
             <ClipboardCheck size={24} />
             
@@ -260,10 +260,10 @@ export function DualLauncher({
               }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="group relative flex items-center justify-center w-12 h-12 rounded-xl bg-[#E6F4EA] dark:bg-[#7CC39F]/10 shadow-lg shadow-[#7CC39F]/20 hover:shadow-[#7CC39F]/40 transition-all border border-[#7CC39F]/20"
+              className="group relative flex items-center justify-center w-12 h-12 rounded-xl bg-[#E6F4EA] dark:bg-[#7dc6a2]/10 shadow-lg shadow-[#7dc6a2]/20 hover:shadow-[#7dc6a2]/40 transition-all border border-[#7dc6a2]/20"
             >
               <img 
-                src={PaymintLeafIcon} 
+                src={MintcomLeafIcon} 
                 alt="" 
                 className="w-8 h-8 object-contain scale-x-[-1] drop-shadow-sm" 
               />
@@ -275,7 +275,7 @@ export function DualLauncher({
               
               {/* Notification dot if tasks completed */}
               {isDashboardRoute && tasksCount === 0 && (
-                <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-paymint-green rounded-full border-2 border-white dark:border-[#0F172A] flex items-center justify-center shadow-sm" />
+                <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-mintcom-green rounded-full border-2 border-white dark:border-[#0F172A] flex items-center justify-center shadow-sm" />
               )}
             </motion.button>
           </motion.div>

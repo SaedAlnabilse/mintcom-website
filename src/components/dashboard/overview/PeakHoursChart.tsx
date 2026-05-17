@@ -59,7 +59,7 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
                 })}>
                   <defs>
                     <linearGradient id="barGradientDash" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#7CC39F" stopOpacity={1} />
+                      <stop offset="0%" stopColor="#7dc6a2" stopOpacity={1} />
                       <stop offset="100%" stopColor="#10b981" stopOpacity={0.8} />
                     </linearGradient>
                   </defs>
@@ -86,7 +86,7 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
                     cursor={{ fill: 'transparent' }}
                     contentStyle={{ backgroundColor: isDark ? '#111' : '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
                     itemStyle={{ fontWeight: 'bold', fontSize: '10px' }}
-                    labelStyle={{ color: '#7CC39F', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
+                    labelStyle={{ color: '#7dc6a2', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
                     formatter={(val: any) => [Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }), t('dashboard.peakHours.revenue')]}
                   />
                   <Bar dataKey="total" name={t('dashboard.peakHours.revenue')} fill="url(#barGradientDash)" radius={[4, 4, 0, 0]} barSize={20} animationDuration={1500} />

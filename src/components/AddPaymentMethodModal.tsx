@@ -168,7 +168,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                         </div>
 
                         {/* Decorative Background */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/10 rounded-full blur-[80px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-mintcom-green/10 rounded-full blur-[80px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
 
                         <div className="p-4 sm:p-8 overflow-y-auto custom-scrollbar pb-safe">
                             <div className="flex items-center justify-between mb-8">
@@ -201,12 +201,12 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             value={cardNumber}
                                             onChange={handleCardNumberChange}
                                             placeholder={formatInputPlaceholder("0000 0000 0000 0000", t('common.locale'))}
-                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cardNumber ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-12 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
+                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cardNumber ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-12 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-all`}
                                         />
-                                        <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                                        <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                                         <div className="absolute right-4 top-1/2 -translate-y-1/2">
                                             {getCardBrand(cardNumber) !== t('common.unknown') && (
-                                                <span className="text-xs font-black text-paymint-green tracking-wider bg-paymint-green/10 px-2 py-1 rounded-md border border-paymint-green/20">
+                                                <span className="text-xs font-black text-mintcom-green tracking-wider bg-mintcom-green/10 px-2 py-1 rounded-md border border-mintcom-green/20">
                                                     {getCardBrand(cardNumber)}
                                                 </span>
                                             )}
@@ -225,7 +225,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             onChange={handleExpiryChange}
                                             placeholder={formatInputPlaceholder(t('paymentMethods.modal.expiryPlaceholder') || "MM/YY", t('common.locale'))}
                                             maxLength={5}
-                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.expiry ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all text-center`}
+                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.expiry ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-all text-center`}
                                         />
                                         {errors.expiry && <p className="text-xs font-bold text-red-500 pl-1">{errors.expiry}</p>}
                                     </div>
@@ -238,9 +238,9 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                                 onChange={(e) => { setCvc(e.target.value.replace(/\D/g, '').slice(0, 4)); if (errors.cvc) setErrors({ ...errors, cvc: '' }); }}
                                                 placeholder={formatInputPlaceholder("123", t('common.locale'))}
                                                 maxLength={4}
-                                                className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cvc ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-10 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
+                                                className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cvc ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-10 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-all`}
                                             />
-                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={16} />
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={16} />
                                         </div>
                                         {errors.cvc && <p className="text-xs font-bold text-red-500 pl-1">{errors.cvc}</p>}
                                     </div>
@@ -253,7 +253,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                         type="text"
                                         value={name}
                                         onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                                        className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
+                                        className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-normal text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-all`}
                                     />
                                     {errors.name && <p className="text-xs font-bold text-red-500 pl-1">{errors.name}</p>}
                                 </div>
@@ -261,7 +261,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full h-14 bg-paymint-green text-black rounded-xl font-black text-xs tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none uppercase"
+                                    className="w-full h-14 bg-mintcom-green text-black rounded-xl font-black text-xs tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-mintcom-green/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none uppercase"
                                 >
                                     {isSubmitting ? (
                                         <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
@@ -279,7 +279,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                     <Link 
                                         to="/legal/terms" 
                                         target="_blank" 
-                                        className="text-paymint-green hover:underline decoration-paymint-green/30"
+                                        className="text-mintcom-green hover:underline decoration-mintcom-green/30"
                                     >
                                         {t('paymentMethods.modal.termsAndConditions')}
                                     </Link>

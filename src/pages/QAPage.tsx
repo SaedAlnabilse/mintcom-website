@@ -98,17 +98,17 @@ export const QAPage = () => {
                                 onClick={() => setActiveCategory(cat.id)}
                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all relative overflow-hidden group ${
                                     activeCategory === cat.id
-                                    ? 'bg-paymint-green/10 text-paymint-green'
+                                    ? 'bg-mintcom-green/10 text-mintcom-green'
                                     : 'text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
                                 }`}
                             >
                                 {activeCategory === cat.id && (
                                   <motion.div 
                                     layoutId="active-indicator"
-                                    className={`absolute inset-y-0 ${t('common.locale') === 'ar' ? 'right-0' : 'left-0'} w-1 bg-paymint-green rounded-full`}
+                                    className={`absolute inset-y-0 ${t('common.locale') === 'ar' ? 'right-0' : 'left-0'} w-1 bg-mintcom-green rounded-full`}
                                   />
                                 )}
-                                <cat.icon size={18} className={activeCategory === cat.id ? 'text-paymint-green' : 'text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'} />
+                                <cat.icon size={18} className={activeCategory === cat.id ? 'text-mintcom-green' : 'text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'} />
                                 {cat.label}
                                 {activeCategory === cat.id && <ChevronRight size={16} className={t('common.locale') === 'ar' ? 'mr-auto rotate-180' : 'ml-auto'} />}
                             </button>
@@ -130,20 +130,20 @@ export const QAPage = () => {
                                         <motion.div
                                             key={item.id}
                                             layout
-                                            className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden transition-all hover:border-paymint-green/30"
+                                            className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden transition-all hover:border-mintcom-green/30"
                                         >
                                             <button
                                                 onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
                                                 className="w-full flex items-start justify-between p-6 text-left"
                                             >
                                                 <div className="flex-1 pr-8">
-                                                    <h3 className={`text-base font-medium transition-colors ${expandedId === item.id ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
+                                                    <h3 className={`text-base font-medium transition-colors ${expandedId === item.id ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>
                                                         {item.question}
                                                     </h3>
                                                 </div>
                                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                                                     expandedId === item.id 
-                                                    ? 'bg-paymint-green text-black rotate-180' 
+                                                    ? 'bg-mintcom-green text-black rotate-180' 
                                                     : 'bg-gray-100 dark:bg-white/5 text-gray-500'
                                                 }`}>
                                                     {expandedId === item.id ? <Minus size={18} /> : <Plus size={18} />}

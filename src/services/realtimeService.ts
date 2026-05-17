@@ -87,7 +87,7 @@ type EventCallback<T> = (event: DataChangeEvent<T>) => void;
  * Real-time Service for Website
  * 
  * Manages WebSocket connection to the backend and handles
- * real-time data synchronization across all PayMint applications.
+ * real-time data synchronization across all Mintcom applications.
  */
 class RealtimeService {
   private socket: Socket | null = null;

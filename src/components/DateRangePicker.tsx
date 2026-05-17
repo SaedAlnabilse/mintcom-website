@@ -137,7 +137,7 @@ export function DateRangePicker({
                 <button
                     onClick={prevMonth}
                     aria-label={t('common.aria.previousMonth')}
-                    className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center bg-paymint-green text-white rounded-lg hover:bg-paymint-green/90 transition-colors"
+                    className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center bg-mintcom-green text-white rounded-lg hover:bg-mintcom-green/90 transition-colors"
                 >
                     <ChevronLeft size={18} className={t('common.locale') === 'ar' ? 'rotate-180' : ''} />
                 </button>
@@ -147,7 +147,7 @@ export function DateRangePicker({
                 <button
                     onClick={nextMonth}
                     aria-label={t('common.aria.nextMonth')}
-                    className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center bg-paymint-green text-white rounded-lg hover:bg-paymint-green/90 transition-colors"
+                    className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center bg-mintcom-green text-white rounded-lg hover:bg-mintcom-green/90 transition-colors"
                 >
                     <ChevronRight size={18} className={t('common.locale') === 'ar' ? 'rotate-180' : ''} />
                 </button>
@@ -216,11 +216,11 @@ export function DateRangePicker({
 
                 // Range styling
                 if (inRange && !rangeStart && !rangeEnd) {
-                    bgClass = 'bg-paymint-green/20 dark:bg-paymint-green/30';
+                    bgClass = 'bg-mintcom-green/20 dark:bg-mintcom-green/30';
                 }
 
                 if (rangeStart || rangeEnd) {
-                    bgClass = 'bg-paymint-green';
+                    bgClass = 'bg-mintcom-green';
                     textClass = 'text-white font-bold';
                 }
 
@@ -241,7 +241,7 @@ export function DateRangePicker({
                 days.push(
                     <div
                         key={day.toString()}
-                        className={`${cellClass} ${bgClass} ${textClass} ${roundedClass} ${!isDisabled && isCurrentMonth ? 'hover:bg-paymint-green/10' : ''}`}
+                        className={`${cellClass} ${bgClass} ${textClass} ${roundedClass} ${!isDisabled && isCurrentMonth ? 'hover:bg-mintcom-green/10' : ''}`}
                         onClick={() => !isDisabled && isCurrentMonth && handleDateClick(cloneDay)}
                         onMouseEnter={() => selectionState === 'end' && isCurrentMonth && !isDisabled && setHoveredDate(cloneDay)}
                         onMouseLeave={() => setHoveredDate(null)}
@@ -250,7 +250,7 @@ export function DateRangePicker({
                             {Number(format(day, 'd')).toLocaleString(t('common.locale'))}
                         </span>
                         {isToday && !rangeStart && !rangeEnd && (
-                            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-paymint-green rounded-full" />
+                            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-mintcom-green rounded-full" />
                         )}
                     </div>
                 );
@@ -296,13 +296,13 @@ export function DateRangePicker({
                 className={`
                     flex items-center gap-3 w-full h-12 px-4 text-sm font-bold rounded-xl border transition-all shadow-sm
                     ${(isOpen || isActive)
-                        ? 'border-paymint-green ring-2 ring-paymint-green bg-paymint-green/5 text-paymint-green shadow-lg shadow-paymint-green/10'
-                        : 'border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white hover:border-paymint-green/50'
+                        ? 'border-mintcom-green ring-2 ring-mintcom-green bg-mintcom-green/5 text-mintcom-green shadow-lg shadow-mintcom-green/10'
+                        : 'border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white hover:border-mintcom-green/50'
                     }
                     ${buttonClassName}
                 `}
             >
-                <CalendarIcon size={18} className={(isOpen || isActive) ? 'text-paymint-green' : 'text-gray-400'} />
+                <CalendarIcon size={18} className={(isOpen || isActive) ? 'text-mintcom-green' : 'text-gray-400'} />
                 <span className="truncate">{displayValue()}</span>
             </button>
 
@@ -335,7 +335,7 @@ export function DateRangePicker({
                                     setIsOpen(false);
                                     setSelectionState('start');
                                 }}
-                                className="px-6 py-2 text-[10px] font-black tracking-widest uppercase text-gray-400 hover:text-paymint-green bg-gray-100 dark:bg-white/5 hover:bg-paymint-green/10 rounded-xl transition-all"
+                                className="px-6 py-2 text-[10px] font-black tracking-widest uppercase text-gray-400 hover:text-mintcom-green bg-gray-100 dark:bg-white/5 hover:bg-mintcom-green/10 rounded-xl transition-all"
                             >
                                 {t('common.clear')}
                             </button>

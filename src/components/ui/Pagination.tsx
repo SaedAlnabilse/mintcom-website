@@ -99,7 +99,7 @@ export function Pagination({
                 <button
                     onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
-                    className="p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all shadow-sm"
+                    className="p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-mintcom-green disabled:opacity-30 transition-all shadow-sm"
                     title={t('common.previous')}
                 >
                     <ArrowUpRight size={18} className="rotate-[225deg]" />
@@ -118,7 +118,7 @@ export function Pagination({
                                 key={pageNum}
                                 onClick={() => onPageChange(pageNum)}
                                 className={`w-10 h-10 rounded-xl text-xs font-medium transition-all ${currentPage === pageNum
-                                    ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                                    ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
                                     : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white shadow-sm'
                                     }`}
                             >
@@ -130,7 +130,7 @@ export function Pagination({
                 <button
                     onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
-                    className="p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all shadow-sm"
+                    className="p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-mintcom-green disabled:opacity-30 transition-all shadow-sm"
                     title={t('common.next')}
                 >
                     <ArrowUpRight size={18} className="rotate-45" />

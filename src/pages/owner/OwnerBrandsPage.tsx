@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
@@ -372,7 +372,7 @@ export function OwnerBrandsPage() {
             case 'WAITER':
                 return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
             case 'ADMIN':
-                return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
+                return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
             default:
                 return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
         }
@@ -496,7 +496,7 @@ export function OwnerBrandsPage() {
                                 setShowCreateModal(true);
                             }
                         }}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
                     >
                         <Plus size={18} />
                         <span>{t('owner.brands.createBrand')}</span>
@@ -594,7 +594,7 @@ export function OwnerBrandsPage() {
                                     setShowCreateModal(true);
                                 }
                             }}
-                            className="mt-6 px-6 py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-[#68B390] transition-all shadow-sm flex items-center gap-2 mx-auto"
+                            className="mt-6 px-6 py-3 bg-mintcom-green text-black font-bold rounded-xl hover:bg-[#5fa888] transition-all shadow-sm flex items-center gap-2 mx-auto"
                         >
                             <Link2 size={18} />
                             {t('owner.brands.createFirstBrand')}
@@ -609,7 +609,7 @@ export function OwnerBrandsPage() {
                                 <div
                                     key={brand.id}
                                     className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
-                                        ? 'border-paymint-green bg-paymint-green/[0.02]'
+                                        ? 'border-mintcom-green bg-mintcom-green/[0.02]'
                                         : 'border-gray-200 dark:border-white/5 hover:border-purple-500/30'
                                         }`}
                                 >
@@ -630,7 +630,7 @@ export function OwnerBrandsPage() {
                                                         </h3>
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green label-strong">
+                                                        <span className="px-2 py-0.5 rounded bg-mintcom-green/10 text-mintcom-green label-strong">
                                                             {t('common.status.active')}
                                                         </span>
                                                         <span className="dashboard-card-label">
@@ -767,7 +767,7 @@ export function OwnerBrandsPage() {
             {createPortal(
                 <AnimatePresence>
                     {showCreateModal && (
-                        <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-paymint-green selection:text-black">
+                        <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-mintcom-green selection:text-black">
                             {/* Backdrop */}
                             <motion.div
                                 initial={{ opacity: 0 }}
@@ -795,7 +795,7 @@ export function OwnerBrandsPage() {
                                     {/* Header */}
                                     <div className="px-8 pt-10 pb-6 flex items-start justify-between">
                                         <div className="flex items-center gap-5">
-                                            <div className="w-16 h-16 rounded-[1.25rem] bg-[#F0FDF4] dark:bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
+                                            <div className="w-16 h-16 rounded-[1.25rem] bg-[#F0FDF4] dark:bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
                                                 <Building2 size={32} />
                                             </div>
                                             <div>
@@ -812,7 +812,7 @@ export function OwnerBrandsPage() {
                                                 {[1, 2, 3].map((step) => (
                                                     <div
                                                         key={step}
-                                                        className={`h-1.5 rounded-full transition-all duration-500 ${wizardStep === step ? 'w-8 bg-paymint-green' : 'w-2 bg-gray-200 dark:bg-white/10'}`}
+                                                        className={`h-1.5 rounded-full transition-all duration-500 ${wizardStep === step ? 'w-8 bg-mintcom-green' : 'w-2 bg-gray-200 dark:bg-white/10'}`}
                                                     />
                                                 ))}
                                             </div>
@@ -834,10 +834,10 @@ export function OwnerBrandsPage() {
                                             <div className="space-y-2">
                                                 <label className="text-[15px] font-sans font-normal text-gray-500 ml-1">{formatInputLabel(t('owner.brands.brandName'), t('common.locale'))}</label>
                                                 <div className="relative group">
-                                                    <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                                                    <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                                                     <input maxLength={255}
                                                         {...register('name')}
-                                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
+                                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
                                                         placeholder={formatInputPlaceholder(t('owner.brands.brandNamePlaceholder'), t('common.locale'))}
                                                     />
                                                 </div>
@@ -847,10 +847,10 @@ export function OwnerBrandsPage() {
                                             <div className="space-y-2">
                                                 <label className="text-[15px] font-sans font-normal text-gray-500 ml-1">{formatInputLabel(t('owner.brands.adminLoginId'), t('common.locale'))}</label>
                                                 <div className="relative group">
-                                                    <Hash className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                                                    <Hash className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                                                     <input maxLength={255}
                                                         {...establishmentLoginIdField}
-                                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
+                                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
                                                         placeholder={formatInputPlaceholder(t('owner.brands.adminLoginIdPlaceholder'), t('common.locale'))}
                                                     />
                                                 </div>
@@ -864,7 +864,7 @@ export function OwnerBrandsPage() {
                                                     </p>
                                                 )}
                                                 {loginIdCheckState === 'available' && !errors.establishmentLoginId && (
-                                                    <p className="mt-1 text-[12px] font-bold text-paymint-green flex items-center gap-1.5 ml-1">
+                                                    <p className="mt-1 text-[12px] font-bold text-mintcom-green flex items-center gap-1.5 ml-1">
                                                         <Check size={12} />
                                                         {loginIdCheckMessage}
                                                     </p>
@@ -875,11 +875,11 @@ export function OwnerBrandsPage() {
                                             <div className="space-y-2">
                                                 <label className="text-[15px] font-sans font-normal text-gray-500 ml-1">{formatInputLabel(t('owner.brands.adminPassword'), t('common.locale'))}</label>
                                                 <div className="relative group">
-                                                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                                                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                                                     <input maxLength={255}
                                                         {...register('establishmentPassword')}
                                                         type={showPassword ? "text" : "password"}
-                                                        className="w-full pl-14 pr-14 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
+                                                        className="w-full pl-14 pr-14 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
                                                         placeholder={formatInputPlaceholder("********", t('common.locale'))}
                                                     />
                                                     <button
@@ -906,7 +906,7 @@ export function OwnerBrandsPage() {
                                                         (These are the unlinked locations to add, any locations not listed here are already included in other brand groups)
                                                     </p>
                                                 </div>
-                                                <span className="flex-shrink-0 text-[13px] font-sans font-bold text-paymint-green bg-paymint-green/10 px-3 py-1.5 rounded-full">
+                                                <span className="flex-shrink-0 text-[13px] font-sans font-bold text-mintcom-green bg-mintcom-green/10 px-3 py-1.5 rounded-full">
                                                     {t('owner.brands.selectedCount', { count: selectedEstablishments.length })}
                                                 </span>
                                             </div>
@@ -921,18 +921,18 @@ export function OwnerBrandsPage() {
                                                             type="button"
                                                             onClick={() => toggleEstablishment(est.id)}
                                                             className={`w-full flex items-center gap-4 p-4 rounded-3xl border transition-all text-left group ${isSelected
-                                                                ? 'border-paymint-green bg-paymint-green/5'
-                                                                : 'border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-black/10 hover:border-paymint-green/20'
+                                                                ? 'border-mintcom-green bg-mintcom-green/5'
+                                                                : 'border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-black/10 hover:border-mintcom-green/20'
                                                                 }`}
                                                         >
-                                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${isSelected ? 'bg-paymint-green text-black' : 'bg-white dark:bg-white/5 text-gray-400'}`}>
+                                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${isSelected ? 'bg-mintcom-green text-black' : 'bg-white dark:bg-white/5 text-gray-400'}`}>
                                                                 <Icon size={24} />
                                                             </div>
                                                             <div className="flex-1 min-w-0">
                                                                 <p className="text-[15px] font-sans font-bold text-gray-900 dark:text-white truncate">{est.name || est.establishmentName}</p>
                                                                 <p className="text-[11px] font-sans font-bold text-gray-400 tracking-wider uppercase mt-0.5">{est.type || t('owner.brands.location')}</p>
                                                             </div>
-                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-300 dark:border-white/10'}`}>
+                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green border-mintcom-green' : 'border-gray-300 dark:border-white/10'}`}>
                                                                 {isSelected && <Check size={14} className="text-black" strokeWidth={4} />}
                                                             </div>
                                                         </button>
@@ -944,9 +944,9 @@ export function OwnerBrandsPage() {
 
                                     {wizardStep === 3 && (
                                         <div className="space-y-6 py-2">
-                                            <div className="bg-paymint-green/5 border border-paymint-green/10 rounded-[1.5rem] p-5 flex gap-4">
-                                                <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center shrink-0">
-                                                    <Shield className="text-paymint-green" size={20} />
+                                            <div className="bg-mintcom-green/5 border border-mintcom-green/10 rounded-[1.5rem] p-5 flex gap-4">
+                                                <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center shrink-0">
+                                                    <Shield className="text-mintcom-green" size={20} />
                                                 </div>
                                                 <p className="text-[13px] font-sans font-medium text-gray-500 leading-relaxed">
                                                     {t('owner.brands.wizard.finalStepDesc')}
@@ -955,7 +955,7 @@ export function OwnerBrandsPage() {
 
                                             {loadingEmployees ? (
                                                 <div className="flex flex-col items-center justify-center py-12">
-                                                    <Loader2 className="animate-spin text-paymint-green mb-4" size={32} />
+                                                    <Loader2 className="animate-spin text-mintcom-green mb-4" size={32} />
                                                     <p className="text-[15px] font-sans font-bold text-gray-500">{t('owner.brands.wizard.scanningEmployees')}</p>
                                                 </div>
                                             ) : (
@@ -964,8 +964,8 @@ export function OwnerBrandsPage() {
                                                         <div key={group.establishmentId} className="space-y-4">
                                                             <div className="flex items-center justify-between sticky top-0 bg-white dark:bg-[#1E293B] z-10 py-2">
                                                                 <h4 className="text-[14px] font-sans font-bold text-gray-900 dark:text-white flex items-center gap-2.5">
-                                                                    <div className="w-8 h-8 rounded-lg bg-paymint-green/10 flex items-center justify-center">
-                                                                        <Store size={16} className="text-paymint-green" />
+                                                                    <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 flex items-center justify-center">
+                                                                        <Store size={16} className="text-mintcom-green" />
                                                                     </div>
                                                                     {group.establishmentName}
                                                                 </h4>
@@ -975,7 +975,7 @@ export function OwnerBrandsPage() {
                                                                         const allSelected = group.employees.every(e => selectedEmployees.includes(e.employeeId));
                                                                         selectAllFromEstablishment(group, !allSelected);
                                                                     }}
-                                                                    className="text-[12px] font-sans font-bold text-paymint-green hover:underline px-2 py-1"
+                                                                    className="text-[12px] font-sans font-bold text-mintcom-green hover:underline px-2 py-1"
                                                                 >
                                                                     {group.employees.every(e => selectedEmployees.includes(e.employeeId)) ? t('owner.brands.wizard.deselectAll') : t('owner.brands.wizard.selectAll')}
                                                                 </button>
@@ -990,11 +990,11 @@ export function OwnerBrandsPage() {
                                                                             type="button"
                                                                             onClick={() => toggleEmployee(emp.employeeId)}
                                                                             className={`w-full flex items-center gap-4 p-4 rounded-3xl border transition-all text-left ${isSelected
-                                                                                ? 'border-paymint-green bg-paymint-green/5'
-                                                                                : 'border-gray-50 dark:border-white/5 bg-white dark:bg-black/10 hover:border-paymint-green/20'
+                                                                                ? 'border-mintcom-green bg-mintcom-green/5'
+                                                                                : 'border-gray-50 dark:border-white/5 bg-white dark:bg-black/10 hover:border-mintcom-green/20'
                                                                                 }`}
                                                                         >
-                                                                            <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-[14px] font-sans font-bold transition-all ${isSelected ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-500'}`}>
+                                                                            <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-[14px] font-sans font-bold transition-all ${isSelected ? 'bg-mintcom-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-500'}`}>
                                                                                 {emp.firstName[0].toUpperCase()}{emp.lastName[0].toUpperCase()}
                                                                             </div>
                                                                             <div className="flex-1 min-w-0">
@@ -1003,7 +1003,7 @@ export function OwnerBrandsPage() {
                                                                                     {emp.role}
                                                                                 </span>
                                                                             </div>
-                                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-200 dark:border-white/10'}`}>
+                                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green border-mintcom-green' : 'border-gray-200 dark:border-white/10'}`}>
                                                                                 {isSelected && <Check size={14} className="text-black" strokeWidth={4} />}
                                                                             </div>
                                                                         </button>
@@ -1038,7 +1038,7 @@ export function OwnerBrandsPage() {
                                                 type="button"
                                                 onClick={wizardStep === 3 ? handleSubmit(onCreateBrand) : handleNextStep}
                                                 disabled={isCreating}
-                                                className="flex-1 py-4 rounded-xl bg-paymint-green text-black font-sans font-bold text-[15px] hover:bg-paymint-green/90 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-[0.98]"
+                                                className="flex-1 py-4 rounded-xl bg-mintcom-green text-black font-sans font-bold text-[15px] hover:bg-mintcom-green/90 transition-all shadow-lg shadow-mintcom-green/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-[0.98]"
                                             >
                                                 {isCreating ? (
                                                     <>
@@ -1079,7 +1079,7 @@ export function OwnerBrandsPage() {
             {createPortal(
                 <AnimatePresence>
                     {showDisclaimerModal && (
-                        <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-paymint-green selection:text-black">
+                        <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-mintcom-green selection:text-black">
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -1128,7 +1128,7 @@ export function OwnerBrandsPage() {
 
                                         <button
                                             onClick={() => setShowDisclaimerModal(false)}
-                                            className="w-full py-4 rounded-xl bg-paymint-green text-black font-sans font-bold text-sm tracking-tight hover:bg-paymint-green/90 transition-all shadow-lg shadow-paymint-green/20 active:scale-[0.98] mt-4"
+                                            className="w-full py-4 rounded-xl bg-mintcom-green text-black font-sans font-bold text-sm tracking-tight hover:bg-mintcom-green/90 transition-all shadow-lg shadow-mintcom-green/20 active:scale-[0.98] mt-4"
                                         >
                                             {t('owner.brands.disclaimerAction')}
                                         </button>

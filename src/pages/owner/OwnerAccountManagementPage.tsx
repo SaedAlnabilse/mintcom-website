@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -420,7 +420,7 @@ export function OwnerAccountManagementPage() {
         switch (status?.toUpperCase()) {
             case 'ACTIVE':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-paymint-green/ border border-paymint-green/ rounded-lg text-xs font-bold tracking-widest text-paymint-green">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-mintcom-green/ border border-mintcom-green/ rounded-lg text-xs font-bold tracking-widest text-mintcom-green">
                         <CheckCircle2 size={12} />
                         {t('common.status.active')}
                     </span>
@@ -496,7 +496,7 @@ export function OwnerAccountManagementPage() {
                 className="flex items-center justify-between"
             >
                 <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center shadow-lg shadow-paymint-green/20">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center shadow-lg shadow-mintcom-green/20">
                         <KeyRound className="w-7 h-7 text-black" />
                     </div>
                     <div>
@@ -586,12 +586,12 @@ export function OwnerAccountManagementPage() {
                         transition={{ delay: 0.1 }}
                         className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-6 shadow-sm transition-all duration-300 overflow-hidden"
                     >
-                        <div className="absolute top-0 right-0 w-40 h-40 bg-paymint-green/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-mintcom-green/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
-                                        <User className="w-5 h-5 text-paymint-green" />
+                                    <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center">
+                                        <User className="w-5 h-5 text-mintcom-green" />
                                     </div>
                                     <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Owner Account</h2>
                                 </div>
@@ -607,7 +607,7 @@ export function OwnerAccountManagementPage() {
                                             </button>
                                             <button
                                                 onClick={handleSaveProfile}
-                                                className="flex items-center gap-2 px-4 py-2 bg-paymint-green hover:bg-[#68B390] text-black rounded-xl text-sm font-bold transition-all disabled:opacity-70"
+                                                className="flex items-center gap-2 px-4 py-2 bg-mintcom-green hover:bg-[#5fa888] text-black rounded-xl text-sm font-bold transition-all disabled:opacity-70"
                                                 disabled={isSaving}
                                             >
                                                 {isSaving ? (
@@ -633,7 +633,7 @@ export function OwnerAccountManagementPage() {
                                             </button>
                                             <button
                                                 onClick={() => openPasswordModal('account')}
-                                                className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 hover:bg-paymint-green/20 text-paymint-green rounded-xl text-sm font-bold transition-all"
+                                                className="flex items-center gap-2 px-4 py-2 bg-mintcom-green/10 hover:bg-mintcom-green/20 text-mintcom-green rounded-xl text-sm font-bold transition-all"
                                             >
                                                 <Key size={16} />
                                                 Reset Password
@@ -656,14 +656,14 @@ export function OwnerAccountManagementPage() {
                                                 value={editForm.firstName}
                                                 onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
                                                 placeholder={formatInputPlaceholder(t('owner.account.firstName'), t('common.locale'))}
-                                                className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
+                                                className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/50"
                                             />
                                             <input maxLength={MAX_OWNER_PROFILE_NAME_LENGTH}
                                                 type="text"
                                                 value={editForm.lastName}
                                                 onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
                                                 placeholder={formatInputPlaceholder(t('owner.account.lastName'), t('common.locale'))}
-                                                className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
+                                                className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/50"
                                             />
                                         </div>
                                     ) : (
@@ -684,7 +684,7 @@ export function OwnerAccountManagementPage() {
                                             value={editForm.email}
                                             onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                                             placeholder={formatInputPlaceholder(t('owner.account.email'), t('common.locale'))}
-                                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
+                                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/50"
                                         />
                                     ) : (
                                         <div className="flex items-center gap-2">
@@ -692,7 +692,7 @@ export function OwnerAccountManagementPage() {
                                                 {accountDetails?.email}
                                             </p>
                                             {accountDetails?.emailVerified && (
-                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-paymint-green/ border border-paymint-green/ rounded-md text-xs font-bold tracking-widest text-paymint-green">
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-mintcom-green/ border border-mintcom-green/ rounded-md text-xs font-bold tracking-widest text-mintcom-green">
                                                     <Shield size={10} />
                                                     {t('owner.account.verified')}
                                                 </span>
@@ -717,11 +717,11 @@ export function OwnerAccountManagementPage() {
                                 <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/[0.05]">
                                     <div className="flex items-center justify-between mb-2">
                                         <span className="label-strong">Profile Completion</span>
-                                        <span className="text-sm font-bold text-paymint-green">{profileCompletion}%</span>
+                                        <span className="text-sm font-bold text-mintcom-green">{profileCompletion}%</span>
                                     </div>
                                     <div className="h-2 bg-gray-100 dark:bg-white/[0.05] rounded-full overflow-hidden">
                                         <div
-                                            className="h-full bg-gradient-to-r from-paymint-green to-emerald-500 rounded-full transition-all duration-500"
+                                            className="h-full bg-gradient-to-r from-mintcom-green to-emerald-500 rounded-full transition-all duration-500"
                                             style={{ width: `${profileCompletion}%` }}
                                         />
                                     </div>
@@ -822,7 +822,7 @@ export function OwnerAccountManagementPage() {
                                                                 className="text-xs font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1"
                                                             >
                                                                 {copiedId === `est-login-${est.id}` ? (
-                                                                    <span className="flex items-center gap-1 text-paymint-green"><CheckCircle2 size={10} /> {t('common.copied')}</span>
+                                                                    <span className="flex items-center gap-1 text-mintcom-green"><CheckCircle2 size={10} /> {t('common.copied')}</span>
                                                                 ) : (
                                                                     <span className="flex items-center gap-1"><Copy size={10} /> {t('common.copy')}</span>
                                                                 )}
@@ -909,7 +909,7 @@ export function OwnerAccountManagementPage() {
                                                                     {t('owner.account.locationsCount', { count })}
                                                                 </span>
                                                                 <span className="text-gray-300 dark:text-gray-600">&bull;</span>
-                                                                <span className={`font-bold ${brand.isActive ? 'text-paymint-green' : 'text-gray-400'}`}>
+                                                                <span className={`font-bold ${brand.isActive ? 'text-mintcom-green' : 'text-gray-400'}`}>
                                                                     {brand.isActive ? t('common.status.active') : t('common.status.inactive')}
                                                                 </span>
                                                                 <span className="text-gray-300 dark:text-gray-600">&bull;</span>
@@ -947,7 +947,7 @@ export function OwnerAccountManagementPage() {
                                                             className="text-xs font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1"
                                                         >
                                                             {copiedId === `brand-${brand.id}` ? (
-                                                                <span className="flex items-center gap-1 text-paymint-green"><CheckCircle2 size={10} /> {t('common.copied')}</span>
+                                                                <span className="flex items-center gap-1 text-mintcom-green"><CheckCircle2 size={10} /> {t('common.copied')}</span>
                                                             ) : (
                                                                 <span className="flex items-center gap-1"><Copy size={10} /> {t('common.copy')}</span>
                                                             )}
@@ -1041,8 +1041,8 @@ export function OwnerAccountManagementPage() {
                             <div className="space-y-3">
                                 {/* User Manual */}
                                 <a
-                                    href="/docs/paymint-user-manual.pdf"
-                                    download="Paymint_User_Manual.pdf"
+                                    href="/docs/mintcom-user-manual.pdf"
+                                    download="Mintcom_User_Manual.pdf"
                                     className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
@@ -1057,8 +1057,8 @@ export function OwnerAccountManagementPage() {
 
                                 {/* Setup Manual */}
                                 <a
-                                    href="/docs/paymint-setup-manual.pdf"
-                                    download="Paymint_Setup_Manual.pdf"
+                                    href="/docs/mintcom-setup-manual.pdf"
+                                    download="Mintcom_Setup_Manual.pdf"
                                     className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
@@ -1113,13 +1113,13 @@ export function OwnerAccountManagementPage() {
                                     className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
-                                        <Shield size={20} className="text-paymint-green group-hover/item:scale-110 transition-transform" />
+                                        <Shield size={20} className="text-mintcom-green group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
                                         <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.privacyPolicy.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.privacyPolicy.desc')}</p>
                                     </div>
-                                    <ExternalLink size={16} className="text-gray-400 group-hover/item:text-paymint-green transition-colors" />
+                                    <ExternalLink size={16} className="text-gray-400 group-hover/item:text-mintcom-green transition-colors" />
                                 </a>
 
                                 {/* Terms of Use */}
@@ -1147,13 +1147,13 @@ export function OwnerAccountManagementPage() {
                                     className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
-                                        <Info size={20} className="text-paymint-green group-hover/item:scale-110 transition-transform" />
+                                        <Info size={20} className="text-mintcom-green group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
                                         <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.aboutUs.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.aboutUs.desc')}</p>
                                     </div>
-                                    <ExternalLink size={16} className="text-gray-400 group-hover/item:text-paymint-green transition-colors" />
+                                    <ExternalLink size={16} className="text-gray-400 group-hover/item:text-mintcom-green transition-colors" />
                                 </a>
                             </div>
                         </div>
@@ -1169,26 +1169,26 @@ export function OwnerAccountManagementPage() {
                         transition={{ delay: 0.25 }}
                         className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-6 shadow-sm transition-all duration-300 overflow-hidden"
                     >
-                        <div className="absolute top-0 right-0 w-40 h-40 bg-paymint-green/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-mintcom-green/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                         <div className="relative z-10">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 rounded-xl bg-paymint-green/20 flex items-center justify-center">
-                                    <Info className="w-5 h-5 text-paymint-green" />
+                                <div className="w-10 h-10 rounded-xl bg-mintcom-green/20 flex items-center justify-center">
+                                    <Info className="w-5 h-5 text-mintcom-green" />
                                 </div>
                                 <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.securityTips.title')}</h2>
                             </div>
 
                             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
                                 <li className="flex items-start gap-2">
-                                    <CheckCircle2 size={16} className="text-paymint-green mt-0.5 shrink-0" />
+                                    <CheckCircle2 size={16} className="text-mintcom-green mt-0.5 shrink-0" />
                                     <span>{t('owner.account.securityTips.uniquePasswords')}</span>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                    <CheckCircle2 size={16} className="text-paymint-green mt-0.5 shrink-0" />
+                                    <CheckCircle2 size={16} className="text-mintcom-green mt-0.5 shrink-0" />
                                     <span>{t('owner.account.securityTips.updatePeriodically')}</span>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                    <CheckCircle2 size={16} className="text-paymint-green mt-0.5 shrink-0" />
+                                    <CheckCircle2 size={16} className="text-mintcom-green mt-0.5 shrink-0" />
                                     <span>{t('owner.account.securityTips.neverShareOtp')}</span>
                                 </li>
                             </ul>
@@ -1200,14 +1200,14 @@ export function OwnerAccountManagementPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className={`relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm transition-all duration-300 overflow-hidden ${accountDetails?.deletionRequestedAt ? 'border-paymint-green/20' : 'border-red-500/20'}`}
+                        className={`relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm transition-all duration-300 overflow-hidden ${accountDetails?.deletionRequestedAt ? 'border-mintcom-green/20' : 'border-red-500/20'}`}
                     >
-                        <div className={`absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${accountDetails?.deletionRequestedAt ? 'bg-paymint-green/10' : 'bg-red-500/10'}`} />
+                        <div className={`absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${accountDetails?.deletionRequestedAt ? 'bg-mintcom-green/10' : 'bg-red-500/10'}`} />
                         <div className="relative z-10">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className={`w-10 h-10 rounded-xl ${accountDetails?.deletionRequestedAt ? 'bg-paymint-green/10' : 'bg-red-500/10'} flex items-center justify-center`}>
+                                <div className={`w-10 h-10 rounded-xl ${accountDetails?.deletionRequestedAt ? 'bg-mintcom-green/10' : 'bg-red-500/10'} flex items-center justify-center`}>
                                     {accountDetails?.deletionRequestedAt ? (
-                                        <div className="w-5 h-5 border-2 border-paymint-green/30 border-t-paymint-green rounded-full" />
+                                        <div className="w-5 h-5 border-2 border-mintcom-green/30 border-t-mintcom-green rounded-full" />
                                     ) : (
                                         <AlertCircle className="w-5 h-5 text-red-500" />
                                     )}
@@ -1227,7 +1227,7 @@ export function OwnerAccountManagementPage() {
                                 <button
                                     onClick={handleRestoreAccount}
                                     disabled={isRestoring}
-                                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-paymint-green hover:bg-[#68B390] text-black rounded-xl text-sm font-black transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-70"
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-mintcom-green hover:bg-[#5fa888] text-black rounded-xl text-sm font-black transition-all shadow-lg shadow-mintcom-green/20 disabled:opacity-70"
                                 >
                                     {isRestoring ? (
                                         <>
@@ -1334,7 +1334,7 @@ export function OwnerAccountManagementPage() {
                                             key={reason}
                                             onClick={() => setDeleteReason(reason)}
                                             className={`w-full text-left px-4 py-3 rounded-xl border transition-all text-sm font-medium ${deleteReason === reason
-                                                ? 'bg-paymint-green/10 border-paymint-green text-paymint-green'
+                                                ? 'bg-mintcom-green/10 border-mintcom-green text-mintcom-green'
                                                 : 'bg-gray-50 dark:bg-white/[0.02] border-gray-100 dark:border-white/[0.05] text-gray-600 dark:text-gray-400 hover:border-gray-300'
                                                 }`}
                                         >
@@ -1480,7 +1480,7 @@ export function OwnerAccountManagementPage() {
                                 <div className="flex flex-col gap-3">
                                     <button
                                         onClick={() => navigate('/owner/billing')}
-                                        className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-paymint-green hover:bg-[#68B390] text-black rounded-2xl text-sm font-black transition-all shadow-lg shadow-paymint-green/20"
+                                        className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-mintcom-green hover:bg-[#5fa888] text-black rounded-2xl text-sm font-black transition-all shadow-lg shadow-mintcom-green/20"
                                     >
                                         <CreditCard size={18} />
                                         {t('owner.account.activeEstBlockModal.goToBilling')}

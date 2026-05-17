@@ -54,7 +54,7 @@ const statusTone: Record<string, string> = {
   NEW: 'bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300',
   REVIEWING: 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300',
   PLANNED: 'bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-300',
-  DONE: 'bg-paymint-green/10 text-green-700 dark:text-paymint-green',
+  DONE: 'bg-mintcom-green/10 text-green-700 dark:text-mintcom-green',
   ARCHIVED: 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300',
 };
 
@@ -151,7 +151,7 @@ export const SupportFeedbackPage = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <Link to="/support/admin" className="mb-4 inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-paymint-green dark:text-gray-400">
+              <Link to="/support/admin" className="mb-4 inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-mintcom-green dark:text-gray-400">
                 <ArrowLeft size={16} />
                 Back to tickets
               </Link>
@@ -177,7 +177,7 @@ export const SupportFeedbackPage = () => {
               { label: 'Total feedback', value: stats.total, icon: MessageSquare, tone: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' },
               { label: 'Average rating', value: stats.averageRating.toFixed(1), icon: Star, tone: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
               { label: 'Low ratings', value: stats.lowRatingCount, icon: BarChart3, tone: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
-              { label: topCategory ? `Top: ${topCategory.category}` : 'Top area', value: topCategory?.count || 0, icon: CheckCircle2, tone: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+              { label: topCategory ? `Top: ${topCategory.category}` : 'Top area', value: topCategory?.count || 0, icon: CheckCircle2, tone: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
             ].map((item) => (
               <div key={item.label} className="rounded-2xl border border-gray-100 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
                 <div className="flex items-center gap-3">
@@ -205,7 +205,7 @@ export const SupportFeedbackPage = () => {
                     if (e.key === 'Enter') fetchFeedback();
                   }}
                   placeholder={formatInputPlaceholder('Search comments, area, route, name, or email...', 'en')}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-11 text-sm font-bold text-gray-700 outline-none transition-colors focus:border-paymint-green/50 focus:ring-2 focus:ring-paymint-green/20 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-11 text-sm font-bold text-gray-700 outline-none transition-colors focus:border-mintcom-green/50 focus:ring-2 focus:ring-mintcom-green/20 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
                 />
                 {searchQuery && (
                   <button
@@ -226,7 +226,7 @@ export const SupportFeedbackPage = () => {
               </button>
               <button
                 onClick={fetchFeedback}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-paymint-green px-5 py-3 text-sm font-black text-black transition-opacity hover:opacity-90"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-mintcom-green px-5 py-3 text-sm font-black text-black transition-opacity hover:opacity-90"
               >
                 Apply
               </button>
@@ -278,7 +278,7 @@ export const SupportFeedbackPage = () => {
                         <span>{item.userName || 'Anonymous'}</span>
                         {item.userEmail && <span>{item.userEmail}</span>}
                         {item.route && <span>{item.route}</span>}
-                        {item.contactConsent && <span className="font-bold text-paymint-green">Contact allowed</span>}
+                        {item.contactConsent && <span className="font-bold text-mintcom-green">Contact allowed</span>}
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2 lg:w-80 lg:justify-end">
@@ -286,7 +286,7 @@ export const SupportFeedbackPage = () => {
                         <button
                           key={status}
                           onClick={() => updateFeedback(item, status)}
-                          className="rounded-lg bg-gray-100 px-3 py-2 text-xs font-black text-gray-600 transition-colors hover:bg-paymint-green/20 dark:bg-white/10 dark:text-gray-300"
+                          className="rounded-lg bg-gray-100 px-3 py-2 text-xs font-black text-gray-600 transition-colors hover:bg-mintcom-green/20 dark:bg-white/10 dark:text-gray-300"
                         >
                           {status.replace('_', ' ').toLowerCase()}
                         </button>

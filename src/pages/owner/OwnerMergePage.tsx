@@ -60,18 +60,18 @@ export function OwnerMergePage() {
         <div className="space-y-10 pb-20 max-w-5xl">
             {/* Ultra Premium Header */}
             <div className="relative overflow-hidden rounded-[4rem] bg-white dark:bg-[#1E293B] p-12 border border-gray-200 dark:border-white/5 shadow-2xl shadow-gray-200/50 dark:shadow-none">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-paymint-green/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-mintcom-green/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-12">
                     <div className="space-y-6">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-paymint-green/10 border border-paymint-green/20">
-                            <GitMerge size={14} className="text-paymint-green" />
-                            <span className="text-xs font-black text-paymint-green tracking-[0.2em]">{t('owner.merge.newBrandBadge')}</span>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-mintcom-green/10 border border-mintcom-green/20">
+                            <GitMerge size={14} className="text-mintcom-green" />
+                            <span className="text-xs font-black text-mintcom-green tracking-[0.2em]">{t('owner.merge.newBrandBadge')}</span>
                         </div>
 
                         <div>
                             <h1 className="text-5xl xl:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">
-                                {t('owner.merge.create')} <span className="text-paymint-green">{t('owner.merge.brand')}</span>
+                                {t('owner.merge.create')} <span className="text-mintcom-green">{t('owner.merge.brand')}</span>
                             </h1>
                             <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 max-w-xl">
                                 {t('owner.merge.subtitle')}
@@ -99,13 +99,13 @@ export function OwnerMergePage() {
                         <div className={`
                             w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm transition-all duration-500
                             ${step === s.id
-                                ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20 scale-110'
+                                ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20 scale-110'
                                 : 'bg-white dark:bg-[#1E293B] text-gray-400 border border-gray-100 dark:border-white/5'}
                         `}>
                             {idx + 1}
                         </div>
                         <div className="flex flex-col">
-                            <span className={`text-xs tracking-[0.2em] font-black ${step === s.id ? 'text-paymint-green' : 'text-gray-400'}`}>
+                            <span className={`text-xs tracking-[0.2em] font-black ${step === s.id ? 'text-mintcom-green' : 'text-gray-400'}`}>
                                 {s.label}
                             </span>
                         </div>
@@ -126,7 +126,7 @@ export function OwnerMergePage() {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                             <div className="lg:col-span-2 space-y-6">
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight px-2 flex items-center gap-3">
-                                    <Store className="text-paymint-green" size={20} /> {t('owner.merge.availableLocations')}
+                                    <Store className="text-mintcom-green" size={20} /> {t('owner.merge.availableLocations')}
                                 </h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -141,14 +141,14 @@ export function OwnerMergePage() {
                                                 className={`
                                                     p-6 rounded-[2.5rem] bg-white dark:bg-[#1E293B] border-2 cursor-pointer transition-all relative overflow-hidden group
                                                     ${isSelected
-                                                        ? 'border-paymint-green bg-paymint-green/[0.02] shadow-xl shadow-paymint-green/5'
+                                                        ? 'border-mintcom-green bg-mintcom-green/[0.02] shadow-xl shadow-mintcom-green/5'
                                                         : 'border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10'}
                                                 `}
                                             >
                                                 <div className="flex items-center gap-4 relative z-10">
                                                     <div className={`
                                                         w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500
-                                                        ${isSelected ? 'bg-paymint-green text-black' : 'bg-gray-50 dark:bg-white/5 text-gray-400'}
+                                                        ${isSelected ? 'bg-mintcom-green text-black' : 'bg-gray-50 dark:bg-white/5 text-gray-400'}
                                                     `}>
                                                         <Store size={24} />
                                                     </div>
@@ -160,13 +160,13 @@ export function OwnerMergePage() {
                                                     </div>
                                                     <div className={`
                                                         w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all
-                                                        ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-200 dark:border-white/10'}
+                                                        ${isSelected ? 'bg-mintcom-green border-mintcom-green' : 'border-gray-200 dark:border-white/10'}
                                                     `}>
                                                         {isSelected && <Check size={16} className="text-black" />}
                                                     </div>
                                                 </div>
                                                 {isSelected && (
-                                                    <div className="absolute top-[-20%] right-[-20%] w-[40%] h-[40%] bg-paymint-green/10 rounded-full blur-2xl transition-all" />
+                                                    <div className="absolute top-[-20%] right-[-20%] w-[40%] h-[40%] bg-mintcom-green/10 rounded-full blur-2xl transition-all" />
                                                 )}
                                             </motion.div>
                                         );
@@ -193,7 +193,7 @@ export function OwnerMergePage() {
                                         <div className="space-y-2">
                                             <p className="label-strong font-outfit leading-none">{t('common.status.title')}</p>
                                             <div className="flex items-center gap-2">
-                                                <div className={`w-2 h-2 rounded-full ${selectedEstablishments.length >= 2 ? 'bg-paymint-green' : 'bg-paymint-red'} animate-pulse`} />
+                                                <div className={`w-2 h-2 rounded-full ${selectedEstablishments.length >= 2 ? 'bg-mintcom-green' : 'bg-mintcom-red'} animate-pulse`} />
                                                 <span className="text-xs font-black text-gray-900 dark:text-white">
                                                     {selectedEstablishments.length < 2
                                                         ? t('owner.merge.selectMore', { count: 2 - selectedEstablishments.length })
@@ -205,7 +205,7 @@ export function OwnerMergePage() {
                                         <button
                                             onClick={handleContinue}
                                             disabled={selectedEstablishments.length < 2}
-                                            className="w-full py-5 bg-paymint-green text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-xl shadow-paymint-green/20 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
+                                            className="w-full py-5 bg-mintcom-green text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-xl shadow-mintcom-green/20 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
                                         >
                                             {t('owner.merge.nextStep', { count: selectedEstablishments.length })}
                                         </button>
@@ -232,7 +232,7 @@ export function OwnerMergePage() {
                             <div className="space-y-2">
                                 <label className="text-xs font-normal text-gray-400 tracking-[0.2em] px-2 block">{formatInputLabel(t('owner.merge.brandName'), t('common.locale'))}</label>
                                 <div className="relative group">
-                                    <div className="absolute inset-y-0 left-6 flex items-center text-gray-400 group-hover:text-paymint-green transition-colors">
+                                    <div className="absolute inset-y-0 left-6 flex items-center text-gray-400 group-hover:text-mintcom-green transition-colors">
                                         <Building2 size={20} />
                                     </div>
                                     <input maxLength={255}
@@ -240,7 +240,7 @@ export function OwnerMergePage() {
                                         value={brandName}
                                         onChange={(e) => setBrandName(e.target.value)}
                                         placeholder={formatInputPlaceholder(t('owner.merge.brandNamePlaceholder'), t('common.locale'))}
-                                        className="w-full pl-16 pr-8 py-6 bg-gray-50 dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-3xl font-black text-lg text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/30 transition-all tracking-tight"
+                                        className="w-full pl-16 pr-8 py-6 bg-gray-50 dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-3xl font-black text-lg text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-mintcom-green/10 focus:border-mintcom-green/30 transition-all tracking-tight"
                                     />
                                 </div>
                             </div>
@@ -281,9 +281,9 @@ export function OwnerMergePage() {
                             <div className="flex flex-wrap gap-2">
                                 {selectedEstInfo.map((est) => (
                                     <div key={est.id} className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-xl shadow-sm group">
-                                        <Store size={14} className="text-paymint-green" />
+                                        <Store size={14} className="text-mintcom-green" />
                                         <span className="text-xs font-black text-gray-900 dark:text-white tracking-tight">{est.name}</span>
-                                        <button onClick={() => toggleEstablishment(est.id)} className="text-gray-300 hover:text-paymint-red transition-colors ml-2">
+                                        <button onClick={() => toggleEstablishment(est.id)} className="text-gray-300 hover:text-mintcom-red transition-colors ml-2">
                                             <X size={12} />
                                         </button>
                                     </div>

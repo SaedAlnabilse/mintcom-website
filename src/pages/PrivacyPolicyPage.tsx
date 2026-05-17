@@ -24,8 +24,8 @@ export const PrivacyPolicyPage = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        <div className="w-16 h-16 rounded-2xl bg-paymint-green/10 flex items-center justify-center mx-auto mb-6">
-                            <Shield className="w-8 h-8 text-paymint-green" />
+                        <div className="w-16 h-16 rounded-2xl bg-mintcom-green/10 flex items-center justify-center mx-auto mb-6">
+                            <Shield className="w-8 h-8 text-mintcom-green" />
                         </div>
                         <h1 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('legal.privacy.title')}</h1>
                         <p className="label-strong font-outfit">
@@ -52,7 +52,7 @@ export const PrivacyPolicyPage = () => {
                             <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s1')}</h2>
                             <p className="text-sm font-medium mb-4">{t('legal.privacy.sections.s1_desc')}</p>
 
-                            <div className={`mb-6 ${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-paymint-green/20`}>
+                            <div className={`mb-6 ${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-mintcom-green/20`}>
                                 <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_1')}</h3>
                                 <p className="text-sm font-medium mb-2">{t('legal.privacy.sections.s1_1_desc')}:</p>
                                 <ul className="list-disc pr-5 pl-5 space-y-1 text-sm font-medium">
@@ -64,7 +64,7 @@ export const PrivacyPolicyPage = () => {
                                 </ul>
                             </div>
 
-                            <div className={`mb-6 ${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-paymint-green/20`}>
+                            <div className={`mb-6 ${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-mintcom-green/20`}>
                                 <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_2')}</h3>
                                 <p className="text-sm font-medium mb-2">{t('legal.privacy.sections.s1_2_desc')}:</p>
                                 <ul className="list-disc pr-5 pl-5 space-y-1 text-sm font-medium mb-4">
@@ -72,14 +72,14 @@ export const PrivacyPolicyPage = () => {
                                     <li>{t('legal.privacy.fields.billingAddress')}</li>
                                     <li>{t('legal.privacy.fields.transactionIds')}</li>
                                 </ul>
-                                <div className="bg-paymint-green/5 p-4 rounded-xl border border-paymint-green/20">
+                                <div className="bg-mintcom-green/5 p-4 rounded-xl border border-mintcom-green/20">
                                     <p className="text-xs font-bold text-gray-500">
-                                        <span className="text-paymint-green font-black">{t('common.note')}:</span> {t('legal.privacy.sections.s1_2_note')}
+                                        <span className="text-mintcom-green font-black">{t('common.note')}:</span> {t('legal.privacy.sections.s1_2_note')}
                                     </p>
                                 </div>
                             </div>
 
-                            <div className={`mb-6 ${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-paymint-green/20`}>
+                            <div className={`mb-6 ${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-mintcom-green/20`}>
                                 <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_3')}</h3>
                                 <p className="text-sm font-medium mb-2">{t('legal.privacy.sections.s1_3_desc')}:</p>
                                 <ul className="list-disc pr-5 pl-5 space-y-1 text-sm font-medium">
@@ -91,7 +91,7 @@ export const PrivacyPolicyPage = () => {
                                 </ul>
                             </div>
 
-                            <div className={`${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-paymint-green/20`}>
+                            <div className={`${t('common.locale') === 'ar' ? 'pr-4 border-r-2' : 'pl-4 border-l-2'} border-mintcom-green/20`}>
                                 <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-3">{t('legal.privacy.sections.s1_4')}</h3>
                                 <p className="text-sm font-medium mb-2">{t('legal.privacy.sections.s1_4_desc')}:</p>
                                 <ul className="list-disc pr-5 pl-5 space-y-1 text-sm font-medium">
@@ -183,7 +183,7 @@ export const PrivacyPolicyPage = () => {
                                 <li>{t('legal.privacy.rights.ri4')}</li>
                             </ul>
                             <p className="text-sm font-medium">
-                                {t('legal.privacy.rights.contact')} <a href="mailto:privacy@paymintpos.net" className="text-paymint-green hover:underline font-bold">privacy@paymintpos.net</a>
+                                {t('legal.privacy.rights.contact')} <a href="mailto:info@mintcompos.com" className="text-mintcom-green hover:underline font-bold">info@mintcompos.com</a>
                             </p>
                         </section>
 
@@ -231,15 +231,15 @@ export const PrivacyPolicyPage = () => {
                             </p>
                             <div className="space-y-2">
                                 <div className="flex items-center gap-3 text-sm font-bold text-gray-600 dark:text-gray-300">
-                                    <span className="text-gray-900 dark:text-white">PayMint LLC</span>
+                                    <span className="text-gray-900 dark:text-white">Mintcom LLC</span>
                                 </div>
                                 <div className="flex items-center gap-3 text-sm font-medium text-gray-600 dark:text-gray-300">
                                     <span className={t('common.locale') === 'ar' ? 'ml-2' : 'w-20'}>{t('common.email')}:</span>
-                                    <a href="mailto:privacy@paymintpos.net" className="text-paymint-green hover:underline">privacy@paymintpos.net</a>
+                                    <a href="mailto:info@mintcompos.com" className="text-mintcom-green hover:underline">info@mintcompos.com</a>
                                 </div>
                                 <div className="flex items-center gap-3 text-sm font-medium text-gray-600 dark:text-gray-300">
                                     <span className={t('common.locale') === 'ar' ? 'ml-2' : 'w-20'}>{t('common.website')}:</span>
-                                    <a href="https://paymintpos.net" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">paymintpos.net</a>
+                                    <a href="https://mintcompos.com" target="_blank" rel="noopener noreferrer" className="text-mintcom-green hover:underline">mintcompos.com</a>
                                 </div>
                             </div>
                         </section>

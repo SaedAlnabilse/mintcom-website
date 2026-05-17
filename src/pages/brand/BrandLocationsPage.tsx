@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -293,7 +293,7 @@ export function BrandLocationsPage() {
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'ACTIVE':
-                return 'bg-paymint-green/ text-paymint-green border-paymint-green/';
+                return 'bg-mintcom-green/ text-mintcom-green border-mintcom-green/';
             case 'INACTIVE':
                 return 'bg-red-500/10 text-red-500 border-red-500/20';
             case 'TRIAL':
@@ -334,7 +334,7 @@ export function BrandLocationsPage() {
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('brand.dashboard.manageLocationsDesc')}</span>
                         {brandName && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                                 {brandName}
                             </span>
                         )}
@@ -344,7 +344,7 @@ export function BrandLocationsPage() {
                 <div className="flex items-center gap-3 relative z-50">
                     <div className="bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">
-                            <div className={`flex-none w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'border-transparent'}`}>
+                            <div className={`flex-none w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-mintcom-green/5 border-mintcom-green ring-1 ring-mintcom-green shadow-lg shadow-mintcom-green/10' : 'border-transparent'}`}>
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
                                     onChange={(val) => setQuickDate(val as DateRangePreset || 'today')}
@@ -352,7 +352,7 @@ export function BrandLocationsPage() {
                                     showAllOption={false}
                                     placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                                     className="w-full"
-                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
+                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-mintcom-green' : ''}`}
                                 />
                             </div>
 
@@ -382,8 +382,8 @@ export function BrandLocationsPage() {
 
                                         <div className="flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]">
                                             <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
-                                                ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
-                                                : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-paymint-green/50'
+                                                ? 'bg-mintcom-green/5 border-mintcom-green ring-2 ring-mintcom-green shadow-lg shadow-mintcom-green/10'
+                                                : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-mintcom-green/50'
                                                 }`}>
                                                 <div className="flex items-center gap-2 justify-between relative">
                                                     <CustomTimePicker
@@ -393,7 +393,7 @@ export function BrandLocationsPage() {
                                                         showIcon={true}
                                                         isActive={isTimeFiltered}
                                                     />
-                                                    <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? 'text-[#7CC39F]/50' : 'text-gray-300 dark:text-white/10'}`}>-</span>
+                                                    <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? 'text-[#7dc6a2]/50' : 'text-gray-300 dark:text-white/10'}`}>-</span>
                                                     <CustomTimePicker
                                                         value={endTime}
                                                         onChange={(val) => { setEndTime(val); }}
@@ -418,7 +418,7 @@ export function BrandLocationsPage() {
             <div className={`grid grid-cols-2 lg:grid-cols-5 gap-4 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
                 {[
                     { label: t('owner.locations.total'), value: stats.totalLocations, icon: Store, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: t('owner.locations.active'), value: stats.activeLocations, icon: Activity, color: 'text-paymint-green', bg: 'bg-paymint-green/' },
+                    { label: t('owner.locations.active'), value: stats.activeLocations, icon: Activity, color: 'text-mintcom-green', bg: 'bg-mintcom-green/' },
                     { label: t('brand.dashboard.totalRevenue'), value: formatCurrency(stats.totalRevenue), icon: DollarSign, color: 'text-purple-500', bg: 'bg-purple-500/10' },
                     { label: t('owner.menu.employees'), value: stats.totalEmployees, icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                     { label: t('brand.dashboard.orders'), value: stats.totalOrders.toLocaleString(), icon: ShoppingBag, color: 'text-pink-500', bg: 'bg-pink-500/10' },
@@ -447,7 +447,7 @@ export function BrandLocationsPage() {
                     {/* Add Location Button */}
                     <button
                         onClick={() => setIsLinkModalOpen(true)}
-                        className="flex items-center gap-2 px-6 rounded-2xl bg-paymint-green text-black font-black text-xs tracking-widest hover:bg-[#68B390] transition-all shadow-sm active:scale-95 h-[52px] flex-shrink-0 w-full lg:w-auto justify-center"
+                        className="flex items-center gap-2 px-6 rounded-2xl bg-mintcom-green text-black font-black text-xs tracking-widest hover:bg-[#5fa888] transition-all shadow-sm active:scale-95 h-[52px] flex-shrink-0 w-full lg:w-auto justify-center"
                     >
                         <Plus size={20} strokeWidth={3} />
                         <span>{t('owner.overview.addLocation')}</span>
@@ -525,7 +525,7 @@ export function BrandLocationsPage() {
                         {hasFilters && (
                             <button
                                 onClick={clearFilters}
-                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-bold tracking-wide hover:bg-paymint-red/20 transition-all"
+                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-mintcom-red/10 text-mintcom-red text-xs font-bold tracking-wide hover:bg-mintcom-red/20 transition-all"
                             >
                                 <X size={14} />
                                 {t('attributes.filters.reset')}
@@ -558,7 +558,7 @@ export function BrandLocationsPage() {
                         )}
                         <button
                             onClick={() => setIsLinkModalOpen(true)}
-                            className="px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-[#68B390] transition-all flex items-center gap-2"
+                            className="px-6 py-2 rounded-xl bg-mintcom-green text-black text-sm font-bold hover:bg-[#5fa888] transition-all flex items-center gap-2"
                         >
                             <Plus size={16} />
                             {t('owner.overview.addLocation')}
@@ -592,11 +592,11 @@ export function BrandLocationsPage() {
                                     >
                                         {/* Location Info */}
                                         <div className="col-span-3 flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
+                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-mintcom-green transition-colors">
                                                 <Icon size={20} />
                                             </div>
                                             <div className="min-w-0">
-                                                <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate" title={loc.name}>
+                                                <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors truncate" title={loc.name}>
                                                     {loc.name}
                                                 </h3>
                                                 <p className="text-xs text-gray-500 mt-0.5 truncate">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : t('onboarding.step1.businessTypes.restaurant')} - {loc.currency ? loc.currency.toUpperCase() : 'USD'}</p>
@@ -606,7 +606,7 @@ export function BrandLocationsPage() {
                                         {/* Status */}
                                         <div className="col-span-2 flex items-center justify-center">
                                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(loc.subscriptionStatus)}`}>
-                                                <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
+                                                <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-mintcom-green' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                                 {loc.subscriptionStatus === 'ACTIVE' ? t('common.active') :
                                                  loc.subscriptionStatus === 'INACTIVE' ? t('paymentMethods.messages.notActive') :
                                                  loc.subscriptionStatus === 'TRIAL' ? t('owner.locations.trial') :

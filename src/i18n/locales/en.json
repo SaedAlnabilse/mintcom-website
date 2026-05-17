@@ -1,33 +1,33 @@
-﻿{
+{
   "about": {
     "intro": {
-      "p1": "PayMint LLC is a technology solutions company specializing in Point of Sale (POS) systems and digital business management platforms. Our products are designed to simplify daily operations, from fast, reliable sales processing on digital devices to automated management tools that give businesses full operational visibility.",
-      "p2": "At the core of PayMint is one clear goal: to give business owners accurate, real-time access to their data while enabling faster, smoother checkout experiences for their customers.",
-      "p3": "The PayMint app is available on both iOS and Android and can be downloaded for free. Businesses can create a PayMint account and complete setup directly through the POS app or via the online management dashboard.",
-      "p4": "PayMint also supports multi-branch operations. Owners and account managers can add, merge, or separate establishments as needed, all from a single universal dashboard. This allows centralized control over sales, staff, products, and performance across multiple locations, with discounted pricing for additional branches."
+      "p1": "Mintcom LLC is a technology solutions company specializing in Point of Sale (POS) systems and digital business management platforms. Our products are designed to simplify daily operations, from fast, reliable sales processing on digital devices to automated management tools that give businesses full operational visibility.",
+      "p2": "At the core of Mintcom is one clear goal: to give business owners accurate, real-time access to their data while enabling faster, smoother checkout experiences for their customers.",
+      "p3": "The Mintcom app is available on both iOS and Android and can be downloaded for free. Businesses can create a Mintcom account and complete setup directly through the POS app or via the online management dashboard.",
+      "p4": "Mintcom also supports multi-branch operations. Owners and account managers can add, merge, or separate establishments as needed, all from a single universal dashboard. This allows centralized control over sales, staff, products, and performance across multiple locations, with discounted pricing for additional branches."
     },
     "story": {
-      "description": "PayMint was founded with a mission to simplify business operations for merchants everywhere.",
-      "p1": "PayMint LLC is a Jordanian company operating globally. The platform officially launched in 2025, built on insights gathered from years of research into the POS and retail technology space.",
-      "p2": "Development spanned more than three years, with a strong focus on security, performance, and scalability. Every feature was designed to meet real-world business needs and compete confidently with leading global POS solutions. Today, PayMint stands as a modern, secure, and scalable system built to support businesses of all sizes, anywhere in the world.",
+      "description": "Mintcom was founded with a mission to simplify business operations for merchants everywhere.",
+      "p1": "Mintcom LLC is a Jordanian company operating globally. The platform officially launched in 2025, built on insights gathered from years of research into the POS and retail technology space.",
+      "p2": "Development spanned more than three years, with a strong focus on security, performance, and scalability. Every feature was designed to meet real-world business needs and compete confidently with leading global POS solutions. Today, Mintcom stands as a modern, secure, and scalable system built to support businesses of all sizes, anywhere in the world.",
       "title": "Our Story"
     },
-    "title": "About PayMint",
+    "title": "About Mintcom",
     "values": {
       "performance": "Performance",
       "simplicity": "Simplicity",
       "title": "Our Value Proposition",
       "transparency": "Transparency",
       "v1": {
-        "description": "PayMint offers one of the most competitive POS solutions in the market when considering the full range of included services. Our pricing is transparent, with no hidden fees or unexpected costs, just a complete, all-in-one system at an accessible monthly rate.",
+        "description": "Mintcom offers one of the most competitive POS solutions in the market when considering the full range of included services. Our pricing is transparent, with no hidden fees or unexpected costs, just a complete, all-in-one system at an accessible monthly rate.",
         "title": "Affordable. Transparent. Complete."
       },
       "v2": {
-        "description": "We developed PayMint in close collaboration with business owners and frontline staff. The result is an intuitive system that can be learned in minutes, not days. Guided in-app tours and clear workflows ensure users always know what to do and how to do it.",
+        "description": "We developed Mintcom in close collaboration with business owners and frontline staff. The result is an intuitive system that can be learned in minutes, not days. Guided in-app tours and clear workflows ensure users always know what to do and how to do it.",
         "title": "Built For Simplicity"
       },
       "v3": {
-        "description": "Speed, reliability, and usability are central to everything we build. PayMint is engineered for fast transactions and smooth daily operations. Our UI and workflows are designed using behavioral insights and user interaction analysis, ensuring that critical actions are easy to access and setup is quick and effortless.",
+        "description": "Speed, reliability, and usability are central to everything we build. Mintcom is engineered for fast transactions and smooth daily operations. Our UI and workflows are designed using behavioral insights and user interaction analysis, ensuring that critical actions are easy to access and setup is quick and effortless.",
         "title": "Performance-driven Design"
       }
     }
@@ -381,8 +381,8 @@
       "pleaseWait": "Please wait",
       "resendVerification": "Resend Verification",
       "signUpButton": "Sign Up",
-      "subscribeToNews": "Keep me updated with PayMint news and product updates",
-      "subtitle": "Join PayMint and Start Growing Your Business",
+      "subscribeToNews": "Keep me updated with Mintcom news and product updates",
+      "subtitle": "Join Mintcom and Start Growing Your Business",
       "success": "Account created successfully! Please check your email to verify.",
       "title": "Create Your Account",
       "verificationSent": "Verification link sent"
@@ -420,7 +420,7 @@
     }
   },
   "brand": {
-    "copyright": "Copyright 2025 PayMint LLC. All rights reserved.",
+    "copyright": "Copyright 2025 Mintcom LLC. All rights reserved.",
     "dashboard": {
       "addLocationsDesc": "Start by adding your first location to see performance data.",
       "adjustFilters": "Adjust Filters",
@@ -478,7 +478,7 @@
       "team": "Team",
       "teamDesc": "Staff Management"
     },
-    "name": "PayMint",
+    "name": "Mintcom",
     "tagline": "Enterprise POS",
     "version": "v2.0"
   },
@@ -542,7 +542,7 @@
       "reports": "Reports",
       "tips": "Tips"
     },
-    "assistantTitle": "Your PayMint Assistant",
+    "assistantTitle": "Your Mintcom Assistant",
     "botName": "Minto",
     "fallback": [
       "I'm sorry, I didn't quite catch that. Could you try rephrasing your question?",
@@ -563,14 +563,14 @@
       "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
       "noResults": "No results found",
       "searchPlaceholder": "Search FAQs...",
-      "subtitle": "Find Answers to Common Questions about PayMint",
+      "subtitle": "Find Answers to Common Questions about Mintcom",
       "title": "Frequently Asked Questions",
       "tryDifferent": "Try different keywords or browse categories"
     },
     "greetings": [
       "Hello! How can I help you today?",
-      "Hi there! I'm Minto, your PayMint assistant. What's on your mind?",
-      "Welcome to PayMint! Feel free to ask me anything about managing your business."
+      "Hi there! I'm Minto, your Mintcom assistant. What's on your mind?",
+      "Welcome to Mintcom! Feel free to ask me anything about managing your business."
     ],
     "inputPlaceholder": "Ask me anything...",
     "launcher": {
@@ -582,7 +582,7 @@
     "navigation": {
       "takeMe": "Take me there"
     },
-    "poweredBy": "Powered by PayMint AI",
+    "poweredBy": "Powered by Mintcom AI",
     "queries": {
       "giveMeTips": "Give me tips to improve my business",
       "howToAddProduct": "How do I add a product?",
@@ -774,7 +774,7 @@
     "locale": "En-US",
     "location": "Location",
     "locations": "Locations",
-    "logoAlt": "PayMint logo",
+    "logoAlt": "Mintcom logo",
     "logout": "Log Out",
     "mo": "/m",
     "month": "Month",
@@ -908,7 +908,7 @@
       "ui_ux": "UI/UX"
     },
     "cta": {
-      "subtitle": "Help others, earn badges, and get early access to new features. Join the PayMint community today!",
+      "subtitle": "Help others, earn badges, and get early access to new features. Join the Mintcom community today!",
       "title": "Become A Community Champion"
     },
     "difficulty": {
@@ -919,7 +919,7 @@
     },
     "discussions": {
       "browse": "Browse Discussions",
-      "description": "Ask questions, share experiences, and connect with other PayMint users.",
+      "description": "Ask questions, share experiences, and connect with other Mintcom users.",
       "featured_1": {
         "title": "Best Practices For Managing Multiple Locations"
       },
@@ -927,7 +927,7 @@
         "title": "How We Reduced Checkout Time By 40%"
       },
       "featured_3": {
-        "title": "Integrating PayMint With Our Recipe operations system"
+        "title": "Integrating Mintcom With Our Recipe operations system"
       },
       "item_1": {
         "excerpt": "I recently expanded to 3 locations and looking for tips on how to manage inventory and staff across all of them efficiently...",
@@ -938,8 +938,8 @@
         "title": "How We Reduced Checkout Time By 40%"
       },
       "item_3": {
-        "excerpt": "Has anyone successfully integrated PayMint with a third-party inventory management system? Looking for recommendations...",
-        "title": "Integrating PayMint With Our Recipe operations system"
+        "excerpt": "Has anyone successfully integrated Mintcom with a third-party inventory management system? Looking for recommendations...",
+        "title": "Integrating Mintcom With Our Recipe operations system"
       },
       "item_4": {
         "excerpt": "I want to add our logo and customize the footer of our receipts. Is this possible with the current version?",
@@ -979,7 +979,7 @@
       "popular_subtitle": "Most-read Tutorials From The Community",
       "search_placeholder": "Search guides...",
       "start": "Start Learning",
-      "subtitle": "Learn Everything about PayMint with Our Comprehensive Guides",
+      "subtitle": "Learn Everything about Mintcom with Our Comprehensive Guides",
       "title": "Guides & Tutorials"
     },
     "hub": {
@@ -995,7 +995,7 @@
     },
     "ideas": {
       "all": "All Ideas",
-      "description": "Vote on feature requests and help shape the future of PayMint.",
+      "description": "Vote on feature requests and help shape the future of Mintcom.",
       "empty_subtitle": "Try Adjusting Your Search Or Filters",
       "empty_title": "No Ideas Found",
       "explore": "Explore Ideas",
@@ -1027,7 +1027,7 @@
       "see_all": "See all ideas",
       "submit": "Share an Idea",
       "submit_first": "Submit the First Idea",
-      "subtitle": "Vote and Help Shape the Future of PayMint",
+      "subtitle": "Vote and Help Shape the Future of Mintcom",
       "title": "Feature Ideas",
       "top": "Top Feature Ideas",
       "top_subtitle": "Vote To Help Prioritize What We Build Next",
@@ -1091,7 +1091,7 @@
     },
     "policy": {
       "declaration": "Cookie Declaration",
-      "p1": "This Cookie Policy explains how PayMint LLC (\"we\", \"us\", or \"our\") uses cookies and similar technologies on our website and services.",
+      "p1": "This Cookie Policy explains how Mintcom LLC (\"we\", \"us\", or \"our\") uses cookies and similar technologies on our website and services.",
       "p2": "By continuing to browse our site, you agree to the use of cookies as described in this policy."
     },
     "preferences": {
@@ -1506,13 +1506,13 @@
     },
     "category": "Feedback type",
     "comments": "Comments",
-    "contactConsent": "PayMint may contact me about this feedback if more detail is needed.",
+    "contactConsent": "Mintcom may contact me about this feedback if more detail is needed.",
     "placeholder": "Tell us what you think...",
     "rateExperience": "Rate your experience",
     "send": "Send Feedback",
     "sending": "Sending...",
     "sent": "Feedback Sent",
-    "subtitle": "Help Us Improve PayMint",
+    "subtitle": "Help Us Improve Mintcom",
     "tab": "Feedback",
     "thanks": "Thanks for your feedback!",
     "title": "Send Feedback"
@@ -1525,16 +1525,19 @@
     "getInTouch": "Get in Touch",
     "guides": "Guides & Tutorials",
     "hardwareSolutions": "Hardware Solutions",
+    "browseArticles": "Articles",
     "helpCenter": "Help Center",
+    "helpCenterDesc": "Search articles, open tickets, and get product help.",
     "privacyPolicy": "Privacy Policy",
     "product": "Product",
     "professionalEquipment": "Professional Equipment for Your Business",
     "resources": "Resources",
+    "submitTicket": "Ticket",
     "termsOfService": "Terms of Service",
     "viewOnAmazon": "View on Amazon"
   },
   "hardware": {
-    "tip": "Pro Tip: All recommended hardware is plug-and-play with the PayMint POS app."
+    "tip": "Pro Tip: All recommended hardware is plug-and-play with the Mintcom POS app."
   },
   "hero": {
     "activeRightNow": "Active right now",
@@ -1542,7 +1545,7 @@
     "badge": "All-in-One Point of Sale System",
     "cta": "Start Free Trial",
     "customers": "Customers",
-    "description": "PayMint is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
+    "description": "Mintcom is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
     "freeTrial": "14-Day Free Trial",
     "fromYesterday": "from yesterday",
     "growth": "Growth",
@@ -1615,7 +1618,7 @@
   },
   "landing": {
     "admin": {
-      "adminApp": "PayMint Admin App",
+      "adminApp": "Mintcom Admin App",
       "alerts": {
         "lowStock": "Low stock alert for {{item}}",
         "newOrder": "New order received #{{id}}",
@@ -1625,7 +1628,7 @@
       "badge": "Owner App",
       "controlCenter": "Control Center",
       "dailyRevenue": "Daily Revenue",
-      "description": "With the PayMint Admin Mobile App, you can monitor and manage your business anytime, anywhere, right from your phone.",
+      "description": "With the Mintcom Admin Mobile App, you can monitor and manage your business anytime, anywhere, right from your phone.",
       "liveAlerts": "Live Alerts",
       "liveReports": "Live Sales & Performance Reports",
       "multiLocationManagement": "Multi-Location Management",
@@ -1676,7 +1679,7 @@
       "badge": "Available Now",
       "comingSoon": "Coming Soon",
       "completed": "Completed",
-      "description": "Experience the power of PayMint on all your devices. Our apps are designed for speed, reliability, and ease of use.",
+      "description": "Experience the power of Mintcom on all your devices. Our apps are designed for speed, reliability, and ease of use.",
       "downloadAPK": "Download APK",
       "downloadFor": "Download for",
       "getApp": "Get the App",
@@ -1700,15 +1703,15 @@
       "badge": "Features",
       "cards": {
         "complete": {
-          "description": "PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more, all included in one fixed monthly plan.",
+          "description": "Mintcom is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more, all included in one fixed monthly plan.",
           "title": "A Complete Solution With No Hidden Costs"
         },
         "multiBranch": {
-          "description": "Run one store or many. PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel.",
+          "description": "Run one store or many. Mintcom supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel.",
           "title": "Multi-Branch Management"
         },
         "realUsers": {
-          "description": "PayMint is built for business owners, cashiers, and managers, not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes.",
+          "description": "Mintcom is built for business owners, cashiers, and managers, not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes.",
           "title": "Designed For Real Users"
         },
         "security": {
@@ -1720,11 +1723,11 @@
       "readLess": "Read less",
       "readMore": "Read more",
       "seamlessSync": "Seamless real-time synchronization across all devices",
-      "seeInAction": "See PayMint in Action",
-      "subtitle": "At PayMint, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing",
+      "seeInAction": "See Mintcom in Action",
+      "subtitle": "At Mintcom, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing",
       "title": "Why",
-      "titleHighlight": "PayMint?",
-      "videoTitle": "PayMint Demo Video"
+      "titleHighlight": "Mintcom?",
+      "videoTitle": "Mintcom Demo Video"
     },
     "hardware": {
       "alreadyHave": "Already have hardware?",
@@ -1818,7 +1821,7 @@
           "specs": "10.5\" Touchscreen, Intel N200"
         }
       },
-      "subtitle": "PayMint works with most standard tablets and thermal printers. here are some models we recommend",
+      "subtitle": "Mintcom works with most standard tablets and thermal printers. here are some models we recommend",
       "tablets": {
         "description": "Powerful handheld and desktop devices for your staff",
         "name": "Tablets & Terminals",
@@ -1836,7 +1839,7 @@
       "badge": "All-in-One Point of Sale System",
       "cta": "Start Free Trial",
       "customers": "Customers",
-      "description": "PayMint is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
+      "description": "Mintcom is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
       "freeTrial": "",
       "fromYesterday": "from yesterday",
       "getStarted": "Get Started",
@@ -2043,7 +2046,7 @@
         "fbDesc": "Used to measure the effectiveness of our advertising campaigns on Facebook and to deliver targeted ads.",
         "ga": "Google Analytics",
         "gaDesc": "Used to collect anonymous data about how visitors use our site, including pages visited, time spent, and traffic sources.",
-        "questionsDesc": "If you have any questions about our use of cookies, please contact us at privacy@paymintpos.net",
+        "questionsDesc": "If you have any questions about our use of cookies, please contact us at info@mintcompos.com",
         "questionsTitle": "Questions About Cookies",
         "thirdParty_1": "We may use third-party cookies from services like Google Analytics and Facebook to help us analyze traffic and improve our services.",
         "thirdPartyTitle": "Third-Party Services",
@@ -2096,7 +2099,7 @@
       }
     },
     "privacy": {
-      "agreement": "By using PayMint, you agree to the collection and use of information in accordance with this Privacy Policy.",
+      "agreement": "By using Mintcom, you agree to the collection and use of information in accordance with this Privacy Policy.",
       "branch": {
         "b1": "Amman, Jordan - Headquarters",
         "b2": "Dubai, UAE - Regional Office",
@@ -2109,7 +2112,7 @@
         "desc": "Our services are not directed to individuals under the age of 16. We do not knowingly collect personal information from children."
       },
       "contact": {
-        "desc": "If you have any questions about this Privacy Policy or our data practices, please contact us at privacy@paymintpos.net"
+        "desc": "If you have any questions about this Privacy Policy or our data practices, please contact us at info@mintcompos.com"
       },
       "cookies": {
         "c1": "Essential cookies for site functionality and authentication",
@@ -2139,7 +2142,7 @@
       "international": {
         "desc": "Your information may be transferred to and maintained on servers located outside of your country. We ensure appropriate safeguards are in place for international data transfers."
       },
-      "intro": "PayMint LLC (\"we\", \"us\", or \"our\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our services.",
+      "intro": "Mintcom LLC (\"we\", \"us\", or \"our\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our services.",
       "lastUpdated": "LAST UPDATED",
       "retention": {
         "deletionRequest": "You may request deletion of your personal data at any time by contacting us or using the account deletion feature in your settings.",
@@ -2148,7 +2151,7 @@
         "r3": "Analytics data: Retained in anonymized form indefinitely"
       },
       "rights": {
-        "contact": "To exercise any of these rights, please contact us at privacy@paymintpos.net",
+        "contact": "To exercise any of these rights, please contact us at info@mintcompos.com",
         "ri1": "Right to access your personal data and request a copy",
         "ri2": "Right to correct inaccurate or incomplete personal data",
         "ri3": "Right to request deletion of your personal data",
@@ -2163,7 +2166,7 @@
         "s1_2_desc": "We automatically collect certain information about your device and usage patterns when you interact with our services.",
         "s1_2_note": "We never sell your personal information to third parties.",
         "s1_3": "1.3 Business & Operational Data",
-        "s1_3_desc": "We may receive information about you from third-party services you connect to your PayMint account.",
+        "s1_3_desc": "We may receive information about you from third-party services you connect to your Mintcom account.",
         "s1_4": "1.4 Technical & Usage Data",
         "s1_4_desc": "We collect transaction data processed through our point-of-sale system to provide our services.",
         "s1_desc": "We collect several types of information to provide and improve our services.",
@@ -2183,7 +2186,7 @@
         "s7": "7. Your Rights",
         "s7_desc": "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the updated policy on our website.",
         "s8": "8. Cookies & Tracking Technologies",
-        "s8_desc": "If you have any questions about this Privacy Policy, please contact us at privacy@paymintpos.net",
+        "s8_desc": "If you have any questions about this Privacy Policy, please contact us at info@mintcompos.com",
         "s9": "9. International Operations",
         "subtitle": "How We Protect Your Data",
         "title": "Privacy Policy"
@@ -2219,18 +2222,18 @@
         "desc": "We strive to maintain high availability but do not guarantee uninterrupted service. We may perform scheduled maintenance with advance notice."
       },
       "contact": {
-        "desc": "For questions about these Terms of Service, please contact us at legal@paymintpos.net"
+        "desc": "For questions about these Terms of Service, please contact us at info@mintcompos.com"
       },
-      "intro": "Welcome to PayMint. By accessing or using our services, you agree to be bound by these Terms of Service. Please read them carefully.",
+      "intro": "Welcome to Mintcom. By accessing or using our services, you agree to be bound by these Terms of Service. Please read them carefully.",
       "ip": {
-        "desc": "All content, trademarks, and intellectual property on our platform are owned by PayMint LLC or its licensors. You may not copy, modify, or distribute our content without written permission."
+        "desc": "All content, trademarks, and intellectual property on our platform are owned by Mintcom LLC or its licensors. You may not copy, modify, or distribute our content without written permission."
       },
       "lastUpdated": "LAST UPDATED",
       "law": {
-        "desc": "These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which PayMint LLC is registered."
+        "desc": "These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which Mintcom LLC is registered."
       },
       "liability": {
-        "desc": "To the maximum extent permitted by law, PayMint LLC shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of our services."
+        "desc": "To the maximum extent permitted by law, Mintcom LLC shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of our services."
       },
       "payments": {
         "p1": "You agree to pay all fees associated with your subscription plan. Fees are non-refundable except as required by law.",
@@ -2269,7 +2272,7 @@
       },
       "title": "Terms of Service",
       "use": {
-        "u1": "PayMint grants you a limited, non-exclusive, non-transferable license to use our services for your business operations.",
+        "u1": "Mintcom grants you a limited, non-exclusive, non-transferable license to use our services for your business operations.",
         "u2": "You may not sublicense, sell, or redistribute access to our services without our written consent."
       }
     }
@@ -2329,36 +2332,36 @@
   },
   "metadata": {
     "about": {
-      "description": "Learn about PayMint's mission to empower business owners with modern, secure, and scalable POS solutions.",
-      "title": "About Us | PayMint"
+      "description": "Learn about Mintcom's mission to empower business owners with modern, secure, and scalable POS solutions.",
+      "title": "About Us | Mintcom"
     },
     "cookiePolicy": {
       "description": "Learn about how we use cookies to improve your experience on our website.",
-      "title": "Cookie Policy | PayMint"
+      "title": "Cookie Policy | Mintcom"
     },
     "home": {
-      "description": "Simplify your business with PayMint. Fast sales, real-time inventory, and powerful analytics on any device. Start your 14-day free trial today.",
-      "title": "PayMint | All-in-One Cloud POS & Business Management"
+      "description": "Simplify your business with Mintcom. Fast sales, real-time inventory, and powerful analytics on any device. Start your 14-day free trial today.",
+      "title": "Mintcom | All-in-One Cloud POS & Business Management"
     },
     "login": {
-      "description": "Access your PayMint business dashboard to manage sales, inventory, and staff.",
-      "title": "Login | PayMint Dashboard"
+      "description": "Access your Mintcom business dashboard to manage sales, inventory, and staff.",
+      "title": "Login | Mintcom Dashboard"
     },
     "privacy": {
       "description": "Read our privacy policy to understand how we protect your data and maintain your privacy.",
-      "title": "Privacy Policy | PayMint"
+      "title": "Privacy Policy | Mintcom"
     },
     "qa": {
-      "description": "Find answers about setup, pricing, features, and support for PayMint POS.",
-      "title": "Questions & Answers | PayMint Support"
+      "description": "Find answers about setup, pricing, features, and support for Mintcom POS.",
+      "title": "Questions & Answers | Mintcom Support"
     },
     "signup": {
-      "description": "Join thousands of businesses using PayMint. Create your account and start your 14-day free trial.",
-      "title": "Sign Up | Start Your Free Trial With PayMint"
+      "description": "Join thousands of businesses using Mintcom. Create your account and start your 14-day free trial.",
+      "title": "Sign Up | Start Your Free Trial With Mintcom"
     },
     "terms": {
-      "description": "Review our terms of service for using the PayMint platform and services.",
-      "title": "Terms of Service | PayMint"
+      "description": "Review our terms of service for using the Mintcom platform and services.",
+      "title": "Terms of Service | Mintcom"
     }
   },
   "nav": {
@@ -2542,7 +2545,7 @@
       "terms": "Terms",
       "userManual": "User Manual",
       "videoGuide": "Video Guide",
-      "welcomeTitle": "Welcome To PayMint!"
+      "welcomeTitle": "Welcome To Mintcom!"
     },
     "tour": {
       "chatBotDesc": "Minto is always here to answer your questions and guide you through the system.",
@@ -2964,7 +2967,7 @@
         },
         "title": "Useful Resources",
         "userManual": {
-          "desc": "Complete guide to using PayMint",
+          "desc": "Complete guide to using Mintcom",
           "title": "User Manual"
         },
         "videoTutorial": {
@@ -4257,7 +4260,7 @@
   "support": {
     "admin": {
       "accessDenied": "Access Denied",
-      "accessDeniedDesc": "This area is restricted to the PayMint support team. If you believe this is an error, please contact the administrator.",
+      "accessDeniedDesc": "This area is restricted to the Mintcom support team. If you believe this is an error, please contact the administrator.",
       "adjustSearch": "Try adjusting your search or filters.",
       "all": "All",
       "closed": "Closed",
@@ -4311,8 +4314,8 @@
         "li9": "Invoices generated automatically each billing cycle",
         "note_desc": "Keep your payment method up to date to avoid service interruptions.",
         "note_label": "Important",
-        "p1": "This guide covers everything you need to know about billing, payments, and managing your PayMint subscription.",
-        "p2": "PayMint uses a simple, transparent pricing model with no hidden fees.",
+        "p1": "This guide covers everything you need to know about billing, payments, and managing your Mintcom subscription.",
+        "p2": "Mintcom uses a simple, transparent pricing model with no hidden fees.",
         "p3": "We accept all major payment methods for your convenience."
       },
       "bl2_excerpt": "A comprehensive guide to billing, invoicing, and managing your subscription payments.",
@@ -4361,7 +4364,7 @@
         "li7": "Manage ingredients and recipes for prepared items",
         "li8": "Import and export product catalogs easily",
         "li9": "Define roles with granular POS and back-office permissions",
-        "p1": "PayMint is a complete 360° point-of-sale solution built for modern businesses. This guide covers all the features available to you.",
+        "p1": "Mintcom is a complete 360° point-of-sale solution built for modern businesses. This guide covers all the features available to you.",
         "p2": "The POS system is designed to be fast, reliable, and easy for your staff to learn.",
         "p3": "Keep track of every item in your inventory with real-time updates.",
         "p4": "Manage your team with flexible roles and detailed performance tracking.",
@@ -4380,9 +4383,9 @@
         "type6_desc": "Configure your store settings, tax rates, receipt layout, and more.",
         "type6_label": "Settings & Config"
       },
-      "ft1_excerpt": "A comprehensive guide to understanding and using all PayMint features.",
+      "ft1_excerpt": "A comprehensive guide to understanding and using all Mintcom features.",
       "ft10": "Offline Mode & Data Sync",
-      "ft10_excerpt": "How PayMint handles offline transactions and syncs data when back online.",
+      "ft10_excerpt": "How Mintcom handles offline transactions and syncs data when back online.",
       "ft2": "Recipe Operations Guide",
       "ft2_excerpt": "Learn how to track stock, set alerts, and manage your inventory efficiently.",
       "ft3": "Staff Roles & Permissions",
@@ -4400,14 +4403,14 @@
       "ft9": "Add-ons & Modifiers Guide",
       "ft9_excerpt": "Create product add-ons and modifiers for customizable orders.",
       "gs1": {
-        "h1": "Getting Started With PayMint",
+        "h1": "Getting Started With Mintcom",
         "h2": "Creating Your Account",
         "h3": "Setting Up Your First Location",
         "h4": "Adding Products",
         "h5": "Configuring Payment Methods",
         "h6": "Inviting Staff",
         "h7": "Going Live",
-        "li1_desc": "Visit paymintpos.net and click \"Get Started\" to begin your registration.",
+        "li1_desc": "Visit mintcompos.com and click \"Get Started\" to begin your registration.",
         "li1_label": "Sign Up",
         "li2_desc": "Check your inbox for a verification email and click the link to activate your account.",
         "li2_label": "Verify Email",
@@ -4415,7 +4418,7 @@
         "li3_label": "Business Details",
         "li4_desc": "Create a unique Login ID and password for your POS terminal.",
         "li4_label": "POS Credentials",
-        "p1": "Welcome to PayMint! This guide will walk you through everything you need to get your business up and running.",
+        "p1": "Welcome to Mintcom! This guide will walk you through everything you need to get your business up and running.",
         "p2": "Start by creating your account and verifying your email address.",
         "p3": "Next, set up your first business location with all the essential details.",
         "p4": "Add your products, set prices, and organize them into categories.",
@@ -4423,7 +4426,7 @@
         "p6": "Invite your team members and assign them appropriate roles and permissions.",
         "p7": "Once everything is set up, download the POS app and start processing orders!"
       },
-      "gs1_excerpt": "Step-by-step guide to setting up your first PayMint location and getting started.",
+      "gs1_excerpt": "Step-by-step guide to setting up your first Mintcom location and getting started.",
       "gs2": {
         "h1": "Navigating Your Dashboard",
         "h2": "Dashboard Overview",
@@ -4456,14 +4459,14 @@
         "li8_label": "Shift Reports",
         "li9_desc": "View all transactions grouped by payment channel.",
         "li9_label": "Payment Reports",
-        "p1": "Your PayMint dashboard is your command center for managing your business.",
+        "p1": "Your Mintcom dashboard is your command center for managing your business.",
         "p2": "The main dashboard gives you a real-time overview of your business performance.",
         "p3": "Access comprehensive reports to understand your sales trends and performance.",
         "p4": "Manage all your orders from a single, unified view.",
         "p5": "Build and manage your team with flexible roles and permissions.",
         "p6": "Configure every aspect of your business from the settings panel."
       },
-      "gs2_excerpt": "Learn how to navigate the PayMint dashboard and use its key features.",
+      "gs2_excerpt": "Learn how to navigate the Mintcom dashboard and use its key features.",
       "gs3": "Adding Your First Product",
       "gs3_excerpt": "Learn how to create products, set prices, and organize your menu.",
       "gs4": "Setting Up Payment Methods",
@@ -4473,7 +4476,7 @@
       "gs6": "Understanding Roles & Permissions",
       "gs6_excerpt": "Learn how to create custom roles with specific POS and back-office access.",
       "gs7": "Downloading the POS App",
-      "gs7_excerpt": "Get the PayMint POS app on your tablet and connect to your location.",
+      "gs7_excerpt": "Get the Mintcom POS app on your tablet and connect to your location.",
       "gs8": "Starting Your First Shift",
       "gs8_excerpt": "Learn how to open a shift, process orders, and close out at the end of the day.",
       "helpfulNo": "No",
@@ -4501,8 +4504,8 @@
         "a1_3": "If none of these steps work, contact our support team with details about the error you're seeing.",
         "a2_1": "Ensure your printer is powered on and connected to the same network as your POS device. Check that the correct printer is selected in Settings > Receipts.",
         "a2_2": "If the test page prints, reconnect the printer in the app settings and run another test receipt.",
-        "a3_1": "PayMint automatically syncs data when your connection is restored. You can continue processing orders in offline mode.",
-        "a3_2": "When the connection returns, PayMint syncs saved data automatically. If pending items remain, keep the app open until sync finishes.",
+        "a3_1": "Mintcom automatically syncs data when your connection is restored. You can continue processing orders in offline mode.",
+        "a3_2": "When the connection returns, Mintcom syncs saved data automatically. If pending items remain, keep the app open until sync finishes.",
         "a3_3": "All offline transactions are securely stored on your device and will be uploaded when connectivity returns.",
         "h1": "Troubleshooting Common Issues",
         "h2": "Connection Problems",
@@ -4513,29 +4516,29 @@
         "li2": "Clear your browser cache and cookies",
         "li3": "Try using a different browser (Chrome recommended)",
         "li4": "Restart your device and try again",
-        "li5": "Ensure your firewall isn't blocking PayMint",
+        "li5": "Ensure your firewall isn't blocking Mintcom",
         "li6": "Update your browser to the latest version",
         "li7": "Contact support if issues persist after trying all steps",
-        "p1": "This guide helps you troubleshoot the most common technical issues you may encounter with PayMint.",
+        "p1": "This guide helps you troubleshoot the most common technical issues you may encounter with Mintcom.",
         "p2": "Most issues can be resolved with these simple steps. If you still need help, email support with the error message, screenshots, and the device you are using.",
         "p3": "Follow this diagnostic process to identify and resolve technical issues.",
-        "q1": "Why can't I access the PayMint dashboard?",
+        "q1": "Why can't I access the Mintcom dashboard?",
         "q2": "My receipt printer isn't working. What should I do?",
         "q3": "What happens to my data during an internet outage?",
         "step1_desc": "Ensure your device is connected to the internet and the connection is stable.",
         "step1_label": "Check Connection",
-        "step2_desc": "Close and reopen the PayMint app or refresh your browser.",
+        "step2_desc": "Close and reopen the Mintcom app or refresh your browser.",
         "step2_label": "Restart Application",
         "step3_desc": "Remove temporary files that might cause issues.",
         "step3_label": "Clear Cache",
-        "step4_desc": "Make sure you're running the latest version of PayMint.",
+        "step4_desc": "Make sure you're running the latest version of Mintcom.",
         "step4_label": "Update Software",
         "step5_desc": "If the issue persists, reach out to our support team with error details.",
         "step5_label": "Contact Support"
       },
       "tc1_excerpt": "Step-by-step guide to resolving common technical issues with the POS system.",
       "tc10": "API Integration Guide",
-      "tc10_excerpt": "Technical guide for integrating with the PayMint API.",
+      "tc10_excerpt": "Technical guide for integrating with the Mintcom API.",
       "tc2": "Network & Connectivity Setup",
       "tc2_excerpt": "Optimize your network setup for reliable POS operations.",
       "tc3": "Printer Setup & Configuration",
@@ -4543,13 +4546,13 @@
       "tc4": "App Performance Optimization",
       "tc4_excerpt": "Tips and tricks to keep your POS app running smoothly.",
       "tc5": "Data Backup & Recovery",
-      "tc5_excerpt": "Understand how PayMint backs up your data and how to recover it.",
+      "tc5_excerpt": "Understand how Mintcom backs up your data and how to recover it.",
       "tc6": "Browser Compatibility Guide",
       "tc6_excerpt": "Supported browsers and recommendations for the best experience.",
       "tc7": "Security Best Practices",
-      "tc7_excerpt": "Keep your PayMint account and data secure with these tips.",
+      "tc7_excerpt": "Keep your Mintcom account and data secure with these tips.",
       "tc8": "Device Requirements",
-      "tc8_excerpt": "Minimum hardware and software requirements for running PayMint.",
+      "tc8_excerpt": "Minimum hardware and software requirements for running Mintcom.",
       "tc9": "Error Codes Reference",
       "tc9_excerpt": "A reference guide for common error codes and their solutions.",
       "updated": "Updated",
@@ -4566,7 +4569,7 @@
       "feature": "Feature Request",
       "featureDescShort": "Suggest an improvement",
       "features": "Features & How-To",
-      "featuresDesc": "Learn how to use all PayMint features",
+      "featuresDesc": "Learn how to use all Mintcom features",
       "gettingStarted": "Getting Started",
       "gettingStartedDesc": "Everything you need to set up and get running",
       "gettingStartedDescShort": "Setup & first steps",
@@ -4596,10 +4599,10 @@
       "faqTitle": "Troubleshooting & FAQ",
       "overview": "Overview",
       "p1": "This comprehensive guide will walk you through the necessary steps and best practices.",
-      "p2": "This article provides detailed instructions and insights to help you optimize your PayMint experience.",
+      "p2": "This article provides detailed instructions and insights to help you optimize your Mintcom experience.",
       "q1": "What if I encounter an error?",
       "q2": "Can I revert my changes?",
-      "step1Desc": "Log into your PayMint dashboard and navigate to the relevant section from the main menu.",
+      "step1Desc": "Log into your Mintcom dashboard and navigate to the relevant section from the main menu.",
       "step1Label": "Step 1: Access the Module",
       "step2Desc": "Review the available options and adjust the configurations according to your business needs.",
       "step2Label": "Step 2: Configure Settings",
@@ -4611,7 +4614,7 @@
     "hero": {
       "badge": "Help Center",
       "searchPlaceholder": "Search for help articles...",
-      "subtitle": "Find Answers, Guides, and Support for All Things PayMint",
+      "subtitle": "Find Answers, Guides, and Support for All Things Mintcom",
       "titleHighlight": "help",
       "titlePart1": "How can we",
       "titlePart2": "you?"
@@ -4673,24 +4676,24 @@
       "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
       "noResults": "No results found",
       "q1": {
-        "answer": "PayMint is a cloud POS and business management platform for restaurants, cafes, and retail businesses. It helps you manage sales, products, staff, reports, and multiple locations from one place.",
-        "question": "What is PayMint?"
+        "answer": "Mintcom is a cloud POS and business management platform for restaurants, cafes, and retail businesses. It helps you manage sales, products, staff, reports, and multiple locations from one place.",
+        "question": "What is Mintcom?"
       },
       "q2": {
-        "answer": "PayMint can be used wherever your business can be onboarded and your payment setup is supported. If you are unsure, contact support before creating a new location.",
-        "question": "Is PayMint available in my country?"
+        "answer": "Mintcom can be used wherever your business can be onboarded and your payment setup is supported. If you are unsure, contact support before creating a new location.",
+        "question": "Is Mintcom available in my country?"
       },
       "q3": {
         "answer": "In the POS you can accept cash, cards, and any custom payment methods you configure for the location. For card processing, use the terminal or provider connected to your business.",
         "question": "What payment methods can I accept?"
       },
       "q4": {
-        "answer": "Settlement timing depends on your payment provider. PayMint records the sale immediately in your dashboard and reports, while card settlement follows the terms of your processor.",
+        "answer": "Settlement timing depends on your payment provider. Mintcom records the sale immediately in your dashboard and reports, while card settlement follows the terms of your processor.",
         "question": "How long do payouts take?"
       },
       "q5": {
         "answer": "Yes. We use secure authentication, role-based access, encrypted connections, and activity logs to protect your account and business data.",
-        "question": "Is PayMint secure?"
+        "question": "Is Mintcom secure?"
       },
       "q6": {
         "answer": "You can reset your password by clicking Forgot Password on the login screen. Follow the link sent to your registered email address to create a new password.",

@@ -1,4 +1,4 @@
-﻿import {
+import {
   TrendingUp,
   Wallet,
   DollarSign,
@@ -23,7 +23,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import React from 'react';
 import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 
-const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+const COLORS = ['#7dc6a2', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
   const { t } = useTranslation();
@@ -88,8 +88,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             amount: grossSales,
             isCurrency: true,
             icon: Wallet,
-            color: 'text-paymint-green',
-            bg: 'bg-paymint-green/10',
+            color: 'text-mintcom-green',
+            bg: 'bg-mintcom-green/10',
             sub: t('orders.reports.sales.totalIncTax')
           },
           {
@@ -97,8 +97,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             amount: netSales,
             isCurrency: true,
             icon: TrendingUp,
-            color: 'text-paymint-green',
-            bg: 'bg-paymint-green/10',
+            color: 'text-mintcom-green',
+            bg: 'bg-mintcom-green/10',
             sub: t('orders.reports.sales.exclTax')
           },
           {
@@ -106,8 +106,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             amount: (salesData.grossProfit ?? 0),
             isCurrency: true,
             icon: DollarSign,
-            color: (salesData.grossProfit ?? 0) >= 0 ? 'text-paymint-green' : 'text-red-500',
-            bg: (salesData.grossProfit ?? 0) >= 0 ? 'bg-paymint-green/10' : 'bg-red-500/10',
+            color: (salesData.grossProfit ?? 0) >= 0 ? 'text-mintcom-green' : 'text-red-500',
+            bg: (salesData.grossProfit ?? 0) >= 0 ? 'bg-mintcom-green/10' : 'bg-red-500/10',
             sub: t('orders.reports.sales.netSalesCost')
           },
           {
@@ -115,8 +115,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             amount: (salesData.taxCollected ?? 0),
             isCurrency: true,
             icon: Percent,
-            color: 'text-paymint-green',
-            bg: 'bg-paymint-green/10',
+            color: 'text-mintcom-green',
+            bg: 'bg-mintcom-green/10',
             sub: t('orders.reports.sales.taxAmount')
           },
           {
@@ -125,8 +125,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             value: (salesData.totalOrders ?? 0).toLocaleString(t('common.locale')),
             suffix: t('dashboard.stats.orders'),
             icon: ShoppingBag,
-            color: 'text-paymint-green',
-            bg: 'bg-paymint-green/10',
+            color: 'text-mintcom-green',
+            bg: 'bg-mintcom-green/10',
             sub: t('orders.reports.sales.completed')
           },
           {
@@ -143,8 +143,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             value: (salesData.totalHoursWorked ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
             suffix: t('orders.reports.sales.hours'),
             icon: Clock,
-            color: 'text-paymint-green',
-            bg: 'bg-paymint-green/10',
+            color: 'text-mintcom-green',
+            bg: 'bg-mintcom-green/10',
             sub: t('orders.reports.sales.staffHours'),
             onClick: () => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -155,14 +155,14 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             label: t('orders.reports.sales.nonSales'),
             value: null,
             icon: ArrowUpRight,
-            color: 'text-paymint-green',
-            bg: 'bg-paymint-green/10',
+            color: 'text-mintcom-green',
+            bg: 'bg-mintcom-green/10',
             sub: null,
             customContent: (
               <div className="w-full mt-6 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-400">{t('orders.reports.sales.payIn')}</span>
-                  <CurrencyAmount amount={salesData.totalPayIn ?? 0} size="text-sm" color="text-paymint-green" />
+                  <CurrencyAmount amount={salesData.totalPayIn ?? 0} size="text-sm" color="text-mintcom-green" />
                 </div>
                 <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
                 <div className="flex items-center justify-between">
@@ -189,7 +189,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                   <stat.icon size={20} />
                 </div>
                 {stat.onClick && (
-                  <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
+                  <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-mintcom-green transition-colors">
                     <ExternalLink size={14} />
                   </div>
                 )}
@@ -203,7 +203,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                 <>
                   <p className="flex flex-col">
                     {stat.isCurrency ? (
-                      <CurrencyAmount amount={stat.amount || 0} color={stat.color.startsWith('text-paymint-green') ? "text-gray-900 dark:text-white" : stat.color} />
+                      <CurrencyAmount amount={stat.amount || 0} color={stat.color.startsWith('text-mintcom-green') ? "text-gray-900 dark:text-white" : stat.color} />
                     ) : (
                       <span className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                         {stat.value}
@@ -226,7 +226,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
         <div className="lg:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+              <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
                 <TrendingUp size={20} />
               </div>
               <div>
@@ -237,7 +237,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
               </div>
             </div>
             <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-              <Activity size={12} className="text-paymint-green" />
+              <Activity size={12} className="text-mintcom-green" />
               <span className="sentence-case-text text-xs font-bold text-gray-500 tracking-wide">{t('orders.reports.sales.realtime')}</span>
             </div>
           </div>
@@ -361,9 +361,9 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                           >
                             <defs>
                               <linearGradient id="colorRevenuePremium" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.4} />
-                                <stop offset="60%" stopColor="#7CC39F" stopOpacity={0.1} />
-                                <stop offset="100%" stopColor="#7CC39F" stopOpacity={0} />
+                                <stop offset="5%" stopColor="#7dc6a2" stopOpacity={0.4} />
+                                <stop offset="60%" stopColor="#7dc6a2" stopOpacity={0.1} />
+                                <stop offset="100%" stopColor="#7dc6a2" stopOpacity={0} />
                               </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="0 0" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
@@ -386,7 +386,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                             />
                             <YAxis hide domain={[minY, maxY]} />
                             <Tooltip
-                              cursor={chartData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
+                              cursor={chartData.length > 1 ? { stroke: '#7dc6a2', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                               formatter={(val: any) => [`${Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencySymbol}`, t('dashboard.revenueChart.revenue')]}
                               contentStyle={{
                                 backgroundColor: isDark ? '#0B1120' : '#fff',
@@ -395,7 +395,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                                 boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
                                 padding: '12px'
                               }}
-                              itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px' }}
+                              itemStyle={{ color: '#7dc6a2', fontWeight: '900', fontSize: '12px' }}
                               labelStyle={{ fontWeight: '900', color: isDark ? '#fff' : '#000', marginBottom: '8px', fontSize: '10px' }}
                               labelFormatter={(val, payload) => {
                                 const dateLocale = getDateLocale(t('common.locale'));
@@ -428,7 +428,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                               <Area
                                 type="monotone"
                                 dataKey="revenue"
-                                stroke="#7CC39F"
+                                stroke="#7dc6a2"
                                 strokeWidth={6}
                                 fillOpacity={1}
                                 fill="url(#colorRevenuePremium)"
@@ -451,7 +451,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
         <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+              <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
                 <Wallet size={20} />
               </div>
               <div>
@@ -461,7 +461,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             </div>
             <button
               onClick={() => navigate(`/dashboard/${locationSlug}/reports/payments`)}
-              className="text-xs font-bold text-paymint-green hover:underline tracking-wide"
+              className="text-xs font-bold text-mintcom-green hover:underline tracking-wide"
             >
               {t('orders.reports.sales.viewAll')}
             </button>

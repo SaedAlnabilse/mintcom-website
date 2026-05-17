@@ -1,6 +1,6 @@
-# PayMint Screens & Popups Reference
+# Mintcom Screens & Popups Reference
 
-This document lists all the application screens (pages) and interactive popups (modals) within the PayMint ecosystem.
+This document lists all the application screens (pages) and interactive popups (modals) within the Mintcom ecosystem.
 
 ## 1. Screens (Pages)
 

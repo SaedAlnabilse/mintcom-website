@@ -2,9 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 // Import SVG logos (vector graphics - infinitely scalable, tiny file size)
-import PaymintLogoGreen from '../assets/green-full-logo.svg';
-import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
-import PaymintLeafIcon from '../assets/small-logo.svg';
+import MintcomLogoGreen from '../assets/green-full-logo.svg';
+import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
+import MintcomLeafIcon from '../assets/small-logo.svg';
 
 interface LogoProps {
   className?: string;
@@ -41,7 +41,7 @@ export const Logo: React.FC<LogoProps> = ({
     return (
       <div className={`flex items-center justify-center ${className}`}>
         <img
-          src={PaymintLeafIcon}
+          src={MintcomLeafIcon}
           alt={t('brand.name')}
           width={iconDimensions.width}
           height={iconDimensions.height}
@@ -59,7 +59,7 @@ export const Logo: React.FC<LogoProps> = ({
     return (
       <div className={`flex items-center ${className}`}>
         <img
-          src={PaymintLogoGreen}
+          src={MintcomLogoGreen}
           alt={t('brand.name')}
           width={dimensions.width}
           height={dimensions.height}
@@ -76,7 +76,7 @@ export const Logo: React.FC<LogoProps> = ({
     return (
       <div className={`flex items-center ${className}`}>
         <img
-          src={PaymintLogoWhite}
+          src={MintcomLogoWhite}
           alt={t('brand.name')}
           width={dimensions.width}
           height={dimensions.height}
@@ -94,7 +94,7 @@ export const Logo: React.FC<LogoProps> = ({
     <div className={`flex items-center ${className}`}>
       {/* Light mode logo */}
       <img
-        src={PaymintLogoGreen}
+        src={MintcomLogoGreen}
         alt={t('brand.name')}
         width={dimensions.width}
         height={dimensions.height}
@@ -105,7 +105,7 @@ export const Logo: React.FC<LogoProps> = ({
       />
       {/* Dark mode logo */}
       <img
-        src={PaymintLogoWhite}
+        src={MintcomLogoWhite}
         alt={t('brand.name')}
         width={dimensions.width}
         height={dimensions.height}
@@ -119,5 +119,5 @@ export const Logo: React.FC<LogoProps> = ({
 };
 
 // Export the SVG imports for use in other components
-export { PaymintLogoGreen, PaymintLogoWhite, PaymintLeafIcon };
+export { MintcomLogoGreen, MintcomLogoWhite, MintcomLeafIcon };
 

@@ -1,4 +1,4 @@
-﻿import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -109,18 +109,18 @@ export function OwnerEstablishmentsPage() {
             );
 
             welcomeTargets.forEach((target) => {
-                localStorage.setItem(`paymint.dashboard.welcome.pending.${target}`, 'true');
-                localStorage.removeItem(`paymint.dashboard.setup.dismissed.${target}`);
-                localStorage.removeItem(`paymint.dashboard.setup.dismissed.v3.${account?.id || 'anonymous'}.${target}`);
-                localStorage.removeItem(`paymint.dashboard.setup.dismissed.v3.anonymous.${target}`);
-                localStorage.removeItem(`paymint.dashboard.setup.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
-                localStorage.removeItem(`paymint.dashboard.setup.dismissed.v6.anonymous.${target}`);
-                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v4.${account?.id || 'anonymous'}.${target}`);
-                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v4.anonymous.${target}`);
-                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v5.${account?.id || 'anonymous'}.${target}`);
-                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v5.anonymous.${target}`);
-                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
-                sessionStorage.removeItem(`paymint.dashboard.setup.session.dismissed.v6.anonymous.${target}`);
+                localStorage.setItem(`mintcom.dashboard.welcome.pending.${target}`, 'true');
+                localStorage.removeItem(`mintcom.dashboard.setup.dismissed.${target}`);
+                localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v3.${account?.id || 'anonymous'}.${target}`);
+                localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v3.anonymous.${target}`);
+                localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
+                localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v6.anonymous.${target}`);
+                sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v4.${account?.id || 'anonymous'}.${target}`);
+                sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v4.anonymous.${target}`);
+                sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v5.${account?.id || 'anonymous'}.${target}`);
+                sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v5.anonymous.${target}`);
+                sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
+                sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v6.anonymous.${target}`);
             });
         }
 
@@ -134,7 +134,7 @@ export function OwnerEstablishmentsPage() {
     const getStatusColor = (status: string) => {
         switch (status?.toUpperCase()) {
             case 'ACTIVE':
-                return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
+                return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
             case 'TRIAL':
                 return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
             case 'CANCELED':
@@ -188,7 +188,7 @@ export function OwnerEstablishmentsPage() {
 
                     <button
                         onClick={handleAddEstablishment}
-                        className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:bg-[#68B390] transition-all shadow-sm active:scale-95 flex-shrink-0 justify-center"
+                        className="flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green text-black font-black text-xs tracking-widest hover:bg-[#5fa888] transition-all shadow-sm active:scale-95 flex-shrink-0 justify-center"
                     >
                         <Plus size={20} strokeWidth={3} />
                         <span>{t('owner.overview.addLocation')}</span>
@@ -216,9 +216,9 @@ export function OwnerEstablishmentsPage() {
                 <div
                     className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
                 >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-paymint-green/10 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-mintcom-green/10 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none" />
                     <div className="relative z-10 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300">
+                        <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center transition-transform duration-300">
                             <Zap size={24} />
                         </div>
                         <div>
@@ -297,13 +297,13 @@ export function OwnerEstablishmentsPage() {
                         <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <Grid3X3 size={18} />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <List size={18} />
                             </button>
@@ -334,7 +334,7 @@ export function OwnerEstablishmentsPage() {
                                     key={est.id}
                                     id={`establishment-${est.id}`}
                                     className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${est.id === highlightId
-                                        ? 'border-paymint-green ring-2 ring-paymint-green/50 shadow-xl shadow-paymint-green/20'
+                                        ? 'border-mintcom-green ring-2 ring-mintcom-green/50 shadow-xl shadow-mintcom-green/20'
                                         : 'border-gray-200 dark:border-white/5 hover:border-blue-500/30'
                                         }`}
                                     onClick={() => handleEstablishmentClick(est)}
@@ -344,7 +344,7 @@ export function OwnerEstablishmentsPage() {
 
                                     {est.id === highlightId && (
                                         <div className="absolute top-0 right-0 p-2">
-                                            <span className="bg-paymint-green text-black text-xs font-black px-2 py-1 rounded-bl-xl rounded-tr-xl tracking-widest shadow-sm">{t('owner.locations.new')}</span>
+                                            <span className="bg-mintcom-green text-black text-xs font-black px-2 py-1 rounded-bl-xl rounded-tr-xl tracking-widest shadow-sm">{t('owner.locations.new')}</span>
                                         </div>
                                     )}
 
@@ -407,7 +407,7 @@ export function OwnerEstablishmentsPage() {
                                         {/* Status Badge */}
                                         <div className="mb-6">
                                             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
-                                                <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' :
+                                                <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-mintcom-green' :
                                                     est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                         'bg-red-500'
                                                     }`} />
@@ -429,7 +429,7 @@ export function OwnerEstablishmentsPage() {
                                                     <Zap size={12} />
                                                     <p className="text-xs font-bold tracking-wide">{t('owner.locations.status')}</p>
                                                 </div>
-                                                <p className="text-sm font-bold text-paymint-green">{t('owner.locations.online')}</p>
+                                                <p className="text-sm font-bold text-mintcom-green">{t('owner.locations.online')}</p>
                                             </div>
                                         </div>
 
@@ -467,7 +467,7 @@ export function OwnerEstablishmentsPage() {
                             return (
                                 <div
                                     key={est.id}
-                                    className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer ${est.id === highlightId ? 'bg-paymint-green/5' : ''}`}
+                                    className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer ${est.id === highlightId ? 'bg-mintcom-green/5' : ''}`}
                                     onClick={() => handleEstablishmentClick(est)}
                                 >
                                     <div className="flex items-start justify-between mb-3">
@@ -480,7 +480,7 @@ export function OwnerEstablishmentsPage() {
                                                 <div className="flex items-center gap-2 mt-1">
                                                     <span className="text-xs text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}</span>
                                                     {est.id === highlightId && (
-                                                        <span className="text-xs text-paymint-green font-bold tracking-wider">{t('owner.locations.new')}</span>
+                                                        <span className="text-xs text-mintcom-green font-bold tracking-wider">{t('owner.locations.new')}</span>
                                                     )}
                                                 </div>
                                             </div>
@@ -514,7 +514,7 @@ export function OwnerEstablishmentsPage() {
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' : est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
+                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-mintcom-green' : est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                             {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
                                         </span>
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">{est.currency?.toUpperCase() || 'JOD'}</span>
@@ -549,22 +549,22 @@ export function OwnerEstablishmentsPage() {
                                     key={est.id}
                                     id={`establishment-${est.id}`}
                                     className={`grid grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group items-center ${est.id === highlightId
-                                        ? 'bg-paymint-green/5 ring-1 ring-paymint-green inset-0 z-10'
+                                        ? 'bg-mintcom-green/5 ring-1 ring-mintcom-green inset-0 z-10'
                                         : ''
                                         }`}
                                     onClick={() => handleEstablishmentClick(est)}
                                 >
                                     {/* Info */}
                                     <div className="col-span-3 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
+                                        <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-mintcom-green transition-colors">
                                             <Icon size={20} />
                                         </div>
                                         <div className="min-w-0">
-                                            <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate" title={est.name}>
+                                            <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors truncate" title={est.name}>
                                                 {est.name}
                                             </h3>
                                             {est.id === highlightId && (
-                                                <span className="text-xs text-paymint-green font-bold tracking-wider">{t('owner.locations.new')}</span>
+                                                <span className="text-xs text-mintcom-green font-bold tracking-wider">{t('owner.locations.new')}</span>
                                             )}
                                         </div>
                                     </div>
@@ -579,7 +579,7 @@ export function OwnerEstablishmentsPage() {
                                     {/* Status */}
                                     <div className="col-span-2 flex items-center justify-center text-center">
                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-paymint-green' :
+                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-mintcom-green' :
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
                                                 }`} />
@@ -608,7 +608,7 @@ export function OwnerEstablishmentsPage() {
                                                 e.stopPropagation();
                                                 handleEstablishmentClick(est);
                                             }}
-                                            className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-[#68B390] transition-all flex items-center gap-2"
+                                            className="px-4 py-2 rounded-lg bg-mintcom-green text-black text-xs font-bold tracking-wide hover:bg-[#5fa888] transition-all flex items-center gap-2"
                                         >
                                             {t('owner.locations.enter')}
                                         </button>

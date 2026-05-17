@@ -1,4 +1,4 @@
-﻿import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
@@ -68,7 +68,7 @@ const isOwnerStaff = (member: Pick<Staff, 'role' | 'isAccountOwner' | 'isOwnerAc
 const MAX_EMPLOYEES_PER_ACCOUNT = 50;
 const EMPLOYEE_LIMIT_POPUP_MESSAGE =
   `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
-  `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact PayMint support at support@paymintpos.net with your account email. Never send your password to support.`;
+  `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact Mintcom support at support@mintcompos.com with your account email. Never send your password to support.`;
 
 export function StaffPage() {
   const { t } = useTranslation();
@@ -399,7 +399,7 @@ export function StaffPage() {
       case 'MANAGER':
         return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
       default:
-        return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
+        return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
     }
   };
 
@@ -423,7 +423,7 @@ export function StaffPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('staff.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -440,7 +440,7 @@ export function StaffPage() {
           </button>
           <button
             onClick={handleOpenAddEmployeeModal}
-            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm touch-target"
+            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm touch-target"
           >
             <Plus size={18} />
             <span className="hidden xs:inline">{t('staff.addMember')}</span>
@@ -451,7 +451,7 @@ export function StaffPage() {
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
           { label: t('owner.employees.totalUsers'), info: t('owner.staff.usersInfo'), value: staff.length, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: t('owner.employees.activeNow'), info: t('owner.staff.activeInfo'), value: staff.filter(s => s.isClockedIn).length, icon: UserCheck, color: 'text-paymint-green', bg: 'bg-paymint-green/' },
+          { label: t('owner.employees.activeNow'), info: t('owner.staff.activeInfo'), value: staff.filter(s => s.isClockedIn).length, icon: UserCheck, color: 'text-mintcom-green', bg: 'bg-mintcom-green/' },
           { label: t('owner.staff.admins'), info: t('owner.staff.adminsInfo'), value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
           { label: t('owner.staff.standardUsers'), info: t('owner.staff.standardInfo'), value: staff.filter(s => s.role !== 'ADMIN' && !isOwnerStaff(s)).length, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
@@ -526,7 +526,7 @@ export function StaffPage() {
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32">
-            <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
+            <div className="w-12 h-12 border-4 border-mintcom-green/30 border-t-mintcom-green rounded-full animate-spin mb-4" />
             <p className="label-strong font-outfit">{t('staff.messages.loading')}</p>
           </div>
         ) : filteredStaff.length === 0 ? (
@@ -552,7 +552,7 @@ export function StaffPage() {
                   {/* Card Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm">
+                      <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black text-sm">
                         {getDisplayInitial(member.name, member.username)}
                       </div>
                       <div>
@@ -585,19 +585,19 @@ export function StaffPage() {
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('common.status.label', 'Status')}</p>
                       <div className="flex items-center gap-1.5 text-xs font-bold">
-                         <span className={`px-2 py-0.5 rounded-md ${member.isActive ? 'bg-paymint-green/10 text-paymint-green' : 'bg-paymint-red/10 text-paymint-red'}`}>
+                         <span className={`px-2 py-0.5 rounded-md ${member.isActive ? 'bg-mintcom-green/10 text-mintcom-green' : 'bg-mintcom-red/10 text-mintcom-red'}`}>
                            {member.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                          </span>
                       </div>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.table.status')}</p>
-                      <div className={`flex items-center gap-2 font-bold text-xs ${member.isClockedIn ? 'text-paymint-green' : 'text-gray-400'}`}>
+                      <div className={`flex items-center gap-2 font-bold text-xs ${member.isClockedIn ? 'text-mintcom-green' : 'text-gray-400'}`}>
                         {member.isClockedIn ? (
                           <>
                             <div className="relative flex h-2 w-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mintcom-green opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-mintcom-green"></span>
                             </div>
                             <span>{t('staff.status.online')}</span>
                           </>
@@ -623,7 +623,7 @@ export function StaffPage() {
                     <button
                       onClick={() => handleDelete(member.id, member.username, member)}
                       disabled={isOwnerStaff(member)}
-                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border transition-all text-xs font-bold touch-target ${isOwnerStaff(member) ? 'border-amber-200 text-amber-600 cursor-not-allowed opacity-70' : 'border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border transition-all text-xs font-bold touch-target ${isOwnerStaff(member) ? 'border-amber-200 text-amber-600 cursor-not-allowed opacity-70' : 'border-red-200 dark:border-red-500/20 text-mintcom-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
                     >
                       <Trash2 size={14} />
                       {isOwnerStaff(member)
@@ -641,7 +641,7 @@ export function StaffPage() {
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
                     <th
-                      className="px-6 py-4 text-left dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
+                      className="px-6 py-4 text-left dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
                       onClick={() => handleSort('username')}
                     >
                       <div className="flex items-center gap-1">
@@ -650,7 +650,7 @@ export function StaffPage() {
                       </div>
                     </th>
                     <th
-                      className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
+                      className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
                       onClick={() => handleSort('role')}
                     >
                       <div className="flex items-center justify-center gap-1">
@@ -661,7 +661,7 @@ export function StaffPage() {
                     <th className="px-6 py-4 text-center dashboard-card-label">{t('staff.table.contact')}</th>
                     <th className="px-6 py-4 text-center dashboard-card-label">{t('common.status.label', 'Status')}</th>
                     <th
-                      className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
+                      className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
                       onClick={() => handleSort('status')}
                     >
                       <div className="flex items-center justify-center gap-1">
@@ -681,7 +681,7 @@ export function StaffPage() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
                             {getDisplayInitial(member.name, member.username)}
                           </div>
                           <div>
@@ -716,17 +716,17 @@ export function StaffPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${member.isActive ? 'bg-paymint-green/10 text-paymint-green' : 'bg-paymint-red/10 text-paymint-red'}`}>
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${member.isActive ? 'bg-mintcom-green/10 text-mintcom-green' : 'bg-mintcom-red/10 text-mintcom-red'}`}>
                           {member.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <div className={`flex items-center justify-center gap-2 font-medium text-xs tracking-wide ${member.isClockedIn ? 'text-paymint-green' : 'text-gray-400'}`}>
+                        <div className={`flex items-center justify-center gap-2 font-medium text-xs tracking-wide ${member.isClockedIn ? 'text-mintcom-green' : 'text-gray-400'}`}>
                           {member.isClockedIn ? (
                             <>
                               <div className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mintcom-green opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-mintcom-green"></span>
                               </div>
                               <span>{t('staff.status.online')}</span>
                             </>
@@ -756,7 +756,7 @@ export function StaffPage() {
                               }}
                               aria-label={t('common.actions')}
                               aria-expanded={activeDropdown === member.id}
-                              className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
+                              className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-mintcom-green text-black border-mintcom-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
                             >
                               <MoreVertical size={18} />
                             </button>
@@ -772,13 +772,13 @@ export function StaffPage() {
                                 onClick={() => { setActiveDropdown(null); toast.success(t('staff.messages.resetSuccess')); }}
                                 className="w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
                               >
-                                <Key size={14} className="text-paymint-green" />
+                                <Key size={14} className="text-mintcom-green" />
                                 <span>{t('staff.actions.resetPassword')}</span>
                               </button>
                               <button
                                 onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username, member); }}
                                 disabled={isOwnerStaff(member)}
-                                className={`w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit transition-colors text-left border-t border-gray-100 dark:border-white/5 ${isOwnerStaff(member) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
+                                className={`w-full flex items-center gap-3 px-4 py-3 label-strong font-outfit transition-colors text-left border-t border-gray-100 dark:border-white/5 ${isOwnerStaff(member) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-mintcom-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
                               >
                                 <Trash2 size={14} />
                                 <span>

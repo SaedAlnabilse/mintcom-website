@@ -4,7 +4,7 @@ test.describe('Landing Page Smoke Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Inject cookie consent to avoid the banner intercepting clicks
     await page.addInitScript(() => {
-      window.localStorage.setItem('paymint-cookie-consent', JSON.stringify({
+      window.localStorage.setItem('mintcom-cookie-consent', JSON.stringify({
         essential: true,
         analytics: true,
         marketing: true,
@@ -17,7 +17,7 @@ test.describe('Landing Page Smoke Tests', () => {
     await page.goto('/');
     
     // Check for Logo
-    await expect(page.locator('nav img[alt="PayMint"]').first()).toBeVisible();
+    await expect(page.locator('nav img[alt="Mintcom"]').first()).toBeVisible();
 
     // Check for Hero Section (Get Started button)
     // Use getByRole for more robust matching

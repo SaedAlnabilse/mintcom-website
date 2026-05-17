@@ -90,7 +90,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             <div className="flex gap-3 justify-center">
               <button
                 onClick={this.handleReload}
-                className="flex items-center gap-2 px-4 py-2 bg-paymint-green text-white rounded-lg hover:bg-paymint-green/90 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-mintcom-green text-white rounded-lg hover:bg-mintcom-green/90 transition-colors"
               >
                 <RefreshCw className="w-4 h-4" />
                 Refresh Page

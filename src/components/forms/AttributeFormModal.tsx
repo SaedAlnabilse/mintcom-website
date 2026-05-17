@@ -69,7 +69,7 @@ export function AttributeFormModal({
             setErrors(newErrors);
             // Scroll to the first field that has an error
             setTimeout(() => {
-                const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red');
+                const firstErrorField = scrollRef.current?.querySelector('.border-mintcom-red');
                 if (firstErrorField) {
                     firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 } else {
@@ -104,7 +104,7 @@ export function AttributeFormModal({
 
                     {/* Header */}
                     <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10">
-                        <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
+                        <div className="absolute top-0 right-0 w-48 h-48 bg-mintcom-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                         <div>
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {t('attributes.form.title')}
@@ -131,7 +131,7 @@ export function AttributeFormModal({
                             {/* Name */}
                             <div className="space-y-2">
                                 <label className="label-strong block flex items-center gap-1">
-                                    {t('attributes.form.nameLabel')} <span className="text-paymint-red">*</span>
+                                    {t('attributes.form.nameLabel')} <span className="text-mintcom-red">*</span>
                                     <QuickInfo text={t('attributes.form.nameTip')} />
                                 </label>
                                 <input maxLength={255}
@@ -139,9 +139,9 @@ export function AttributeFormModal({
                                     value={name}
                                     onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                                     placeholder={formatInputPlaceholder(t('attributes.form.namePlaceholder'), t('common.locale'))}
-                                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
                                 />
-                                {errors.name && <p className="mt-1.5 px-1 text-xs font-medium text-paymint-red">{errors.name}</p>}
+                                {errors.name && <p className="mt-1.5 px-1 text-xs font-medium text-mintcom-red">{errors.name}</p>}
                             </div>
 
                             {/* Input Type Selection */}
@@ -155,20 +155,20 @@ export function AttributeFormModal({
                                         type="button"
                                         onClick={() => setInputType('SINGLE_SELECT')}
                                         className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${inputType === 'SINGLE_SELECT'
-                                            ? 'bg-paymint-green/10 border-paymint-green'
-                                            : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+                                            ? 'bg-mintcom-green/10 border-mintcom-green'
+                                            : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-mintcom-green/30'
                                             }`}
                                     >
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${inputType === 'SINGLE_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${inputType === 'SINGLE_SELECT' ? 'bg-mintcom-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
                                             <MousePointerClick size={20} strokeWidth={2.5} />
                                         </div>
                                         <div>
-                                            <p className={`text-sm font-bold ${inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
+                                            <p className={`text-sm font-bold ${inputType === 'SINGLE_SELECT' ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
                                             <p className="text-xs font-medium text-gray-500 mt-1">{t('attributes.form.singleDesc')}</p>
                                         </div>
                                         {inputType === 'SINGLE_SELECT' && (
-                                            <div className="absolute top-4 right-4 text-paymint-green">
-                                                <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                            <div className="absolute top-4 right-4 text-mintcom-green">
+                                                <div className="w-2 h-2 rounded-full bg-mintcom-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                                             </div>
                                         )}
                                     </button>
@@ -177,20 +177,20 @@ export function AttributeFormModal({
                                         type="button"
                                         onClick={() => setInputType('MULTI_SELECT')}
                                         className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${inputType === 'MULTI_SELECT'
-                                            ? 'bg-paymint-green/10 border-paymint-green'
-                                            : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+                                            ? 'bg-mintcom-green/10 border-mintcom-green'
+                                            : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-mintcom-green/30'
                                             }`}
                                     >
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${inputType === 'MULTI_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${inputType === 'MULTI_SELECT' ? 'bg-mintcom-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
                                             <CheckSquare size={20} strokeWidth={2.5} />
                                         </div>
                                         <div>
-                                            <p className={`text-sm font-bold ${inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
+                                            <p className={`text-sm font-bold ${inputType === 'MULTI_SELECT' ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
                                             <p className="text-xs font-medium text-gray-500 mt-1">{t('attributes.form.multipleDesc')}</p>
                                         </div>
                                         {inputType === 'MULTI_SELECT' && (
-                                            <div className="absolute top-4 right-4 text-paymint-green">
-                                                <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                            <div className="absolute top-4 right-4 text-mintcom-green">
+                                                <div className="w-2 h-2 rounded-full bg-mintcom-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                                             </div>
                                         )}
                                     </button>
@@ -205,7 +205,7 @@ export function AttributeFormModal({
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" checked={isRequired} onChange={() => setIsRequired(!isRequired)} className="sr-only peer" />
-                                    <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
+                                    <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-mintcom-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
                                 </label>
                             </div>
 
@@ -229,7 +229,7 @@ export function AttributeFormModal({
                                 type="button"
                                 onClick={() => onDelete(initialData.id)}
                                 title={t('common.archive')}
-                                className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90"
+                                className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-mintcom-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90"
                             >
                                 <Trash2 size={24} className="group-hover:scale-110 transition-transform" />
                             </button>
@@ -245,7 +245,7 @@ export function AttributeFormModal({
                             type="submit"
                             form="attribute-form"
                             disabled={isSubmitting}
-                            className="flex-[2] h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                            className="flex-[2] h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
                         >
                             {isSubmitting ? (
                                 <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />

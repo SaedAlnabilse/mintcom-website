@@ -54,7 +54,7 @@ export const CommunityPage = () => {
     },
     {
       id: 3,
-      title: t('community.discussions.featured_3.title', 'Integrating PayMint with our inventory system'),
+      title: t('community.discussions.featured_3.title', 'Integrating Mintcom with our inventory system'),
       author: 'David Kim',
       avatar: null,
       replies: 12,
@@ -93,7 +93,7 @@ export const CommunityPage = () => {
         {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-10 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-PayMint-green/10 rounded-full blur-[80px]" />
+          <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-Mintcom-green/10 rounded-full blur-[80px]" />
         </div>
 
         <div className="container mx-auto px-8 md:px-16 lg:px-24 relative z-10">
@@ -109,7 +109,7 @@ export const CommunityPage = () => {
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6">
               {t('community.hub.hero.title_part1', 'Learn, Share,')}{' '}
-              <span className="text-PayMint-green">{t('community.hub.hero.title_part2', 'Grow')}</span>{' '}
+              <span className="text-Mintcom-green">{t('community.hub.hero.title_part2', 'Grow')}</span>{' '}
               {t('community.hub.hero.title_part3', 'Together')}
             </h1>
 
@@ -125,7 +125,7 @@ export const CommunityPage = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={formatInputPlaceholder(t('community.hub.search_placeholder', 'Search discussions, ideas, or guides...'), t('common.locale'))}
-                className="w-full pl-16 pr-14 py-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all"
+                className="w-full pl-16 pr-14 py-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-medium focus:outline-none focus:ring-2 focus:ring-Mintcom-green/50 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all"
               />
               {searchQuery && (
                 <button
@@ -155,7 +155,7 @@ export const CommunityPage = () => {
                 className="text-center"
               >
                 <div className="w-12 h-12 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <stat.icon size={24} className="text-PayMint-green" />
+                  <stat.icon size={24} className="text-Mintcom-green" />
                 </div>
                 <p className="text-2xl md:text-3xl font-black">{stat.value}</p>
                 <p className="text-sm font-medium text-gray-500">{stat.label}</p>
@@ -181,7 +181,7 @@ export const CommunityPage = () => {
                 {t('community.discussions.title', 'Discussions')}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
-                {t('community.discussions.description', 'Ask questions, share experiences, and connect with other PayMint users.')}
+                {t('community.discussions.description', 'Ask questions, share experiences, and connect with other Mintcom users.')}
               </p>
               <div className="flex items-center gap-2 text-blue-500 font-bold">
                 {t('community.discussions.browse', 'Browse Discussions')}{' '}
@@ -201,7 +201,7 @@ export const CommunityPage = () => {
                 {t('community.ideas.title', 'Feature Ideas')}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
-                {t('community.ideas.description', 'Vote on feature requests and help shape the future of PayMint.')}
+                {t('community.ideas.description', 'Vote on feature requests and help shape the future of Mintcom.')}
               </p>
               <div className="flex items-center gap-2 text-yellow-600 font-bold">
                 {t('community.ideas.explore', 'Explore Ideas')}{' '}
@@ -212,18 +212,18 @@ export const CommunityPage = () => {
             {/* Guides */}
             <Link
               to="/community/guides"
-              className="group bg-gradient-to-br from-PayMint-green/10 to-emerald-500/5 border border-PayMint-green/20 rounded-3xl p-8 hover:border-PayMint-green/40 transition-all"
+              className="group bg-gradient-to-br from-Mintcom-green/10 to-emerald-500/5 border border-Mintcom-green/20 rounded-3xl p-8 hover:border-Mintcom-green/40 transition-all"
             >
-              <div className="w-14 h-14 bg-PayMint-green rounded-2xl flex items-center justify-center text-black mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-14 h-14 bg-Mintcom-green rounded-2xl flex items-center justify-center text-black mb-6 group-hover:scale-110 transition-transform">
                 <BookOpen size={28} />
               </div>
-              <h3 className="text-2xl font-black mb-3 group-hover:text-PayMint-green transition-colors">
+              <h3 className="text-2xl font-black mb-3 group-hover:text-Mintcom-green transition-colors">
                 {t('community.guides.title', 'Guides & Tutorials')}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
                 {t('community.guides.description', 'Learn best practices and master every feature with our guides.')}
               </p>
-              <div className="flex items-center gap-2 text-PayMint-green font-bold">
+              <div className="flex items-center gap-2 text-Mintcom-green font-bold">
                 {t('community.guides.start', 'Start Learning')}{' '}
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -260,7 +260,7 @@ export const CommunityPage = () => {
               >
                 <Link
                   to={`/community/discussions/${discussion.id}`}
-                  className="block bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 hover:border-PayMint-green/30 hover:shadow-xl transition-all group h-full"
+                  className="block bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 hover:border-Mintcom-green/30 hover:shadow-xl transition-all group h-full"
                 >
                   {discussion.isHot && (
                     <div className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 dark:bg-orange-500/20 text-orange-600 rounded-md text-xs font-bold mb-3">
@@ -268,7 +268,7 @@ export const CommunityPage = () => {
                       {t('community.labels.hot', 'Hot')}
                     </div>
                   )}
-                  <h3 className="font-bold text-lg mb-3 group-hover:text-PayMint-green transition-colors">
+                  <h3 className="font-bold text-lg mb-3 group-hover:text-Mintcom-green transition-colors">
                     {discussion.title}
                   </h3>
                   <p className="text-sm text-gray-500 mb-4">{discussion.category}</p>
@@ -305,7 +305,7 @@ export const CommunityPage = () => {
               </div>
               <Link
                 to="/community/ideas"
-                className="text-sm font-bold text-PayMint-green hover:underline flex items-center gap-1"
+                className="text-sm font-bold text-Mintcom-green hover:underline flex items-center gap-1"
               >
                 {t('community.ideas.see_all', 'See all ideas')} <ArrowRight size={14} />
               </Link>
@@ -318,10 +318,10 @@ export const CommunityPage = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="flex items-center gap-4 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl p-4 hover:border-PayMint-green/30 transition-all"
+                  className="flex items-center gap-4 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl p-4 hover:border-Mintcom-green/30 transition-all"
                 >
                   <div className="text-center">
-                    <button className="w-12 h-12 bg-PayMint-green/10 hover:bg-PayMint-green/20 text-PayMint-green rounded-xl flex flex-col items-center justify-center transition-colors">
+                    <button className="w-12 h-12 bg-Mintcom-green/10 hover:bg-Mintcom-green/20 text-Mintcom-green rounded-xl flex flex-col items-center justify-center transition-colors">
                       <TrendingUp size={16} />
                       <span className="text-xs font-black mt-0.5">{idea.votes}</span>
                     </button>
@@ -359,7 +359,7 @@ export const CommunityPage = () => {
               </div>
               <Link
                 to="/community/guides"
-                className="text-sm font-bold text-PayMint-green hover:underline flex items-center gap-1"
+                className="text-sm font-bold text-Mintcom-green hover:underline flex items-center gap-1"
               >
                 {t('community.guides.browse_all', 'Browse all')} <ArrowRight size={14} />
               </Link>
@@ -373,13 +373,13 @@ export const CommunityPage = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="flex items-center gap-4 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl p-4 hover:border-PayMint-green/30 transition-all group"
+                  className="flex items-center gap-4 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl p-4 hover:border-Mintcom-green/30 transition-all group"
                 >
-                  <div className="w-12 h-12 bg-PayMint-green/10 rounded-xl flex items-center justify-center">
-                    <BookOpen size={20} className="text-PayMint-green" />
+                  <div className="w-12 h-12 bg-Mintcom-green/10 rounded-xl flex items-center justify-center">
+                    <BookOpen size={20} className="text-Mintcom-green" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-bold group-hover:text-PayMint-green transition-colors">
+                    <h4 className="font-bold group-hover:text-Mintcom-green transition-colors">
                       {guide.title}
                     </h4>
                     <div className="flex items-center gap-4 text-sm text-gray-400 mt-1">
@@ -391,7 +391,7 @@ export const CommunityPage = () => {
                       </span>
                     </div>
                   </div>
-                  <ChevronRight size={20} className="text-gray-400 group-hover:text-PayMint-green group-hover:translate-x-1 transition-all" />
+                  <ChevronRight size={20} className="text-gray-400 group-hover:text-Mintcom-green group-hover:translate-x-1 transition-all" />
                 </motion.a>
               ))}
             </div>
@@ -405,7 +405,7 @@ export const CommunityPage = () => {
           <div className="max-w-4xl mx-auto">
             <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl p-10 md:p-16 text-center text-white relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-[80px]" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-PayMint-green/20 rounded-full blur-[60px]" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-Mintcom-green/20 rounded-full blur-[60px]" />
 
               <div className="relative z-10">
                 <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -415,7 +415,7 @@ export const CommunityPage = () => {
                   {t('community.cta.title', 'Become a Community Champion')}
                 </h2>
                 <p className="text-white/80 font-medium mb-8 max-w-lg mx-auto">
-                  {t('community.cta.subtitle', 'Help others, earn badges, and get early access to new features. Join the PayMint community today!')}
+                  {t('community.cta.subtitle', 'Help others, earn badges, and get early access to new features. Join the Mintcom community today!')}
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">
                   {isAuthenticated ? (

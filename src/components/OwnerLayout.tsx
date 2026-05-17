@@ -25,10 +25,10 @@ import {
     ArrowLeft
 } from 'lucide-react';
 
-// Paymint Logo imports
-import PaymintLogoGreen from '../assets/green-full-logo.svg';
-import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
-import PaymintLeafIcon from '../assets/small-logo.svg';
+// Mintcom Logo imports
+import MintcomLogoGreen from '../assets/green-full-logo.svg';
+import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
+import MintcomLeafIcon from '../assets/small-logo.svg';
 
 export function OwnerLayout() {
     const { t } = useTranslation();
@@ -112,7 +112,7 @@ export function OwnerLayout() {
     return (
         <div
             dir={isRtl ? 'rtl' : 'ltr'}
-            className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden selection:bg-paymint-green selection:text-black transition-colors duration-500"
+            className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden selection:bg-mintcom-green selection:text-black transition-colors duration-500"
         >
             {/* Mobile Menu Overlay */}
             <AnimatePresence>
@@ -141,7 +141,7 @@ export function OwnerLayout() {
                 `}
             >
                 {/* Sidebar Glow Decor */}
-                <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-transparent via-paymint-green/20 to-transparent opacity-50" />
+                <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-transparent via-mintcom-green/20 to-transparent opacity-50" />
 
                 {/* Brand Header & Toggle */}
                 <div className="h-20 flex items-center justify-between px-6 mb-2 relative shrink-0">
@@ -157,7 +157,7 @@ export function OwnerLayout() {
                             >
                                 <ArrowLeft size={16} className="text-gray-400 mr-2 group-hover:-translate-x-1 transition-transform" />
                                 <img
-                                    src={PaymintLogoGreen}
+                                    src={MintcomLogoGreen}
                                     alt={t('brand.name')}
                                     width={160}
                                     height={40}
@@ -166,7 +166,7 @@ export function OwnerLayout() {
                                     className="h-10 w-auto object-contain dark:hidden transition-transform"
                                 />
                                 <img
-                                    src={PaymintLogoWhite}
+                                    src={MintcomLogoWhite}
                                     alt={t('brand.name')}
                                     width={160}
                                     height={40}
@@ -187,10 +187,10 @@ export function OwnerLayout() {
                                 className="mx-auto"
                             >
                                 <button
-                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 text-paymint-green transition-all group relative"
+                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-mintcom-green/20 to-mintcom-green/5 border border-mintcom-green/20 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
                                     onClick={() => setSidebarOpen(true)}
                                 >
-                                    <img src={PaymintLeafIcon} width={32} height={32} loading="eager" decoding="async" className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt="P" />
+                                    <img src={MintcomLeafIcon} width={32} height={32} loading="eager" decoding="async" className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt="P" />
                                     <PanelLeft
                                         size={24}
                                         className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
@@ -206,7 +206,7 @@ export function OwnerLayout() {
                     {sidebarOpen && (
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="p-2 rounded-xl text-gray-400 hover:text-paymint-green hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                            className="p-2 rounded-xl text-gray-400 hover:text-mintcom-green hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
                         >
                             <PanelLeftClose size={20} />
                         </button>
@@ -239,7 +239,7 @@ export function OwnerLayout() {
                                 className={({ isActive }) =>
                                     `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
                                     ${isActive
-                                        ? 'bg-paymint-green text-black font-semibold shadow-lg shadow-paymint-green/20 active-menu-item'
+                                        ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20 active-menu-item'
                                         : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
                                     ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
                                 }
@@ -275,7 +275,7 @@ export function OwnerLayout() {
                         <div className="space-y-1">
                             {/* Profile Header */}
                             <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-xl">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
                                     {account?.firstName?.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="min-w-0">
@@ -371,7 +371,7 @@ export function OwnerLayout() {
 
             {/* Main Content Area */}
             <main
-                className="flex-1 relative overflow-hidden bg-gray-100 dark:bg-paymint-dark transition-all duration-500 border-l border-gray-200 dark:border-white/[0.05] flex flex-col"
+                className="flex-1 relative overflow-hidden bg-gray-100 dark:bg-mintcom-dark transition-all duration-500 border-l border-gray-200 dark:border-white/[0.05] flex flex-col"
                 onClick={() => sidebarOpen && setSidebarOpen(false)}
             >
                 {/* Mobile Header */}
@@ -383,12 +383,12 @@ export function OwnerLayout() {
                         <Menu size={22} />
                     </button>
                     <img
-                        src={PaymintLogoGreen}
+                        src={MintcomLogoGreen}
                         alt={t('brand.name')}
                         className="h-8 w-auto object-contain dark:hidden"
                     />
                     <img
-                        src={PaymintLogoWhite}
+                        src={MintcomLogoWhite}
                         alt={t('brand.name')}
                         className="h-8 w-auto object-contain hidden dark:block"
                     />
@@ -421,7 +421,7 @@ export function OwnerLayout() {
                         {/* Close Button */}
                         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100 dark:border-white/5">
                             <div className="flex items-center gap-3">
-                                <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt="P" />
+                                <img src={MintcomLeafIcon} className="w-8 h-8 object-contain" alt="P" />
                                 <span className="text-lg font-bold text-gray-900 dark:text-white">{t('brand.name')}</span>
                             </div>
                             <button
@@ -447,7 +447,7 @@ export function OwnerLayout() {
                                         className={`
                                             flex items-center gap-3 p-3.5 rounded-xl transition-all
                                             ${isActive
-                                                ? 'bg-paymint-green text-black font-semibold shadow-lg shadow-paymint-green/20'
+                                                ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20'
                                                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'}
                                         `}
                                     >
@@ -470,7 +470,7 @@ export function OwnerLayout() {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center">
                                     <span className="text-black font-bold">{account?.firstName?.charAt(0).toUpperCase()}</span>
                                 </div>
                                 <div className="flex-1">

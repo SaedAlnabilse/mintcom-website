@@ -225,7 +225,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!error.response) {
         return {
           success: false,
-          error: 'Cannot reach the PayMint server from this website domain. Please try again, or contact support if it continues.',
+          error: 'Cannot reach the Mintcom server from this website domain. Please try again, or contact support if it continues.',
         };
       }
       return {

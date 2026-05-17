@@ -36,8 +36,8 @@ interface TaskItem {
 /*  LocalStorage helpers                                               */
 /* ------------------------------------------------------------------ */
 
-const getTasksStorageKey = (contextId: string) => `paymint.widget.tasks.v1.${contextId}`;
-const getDismissedKey = (contextId: string) => `paymint.widget.tasks.dismissed.${contextId}`;
+const getTasksStorageKey = (contextId: string) => `mintcom.widget.tasks.v1.${contextId}`;
+const getDismissedKey = (contextId: string) => `mintcom.widget.tasks.dismissed.${contextId}`;
 
 function readCompletedState(storageKey: string): Record<string, boolean> {
     if (typeof window === 'undefined') return {};
@@ -89,7 +89,7 @@ export function TasksWidget() {
             if (widgetRef.current && !widgetRef.current.contains(event.target as Node)) {
                 // IMPORTANT: If a tour guide is active, DO NOT close the panel automatically on outside click
                 // This allows the user to interact with the tour (clicking "Next", etc.) without closing the task list
-                if (document.getElementById('paymint-tour-guide-active')) {
+                if (document.getElementById('mintcom-tour-guide-active')) {
                     return;
                 }
 
@@ -248,7 +248,7 @@ export function TasksWidget() {
         if (typeof window === 'undefined') return;
         try {
             window.localStorage.setItem(storageKey, JSON.stringify(completedById));
-            window.dispatchEvent(new Event('paymint-tasks-updated'));
+            window.dispatchEvent(new Event('mintcom-tasks-updated'));
         } catch {
             /* no-op */
         }
@@ -319,8 +319,8 @@ export function TasksWidget() {
         const handleOpenTasksEvent = () => {
             openPanel();
         };
-        window.addEventListener('paymint-open-tasks', handleOpenTasksEvent);
-        return () => window.removeEventListener('paymint-open-tasks', handleOpenTasksEvent);
+        window.addEventListener('mintcom-open-tasks', handleOpenTasksEvent);
+        return () => window.removeEventListener('mintcom-open-tasks', handleOpenTasksEvent);
     }, []);
 
     /* ---- visibility ---- */
@@ -352,11 +352,11 @@ export function TasksWidget() {
                         <motion.div
                             animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.1, 0.4] }}
                             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                            className="absolute inset-0 rounded-2xl bg-[#7CC39F]/30"
+                            className="absolute inset-0 rounded-2xl bg-[#7dc6a2]/30"
                         />
 
                         {/* Main button */}
-                        <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-[#7CC39F] to-[#5BA882] text-white shadow-lg shadow-[#7CC39F]/40 flex items-center justify-center transition-shadow group-hover:shadow-[#7CC39F]/60">
+                        <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-[#7dc6a2] to-[#5BA882] text-white shadow-lg shadow-[#7dc6a2]/40 flex items-center justify-center transition-shadow group-hover:shadow-[#7dc6a2]/60">
                             <ListTodo size={22} strokeWidth={2.2} />
                         </div>
 
@@ -376,7 +376,7 @@ export function TasksWidget() {
                             <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className={`absolute -top-1.5 ${isRTL ? '-left-1.5' : '-right-1.5'} w-[22px] h-[22px] rounded-full bg-[#7CC39F] text-white flex items-center justify-center border-2 border-white dark:border-[#0F172A]`}
+                                className={`absolute -top-1.5 ${isRTL ? '-left-1.5' : '-right-1.5'} w-[22px] h-[22px] rounded-full bg-[#7dc6a2] text-white flex items-center justify-center border-2 border-white dark:border-[#0F172A]`}
                             >
                                 <Check size={12} strokeWidth={3} />
                             </motion.div>
@@ -402,7 +402,7 @@ export function TasksWidget() {
                         {/* ---------- Header ---------- */}
                         <div className="px-4 py-3 border-b border-gray-100 dark:border-white/5 flex items-center justify-between flex-shrink-0">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#7CC39F]/20 to-[#7CC39F]/5 text-[#7CC39F] flex items-center justify-center">
+                                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#7dc6a2]/20 to-[#7dc6a2]/5 text-[#7dc6a2] flex items-center justify-center">
                                     <ClipboardCheck size={18} />
                                 </div>
                                 <div>
@@ -461,7 +461,7 @@ export function TasksWidget() {
 
                                 <div className="mt-2 h-2.5 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden">
                                     <motion.div
-                                        className="h-full rounded-full bg-gradient-to-r from-[#7CC39F] to-[#5BA882]"
+                                        className="h-full rounded-full bg-gradient-to-r from-[#7dc6a2] to-[#5BA882]"
                                         initial={{ width: 0 }}
                                         animate={{ width: `${progress}%` }}
                                         transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -481,16 +481,16 @@ export function TasksWidget() {
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="rounded-2xl border border-[#7CC39F]/30 dark:border-[#7CC39F]/20 bg-[#7CC39F]/10 dark:bg-[#7CC39F]/10 p-5 text-center"
+                                    className="rounded-2xl border border-[#7dc6a2]/30 dark:border-[#7dc6a2]/20 bg-[#7dc6a2]/10 dark:bg-[#7dc6a2]/10 p-5 text-center"
                                 >
                                     <PartyPopper
                                         size={40}
-                                        className="mx-auto text-[#7CC39F] mb-2"
+                                        className="mx-auto text-[#7dc6a2] mb-2"
                                     />
-                                    <h4 className="text-lg font-bold text-[#7CC39F] dark:text-[#7CC39F]">
+                                    <h4 className="text-lg font-bold text-[#7dc6a2] dark:text-[#7dc6a2]">
                                         {t('chat.tasks.allDoneTitle', 'All Done! 🎉')}
                                     </h4>
-                                    <p className="text-sm text-[#7CC39F]/80 dark:text-[#7CC39F]/80 mt-1">
+                                    <p className="text-sm text-[#7dc6a2]/80 dark:text-[#7dc6a2]/80 mt-1">
                                         {t(
                                             'chat.tasks.allDoneSubtitle',
                                             'Your location is fully set up and ready to go.',
@@ -509,7 +509,7 @@ export function TasksWidget() {
                                         key={task.id}
                                         id={`widget-task-item-${task.id}`}
                                         className={`rounded-2xl border overflow-hidden transition-colors ${isCompleted
-                                            ? 'border-[#7CC39F]/30 dark:border-[#7CC39F]/10 bg-[#7CC39F]/5 dark:bg-[#7CC39F]/5'
+                                            ? 'border-[#7dc6a2]/30 dark:border-[#7dc6a2]/10 bg-[#7dc6a2]/5 dark:bg-[#7dc6a2]/5'
                                             : 'border-gray-200/80 dark:border-white/10 bg-white dark:bg-white/[0.02]'
                                             } shadow-sm`}
                                     >
@@ -530,8 +530,8 @@ export function TasksWidget() {
                                         >
                                             <div
                                                 className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0 transition-colors ${isCompleted
-                                                    ? 'bg-[#7CC39F]/15 text-[#7CC39F]'
-                                                    : 'bg-[#7CC39F]/10 text-gray-700 dark:text-gray-200'
+                                                    ? 'bg-[#7dc6a2]/15 text-[#7dc6a2]'
+                                                    : 'bg-[#7dc6a2]/10 text-gray-700 dark:text-gray-200'
                                                     }`}
                                             >
                                                 {isCompleted ? <Check size={18} /> : index + 1}
@@ -573,7 +573,7 @@ export function TasksWidget() {
                                                         <div className="mt-4 flex items-center gap-2">
                                                             <button
                                                                 onClick={() => handleOpenTask(task.navigation)}
-                                                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#7CC39F] to-[#5BA882] text-white font-bold text-sm shadow-sm hover:brightness-105 transition-all"
+                                                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#7dc6a2] to-[#5BA882] text-white font-bold text-sm shadow-sm hover:brightness-105 transition-all"
                                                             >
                                                                 <span>{task.actionLabel}</span>
                                                                 <ExternalLink size={14} />
@@ -583,7 +583,7 @@ export function TasksWidget() {
                                                                 onClick={() => toggleComplete(task.id)}
                                                                 className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-sm transition-colors ${isCompleted
                                                                     ? 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
-                                                                    : 'text-[#7CC39F] hover:bg-[#7CC39F]/10'
+                                                                    : 'text-[#7dc6a2] hover:bg-[#7dc6a2]/10'
                                                                     }`}
                                                             >
                                                                 <Check size={14} />

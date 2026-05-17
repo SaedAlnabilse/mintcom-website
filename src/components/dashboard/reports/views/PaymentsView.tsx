@@ -1,4 +1,4 @@
-﻿import { Wallet, CreditCard, PieChart as PieChartIcon, ChevronRight, Activity } from 'lucide-react';
+import { Wallet, CreditCard, PieChart as PieChartIcon, ChevronRight, Activity } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { SalesSummary } from '../../../../types';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Label } from 'recharts';
@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 
-const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+const COLORS = ['#7dc6a2', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
   const { t } = useTranslation();
@@ -77,7 +77,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
             <CurrencyAmount amount={salesData.totalRevenue || 0} />
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.payments.totalCollectedDesc')}</p>
           </div>
-          <div className="absolute right-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 w-32 h-32 bg-mintcom-green/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
         </div>
 
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
@@ -88,7 +88,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
             </p>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.payments.topMethodDesc')}</p>
           </div>
-          <div className="absolute right-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 w-32 h-32 bg-mintcom-green/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
         </div>
 
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
@@ -108,7 +108,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
         {/* Detailed Distribution Chart */}
         <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
               <PieChartIcon size={20} />
             </div>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -203,7 +203,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
         <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col h-[400px]">
           <div className="p-6 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+              <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
                 <Activity size={20} />
               </div>
               <div>
@@ -224,7 +224,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all label-strong font-outfit border border-gray-200 dark:border-white/10"
             >
               <span>{t('orders.reports.payments.viewAllOrders')}</span>
-              <ChevronRight size={14} className={`text-paymint-green transition-transform ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
+              <ChevronRight size={14} className={`text-mintcom-green transition-transform ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
             </button>
           </div>
           <div className="flex-1 overflow-auto custom-scrollbar">

@@ -92,7 +92,7 @@ export function DiscountFormModal({
       setErrors(newErrors);
       // Scroll to the first field that has an error
       setTimeout(() => {
-        const firstErrorField = scrollRef.current?.querySelector('.border-paymint-red');
+        const firstErrorField = scrollRef.current?.querySelector('.border-mintcom-red');
         if (firstErrorField) {
           firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
@@ -151,7 +151,7 @@ export function DiscountFormModal({
               {/* Name */}
               <div className="space-y-2">
                 <label className="label-strong block flex items-center gap-1">
-                  {t('discounts.form.nameLabel')} <span className="text-paymint-red">*</span>
+                  {t('discounts.form.nameLabel')} <span className="text-mintcom-red">*</span>
                   <QuickInfo text={t('discounts.form.nameTip')} />
                 </label>
                 <input maxLength={255}
@@ -159,15 +159,15 @@ export function DiscountFormModal({
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                   placeholder={formatInputPlaceholder(t('discounts.form.namePlaceholder'), t('common.locale'))}
-                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
                 />
-                {errors.name && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
+                {errors.name && <p className="mt-1.5 px-1 text-xs font-bold text-mintcom-red">{errors.name}</p>}
               </div>
 
               {/* Percentage */}
               <div className="space-y-2">
                 <label className="label-strong block flex items-center gap-1">
-                  {t('discounts.form.percentageLabel')} <span className="text-paymint-red">*</span>
+                  {t('discounts.form.percentageLabel')} <span className="text-mintcom-red">*</span>
                   <QuickInfo text={t('discounts.form.percentageTip')} />
                 </label>
                 <div className="relative group">
@@ -183,14 +183,14 @@ export function DiscountFormModal({
                       }
                     }}
                     placeholder={formatInputPlaceholder(t('common.zeroDecimal'), t('common.locale'))}
-                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.percentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.percentage ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
                   />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
-                    <span className="text-paymint-green text-xs font-black">{t('common.percent')}</span>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-mintcom-green/10 border border-mintcom-green/20 rounded-lg shadow-sm">
+                    <span className="text-mintcom-green text-xs font-black">{t('common.percent')}</span>
                   </div>
                 </div>
-                <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
-                {errors.percentage && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.percentage}</p>}
+                <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
+                {errors.percentage && <p className="mt-1.5 px-1 text-xs font-bold text-mintcom-red">{errors.percentage}</p>}
               </div>
 
               {/* Manager Only Toggle */}
@@ -206,7 +206,7 @@ export function DiscountFormModal({
                     onChange={(e) => setAdminOnly(e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
+                  <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
                 </label>
               </div>
 
@@ -229,7 +229,7 @@ export function DiscountFormModal({
                   type="button"
                   onClick={() => initialData && onReactivate?.(initialData.id)}
                   disabled={isSubmitting}
-                  className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-barlow font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                  className="flex-1 h-12 sm:h-14 bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
                 >
                   <RotateCcw size={16} />
                   <span>{t('common.reactivate', { defaultValue: 'Reactivate' })}</span>
@@ -241,7 +241,7 @@ export function DiscountFormModal({
                   <button
                     type="button"
                     onClick={() => onDelete(initialData.id)}
-                    className="flex-1 h-14 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-widest rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2"
+                    className="flex-1 h-14 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-widest rounded-2xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2"
                   >
                     <Trash2 size={16} />
                     <span>{t('common.deactivate')}</span>
@@ -259,7 +259,7 @@ export function DiscountFormModal({
                   type="submit"
                   form="discount-form"
                   disabled={isSubmitting}
-                  className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-barlow font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                  className="flex-1 h-12 sm:h-14 bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
                 >
                   {isSubmitting ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -132,14 +132,14 @@ function LayoutSuspense({ children }: { children: React.ReactNode }) {
 }
 
 const routeSeo = [
-  { path: '/', title: 'PayMint POS | Cloud POS & Business Management', description: 'Run sales, inventory, staff, reports, loyalty, and multi-location operations from PayMint.' },
-  { path: '/login', title: 'Login | PayMint POS', description: 'Sign in securely to your PayMint account.' },
-  { path: '/signup', title: 'Create Account | PayMint POS', description: 'Create a PayMint account for your business.' },
-  { path: '/support', title: 'Support | PayMint POS', description: 'Find PayMint help articles and support tickets.' },
-  { path: '/about', title: 'About PayMint', description: 'Learn about PayMint POS and business management.' },
-  { path: '/dashboard', title: 'Dashboard | PayMint POS', description: 'Manage your PayMint business dashboard.' },
-  { path: '/owner', title: 'Owner Portal | PayMint POS', description: 'Manage PayMint account ownership, billing, brands, and establishments.' },
-  { path: '/brand', title: 'Brand Portal | PayMint POS', description: 'Manage PayMint brand locations and teams.' },
+  { path: '/', title: 'Mintcom POS | Cloud POS & Business Management', description: 'Run sales, inventory, staff, reports, loyalty, and multi-location operations from Mintcom.' },
+  { path: '/login', title: 'Login | Mintcom POS', description: 'Sign in securely to your Mintcom account.' },
+  { path: '/signup', title: 'Create Account | Mintcom POS', description: 'Create a Mintcom account for your business.' },
+  { path: '/support', title: 'Support | Mintcom POS', description: 'Find Mintcom help articles and support tickets.' },
+  { path: '/about', title: 'About Mintcom', description: 'Learn about Mintcom POS and business management.' },
+  { path: '/dashboard', title: 'Dashboard | Mintcom POS', description: 'Manage your Mintcom business dashboard.' },
+  { path: '/owner', title: 'Owner Portal | Mintcom POS', description: 'Manage Mintcom account ownership, billing, brands, and establishments.' },
+  { path: '/brand', title: 'Brand Portal | Mintcom POS', description: 'Manage Mintcom brand locations and teams.' },
 ];
 
 const siteUrl = env.VITE_SITE_URL.replace(/\/$/, '');
@@ -718,7 +718,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="system" storageKey="paymint-ui-theme">
+      <ThemeProvider defaultTheme="system" storageKey="mintcom-ui-theme">
         <AuthProvider>
           <CurrencyProvider>
             <div id="global-blocking-overlay" />
@@ -734,7 +734,7 @@ function App() {
                 },
                 success: {
                   iconTheme: {
-                    primary: '#7CC39F',
+                    primary: '#7dc6a2',
                     secondary: '#fff',
                   },
                 },

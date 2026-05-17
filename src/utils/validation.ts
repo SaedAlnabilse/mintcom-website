@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { TFunction } from 'i18next';
 
 /**
- * Common validation schemas for the PayMint Landing application.
+ * Common validation schemas for the Mintcom Landing application.
  * Centralizing these allows for consistent validation logic across pages 
  * and enables robust unit testing.
  */

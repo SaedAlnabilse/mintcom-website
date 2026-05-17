@@ -67,7 +67,7 @@ interface Ticket {
 const statusConfig: Record<string, { label: string; color: string; bg: string; icon: typeof Inbox }> = {
     open: { label: 'Open', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', icon: Inbox },
     in_progress: { label: 'In Progress', color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', icon: Clock },
-    resolved: { label: 'Resolved', color: 'text-paymint-green', bg: 'bg-paymint-green/10 dark:bg-paymint-green/', icon: CheckCircle2 },
+    resolved: { label: 'Resolved', color: 'text-mintcom-green', bg: 'bg-mintcom-green/10 dark:bg-mintcom-green/', icon: CheckCircle2 },
     closed: { label: 'Closed', color: 'text-gray-500', bg: 'bg-gray-50 dark:bg-gray-800', icon: XCircle },
 };
 
@@ -100,7 +100,7 @@ const quickReplies = [
     },
     {
         label: 'Billing follow-up',
-        text: 'Thanks for contacting Paymint Support. We are reviewing the billing details on your account and will follow up here with the safest next step.',
+        text: 'Thanks for contacting Mintcom Support. We are reviewing the billing details on your account and will follow up here with the safest next step.',
     },
 ];
 
@@ -125,7 +125,7 @@ function getSlaState(ticket: Ticket) {
     const remaining = slaHours - hoursSince(anchorDate);
 
     if (ticket.status === 'resolved' || ticket.status === 'closed') {
-        return { label: 'SLA complete', color: 'text-paymint-green' };
+        return { label: 'SLA complete', color: 'text-mintcom-green' };
     }
 
     if (remaining <= 0) {
@@ -186,15 +186,15 @@ export const SupportAdminDetailPage = () => {
 
     useEffect(() => {
         if (!ticketId) return;
-        setInternalNote(localStorage.getItem(`paymint-support-note-${ticketId}`) || '');
+        setInternalNote(localStorage.getItem(`mintcom-support-note-${ticketId}`) || '');
     }, [ticketId]);
 
     useEffect(() => {
         if (!ticketId) return;
         if (internalNote.trim()) {
-            localStorage.setItem(`paymint-support-note-${ticketId}`, internalNote);
+            localStorage.setItem(`mintcom-support-note-${ticketId}`, internalNote);
         } else {
-            localStorage.removeItem(`paymint-support-note-${ticketId}`);
+            localStorage.removeItem(`mintcom-support-note-${ticketId}`);
         }
     }, [internalNote, ticketId]);
 
@@ -286,7 +286,7 @@ export const SupportAdminDetailPage = () => {
                 <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0a0a0a] pt-24">
                     <div className="text-center">
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Ticket Not Found</h1>
-                        <Link to="/support/admin" className="text-paymint-green font-bold hover:underline">
+                        <Link to="/support/admin" className="text-mintcom-green font-bold hover:underline">
                             ← Back to Admin Portal
                         </Link>
                     </div>
@@ -312,7 +312,7 @@ export const SupportAdminDetailPage = () => {
                     {/* ── Back + Header ──────────────────────────────────────────── */}
                     <Link
                         to="/support/admin"
-                        className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors mb-6"
+                        className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-mintcom-green transition-colors mb-6"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         Back to Admin Portal
@@ -325,10 +325,10 @@ export const SupportAdminDetailPage = () => {
                                 <div className="flex items-center gap-2 mb-2">
                                     <button
                                         onClick={handleCopy}
-                                        className="text-xs font-mono font-bold text-gray-400 hover:text-paymint-green flex items-center gap-1 transition-colors"
+                                        className="text-xs font-mono font-bold text-gray-400 hover:text-mintcom-green flex items-center gap-1 transition-colors"
                                     >
                                         {ticket.ticketNumber}
-                                        {copied ? <Check className="w-3 h-3 text-paymint-green" /> : <Copy className="w-3 h-3" />}
+                                        {copied ? <Check className="w-3 h-3 text-mintcom-green" /> : <Copy className="w-3 h-3" />}
                                     </button>
                                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold ${currentStatus.bg} ${currentStatus.color}`}>
                                         <StatusIcon className="w-3 h-3" />
@@ -425,22 +425,22 @@ export const SupportAdminDetailPage = () => {
                                         className={`flex gap-3 ${isSupport ? 'flex-row-reverse' : ''}`}
                                     >
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isSupport
-                                            ? 'bg-paymint-green/10'
+                                            ? 'bg-mintcom-green/10'
                                             : 'bg-blue-50 dark:bg-blue-900/20'
                                             }`}>
                                             {isSupport ? (
-                                                <Headphones className="w-4 h-4 text-paymint-green" />
+                                                <Headphones className="w-4 h-4 text-mintcom-green" />
                                             ) : (
                                                 <User className="w-4 h-4 text-blue-600" />
                                             )}
                                         </div>
                                         <div className={`flex-1 max-w-[80%] ${isSupport ? 'text-right' : ''}`}>
                                             <div className={`inline-block text-left rounded-xl p-3 ${isSupport
-                                                ? 'bg-paymint-green/10 dark:bg-paymint-green/5 border border-paymint-green/20'
+                                                ? 'bg-mintcom-green/10 dark:bg-mintcom-green/5 border border-mintcom-green/20'
                                                 : 'bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5'
                                                 }`}>
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    <span className={`text-xs font-bold ${isSupport ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
+                                                    <span className={`text-xs font-bold ${isSupport ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>
                                                         {msg.senderName}
                                                     </span>
                                                     <span className="text-[10px] text-gray-400">{formatDate(msg.createdAt)}</span>
@@ -462,7 +462,7 @@ export const SupportAdminDetailPage = () => {
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
                                                                         download={!isImage ? att.name : undefined}
-                                                                        className="inline-flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-medium hover:border-paymint-green/30 transition-colors"
+                                                                        className="inline-flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-medium hover:border-mintcom-green/30 transition-colors"
                                                                     >
                                                                         {isImage ? <ImageIcon size={12} /> : <Download size={12} />}
                                                                         <span className="truncate max-w-[120px]">{att.name}</span>
@@ -484,9 +484,9 @@ export const SupportAdminDetailPage = () => {
                         {/* Reply box */}
                         {ticket.status !== 'closed' ? (
                             <div className="border-t border-gray-100 dark:border-white/5 p-4">
-                                <div className="flex items-center gap-2 mb-3 text-xs text-paymint-green font-bold">
+                                <div className="flex items-center gap-2 mb-3 text-xs text-mintcom-green font-bold">
                                     <Shield className="w-3 h-3" />
-                                    Replying as Paymint Support
+                                    Replying as Mintcom Support
                                 </div>
                                 <div className="flex gap-3">
                                     <textarea maxLength={2000}
@@ -494,7 +494,7 @@ export const SupportAdminDetailPage = () => {
                                         onChange={(e) => setReplyText(e.target.value)}
                                         placeholder={formatInputPlaceholder("Type your support reply...", t('common.locale'))}
                                         rows={3}
-                                        className="flex-1 resize-none bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30"
+                                        className="flex-1 resize-none bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30"
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                                                 handleSendReply();
@@ -504,7 +504,7 @@ export const SupportAdminDetailPage = () => {
                                     <button
                                         onClick={handleSendReply}
                                         disabled={!replyText.trim() || sending}
-                                        className="self-end px-4 py-3 bg-paymint-green text-black font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                                        className="self-end px-4 py-3 bg-mintcom-green text-black font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                                     >
                                         {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                                         Send
@@ -518,7 +518,7 @@ export const SupportAdminDetailPage = () => {
                                     This ticket is closed.{' '}
                                     <button
                                         onClick={() => handleChangeStatus('open')}
-                                        className="text-paymint-green font-bold hover:underline"
+                                        className="text-mintcom-green font-bold hover:underline"
                                     >
                                         Reopen it
                                     </button>
@@ -567,7 +567,7 @@ export const SupportAdminDetailPage = () => {
                                     'Mark resolved only after customer can continue',
                                 ].map((item) => (
                                     <label key={item} className="flex items-start gap-2 rounded-lg bg-gray-50 p-2 dark:bg-white/5">
-                                        <input type="checkbox" className="mt-0.5 h-3.5 w-3.5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green" />
+                                        <input type="checkbox" className="mt-0.5 h-3.5 w-3.5 rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green" />
                                         <span>{item}</span>
                                     </label>
                                 ))}
@@ -585,7 +585,7 @@ export const SupportAdminDetailPage = () => {
                                         key={reply.label}
                                         type="button"
                                         onClick={() => insertQuickReply(reply.text)}
-                                        className="w-full rounded-lg bg-gray-50 px-3 py-2 text-left text-xs font-bold text-gray-600 transition-colors hover:bg-paymint-green/10 hover:text-gray-900 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-paymint-green/10"
+                                        className="w-full rounded-lg bg-gray-50 px-3 py-2 text-left text-xs font-bold text-gray-600 transition-colors hover:bg-mintcom-green/10 hover:text-gray-900 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-mintcom-green/10"
                                     >
                                         {reply.label}
                                     </button>
@@ -601,7 +601,7 @@ export const SupportAdminDetailPage = () => {
                                 rows={5}
                                 maxLength={1000}
                                 placeholder="Private note for this browser. Not sent to the customer."
-                                className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs font-medium text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+                                className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs font-medium text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
                             />
                         </div>
                     </aside>

@@ -116,7 +116,7 @@ export function RoleDeleteResolutionModal({
               <div className="mt-6 space-y-3">
                 <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-4">
                   <div className="flex items-start gap-3">
-                    <ShieldCheck size={20} className="mt-0.5 text-paymint-green shrink-0" />
+                    <ShieldCheck size={20} className="mt-0.5 text-mintcom-green shrink-0" />
                     <div>
                       <h4 className="text-sm font-black text-gray-900 dark:text-white">
                         {t('roles.deleteResolution.detachTitle', {
@@ -135,7 +135,7 @@ export function RoleDeleteResolutionModal({
                     type="button"
                     onClick={onDetach}
                     disabled={isSubmitting}
-                    className="mt-4 w-full rounded-xl bg-paymint-green px-4 py-3 text-sm font-black text-black transition-all hover:bg-paymint-green/90 disabled:opacity-60"
+                    className="mt-4 w-full rounded-xl bg-mintcom-green px-4 py-3 text-sm font-black text-black transition-all hover:bg-mintcom-green/90 disabled:opacity-60"
                   >
                     {isSubmitting
                       ? t('common.loading', { defaultValue: 'Loading...' })
@@ -167,7 +167,7 @@ export function RoleDeleteResolutionModal({
                     value={selectedReplacementId}
                     onChange={(event) => setSelectedReplacementId(event.target.value)}
                     disabled={replacementRoles.length === 0 || isSubmitting}
-                    className="mt-4 w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0F172A] px-4 py-3 text-sm font-bold text-gray-900 dark:text-white outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green disabled:opacity-60"
+                    className="mt-4 w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0F172A] px-4 py-3 text-sm font-bold text-gray-900 dark:text-white outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green disabled:opacity-60"
                   >
                     {replacementRoles.length === 0 ? (
                       <option value="">

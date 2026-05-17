@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, ArrowUpDown, RotateCcw } from 'lucide-react';
@@ -241,14 +241,14 @@ export function OwnerBillingPage() {
         switch (est.subscriptionStatus?.toUpperCase()) {
             case 'TRIAL':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-paymint-green/ border border-paymint-green/ rounded-lg text-xs font-bold tracking-widest text-paymint-green">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-mintcom-green/ border border-mintcom-green/ rounded-lg text-xs font-bold tracking-widest text-mintcom-green">
                         <Zap size={12} />
                         {t('owner.locations.trial')}
                     </span>
                 );
             case 'ACTIVE':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg text-xs font-bold tracking-widest text-paymint-green">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-mintcom-green/10 border border-mintcom-green/20 rounded-lg text-xs font-bold tracking-widest text-mintcom-green">
                         <CheckCircle2 size={12} />
                         {t('common.active')}
                     </span>
@@ -392,11 +392,11 @@ export function OwnerBillingPage() {
                         <>
                             <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
                             <div className="text-right hidden sm:block">
-                                <p className="text-[10px] font-bold text-paymint-green tracking-widest capitalize mb-1">
+                                <p className="text-[10px] font-bold text-mintcom-green tracking-widest capitalize mb-1">
                                     {t('owner.billing.yearly')}
                                 </p>
                                 <div className="flex items-baseline justify-end">
-                                    <span className="dashboard-card-value text-xl text-paymint-green">{formatUsd(totalYearlyCost)}</span>
+                                    <span className="dashboard-card-value text-xl text-mintcom-green">{formatUsd(totalYearlyCost)}</span>
                                     <span className="text-xs font-bold text-gray-400 ml-0.5">{t('common.yearly')}</span>
                                 </div>
                             </div>
@@ -405,7 +405,7 @@ export function OwnerBillingPage() {
                     <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
                     <button
                         onClick={() => setIsAddCardModalOpen(true)}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
                     >
                         <Plus size={18} />
                         <span>{t('owner.billing.addPaymentMethod')}</span>
@@ -417,7 +417,7 @@ export function OwnerBillingPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                     { label: t('owner.billing.cards'), value: billingData?.savedCards.length || 0, icon: CreditCard, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: t('owner.billing.plans'), value: billingData?.establishments.filter(e => e.subscriptionStatus === 'ACTIVE' || e.subscriptionStatus === 'TRIAL').length || 0, icon: Zap, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+                    { label: t('owner.billing.plans'), value: billingData?.establishments.filter(e => e.subscriptionStatus === 'ACTIVE' || e.subscriptionStatus === 'TRIAL').length || 0, icon: Zap, color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
                     {
                         label: t('owner.billing.nextBill'),
                         value: tableNextBillDate
@@ -453,7 +453,7 @@ export function OwnerBillingPage() {
                 {/* Saved Cards Section */}
                 <div className="lg:col-span-1 space-y-6">
                     <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
-                        <CreditCard size={18} className="text-paymint-green" />
+                        <CreditCard size={18} className="text-mintcom-green" />
                         {t('owner.billing.cards')}
                     </h2>
 
@@ -468,7 +468,7 @@ export function OwnerBillingPage() {
                             onClick={() => setIsAddCardModalOpen(true)}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="w-full p-8 rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-all flex flex-col items-center gap-3 bg-gray-50 dark:bg-white/[0.02]"
+                            className="w-full p-8 rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 text-gray-400 hover:text-mintcom-green hover:border-mintcom-green/30 transition-all flex flex-col items-center gap-3 bg-gray-50 dark:bg-white/[0.02]"
                         >
                             <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center">
                                 <Plus size={24} />
@@ -484,18 +484,18 @@ export function OwnerBillingPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.1 }}
                                     className={`group relative p-6 h-48 rounded-2xl flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-lg transition-all border ${card.isDefault
-                                        ? 'bg-white dark:bg-[#1E293B] border-paymint-green/30 ring-1 ring-paymint-green/10'
-                                        : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/5 hover:border-paymint-green/30'
+                                        ? 'bg-white dark:bg-[#1E293B] border-mintcom-green/30 ring-1 ring-mintcom-green/10'
+                                        : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/5 hover:border-mintcom-green/30'
                                         }`}
                                 >
                                     {/* Gradient Blob */}
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                                     <div className="relative z-10">
                                         <div className="flex justify-between items-start mb-1.5">
                                             <p className="dashboard-card-label">{t('owner.billing.addCard')}</p>
                                             {card.isDefault && (
-                                                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-paymint-green text-black text-[8px] font-black rounded-[12px] tracking-widest shadow-lg shadow-paymint-green/20">
+                                                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-mintcom-green text-black text-[8px] font-black rounded-[12px] tracking-widest shadow-lg shadow-mintcom-green/20">
                                                     <div className="w-1 h-1 rounded-full bg-black animate-pulse" />
                                                     {t('owner.billing.primary')}
                                                 </div>
@@ -523,7 +523,7 @@ export function OwnerBillingPage() {
                                         {!card.isDefault && (
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); handleSetDefaultCard(card.id); }}
-                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-paymint-green hover:border-paymint-green/50 flex items-center justify-center transition-all shadow-xl hover:scale-110 active:scale-95 pointer-events-auto"
+                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-mintcom-green hover:border-mintcom-green/50 flex items-center justify-center transition-all shadow-xl hover:scale-110 active:scale-95 pointer-events-auto"
                                                 title={t('owner.billing.setDefault')}
                                             >
                                                 <Star size={20} />
@@ -552,7 +552,7 @@ export function OwnerBillingPage() {
                 {/* Subscriptions Section */}
                 <div className="lg:col-span-2 space-y-6">
                     <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
-                        <DollarSign size={18} className="text-paymint-green" />
+                        <DollarSign size={18} className="text-mintcom-green" />
                         {t('owner.billing.plans')}
                     </h2>
 
@@ -569,7 +569,7 @@ export function OwnerBillingPage() {
                                 <button
                                     type="button"
                                     onClick={() => setNextBillSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
-                                    className="inline-flex items-center gap-1 hover:text-paymint-green transition-colors"
+                                    className="inline-flex items-center gap-1 hover:text-mintcom-green transition-colors"
                                     title={`${toHeaderCase(t('owner.billing.nextBill'))}: ${nextBillSortOrder === 'asc' ? toHeaderCase(t('common.next')) : toHeaderCase(t('sort.latest'))}`}
                                 >
                                     <span>{toHeaderCase(t('owner.billing.nextBill'))}</span>
@@ -599,7 +599,7 @@ export function OwnerBillingPage() {
                                     >
                                         {/* Service */}
                                         <div className="col-span-4 flex items-center gap-3 min-w-0">
-                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-sm font-bold text-gray-400 group-hover:text-paymint-green transition-colors shrink-0">
+                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-sm font-bold text-gray-400 group-hover:text-mintcom-green transition-colors shrink-0">
                                                 {est.name.charAt(0)}
                                             </div>
                                             <div className="min-w-0 flex-1">
@@ -706,7 +706,7 @@ export function OwnerBillingPage() {
                                                         {(est.cancelAtPeriodEnd || ['CANCELED', 'PAST_DUE', 'SUSPENDED'].includes(est.subscriptionStatus?.toUpperCase())) && (
                                                             <button
                                                                 onClick={() => handleResumeSubscription(est.id, est.name, est.cancelAtPeriodEnd)}
-                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-paymint-green hover:bg-paymint-green/10 tracking-wide transition-colors flex items-center gap-2"
+                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-mintcom-green hover:bg-mintcom-green/10 tracking-wide transition-colors flex items-center gap-2"
                                                             >
                                                                 <RotateCcw size={14} />
                                                                 {['CANCELED', 'PAST_DUE', 'SUSPENDED'].includes(est.subscriptionStatus?.toUpperCase()) ? t('owner.billing.reactivate') : t('owner.billing.resume')}

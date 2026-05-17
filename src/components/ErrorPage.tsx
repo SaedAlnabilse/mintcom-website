@@ -40,12 +40,12 @@ export function ErrorPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-paymint-dark flex items-center justify-center p-4 font-sans">
+        <div className="min-h-screen bg-gray-50 dark:bg-mintcom-dark flex items-center justify-center p-4 font-sans">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
-                className="max-w-md w-full bg-white dark:bg-paymint-surface rounded-2xl shadow-xl p-8 text-center border border-gray-100 dark:border-gray-800"
+                className="max-w-md w-full bg-white dark:bg-mintcom-surface rounded-2xl shadow-xl p-8 text-center border border-gray-100 dark:border-gray-800"
             >
                 <motion.div
                     initial={{ y: -10 }}
@@ -55,9 +55,9 @@ export function ErrorPage() {
                         stiffness: 300,
                         damping: 20
                     }}
-                    className="w-20 h-20 bg-red-50 dark:bg-paymint-red/10 rounded-full flex items-center justify-center mx-auto mb-6"
+                    className="w-20 h-20 bg-red-50 dark:bg-mintcom-red/10 rounded-full flex items-center justify-center mx-auto mb-6"
                 >
-                    <AlertTriangle className="w-10 h-10 text-paymint-red" />
+                    <AlertTriangle className="w-10 h-10 text-mintcom-red" />
                 </motion.div>
 
                 <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3">
@@ -78,7 +78,7 @@ export function ErrorPage() {
                 <div className="flex flex-col space-y-3">
                     <button
                         onClick={() => window.location.reload()}
-                        className="w-full flex items-center justify-center space-x-2 bg-paymint-green hover:bg-paymint-green/90 text-black text-base font-semibold font-outfit py-3 px-4 rounded-xl transition-all shadow-sm active:scale-[0.98]"
+                        className="w-full flex items-center justify-center space-x-2 bg-mintcom-green hover:bg-mintcom-green/90 text-black text-base font-semibold font-outfit py-3 px-4 rounded-xl transition-all shadow-sm active:scale-[0.98]"
                     >
                         <span>{t('common.reloadPage')}</span>
                     </button>
@@ -110,7 +110,7 @@ export function ErrorPage() {
                                 <span>{t('common.showTechnicalDetails')}</span>
                                 <span className="group-open:rotate-180 transition-transform ml-1">▼</span>
                             </summary>
-                            <div className="mt-3 text-left bg-gray-50 dark:bg-paymint-dark/50 p-3 rounded-lg border border-gray-100 dark:border-gray-800 overflow-hidden">
+                            <div className="mt-3 text-left bg-gray-50 dark:bg-mintcom-dark/50 p-3 rounded-lg border border-gray-100 dark:border-gray-800 overflow-hidden">
                                 <pre className="text-xs text-red-500/80 font-mono whitespace-pre-wrap break-words">
                                     {error.stack || error.message}
                                 </pre>

@@ -178,7 +178,7 @@ interface StatusBadgeProps {
 
 export function MobileStatusBadge({ status, label }: StatusBadgeProps) {
   const colorClasses = {
-    success: 'bg-paymint-green/10 text-paymint-green border-paymint-green/20',
+    success: 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20',
     warning: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
     error: 'bg-red-500/10 text-red-500 border-red-500/20',
     info: 'bg-blue-500/10 text-blue-500 border-blue-500/20',

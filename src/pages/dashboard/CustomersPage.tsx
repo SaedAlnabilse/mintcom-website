@@ -1,4 +1,4 @@
-﻿import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
@@ -93,7 +93,7 @@ function TableActionMenu({ customer, onViewProfile, onDelete }: TableActionMenuP
         aria-label="More actions"
         className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all ${
           isOpen 
-            ? 'bg-paymint-green text-black border-paymint-green' 
+            ? 'bg-mintcom-green text-black border-mintcom-green' 
             : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
         }`}
       >
@@ -114,7 +114,7 @@ function TableActionMenu({ customer, onViewProfile, onDelete }: TableActionMenuP
             }}
             className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
           >
-            <Eye size={14} className="text-paymint-green" />
+            <Eye size={14} className="text-mintcom-green" />
             {t('customers.messages.viewProfile')}
           </button>
           <button
@@ -122,7 +122,7 @@ function TableActionMenu({ customer, onViewProfile, onDelete }: TableActionMenuP
               onDelete(customer);
               setIsOpen(false);
             }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-mintcom-red hover:bg-mintcom-red/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
           >
             <Trash2 size={14} />
             {t('customers.messages.removeCustomer')}
@@ -372,7 +372,7 @@ export function CustomersPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('customers.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -389,7 +389,7 @@ export function CustomersPage() {
           </button>
           <button
             onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
-            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm touch-target"
+            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm touch-target"
           >
             <Plus size={18} />
             <span className="hidden xs:inline">{t('customers.addCustomer')}</span>
@@ -399,7 +399,7 @@ export function CustomersPage() {
 
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
-          { label: t('customers.stats.total'), value: stats.totalCustomers, icon: User, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+          { label: t('customers.stats.total'), value: stats.totalCustomers, icon: User, color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
           { label: t('customers.stats.points'), value: stats.totalPoints, icon: Award, color: 'text-blue-500', bg: 'bg-blue-500/10' },
           { label: t('customers.stats.spent'), value: formatAmount(stats.totalSpent), icon: ShoppingBag, color: 'text-purple-500', bg: 'bg-purple-500/10' },
         ].map((stat, i) => (
@@ -441,7 +441,7 @@ export function CustomersPage() {
       <div className="bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32">
-            <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+            <div className="w-12 h-12 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin mb-4" />
             <p className="label-strong font-outfit">{t('customers.messages.loading')}</p>
           </div>
         ) : customers.length === 0 ? (
@@ -464,7 +464,7 @@ export function CustomersPage() {
             {!searchQuery.trim() && (
               <button
                 onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
+                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
               >
                 <Plus size={18} />
                 <span>{t('customers.addCustomer')}</span>
@@ -492,7 +492,7 @@ export function CustomersPage() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-black text-paymint-green">{customer.points}</p>
+                      <p className="text-sm font-black text-mintcom-green">{customer.points}</p>
                       <p className="text-xs text-gray-400">{t('rewards.points')}</p>
                     </div>
                   </div>
@@ -514,7 +514,7 @@ export function CustomersPage() {
                   <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-white/5" onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={() => { setSelectedCustomer(customer); setPointsAmount(0); setShowPointsModal(true); }}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-paymint-green/10 text-paymint-green text-xs font-bold touch-target"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-mintcom-green/10 text-mintcom-green text-xs font-bold touch-target"
                     >
                       <Award size={14} />
                       {t('customers.details.points')}
@@ -528,7 +528,7 @@ export function CustomersPage() {
                     </button>
                     <button
                       onClick={() => handleDeleteCustomer(customer)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-mintcom-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
                     >
                       <Trash2 size={14} />
                       {t('common.remove')}
@@ -570,7 +570,7 @@ export function CustomersPage() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="flex flex-col gap-1 items-center justify-center">
-                          <p className="text-sm font-black text-paymint-green">{customer.points}</p>
+                          <p className="text-sm font-black text-mintcom-green">{customer.points}</p>
                           <p className="dashboard-card-label">{t('rewards.points')}</p>
                         </div>
                       </td>
@@ -588,13 +588,13 @@ export function CustomersPage() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <p className="font-black text-gray-900 dark:text-white text-sm">{customer.totalSpent.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}</p>
-                        <p className="text-xs text-paymint-green font-black tracking-widest">{t('common.active')}</p>
+                        <p className="text-xs text-mintcom-green font-black tracking-widest">{t('common.active')}</p>
                       </td>
                       <td className="px-6 py-4 text-center" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-center gap-1 sm:gap-2">
                           <button
                             onClick={() => { setSelectedCustomer(customer); setPointsAmount(0); setShowPointsModal(true); }}
-                            className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-all"
+                            className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-mintcom-green hover:border-mintcom-green/30 transition-all"
                             title="Adjust Points"
                           >
                             <Award size={18} />
@@ -655,18 +655,18 @@ export function CustomersPage() {
               <form onSubmit={handleSubmit(handleSaveCustomer)} className="p-8 space-y-8">
                 <div className="space-y-3">
                   <label className="block text-xs font-normal text-gray-400 tracking-[0.2em] px-1 flex items-center">
-                    {t('customers.form.name')} <span className="text-paymint-red mx-1">*</span>
+                    {t('customers.form.name')} <span className="text-mintcom-red mx-1">*</span>
                   </label>
                   <div className="relative group">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-mintcom-green transition-colors" />
                     <input maxLength={255}
                       type="text"
                       {...register('name')}
                       placeholder={formatInputPlaceholder(t('customers.form.namePlaceholder'), t('common.locale'))}
-                      className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                      className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
                     />
                   </div>
-                  {errors.name && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.name.message}</p>}
+                  {errors.name && <p className="text-mintcom-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.name.message}</p>}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -678,9 +678,9 @@ export function CustomersPage() {
                       type="tel"
                       {...register('phone')}
                       placeholder={formatInputPlaceholder(t('customers.form.phonePlaceholder'), t('common.locale'))}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.phone ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
                     />
-                    {errors.phone && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.phone.message}</p>}
+                    {errors.phone && <p className="text-mintcom-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.phone.message}</p>}
                   </div>
                   <div className="space-y-3">
                     <label className="block text-xs font-normal text-gray-400 tracking-[0.2em] px-1">{t('customers.form.email')} (optional)</label>
@@ -688,9 +688,9 @@ export function CustomersPage() {
                       type="email"
                       {...register('email')}
                       placeholder={formatInputPlaceholder(t('customers.form.emailPlaceholder'), t('common.locale'))}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
                     />
-                    {errors.email && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.email.message}</p>}
+                    {errors.email && <p className="text-mintcom-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.email.message}</p>}
                   </div>
                 </div>
 
@@ -700,7 +700,7 @@ export function CustomersPage() {
                     type="text"
                     {...register('address')}
                     placeholder={formatInputPlaceholder(t('customers.form.addressPlaceholder'), t('common.locale'))}
-                    className="w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-normal focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
+                    className="w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-normal focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm"
                   />
                 </div>
 
@@ -715,7 +715,7 @@ export function CustomersPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-[2] py-4 bg-paymint-green text-black font-black rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 tracking-[0.2em] text-xs shadow-lg shadow-paymint-green/20"
+                    className="flex-[2] py-4 bg-mintcom-green text-black font-black rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 tracking-[0.2em] text-xs shadow-lg shadow-mintcom-green/20"
                   >
                     {editingCustomer ? t('customers.form.updateCustomer') : t('customers.form.saveCustomer')}
                   </button>
@@ -767,8 +767,8 @@ export function CustomersPage() {
                       className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
                         pointsAction === action
                           ? action === 'add'
-                            ? 'bg-paymint-green text-black shadow-sm'
-                            : 'bg-paymint-red text-white shadow-sm'
+                            ? 'bg-mintcom-green text-black shadow-sm'
+                            : 'bg-mintcom-red text-white shadow-sm'
                           : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
                       }`}
                     >
@@ -792,11 +792,11 @@ export function CustomersPage() {
                         setPointsAmount(numericValue);
                         setPointsError(null);
                       }}
-                      className={`w-full px-4 py-3 bg-gray-50 dark:bg-black/20 border ${pointsError ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-lg font-bold focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all outline-none`}
+                      className={`w-full px-4 py-3 bg-gray-50 dark:bg-black/20 border ${pointsError ? 'border-mintcom-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-lg font-bold focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all outline-none`}
                       placeholder={formatInputPlaceholder("0", t('common.locale'))}
                     />
                   </div>
-                  <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>                  {pointsError && (                    <p className="text-[10px] font-bold text-paymint-red uppercase tracking-wider">
+                  <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>                  {pointsError && (                    <p className="text-[10px] font-bold text-mintcom-red uppercase tracking-wider">
                       {pointsError}
                     </p>
                   )}
@@ -812,7 +812,7 @@ export function CustomersPage() {
                   <button 
                     onClick={handlePointsUpdate} 
                     disabled={isSubmitting || pointsAmount <= 0} 
-                    className="flex-[2] py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-[#68B390] transition-all disabled:opacity-50 text-xs"
+                    className="flex-[2] py-3 bg-mintcom-green text-black font-bold rounded-xl hover:bg-[#5fa888] transition-all disabled:opacity-50 text-xs"
                   >
                     {t('customers.details.confirmAdjustment')}
                   </button>
@@ -831,12 +831,12 @@ export function CustomersPage() {
               <div className="p-10 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-transparent">
                 <div className="flex justify-between items-start mb-10">
                   <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
+                    <div className="w-20 h-20 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
                       <User size={28} />
                     </div>
                     <div>
                       <h2 className="dashboard-card-value">{selectedCustomer.name}</h2>
-                      <div className="mt-2 flex items-center gap-2 text-paymint-green">
+                      <div className="mt-2 flex items-center gap-2 text-mintcom-green">
                         <Award size={14} className="animate-pulse" />
                         <p className="text-lg font-black tracking-tight">{selectedCustomer.points} {t('rewards.points')}</p>
                       </div>
@@ -865,19 +865,19 @@ export function CustomersPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                   <div className="space-y-6">
                     <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                      <Mail size={12} className="text-paymint-green" /> {t('customers.details.contactInfo')}
+                      <Mail size={12} className="text-mintcom-green" /> {t('customers.details.contactInfo')}
                     </h3>
                     <div className="space-y-4">
                       <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
-                        <Phone size={14} className="text-paymint-green flex-shrink-0" />
+                        <Phone size={14} className="text-mintcom-green flex-shrink-0" />
                         <span className="truncate">{selectedCustomer.phone || t('common.notAvailable')}</span>
                       </div>
                       <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
-                        <Mail size={14} className="text-paymint-green flex-shrink-0" />
+                        <Mail size={14} className="text-mintcom-green flex-shrink-0" />
                         <span className="truncate">{selectedCustomer.email || t('owner.staff.noEmail')}</span>
                       </div>
                       <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
-                        <MapPin size={14} className="text-paymint-green flex-shrink-0" />
+                        <MapPin size={14} className="text-mintcom-green flex-shrink-0" />
                         <span className="break-words">{selectedCustomer.address || t('common.notAvailable')}</span>
                       </div>
                     </div>
@@ -885,7 +885,7 @@ export function CustomersPage() {
                   
                   <div className="space-y-6">
                     <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                      <History size={12} className="text-paymint-green" /> {t('customers.details.insights')}
+                      <History size={12} className="text-mintcom-green" /> {t('customers.details.insights')}
                     </h3>
                     <div className="grid grid-cols-1 gap-4">
                        <div className="p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
@@ -894,15 +894,15 @@ export function CustomersPage() {
                       </div>
                       <div className="p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t('customers.details.spent')}</p>
-                        <p className="text-sm font-bold text-paymint-green">{formatAmount(selectedCustomer.totalSpent)}</p>
+                        <p className="text-sm font-bold text-mintcom-green">{formatAmount(selectedCustomer.totalSpent)}</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {selectedCustomer.notes && (
-                  <div className="p-6 bg-paymint-green/5 border border-paymint-green/10 rounded-xl">
-                    <p className="label-strong font-outfit text-paymint-green mb-2">{t('customers.details.notes')}</p>
+                  <div className="p-6 bg-mintcom-green/5 border border-mintcom-green/10 rounded-xl">
+                    <p className="label-strong font-outfit text-mintcom-green mb-2">{t('customers.details.notes')}</p>
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
                       {selectedCustomer.notes}
                     </p>
@@ -910,13 +910,13 @@ export function CustomersPage() {
                 )}
 
                 <div className="flex gap-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                  <button onClick={() => { setShowDetailModal(false); handleDeleteCustomer(selectedCustomer); }} className="px-6 py-4 bg-paymint-red/10 text-paymint-red font-black rounded-xl text-xs tracking-widest transition-all hover:bg-paymint-red hover:text-white active:scale-95 shadow-sm">
+                  <button onClick={() => { setShowDetailModal(false); handleDeleteCustomer(selectedCustomer); }} className="px-6 py-4 bg-mintcom-red/10 text-mintcom-red font-black rounded-xl text-xs tracking-widest transition-all hover:bg-mintcom-red hover:text-white active:scale-95 shadow-sm">
                     <Trash2 size={18} />
                   </button>
                   <button onClick={() => { setShowDetailModal(false); openEditModal(selectedCustomer); }} className="flex-1 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg active:scale-95">
                     {t('common.edit')}
                   </button>
-                  <button onClick={() => { setShowDetailModal(false); setShowPointsModal(true); setPointsAmount(0); }} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg shadow-paymint-green/20 active:scale-95">
+                  <button onClick={() => { setShowDetailModal(false); setShowPointsModal(true); setPointsAmount(0); }} className="flex-1 py-4 bg-mintcom-green text-black font-black rounded-xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg shadow-mintcom-green/20 active:scale-95">
                     {t('customers.details.points')}
                   </button>
                 </div>

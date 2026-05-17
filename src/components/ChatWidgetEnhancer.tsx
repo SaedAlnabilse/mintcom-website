@@ -10,8 +10,8 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 const TOTAL_TASKS = 8; // Match the number of tasks in TasksWidget
-const getTasksStorageKey = (contextId: string) => `paymint.widget.tasks.v1.${contextId}`;
-const getPopupSeenKey = (contextId: string) => `paymint.widget.tasks.popup.seen.${contextId}`;
+const getTasksStorageKey = (contextId: string) => `mintcom.widget.tasks.v1.${contextId}`;
+const getPopupSeenKey = (contextId: string) => `mintcom.widget.tasks.popup.seen.${contextId}`;
 
 const checkAllCompleted = (storageKey: string) => {
     if (typeof window === 'undefined') return false;
@@ -70,8 +70,8 @@ export const ChatWidgetEnhancer = () => {
         // Check on mount as well in case it was completed while unmounted
         handleTasksUpdate();
 
-        window.addEventListener('paymint-tasks-updated', handleTasksUpdate);
-        return () => window.removeEventListener('paymint-tasks-updated', handleTasksUpdate);
+        window.addEventListener('mintcom-tasks-updated', handleTasksUpdate);
+        return () => window.removeEventListener('mintcom-tasks-updated', handleTasksUpdate);
     }, [popupSeenKey, storageKey]);
 
     const handleOpenChat = () => {
@@ -93,8 +93,8 @@ export const ChatWidgetEnhancer = () => {
     };
 
     useEffect(() => {
-        window.addEventListener('paymint-open-tasks', handleOpenTasks);
-        return () => window.removeEventListener('paymint-open-tasks', handleOpenTasks);
+        window.addEventListener('mintcom-open-tasks', handleOpenTasks);
+        return () => window.removeEventListener('mintcom-open-tasks', handleOpenTasks);
     }, []);
 
     const handleCloseAll = () => {
@@ -155,15 +155,15 @@ export const ChatWidgetEnhancer = () => {
                             </div>
 
                             <div className="px-6 pt-8 pb-8 flex flex-col items-center text-center">
-                                <div className="w-16 h-16 mb-4 rounded-full bg-[#7CC39F]/10 flex items-center justify-center relative">
-                                    <PartyPopper size={32} className="text-[#7CC39F]" />
+                                <div className="w-16 h-16 mb-4 rounded-full bg-[#7dc6a2]/10 flex items-center justify-center relative">
+                                    <PartyPopper size={32} className="text-[#7dc6a2]" />
                                     <motion.div 
                                         initial={{ scale: 0 }}
                                         animate={{ scale: 1 }}
                                         transition={{ delay: 0.2, type: "spring" }}
                                         className="absolute -bottom-1 -right-1 w-6 h-6 bg-white dark:bg-[#0F172A] rounded-full flex items-center justify-center"
                                     >
-                                        <div className="w-5 h-5 bg-[#7CC39F] text-white rounded-full flex items-center justify-center">
+                                        <div className="w-5 h-5 bg-[#7dc6a2] text-white rounded-full flex items-center justify-center">
                                             <CheckCircle2 size={12} strokeWidth={3} />
                                         </div>
                                     </motion.div>
@@ -178,7 +178,7 @@ export const ChatWidgetEnhancer = () => {
 
                                 <button
                                     onClick={() => setShowCongratsPopup(false)}
-                                    className="w-full py-3.5 px-4 bg-gradient-to-r from-[#7CC39F] to-[#5BA882] hover:brightness-105 text-white font-bold rounded-xl shadow-lg shadow-[#7CC39F]/30 transition-all active:scale-[0.98]"
+                                    className="w-full py-3.5 px-4 bg-gradient-to-r from-[#7dc6a2] to-[#5BA882] hover:brightness-105 text-white font-bold rounded-xl shadow-lg shadow-[#7dc6a2]/30 transition-all active:scale-[0.98]"
                                 >
                                     {t('common.continue', 'Continue')}
                                 </button>

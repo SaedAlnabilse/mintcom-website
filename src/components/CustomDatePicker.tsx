@@ -116,7 +116,7 @@ export function CustomDatePicker({
                         className={`
               relative p-1 text-center text-sm rounded-lg transition-all duration-200
               ${!isCurrentMonth ? "text-gray-300 dark:text-gray-600" : "text-gray-700 dark:text-gray-200"}
-              ${isSelected ? "!bg-[#7CC39F] !text-white font-bold shadow-md shadow-[#7CC39F]/20" :
+              ${isSelected ? "!bg-[#7dc6a2] !text-white font-bold shadow-md shadow-[#7dc6a2]/20" :
                                 isDisabled ? "opacity-20 cursor-not-allowed" : "hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer"}
             `}
                         onClick={() => !isDisabled && handleDateClick(cloneDay)}
@@ -143,10 +143,10 @@ export function CustomDatePicker({
                 onClick={() => setIsOpen(!isOpen)}
                 className={`
           flex items-center gap-2 w-full bg-transparent p-0 text-sm font-bold border-none focus:ring-0 cursor-pointer transition-colors
-          ${isOpen ? 'text-[#7CC39F]' : 'text-gray-600 dark:text-white/60'}
+          ${isOpen ? 'text-[#7dc6a2]' : 'text-gray-600 dark:text-white/60'}
         `}
             >
-                {showIcon && <CalendarIcon size={14} className={isOpen ? 'text-[#7CC39F]' : 'text-gray-400'} />}
+                {showIcon && <CalendarIcon size={14} className={isOpen ? 'text-[#7dc6a2]' : 'text-gray-400'} />}
                 <span>{value ? format(parseISO(value), t('common.locale') === 'ar' ? 'yyyy/MM/dd' : 'MM/dd/yyyy') : placeholder}</span>
             </button>
 
@@ -173,7 +173,7 @@ export function CustomDatePicker({
                             </button>
                             <button
                                 onClick={() => { onChange(format(new Date(), 'yyyy-MM-dd')); setIsOpen(false); }}
-                                className="text-xs font-bold text-[#7CC39F] hover:text-[#6ab38b]"
+                                className="text-xs font-bold text-[#7dc6a2] hover:text-[#6ab38b]"
                             >
                                 {t('common.today')}
                             </button>

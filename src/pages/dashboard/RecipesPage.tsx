@@ -552,7 +552,7 @@ export function RecipesPage() {
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
             <span>{t('manufacturing.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong font-outfit border border-paymint-green/20">
+              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-outfit border border-mintcom-green/20">
                 {currentEstablishment.name}
               </span>
             )}
@@ -588,7 +588,7 @@ export function RecipesPage() {
                 setShowSubRecipeModal(true);
               }
             }}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-[#68B390] transition-all shadow-sm"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
           >
             <Plus size={18} />
             <span>{activeTab === 'materials' ? t('inventory.addIngredient', {defaultValue: 'Add Ingredient'}) : activeTab === 'final' ? t('manufacturing.linkProduct') : t('manufacturing.newPrep')}</span>
@@ -618,16 +618,16 @@ export function RecipesPage() {
           />
         </div>
         <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl overflow-x-auto hide-scrollbar">
-          <button onClick={() => { setActiveTab('materials'); setPage(1); }} className={`px-4 py-2 rounded-lg label-strong font-outfit transition-all whitespace-nowrap ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('inventory.materials', {defaultValue: 'Ingredients'})}</button>
-          <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg label-strong font-outfit transition-all whitespace-nowrap ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.prep', {defaultValue: 'Prep'})}</button>
-          <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg label-strong font-outfit transition-all whitespace-nowrap ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.products', {defaultValue: 'Products'})}</button>
+          <button onClick={() => { setActiveTab('materials'); setPage(1); }} className={`px-4 py-2 rounded-lg label-strong font-outfit transition-all whitespace-nowrap ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('inventory.materials', {defaultValue: 'Ingredients'})}</button>
+          <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg label-strong font-outfit transition-all whitespace-nowrap ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.prep', {defaultValue: 'Prep'})}</button>
+          <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg label-strong font-outfit transition-all whitespace-nowrap ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.products', {defaultValue: 'Products'})}</button>
         </div>
       </div>
 
       <AnimatePresence mode="wait">
         {isLoading ? (
           <div className="py-32 flex flex-col items-center">
-            <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
+            <div className="w-12 h-12 border-4 border-mintcom-green/30 border-t-mintcom-green rounded-full animate-spin mb-4" />
             <p className="label-strong font-outfit">{t('common.loading')}</p>
           </div>
         ) : paginatedItems.length === 0 ? (
@@ -667,12 +667,12 @@ export function RecipesPage() {
                           <div key={m.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border flex-shrink-0 ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border flex-shrink-0 ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'}`}>
                               {m.name.charAt(0).toUpperCase()}
                             </div>
                             <div className="min-w-0">
                               <p className="font-bold text-gray-900 dark:text-white text-sm truncate">{m.name}</p>
-                              <span className={`inline-flex mt-1 px-2 py-0.5 rounded-full text-[10px] font-black ${active ? 'bg-paymint-green/10 text-paymint-green' : 'bg-paymint-red/10 text-paymint-red'}`}>
+                              <span className={`inline-flex mt-1 px-2 py-0.5 rounded-full text-[10px] font-black ${active ? 'bg-mintcom-green/10 text-mintcom-green' : 'bg-mintcom-red/10 text-mintcom-red'}`}>
                                 {active ? t('common.active', { defaultValue: 'Active' }) : t('common.inactive', { defaultValue: 'Inactive' })}
                               </span>
                             </div>
@@ -680,11 +680,11 @@ export function RecipesPage() {
                           <div className="flex gap-1 flex-shrink-0">
                             {active ? (
                               <>
-                                <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors"><Edit2 size={14} /></button>
+                                <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-mintcom-green transition-colors"><Edit2 size={14} /></button>
                                 <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={14} /></button>
                               </>
                             ) : (
-                              <button onClick={() => handleReactivateMaterial(m.id)} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={14} /></button>
+                              <button onClick={() => handleReactivateMaterial(m.id)} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-mintcom-green transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={14} /></button>
                             )}
                           </div>
                         </div>
@@ -717,7 +717,7 @@ export function RecipesPage() {
                           <tr key={m.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                             <td className="px-6 py-4 text-left">
                               <div className="flex items-center gap-3">
-                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs border ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
+                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs border ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'}`}>
                                   {m.name.charAt(0).toUpperCase()}
                                 </div>
                                 <span className="font-bold text-gray-900 dark:text-white text-sm">{m.name}</span>
@@ -728,7 +728,7 @@ export function RecipesPage() {
                               <span className="ml-1 text-xs font-medium text-gray-500">{m.unit}</span>
                             </td>
                             <td className="px-6 py-4 text-center">
-                              <span className={`inline-flex px-3 py-1 rounded-full text-xs font-black ${active ? 'bg-paymint-green/10 text-paymint-green' : 'bg-paymint-red/10 text-paymint-red'}`}>
+                              <span className={`inline-flex px-3 py-1 rounded-full text-xs font-black ${active ? 'bg-mintcom-green/10 text-mintcom-green' : 'bg-mintcom-red/10 text-mintcom-red'}`}>
                                 {active ? t('common.active', { defaultValue: 'Active' }) : t('common.inactive', { defaultValue: 'Inactive' })}
                               </span>
                             </td>
@@ -736,11 +736,11 @@ export function RecipesPage() {
                               <div className="flex items-center justify-center gap-2 transition-opacity">
                                 {active ? (
                                   <>
-                                    <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors"><Edit2 size={14} /></button>
+                                    <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-mintcom-green transition-colors"><Edit2 size={14} /></button>
                                     <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={14} /></button>
                                   </>
                                 ) : (
-                                  <button onClick={() => handleReactivateMaterial(m.id)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={14} /></button>
+                                  <button onClick={() => handleReactivateMaterial(m.id)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-mintcom-green transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={14} /></button>
                                 )}
                               </div>
                             </td>
@@ -770,22 +770,22 @@ export function RecipesPage() {
                       key={recipe.id}
                       className={`group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden ${active ? '' : 'opacity-75'}`}
                     >
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                      <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                      <div className="absolute left-0 top-0 h-full w-1 bg-mintcom-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                       <div className="relative z-10">
                         <div className="flex justify-between items-start mb-6">
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
+                            <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
                               {activeTab === 'final' ? <Pizza size={20} /> : <Package size={20} />}
                             </div>
                             <div>
-                              <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
+                              <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-mintcom-green transition-colors">
                                 {activeTab === 'final' ? getFinalRecipeTargetName(recipe as FinalRecipe) : (recipe as SubRecipe).name}
                               </h3>
                               <p className="label-strong font-outfit">{((recipe as any).ingredients || []).length} {t('manufacturing.ingredients')}</p>
                               <div className="flex items-center gap-2 mt-2">
-                                <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-black ${active ? 'bg-paymint-green/10 text-paymint-green' : 'bg-paymint-red/10 text-paymint-red'}`}>
+                                <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-black ${active ? 'bg-mintcom-green/10 text-mintcom-green' : 'bg-mintcom-red/10 text-mintcom-red'}`}>
                                   {active ? t('common.active', { defaultValue: 'Active' }) : t('common.inactive', { defaultValue: 'Inactive' })}
                                 </span>
                                 {activeTab === 'final' && (recipe as FinalRecipe).version && (
@@ -799,11 +799,11 @@ export function RecipesPage() {
                           <div className="flex gap-1 transition-all">
                             {active ? (
                               <>
-                                <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors" title={t('common.edit')}><Edit2 size={16} /></button>
-                                <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={16} /></button>
+                                <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 transition-colors" title={t('common.edit')}><Edit2 size={16} /></button>
+                                <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={16} /></button>
                               </>
                             ) : (
-                              <button onClick={() => handleReactivateRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={16} /></button>
+                              <button onClick={() => handleReactivateRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={16} /></button>
                             )}
                           </div>
                         </div>
@@ -826,11 +826,11 @@ export function RecipesPage() {
                               </div>
                             );
                           })}
-                          {((recipe as any).ingredients || []).length > 3 && <p className="text-xs font-black text-paymint-green text-center mt-2 tracking-widest">+ {((recipe as any).ingredients || []).length - 3} {t('manufacturing.additionalElements')}</p>}
+                          {((recipe as any).ingredients || []).length > 3 && <p className="text-xs font-black text-mintcom-green text-center mt-2 tracking-widest">+ {((recipe as any).ingredients || []).length - 3} {t('manufacturing.additionalElements')}</p>}
                         </div>
 
                         {activeTab === 'sub' && (
-                          <button disabled={!active} onClick={() => openManufactureModal(recipe as SubRecipe)} className={`w-full py-3 font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm ${active ? 'bg-paymint-green text-black hover:bg-[#68B390]' : 'bg-gray-100 dark:bg-white/5 text-gray-400 cursor-not-allowed'}`}>
+                          <button disabled={!active} onClick={() => openManufactureModal(recipe as SubRecipe)} className={`w-full py-3 font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm ${active ? 'bg-mintcom-green text-black hover:bg-[#5fa888]' : 'bg-gray-100 dark:bg-white/5 text-gray-400 cursor-not-allowed'}`}>
                             {t('manufacturing.produceBatch')}
                           </button>
                         )}
@@ -866,9 +866,9 @@ export function RecipesPage() {
                   </div>
                   <form onSubmit={handleMaterialSubmit} className="p-4 sm:p-8 space-y-6 overflow-y-auto flex-1">
                     <div>
-                      <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-paymint-red mx-1">*</span></label>
-                      <input  maxLength={255}type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
-                      {errors.name && <p className="mt-2 text-xs font-bold text-paymint-red px-1">{errors.name}</p>}
+                      <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-mintcom-red mx-1">*</span></label>
+                      <input  maxLength={255}type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
+                      {errors.name && <p className="mt-2 text-xs font-bold text-mintcom-red px-1">{errors.name}</p>}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -895,9 +895,9 @@ export function RecipesPage() {
                               const numericValue = parseInt(val || '0', 10) / 100;
                               setMaterialForm({ ...materialForm, quantity: numericValue });
                             }}
-                            className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all"
+                            className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all"
                           />
-                          <p className="mt-2 text-[10px] font-bold text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
+                          <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
                         </div>
                       </div>
                     </div>
@@ -917,7 +917,7 @@ export function RecipesPage() {
                           type="button"
                           onClick={() => handleReactivateMaterial(editingMaterial.id)}
                           disabled={isSubmitting}
-                          className="flex-1 px-5 py-3.5 bg-paymint-green text-black font-bold rounded-2xl transition-all shadow-lg shadow-paymint-green/20 flex items-center justify-center gap-2 hover:bg-[#68B390]"
+                          className="flex-1 px-5 py-3.5 bg-mintcom-green text-black font-bold rounded-2xl transition-all shadow-lg shadow-mintcom-green/20 flex items-center justify-center gap-2 hover:bg-[#5fa888]"
                         >
                           <RefreshCcw size={16} />
                           {t('common.reactivate', { defaultValue: 'Reactivate' })}
@@ -933,13 +933,13 @@ export function RecipesPage() {
                               handleDeleteMaterial(editingMaterial.id, editingMaterial.name);
                             }}
                             disabled={isSubmitting}
-                            className="flex-1 px-5 py-3.5 border border-paymint-red/20 text-paymint-red font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2 hover:bg-paymint-red/5"
+                            className="flex-1 px-5 py-3.5 border border-mintcom-red/20 text-mintcom-red font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2 hover:bg-mintcom-red/5"
                           >
                             <Trash2 size={16} />
                             {t('common.archive', { defaultValue: 'Archive' })}
                           </button>
                         )}
-                        <button onClick={handleMaterialSubmit} disabled={isSubmitting} className="flex-1 px-5 py-3.5 bg-paymint-green hover:bg-[#68B390] text-black font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
+                        <button onClick={handleMaterialSubmit} disabled={isSubmitting} className="flex-1 px-5 py-3.5 bg-mintcom-green hover:bg-[#5fa888] text-black font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
                           {isSubmitting ? <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : t('common.save', {defaultValue: 'Save'})}
                         </button>
                       </>
@@ -961,7 +961,7 @@ export function RecipesPage() {
               <div className="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
                 <div>
                   <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
-                    {t('manufacturing.formula.name')} <span className="text-paymint-red mx-1">*</span>
+                    {t('manufacturing.formula.name')} <span className="text-mintcom-red mx-1">*</span>
                   </label>
                   <input maxLength={255}
                     type="text"
@@ -970,10 +970,10 @@ export function RecipesPage() {
                       setSubRecipeForm({ ...subRecipeForm, name: e.target.value });
                       if (errors.name) setErrors({ ...errors, name: '' });
                     }}
-                    className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-paymint-green/10 focus:border-paymint-green transition-all`}
+                    className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all`}
                     placeholder={formatInputPlaceholder(t('manufacturing.formula.namePlaceholder'), t('common.locale'))}
                   />
-                  {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
+                  {errors.name && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.name}</p>}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col">
@@ -999,7 +999,7 @@ export function RecipesPage() {
                           setSubRecipeForm({ ...subRecipeForm, yield: 0 });
                         }
                       }}
-                      className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-sm text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-paymint-green/20 transition-all outline-none shadow-sm hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]"
+                      className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-sm text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-mintcom-green/20 transition-all outline-none shadow-sm hover:border-mintcom-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]"
                     />
                   </div>
                   <div className="flex flex-col">
@@ -1077,7 +1077,7 @@ export function RecipesPage() {
                                     setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
                                   }
                                 }}
-                                className="w-16 flex-1 px-3 py-3.5 bg-transparent text-right font-black text-paymint-green focus:outline-none text-sm"
+                                className="w-16 flex-1 px-3 py-3.5 bg-transparent text-right font-black text-mintcom-green focus:outline-none text-sm"
                                 placeholder={formatInputPlaceholder("0", t('common.locale'))}
                               />
                               <div className="border-l border-gray-300 dark:border-white/10">
@@ -1100,7 +1100,7 @@ export function RecipesPage() {
 
                             <button
                               onClick={() => setSubRecipeForm(prev => ({ ...prev, ingredients: prev.ingredients.filter((_, i) => i !== index) }))}
-                              className="p-2 text-paymint-red hover:bg-paymint-red/10 rounded-xl transition-all"
+                              className="p-2 text-mintcom-red hover:bg-mintcom-red/10 rounded-xl transition-all"
                             >
                               <Trash2 size={16} />
                             </button>
@@ -1139,7 +1139,7 @@ export function RecipesPage() {
                         }
                         setSubRecipeForm(prev => ({ ...prev, ingredients: [...prev.ingredients, { rawMaterialId: '', quantity: 0 }] }));
                       }}
-                      className="w-full flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl label-strong font-outfit text-paymint-green hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
+                      className="w-full flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl label-strong font-outfit text-mintcom-green hover:bg-mintcom-green/5 hover:border-mintcom-green/30 transition-all group"
                     >
                       <Plus size={16} className="group-hover:scale-125 transition-transform" />
                       <span>{t('manufacturing.formula.addMaterial')}</span>
@@ -1162,7 +1162,7 @@ export function RecipesPage() {
                       type="button"
                       onClick={() => handleReactivateRecipe(editingRecipe.id, 'sub')}
                       disabled={isSubmitting}
-                      className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20"
+                      className="flex-1 py-4 bg-mintcom-green text-black font-black rounded-2xl hover:bg-[#5fa888] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-mintcom-green/20"
                     >
                       <RefreshCcw size={16} />
                       {t('common.reactivate', { defaultValue: 'Reactivate' })}
@@ -1178,13 +1178,13 @@ export function RecipesPage() {
                           handleDeleteRecipe(editingRecipe.id, 'sub');
                         }}
                         disabled={isSubmitting}
-                        className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs flex items-center justify-center gap-2 transition-all"
+                        className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black rounded-2xl hover:bg-mintcom-red/5 tracking-widest text-xs flex items-center justify-center gap-2 transition-all"
                       >
                         <Trash2 size={16} />
                         {t('common.archive', { defaultValue: 'Archive' })}
                       </button>
                     )}
-                    <button onClick={handleSaveSubRecipe} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
+                    <button onClick={handleSaveSubRecipe} disabled={isSubmitting} className="flex-1 py-4 bg-mintcom-green text-black font-black rounded-2xl hover:bg-[#5fa888] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-mintcom-green/20">
                       {t('manufacturing.formula.saveFormula')}
                     </button>
                   </>
@@ -1206,7 +1206,7 @@ export function RecipesPage() {
               <div className="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
                 <div>
                   <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
-                    {t('manufacturing.formula.targetItem', {defaultValue: 'Target Menu Item'})} <span className="text-paymint-red mx-1">*</span>
+                    {t('manufacturing.formula.targetItem', {defaultValue: 'Target Menu Item'})} <span className="text-mintcom-red mx-1">*</span>
                     <QuickInfo text={t('manufacturing.tips.targetItem', {defaultValue: 'The product on your menu that users order (e.g., Pepperoni Pizza).'})} />
                   </label>
                   <CustomSelect
@@ -1221,7 +1221,7 @@ export function RecipesPage() {
                     }))}
                     placeholder={formatInputPlaceholder(t('manufacturing.formula.selectItem'), t('common.locale'))}
                   />
-                  {errors.itemId && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.itemId}</p>}
+                  {errors.itemId && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.itemId}</p>}
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
@@ -1302,7 +1302,7 @@ export function RecipesPage() {
                               )}
 
                               {(ing.rawMaterialId || ing.subRecipeId) && (
-                              <div className="flex flex-1 bg-white dark:bg-[#1a1a1a] rounded-2xl border border-gray-300 dark:border-white/10 transition-all hover:border-gray-400 dark:hover:border-white/20 focus-within:border-paymint-green/50 focus-within:ring-2 focus-within:ring-paymint-green/20 relative group/input">
+                              <div className="flex flex-1 bg-white dark:bg-[#1a1a1a] rounded-2xl border border-gray-300 dark:border-white/10 transition-all hover:border-gray-400 dark:hover:border-white/20 focus-within:border-mintcom-green/50 focus-within:ring-2 focus-within:ring-mintcom-green/20 relative group/input">
                                 <input
                                   type="number"
                                   min="0"
@@ -1359,7 +1359,7 @@ export function RecipesPage() {
                                                 setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                                                 setActiveDropdown(null);
                                               }}
-                                              className={`w-full px-4 py-2 text-center text-xs font-black transition-colors ${u === currentUnit ? 'bg-paymint-green text-gray-900' : 'text-gray-500 hover:text-black dark:hover:text-white'
+                                              className={`w-full px-4 py-2 text-center text-xs font-black transition-colors ${u === currentUnit ? 'bg-mintcom-green text-gray-900' : 'text-gray-500 hover:text-black dark:hover:text-white'
                                                 }`}
                                             >
                                               {t(`inventory.units.${u.toLowerCase()}`, { defaultValue: u })}
@@ -1375,7 +1375,7 @@ export function RecipesPage() {
 
                             <button
                               onClick={() => setFinalRecipeForm(prev => ({ ...prev, ingredients: prev.ingredients.filter((_, i) => i !== index) }))}
-                              className="p-2 text-paymint-red hover:bg-paymint-red/10 rounded-xl transition-all"
+                              className="p-2 text-mintcom-red hover:bg-mintcom-red/10 rounded-xl transition-all"
                             >
                               <Trash2 size={16} />
                             </button>
@@ -1417,7 +1417,7 @@ export function RecipesPage() {
                         }
                         setFinalRecipeForm(prev => ({ ...prev, ingredients: [...prev.ingredients, { rawMaterialId: '', quantity: 0, type: 'raw' }] }));
                       }}
-                      className="flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl label-strong font-outfit text-paymint-green hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
+                      className="flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl label-strong font-outfit text-mintcom-green hover:bg-mintcom-green/5 hover:border-mintcom-green/30 transition-all group"
                     >
                       <Package size={16} className="group-hover:scale-125 transition-transform" />
                       <span>{t('manufacturing.formula.addMaterial')}</span>
@@ -1464,7 +1464,7 @@ export function RecipesPage() {
                       type="button"
                       onClick={() => handleReactivateRecipe(editingRecipe.id, 'final')}
                       disabled={isSubmitting}
-                      className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20"
+                      className="flex-1 py-4 bg-mintcom-green text-black font-black rounded-2xl hover:bg-[#5fa888] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-mintcom-green/20"
                     >
                       <RefreshCcw size={16} />
                       {t('common.reactivate', { defaultValue: 'Reactivate' })}
@@ -1480,13 +1480,13 @@ export function RecipesPage() {
                           handleDeleteRecipe(editingRecipe.id, 'final');
                         }}
                         disabled={isSubmitting}
-                        className="flex-1 py-4 border border-paymint-red/20 text-paymint-red font-black rounded-2xl hover:bg-paymint-red/5 tracking-widest text-xs flex items-center justify-center gap-2 transition-all"
+                        className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black rounded-2xl hover:bg-mintcom-red/5 tracking-widest text-xs flex items-center justify-center gap-2 transition-all"
                       >
                         <Trash2 size={16} />
                         {t('common.archive', { defaultValue: 'Archive' })}
                       </button>
                     )}
-                    <button onClick={handleSaveFinalRecipe} disabled={isSubmitting} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
+                    <button onClick={handleSaveFinalRecipe} disabled={isSubmitting} className="flex-1 py-4 bg-mintcom-green text-black font-black rounded-2xl hover:bg-[#5fa888] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-mintcom-green/20">
                       {t('manufacturing.formula.registerRecipe')}
                     </button>
                   </>
@@ -1534,7 +1534,7 @@ export function RecipesPage() {
                       type="button"
                       onClick={() => setNumBatches((value) => Math.max(1, value - 1))}
                       disabled={numBatches <= 1}
-                      className="h-12 w-12 shrink-0 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-paymint-green/40 hover:text-paymint-green disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-600 transition-all flex items-center justify-center"
+                      className="h-12 w-12 shrink-0 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-mintcom-green/40 hover:text-mintcom-green disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-600 transition-all flex items-center justify-center"
                       aria-label={t('common.decrease', { defaultValue: 'Decrease' })}
                     >
                       <Minus size={18} />
@@ -1552,18 +1552,18 @@ export function RecipesPage() {
                           const value = parseInt(digits || '1', 10);
                           setNumBatches(Math.max(1, value));
                         }}
-                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 pr-24 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
+                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 pr-24 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm"
                         placeholder={formatInputPlaceholder('1', t('common.locale'))}
                         autoFocus
                       />
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
-                        <span className="text-paymint-green text-xs font-black">{t('manufacturing.batches', { defaultValue: 'Batches' })}</span>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-mintcom-green/10 border border-mintcom-green/20 rounded-lg shadow-sm">
+                        <span className="text-mintcom-green text-xs font-black">{t('manufacturing.batches', { defaultValue: 'Batches' })}</span>
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => setNumBatches((value) => Math.min(999999, value + 1))}
-                      className="h-12 w-12 shrink-0 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-paymint-green/40 hover:text-paymint-green transition-all flex items-center justify-center"
+                      className="h-12 w-12 shrink-0 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:border-mintcom-green/40 hover:text-mintcom-green transition-all flex items-center justify-center"
                       aria-label={t('common.increase', { defaultValue: 'Increase' })}
                     >
                       <Plus size={18} />
@@ -1604,7 +1604,7 @@ export function RecipesPage() {
                 <button
                   onClick={handleManufacture}
                   disabled={isSubmitting}
-                  className="w-full py-3.5 bg-paymint-green text-black font-black rounded-2xl hover:bg-[#68B390] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20"
+                  className="w-full py-3.5 bg-mintcom-green text-black font-black rounded-2xl hover:bg-[#5fa888] tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-mintcom-green/20"
                 >
                   {t('manufacturing.confirmProduction')}
                 </button>

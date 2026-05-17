@@ -164,7 +164,7 @@ export function LinkLocationModal({
 
     const getRoleBadgeColor = (role: string) => {
         switch (role?.toUpperCase()) {
-            case 'ADMIN': return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
+            case 'ADMIN': return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
             case 'MANAGER': return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
             default: return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
         }
@@ -188,7 +188,7 @@ export function LinkLocationModal({
                     {/* Header */}
                     <div className="px-8 pt-10 pb-6 flex items-start justify-between">
                         <div className="flex items-center gap-5">
-                            <div className="w-16 h-16 rounded-[1.25rem] bg-[#F0FDF4] dark:bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
+                            <div className="w-16 h-16 rounded-[1.25rem] bg-[#F0FDF4] dark:bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
                                 {step === 1 ? <Building2 size={32} /> : <Users size={32} />}
                             </div>
                             <div>
@@ -216,7 +216,7 @@ export function LinkLocationModal({
                         <motion.div 
                             initial={{ width: "50%" }}
                             animate={{ width: step === 1 ? "50%" : "100%" }}
-                            className="h-full bg-paymint-green transition-all duration-500"
+                            className="h-full bg-mintcom-green transition-all duration-500"
                         />
                     </div>
 
@@ -227,13 +227,13 @@ export function LinkLocationModal({
                                 {/* Search */}
                                 {availableEstablishments.length > 0 && (
                                     <div className="relative group">
-                                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                                         <input
                                             type="text"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                             placeholder={formatInputPlaceholder(t('owner.locations.searchPlaceholder'), t('common.locale'))}
-                                            className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-paymint-green/30 rounded-2xl text-[15px] font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all h-[60px]"
+                                            className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
                                         />
                                     </div>
                                 )}
@@ -262,7 +262,7 @@ export function LinkLocationModal({
 
                                             <button
                                                 onClick={handleClose}
-                                                className="w-full py-4 rounded-2xl bg-paymint-green text-black font-sans font-bold text-sm tracking-tight hover:bg-paymint-green/90 transition-all shadow-lg shadow-paymint-green/20 active:scale-[0.98] mt-4"
+                                                className="w-full py-4 rounded-2xl bg-mintcom-green text-black font-sans font-bold text-sm tracking-tight hover:bg-mintcom-green/90 transition-all shadow-lg shadow-mintcom-green/20 active:scale-[0.98] mt-4"
                                             >
                                                 {t('owner.brands.disclaimerAction')}
                                             </button>
@@ -278,17 +278,17 @@ export function LinkLocationModal({
                                                     key={est.id}
                                                     onClick={() => toggleEstablishment(est.id)}
                                                     className={`flex items-center gap-4 p-4 rounded-2xl border transition-all text-left group ${
-                                                        isSelected ? 'border-paymint-green bg-paymint-green/5 ring-1 ring-paymint-green' : 'border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] hover:border-paymint-green/30'
+                                                        isSelected ? 'border-mintcom-green bg-mintcom-green/5 ring-1 ring-mintcom-green' : 'border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] hover:border-mintcom-green/30'
                                                     }`}
                                                 >
-                                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green text-black' : 'bg-white dark:bg-white/5 text-gray-400 group-hover:text-paymint-green'}`}>
+                                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green text-black' : 'bg-white dark:bg-white/5 text-gray-400 group-hover:text-mintcom-green'}`}>
                                                         <Icon size={24} />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate">{est.name}</h4>
                                                         <p className="text-[10px] font-black text-gray-400 tracking-widest uppercase mt-0.5">{est.type} • {est.currency}</p>
                                                     </div>
-                                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-200 dark:border-white/10'}`}>
+                                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green border-mintcom-green' : 'border-gray-200 dark:border-white/10'}`}>
                                                         {isSelected && <Check size={14} className="text-black" strokeWidth={3} />}
                                                     </div>
                                                 </button>
@@ -308,7 +308,7 @@ export function LinkLocationModal({
 
                                 {isLoadingEmployees ? (
                                     <div className="py-20 flex flex-col items-center gap-4">
-                                        <Loader2 className="animate-spin text-paymint-green" size={32} />
+                                        <Loader2 className="animate-spin text-mintcom-green" size={32} />
                                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('owner.brands.wizard.scanningEmployees')}</p>
                                     </div>
                                 ) : (
@@ -316,7 +316,7 @@ export function LinkLocationModal({
                                         {employeesForMerging.map((group) => (
                                             <div key={group.establishmentId} className="space-y-4">
                                                 <div className="flex items-center gap-2 px-1">
-                                                    <Store size={14} className="text-paymint-green" />
+                                                    <Store size={14} className="text-mintcom-green" />
                                                     <h3 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-widest">
                                                         {group.establishmentName}
                                                     </h3>
@@ -335,10 +335,10 @@ export function LinkLocationModal({
                                                                         key={emp.employeeId}
                                                                         onClick={() => toggleEmployee(emp.employeeId)}
                                                                         className={`flex items-center gap-4 p-4 rounded-2xl border transition-all text-left group ${
-                                                                            isSelected ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-black/10'
+                                                                            isSelected ? 'border-mintcom-green bg-mintcom-green/5' : 'border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-black/10'
                                                                         }`}
                                                                     >
-                                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green text-black' : 'bg-white dark:bg-white/5 text-gray-400'}`}>
+                                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green text-black' : 'bg-white dark:bg-white/5 text-gray-400'}`}>
                                                                             <CheckCircle2 size={20} />
                                                                         </div>
                                                                         <div className="flex-1 min-w-0">
@@ -375,7 +375,7 @@ export function LinkLocationModal({
                                 <button
                                     onClick={handleNext}
                                     disabled={selectedIds.length === 0 || isLoadingEmployees}
-                                    className="flex-[2] py-4 bg-paymint-green text-black rounded-2xl text-xs font-black shadow-lg shadow-paymint-green/20 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                    className="flex-[2] py-4 bg-mintcom-green text-black rounded-2xl text-xs font-black shadow-lg shadow-mintcom-green/20 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                 >
                                     {isLoadingEmployees ? <Loader2 size={18} className="animate-spin" /> : <>
                                         {t('common.next')}

@@ -186,7 +186,7 @@ export const Hardware = () => {
       >
         {/* Background ambient */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-20 right-[5%] h-[420px] w-[420px] rounded-full bg-paymint-green/8 blur-[120px]" />
+          <div className="absolute -top-20 right-[5%] h-[420px] w-[420px] rounded-full bg-mintcom-green/8 blur-[120px]" />
           <div className="absolute -bottom-10 left-[5%] h-[420px] w-[420px] rounded-full bg-emerald-400/5 blur-[120px]" />
         </div>
 
@@ -198,7 +198,7 @@ export const Hardware = () => {
             viewport={{ once: true }}
             className="mx-auto mb-14 max-w-3xl text-center lg:mb-20"
           >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-white/60 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-paymint-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-white/60 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-mintcom-green shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-12px_rgba(124,195,159,0.5)] backdrop-blur-xl dark:bg-white/5">
               <Monitor size={12} />
               <span>{t('landing.hardware.terminals')}</span>
             </div>
@@ -207,7 +207,7 @@ export const Hardware = () => {
               <span className="text-gray-900 dark:text-white">
                 {t('landing.hardware.title')}{' '}
               </span>
-              <span className="bg-gradient-to-r from-paymint-green via-emerald-400 to-paymint-green bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-mintcom-green via-emerald-400 to-mintcom-green bg-clip-text text-transparent">
                 {t('landing.hardware.titleHighlight')}
               </span>
             </h2>
@@ -230,20 +230,20 @@ export const Hardware = () => {
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 whileHover={{ y: -6 }}
-                className="group relative overflow-hidden rounded-3xl border border-gray-200/70 bg-white/90 p-8 shadow-[0_8px_20px_-8px_rgba(0,0,0,0.06)] backdrop-blur-xl transition-all duration-500 hover:border-paymint-green/40 hover:shadow-[0_12px_30px_-10px_rgba(124,195,159,0.15)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none lg:p-10"
+                className="group relative overflow-hidden rounded-3xl border border-gray-200/70 bg-white/90 p-8 shadow-[0_8px_20px_-8px_rgba(0,0,0,0.06)] backdrop-blur-xl transition-all duration-500 hover:border-mintcom-green/40 hover:shadow-[0_12px_30px_-10px_rgba(124,195,159,0.15)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none lg:p-10"
               >
                 {/* Decorative corner glow */}
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-paymint-green/15 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+                  className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-mintcom-green/15 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
                 />
 
                 <div className="relative flex items-start gap-5">
                   {/* Big icon tile */}
-                  <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-paymint-green/15 to-paymint-green/5 ring-1 ring-paymint-green/25 transition-all duration-500 group-hover:from-paymint-green group-hover:to-emerald-400 group-hover:ring-paymint-green/60 group-hover:shadow-[0_10px_30px_-8px_rgba(124,195,159,0.6)]">
+                  <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-mintcom-green/15 to-mintcom-green/5 ring-1 ring-mintcom-green/25 transition-all duration-500 group-hover:from-mintcom-green group-hover:to-emerald-400 group-hover:ring-mintcom-green/60 group-hover:shadow-[0_10px_30px_-8px_rgba(124,195,159,0.6)]">
                     <item.icon
                       size={28}
-                      className="text-paymint-green transition-colors duration-500 group-hover:text-black"
+                      className="text-mintcom-green transition-colors duration-500 group-hover:text-black"
                     />
                   </div>
 
@@ -262,11 +262,11 @@ export const Hardware = () => {
                   {item.products.slice(0, 3).map((product, idx) => (
                     <li
                       key={idx}
-                      className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50/70 p-3 transition-colors hover:border-paymint-green/20 hover:bg-paymint-green/5 dark:border-white/5 dark:bg-white/[0.03]"
+                      className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50/70 p-3 transition-colors hover:border-mintcom-green/20 hover:bg-mintcom-green/5 dark:border-white/5 dark:bg-white/[0.03]"
                     >
                       <CheckCircle2
                         size={16}
-                        className="flex-shrink-0 text-paymint-green"
+                        className="flex-shrink-0 text-mintcom-green"
                       />
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-semibold text-gray-800 dark:text-gray-100">
@@ -285,7 +285,7 @@ export const Hardware = () => {
                     setSelectedHardware(item);
                     setShowModal(true);
                   }}
-                  className="group/btn relative mt-6 inline-flex h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-xl border border-gray-200 bg-white text-sm font-bold text-gray-900 transition-all hover:border-paymint-green hover:bg-paymint-green hover:text-black dark:border-white/10 dark:bg-white/5 dark:text-white"
+                  className="group/btn relative mt-6 inline-flex h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-xl border border-gray-200 bg-white text-sm font-bold text-gray-900 transition-all hover:border-mintcom-green hover:bg-mintcom-green hover:text-black dark:border-white/10 dark:bg-white/5 dark:text-white"
                 >
                   <span>{t('landing.hardware.viewAllOptions')}</span>
                   <ArrowRight
@@ -309,7 +309,7 @@ export const Hardware = () => {
             className="mx-auto max-w-2xl rounded-3xl border border-gray-200/70 bg-white/70 p-6 text-center backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03]"
           >
             <p className="text-base font-medium text-gray-600 dark:text-gray-300">
-              <span className="font-bold text-paymint-green">
+              <span className="font-bold text-mintcom-green">
                 {t('landing.hardware.alreadyHave')}
               </span>{' '}
               <span className="text-gray-500 dark:text-gray-400">
@@ -338,9 +338,9 @@ export const Hardware = () => {
               className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
             >
               {/* Header */}
-              <div className="flex items-center justify-between border-b border-gray-100 bg-gradient-to-r from-paymint-green/10 via-transparent to-transparent p-6 dark:border-white/5">
+              <div className="flex items-center justify-between border-b border-gray-100 bg-gradient-to-r from-mintcom-green/10 via-transparent to-transparent p-6 dark:border-white/5">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-paymint-green shadow-lg shadow-paymint-green/30">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-mintcom-green shadow-lg shadow-mintcom-green/30">
                     <selectedHardware.icon size={22} className="text-black" />
                   </div>
                   <div>
@@ -371,7 +371,7 @@ export const Hardware = () => {
                       exit={{ opacity: 0 }}
                       className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex h-12 items-start justify-center bg-gradient-to-b from-white to-transparent pt-2 dark:from-[#0e0e0e]"
                     >
-                      <ChevronUp size={18} className="animate-bounce text-paymint-green" />
+                      <ChevronUp size={18} className="animate-bounce text-mintcom-green" />
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -388,17 +388,17 @@ export const Hardware = () => {
                         href={product.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex items-center justify-between gap-4 rounded-2xl border border-transparent bg-gray-50/70 p-4 transition-all hover:border-paymint-green/30 hover:bg-paymint-green/5 dark:bg-white/[0.03]"
+                        className="group flex items-center justify-between gap-4 rounded-2xl border border-transparent bg-gray-50/70 p-4 transition-all hover:border-mintcom-green/30 hover:bg-mintcom-green/5 dark:bg-white/[0.03]"
                       >
                         <div className="flex min-w-0 items-center gap-4">
-                          <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-paymint-green/10 ring-1 ring-paymint-green/20 transition-all group-hover:bg-paymint-green group-hover:ring-paymint-green/50">
+                          <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 ring-1 ring-mintcom-green/20 transition-all group-hover:bg-mintcom-green group-hover:ring-mintcom-green/50">
                             <CheckCircle2
                               size={18}
-                              className="text-paymint-green transition-colors group-hover:text-black"
+                              className="text-mintcom-green transition-colors group-hover:text-black"
                             />
                           </div>
                           <div className="min-w-0">
-                            <p className="truncate font-bold text-gray-900 transition-colors group-hover:text-paymint-green dark:text-white">
+                            <p className="truncate font-bold text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
                               {product.name}
                             </p>
                             <p className="truncate text-sm text-gray-500 dark:text-gray-400">
@@ -431,7 +431,7 @@ export const Hardware = () => {
                     >
                       <ChevronDown
                         size={18}
-                        className="animate-bounce text-paymint-green"
+                        className="animate-bounce text-mintcom-green"
                       />
                     </motion.div>
                   )}

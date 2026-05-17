@@ -62,7 +62,7 @@ type QueueKey = 'all' | 'needs_reply' | 'urgent' | 'stale' | 'open' | 'in_progre
 const statusConfig = {
   open: { label: 'Open', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: Inbox },
   in_progress: { label: 'In progress', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/15', icon: Clock },
-  resolved: { label: 'Resolved', color: 'text-paymint-green', bg: 'bg-paymint-green/10', icon: CheckCircle2 },
+  resolved: { label: 'Resolved', color: 'text-mintcom-green', bg: 'bg-mintcom-green/10', icon: CheckCircle2 },
   closed: { label: 'Closed', color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-white/10', icon: XCircle },
 };
 
@@ -229,7 +229,7 @@ export const SupportAdminPage = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <div className="mb-3 inline-flex items-center gap-2 rounded-xl border border-paymint-green/25 bg-paymint-green/10 px-3 py-1.5 text-xs font-bold text-paymint-green">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-mintcom-green/10 px-3 py-1.5 text-xs font-bold text-mintcom-green">
                 <Shield size={14} />
                 Support admin: {account?.email}
               </div>
@@ -237,7 +237,7 @@ export const SupportAdminPage = () => {
                 Support Desk
               </h1>
               <p className="mt-2 max-w-2xl text-sm font-medium text-gray-500 dark:text-gray-400">
-                Triage customer tickets, keep urgent requests visible, and reply as Paymint Support.
+                Triage customer tickets, keep urgent requests visible, and reply as Mintcom Support.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -251,7 +251,7 @@ export const SupportAdminPage = () => {
               </button>
               <button
                 onClick={() => navigate('/support/admin/feedback')}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-paymint-green px-4 py-3 text-sm font-black text-black transition-opacity hover:opacity-90"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-mintcom-green px-4 py-3 text-sm font-black text-black transition-opacity hover:opacity-90"
               >
                 <Star size={16} />
                 Feedback
@@ -264,7 +264,7 @@ export const SupportAdminPage = () => {
               { label: 'Active', value: deskStats.active, icon: Inbox, tone: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' },
               { label: 'Needs reply', value: deskStats.needsReply, icon: AlertTriangle, tone: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
               { label: 'SLA overdue', value: deskStats.stale, icon: TimerReset, tone: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
-              { label: 'Resolved', value: stats.resolved, icon: CheckCircle2, tone: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+              { label: 'Resolved', value: stats.resolved, icon: CheckCircle2, tone: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
             ].map((item) => (
               <div key={item.label} className="rounded-2xl border border-gray-100 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
                 <div className="flex items-center gap-3">
@@ -328,7 +328,7 @@ export const SupportAdminPage = () => {
                         if (e.key === 'Enter') fetchTickets();
                       }}
                       placeholder={formatInputPlaceholder('Search ticket number, subject, email, or customer...', t('common.locale'))}
-                      className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-11 text-sm font-bold text-gray-700 outline-none transition-colors focus:border-paymint-green/50 focus:ring-2 focus:ring-paymint-green/20 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+                      className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-11 text-sm font-bold text-gray-700 outline-none transition-colors focus:border-mintcom-green/50 focus:ring-2 focus:ring-mintcom-green/20 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
                     />
                     {searchQuery && (
                       <button
@@ -349,7 +349,7 @@ export const SupportAdminPage = () => {
                   </button>
                   <button
                     onClick={fetchTickets}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-paymint-green px-5 py-3 text-sm font-black text-black transition-opacity hover:opacity-90"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-mintcom-green px-5 py-3 text-sm font-black text-black transition-opacity hover:opacity-90"
                   >
                     Apply
                   </button>
@@ -462,7 +462,7 @@ function TicketRow({ ticket, index, onOpen }: { ticket: AdminTicket; index: numb
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(index * 0.025, 0.25) }}
-      className={`block w-full rounded-2xl border bg-white p-5 text-left transition-all hover:border-paymint-green/40 hover:shadow-lg hover:shadow-paymint-green/5 dark:bg-white/[0.03] ${
+      className={`block w-full rounded-2xl border bg-white p-5 text-left transition-all hover:border-mintcom-green/40 hover:shadow-lg hover:shadow-mintcom-green/5 dark:bg-white/[0.03] ${
         waitingForSupport
           ? 'border-amber-300 dark:border-amber-500/40'
           : 'border-gray-100 dark:border-white/10'
@@ -521,7 +521,7 @@ function TicketRow({ ticket, index, onOpen }: { ticket: AdminTicket; index: numb
             <MessageSquare size={14} />
             {ticket.messageCount}
           </span>
-          <ChevronRight className="h-5 w-5 text-gray-300 transition-colors group-hover:text-paymint-green" />
+          <ChevronRight className="h-5 w-5 text-gray-300 transition-colors group-hover:text-mintcom-green" />
         </div>
       </div>
     </motion.button>

@@ -143,7 +143,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                     <div className="relative z-10 flex flex-col">
                                         <div className="flex items-center gap-2 mb-3">
                                             <div className="w-8 h-8 rounded-lg bg-white dark:bg-white/5 flex items-center justify-center shadow-sm">
-                                                <ArrowUpRight size={16} className={`text-paymint-green ${t('common.locale') === 'ar' ? '-rotate-90' : ''}`} />
+                                                <ArrowUpRight size={16} className={`text-mintcom-green ${t('common.locale') === 'ar' ? '-rotate-90' : ''}`} />
                                             </div>
                                             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('orders.reports.sales.payIn')}</span>
                                         </div>
@@ -180,7 +180,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                             <div>
                                 {isLoading ? (
                                     <div className="py-12 flex flex-col items-center justify-center space-y-3 opacity-50">
-                                        <div className="w-6 h-6 border-2 border-paymint-green border-t-transparent rounded-full animate-spin" />
+                                        <div className="w-6 h-6 border-2 border-mintcom-green border-t-transparent rounded-full animate-spin" />
                                         <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">{t('common.loading')}</p>
                                     </div>
                                 ) : logs.length > 0 ? (
@@ -193,7 +193,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                                 <div className="flex items-center gap-4">
                                                     {/* Icon Box */}
                                                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${log.type === 'PAY_IN'
-                                                        ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                                                        ? 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'
                                                         : 'bg-red-500/10 text-red-500 border-red-500/20'
                                                         }`}>
                                                         {log.type === 'PAY_IN' ? <ArrowUpRight size={20} className={t('common.locale') === 'ar' ? '-rotate-90' : ''} /> : <ArrowDownLeft size={20} className={t('common.locale') === 'ar' ? '-rotate-90' : ''} />}
@@ -223,7 +223,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                                 </div>
 
                                                 {/* Amount */}
-                                                <div className={`text-xl font-bold tabular-nums shrink-0 ${log.type === 'PAY_IN' ? 'text-paymint-green' : 'text-red-500'
+                                                <div className={`text-xl font-bold tabular-nums shrink-0 ${log.type === 'PAY_IN' ? 'text-mintcom-green' : 'text-red-500'
                                                     }`} dir="ltr">
                                                     {log.type === 'PAY_IN' ? '+' : '-'}{formatCurrency(Math.abs(log.amount))}
                                                 </div>

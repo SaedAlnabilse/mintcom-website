@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import PaymintLeafIcon from '../../assets/small-logo.svg';
+import MintcomLeafIcon from '../../assets/small-logo.svg';
 import { useAuth } from '../../context/AuthContext';
 import type { KnowledgeEntry } from '../../data/chatbotKnowledge';
 import type { ChatIconName, ResolvedChatAction } from './chatbotTypes';
@@ -144,7 +144,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (chatRef.current && !chatRef.current.contains(event.target as Node)) {
-        const isSwitcher = (event.target as Element).closest('#paymint-launcher-switcher');
+        const isSwitcher = (event.target as Element).closest('#mintcom-launcher-switcher');
         if (!isSwitcher) {
           onClose();
         }
@@ -357,7 +357,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
           dir={isRTL ? 'rtl' : 'ltr'}
           className={`fixed bottom-[100px] ${isRTL ? 'left-[30px]' : 'right-[30px]'} z-[950] flex h-[600px] max-h-[calc(100vh-150px)] w-[400px] max-w-[calc(100vw-60px)] flex-col overflow-hidden rounded-3xl border border-gray-200/50 bg-white shadow-2xl dark:border-white/10 dark:bg-[#0F172A]`}
         >
-          <div className="relative overflow-hidden bg-gradient-to-r from-[#7CC39F] to-[#5BA882] px-5 py-4">
+          <div className="relative overflow-hidden bg-gradient-to-r from-[#7dc6a2] to-[#5BA882] px-5 py-4">
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
               <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-black/5 blur-xl" />
@@ -366,7 +366,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
             <div className="relative flex items-center gap-3">
               <div className="relative">
                 <div className="flex h-12 w-12 items-center justify-center">
-                  <img src={PaymintLeafIcon} alt="" className="h-10 w-10 scale-x-[-1] object-contain drop-shadow-md" />
+                  <img src={MintcomLeafIcon} alt="" className="h-10 w-10 scale-x-[-1] object-contain drop-shadow-md" />
                 </div>
               </div>
               <div>
@@ -393,7 +393,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                         <User size={16} className="text-gray-600 dark:text-gray-300" />
                       </div>
                     ) : (
-                      <img src={PaymintLeafIcon} alt="" className="h-7 w-7 scale-x-[-1] object-contain" />
+                      <img src={MintcomLeafIcon} alt="" className="h-7 w-7 scale-x-[-1] object-contain" />
                     )}
                   </div>
 
@@ -401,7 +401,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                     <div
                       className={`inline-block rounded-2xl px-4 py-3 ${
                         message.type === 'user'
-                          ? 'rounded-tr-sm bg-[#7CC39F] text-black'
+                          ? 'rounded-tr-sm bg-[#7dc6a2] text-black'
                           : 'rounded-tl-sm bg-gray-100 text-gray-800 dark:bg-white/5 dark:text-gray-200'
                       }`}
                     >
@@ -416,7 +416,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => handleAction(action)}
-                            className="inline-flex items-center gap-2 rounded-full bg-[#7CC39F]/10 px-3 py-1.5 text-xs font-bold text-[#3C8E4C] transition-colors hover:bg-[#7CC39F]/20"
+                            className="inline-flex items-center gap-2 rounded-full bg-[#7dc6a2]/10 px-3 py-1.5 text-xs font-bold text-[#3C8E4C] transition-colors hover:bg-[#7dc6a2]/20"
                           >
                             {renderActionIcon(action.icon)}
                             <span>{action.label}</span>
@@ -436,7 +436,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => void processMessage(suggestion)}
-                            className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-[#7CC39F] hover:text-[#7CC39F] dark:border-white/10 dark:bg-white/5 dark:text-gray-300"
+                            className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-[#7dc6a2] hover:text-[#7dc6a2] dark:border-white/10 dark:bg-white/5 dark:text-gray-300"
                           >
                             {suggestion}
                           </motion.button>
@@ -452,7 +452,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-start">
                 <div className="flex gap-2">
                   <div className="flex h-8 w-8 items-center justify-center">
-                    <img src={PaymintLeafIcon} alt="" className="h-7 w-7 scale-x-[-1] object-contain" />
+                    <img src={MintcomLeafIcon} alt="" className="h-7 w-7 scale-x-[-1] object-contain" />
                   </div>
                   <div className="rounded-2xl rounded-tl-sm bg-gray-100 px-4 py-3 dark:bg-white/5">
                     <div className="flex gap-1">
@@ -461,7 +461,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                           key={i}
                           animate={{ y: [0, -4, 0] }}
                           transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.1 }}
-                          className="h-2 w-2 rounded-full bg-[#7CC39F]"
+                          className="h-2 w-2 rounded-full bg-[#7dc6a2]"
                         />
                       ))}
                     </div>
@@ -481,7 +481,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleAction(action)}
-                  className="flex flex-shrink-0 items-center gap-1.5 rounded-full bg-gray-50 px-3 py-1.5 text-xs font-bold text-gray-600 transition-colors hover:bg-[#7CC39F]/10 hover:text-[#7CC39F] dark:bg-white/5 dark:text-gray-400"
+                  className="flex flex-shrink-0 items-center gap-1.5 rounded-full bg-gray-50 px-3 py-1.5 text-xs font-bold text-gray-600 transition-colors hover:bg-[#7dc6a2]/10 hover:text-[#7dc6a2] dark:bg-white/5 dark:text-gray-400"
                 >
                   {renderActionIcon(action.icon)}
                   <span>{action.label}</span>
@@ -503,7 +503,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                   onKeyDown={handleKeyDown}
                   placeholder={formatInputPlaceholder(t('chat.inputPlaceholder'), t('common.locale'))}
                   disabled={isTyping}
-                  className={`w-full rounded-2xl border border-gray-200 bg-white py-3 text-sm text-gray-900 transition-all placeholder:text-gray-400 focus:border-[#7CC39F] focus:outline-none focus:ring-2 focus:ring-[#7CC39F]/30 disabled:opacity-50 dark:border-white/10 dark:bg-[#1E293B] dark:text-white ${
+                  className={`w-full rounded-2xl border border-gray-200 bg-white py-3 text-sm text-gray-900 transition-all placeholder:text-gray-400 focus:border-[#7dc6a2] focus:outline-none focus:ring-2 focus:ring-[#7dc6a2]/30 disabled:opacity-50 dark:border-white/10 dark:bg-[#1E293B] dark:text-white ${
                     isRTL ? 'pl-10 pr-4 text-right' : 'pl-4 pr-10 text-left'
                   }`}
                 />
@@ -517,7 +517,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSend}
                 disabled={!input.trim() || isTyping}
-                className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-[#7CC39F] text-black shadow-lg shadow-[#7CC39F]/30 transition-all hover:brightness-110 disabled:opacity-50 disabled:hover:brightness-100 ${isRTL ? 'rotate-180' : ''}`}
+                className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-[#7dc6a2] text-black shadow-lg shadow-[#7dc6a2]/30 transition-all hover:brightness-110 disabled:opacity-50 disabled:hover:brightness-100 ${isRTL ? 'rotate-180' : ''}`}
               >
                 <Send size={18} />
               </motion.button>

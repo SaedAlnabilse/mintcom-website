@@ -23,7 +23,7 @@ interface TaskItem {
   estimateMinutes: number;
 }
 
-const getTasksStorageKey = (contextId: string) => `paymint.widget.tasks.v1.${contextId}`;
+const getTasksStorageKey = (contextId: string) => `mintcom.widget.tasks.v1.${contextId}`;
 
 function readCompletedState(storageKey: string): Record<string, boolean> {
   if (typeof window === 'undefined') {
@@ -61,9 +61,9 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         // Ignore clicks on the launcher switcher bar
         const target = event.target as Element;
-        const isSwitcher = target.closest('#paymint-launcher-switcher');
-        const isSetupGuide = target.closest('#paymint-tour-guide-active');
-        const isWelcomePopup = target.closest('#paymint-dashboard-welcome-popup');
+        const isSwitcher = target.closest('#mintcom-launcher-switcher');
+        const isSetupGuide = target.closest('#mintcom-tour-guide-active');
+        const isWelcomePopup = target.closest('#mintcom-dashboard-welcome-popup');
         if (!isSwitcher && !isSetupGuide && !isWelcomePopup) {
           onClose();
         }
@@ -187,7 +187,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
 
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(completedById));
-      window.dispatchEvent(new Event('paymint-tasks-updated'));
+      window.dispatchEvent(new Event('mintcom-tasks-updated'));
     } catch {
       // No-op if storage is unavailable.
     }
@@ -269,7 +269,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
         >
           <div className="px-4 py-3 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#7CC39F]/10 text-[#7CC39F] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-[#7dc6a2]/10 text-[#7dc6a2] flex items-center justify-center">
                 <ClipboardList size={16} />
               </div>
               <h3 className="font-bold text-gray-900 dark:text-white text-lg">{t('chat.tasks.title')}</h3>
@@ -297,7 +297,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
 
               <div className="mt-2 h-2 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#7CC39F] to-[#5BA882] transition-all"
+                  className="h-full rounded-full bg-gradient-to-r from-[#7dc6a2] to-[#5BA882] transition-all"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -335,8 +335,8 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
                     <div
                       className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0 ${
                         isCompleted
-                          ? 'bg-[#7CC39F]/15 text-[#5BA882]'
-                          : 'bg-[#7CC39F]/10 text-gray-700 dark:text-gray-200'
+                          ? 'bg-[#7dc6a2]/15 text-[#5BA882]'
+                          : 'bg-[#7dc6a2]/10 text-gray-700 dark:text-gray-200'
                       }`}
                     >
                       {isCompleted ? <Check size={18} /> : index + 1}
@@ -369,7 +369,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
                           <div className="mt-4 flex items-center gap-2">
                             <button
                               onClick={() => handleOpenTask(task.navigation)}
-                              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#7CC39F] to-[#5BA882] text-white font-bold text-sm shadow-sm hover:brightness-105 transition-all"
+                              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#7dc6a2] to-[#5BA882] text-white font-bold text-sm shadow-sm hover:brightness-105 transition-all"
                             >
                               <span>{task.actionLabel}</span>
                               <ExternalLink size={14} />
@@ -380,7 +380,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
                               className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-sm transition-colors ${
                                 isCompleted
                                   ? 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
-                                  : 'text-[#7CC39F] hover:bg-[#7CC39F]/10'
+                                  : 'text-[#7dc6a2] hover:bg-[#7dc6a2]/10'
                               }`}
                             >
                               <Check size={14} />

@@ -59,7 +59,7 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
     <div className={`relative ${showLabel ? 'w-full' : ''}`} ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center transition-all active:scale-90 ${!showLabel && !className.includes('justify-') ? 'justify-center' : ''} ${className || 'w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green'} ${isOpen ? 'bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white' : ''}`}
+        className={`flex items-center transition-all active:scale-90 ${!showLabel && !className.includes('justify-') ? 'justify-center' : ''} ${className || 'w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-mintcom-green dark:hover:text-mintcom-green'} ${isOpen ? 'bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white' : ''}`}
         title={t('theme.toggle')}
       >
         <div className="relative flex items-center justify-center" style={{ width: iconSize, height: iconSize }}>
@@ -102,7 +102,7 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
                     setIsOpen(false);
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-outfit transition-all text-sm font-medium tracking-normal ${theme === option.id
-                    ? 'bg-paymint-green/10 text-paymint-green'
+                    ? 'bg-mintcom-green/10 text-mintcom-green'
                     : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
                     }`}
                 >
