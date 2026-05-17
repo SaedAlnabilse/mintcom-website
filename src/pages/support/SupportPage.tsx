@@ -343,8 +343,6 @@ export const SupportPage = () => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mb-4">
             {categories.slice(0, 2).map((category, index) => {
               const acc = categoryAccent[category.id];
-              const maxArticles = 10;
-              const pct = Math.round((category.articles / maxArticles) * 100);
               return (
                 <motion.div key={category.id}
                   initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -363,17 +361,6 @@ export const SupportPage = () => {
                         {category.title}
                       </h3>
                       <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{category.description}</p>
-                      {/* progress bar */}
-                      <div className="mt-3 flex items-center gap-3">
-                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
-                          <motion.div
-                            initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }}
-                            transition={{ delay: 0.3 + index * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                            className={`h-full rounded-full ${acc.iconBg}`}
-                          />
-                        </div>
-                        <span className="text-xs font-bold text-gray-400">{category.articles} articles</span>
-                      </div>
                     </div>
                     <ChevronRight size={18} className={`flex-shrink-0 text-gray-300 transition-all group-hover:text-mintcom-green group-hover:translate-x-1 ${isRtl ? 'rotate-180' : ''}`} />
                   </Link>
@@ -386,8 +373,6 @@ export const SupportPage = () => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {categories.slice(2).map((category, index) => {
               const acc = categoryAccent[category.id];
-              const maxArticles = 10;
-              const pct = Math.round((category.articles / maxArticles) * 100);
               return (
                 <motion.div key={category.id}
                   initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -404,16 +389,6 @@ export const SupportPage = () => {
                         {category.title}
                       </h3>
                       <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{category.description}</p>
-                      <div className="mt-3 flex items-center gap-3">
-                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
-                          <motion.div
-                            initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }}
-                            transition={{ delay: 0.3 + (index + 2) * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                            className={`h-full rounded-full ${acc.iconBg}`}
-                          />
-                        </div>
-                        <span className="text-xs font-bold text-gray-400">{category.articles} articles</span>
-                      </div>
                     </div>
                     <ChevronRight size={18} className={`flex-shrink-0 text-gray-300 transition-all group-hover:text-mintcom-green group-hover:translate-x-1 ${isRtl ? 'rotate-180' : ''}`} />
                   </Link>

@@ -1989,7 +1989,7 @@
         "title": "Production & Cost Tracking"
       },
       "aiSystem": {
-        "description": "Leverage AI-powered insights to optimize operations, predict trends, and make smarter business decisions.",
+        "description": "Manage your business anytime, anywhere with the Mintcom Admin Mobile App. Get real-time data at your fingertips, allowing you to take quick action and stay completely in control while on the go.",
         "title": "AI-Empowered System"
       },
       "sales": {
@@ -2483,7 +2483,7 @@
       "errors": {
         "idMin": "Location ID must be at least 4 characters",
         "idRegex": "Location ID can only contain letters, numbers, underscores, and hyphens",
-        "passwordMin": "Location Password must be at least 6 characters"
+        "passwordMin": "Location Password must be at least 8 characters"
       },
       "locationId": "Location ID",
       "locationIdDesc": "",
@@ -2491,7 +2491,7 @@
       "locationIdTip": "Unique ID for POS login.",
       "password": "Location Password",
       "passwordPlaceholder": "••••••••",
-      "passwordTip": "Password for this location.",
+      "passwordTip": "At least 8 characters with uppercase, lowercase, and a number.",
       "subtitle": "This is the ID used to access the POS application",
       "title": "Create Location Login",
       "uniqueAccess": "Unique access:",
@@ -2502,7 +2502,7 @@
       "errors": {
         "firstNameMin": "First name must be at least 2 characters",
         "lastNameMin": "Last name must be at least 2 characters",
-        "passwordMin": "Password must be at least 6 characters",
+        "passwordMin": "Password must be at least 8 characters",
         "usernameMin": "Username must be at least 3 characters",
         "usernameRegex": "Username can only contain letters, numbers, underscores, and hyphens"
       },
@@ -2512,7 +2512,7 @@
       "lastNamePlaceholder": "Doe",
       "password": "Personal Password",
       "passwordPlaceholder": "••••••••",
-      "passwordTip": "Your unique password.",
+      "passwordTip": "At least 8 characters with uppercase, lowercase, and a number.",
       "step2Note": "This is step 2 of the POS login.",
       "subtitle": "Create your personal account",
       "title": "Create Your Login",
@@ -2570,7 +2570,7 @@
       "resourcesTitle": "Help Center"
     },
     "validation": {
-      "locationPasswordMin": "Location password must be at least 6 characters"
+      "locationPasswordMin": "Location password must be at least 8 characters"
     }
   },
   "orders": {
@@ -3132,7 +3132,7 @@
         "loginIdMin": "Login ID must be at least 4 characters",
         "loginIdRegex": "Login ID can only contain letters, numbers, underscores, and hyphens",
         "nameMin": "Brand name must be at least 2 characters",
-        "passwordMin": "Password must be at least 6 characters"
+        "passwordMin": "Password must be at least 8 characters"
       },
       "viewDashboard": "View Dashboard",
       "wizard": {

@@ -126,7 +126,11 @@ export function OwnerBrandsPage() {
         establishmentLoginId: z.string()
             .min(4, t('owner.brands.validation.loginIdMin'))
             .regex(/^[a-zA-Z0-9_-]+$/, t('owner.brands.validation.loginIdRegex')),
-        establishmentPassword: z.string().min(6, t('owner.brands.validation.passwordMin')),
+        establishmentPassword: z.string()
+            .min(8, t('auth.validation.passwordMin'))
+            .regex(/[A-Z]/, t('auth.validation.passwordUppercase'))
+            .regex(/[a-z]/, t('auth.validation.passwordLowercase'))
+            .regex(/[0-9]/, t('auth.validation.passwordNumber')),
     }), [t]);
 
     const {

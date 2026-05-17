@@ -92,7 +92,11 @@ export function OnboardingPage() {
     establishmentLoginId: z.string()
       .min(4, t('onboarding.step3.errors.idMin'))
       .regex(/^[a-zA-Z0-9_-]+$/, t('onboarding.step3.errors.idRegex')),
-    establishmentPassword: z.string().min(6, t('onboarding.step3.errors.passwordMin')),
+    establishmentPassword: z.string()
+      .min(8, t('auth.validation.passwordMin'))
+      .regex(/[A-Z]/, t('auth.validation.passwordUppercase'))
+      .regex(/[a-z]/, t('auth.validation.passwordLowercase'))
+      .regex(/[0-9]/, t('auth.validation.passwordNumber')),
   });
 
   // Step 3: Admin Access
@@ -100,7 +104,11 @@ export function OnboardingPage() {
     username: z.string()
       .min(3, t('onboarding.step4.errors.usernameMin'))
       .regex(/^[a-zA-Z0-9_-]+$/, t('onboarding.step4.errors.usernameRegex')),
-    password: z.string().min(6, t('onboarding.step4.errors.passwordMin')),
+    password: z.string()
+      .min(8, t('auth.validation.passwordMin'))
+      .regex(/[A-Z]/, t('auth.validation.passwordUppercase'))
+      .regex(/[a-z]/, t('auth.validation.passwordLowercase'))
+      .regex(/[0-9]/, t('auth.validation.passwordNumber')),
     firstName: z.string().min(2, t('onboarding.step4.errors.firstNameMin')),
     lastName: z.string().min(2, t('onboarding.step4.errors.lastNameMin')),
   });

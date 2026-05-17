@@ -44,8 +44,8 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
   ];
 
   const resourceLinks: FooterLink[] = [
-    { name: t('footer.privacyPolicy'), href: '/legal/privacy', target: '_blank' },
-    { name: t('footer.termsOfService'), href: '/legal/terms', target: '_blank' },
+    { name: t('footer.privacyPolicy'), href: '/legal/privacy' },
+    { name: t('footer.termsOfService'), href: '/legal/terms' },
   ];
 
   const FooterLinkItem = ({ link }: { link: FooterLink }) => {
@@ -53,8 +53,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
       return (
         <Link
           to={link.href}
-          target="_blank"
-          rel="noopener noreferrer"
+          {...(link.target ? { target: link.target, rel: 'noopener noreferrer' } : {})}
           onClick={(e) => {
             if (link.href?.startsWith('/#') && window.location.pathname === '/') {
               const el = document.getElementById(link.href.slice(2));
@@ -109,7 +108,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
               </span>
               <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <Phone size={14} className="text-mintcom-green" />
-                <span dir="ltr">+962 790 000 000</span>
+                <span dir="ltr">+962 79X XXX XXX</span>
               </span>
             </div>
           </div>
@@ -151,11 +150,11 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
                     <span dir="ltr">support@mintcompos.com</span>
                   </a>
                   <a
-                    href="tel:+962790000000"
+                    href="tel:+96279XXXXXXX"
                     className="group flex items-center gap-2 text-[13px] text-gray-500 transition-colors hover:text-mintcom-green dark:text-gray-400"
                   >
                     <Phone size={13} className="shrink-0 text-mintcom-green" />
-                    <span dir="ltr">+962 790 000 000</span>
+                    <span dir="ltr">+962 79X XXX XXX</span>
                   </a>
                 </div>
               </div>

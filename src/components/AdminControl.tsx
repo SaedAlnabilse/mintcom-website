@@ -112,7 +112,7 @@ export const AdminControl = () => {
             </div>
 
             {/* Android Frame Mockup (Right/Front) */}
-            <div className="absolute left-[35%] lg:left-[42%] w-[300px] h-[620px] lg:w-[330px] lg:h-[680px] bg-[#0a0a0a] rounded-[30px] border-[7px] border-gray-800 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10 group z-20 transform rotate-3 hover:-translate-y-2 transition-all duration-500">
+            <div className="absolute left-[25%] lg:left-[32%] w-[300px] h-[620px] lg:w-[330px] lg:h-[680px] bg-[#0a0a0a] rounded-[30px] border-[7px] border-gray-800 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10 group z-20 transform rotate-3 hover:-translate-y-2 transition-all duration-500">
               {/* Android Hole Punch */}
               <div className="absolute top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-black border border-gray-800 rounded-full z-30 shadow-inner" />
 
