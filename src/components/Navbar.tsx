@@ -167,7 +167,7 @@ export const Navbar = () => {
                 ))}
               </div>
 
-              <div className="mx-5 h-4 w-px bg-gray-200 dark:bg-white/10" />
+              <div className="mx-5 h-5 w-[2px] bg-gray-400 dark:bg-white/30" />
             </>
           )}
 

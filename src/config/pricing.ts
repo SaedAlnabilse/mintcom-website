@@ -7,7 +7,7 @@ export type BillingCycle = (typeof BILLING_CYCLES)[keyof typeof BILLING_CYCLES];
 
 export const MINTCOM_PRICING = {
   currency: 'USD',
-  defaultBillingCycle: BILLING_CYCLES.MONTHLY,
+  defaultBillingCycle: BILLING_CYCLES.MONTHLY as BillingCycle,
   primary: {
     monthly: 20,
     yearly: 210,
