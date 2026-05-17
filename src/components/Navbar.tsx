@@ -114,14 +114,14 @@ export const Navbar = () => {
       />
 
       <div
-        className={`relative z-10 mx-auto flex max-w-[1280px] items-center justify-between px-6 md:px-10 ${
+        className={`relative z-10 mx-auto flex max-w-[1280px] items-center justify-between px-4 xs:px-6 md:px-10 ${
           isScrolled ? 'py-3' : 'py-5'
         }`}
       >
         {/* Logo */}
         <Link
           to="/"
-          className="relative z-[60] flex items-center"
+          className="relative z-[60] flex min-w-0 items-center"
           onClick={() => {
             setIsMobileMenuOpen(false);
             if (window.location.pathname === '/') {
@@ -129,7 +129,12 @@ export const Navbar = () => {
             }
           }}
         >
-          <Logo size="lg" className="transition-transform duration-500" />
+          <span className="navbar-logo-full min-w-0">
+            <Logo size="lg" className="transition-transform duration-500" />
+          </span>
+          <span className="navbar-logo-icon">
+            <Logo variant="icon" size="lg" className="transition-transform duration-500" />
+          </span>
         </Link>
 
         {/* Desktop nav */}
@@ -231,9 +236,12 @@ export const Navbar = () => {
         </div>
 
         {/* Mobile controls */}
-        <div className="relative z-[60] flex items-center gap-2 sm:gap-3 lg:hidden">
-          <LanguageSwitcher />
-          <ThemeToggle />
+        <div className="relative z-[60] flex shrink-0 items-center gap-1.5 xs:gap-2 sm:gap-3 lg:hidden">
+          <LanguageSwitcher compact showGlobeIcon={false} buttonClassName="min-h-10 px-3" />
+          <ThemeToggle
+            iconSize={18}
+            className="h-10 w-10 rounded-xl border border-gray-200 bg-gray-50 text-gray-600 hover:text-mintcom-green dark:border-white/10 dark:bg-white/5 dark:text-gray-400 dark:hover:text-mintcom-green"
+          />
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={
@@ -243,7 +251,7 @@ export const Navbar = () => {
             }
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-menu"
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2 text-gray-900 transition-colors hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
+            className="flex min-h-10 min-w-10 items-center justify-center rounded-xl p-2 text-gray-900 transition-colors hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
           >
             {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -305,7 +313,7 @@ export const Navbar = () => {
                             }
                           }
                         }}
-                        className="font-magilio text-3xl font-bold tracking-tight text-gray-900 transition-colors hover:text-mintcom-green dark:text-white sm:text-4xl"
+                        className="font-barlow text-3xl font-bold tracking-tight text-gray-900 transition-colors hover:text-mintcom-green dark:text-white sm:text-4xl"
                       >
                         {link.name}
                       </Link>

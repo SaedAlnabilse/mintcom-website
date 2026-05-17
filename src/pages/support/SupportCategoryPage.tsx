@@ -151,7 +151,7 @@ export const SupportCategoryPage = () => {
                         <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl ${category.bgColor}/10`}>
                           <BookOpen size={20} className={category.color} />
                         </div>
-                        <h3 className="font-magilio text-lg font-bold leading-tight tracking-tight transition-colors group-hover:text-mintcom-green">{article.title}</h3>
+                        <h3 className="font-barlow text-lg font-bold leading-tight tracking-tight transition-colors group-hover:text-mintcom-green">{article.title}</h3>
                       </div>
                       <p className="flex-1 text-sm font-light leading-relaxed text-gray-500 dark:text-gray-400 line-clamp-2">{article.excerpt}</p>
                       <div className="mt-4 flex items-center gap-4 text-xs font-medium text-gray-400">
@@ -202,7 +202,7 @@ export const SupportCategoryPage = () => {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/10">
                   <HelpCircle size={28} className="text-gray-400" />
                 </div>
-                <h3 className="font-magilio mb-2 text-xl font-bold">{searchQuery.trim() ? t('common.noResults') : t('support.articles.notFound')}</h3>
+                <h3 className="font-barlow mb-2 text-xl font-bold">{searchQuery.trim() ? t('common.noResults') : t('support.articles.notFound')}</h3>
                 <p className="mb-6 text-sm font-light text-gray-500 dark:text-gray-400">
                   {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No articles matching "{{query}}"' }) : t('support.articles.notFoundDesc')}
                 </p>
@@ -215,7 +215,7 @@ export const SupportCategoryPage = () => {
           <div className="mt-12 overflow-hidden rounded-3xl border border-mintcom-green/20 bg-gradient-to-br from-mintcom-green/5 via-white to-white p-8 dark:from-mintcom-green/10 dark:via-transparent dark:to-transparent">
             <div className="flex flex-col items-start justify-between gap-5 md:flex-row md:items-center">
               <div>
-                <h3 className="font-magilio text-2xl font-bold text-gray-900 dark:text-white">{t('support.cta.stillNeedHelp')}</h3>
+                <h3 className="font-barlow text-2xl font-bold text-gray-900 dark:text-white">{t('support.cta.stillNeedHelp')}</h3>
                 <p className="mt-1 text-sm font-light text-gray-500 dark:text-gray-400">{t('support.cta.stillNeedHelpDesc')}</p>
               </div>
               <Link to="/support/tickets/new" className="inline-flex items-center gap-2 rounded-xl bg-mintcom-green px-6 py-3 font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] whitespace-nowrap">

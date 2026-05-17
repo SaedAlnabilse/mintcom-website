@@ -110,7 +110,7 @@ export function CookiePolicyPage() {
                   <div className="p-2 bg-mintcom-green/10 dark:bg-mintcom-green/ text-mintcom-green rounded-lg">
                     <Lock size={20} />
                   </div>
-                  <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.essential')}</h3>
+                  <h3 className="font-barlow text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.essential')}</h3>
                 </div>
                 <p className="text-xs font-bold text-gray-500 leading-relaxed">
                   {t('legal.cookies.cards.essentialDesc')}
@@ -122,7 +122,7 @@ export function CookiePolicyPage() {
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/20 text-blue-600 rounded-lg">
                     <BarChart3 size={20} />
                   </div>
-                  <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.analytics')}</h3>
+                  <h3 className="font-barlow text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.analytics')}</h3>
                 </div>
                 <p className="text-xs font-bold text-gray-500 leading-relaxed">
                   {t('legal.cookies.cards.analyticsDesc')}
@@ -134,7 +134,7 @@ export function CookiePolicyPage() {
                   <div className="p-2 bg-purple-100 dark:bg-purple-900/20 text-purple-600 rounded-lg">
                     <Globe size={20} />
                   </div>
-                  <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.advertising')}</h3>
+                  <h3 className="font-barlow text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.advertising')}</h3>
                 </div>
                 <p className="text-xs font-bold text-gray-500 leading-relaxed">
                   {t('legal.cookies.cards.advertisingDesc')}
@@ -160,7 +160,7 @@ export function CookiePolicyPage() {
               {t('legal.cookies.content.control_1')}
             </p>
             <div className="bg-mintcom-green/10 border border-mintcom-green/20 rounded-xl p-6 my-6">
-              <h4 className="font-magilio text-mintcom-green font-bold text-base mb-2 not-prose">{t('legal.cookies.preferenceCenterTitle')}</h4>
+              <h4 className="font-barlow text-mintcom-green font-bold text-base mb-2 not-prose">{t('legal.cookies.preferenceCenterTitle')}</h4>
               <p className="text-gray-700 dark:text-gray-300 text-xs font-bold mb-4">
                 {t('legal.cookies.preferenceCenterSubtitle')}
               </p>

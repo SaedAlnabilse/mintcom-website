@@ -220,7 +220,7 @@ export const IdeaDetailPage = () => {
                                                 </div>
                                             </div>
 
-                                            <h1 className="font-magilio text-3xl font-black tracking-tight mb-6">
+                                            <h1 className="font-barlow text-3xl font-black tracking-tight mb-6">
                                                 {idea.title}
                                             </h1>
 
@@ -257,7 +257,7 @@ export const IdeaDetailPage = () => {
                                 <section>
                                     <div className="flex items-center gap-3 mb-6">
                                         <MessageSquare size={24} className="text-Mintcom-green" />
-                                        <h2 className="font-magilio text-2xl font-black">{idea.commentsCount} {t('community.labels.comments', 'Comments')}</h2>
+                                        <h2 className="font-barlow text-2xl font-black">{idea.commentsCount} {t('community.labels.comments', 'Comments')}</h2>
                                     </div>
 
                                     {/* Post Comment */}
@@ -348,7 +348,7 @@ export const IdeaDetailPage = () => {
                                 <div className="sticky top-28 space-y-6">
                                     {/* Stats Card */}
                                     <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-6 shadow-sm">
-                                        <h3 className="font-magilio text-sm font-black uppercase tracking-widest text-gray-400 mb-6">{t('community.labels.ideaStats', 'Analytics')}</h3>
+                                        <h3 className="font-barlow text-sm font-black uppercase tracking-widest text-gray-400 mb-6">{t('community.labels.ideaStats', 'Analytics')}</h3>
                                         <div className="space-y-6">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
@@ -393,7 +393,7 @@ export const IdeaDetailPage = () => {
 
                                     {/* Similar Ideas */}
                                     <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-6 shadow-sm">
-                                        <h3 className="font-magilio text-sm font-black uppercase tracking-widest text-gray-400 mb-6">{t('community.labels.similarIdeas', 'Similar Ideas')}</h3>
+                                        <h3 className="font-barlow text-sm font-black uppercase tracking-widest text-gray-400 mb-6">{t('community.labels.similarIdeas', 'Similar Ideas')}</h3>
                                         <div className="space-y-4">
                                             {[1, 2].map(i => (
                                                 <Link key={i} to="/community/ideas" className="block group">

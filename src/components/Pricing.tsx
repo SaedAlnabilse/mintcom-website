@@ -26,7 +26,8 @@ export const Pricing = () => {
     t('landing.pricing.features.unlimitedStaff'),
     t('landing.pricing.features.adminApp'),
     t('landing.pricing.features.support'),
-    t('landing.pricing.features.reports')
+    t('landing.pricing.features.reports'),
+    t('landing.pricing.features.aiSystem')
   ];
 
   const [showAlreadySignedIn, setShowAlreadySignedIn] = useState(false);
@@ -47,7 +48,7 @@ export const Pricing = () => {
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#d4ff33]/5 rounded-full blur-[120px]" />
       </div>
 
-      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl relative z-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="container mx-auto px-6 md:px-10 lg:px-16 max-w-[1280px] relative z-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -57,7 +58,7 @@ export const Pricing = () => {
           <h2 className="text-5xl lg:text-7xl font-bold font-magilio text-white mb-6 leading-tight tracking-tight">
             {t('landing.pricing.title')}
           </h2>
-          <p className="text-xl lg:text-2xl text-[#d4ff33] font-black max-w-2xl mx-auto">
+          <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl mx-auto">
             {t('common.locale') === 'ar' ? (
               <>لحظة <span className="text-[#d4ff33]">"aha"</span> الخاصة بك على بعد دقائق فقط.</>
             ) : (
@@ -84,40 +85,33 @@ export const Pricing = () => {
                     <span className="text-[#d4ff33] font-black tracking-[0.2em] text-xs uppercase mb-4 block">
                       {t('landing.pricing.fullAccess')}
                     </span>
-                    <h3 className="font-magilio text-4xl font-bold text-white mb-10 transition-colors duration-300">
+                    <h3 className="font-barlow text-4xl font-bold text-white mb-10 transition-colors duration-300">
                       {isYearly ? t('landing.pricing.yearlyPlan') : t('landing.pricing.monthlyPlan')}
                     </h3>
 
-                    {/* Billing Toggle */}
-                    <div className="bg-black/40 p-1.5 rounded-2xl flex items-center mb-12 w-full relative border border-white/5">
+                    {/* Billing Toggle — clickable buttons */}
+                    <div className="flex items-center gap-3 mb-12">
                       <button
                         onClick={() => setIsYearly(false)}
-                        className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 ${!isYearly ? 'text-black' : 'text-gray-500 hover:text-gray-300'
-                          }`}
+                        className={`px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all duration-200 active:scale-95 ${!isYearly
+                          ? 'bg-[#d4ff33] text-black shadow-lg shadow-[#d4ff33]/20'
+                          : 'bg-white/5 text-gray-500 hover:bg-white/10 hover:text-gray-300'
+                        }`}
                       >
                         {t('landing.pricing.monthly')}
                       </button>
                       <button
                         onClick={() => setIsYearly(true)}
-                        className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 flex items-center justify-center gap-2 ${isYearly ? 'text-black' : 'text-gray-500 hover:text-gray-300'
-                          }`}
+                        className={`px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all duration-200 active:scale-95 flex items-center gap-2 ${isYearly
+                          ? 'bg-[#d4ff33] text-black shadow-lg shadow-[#d4ff33]/20'
+                          : 'bg-white/5 text-gray-500 hover:bg-white/10 hover:text-gray-300'
+                        }`}
                       >
                         {t('landing.pricing.yearly')}
-                        <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black tracking-wider transition-all duration-300 ${isYearly ? 'bg-black text-[#d4ff33]' : 'bg-[#d4ff33] text-black'
-                          }`}>
+                        <span className={`text-[9px] font-black tracking-wider px-2 py-0.5 rounded-xl transition-colors duration-200 ${isYearly ? 'bg-black text-[#d4ff33]' : 'bg-[#d4ff33]/20 text-[#d4ff33]'}`}>
                           {t('landing.pricing.save')}
                         </span>
                       </button>
-
-                      {/* Static Background (Instantly switches) */}
-                      <div
-                        style={{
-                          transform: t('common.locale') === 'ar'
-                            ? (isYearly ? 'translateX(0%)' : 'translateX(100%)')
-                            : (isYearly ? 'translateX(100%)' : 'translateX(0%)')
-                        }}
-                        className="absolute inset-y-1.5 left-1.5 w-[calc(50%-6px)] bg-[#d4ff33] rounded-xl shadow-lg transition-transform duration-300"
-                      />
                     </div>
 
                     <div className="mb-12 relative">
@@ -168,7 +162,7 @@ export const Pricing = () => {
                 {/* Right Side: Features */}
                 <div className="flex-1 w-full">
                   <div className="mb-10">
-                    <h4 className="font-magilio text-white font-bold text-2xl mb-2">
+                    <h4 className="font-barlow text-white font-bold text-2xl mb-2">
                       {t('landing.pricing.includedTitle', 'Everything you need')}
                     </h4>
                     <p className="text-gray-500 font-medium">
@@ -220,7 +214,7 @@ export const Pricing = () => {
               <div className="w-20 h-20 bg-[#d4ff33]/10 rounded-full flex items-center justify-center mx-auto mb-8">
                 <Check size={40} className="text-[#d4ff33] stroke-[3px]" />
               </div>
-              <h3 className="font-magilio text-2xl font-bold text-white mb-4">
+              <h3 className="font-barlow text-2xl font-bold text-white mb-4">
                 {t('landing.pricing.alreadySignedIn', 'You are already signed in')}
               </h3>
               <p className="text-gray-400 mb-10 leading-relaxed font-medium">

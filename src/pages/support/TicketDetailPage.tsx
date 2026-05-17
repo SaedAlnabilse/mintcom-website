@@ -289,7 +289,7 @@ export const TicketDetailPage = () => {
               <div className="w-20 h-20 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Inbox size={36} className="text-gray-400" />
               </div>
-              <h3 className="font-magilio text-xl font-bold mb-2">{t('support.tickets.notFound')}</h3>
+              <h3 className="font-barlow text-xl font-bold mb-2">{t('support.tickets.notFound')}</h3>
               <p className="text-gray-500 dark:text-gray-400 mb-8">
                 Ticket <span className="font-mono font-bold">{ticketId}</span> was not found.
               </p>
@@ -394,7 +394,7 @@ export const TicketDetailPage = () => {
           <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] overflow-hidden">
             {/* Header */}
             <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
-              <h2 className="font-magilio font-bold flex items-center gap-2">
+              <h2 className="font-barlow font-bold flex items-center gap-2">
                 <MessageSquare size={18} className="text-gray-400" />
                 {t('support.tickets.conversation')}
               </h2>

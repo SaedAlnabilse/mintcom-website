@@ -1,4 +1,4 @@
-ï»¿import { Activity, Clock } from 'lucide-react';
+import { Activity, Clock } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { Shift } from '../../../../types';
 import { motion } from 'framer-motion';
@@ -148,7 +148,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                         <span className="font-bold text-mintcom-green">
                           {shift.closingBalance !== null && shift.closingBalance !== undefined
                             ? <FormatCurrency value={shift.closingBalance} />
-                            : 'â€”'}
+                            : '—'}
                         </span>
                       ) : (
                         <span className="label-strong font-outfit">{t('orders.reports.shifts.active')}</span>
@@ -175,7 +175,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                           </span>
                         </div>
                       ) : (
-                        <span className="label-strong font-outfit">â€”</span>
+                        <span className="label-strong font-outfit">—</span>
                       )}
                     </td>
                     <td className="px-5 py-5 text-center">

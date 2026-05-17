@@ -1628,7 +1628,10 @@
       "badge": "Owner App",
       "controlCenter": "Control Center",
       "dailyRevenue": "Daily Revenue",
-      "description": "With the Mintcom Admin Mobile App, you can monitor and manage your business anytime, anywhere, right from your phone.",
+      "description": "Manage your business anytime, anywhere with the Mintcom Admin Mobile App. Get real-time data at your fingertips, allowing you to take quick action and stay completely in control while on the go.",
+      "downloadOnAppStore": "Download on the App Store",
+      "getItOnGooglePlay": "Get it on Google Play",
+      "installApp": "Install the App",
       "liveAlerts": "Live Alerts",
       "liveReports": "Live Sales & Performance Reports",
       "multiLocationManagement": "Multi-Location Management",
@@ -1883,6 +1886,7 @@
       "features": {
         "adminApp": "Access to the Admin Mobile App",
         "advancedReporting": "Advanced Reporting",
+        "aiSystem": "AI-Empowered System",
         "dashboard": "Online dashboard & management system",
         "inventory": "Recipe Operations",
         "pointOfSale": "Point of sale",
@@ -1983,6 +1987,10 @@
       "production": {
         "description": "Set recipes, calculate costs, and track profit margins accurately.",
         "title": "Production & Cost Tracking"
+      },
+      "aiSystem": {
+        "description": "Leverage AI-powered insights to optimize operations, predict trends, and make smarter business decisions.",
+        "title": "AI-Empowered System"
       },
       "sales": {
         "description": "Process transactions in seconds with our optimized POS interface.",
@@ -4622,10 +4630,10 @@
     "manual": {
       "description": "Our comprehensive user manual covers everything from initial setup to advanced reporting and staff management.",
       "downloadButton": "Download PDF manual",
-      "fileSize": "57 KB",
+      "fileSize": "2.4 MB",
       "subtitle": "Download The Complete Guide",
       "title": "User Manual",
-      "updated": "Updated March 2024"
+      "updated": "Updated May 2026"
     },
     "newTicket": {
       "addFiles": "Add Files",

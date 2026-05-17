@@ -165,7 +165,7 @@ export const AllArticlesPage = () => {
                     <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/10">
                       <BookOpen size={28} className="text-gray-400" />
                     </div>
-                    <h3 className="font-magilio mb-2 text-xl font-bold">{t('common.noResults')}</h3>
+                    <h3 className="font-barlow mb-2 text-xl font-bold">{t('common.noResults')}</h3>
                     <p className="mb-6 text-sm font-light text-gray-500 dark:text-gray-400">
                       {t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No articles matching "{{query}}"' })}
                     </p>

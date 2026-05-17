@@ -1,4 +1,4 @@
-﻿import { Percent, Tag } from 'lucide-react';
+import { Percent, Tag } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { SalesSummary } from '../../../../types';
 import { motion } from 'framer-motion';

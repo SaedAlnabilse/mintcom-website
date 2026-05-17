@@ -31,7 +31,7 @@ export const DownloadApp = () => {
       <div className="absolute top-1/2 right-[-10%] w-[600px] h-[600px] bg-mintcom-green/5 rounded-full blur-[120px] -z-10" />
       <div className="absolute bottom-0 left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
 
-      <div className="container mx-auto px-8 md:px-16 lg:px-24 max-w-7xl">
+      <div className="container mx-auto px-6 md:px-10 lg:px-16 max-w-[1280px]">
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
 
           {/* Left Side: Content */}

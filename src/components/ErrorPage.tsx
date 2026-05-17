@@ -60,7 +60,7 @@ export function ErrorPage() {
                     <AlertTriangle className="w-10 h-10 text-mintcom-red" />
                 </motion.div>
 
-                <h1 className="font-magilio text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3">
+                <h1 className="font-barlow text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3">
                     {title}
                 </h1>
 

@@ -136,7 +136,7 @@ export const TermsPage = () => {
 
                         {/* 10. Contact */}
                         <section className="bg-gray-50 dark:bg-white/5 p-8 rounded-3xl border border-gray-100 dark:border-white/5">
-                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s10')}</h2>
+                            <h2 className="font-barlow text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.terms.sections.s10')}</h2>
                             <p className="text-sm font-medium mb-4">
                                 {t('legal.terms.contact.desc')}
                             </p>

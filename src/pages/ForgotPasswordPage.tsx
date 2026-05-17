@@ -73,7 +73,7 @@ export function ForgotPasswordPage() {
                 <div className="w-16 h-16 bg-mintcom-green/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Mail className="text-mintcom-green" size={32} />
                 </div>
-                <h1 className="font-magilio text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">{t('auth.forgotPassword.title')}</h1>
+                <h1 className="font-barlow text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">{t('auth.forgotPassword.title')}</h1>
                 <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mt-2">{t('auth.forgotPassword.subtitle')}</p>
               </div>
 
@@ -114,7 +114,7 @@ export function ForgotPasswordPage() {
               <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
                 <CheckCircle2 className="text-mintcom-green" size={40} />
               </div>
-              <h2 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.forgotPassword.emailSent')}</h2>
+              <h2 className="font-barlow text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.forgotPassword.emailSent')}</h2>
               <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mt-4">
                 {t('auth.forgotPassword.linkSentTo')}
                 <br />

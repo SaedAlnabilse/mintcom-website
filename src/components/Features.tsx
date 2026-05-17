@@ -43,13 +43,13 @@ const FeatureCard = ({ feature, index, t }: { feature: any, index: number, t: an
         </div>
       </div>
 
-      <h3 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-mintcom-green transition-colors leading-tight tracking-tight">
+      <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-mintcom-green transition-colors leading-snug tracking-tight">
         {feature.title}
       </h3>
 
       <div className="flex-1 flex flex-col justify-between">
         <div className="relative">
-          <p className={`text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium transition-all duration-300 ${!isExpanded && shouldTruncate ? 'line-clamp-4' : ''}`}>
+          <p className={`font-barlow text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium transition-all duration-300 ${!isExpanded && shouldTruncate ? 'line-clamp-4' : ''}`}>
             {description}
           </p>
         </div>
@@ -57,7 +57,7 @@ const FeatureCard = ({ feature, index, t }: { feature: any, index: number, t: an
         {shouldTruncate && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-4 text-sm font-bold text-mintcom-green hover:text-mintcom-green/80 self-start transition-colors focus:outline-none"
+            className="mt-4 text-sm font-bold font-barlow text-mintcom-green hover:text-mintcom-green/80 self-start transition-colors focus:outline-none"
           >
             {isExpanded ? t('landing.features.readLess', 'Read less') : t('landing.features.readMore', 'Read more')}
           </button>
@@ -124,7 +124,7 @@ export const Features = () => {
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-mintcom-green/5 rounded-full blur-[120px] -z-10" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-mintcom-green/3 rounded-full blur-[100px] -z-10" />
 
-      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
+      <div className="container mx-auto px-6 md:px-10 lg:px-16 max-w-[1280px]">
 
         {/* Header Section */}
         <motion.div
@@ -157,12 +157,12 @@ export const Features = () => {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
             <SplitText text={t('landing.features.title') + ' ' + t('landing.features.titleHighlight')} />
           </h2>
-          <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto font-light">
+          <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl mx-auto">
             {t('landing.features.subtitle')}
           </p>
         </motion.div>
 
-        {/* Redesigned Layout: Cards First, then Video or vice-versa */}
+        {/* Redesigned Layout: Cards First, then Video */}
         <div className="flex flex-col gap-16 lg:gap-24">
 
           {/* Feature Cards Grid - Spans full width 4 columns */}
@@ -184,7 +184,7 @@ export const Features = () => {
             <div className="relative rounded-xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-white/10 aspect-video bg-gray-900 group">
               {isVideoVisible ? (
                 <iframe
-                  src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"
+                  src=""
                   className="w-full h-full scale-[1.02] group-hover:scale-100 transition-transform duration-1000"
                   allow="autoplay; fullscreen; picture-in-picture"
                   allowFullScreen
@@ -216,7 +216,7 @@ export const Features = () => {
                       </span>
                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/90">{t('landing.features.liveDemo')}</span>
                     </div>
-                    <h4 className="font-bold font-magilio text-3xl md:text-5xl mb-2 tracking-tighter">{t('landing.features.seeInAction')}</h4>
+                    <h4 className="font-bold font-barlow text-3xl md:text-5xl mb-2 tracking-tighter">{t('landing.features.seeInAction')}</h4>
                     <p className="text-base md:text-lg text-white/70 font-medium">{t('landing.features.seamlessSync')}</p>
                   </div>
                 </div>
@@ -229,4 +229,3 @@ export const Features = () => {
     </section>
   );
 };
-

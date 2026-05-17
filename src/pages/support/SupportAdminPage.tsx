@@ -305,7 +305,7 @@ export const SupportAdminPage = () => {
               </div>
 
               <div className="rounded-2xl border border-gray-100 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
-                <h2 className="font-magilio mb-3 text-sm font-black text-gray-900 dark:text-white">Triage rules</h2>
+                <h2 className="font-barlow mb-3 text-sm font-black text-gray-900 dark:text-white">Triage rules</h2>
                 <div className="space-y-3 text-xs font-medium text-gray-500 dark:text-gray-400">
                   <p>Urgent tickets target a 2 hour first response.</p>
                   <p>High priority tickets target 8 hours.</p>
@@ -387,7 +387,7 @@ export const SupportAdminPage = () => {
               ) : filteredTickets.length === 0 ? (
                 <div className="rounded-2xl border border-gray-100 bg-white p-16 text-center dark:border-white/10 dark:bg-white/[0.03]">
                   <Inbox className="mx-auto mb-4 h-14 w-14 text-gray-300 dark:text-gray-600" />
-                  <h3 className="font-magilio mb-2 text-lg font-black text-gray-900 dark:text-white">No tickets in this queue</h3>
+                  <h3 className="font-barlow mb-2 text-lg font-black text-gray-900 dark:text-white">No tickets in this queue</h3>
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Try a different queue or clear filters.</p>
                 </div>
               ) : (
@@ -492,7 +492,7 @@ function TicketRow({ ticket, index, onOpen }: { ticket: AdminTicket; index: numb
             </span>
           </div>
 
-          <h3 className="font-magilio truncate text-base font-black text-gray-900 dark:text-white">{ticket.subject}</h3>
+          <h3 className="font-barlow truncate text-base font-black text-gray-900 dark:text-white">{ticket.subject}</h3>
           <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-gray-500 dark:text-gray-400">
             <span className="inline-flex items-center gap-1">
               <UserRound size={13} />

@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Smartphone, Laptop, BarChart2, ShoppingCart, Users, TrendingUp, Bell, User } from 'lucide-react';
+import { Smartphone, Laptop, BarChart2, ShoppingCart, Users, TrendingUp, Bell, User, Package } from 'lucide-react';
 import WhiteLogo from '../assets/white-green-full-logo.svg';
 import GreenLogo from '../assets/green-full-logo.svg';
+import AppStoreBadge from '../assets/App_Store_(iOS)-Badge-Logo.wine.svg';
+import GooglePlayBadge from '../assets/Google_Play-Badge-Logo.wine.svg';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -30,7 +32,7 @@ export const AdminControl = () => {
       {/* Background Decor */}
       <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
 
-      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
+      <div className="container mx-auto px-6 md:px-10 lg:px-16 max-w-[1280px]">
         <div className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16">
 
           {/* Left Side: Animated Mobile App Mockup */}
@@ -39,10 +41,10 @@ export const AdminControl = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="w-full lg:w-1/2 relative flex justify-center items-center h-[500px] lg:justify-start"
+            className="w-full lg:w-1/2 relative flex justify-center items-center h-[640px] lg:h-[760px] lg:justify-start"
           >
             {/* iPhone Frame Mockup (Left/Back) */}
-            <div className="absolute left-[10%] lg:left-[5%] w-[220px] h-[460px] bg-[#0a0a0a] rounded-xl border-[6px] border-gray-800 shadow-2xl overflow-hidden ring-1 ring-white/10 group z-10 transform -rotate-6 scale-95 opacity-80 hover:rotate-0 hover:scale-100 hover:z-30 hover:opacity-100 transition-all duration-500">
+            <div className="absolute left-[5%] lg:left-[2%] w-[280px] h-[600px] lg:w-[300px] lg:h-[640px] bg-[#0a0a0a] rounded-[28px] border-[7px] border-gray-800 shadow-2xl overflow-hidden ring-1 ring-white/10 group z-10 transform -rotate-6 scale-95 opacity-80 hover:rotate-0 hover:scale-100 hover:z-30 hover:opacity-100 transition-all duration-500">
               {/* iPhone Notch */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-5 bg-gray-800 rounded-b-xl z-30" />
 
@@ -110,7 +112,7 @@ export const AdminControl = () => {
             </div>
 
             {/* Android Frame Mockup (Right/Front) */}
-            <div className="absolute left-[35%] lg:left-[45%] w-[240px] h-[480px] bg-[#0a0a0a] rounded-xl border-[6px] border-gray-800 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10 group z-20 transform rotate-3 hover:-translate-y-2 transition-all duration-500">
+            <div className="absolute left-[35%] lg:left-[42%] w-[300px] h-[620px] lg:w-[330px] lg:h-[680px] bg-[#0a0a0a] rounded-[30px] border-[7px] border-gray-800 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10 group z-20 transform rotate-3 hover:-translate-y-2 transition-all duration-500">
               {/* Android Hole Punch */}
               <div className="absolute top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-black border border-gray-800 rounded-full z-30 shadow-inner" />
 
@@ -153,26 +155,58 @@ export const AdminControl = () => {
 
                 {/* Recent Alerts List (Takes up remaining space) */}
                 <div className="flex flex-col gap-2.5 mt-2 flex-1">
-                  <div
-                    className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-pointer"
-                  >
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-pointer">
                     <div className="w-8 h-8 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
                       <Bell size={12} className="text-red-400" />
                     </div>
                     <div>
                       <div className="text-white/90 text-[10px] font-semibold mb-0.5">{t('landing.admin.stockAlerts')}</div>
-                      <div className="text-gray-400 text-[9px]">Coffee Beans <span className="text-red-400 ml-1 font-medium">-5 kg</span></div>
+                      <div className="text-gray-400 text-[9px]">Espresso Beans <span className="text-red-400 ml-1 font-medium">-3 kg remaining</span></div>
                     </div>
                   </div>
-                  <div
-                    className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-pointer"
-                  >
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-pointer">
                     <div className="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
                       <TrendingUp size={12} className="text-blue-400" />
                     </div>
                     <div>
                       <div className="text-white/90 text-[10px] font-semibold mb-0.5">{t('landing.admin.shiftAlerts')}</div>
-                      <div className="text-gray-400 text-[9px]">Sarah left at 4:00 PM</div>
+                      <div className="text-gray-400 text-[9px]">Cashier Sara <span className="text-blue-400 ml-1 font-medium">clocked out 4:00 PM</span></div>
+                    </div>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-pointer">
+                    <div className="w-8 h-8 rounded-full bg-mintcom-green/10 border border-mintcom-green/20 flex items-center justify-center flex-shrink-0">
+                      <ShoppingCart size={12} className="text-mintcom-green" />
+                    </div>
+                    <div>
+                      <div className="text-white/90 text-[10px] font-semibold mb-0.5">Order Completed</div>
+                      <div className="text-gray-400 text-[9px]">Order #1042 <span className="text-mintcom-green ml-1 font-medium">JOD 24.00</span></div>
+                    </div>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-pointer">
+                    <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
+                      <Users size={12} className="text-amber-400" />
+                    </div>
+                    <div>
+                      <div className="text-white/90 text-[10px] font-semibold mb-0.5">Shift Started</div>
+                      <div className="text-gray-400 text-[9px]">Ahmad clocked in <span className="text-amber-400 ml-1 font-medium">9:00 AM</span></div>
+                    </div>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-pointer">
+                    <div className="w-8 h-8 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center flex-shrink-0">
+                      <BarChart2 size={12} className="text-purple-400" />
+                    </div>
+                    <div>
+                      <div className="text-white/90 text-[10px] font-semibold mb-0.5">{t('landing.admin.liveReports')}</div>
+                      <div className="text-gray-400 text-[9px]">Today's revenue <span className="text-purple-400 ml-1 font-medium">JOD 2,450</span></div>
+                    </div>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-pointer">
+                    <div className="w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                      <Package size={12} className="text-cyan-400" />
+                    </div>
+                    <div>
+                      <div className="text-white/90 text-[10px] font-semibold mb-0.5">Stock Restocked</div>
+                      <div className="text-gray-400 text-[9px]">Whole Milk <span className="text-cyan-400 ml-1 font-medium">+20 L added</span></div>
                     </div>
                   </div>
                 </div>
@@ -182,7 +216,7 @@ export const AdminControl = () => {
             </div>
 
             {/* Decorative Circle */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] border border-mintcom-green/20 rounded-full -z-10 animate-[spin_20s_linear_infinite]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] lg:w-[560px] lg:h-[560px] border border-mintcom-green/20 rounded-full -z-10 animate-[spin_20s_linear_infinite]" />
           </motion.div>
 
           {/* Right Side: Content */}
@@ -213,10 +247,10 @@ export const AdminControl = () => {
               </span>
             </motion.div>
 
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
-              <SplitText text={t('landing.admin.title1')} /> <br />
-              <SplitText text={t('landing.admin.title2')} /> <br />
-              <SplitText text={t('landing.admin.title3')} />
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 tracking-tight">
+              <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.admin.title1')} /></span>
+              <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.admin.title2')} /></span>
+              <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.admin.title3')} /></span>
             </h2>
 
             {/* Logo Lockup */}
@@ -230,27 +264,72 @@ export const AdminControl = () => {
               </div>
             </div>
 
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
+            <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
               {t('landing.admin.description')}
             </p>
 
             <ul className="space-y-4 font-medium">
               {[
-                { label: t('landing.admin.shiftAlerts'), color: 'bg-mintcom-green' },
-                { label: t('landing.admin.stockAlerts'), color: 'bg-mintcom-green' },
-                { label: t('landing.admin.liveReports'), color: 'bg-mintcom-green' }
+                { label: t('landing.admin.shiftAlerts'), icon: Bell },
+                { label: t('landing.admin.stockAlerts'), icon: Package },
+                { label: t('landing.admin.liveReports'), icon: BarChart2 }
               ].map((item, i) => (
                 <li
                   key={i}
                   className="flex items-center gap-4 text-gray-700 dark:text-gray-300 group"
                 >
-                  <div className="w-8 h-8 rounded-full bg-mintcom-green/10 border border-mintcom-green/20 flex items-center justify-center transition-all duration-300 group-hover:bg-mintcom-green/20">
-                    <div className="w-2 h-2 rounded-full bg-mintcom-green shadow-[0_0_10px_rgba(34,197,94,0.4)]" />
+                  <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 border border-mintcom-green/20 flex items-center justify-center transition-all duration-300 group-hover:bg-mintcom-green/20 group-hover:scale-110 flex-shrink-0">
+                    <item.icon size={18} className="text-mintcom-green" />
                   </div>
                   <span className="text-lg tracking-tight">{item.label}</span>
                 </li>
               ))}
             </ul>
+
+            {/* App Store / Play Store Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mt-10 flex flex-col gap-3"
+            >
+              <p className="text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                {t('landing.admin.installApp')}
+              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <a
+                  href="https://apps.apple.com/app/Mintcom-owner/id0000000001"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={t('landing.admin.downloadOnAppStore')}
+                  className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green/60 rounded-[11px]"
+                >
+                  <img
+                    src={AppStoreBadge}
+                    alt={t('landing.admin.downloadOnAppStore')}
+                    className="block h-[54px] w-[180px] object-fill rounded-[11px]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.Mintcom.owner"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={t('landing.admin.getItOnGooglePlay')}
+                  className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green/60 rounded-[11px]"
+                >
+                  <img
+                    src={GooglePlayBadge}
+                    alt={t('landing.admin.getItOnGooglePlay')}
+                    className="block h-[54px] w-[180px] object-fill rounded-[11px]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+              </div>
+            </motion.div>
           </motion.div>
 
         </div>

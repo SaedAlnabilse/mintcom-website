@@ -1073,7 +1073,7 @@ export function OwnerAccountManagementPage() {
 
                                 {/* Video Tutorial */}
                                 <a
-                                    href="https://vimeo.com/1158972798"
+                                    href=""
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"

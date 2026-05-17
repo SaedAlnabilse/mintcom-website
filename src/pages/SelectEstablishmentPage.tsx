@@ -141,7 +141,7 @@ export function SelectEstablishmentPage() {
                 <Store size={32} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
               </div>
 
-              <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white mb-2 px-2 leading-tight text-center tracking-normal" dir="auto">{est.name}</h3>
+              <h3 className="font-barlow text-base font-bold text-gray-900 dark:text-white mb-2 px-2 leading-tight text-center tracking-normal" dir="auto">{est.name}</h3>
 
               <div className="flex items-center gap-2.5 mb-8">
                 <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-sans font-bold text-gray-500">
@@ -171,7 +171,7 @@ export function SelectEstablishmentPage() {
               <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-mintcom-green/10 group-hover:border-mintcom-green transition-all">
                 <Plus size={28} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
               </div>
-              <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
+              <h3 className="font-barlow text-base font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
             </motion.div>
           )}
         </div>

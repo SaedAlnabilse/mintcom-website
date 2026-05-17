@@ -739,7 +739,7 @@ export function OnboardingPage() {
                       <div className="pt-4 border-t border-gray-100 dark:border-white/5">
                         <div className="flex items-center gap-2 mb-4">
                           <Copy className="text-mintcom-green" size={20} />
-                          <h3 className="font-magilio text-base font-bold text-gray-900 dark:text-white">{t('onboarding.step1.quickSetup')}</h3>
+                          <h3 className="font-barlow text-base font-bold text-gray-900 dark:text-white">{t('onboarding.step1.quickSetup')}</h3>
                         </div>
 
                         <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5 border border-gray-100 dark:border-white/5">
@@ -1168,7 +1168,7 @@ export function OnboardingPage() {
                   <div className="p-4 bg-gray-50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-300 dark:border-white/10">
                     <div className="flex justify-between items-center mb-4">
                       <span className="text-xs text-gray-400">{t('onboarding.step2.totalDue')}</span>
-                      <span className="font-magilio text-xl font-bold text-gray-900 dark:text-white">
+                      <span className="font-barlow text-xl font-bold text-gray-900 dark:text-white">
                         {isTrialFlow
                           ? formatWholeUsd(0)
                           : formatWholeUsd(displayPrice)
@@ -1485,7 +1485,7 @@ export function OnboardingPage() {
                         <Tablet size={28} className="text-orange-600 dark:text-orange-400" />
                       </div>
                       <div>
-                        <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.posApp')}</h3>
+                        <h3 className="font-barlow text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.posApp')}</h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400">{t('onboarding.step5.posAppDesc')}</p>
                       </div>
                     </div>
@@ -1546,7 +1546,7 @@ export function OnboardingPage() {
                         <Smartphone size={28} className="text-purple-600 dark:text-purple-400" />
                       </div>
                       <div>
-                        <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.ownerApp')}</h3>
+                        <h3 className="font-barlow text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.ownerApp')}</h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400">{t('onboarding.step5.ownerAppDesc')}</p>
                       </div>
                     </div>
@@ -1587,7 +1587,7 @@ export function OnboardingPage() {
                         <Building2 size={20} className="text-mintcom-green" />
                       </div>
                       <div>
-                        <h3 className="font-magilio font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.locationReady')}</h3>
+                        <h3 className="font-barlow font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.locationReady')}</h3>
                         <p className="text-xs text-gray-500">{t('onboarding.step5.setupComplete')}</p>
                       </div>
                     </div>
@@ -1646,7 +1646,7 @@ export function OnboardingPage() {
                       <div className="w-10 h-10 bg-mintcom-green/10 rounded-lg flex items-center justify-center">
                         <BookOpen size={20} className="text-mintcom-green" />
                       </div>
-                      <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.resourcesAndHelp')}</h3>
+                      <h3 className="font-barlow text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.resourcesAndHelp')}</h3>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -1659,7 +1659,7 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <BookOpen size={20} className="text-blue-500" />
                         </div>
-                        <h4 className="font-magilio font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.userManual')}</h4>
+                        <h4 className="font-barlow font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.userManual')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.completeGuide')}</p>
                       </a>
 
@@ -1673,13 +1673,13 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Settings size={20} className="text-amber-500" />
                         </div>
-                        <h4 className="font-magilio font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.setupManual')}</h4>
+                        <h4 className="font-barlow font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.setupManual')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.hardwareSetup')}</p>
                       </a>
 
                       {/* Video Tutorial */}
                       <a
-                        href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID"
+                        href=""
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all"
@@ -1687,7 +1687,7 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <PlayCircle size={20} className="text-red-500" />
                         </div>
-                        <h4 className="font-magilio font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.videoGuide')}</h4>
+                        <h4 className="font-barlow font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.videoGuide')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.quickStart')}</p>
                       </a>
 
@@ -1701,7 +1701,7 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <HelpCircle size={20} className="text-purple-500" />
                         </div>
-                        <h4 className="font-magilio font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.qaCenter')}</h4>
+                        <h4 className="font-barlow font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.qaCenter')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.faqs')}</p>
                       </a>
 
@@ -1715,7 +1715,7 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-mintcom-green/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Shield size={20} className="text-mintcom-green" />
                         </div>
-                        <h4 className="font-magilio font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.privacy')}</h4>
+                        <h4 className="font-barlow font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.privacy')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.dataProtection')}</p>
                       </a>
 
@@ -1729,7 +1729,7 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Scale size={20} className="text-blue-500" />
                         </div>
-                        <h4 className="font-magilio font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.terms')}</h4>
+                        <h4 className="font-barlow font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.terms')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.agreement')}</p>
                       </a>
 
@@ -1743,7 +1743,7 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-mintcom-green/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Info size={20} className="text-mintcom-green" />
                         </div>
-                        <h4 className="font-magilio font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.aboutUs')}</h4>
+                        <h4 className="font-barlow font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.aboutUs')}</h4>
                         <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.ourStory')}</p>
                       </a>
                     </div>

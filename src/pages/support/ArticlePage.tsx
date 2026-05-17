@@ -402,14 +402,14 @@ export const ArticlePage = () => {
                 {article.content.map((paragraph, index) => {
                   if (paragraph.startsWith('## ')) {
                     return (
-                      <h2 key={index} className="font-magilio text-2xl font-black mt-8 mb-4 first:mt-0">
+                      <h2 key={index} className="font-barlow text-2xl font-black mt-8 mb-4 first:mt-0">
                         {paragraph.replace('## ', '')}
                       </h2>
                     );
                   }
                   if (paragraph.startsWith('### ')) {
                     return (
-                      <h3 key={index} className="font-magilio text-xl font-bold mt-6 mb-3">
+                      <h3 key={index} className="font-barlow text-xl font-bold mt-6 mb-3">
                         {paragraph.replace('### ', '')}
                       </h3>
                     );
@@ -517,7 +517,7 @@ export const ArticlePage = () => {
                         <div className="w-10 h-10 bg-mintcom-green/10 rounded-lg flex items-center justify-center mb-3">
                           <BookOpen size={18} className="text-mintcom-green" />
                         </div>
-                        <h4 className="font-magilio font-bold mb-2 group-hover:text-mintcom-green transition-colors line-clamp-2">
+                        <h4 className="font-barlow font-bold mb-2 group-hover:text-mintcom-green transition-colors line-clamp-2">
                           {related.title}
                         </h4>
                         <div className="flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">

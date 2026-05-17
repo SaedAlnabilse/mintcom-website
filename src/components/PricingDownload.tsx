@@ -23,7 +23,8 @@ export const PricingDownload = () => {
         t('landing.pricing.features.unlimitedStaff'),
         t('landing.pricing.features.adminApp'),
         t('landing.pricing.features.support'),
-        t('landing.pricing.features.reports')
+        t('landing.pricing.features.reports'),
+        t('landing.pricing.features.aiSystem')
     ];
 
     const [showAlreadySignedIn, setShowAlreadySignedIn] = useState(false);
@@ -44,7 +45,7 @@ export const PricingDownload = () => {
                 <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-mintcom-green/5 rounded-full blur-[120px]" />
             </div>
 
-            <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl relative z-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+            <div className="container mx-auto px-6 md:px-10 lg:px-16 max-w-[1280px] relative z-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -54,7 +55,7 @@ export const PricingDownload = () => {
                     <h2 className="text-5xl lg:text-7xl font-bold font-magilio text-gray-900 dark:text-white mb-6 leading-tight tracking-tight">
                         {t('landing.pricing.title')}
                     </h2>
-                    <p className="text-xl lg:text-2xl text-mintcom-green font-black max-w-2xl mx-auto">
+                    <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl mx-auto">
                         {t('landing.pricing.subtitle')}
                     </p>
                 </motion.div>
@@ -77,49 +78,39 @@ export const PricingDownload = () => {
                                         <span className="text-mintcom-green font-black tracking-[0.2em] text-xs uppercase mb-4 block">
                                             {t('landing.pricing.fullAccess')}
                                         </span>
-                                        <h3 className="font-magilio text-4xl font-bold text-gray-900 dark:text-white mb-10 transition-colors duration-300">
+                                        <h3 className="font-barlow text-4xl font-bold text-gray-900 dark:text-white mb-10 transition-colors duration-300">
                                             {isYearly ? t('landing.pricing.yearlyPlan') : t('landing.pricing.monthlyPlan')}
                                         </h3>
 
-                                        {/* Billing Toggle */}
-                                        <div className="bg-gray-100 dark:bg-black/40 p-1.5 rounded-2xl flex items-center mb-12 w-full relative border border-gray-100 dark:border-white/5">
+                                        {/* Billing Toggle — clickable buttons */}
+                                        <div className="flex items-center gap-3 mb-12">
                                             <button
                                                 onClick={() => setIsYearly(false)}
-                                                className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 ${
-                                                    !isYearly ? 'text-black' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                                className={`px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all duration-200 active:scale-95 ${!isYearly
+                                                    ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
+                                                    : 'bg-gray-100 dark:bg-white/5 text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-gray-300'
                                                 }`}
                                             >
                                                 {t('landing.pricing.monthly')}
                                             </button>
                                             <button
                                                 onClick={() => setIsYearly(true)}
-                                                className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 flex items-center justify-center gap-2 ${
-                                                    isYearly ? 'text-black' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                                className={`px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all duration-200 active:scale-95 flex items-center gap-2 ${isYearly
+                                                    ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
+                                                    : 'bg-gray-100 dark:bg-white/5 text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-gray-300'
                                                 }`}
                                             >
                                                 {t('landing.pricing.yearly')}
-                                                <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black tracking-wider transition-all duration-300 ${
-                                                    isYearly ? 'bg-black text-mintcom-green' : 'bg-mintcom-green text-black'
-                                                }`}>
+                                                <span className={`text-[9px] font-black tracking-wider px-2 py-0.5 rounded-xl transition-colors duration-200 ${isYearly ? 'bg-black text-mintcom-green' : 'bg-mintcom-green/20 text-mintcom-green'}`}>
                                                     {t('landing.pricing.save')}
                                                 </span>
                                             </button>
-
-                                            {/* Static Background (Instantly switches) */}
-                                            <div
-                                                style={{ 
-                                                    transform: t('common.locale') === 'ar' 
-                                                        ? (isYearly ? 'translateX(0%)' : 'translateX(100%)')
-                                                        : (isYearly ? 'translateX(100%)' : 'translateX(0%)')
-                                                }}
-                                                className="absolute inset-y-1.5 left-1.5 w-[calc(50%-6px)] bg-mintcom-green rounded-xl shadow-lg transition-transform duration-300"
-                                            />
                                         </div>
 
                                         <div className="mb-12 relative">
                                             <div className="flex items-baseline justify-center lg:justify-start gap-2 mb-2">
                                                 <span className="text-7xl lg:text-8xl font-bold text-gray-900 dark:text-white tracking-tighter transition-all duration-300">
-                                                    {currentPrice} <span className="text-4xl lg:text-5xl ml-2">USD</span>
+                                                    {currentPrice}<span className="text-4xl lg:text-5xl ml-1">USD</span>
                                                 </span>
                                                 <span className="text-gray-400 font-medium text-2xl uppercase tracking-widest">
                                                     {currentPeriod}
@@ -164,7 +155,7 @@ export const PricingDownload = () => {
                                 {/* Right Side: Features */}
                                 <div className="flex-1 w-full">
                                     <div className="mb-10">
-                                        <h4 className="font-magilio text-gray-900 dark:text-white font-bold text-2xl mb-2">
+                                        <h4 className="font-barlow text-gray-900 dark:text-white font-bold text-2xl mb-2">
                                             {t('landing.pricing.includedTitle', 'Everything you need')}
                                         </h4>
                                         <p className="text-gray-500 dark:text-gray-400 font-medium">
@@ -216,7 +207,7 @@ export const PricingDownload = () => {
                             <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
                                 <Check size={40} className="text-mintcom-green stroke-[3px]" />
                             </div>
-                            <h3 className="font-magilio text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                            <h3 className="font-barlow text-2xl font-bold text-gray-900 dark:text-white mb-4">
                                 {t('landing.pricing.alreadySignedIn', 'You are already signed in')}
                             </h3>
                             <p className="text-gray-600 dark:text-gray-400 mb-10 leading-relaxed font-medium">

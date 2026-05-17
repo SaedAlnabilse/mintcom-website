@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Tablet, Printer, X, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Tablet, Printer, X, CheckCircle2 } from 'lucide-react';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -143,8 +143,6 @@ export const Hardware = () => {
   ];
 
   const [selectedHardware, setSelectedHardware] = useState(hardwareItems[0]);
-  const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 3;
 
 
   return (
@@ -153,7 +151,7 @@ export const Hardware = () => {
         {/* Background Decor */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-mintcom-green/5 rounded-full blur-[120px] -z-10" />
 
-        <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
+        <div className="container mx-auto px-6 md:px-10 lg:px-16 max-w-[1280px]">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -163,7 +161,7 @@ export const Hardware = () => {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
               <SplitText text={t('landing.hardware.title') + ' ' + t('landing.hardware.titleHighlight')} />
             </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto font-light">
+            <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl mx-auto">
               {t('landing.hardware.subtitle')}
             </p>
           </motion.div>
@@ -184,8 +182,8 @@ export const Hardware = () => {
                     <item.icon size={28} className="text-mintcom-green" />
                   </div>
                   <div>
-                    <h3 className="font-magilio text-xl font-bold text-gray-900 dark:text-white">{item.name}</h3>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">{item.description}</p>
+                    <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white">{item.name}</h3>
+                    <p className="font-barlow text-gray-500 dark:text-gray-400 text-sm">{item.description}</p>
                   </div>
                 </div>
 
@@ -195,7 +193,7 @@ export const Hardware = () => {
                     <div key={idx} className="flex items-center p-3 bg-gray-50 dark:bg-black/20 rounded-xl">
                       <div className="flex items-center gap-3">
                         <CheckCircle2 size={16} className="text-mintcom-green" />
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{product.name}</span>
+                        <span className="font-barlow text-sm font-medium text-gray-700 dark:text-gray-300">{product.name}</span>
                       </div>
                     </div>
                   ))}
@@ -204,7 +202,6 @@ export const Hardware = () => {
                 <button
                    onClick={() => {
                     setSelectedHardware(item);
-                    setItemOffset(0);
                     setShowModal(true);
                   }}
                   className="w-full py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white font-bold rounded-xl hover:bg-mintcom-green hover:text-black transition-all"
@@ -253,8 +250,8 @@ export const Hardware = () => {
                     <selectedHardware.icon size={24} className="text-white" />
                   </div>
                   <div>
-                    <h3 className="font-magilio text-xl font-bold text-gray-900 dark:text-white">{selectedHardware.name}</h3>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">{selectedHardware.description}</p>
+                    <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white">{selectedHardware.name}</h3>
+                    <p className="font-barlow text-gray-500 dark:text-gray-400 text-sm">{selectedHardware.description}</p>
                   </div>
                 </div>
                 <button
@@ -266,63 +263,38 @@ export const Hardware = () => {
               </div>
 
               {/* Content */}
-              <div className="p-6 overflow-y-auto max-h-[60vh]">
-
-                 {/* Products List */}
-                <div className="space-y-3 mb-6">
-                  {selectedHardware.products.slice(itemOffset, itemOffset + itemsPerPage).map((product, idx) => (
-                    <a
-                      key={idx}
-                      href={product.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group border border-transparent hover:border-mintcom-green/30"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 dark:bg-mintcom-green/20 flex items-center justify-center group-hover:bg-mintcom-green transition-colors">
-                          <CheckCircle2 size={18} className="text-mintcom-green group-hover:text-white transition-colors" />
-                        </div>
-                        <div>
-                          <p className="font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">{product.name}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{product.specs}</p>
-                        </div>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-
-                {/* Item Pagination */}
-                {selectedHardware.products.length > itemsPerPage && (
-                  <div className="flex items-center justify-center gap-4 mb-6">
-                    <button
-                      disabled={itemOffset === 0}
-                      onClick={() => setItemOffset(prev => Math.max(0, prev - itemsPerPage))}
-                      className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-mintcom-green disabled:opacity-50 disabled:hover:text-gray-500 transition-colors"
-                    >
-                      <ChevronLeft size={24} />
-                    </button>
-                    <div className="flex gap-1.5">
-                      {Array.from({ length: Math.ceil(selectedHardware.products.length / itemsPerPage) }).map((_, i) => (
-                        <div
-                          key={i}
-                          className={`w-2 h-2 rounded-full transition-all ${Math.floor(itemOffset / itemsPerPage) === i ? 'bg-mintcom-green w-4' : 'bg-gray-300 dark:bg-white/10'}`}
-                        />
+              <div className="flex flex-col overflow-hidden" style={{ maxHeight: 'calc(85vh - 100px)' }}>
+                {/* Scrollable Products List */}
+                <div className="relative flex-1 overflow-hidden">
+                  <div className="p-6 pb-2 overflow-y-auto max-h-[50vh] scroll-smooth hardware-scroll">
+                    <div className="space-y-3">
+                      {selectedHardware.products.map((product, idx) => (
+                        <a
+                          key={idx}
+                          href={product.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group border border-transparent hover:border-mintcom-green/30"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 dark:bg-mintcom-green/20 flex items-center justify-center group-hover:bg-mintcom-green transition-colors">
+                              <CheckCircle2 size={18} className="text-mintcom-green group-hover:text-white transition-colors" />
+                            </div>
+                            <div>
+                              <p className="font-barlow font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">{product.name}</p>
+                              <p className="font-barlow text-sm text-gray-500 dark:text-gray-400">{product.specs}</p>
+                            </div>
+                          </div>
+                        </a>
                       ))}
                     </div>
-                    <button
-                      disabled={itemOffset + itemsPerPage >= selectedHardware.products.length}
-                      onClick={() => setItemOffset(prev => prev + itemsPerPage)}
-                      className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-mintcom-green disabled:opacity-50 disabled:hover:text-gray-500 transition-colors"
-                    >
-                      <ChevronRight size={24} />
-                    </button>
                   </div>
-                )}
+                  {/* Scroll fade indicator */}
+                  <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white dark:from-[#1a1a1a] to-transparent" />
+                </div>
 
-
-
-                {/* Note */}
-                <div className="p-4 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-200 dark:border-blue-500/20">
+                {/* Sticky Tip */}
+                <div className="sticky bottom-0 p-4 mx-6 mb-4 mt-2 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-200 dark:border-blue-500/20 shadow-sm">
                   <p className="text-sm text-blue-700 dark:text-blue-400 text-center">
                     <span className="font-bold">💡 {t('common.tip')}:</span> {selectedHardware.note}
                   </p>

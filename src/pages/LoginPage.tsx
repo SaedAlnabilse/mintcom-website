@@ -319,7 +319,7 @@ export function LoginPage() {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-100 dark:bg-amber-900/30">
                   <AlertTriangle size={28} className="text-amber-600 dark:text-amber-400" />
                 </div>
-                <h3 className="font-magilio text-2xl font-bold text-gray-900 dark:text-white">
+                <h3 className="font-barlow text-2xl font-bold text-gray-900 dark:text-white">
                   {t('auth.verifyEmail.verifyingTitle')}
                 </h3>
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">

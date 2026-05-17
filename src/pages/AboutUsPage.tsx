@@ -87,7 +87,7 @@ export const AboutUsPage = () => {
                                 <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:bg-mintcom-green/10">
                                     <value.icon className="w-7 h-7 text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors" />
                                 </div>
-                                <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-3">{value.title}</h3>
+                                <h3 className="font-barlow text-lg font-bold text-gray-900 dark:text-white mb-3">{value.title}</h3>
                                 <p className="text-sm font-medium text-gray-500 leading-relaxed">
                                     {value.description}
                                 </p>

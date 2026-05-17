@@ -137,7 +137,7 @@ export const QAPage = () => {
                                                 className="w-full flex items-start justify-between p-6 text-left"
                                             >
                                                 <div className="flex-1 pr-8">
-                                                    <h3 className={`font-magilio text-base font-medium transition-colors ${expandedId === item.id ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>
+                                                    <h3 className={`font-barlow text-base font-medium transition-colors ${expandedId === item.id ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>
                                                         {item.question}
                                                     </h3>
                                                 </div>
@@ -180,7 +180,7 @@ export const QAPage = () => {
                                     <div className="w-16 h-16 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <Search className="w-8 h-8 text-gray-400" />
                                     </div>
-                                    <h3 className="font-magilio text-base font-semibold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="font-barlow text-base font-semibold text-gray-900 dark:text-white mb-2">
                                         {t('support.qa.empty_title', 'No Results Found')}
                                     </h3>
                                     <p className="text-xs font-medium text-gray-500">

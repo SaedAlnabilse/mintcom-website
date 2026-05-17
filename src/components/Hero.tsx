@@ -61,21 +61,21 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
         />
       </div>
 
-      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+      <div className="container mx-auto px-4 xs:px-6 md:px-10 lg:px-16 max-w-[1280px] relative z-10">
+        <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center lg:gap-16">
 
           {/* Text Content */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="flex-1 text-center lg:text-start"
+            className="w-full min-w-0 flex-1 text-start"
           >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="group relative inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[12px] bg-mintcom-green/5 dark:bg-mintcom-green/10 text-mintcom-green font-bold text-xs mb-8 border border-mintcom-green/20 backdrop-blur-md shadow-[0_0_15px_rgba(124,195,159,0.05)] hover:border-mintcom-green/40 transition-all duration-300"
+              className="group relative mb-8 inline-flex max-w-full items-center gap-2.5 rounded-[12px] border border-mintcom-green/20 bg-mintcom-green/5 px-3 py-1.5 text-xs font-bold text-mintcom-green shadow-[0_0_15px_rgba(124,195,159,0.05)] backdrop-blur-md transition-all duration-300 hover:border-mintcom-green/40 dark:bg-mintcom-green/10 xs:px-3.5"
             >
               <div className="relative flex items-center justify-center w-5 h-5 rounded-full bg-mintcom-green/20 text-mintcom-green overflow-hidden">
                 <Zap size={11} fill="currentColor" className="relative z-10" />
@@ -85,26 +85,26 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                   className="absolute inset-0 bg-mintcom-green/30"
                 />
               </div>
-              <span className="tracking-widest uppercase text-[10px] md:text-[11px] leading-none">
+              <span className="min-w-0 leading-none text-[10px] uppercase tracking-widest md:text-[11px]">
                 {t('landing.hero.badge')}
               </span>
             </motion.div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold font-magilio mb-8 leading-[1.1] rtl:leading-[1.2] tracking-tight">
-              <SplitText text={t('landing.hero.title1')} /> <br />
-              <SplitText text={t('landing.hero.title2')} /> <br />
-              <SplitText text={t('landing.hero.title3')} />
+            <h1 className="mb-8 font-magilio text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+              <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.hero.title1')} /></span>
+              <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.hero.title2')} /></span>
+              <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.hero.title3')} /></span>
             </h1>
 
-            <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-light">
+            <p className="mb-10 max-w-2xl text-xl font-light leading-relaxed text-gray-600 dark:text-gray-400">
               {t('landing.hero.description')}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <div className="flex w-full flex-col justify-start gap-4 sm:w-auto sm:flex-row">
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCtaClick}
-                className="bg-mintcom-green text-black px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 group"
+                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-mintcom-green px-8 py-4 text-lg font-bold text-black transition-all sm:w-auto"
               >
                 {isAuthenticated ? t('nav.dashboard', 'Go to Dashboard') : t('landing.hero.cta')}
                 <ArrowRight size={20} className={`transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} />
@@ -113,7 +113,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsVideoOpen(true)}
-                className="bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-3"
+                className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-gray-100 px-8 py-4 text-lg font-bold text-gray-900 transition-colors hover:bg-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 sm:w-auto"
               >
                 <Play size={20} fill="currentColor" className="text-mintcom-green" />
                 {t('landing.hero.watchVideo')}
@@ -128,7 +128,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             initial={{ opacity: 0, x: 50, rotateY: -10 }}
             animate={{ opacity: 1, x: 0, rotateY: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="flex-1 w-full max-w-[700px] lg:max-w-[800px] xl:max-w-[900px] relative mt-16 lg:mt-0 perspective-1000 lg:-translate-x-20 xl:-translate-x-28"
+            className="perspective-1000 relative mt-12 w-full max-w-[700px] flex-1 lg:mt-0 lg:max-w-[800px] lg:-translate-x-20 xl:max-w-[900px] xl:-translate-x-28"
           >
             <div className="relative w-full aspect-square sm:aspect-[4/3] flex items-center justify-center">
               
@@ -137,7 +137,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
 
               {/* Generated Mintcom POS System Image - mix-blend-multiply removes white bg in all modes */}
               <motion.div
-                className="relative w-[140%] sm:w-[135%] max-w-[1100px] scale-110 origin-center lg:origin-left"
+                className="relative w-full max-w-[1100px] origin-center sm:w-[118%] lg:w-[140%] lg:origin-left"
                 style={{ isolation: 'auto' }}
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
@@ -181,7 +181,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               onClick={(e) => e.stopPropagation()}
             >
               <iframe
-                src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&title=0&byline=0&portrait=0"
+                src=""
                 className="w-full h-full"
                 allow="autoplay; fullscreen; picture-in-picture"
                 allowFullScreen
@@ -193,7 +193,3 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
     </section>
   );
 };
-
-
-
-

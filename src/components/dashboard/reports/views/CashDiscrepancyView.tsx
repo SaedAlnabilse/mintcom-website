@@ -1,4 +1,4 @@
-﻿import { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Scale, TrendingUp, TrendingDown, AlertCircle, User } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import { useTranslation } from 'react-i18next';

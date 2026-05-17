@@ -242,7 +242,7 @@ export function PasswordResetOtpModal({
                             <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center">
                                 <Shield className="w-5 h-5 text-mintcom-green" />
                             </div>
-                            <h2 className="font-magilio text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                            <h2 className="font-barlow text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {title}
                             </h2>
                         </div>
@@ -263,7 +263,7 @@ export function PasswordResetOtpModal({
                                     <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
                                         <Mail className="w-8 h-8 text-blue-500" />
                                     </div>
-                                    <h3 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white mb-2">
                                         {t('passwordReset.steps.verifyTitle')}
                                     </h3>
                                     <p className="text-sm font-bold text-gray-500">
@@ -305,7 +305,7 @@ export function PasswordResetOtpModal({
                                     <div className="w-16 h-16 rounded-full bg-mintcom-green/10 flex items-center justify-center mx-auto mb-4">
                                         <Shield className="w-8 h-8 text-mintcom-green" />
                                     </div>
-                                    <h3 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white mb-2">
                                         {t('passwordReset.steps.enterCodeTitle')}
                                     </h3>
                                     <p className="text-sm font-bold text-gray-500">
@@ -370,7 +370,7 @@ export function PasswordResetOtpModal({
                                     <div className="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center mx-auto mb-4">
                                         <Key className="w-8 h-8 text-purple-500" />
                                     </div>
-                                    <h3 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white mb-2">
                                         {t('passwordReset.steps.newPasswordTitle')}
                                     </h3>
                                     <p className="text-sm font-bold text-gray-500">
@@ -466,7 +466,7 @@ export function PasswordResetOtpModal({
                                     <CheckCircle2 className="w-10 h-10 text-mintcom-green" />
                                 </div>
                                 <div>
-                                    <h3 className="font-magilio text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="font-barlow text-lg font-bold text-gray-900 dark:text-white mb-2">
                                         {t('passwordReset.steps.successTitle')}
                                     </h3>
                                     <p className="text-sm font-bold text-gray-500">

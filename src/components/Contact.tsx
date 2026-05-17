@@ -62,7 +62,7 @@ export const Contact = () => {
 
   return (
     <section id="contact" className="py-16 lg:py-20 bg-white dark:bg-[#050505] relative overflow-hidden transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-      <div className="container mx-auto px-8 md:px-16 lg:px-24 relative z-10">
+      <div className="container mx-auto px-6 md:px-10 lg:px-16 max-w-[1280px] relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row items-stretch bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none">
 
@@ -72,7 +72,7 @@ export const Contact = () => {
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
                   <SplitText text={t('landing.contact.title') + ' ' + t('landing.contact.titleHighlight')} />
                 </h2>
-                <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed mb-12 font-light">
+                <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
                   {t('landing.contact.subtitle')}
                 </p>
                 <div className="space-y-8">
@@ -107,7 +107,7 @@ export const Contact = () => {
                       <CheckCircle2 size={48} className="text-mintcom-green" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold font-magilio text-gray-900 dark:text-white mb-2">{t('landing.contact.success')}</h3>
+                      <h3 className="text-2xl font-bold font-barlow text-gray-900 dark:text-white mb-2">{t('landing.contact.success')}</h3>
                       <p className="text-gray-600 dark:text-gray-400 font-medium">{t('landing.contact.responseTime')}</p>
                     </div>
                     <button

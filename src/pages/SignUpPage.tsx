@@ -159,7 +159,7 @@ export function SignUpPage() {
           >
             <Check size={40} strokeWidth={2.5} className="text-mintcom-green" />
           </motion.div>
-          <h2 className="font-magilio text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+          <h2 className="font-barlow text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
             {t('auth.signup.checkEmail')}
           </h2>
           <p className="mt-4 text-sm font-medium leading-relaxed text-gray-600 dark:text-gray-400">
@@ -607,7 +607,7 @@ export function SignUpPage() {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-mintcom-green/10">
                   <ShieldCheck size={28} className="text-mintcom-green" />
                 </div>
-                <h3 className="font-magilio text-2xl font-bold text-gray-900 dark:text-white">
+                <h3 className="font-barlow text-2xl font-bold text-gray-900 dark:text-white">
                   {t('common.security')}
                 </h3>
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
