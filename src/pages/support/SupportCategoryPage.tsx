@@ -208,8 +208,8 @@ export const SupportCategoryPage = () => {
                     transition={{ delay: i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                     whileHover={{ y: -3 }}>
                     <Link to={`/support/article/${article.id}`}
-                      className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-white p-6 shadow-sm transition-all duration-300 dark:bg-white/[0.03] ${acc.border} hover:shadow-[0_8px_30px_-10px_${acc.glow}]`}
-                      style={{ '--glow': acc.glow } as React.CSSProperties}>
+                      className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-white p-6 shadow-sm transition-all duration-300 dark:bg-white/[0.03] ${acc.border}`}
+                      style={{ '--glow-color': acc.glow } as React.CSSProperties}>
                       {/* top accent */}
                       <div className={`absolute inset-x-0 top-0 h-0.5 ${acc.bg} opacity-0 transition-opacity group-hover:opacity-100`} />
                       <div className="mb-4 flex items-start gap-4">
