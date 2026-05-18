@@ -633,7 +633,7 @@ const LoyaltyDemo = ({ t }: { t: any }) => {
   );
 };
 
-// 12. Mobile App – live notifications popping in
+// 12. Mobile App – live notifications popping in (fixed height, no layout shift)
 const MobileDemo = ({ t }: { t: any }) => {
   const messages = useMemo(
     () => [
@@ -644,41 +644,41 @@ const MobileDemo = ({ t }: { t: any }) => {
     ],
     [t]
   );
-  const [shown, setShown] = useState<string[]>([]);
+  // Always render the same 3 rows. We just rotate which message sits in row 0.
+  const [head, setHead] = useState(0);
 
   useEffect(() => {
-    let i = 0;
-    setShown([messages[0]]);
     const id = setInterval(() => {
-      i = (i + 1) % messages.length;
-      setShown((s) => [messages[i], ...s].slice(0, 3));
-    }, 2200);
+      setHead((h) => (h + 1) % messages.length);
+    }, 2400);
     return () => clearInterval(id);
-  }, [messages]);
+  }, [messages.length]);
+
+  const visible = [0, 1, 2].map((offset) => ({
+    text: messages[(head + offset) % messages.length],
+    offset,
+  }));
 
   return (
     <div className="space-y-1.5">
-      <AnimatePresence initial={false}>
-        {shown.map((m, idx) => (
-          <motion.div
-            key={m + idx}
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1 - idx * 0.25, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.4 }}
-            className="flex items-start gap-2 rounded-lg bg-white dark:bg-black/30 border border-gray-200 dark:border-white/10 shadow-sm px-2.5 py-2"
-          >
-            <div className="w-6 h-6 rounded-md bg-mintcom-green/15 flex items-center justify-center flex-shrink-0">
-              <Bell size={11} className="text-mintcom-green" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[10px] font-bold text-gray-800 dark:text-gray-200">Mintcom</div>
-              <div className="text-[10px] text-gray-600 dark:text-gray-400 truncate">{m}</div>
-            </div>
-            <div className="text-[9px] font-mono text-gray-400">now</div>
-          </motion.div>
-        ))}
-      </AnimatePresence>
+      {visible.map((item, idx) => (
+        <motion.div
+          key={item.text + '-' + idx}
+          initial={idx === 0 ? { opacity: 0, y: -10, scale: 0.95 } : false}
+          animate={{ opacity: 1 - item.offset * 0.25, y: 0, scale: 1 }}
+          transition={{ duration: 0.35 }}
+          className="flex items-start gap-2 rounded-lg bg-white dark:bg-black/30 border border-gray-200 dark:border-white/10 shadow-sm px-2.5 py-2 h-[44px]"
+        >
+          <div className="w-6 h-6 rounded-md bg-mintcom-green/15 flex items-center justify-center flex-shrink-0">
+            <Bell size={11} className="text-mintcom-green" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[10px] font-bold text-gray-800 dark:text-gray-200 leading-tight">Mintcom</div>
+            <div className="text-[10px] text-gray-600 dark:text-gray-400 truncate leading-tight">{item.text}</div>
+          </div>
+          <div className="text-[9px] font-mono text-gray-400">now</div>
+        </motion.div>
+      ))}
     </div>
   );
 };
@@ -786,16 +786,6 @@ export const WorkflowReceiptModal = ({ feature, index, onClose }: Props) => {
           className="fixed inset-0 z-[120] flex items-start sm:items-center justify-center p-4 sm:p-6 bg-black/55 backdrop-blur-md overflow-y-auto"
           dir={isRtl ? 'rtl' : 'ltr'}
         >
-          {/* Top "printer slot" – decorative */}
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="hidden sm:block absolute top-6 left-1/2 -translate-x-1/2 w-[340px] h-3 rounded-b-xl bg-gradient-to-b from-gray-700 to-gray-900 shadow-xl shadow-black/40 pointer-events-none"
-          >
-            <div className="absolute inset-x-6 top-1 h-0.5 rounded bg-black/60" />
-          </motion.div>
-
           {/* Close (outside the receipt for clarity) */}
           <button
             onClick={onClose}
