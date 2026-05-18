@@ -72,23 +72,11 @@ const WorkflowFeatureCard = ({ feature, index, onOpen, t }: CardProps) => {
 const SplitText = ({ text, className = '' }: { text: string; className?: string }) => {
   return (
     <span className={className}>
-      {text.split(' ').map((word, i) => {
-        const isMintcom = word.toLowerCase().includes('mintcom');
-        return (
-          <span
-            key={i}
-            className={
-              isMintcom
-                ? 'text-mintcom-green'
-                : i % 2 === 0
-                ? 'text-gray-900 dark:text-white'
-                : 'text-mintcom-green'
-            }
-          >
-            {word}{' '}
-          </span>
-        );
-      })}
+      {text.split(' ').map((word, i) => (
+        <span key={i} className="text-gray-900 dark:text-white">
+          {word}{' '}
+        </span>
+      ))}
     </span>
   );
 };
@@ -180,6 +168,7 @@ export const WorkflowSupport = () => {
 
   return (
     <section
+      id="features"
       className="py-16 lg:py-24 bg-white dark:bg-[#0f0f0f] overflow-hidden relative"
       dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
     >

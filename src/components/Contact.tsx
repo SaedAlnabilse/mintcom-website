@@ -185,7 +185,7 @@ export const Contact = () => {
                         className="mt-1.5 w-4 h-4 rounded border-gray-300 dark:border-white/20 text-mintcom-green focus:ring-mintcom-green cursor-pointer"
                       />
                       <label htmlFor="terms" className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                        {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-mintcom-green font-bold hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-mintcom-green font-bold hover:underline">{t('landing.contact.termsOfService')}</Link>.
+                        {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-mintcom-green font-bold hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-mintcom-green font-bold hover:underline">{t('landing.contact.termsOfService')}</Link>.
                       </label>
                     </div>
 

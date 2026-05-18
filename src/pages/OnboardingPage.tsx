@@ -61,8 +61,8 @@ import {
 // Mintcom Logo imports
 import MintcomLogoGreen from '../assets/green-full-logo.svg';
 import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
-import AppStoreBadge from '../assets/App_Store_(iOS)-Badge-Logo.wine.svg';
-import GooglePlayBadge from '../assets/Google_Play-Badge-Logo.wine.svg';
+import AppStoreBadge from '../assets/app-store-badge.svg';
+import GooglePlayBadge from '../assets/google-play-badge.svg';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
 
@@ -1507,7 +1507,7 @@ export function OnboardingPage() {
                           aria-label="Get it on Google Play"
                           className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
                         >
-                          <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[54px] w-full object-fill rounded-[11px]" />
+                          <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
                         </a>
                       ) : (
                         <button
@@ -1516,7 +1516,7 @@ export function OnboardingPage() {
                           aria-label="Android app download coming soon"
                           className="block opacity-50 cursor-not-allowed"
                         >
-                          <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[54px] w-full object-fill rounded-[11px]" />
+                          <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
                         </button>
                       )}
                       {hasIosDownload ? (
@@ -1527,7 +1527,7 @@ export function OnboardingPage() {
                           aria-label="Download on the App Store"
                           className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
                         >
-                          <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[54px] w-full object-fill rounded-[11px]" />
+                          <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
                         </a>
                       ) : (
                         <button
@@ -1536,7 +1536,7 @@ export function OnboardingPage() {
                           aria-label="iOS app download coming soon"
                           className="block opacity-50 cursor-not-allowed"
                         >
-                          <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[54px] w-full object-fill rounded-[11px]" />
+                          <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
                         </button>
                       )}
                     </div>
@@ -1566,7 +1566,7 @@ export function OnboardingPage() {
                         aria-label="Get it on Google Play"
                         className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
                       >
-                        <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[54px] w-full object-fill rounded-[11px]" />
+                        <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
                       </a>
                       <a
                         href="https://apps.apple.com/app/Mintcom-owner/id0000000001"
@@ -1575,7 +1575,7 @@ export function OnboardingPage() {
                         aria-label="Download on the App Store"
                         className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
                       >
-                        <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[54px] w-full object-fill rounded-[11px]" />
+                        <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
                       </a>
                     </div>
                   </motion.div>

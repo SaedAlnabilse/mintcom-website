@@ -49,6 +49,7 @@ export const SupportPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginRedirectTo, setLoginRedirectTo] = useState('/support/tickets/new');
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const { isAuthenticated } = useAuth();
 
@@ -56,6 +57,16 @@ export const SupportPage = () => {
     if (isAuthenticated) {
       navigate('/support/tickets/new');
     } else {
+      setLoginRedirectTo('/support/tickets/new');
+      setShowLoginModal(true);
+    }
+  };
+
+  const handleMyTickets = () => {
+    if (isAuthenticated) {
+      navigate('/support/tickets');
+    } else {
+      setLoginRedirectTo('/support/tickets');
       setShowLoginModal(true);
     }
   };
@@ -280,11 +291,11 @@ export const SupportPage = () => {
                   <Ticket size={15} />
                   {t('support.quickLinks.submitTicket')}
                 </button>
-                <Link to="/support/tickets"
+                <button onClick={handleMyTickets}
                   className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10">
                   <MessageSquare size={15} />
                   {t('support.tickets.myTickets')}
-                </Link>
+                </button>
               </div>
             </motion.div>
 
@@ -566,7 +577,7 @@ export const SupportPage = () => {
       </section>
 
       <Footer />
-      <LoginRequiredModal open={showLoginModal} onClose={() => setShowLoginModal(false)} />
+      <LoginRequiredModal open={showLoginModal} onClose={() => setShowLoginModal(false)} redirectTo={loginRedirectTo} />
     </div>
   );
 };

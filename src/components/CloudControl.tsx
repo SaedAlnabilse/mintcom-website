@@ -1,4 +1,11 @@
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   Cloud,
@@ -11,31 +18,243 @@ import {
   TrendingUp,
   Settings,
 } from 'lucide-react';
-import AppStoreBadge from '../assets/App_Store_(iOS)-Badge-Logo.wine.svg';
-import GooglePlayBadge from '../assets/Google_Play-Badge-Logo.wine.svg';
+import AppStoreBadge from '../assets/app-store-badge.svg';
+import GooglePlayBadge from '../assets/google-play-badge.svg';
 
-const SplitText = ({ text, className = '' }: { text: string; className?: string }) => {
+// ---------------------------------------------------------------------------
+// Mini "scope" preview — accurate miniaturised dashboard for each scope.
+// Each one mirrors what that scope actually manages in Mintcom.
+// ---------------------------------------------------------------------------
+
+// Tiny browser-window chrome shared by all three previews
+const Chrome = ({ url, label }: { url: string; label: string }) => (
+  <div className="absolute top-0 left-0 right-0 h-[14px] bg-gray-100 dark:bg-white/5 border-b border-gray-200 dark:border-white/10 flex items-center px-1.5 gap-1 z-10">
+    <span className="w-1.5 h-1.5 rounded-full bg-red-400/70" />
+    <span className="w-1.5 h-1.5 rounded-full bg-amber-400/70" />
+    <span className="w-1.5 h-1.5 rounded-full bg-mintcom-green/70" />
+    <div className="ml-auto px-1.5 py-[1px] rounded-sm bg-white dark:bg-black/40 text-[7px] font-mono text-gray-500 leading-none truncate max-w-[80%]">
+      <span className="text-mintcom-green">●</span> {url}
+    </div>
+    <span className="sr-only">{label}</span>
+  </div>
+);
+
+// Owner — total revenue + per-brand breakdown + active billing
+const OwnerScopePreview = ({ t }: { t: any }) => {
+  const brands = [
+    { name: t('landing.cloudControl.scope.preview.brandA', 'Cafe Delight'), val: 58420, change: 12.4, locs: 6 },
+    { name: t('landing.cloudControl.scope.preview.brandB', 'Urban Eats'), val: 42180, change: 8.1, locs: 4 },
+    { name: t('landing.cloudControl.scope.preview.brandC', 'Pizza Yard'), val: 47650, change: 4.6, locs: 3 },
+  ];
+  const total = brands.reduce((s, b) => s + b.val, 0);
   return (
-    <span className={className}>
-      {text.split(' ').map((word, i) => {
-        const isMintcom = word.toLowerCase().includes('mintcom');
-        return (
-          <span
-            key={i}
-            className={
-              isMintcom
-                ? 'text-mintcom-green'
-                : i % 2 === 0
-                ? 'text-gray-900 dark:text-white'
-                : 'text-mintcom-green'
-            }
+    <>
+      <Chrome url="dashboard.mintcom.app/owner" label="Owner" />
+      <div className="h-full flex gap-1.5">
+        {/* Hero KPI */}
+        <div className="flex-shrink-0 w-[42%] rounded-md bg-gradient-to-br from-mintcom-green/15 to-mintcom-green/5 border border-mintcom-green/25 px-1.5 py-1 flex flex-col justify-center">
+          <div className="text-[7px] uppercase tracking-widest text-gray-500 leading-none">
+            {t('landing.cloudControl.scope.preview.totalRevenue', 'Total revenue')}
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 4 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-[12px] font-mono font-black text-gray-900 dark:text-white leading-tight mt-0.5"
           >
-            {word}{' '}
-          </span>
-        );
-      })}
-    </span>
+            ${(total / 1000).toFixed(1)}K
+          </motion.div>
+          <div className="flex items-center gap-0.5 text-[7px] font-bold text-mintcom-green leading-none mt-0.5">
+            <TrendingUp size={6} /> +9.2%
+          </div>
+          <div className="mt-0.5 px-1 py-[1px] rounded-sm bg-mintcom-green/15 self-start text-[6px] font-bold uppercase tracking-widest text-mintcom-green">
+            {t('landing.cloudControl.scope.preview.billingActive', 'Billing · Active')}
+          </div>
+        </div>
+
+        {/* Brand rows */}
+        <div className="flex-1 flex flex-col gap-[3px] min-w-0">
+          {brands.map((b, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: 6 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 + i * 0.1 }}
+              className="flex items-center justify-between gap-1 rounded-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-1 py-[2px]"
+            >
+              <div className="flex items-center gap-1 min-w-0">
+                <Tags size={6} className="text-mintcom-green flex-shrink-0" />
+                <span className="text-[7px] font-bold text-gray-800 dark:text-gray-200 truncate">{b.name}</span>
+                <span className="text-[6px] font-mono text-gray-400 flex-shrink-0">·{b.locs}</span>
+              </div>
+              <span className="text-[7px] font-mono text-mintcom-green font-bold flex-shrink-0">+{b.change}%</span>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </>
   );
+};
+
+// Brand — brand header + locations grid + staff role split
+const BrandScopePreview = ({ t }: { t: any }) => {
+  const locations = [
+    { name: t('landing.cloudControl.scope.preview.locDowntown', 'Downtown'), online: true },
+    { name: t('landing.cloudControl.scope.preview.locMall', 'Mall'), online: true },
+    { name: t('landing.cloudControl.scope.preview.locAirport', 'Airport'), online: true },
+    { name: t('landing.cloudControl.scope.preview.locWest', 'West Side'), online: false },
+  ];
+  const roles = [
+    { label: 'M', pct: 18, name: t('landing.cloudControl.scope.preview.roleManager', 'Manager') },
+    { label: 'C', pct: 38, name: t('landing.cloudControl.scope.preview.roleCashier', 'Cashier') },
+    { label: 'B', pct: 28, name: t('landing.cloudControl.scope.preview.roleBarista', 'Barista') },
+    { label: 'S', pct: 16, name: t('landing.cloudControl.scope.preview.roleStaff', 'Staff') },
+  ];
+  return (
+    <>
+      <Chrome url="dashboard.mintcom.app/brand" label="Brand" />
+      <div className="h-full flex flex-col gap-1">
+        {/* Brand header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 min-w-0">
+            <div className="w-3 h-3 rounded-sm bg-mintcom-green flex items-center justify-center flex-shrink-0">
+              <Tags size={6} className="text-white" />
+            </div>
+            <span className="text-[8px] font-bold text-gray-900 dark:text-white truncate">
+              {t('landing.cloudControl.scope.preview.brandA', 'Cafe Delight')}
+            </span>
+          </div>
+          <span className="text-[6px] font-mono uppercase tracking-widest text-mintcom-green flex items-center gap-0.5 flex-shrink-0">
+            <span className="w-1 h-1 rounded-full bg-mintcom-green animate-pulse" />
+            3/4
+          </span>
+        </div>
+
+        {/* Locations grid */}
+        <div className="grid grid-cols-2 gap-[3px]">
+          {locations.map((l, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 + i * 0.06 }}
+              className="flex items-center gap-1 rounded-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-1 py-[2px]"
+            >
+              <span
+                className={`w-1 h-1 rounded-full flex-shrink-0 ${
+                  l.online ? 'bg-mintcom-green' : 'bg-gray-400'
+                }`}
+              />
+              <Building2 size={6} className="text-gray-400 flex-shrink-0" />
+              <span className="text-[7px] font-bold text-gray-700 dark:text-gray-300 truncate">
+                {l.name}
+              </span>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Roles distribution bar */}
+        <div className="mt-auto">
+          <div className="text-[6px] uppercase tracking-widest text-gray-500 leading-none mb-0.5 flex items-center gap-0.5">
+            <Users size={6} />
+            {t('landing.cloudControl.scope.preview.rolesAcrossLocations', 'Roles across locations')}
+          </div>
+          <div className="flex h-1.5 rounded-full overflow-hidden bg-gray-200 dark:bg-white/10">
+            {roles.map((r, i) => (
+              <motion.div
+                key={i}
+                initial={{ width: 0 }}
+                whileInView={{ width: `${r.pct}%` }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
+                title={`${r.name} ${r.pct}%`}
+                className={
+                  i === 0
+                    ? 'bg-mintcom-green'
+                    : i === 1
+                    ? 'bg-mintcom-greenLight'
+                    : i === 2
+                    ? 'bg-mintcom-green/60'
+                    : 'bg-mintcom-green/30'
+                }
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+// Location — today KPIs + live order ticker
+const LocationScopePreview = ({ t }: { t: any }) => {
+  const kpis = [
+    { label: t('landing.cloudControl.scope.preview.orders', 'Orders'), val: '142' },
+    { label: t('landing.cloudControl.scope.preview.revenue', 'Revenue'), val: '$2.4K' },
+    { label: t('landing.cloudControl.scope.preview.aov', 'AOV'), val: '$16.9' },
+  ];
+  const orders = [
+    { id: '#4218', amt: '$24.50', method: 'Card' },
+    { id: '#4217', amt: '$8.75', method: 'Cash' },
+    { id: '#4216', amt: '$32.00', method: 'Mobile' },
+  ];
+  return (
+    <>
+      <Chrome url="dashboard.mintcom.app/location" label="Location" />
+      <div className="h-full flex flex-col gap-1">
+        {/* KPI strip */}
+        <div className="grid grid-cols-3 gap-1">
+          {kpis.map((k, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 3 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.15 + i * 0.07 }}
+              className="rounded-sm bg-gradient-to-br from-mintcom-green/10 to-transparent border border-mintcom-green/20 px-1 py-[2px] flex flex-col items-start"
+            >
+              <span className="text-[6px] uppercase tracking-widest text-gray-500 leading-none">{k.label}</span>
+              <span className="text-[9px] font-mono font-black text-mintcom-green leading-tight mt-[1px]">{k.val}</span>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Live order ticker */}
+        <div className="flex-1 flex flex-col gap-[2px]">
+          <div className="text-[6px] uppercase tracking-widest text-gray-500 leading-none flex items-center gap-0.5">
+            <span className="w-1 h-1 rounded-full bg-mintcom-green animate-pulse" />
+            {t('landing.cloudControl.scope.preview.liveOrders', 'Live orders')}
+          </div>
+          {orders.map((o, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -4 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 + i * 0.08 }}
+              className="flex items-center justify-between rounded-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-1 py-[2px]"
+            >
+              <div className="flex items-center gap-1">
+                <ShoppingCart size={6} className="text-mintcom-green" />
+                <span className="text-[7px] font-mono text-gray-600 dark:text-gray-400">{o.id}</span>
+                <span className="text-[6px] font-bold uppercase tracking-widest text-gray-400">{o.method}</span>
+              </div>
+              <span className="text-[7px] font-mono font-bold text-gray-800 dark:text-gray-200">{o.amt}</span>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+const ScopePreview = ({ scope, t }: { scope: 'owner' | 'brand' | 'location'; t: any }) => {
+  if (scope === 'owner') return <OwnerScopePreview t={t} />;
+  if (scope === 'brand') return <BrandScopePreview t={t} />;
+  return <LocationScopePreview t={t} />;
 };
 
 const DashboardCard = ({
@@ -43,36 +262,127 @@ const DashboardCard = ({
   title,
   description,
   index,
+  scope,
+  scopeLabel,
+  t,
 }: {
   icon: any;
   title: string;
   description: string;
   index: number;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ delay: index * 0.1, duration: 0.6 }}
-    whileHover={{ y: -6, scale: 1.02 }}
-    className="group relative flex flex-col h-full p-7 rounded-2xl border border-gray-100 dark:border-white/5 bg-white dark:bg-[#121212] hover:border-mintcom-green/40 hover:shadow-2xl hover:shadow-mintcom-green/10 shadow-lg shadow-gray-200/30 dark:shadow-none transition-all duration-500 overflow-hidden"
-  >
-    <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+  scope: 'owner' | 'brand' | 'location';
+  scopeLabel: string;
+  t: any;
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
-    <div className="flex items-center gap-4 mb-5 relative z-10">
-      <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-mintcom-green/10 dark:bg-mintcom-green/15 flex items-center justify-center group-hover:bg-mintcom-green group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-inner">
-        <Icon size={24} className="text-mintcom-green group-hover:text-white transition-colors duration-500" />
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [5, -5]), {
+    stiffness: 200,
+    damping: 20,
+  });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-5, 5]), {
+    stiffness: 200,
+    damping: 20,
+  });
+
+  const spotlightX = useTransform(mouseX, [-0.5, 0.5], ['0%', '100%']);
+  const spotlightY = useTransform(mouseY, [-0.5, 0.5], ['0%', '100%']);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+    mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  // Scope rank dots — visual hierarchy: Owner = 3, Brand = 2, Location = 1
+  const rank = scope === 'owner' ? 3 : scope === 'brand' ? 2 : 1;
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, duration: 0.6 }}
+      style={{ rotateX, rotateY, transformStyle: 'preserve-3d', perspective: 1000 }}
+      className="group relative h-full"
+    >
+      {/* Outer glow */}
+      <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-mintcom-green/0 via-mintcom-green/0 to-mintcom-green/0 group-hover:from-mintcom-green/30 group-hover:via-mintcom-green/10 group-hover:to-transparent transition-all duration-500 blur-sm pointer-events-none" />
+
+      <div className="relative flex flex-col h-full p-7 rounded-2xl border border-gray-100 dark:border-white/5 bg-white dark:bg-[#121212] group-hover:border-mintcom-green/40 group-hover:shadow-2xl group-hover:shadow-mintcom-green/10 shadow-lg shadow-gray-200/30 dark:shadow-none transition-all duration-500 overflow-hidden">
+        {/* Mouse-tracked spotlight */}
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background: useTransform(
+              [spotlightX, spotlightY] as unknown as MotionValue<number>[],
+              ([x, y]: any) =>
+                `radial-gradient(280px circle at ${x} ${y}, rgba(125,198,162,0.18), transparent 60%)`
+            ),
+          }}
+        />
+
+        {/* Scope rank chips top-right (3 dots = Owner, 2 = Brand, 1 = Location) */}
+        <div className="absolute top-4 end-4 flex items-center gap-1 z-10" style={{ transform: 'translateZ(40px)' }}>
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className={`w-1.5 h-1.5 rounded-full transition-colors duration-500 ${
+                i < rank ? 'bg-mintcom-green' : 'bg-gray-300 dark:bg-white/15'
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Header: icon + scope label */}
+        <div
+          className="relative z-10 flex items-center gap-4 mb-5"
+          style={{ transform: 'translateZ(30px)' }}
+        >
+          <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-mintcom-green/10 dark:bg-mintcom-green/15 flex items-center justify-center group-hover:bg-mintcom-green group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-inner">
+            <Icon size={24} className="text-mintcom-green group-hover:text-white transition-colors duration-500" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[9px] uppercase tracking-[0.2em] text-gray-500 mb-0.5 leading-none">
+              {scopeLabel}
+            </div>
+            <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors leading-tight tracking-tight">
+              {title}
+            </h3>
+          </div>
+        </div>
+
+        {/* Mini scope preview */}
+        <div
+          className="relative z-10 mb-5 h-[88px] rounded-xl bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 overflow-hidden p-2 pt-[18px] shadow-inner"
+          style={{ transform: 'translateZ(20px)' }}
+        >
+          <ScopePreview scope={scope} t={t} />
+        </div>
+
+        {/* Description */}
+        <p
+          className="relative z-10 font-barlow text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium"
+          style={{ transform: 'translateZ(10px)' }}
+        >
+          {description}
+        </p>
       </div>
-      <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors leading-tight tracking-tight">
-        {title}
-      </h3>
-    </div>
-
-    <p className="font-barlow text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium relative z-10">
-      {description}
-    </p>
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
 // Stylised SVG-driven mockup of a laptop and tablet showing Mintcom dashboards.
 // Pure CSS/SVG so it stays crisp at any size and never 404s.
@@ -256,16 +566,22 @@ export const CloudControl = () => {
       icon: Crown,
       title: t('landing.cloudControl.owner.title'),
       description: t('landing.cloudControl.owner.description'),
+      scope: 'owner' as const,
+      scopeLabel: t('landing.cloudControl.scope.global', 'Global scope'),
     },
     {
       icon: Tags,
       title: t('landing.cloudControl.brand.title'),
       description: t('landing.cloudControl.brand.description'),
+      scope: 'brand' as const,
+      scopeLabel: t('landing.cloudControl.scope.brand', 'Brand scope'),
     },
     {
       icon: Building2,
       title: t('landing.cloudControl.location.title'),
       description: t('landing.cloudControl.location.description'),
+      scope: 'location' as const,
+      scopeLabel: t('landing.cloudControl.scope.location', 'Location scope'),
     },
   ];
 
@@ -310,8 +626,9 @@ export const CloudControl = () => {
             </motion.div>
 
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.15] rtl:leading-[1.3] tracking-tight">
-              <SplitText text={t('landing.cloudControl.title')} />
-              <span className="block text-mintcom-green mt-2">
+              <span className="text-gray-900 dark:text-white">In-Sync </span>
+              <span className="text-mintcom-green">Cloud Control</span>
+              <span className="block text-gray-900 dark:text-white mt-2">
                 {t('landing.cloudControl.titleHighlight')}
               </span>
             </h2>
@@ -325,7 +642,7 @@ export const CloudControl = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-10 flex flex-col gap-3"
+              className="mt-10 flex flex-col items-start gap-3 w-fit"
             >
               <p className="text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400">
                 {t('landing.admin.installApp')}
@@ -341,7 +658,7 @@ export const CloudControl = () => {
                   <img
                     src={AppStoreBadge}
                     alt={t('landing.admin.downloadOnAppStore')}
-                    className="block h-[54px] w-[180px] object-fill rounded-[11px]"
+                    className="block h-[52px] w-auto object-contain"
                     loading="lazy"
                     decoding="async"
                   />
@@ -356,7 +673,7 @@ export const CloudControl = () => {
                   <img
                     src={GooglePlayBadge}
                     alt={t('landing.admin.getItOnGooglePlay')}
-                    className="block h-[54px] w-[180px] object-fill rounded-[11px]"
+                    className="block h-[52px] w-auto object-contain"
                     loading="lazy"
                     decoding="async"
                   />
@@ -378,7 +695,7 @@ export const CloudControl = () => {
         </div>
 
         {/* Three Dashboard Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {dashboards.map((d, i) => (
             <DashboardCard
               key={i}
@@ -386,6 +703,9 @@ export const CloudControl = () => {
               title={d.title}
               description={d.description}
               index={i}
+              scope={d.scope}
+              scopeLabel={d.scopeLabel}
+              t={t}
             />
           ))}
         </div>

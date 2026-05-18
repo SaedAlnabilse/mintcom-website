@@ -59,23 +59,23 @@ export const Features = () => {
     {
       icon: <Store className="w-6 h-6" />,
       title: t('landing.features.cards.complete.title'),
-      description: t('landing.features.cards.complete.description')
+      description: t('landing.features.cards.complete.description'),
     },
     {
       icon: <Zap className="w-6 h-6" />,
       title: t('landing.features.cards.realUsers.title'),
-      description: t('landing.features.cards.realUsers.description')
+      description: t('landing.features.cards.realUsers.description'),
     },
     {
       icon: <ShieldCheck className="w-6 h-6" />,
       title: t('landing.features.cards.security.title'),
-      description: t('landing.features.cards.security.description')
+      description: t('landing.features.cards.security.description'),
     },
     {
       icon: <Settings className="w-6 h-6" />,
       title: t('landing.features.cards.multiBranch.title'),
-      description: t('landing.features.cards.multiBranch.description')
-    }
+      description: t('landing.features.cards.multiBranch.description'),
+    },
   ];
 
   // Lazy load video when section comes into view
@@ -101,13 +101,16 @@ export const Features = () => {
   }, [isVideoLoaded]);
 
   return (
-    <section id="features" className="py-16 lg:py-20 bg-gray-50 dark:bg-[#0f0f0f] overflow-hidden relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <section
+      id="why-mintcom"
+      className="py-16 lg:py-20 bg-gray-50 dark:bg-[#0f0f0f] overflow-hidden relative"
+      dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+    >
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-mintcom-green/5 rounded-full blur-[120px] -z-10" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-mintcom-green/3 rounded-full blur-[100px] -z-10" />
 
       <div className="container mx-auto px-6 md:px-10 lg:px-16 max-w-[1280px]">
-
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -127,7 +130,7 @@ export const Features = () => {
               <Sparkles size={11} className="relative z-10" />
               <motion.div
                 animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute inset-0 bg-mintcom-green/30"
               />
             </div>
@@ -145,10 +148,9 @@ export const Features = () => {
           </p>
         </motion.div>
 
-        {/* Redesigned Layout: Cards First, then Video */}
+        {/* Cards & Video */}
         <div className="flex flex-col gap-16 lg:gap-24">
-
-          {/* Feature Cards Grid - Spans full width 4 columns */}
+          {/* Pillar Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
             {features.map((feature, index) => (
               <FeatureCard key={index} feature={feature} index={index} t={t} />
@@ -160,7 +162,7 @@ export const Features = () => {
             ref={videoRef}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.7 }}
             className="w-full max-w-7xl mx-auto"
           >
@@ -206,7 +208,6 @@ export const Features = () => {
               </div>
             </div>
           </motion.div>
-
         </div>
       </div>
     </section>

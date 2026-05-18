@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useScrollLock } from '../hooks/useScrollLock';
 import MintcomLeafIcon from '../assets/small-logo.svg';
-import AppStoreBadge from '../assets/App_Store_(iOS)-Badge-Logo.wine.svg';
-import GooglePlayBadge from '../assets/Google_Play-Badge-Logo.wine.svg';
+import AppStoreBadge from '../assets/app-store-badge.svg';
+import GooglePlayBadge from '../assets/google-play-badge.svg';
 
 interface MobileAppModalProps {
   isOpen: boolean;

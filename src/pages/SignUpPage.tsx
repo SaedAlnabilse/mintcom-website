@@ -436,9 +436,9 @@ export function SignUpPage() {
                   />
                   <label htmlFor="agreeToTerms" className="cursor-pointer text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {t('landing.contact.termsAgree')}{' '}
-                    <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="font-bold text-mintcom-green hover:underline">{t('landing.contact.privacyPolicy')}</Link>{' '}
+                    <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="font-bold text-mintcom-green hover:underline">{t('landing.contact.privacyPolicy')}</Link>{' '}
                     {t('common.and')}{' '}
-                    <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="font-bold text-mintcom-green hover:underline">{t('landing.contact.termsOfService')}</Link>.
+                    <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="font-bold text-mintcom-green hover:underline">{t('landing.contact.termsOfService')}</Link>.
                   </label>
                 </div>
                 {errors.agreeToTerms && (

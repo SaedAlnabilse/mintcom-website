@@ -1769,7 +1769,8 @@
       "description": "Manage your business anytime, anywhere with the Mintcom Admin Mobile App. Get real-time data at your fingertips, allowing you to take quick action and stay completely in control while on the go.",
       "downloadOnAppStore": "Download on the App Store",
       "getItOnGooglePlay": "Get it on Google Play",
-      "installApp": "Install the App",
+      "installApp": "INSTALL POS APPLICATION",
+      "installBackofficeApp": "INSTALL BACKOFFICE APPLICATION",
       "liveAlerts": "Live Alerts",
       "liveReports": "Live Sales & Performance Reports",
       "multiLocationManagement": "Multi-Location Management",
@@ -1785,6 +1786,31 @@
     },
     "cloudControl": {
       "badge": "MINTCOM DASHBOARDS",
+      "scope": {
+        "global": "Global scope",
+        "brand": "Brand scope",
+        "location": "Location scope",
+        "preview": {
+          "totalRevenue": "Total revenue",
+          "billingActive": "Billing · Active",
+          "brandA": "Cafe Delight",
+          "brandB": "Urban Eats",
+          "brandC": "Pizza Yard",
+          "locDowntown": "Downtown",
+          "locMall": "Mall",
+          "locAirport": "Airport",
+          "locWest": "West Side",
+          "rolesAcrossLocations": "Roles across locations",
+          "roleManager": "Manager",
+          "roleCashier": "Cashier",
+          "roleBarista": "Barista",
+          "roleStaff": "Staff",
+          "orders": "Orders",
+          "revenue": "Revenue",
+          "aov": "AOV",
+          "liveOrders": "Live orders"
+        }
+      },
       "brand": {
         "description": "Designed for businesses operating multiple connected locations under one brand. Manage brand-level settings, organize staff roles across locations, and access consolidated reporting and performance insights across the brand.",
         "title": "Brand Dashboard"
@@ -1869,6 +1895,8 @@
     },
     "features": {
       "badge": "Why Mintcom",
+      "cardLabel": "Pillar",
+      "verified": "Verified",
       "cards": {
         "complete": {
           "description": "Mintcom is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more, all included in one fixed monthly plan.",
@@ -2062,7 +2090,7 @@
         "reports": "Advanced reports & analytics",
         "staffManagement": "Staff Management",
         "support": "Dedicated customer support",
-        "unlimitedStaff": "Unlimited staff accounts"
+        "unlimitedStaff": "Multiple staff accounts"
       },
       "fullAccess": "FULL ACCESS",
       "getStarted": "Get Started",
@@ -2141,6 +2169,37 @@
         "total": "Included",
         "thanks": "Thank you",
         "tagline": "Built for businesses on the move.",
+        "frame": {
+          "pos": "Sales receipt",
+          "salesCard": "Mintcom Pay",
+          "cardholder": "Cardholder",
+          "approved": "Transaction approved",
+          "staffBadge": "Employee badge",
+          "role": "Role",
+          "active": "Active",
+          "issued": "Issued by Mintcom HR",
+          "report": "Quarterly report",
+          "confidential": "Confidential",
+          "page": "Page 1 of 1",
+          "recipe": "Recipe card",
+          "prep": "Prep",
+          "cook": "Cook",
+          "yield": "Yield",
+          "online": "Online",
+          "aiFooter": "Built into every Mintcom dashboard",
+          "map": "Branch atlas",
+          "locations": "live locations",
+          "boarding": "Welcome aboard",
+          "from": "From",
+          "to": "To",
+          "passenger": "Trainee",
+          "gate": "Gate",
+          "dossier": "Security dossier",
+          "classified": "Classified",
+          "clearance": "Clearance · Top",
+          "signed": "Signed · CISO",
+          "loyalty": "Member since 2024"
+        },
         "demo": {
           "pos": {
             "espresso": "Espresso",
@@ -2154,7 +2213,7 @@
           "sales": {
             "cash": "Cash",
             "card": "Card",
-            "mobile": "Mobile",
+            "others": "Others",
             "tax": "Tax",
             "subtotal": "Subtotal",
             "total": "Charged",
@@ -2271,7 +2330,7 @@
       },
       "pointOfSale": {
         "description": "Create products and categories, process sales quickly, and manage transactions with a fast and reliable checkout experience designed for busy businesses.",
-        "title": "Point Of Sale"
+        "title": "Point of Sale"
       },
       "production": {
         "description": "Create and update recipes, control ingredients, and automatically calculate production costs and profit margins to maintain consistency and make smarter pricing decisions.",
@@ -4768,7 +4827,7 @@
       "feedbackThanks": "Thanks for your feedback!",
       "ft1": {
         "h1": "Complete Feature Guide",
-        "h2": "Point Of Sale (POS)",
+        "h2": "Point of Sale (POS)",
         "h3": "Recipe Operations",
         "h4": "Staff Management",
         "h5": "Reporting & Analytics",

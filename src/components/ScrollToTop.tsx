@@ -3,32 +3,37 @@ import { useLocation } from 'react-router-dom';
 
 /**
  * ScrollToTop Component
- * 
+ *
  * Automatically scrolls the window to the top whenever the route changes.
- * This ensures that navigating between pages always starts at the top of the content.
+ * When a hash is present (e.g. /#features), polls for the target element
+ * so it works even when the destination page is lazy-loaded.
  */
 export function ScrollToTop() {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    // If there's a hash, scroll to the element
     if (hash) {
-      // Small timeout to allow the layout to stabilize
-      const timer = setTimeout(() => {
-        const id = hash.replace('#', '');
+      const id = hash.replace('#', '');
+      let attempts = 0;
+      const maxAttempts = 30; // up to ~1.5 s of polling
+
+      const tryScroll = () => {
         const element = document.getElementById(id);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth' });
+          return;
         }
-      }, 100);
-      return () => clearTimeout(timer);
+        attempts++;
+        if (attempts < maxAttempts) {
+          setTimeout(tryScroll, 50);
+        }
+      };
+
+      // Start after a short initial delay to let React render the new route
+      const initial = setTimeout(tryScroll, 80);
+      return () => clearTimeout(initial);
     } else {
-      // Default behavior: scroll to top
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'instant'
-      });
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }
   }, [pathname, hash]);
 

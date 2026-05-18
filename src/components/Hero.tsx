@@ -61,7 +61,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
         />
       </div>
 
-      <div className="container mx-auto px-4 xs:px-6 md:px-10 lg:px-16 max-w-[1280px] relative z-10">
+      <div className="mx-auto w-[95%] max-w-[1200px] px-5 md:px-7 relative z-10">
         <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center lg:gap-16">
 
           {/* Text Content */}

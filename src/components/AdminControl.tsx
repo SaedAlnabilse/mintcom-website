@@ -1,10 +1,8 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Smartphone, Laptop, BarChart2, ShoppingCart, Users, TrendingUp, Bell, User, Package } from 'lucide-react';
-import WhiteLogo from '../assets/white-green-full-logo.svg';
-import GreenLogo from '../assets/green-full-logo.svg';
-import AppStoreBadge from '../assets/App_Store_(iOS)-Badge-Logo.wine.svg';
-import GooglePlayBadge from '../assets/Google_Play-Badge-Logo.wine.svg';
+import { Laptop, BarChart2, ShoppingCart, Users, TrendingUp, Bell, User, Package } from 'lucide-react';
+import AppStoreBadge from '../assets/app-store-badge.svg';
+import GooglePlayBadge from '../assets/google-play-badge.svg';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -41,10 +39,10 @@ export const AdminControl = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="w-full lg:w-1/2 relative flex justify-center items-center h-[640px] lg:h-[760px] lg:justify-start"
+            className="w-full lg:w-1/2 relative flex justify-center items-center h-[520px] lg:h-[600px] lg:justify-start"
           >
             {/* iPhone Frame Mockup (Left/Back) */}
-            <div className="absolute left-[5%] lg:left-[2%] w-[280px] h-[600px] lg:w-[300px] lg:h-[640px] bg-[#0a0a0a] rounded-[28px] border-[7px] border-gray-800 shadow-2xl overflow-hidden ring-1 ring-white/10 z-10 transform -rotate-6 scale-95 opacity-80">
+            <div className="absolute left-[5%] lg:left-[2%] w-[280px] h-[600px] lg:w-[300px] lg:h-[640px] bg-[#0a0a0a] rounded-[28px] border-[7px] border-gray-800 shadow-2xl overflow-hidden ring-1 ring-white/10 z-10 transform -rotate-6 opacity-80 scale-[0.78] origin-top">
               {/* iPhone Notch */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-5 bg-gray-800 rounded-b-xl z-30" />
 
@@ -112,7 +110,7 @@ export const AdminControl = () => {
             </div>
 
             {/* Android Frame Mockup (Right/Front) */}
-            <div className="absolute left-[25%] lg:left-[32%] w-[300px] h-[620px] lg:w-[330px] lg:h-[680px] bg-[#0a0a0a] rounded-[30px] border-[7px] border-gray-800 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10 z-20 transform rotate-3">
+            <div className="absolute left-[25%] lg:left-[32%] w-[300px] h-[620px] lg:w-[330px] lg:h-[680px] bg-[#0a0a0a] rounded-[30px] border-[7px] border-gray-800 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10 z-20 transform rotate-3 scale-[0.78] origin-top">
               {/* Android Hole Punch */}
               <div className="absolute top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-black border border-gray-800 rounded-full z-30 shadow-inner" />
 
@@ -216,7 +214,7 @@ export const AdminControl = () => {
             </div>
 
             {/* Decorative Circle */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] lg:w-[560px] lg:h-[560px] border border-mintcom-green/20 rounded-full -z-10 animate-[spin_20s_linear_infinite]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] lg:w-[480px] lg:h-[480px] border border-mintcom-green/20 rounded-full -z-10 animate-[spin_20s_linear_infinite]" />
           </motion.div>
 
           {/* Right Side: Content */}
@@ -253,16 +251,6 @@ export const AdminControl = () => {
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.admin.title3')} /></span>
             </h2>
 
-            {/* Logo Lockup */}
-            <div className="flex items-center gap-6 mb-8 p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 w-fit">
-              <img src={WhiteLogo} alt={t('common.logoAlt')} width={128} height={32} className="h-8 w-auto object-contain hidden dark:block" loading="lazy" decoding="async" />
-              <img src={GreenLogo} alt={t('common.logoAlt')} width={128} height={32} className="h-8 w-auto object-contain block dark:hidden" loading="lazy" decoding="async" />
-              <div className="h-8 w-px bg-gray-300 dark:bg-white/20"></div>
-              <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
-                <Smartphone size={16} />
-                <span>{t('landing.admin.adminApp')}</span>
-              </div>
-            </div>
 
             <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
               {t('landing.admin.description')}
@@ -292,10 +280,10 @@ export const AdminControl = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-10 flex flex-col gap-3"
+              className="mt-10 flex flex-col items-start gap-3 w-fit"
             >
               <p className="text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400">
-                {t('landing.admin.installApp')}
+                {t('landing.admin.installBackofficeApp')}
               </p>
               <div className="flex flex-wrap items-center gap-3">
                 <a
@@ -308,7 +296,7 @@ export const AdminControl = () => {
                   <img
                     src={AppStoreBadge}
                     alt={t('landing.admin.downloadOnAppStore')}
-                    className="block h-[54px] w-[180px] object-fill rounded-[11px]"
+                    className="block h-[52px] w-auto object-contain"
                     loading="lazy"
                     decoding="async"
                   />
@@ -323,7 +311,7 @@ export const AdminControl = () => {
                   <img
                     src={GooglePlayBadge}
                     alt={t('landing.admin.getItOnGooglePlay')}
-                    className="block h-[54px] w-[180px] object-fill rounded-[11px]"
+                    className="block h-[52px] w-auto object-contain"
                     loading="lazy"
                     decoding="async"
                   />
