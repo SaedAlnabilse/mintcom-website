@@ -14,23 +14,37 @@ import {
   Lock,
   Heart,
   Smartphone,
+  ArrowUpRight,
 } from 'lucide-react';
+import { WorkflowReceiptModal, type WorkflowFeature } from './WorkflowReceiptModal';
 
-const WorkflowFeatureCard = ({ feature, index, t }: { feature: any; index: number; t: any }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const description = feature.description as string;
-  const shouldTruncate = description.length > 110;
+type CardProps = {
+  feature: WorkflowFeature;
+  index: number;
+  onOpen: () => void;
+  t: any;
+};
 
+const WorkflowFeatureCard = ({ feature, index, onOpen, t }: CardProps) => {
   return (
-    <motion.div
+    <motion.button
+      type="button"
+      onClick={onOpen}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: (index % 4) * 0.08, duration: 0.5 }}
       whileHover={{ y: -6, scale: 1.02 }}
-      className="group flex flex-col h-full p-6 rounded-2xl border border-gray-100 dark:border-white/5 bg-white dark:bg-[#121212] hover:border-mintcom-green/40 hover:shadow-2xl hover:shadow-mintcom-green/10 shadow-lg shadow-gray-200/30 dark:shadow-none transition-all duration-500 relative overflow-hidden"
+      whileTap={{ scale: 0.98 }}
+      className="group flex flex-col h-full p-6 rounded-2xl border border-gray-100 dark:border-white/5 bg-white dark:bg-[#121212] hover:border-mintcom-green/40 hover:shadow-2xl hover:shadow-mintcom-green/10 shadow-lg shadow-gray-200/30 dark:shadow-none transition-all duration-500 relative overflow-hidden text-start cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green/60"
+      aria-label={t('landing.workflow.cardCta', 'Open {{title}} preview', { title: feature.title })}
     >
       <div className="absolute top-0 right-0 w-28 h-28 bg-mintcom-green/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+      {/* Top-right open indicator */}
+      <div className="absolute top-3 end-3 w-7 h-7 rounded-full bg-mintcom-green/0 group-hover:bg-mintcom-green/15 flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100">
+        <ArrowUpRight size={14} className="text-mintcom-green rtl:-scale-x-100" />
+      </div>
 
       <div className="flex items-start gap-4 mb-4 relative z-10">
         <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-mintcom-green/10 dark:bg-mintcom-green/15 flex items-center justify-center group-hover:bg-mintcom-green group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-inner">
@@ -42,29 +56,16 @@ const WorkflowFeatureCard = ({ feature, index, t }: { feature: any; index: numbe
       </div>
 
       <div className="flex-1 flex flex-col justify-between relative z-10">
-        <p
-          className={`font-barlow text-gray-600 dark:text-gray-400 text-sm leading-relaxed font-medium transition-all duration-300 ${
-            !isExpanded && shouldTruncate ? 'line-clamp-3' : ''
-          }`}
-        >
-          {description}
+        <p className="font-barlow text-gray-600 dark:text-gray-400 text-sm leading-relaxed font-medium line-clamp-3">
+          {feature.description}
         </p>
 
-        {shouldTruncate && (
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              setIsExpanded(!isExpanded);
-            }}
-            className="mt-3 text-xs font-bold font-barlow text-mintcom-green hover:text-mintcom-green/80 self-start transition-colors focus:outline-none"
-          >
-            {isExpanded
-              ? t('landing.features.readLess', 'Read less')
-              : t('landing.features.readMore', 'Read more')}
-          </button>
-        )}
+        <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold font-barlow text-mintcom-green self-start">
+          {t('landing.workflow.preview', 'Preview')}
+          <ArrowUpRight size={12} className="rtl:-scale-x-100 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </span>
       </div>
-    </motion.div>
+    </motion.button>
   );
 };
 
@@ -94,73 +95,88 @@ const SplitText = ({ text, className = '' }: { text: string; className?: string 
 
 export const WorkflowSupport = () => {
   const { t } = useTranslation();
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   // Order matches the requested layout:
   // POS, Sales Control, Staff Management, Advanced Reporting,
   // Recipe & Cost Management, AI System, Multi-Branch Management, Simple & Easy Interface,
   // Fast Staff Onboarding, Secure & Reliable, Loyalty & Customer Management, Mobile App & Notifications
-  const workflowFeatures = [
+  const workflowFeatures: WorkflowFeature[] = [
     {
+      id: 'pointOfSale',
       title: t('landing.workflow.pointOfSale.title'),
       description: t('landing.workflow.pointOfSale.description'),
       icon: CreditCard,
     },
     {
+      id: 'salesControl',
       title: t('landing.workflow.salesControl.title'),
       description: t('landing.workflow.salesControl.description'),
       icon: ShieldCheck,
     },
     {
+      id: 'staffManagement',
       title: t('landing.workflow.staffManagement.title'),
       description: t('landing.workflow.staffManagement.description'),
       icon: Users,
     },
     {
+      id: 'advancedReporting',
       title: t('landing.workflow.advancedReporting.title'),
       description: t('landing.workflow.advancedReporting.description'),
       icon: BarChart3,
     },
     {
+      id: 'production',
       title: t('landing.workflow.production.title'),
       description: t('landing.workflow.production.description'),
       icon: ChefHat,
     },
     {
+      id: 'aiSystem',
       title: t('landing.workflow.aiSystem.title'),
       description: t('landing.workflow.aiSystem.description'),
       icon: Sparkles,
     },
     {
+      id: 'multiBranch',
       title: t('landing.workflow.multiBranch.title'),
       description: t('landing.workflow.multiBranch.description'),
       icon: Building2,
     },
     {
+      id: 'simpleUI',
       title: t('landing.workflow.simpleUI.title'),
       description: t('landing.workflow.simpleUI.description'),
       icon: LayoutDashboard,
     },
     {
+      id: 'fastOnboarding',
       title: t('landing.workflow.fastOnboarding.title'),
       description: t('landing.workflow.fastOnboarding.description'),
       icon: Zap,
     },
     {
+      id: 'secure',
       title: t('landing.workflow.secure.title'),
       description: t('landing.workflow.secure.description'),
       icon: Lock,
     },
     {
+      id: 'loyalty',
       title: t('landing.workflow.loyalty.title'),
       description: t('landing.workflow.loyalty.description'),
       icon: Heart,
     },
     {
+      id: 'mobileApp',
       title: t('landing.workflow.mobileApp.title'),
       description: t('landing.workflow.mobileApp.description'),
       icon: Smartphone,
     },
   ];
+
+  const openFeature = openIndex !== null ? workflowFeatures[openIndex] : null;
 
   return (
     <section
@@ -213,10 +229,23 @@ export const WorkflowSupport = () => {
         {/* 4-column responsive grid of all 12 features */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6 items-stretch">
           {workflowFeatures.map((feature, index) => (
-            <WorkflowFeatureCard key={index} feature={feature} index={index} t={t} />
+            <WorkflowFeatureCard
+              key={feature.id}
+              feature={feature}
+              index={index}
+              onOpen={() => setOpenIndex(index)}
+              t={t}
+            />
           ))}
         </div>
       </div>
+
+      {/* Receipt-style modal preview */}
+      <WorkflowReceiptModal
+        feature={openFeature}
+        index={openIndex ?? 0}
+        onClose={() => setOpenIndex(null)}
+      />
     </section>
   );
 };

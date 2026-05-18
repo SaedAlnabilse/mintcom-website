@@ -2129,6 +2129,106 @@
     },
     "workflow": {
       "badge": "Features",
+      "cardCta": "Open {{title}} preview",
+      "preview": "Preview",
+      "receipt": {
+        "brand": "MINTCOM POS",
+        "subtitle": "Feature receipt",
+        "feature": "Feature",
+        "tryIt": "Try it",
+        "sku": "SKU",
+        "cashier": "Cashier",
+        "total": "Included",
+        "thanks": "Thank you",
+        "tagline": "Built for businesses on the move.",
+        "demo": {
+          "pos": {
+            "espresso": "Espresso",
+            "croissant": "Croissant",
+            "soda": "Soda",
+            "tap": "Tap an item to add",
+            "subtotal": "Subtotal",
+            "taxLine": "Tax 8%",
+            "totalLine": "Total"
+          },
+          "sales": {
+            "cash": "Cash",
+            "card": "Card",
+            "mobile": "Mobile",
+            "tax": "Tax",
+            "subtotal": "Subtotal",
+            "total": "Charged",
+            "via": "via {{m}}"
+          },
+          "staff": {
+            "cashier": "Cashier",
+            "barista": "Barista",
+            "manager": "Manager",
+            "on": "On shift",
+            "off": "Off",
+            "working": "working"
+          },
+          "reporting": {
+            "weekly": "Weekly sales"
+          },
+          "recipe": {
+            "flour": "Flour",
+            "butter": "Butter",
+            "sugar": "Sugar",
+            "margin": "Profit margin"
+          },
+          "ai": {
+            "q1": "What sold best today?",
+            "q2": "Suggest a combo deal",
+            "q3": "Forecast tomorrow",
+            "a1": "Espresso led with 142 cups, up 18% from yesterday.",
+            "a2": "Try a \"Croissant + Latte\" bundle at $5.50 — projects +12% basket.",
+            "a3": "Expect 320–360 orders, peak 9–11 AM. Schedule 2 baristas.",
+            "placeholder": "Pick a prompt above"
+          },
+          "branch": {
+            "downtown": "Downtown",
+            "mall": "Mall",
+            "airport": "Airport",
+            "today": "Today",
+            "staff": "Staff"
+          },
+          "ui": {
+            "light": "Light",
+            "dark": "Dark",
+            "cozy": "Cozy",
+            "compact": "Compact"
+          },
+          "onboard": {
+            "s1": "Add staff member",
+            "s2": "Assign a role",
+            "s3": "Run first sale",
+            "s4": "Ready to go"
+          },
+          "secure": {
+            "c1": "Encrypted backups",
+            "c2": "2-factor auth",
+            "c3": "Role-based access",
+            "c4": "99.9% uptime",
+            "protected": "Protected",
+            "live": "Live"
+          },
+          "loyalty": {
+            "bronze": "Bronze",
+            "silver": "Silver",
+            "gold": "Gold",
+            "tier": "Tier",
+            "redeem": "Redeem",
+            "earn": "Earn 100"
+          },
+          "mobile": {
+            "n1": "New order #4218 — $24.50",
+            "n2": "Daily target reached 🎉",
+            "n3": "Low stock: Espresso beans",
+            "n4": "Sara clocked in"
+          }
+        }
+      },
       "advancedReporting": {
         "description": "Access real-time reports and business insights to track sales, profits, inventory movement, and operational performance across your business.",
         "title": "Advanced Reporting"
