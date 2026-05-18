@@ -53,10 +53,18 @@ export const PricingDownload = () => {
                     className="text-center mb-10 lg:mb-12"
                 >
                     <h2 className="text-5xl lg:text-7xl font-bold font-magilio text-gray-900 dark:text-white mb-6 leading-tight tracking-tight">
-                        {t('landing.pricing.title')}
+                        {t('common.locale') === 'ar' ? (
+                            <>ابدأ <span className="text-mintcom-green">الآن</span></>
+                        ) : (
+                            <>Get <span className="text-mintcom-green">Started</span></>
+                        )}
                     </h2>
                     <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl mx-auto">
-                        {t('landing.pricing.subtitle')}
+                        {t('common.locale') === 'ar' ? (
+                            <>لحظة <span className="text-mintcom-green">"aha"</span> الخاصة بك على بعد دقائق فقط.</>
+                        ) : (
+                            <>Your <span className="text-mintcom-green">"aha"</span> moment is just minutes away.</>
+                        )}
                     </p>
                 </motion.div>
 

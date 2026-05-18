@@ -56,7 +56,11 @@ export const Pricing = () => {
           className="text-center mb-16 lg:mb-24"
         >
           <h2 className="text-5xl lg:text-7xl font-bold font-magilio text-white mb-6 leading-tight tracking-tight">
-            {t('landing.pricing.title')}
+            {t('common.locale') === 'ar' ? (
+              <>ابدأ <span className="text-[#d4ff33]">الآن</span></>
+            ) : (
+              <>Get <span className="text-[#d4ff33]">Started</span></>
+            )}
           </h2>
           <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl mx-auto">
             {t('common.locale') === 'ar' ? (
