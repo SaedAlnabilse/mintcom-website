@@ -3,24 +3,6 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Zap, Settings, Store, Play, Sparkles } from 'lucide-react';
 
-const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
-  return (
-    <span className={className}>
-      {text.split(' ').map((word, i) => {
-        const isMintcom = word.toLowerCase().includes('mintcom');
-        return (
-          <span
-            key={i}
-            className={isMintcom ? 'text-mintcom-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-mintcom-green')}
-          >
-            {word}{' '}
-          </span>
-        );
-      })}
-    </span>
-  );
-};
-
 const FeatureCard = ({ feature, index, t }: { feature: any, index: number, t: any }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const description = feature.description as string;
