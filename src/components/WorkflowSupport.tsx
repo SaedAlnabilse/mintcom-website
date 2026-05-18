@@ -141,6 +141,7 @@ export const WorkflowSupport = () => {
 
   return (
     <section
+      id="features"
       className="py-16 lg:py-24 bg-white dark:bg-[#0f0f0f] overflow-hidden relative"
       dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
     >
