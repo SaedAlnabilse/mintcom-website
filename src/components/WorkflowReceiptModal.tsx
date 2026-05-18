@@ -23,6 +23,8 @@ import {
   Moon,
   type LucideIcon,
 } from 'lucide-react';
+import MintcomLogoGreen from '../assets/green-full-logo.svg';
+import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -264,18 +266,24 @@ const ReportingDemo = ({ t }: { t: any }) => {
     { l: 'S', v: 72 },
   ];
   const total = 4892;
+  const maxBarHeight = 64; // px
   return (
     <div className="space-y-2.5">
-      <div className="flex items-end justify-between gap-1 h-20">
+      <div className="flex items-end justify-between gap-1.5" style={{ height: maxBarHeight + 16 }}>
         {days.map((d, i) => (
-          <div key={i} className="flex-1 flex flex-col items-center gap-1">
+          <div key={i} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
             <motion.div
-              initial={{ height: 0 }}
-              animate={{ height: `${d.v}%` }}
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: 1 }}
               transition={{ delay: i * 0.06, duration: 0.5, ease: 'easeOut' }}
-              className="w-full rounded-t-sm bg-gradient-to-t from-mintcom-green to-mintcom-greenLight"
+              style={{
+                height: `${(d.v / 100) * maxBarHeight}px`,
+                transformOrigin: 'bottom center',
+                width: '100%',
+              }}
+              className="rounded-t-sm bg-gradient-to-t from-mintcom-green to-mintcom-greenLight"
             />
-            <span className="text-[9px] font-mono text-gray-500">{d.l}</span>
+            <span className="text-[9px] font-mono text-gray-500 leading-none">{d.l}</span>
           </div>
         ))}
       </div>
@@ -310,10 +318,11 @@ const RecipeDemo = ({ t }: { t: any }) => {
           </div>
           <div className="h-1.5 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden">
             <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${ing.pct * 2}%` }}
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
               transition={{ delay: idx * 0.1, duration: 0.6 }}
-              className="h-full bg-mintcom-green"
+              style={{ width: `${ing.pct * 2}%`, transformOrigin: 'left center' }}
+              className="h-full bg-mintcom-green rtl:[transform-origin:right_center]"
             />
           </div>
         </div>
@@ -813,11 +822,19 @@ export const WorkflowReceiptModal = ({ feature, index, onClose }: Props) => {
               <div className="relative px-6 pt-6 pb-5 font-barlow">
                 {/* Header */}
                 <div className="text-center">
-                  <div className="inline-flex items-center gap-1.5 text-mintcom-green font-magilio text-xl font-bold tracking-tight">
-                    <Sparkles size={14} />
-                    {t('landing.workflow.receipt.brand', 'MINTCOM POS')}
+                  <div className="inline-flex items-center justify-center">
+                    <img
+                      src={MintcomLogoGreen}
+                      alt={t('landing.workflow.receipt.brand', 'Mintcom')}
+                      className="h-7 w-auto object-contain dark:hidden"
+                    />
+                    <img
+                      src={MintcomLogoWhite}
+                      alt={t('landing.workflow.receipt.brand', 'Mintcom')}
+                      className="hidden h-7 w-auto object-contain dark:block"
+                    />
                   </div>
-                  <div className="text-[10px] uppercase tracking-[0.25em] text-gray-500 mt-0.5">
+                  <div className="text-[10px] uppercase tracking-[0.25em] text-gray-500 mt-2">
                     {t('landing.workflow.receipt.subtitle', 'Feature receipt')}
                   </div>
                 </div>

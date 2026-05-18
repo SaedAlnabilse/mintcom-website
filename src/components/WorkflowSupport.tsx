@@ -50,17 +50,17 @@ const WorkflowFeatureCard = ({ feature, index, onOpen, t }: CardProps) => {
         <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-mintcom-green/10 dark:bg-mintcom-green/15 flex items-center justify-center group-hover:bg-mintcom-green group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-inner">
           <feature.icon size={22} className="text-mintcom-green group-hover:text-white transition-colors duration-500" />
         </div>
-        <h3 className="font-barlow text-gray-900 dark:text-white font-bold text-base mt-2 group-hover:text-mintcom-green transition-colors leading-tight tracking-tight">
+        <h3 className="font-barlow text-gray-900 dark:text-white font-bold text-base mt-1 group-hover:text-mintcom-green transition-colors leading-tight tracking-tight min-h-[2.5rem]">
           {feature.title}
         </h3>
       </div>
 
       <div className="flex-1 flex flex-col justify-between relative z-10">
-        <p className="font-barlow text-gray-600 dark:text-gray-400 text-sm leading-relaxed font-medium line-clamp-3">
+        <p className="font-barlow text-gray-600 dark:text-gray-400 text-sm leading-relaxed font-medium">
           {feature.description}
         </p>
 
-        <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold font-barlow text-mintcom-green self-start">
+        <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold font-barlow text-mintcom-green self-start">
           {t('landing.workflow.preview', 'Preview')}
           <ArrowUpRight size={12} className="rtl:-scale-x-100 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </span>
