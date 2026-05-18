@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { env } from './env';
+import { sanitizeTextPayload } from '../utils/textLimitUtils';
 
 const ESTABLISHMENT_HEADER = 'X-Establishment-Id';
 const SKIP_ESTABLISHMENT_HEADER = 'X-Skip-Establishment-Header';
@@ -104,11 +105,19 @@ const normalizeEstablishmentHeaderError = (error: any) => {
   console.warn('[API] Suppressed raw establishment header validation error');
 };
 
+const shouldSanitizeTextPayload = (url?: string): boolean => {
+  if (!url) return true;
+  return !/(?:\/api)?\/(support|contact)\b/.test(url);
+};
+
 // Request interceptor to add establishment ID and ensure /api prefix
 api.interceptors.request.use(
   (config) => {
     activeRequests++;
     updateLoadingState();
+    if (shouldSanitizeTextPayload(config.url)) {
+      config.data = sanitizeTextPayload(config.data);
+    }
 
     // Ensure all API calls have the /api prefix (except for static files like /uploads, /files)
     if (config.url && !config.url.startsWith('/api') && !config.url.startsWith('/uploads') && !config.url.startsWith('/files') && !config.url.startsWith('http')) {

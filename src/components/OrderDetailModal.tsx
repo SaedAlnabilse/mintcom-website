@@ -413,11 +413,11 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                     <div className="flex flex-col">
                                         <div className="flex items-center gap-2">
                                             <span className={`text-sm font-semibold ${restockItems ? 'text-mintcom-green dark:text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`}>
-                                                {t('reports.restockItems') || 'Restock Items'}
+                                                {t('orders.reports.restockItems')}
                                             </span>
                                         </div>
                                         <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                            {t('reports.restockDescription') || 'Add refunded items back to inventory'}
+                                            {t('orders.reports.restockDescription')}
                                         </span>
                                     </div>
                                     <label className="relative inline-flex cursor-pointer items-center">

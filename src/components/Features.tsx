@@ -155,7 +155,8 @@ export const Features = () => {
           </motion.div>
 
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
-            <SplitText text={t('landing.features.title') + ' ' + t('landing.features.titleHighlight')} />
+            <span className="text-gray-900 dark:text-white">{t('landing.features.title')}</span>{' '}
+            <span className="text-mintcom-green">{t('landing.features.titleHighlight')}</span>
           </h2>
           <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl mx-auto">
             {t('landing.features.subtitle')}

@@ -10,13 +10,13 @@ import { useAuth } from '../context/AuthContext';
 import { useScrollLock } from '../hooks/useScrollLock';
 
 /* -----------------------------------------------------------
-   Navbar — Smooth morphing glass header
-   - Full-width transparent at rest
-   - On scroll: smoothly gains a frosted glass background with
-     a thin bottom highlight line (gradient accent)
-   - Nav links use an animated underline on hover
-   - CTA has a soft glow that pulses subtly
-   - All transitions are 500ms cubic-bezier for buttery feel
+   Navbar — Floating Capsule Design
+   - Centered floating pill that hovers above content
+   - Splits into distinct zones: brand | navigation | actions
+   - Magnetic hover effects on nav items
+   - Gradient border glow on scroll
+   - Micro-interactions with spring physics
+   - Dark mode: inverted luminance with neon accents
 ----------------------------------------------------------- */
 
 export const Navbar = () => {
@@ -25,12 +25,13 @@ export const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const isRtl = t('common.locale') === 'ar';
 
   useScrollLock(isMobileMenuOpen);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 30);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -38,9 +39,9 @@ export const Navbar = () => {
   const navLinks = isAuthenticated
     ? []
     : [
-        { name: t('nav.features'), href: '/#features' },
-        { name: t('nav.pricing'), href: '/#pricing' },
-        { name: t('nav.support'), href: '/support' },
+        { name: t('nav.features'), href: '/#features', id: 'features' },
+        { name: t('nav.pricing'), href: '/#pricing', id: 'pricing' },
+        { name: t('nav.support'), href: '/support', id: 'support' },
       ];
 
   const handleLogout = async () => {
@@ -55,281 +56,326 @@ export const Navbar = () => {
   return (
     <nav
       dir={isRtl ? 'rtl' : 'ltr'}
-      className="fixed inset-x-0 top-0 z-50"
+      className="fixed inset-x-0 top-0 z-50 flex items-start justify-center"
     >
-      {/* Glass background layer — separate element so backdrop-filter is never animated */}
-      <div
-        aria-hidden
-        className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${
-          isMobileMenuOpen
-            ? 'opacity-0'
-            : isScrolled
-            ? 'opacity-100'
-            : 'opacity-0'
-        }`}
-        style={{
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          backgroundColor: 'rgba(255,255,255,0.72)',
+      {/* Floating capsule container */}
+      <motion.div
+        initial={false}
+        animate={{
+          marginTop: isScrolled ? 12 : 16,
+          width: isScrolled ? '92%' : '95%',
         }}
-      />
-      {/* Dark mode glass layer */}
-      <div
-        aria-hidden
-        className={`pointer-events-none absolute inset-0 hidden transition-opacity duration-500 dark:block ${
-          isMobileMenuOpen
-            ? 'opacity-0'
-            : isScrolled
-            ? 'opacity-100'
-            : 'opacity-0'
-        }`}
-        style={{
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          backgroundColor: 'rgba(5,5,5,0.72)',
-        }}
-      />
-      {/* Solid bg when menu is open */}
-      <div
-        aria-hidden
-        className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-200 dark:bg-[#050505] ${
-          isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
-        }`}
-      />
-      {/* Shadow layer */}
-      <div
-        aria-hidden
-        className={`pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-mintcom-green/40 to-transparent transition-opacity duration-500 ${
-          isScrolled && !isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
-        }`}
-      />
-      <div
-        aria-hidden
-        className={`pointer-events-none absolute inset-x-0 -bottom-px h-[20px] transition-opacity duration-500 ${
-          isScrolled && !isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{
-          boxShadow: '0 4px 20px -4px rgba(0,0,0,0.08)',
-        }}
-      />
-
-      <div
-        className={`relative z-10 mx-auto flex max-w-[1280px] items-center justify-between px-4 xs:px-6 md:px-10 ${
-          isScrolled ? 'py-3' : 'py-5'
-        }`}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="relative max-w-[1200px] w-full"
       >
-        {/* Logo */}
-        <Link
-          to="/"
-          className="relative z-[60] flex min-w-0 items-center"
-          onClick={() => {
-            setIsMobileMenuOpen(false);
-            if (window.location.pathname === '/') {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+        {/* Animated gradient border */}
+        <div
+          aria-hidden
+          className={`absolute -inset-[1px] rounded-[20px] transition-opacity duration-700 ${
+            isScrolled ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{
+            background: 'linear-gradient(135deg, #7dc6a2 0%, transparent 40%, transparent 60%, #7dc6a2 100%)',
+            mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            maskComposite: 'exclude',
+            WebkitMaskComposite: 'xor',
+            padding: '1px',
+            borderRadius: '20px',
+          }}
+        />
+
+        {/* Main navbar body */}
+        <div
+          className={`relative rounded-[20px] transition-all duration-500 ${
+            isScrolled
+              ? 'bg-white/80 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)] dark:bg-[#0a0a0a]/80 dark:shadow-[0_8px_40px_-12px_rgba(125,198,162,0.08)]'
+              : 'bg-white/40 dark:bg-[#0a0a0a]/40'
+          }`}
+          style={{
+            backdropFilter: 'blur(20px) saturate(1.8)',
+            WebkitBackdropFilter: 'blur(20px) saturate(1.8)',
           }}
         >
-          <span className="navbar-logo-full min-w-0">
-            <Logo size="lg" className="transition-transform duration-500" />
-          </span>
-          <span className="navbar-logo-icon">
-            <Logo variant="icon" size="lg" className="transition-transform duration-500" />
-          </span>
-        </Link>
-
-        {/* Desktop nav */}
-        <div className="relative z-[60] hidden items-center lg:flex">
-          {!isAuthenticated && (
-            <>
-              <div className="flex items-center">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.name}
-                    to={link.href}
-                    className="group relative px-5 py-2 text-[13px] font-semibold text-gray-500 transition-colors duration-300 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                    onClick={(e) => {
-                      if (
-                        link.href.startsWith('/#') &&
-                        window.location.pathname === '/'
-                      ) {
-                        const el = document.getElementById(link.href.slice(2));
-                        if (el) {
-                          e.preventDefault();
-                          el.scrollIntoView({ behavior: 'smooth' });
-                        }
-                      }
-                    }}
-                  >
-                    {link.name}
-                    {/* Animated underline */}
-                    <span className="absolute inset-x-3 -bottom-0.5 h-[2px] origin-left scale-x-0 rounded-full bg-mintcom-green transition-transform duration-300 ease-out group-hover:scale-x-100" />
-                  </Link>
-                ))}
-              </div>
-
-              <div className="mx-5 h-5 w-[2px] bg-gray-400 dark:bg-white/30" />
-            </>
-          )}
-
-          <div className="flex items-center gap-3">
-            {isAuthenticated ? (
-              <>
-                <Link
-                  to="/support"
-                  className="inline-flex items-center gap-2 rounded-xl border border-gray-200/80 bg-gray-50 px-4 py-2 text-[13px] font-semibold text-gray-700 transition-all duration-300 hover:border-gray-300 hover:bg-white hover:shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10"
-                >
-                  <Headset size={14} />
-                  {t('nav.support')}
-                </Link>
-                <Link
-                  to="/owner"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-mintcom-green px-4 py-2 text-[13px] font-bold text-black shadow-[0_2px_12px_-2px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_4px_20px_-4px_rgba(124,195,159,0.7)]"
-                >
-                  <User size={14} />
-                  {t('nav.dashboard', 'Dashboard')}
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="inline-flex items-center gap-2 rounded-xl bg-rose-50 px-4 py-2 text-[13px] font-semibold text-rose-500 transition-colors duration-300 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20"
-                >
-                  <LogOut size={14} />
-                  {t('nav.logout')}
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="group relative overflow-hidden rounded-xl px-4 py-2 text-[13px] font-semibold text-gray-600 transition-all duration-300 hover:bg-gray-100/70 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/[0.06] dark:hover:text-white"
-                >
-                  {t('nav.login')}
-                  <span className="absolute inset-x-3 bottom-1 h-[2px] origin-left scale-x-0 rounded-full bg-mintcom-green/60 transition-transform duration-300 ease-out group-hover:scale-x-100" />
-                </Link>
-                <Link
-                  to="/signup"
-                  className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-xl bg-mintcom-green px-5 py-2.5 text-[13px] font-bold text-black shadow-[0_2px_12px_-2px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_6px_24px_-4px_rgba(124,195,159,0.7)] active:scale-[0.97]"
-                >
-                  {/* Shine sweep on hover */}
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"
-                  />
-                  <span className="relative">{t('nav.getStarted')}</span>
-                  <ArrowRight
-                    size={14}
-                    className={`relative transition-transform duration-300 ${
-                      isRtl
-                        ? 'rotate-180 group-hover:-translate-x-0.5'
-                        : 'group-hover:translate-x-0.5'
-                    }`}
-                  />
-                </Link>
-              </>
-            )}
-
-            <div className="mx-2 h-4 w-px bg-gray-200 dark:bg-white/10" />
-            <LanguageSwitcher />
-            <ThemeToggle />
-          </div>
-        </div>
-
-        {/* Mobile controls */}
-        <div className="relative z-[60] flex shrink-0 items-center gap-1.5 xs:gap-2 sm:gap-3 lg:hidden">
-          <LanguageSwitcher compact showGlobeIcon={false} buttonClassName="min-h-10 px-3" />
-          <ThemeToggle
-            iconSize={18}
-            className="h-10 w-10 rounded-xl border border-gray-200 bg-gray-50 text-gray-600 hover:text-mintcom-green dark:border-white/10 dark:bg-white/5 dark:text-gray-400 dark:hover:text-mintcom-green"
-          />
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label={
-              isMobileMenuOpen
-                ? t('common.aria.closeMenu')
-                : t('common.aria.openMenu')
-            }
-            aria-expanded={isMobileMenuOpen}
-            aria-controls="mobile-menu"
-            className="flex min-h-10 min-w-10 items-center justify-center rounded-xl p-2 text-gray-900 transition-colors hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
-          >
-            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-            id="mobile-menu"
-            role="navigation"
-            aria-label={t('common.aria.mobileNav')}
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="fixed inset-0 z-50 bg-white dark:bg-[#050505] lg:hidden will-change-[opacity,transform]"
-          >
-            {/* Content — stopPropagation so clicks inside don't close the menu */}
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="flex flex-col items-center px-6 pt-6 sm:px-10"
+          {/* Inner content */}
+          <div className="relative z-10 flex items-center justify-between px-5 py-3 md:px-7">
+            {/* Left zone: Logo */}
+            <Link
+              to="/"
+              className="relative z-[60] flex shrink-0 items-center"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                if (window.location.pathname === '/') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
             >
-              {/* Top bar: logo centered, X on the right */}
-              <div className="flex w-full max-w-sm items-center justify-between mb-12">
-                <div className="w-11" /> {/* Spacer to center logo */}
-                <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Logo size="lg" />
-                </Link>
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-white transition-colors hover:bg-white/20 dark:bg-white/10 dark:text-white"
-                  aria-label={t('common.aria.closeMenu')}
-                >
-                  <X size={22} />
-                </button>
-              </div>
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+              >
+                <span className="navbar-logo-full min-w-0">
+                  <Logo size="lg" className="transition-transform duration-500" />
+                </span>
+                <span className="navbar-logo-icon">
+                  <Logo variant="icon" size="lg" className="transition-transform duration-500" />
+                </span>
+              </motion.div>
+            </Link>
 
-              <div className="w-full max-w-sm space-y-10 pb-20">
-              {!isAuthenticated && (
-                <>
-                  <div className="flex flex-col items-center gap-6">
-                    {navLinks.map((link) => (
-                      <Link
-                        key={link.name}
-                        to={link.href}
-                        onClick={(e) => {
-                          setIsMobileMenuOpen(false);
-                          if (
-                            link.href.startsWith('/#') &&
-                            window.location.pathname === '/'
-                          ) {
-                            const el = document.getElementById(link.href.slice(2));
-                            if (el) {
-                              e.preventDefault();
-                              el.scrollIntoView({ behavior: 'smooth' });
-                            }
+            {/* Center zone: Navigation links */}
+            <div className="relative z-[60] hidden items-center lg:flex">
+              {!isAuthenticated && navLinks.length > 0 && (
+                <div className="relative flex items-center rounded-xl bg-gray-100/70 px-1.5 py-1.5 dark:bg-white/[0.06]">
+                  {/* Animated highlight pill */}
+                  <AnimatePresence>
+                    {hoveredLink && (
+                      <motion.div
+                        layoutId="nav-highlight"
+                        className="absolute inset-y-1.5 rounded-lg bg-white shadow-sm dark:bg-white/10"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+                      />
+                    )}
+                  </AnimatePresence>
+
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.id}
+                      to={link.href}
+                      onMouseEnter={() => setHoveredLink(link.id)}
+                      onMouseLeave={() => setHoveredLink(null)}
+                      className="relative z-10 px-5 py-2 text-[13px] font-semibold text-gray-600 transition-colors duration-200 hover:text-mintcom-green dark:text-gray-400 dark:hover:text-mintcom-green"
+                      onClick={(e) => {
+                        if (
+                          link.href.startsWith('/#') &&
+                          window.location.pathname === '/'
+                        ) {
+                          const el = document.getElementById(link.href.slice(2));
+                          if (el) {
+                            e.preventDefault();
+                            el.scrollIntoView({ behavior: 'smooth' });
                           }
-                        }}
-                        className="font-barlow text-3xl font-bold tracking-tight text-gray-900 transition-colors hover:text-mintcom-green dark:text-white sm:text-4xl"
-                      >
-                        {link.name}
-                      </Link>
-                    ))}
-                  </div>
-                  <div className="h-px w-full bg-gray-100 dark:bg-white/5" />
+                        }
+                      }}
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Right zone: Actions */}
+            <div className="relative z-[60] hidden items-center gap-2 lg:flex">
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to="/support"
+                    className="group inline-flex items-center gap-2 rounded-full border border-gray-200/80 px-4 py-2 text-[13px] font-semibold text-gray-600 transition-all duration-300 hover:border-mintcom-green/30 hover:text-mintcom-green dark:border-white/10 dark:text-gray-300 dark:hover:border-mintcom-green/30 dark:hover:text-mintcom-green"
+                  >
+                    <Headset size={14} className="transition-transform duration-300 group-hover:scale-110" />
+                    {t('nav.support')}
+                  </Link>
+                  <Link
+                    to="/owner"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-mintcom-green to-emerald-400 px-5 py-2.5 text-[13px] font-bold text-white shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_6px_24px_-4px_rgba(124,195,159,0.7)] active:scale-[0.97] dark:from-mintcom-green dark:to-emerald-500"
+                  >
+                    <User size={14} />
+                    {t('nav.dashboard', 'Dashboard')}
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="inline-flex items-center gap-2 rounded-full bg-rose-50 px-4 py-2 text-[13px] font-semibold text-rose-500 transition-all duration-300 hover:bg-rose-100 hover:shadow-sm active:scale-[0.97] dark:bg-rose-500/10 dark:hover:bg-rose-500/20"
+                  >
+                    <LogOut size={14} />
+                    {t('nav.logout')}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="group relative overflow-hidden rounded-full px-4 py-2 text-[13px] font-semibold text-gray-600 transition-all duration-300 hover:text-mintcom-green dark:text-gray-400 dark:hover:text-mintcom-green"
+                  >
+                    <span className="relative z-10 inline-flex items-center gap-1.5">
+                      {t('nav.login')}
+                      <ArrowRight
+                        size={12}
+                        className={`opacity-0 transition-all duration-300 group-hover:opacity-100 ${
+                          isRtl
+                            ? 'translate-x-1 rotate-180 group-hover:translate-x-0'
+                            : '-translate-x-1 group-hover:translate-x-0'
+                        }`}
+                      />
+                    </span>
+                    {/* Subtle underline that grows on hover */}
+                    <span className="absolute inset-x-4 bottom-1.5 h-[2px] origin-left scale-x-0 rounded-full bg-mintcom-green/50 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                  </Link>
+                  <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                  >
+                    <Link
+                      to="/signup"
+                      className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-mintcom-green px-5 py-2.5 text-[13px] font-bold text-black shadow-[0_2px_12px_-2px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_6px_24px_-4px_rgba(124,195,159,0.7)]"
+                    >
+                      {/* Shimmer effect */}
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 ease-out group-hover:translate-x-full"
+                      />
+                      <span className="relative">{t('nav.getStarted')}</span>
+                      <ArrowRight
+                        size={13}
+                        className={`relative transition-transform duration-300 ${
+                          isRtl
+                            ? 'rotate-180 group-hover:-translate-x-0.5'
+                            : 'group-hover:translate-x-0.5'
+                        }`}
+                      />
+                    </Link>
+                  </motion.div>
                 </>
               )}
 
-              <div className="flex flex-col gap-3">
+              {/* Divider */}
+              <div className="mx-2 h-6 w-px bg-gray-200 dark:bg-white/10" />
+
+              {/* Utilities */}
+              <LanguageSwitcher
+                dropdownDirection="down"
+                buttonClassName="rounded-full bg-transparent border-0 hover:bg-gray-100 dark:hover:bg-white/[0.06] px-3 py-2"
+              />
+              <ThemeToggle
+                dropdownDirection="down"
+                iconSize={17}
+                className="h-9 w-9 rounded-full border-0 bg-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/[0.06] dark:hover:text-white"
+              />
+            </div>
+
+            {/* Mobile controls */}
+            <div className="relative z-[60] flex shrink-0 items-center gap-1.5 xs:gap-2 sm:gap-3 lg:hidden">
+              <LanguageSwitcher compact showGlobeIcon={false} buttonClassName="min-h-10 px-3 rounded-full" />
+              <ThemeToggle
+                iconSize={18}
+                className="h-10 w-10 rounded-full border border-gray-200 bg-gray-50 text-gray-600 hover:text-mintcom-green dark:border-white/10 dark:bg-white/5 dark:text-gray-400 dark:hover:text-mintcom-green"
+              />
+              <motion.button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label={
+                  isMobileMenuOpen
+                    ? t('common.aria.closeMenu')
+                    : t('common.aria.openMenu')
+                }
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-menu"
+                whileTap={{ scale: 0.9 }}
+                className="flex min-h-10 min-w-10 items-center justify-center rounded-full p-2 text-gray-900 transition-colors hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
+              >
+                <AnimatePresence mode="wait">
+                  {isMobileMenuOpen ? (
+                    <motion.div
+                      key="close"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      <X size={22} />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="menu"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      <Menu size={22} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Mobile menu — full screen overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, clipPath: 'circle(0% at calc(100% - 40px) 40px)' }}
+            animate={{ opacity: 1, clipPath: 'circle(150% at calc(100% - 40px) 40px)' }}
+            exit={{ opacity: 0, clipPath: 'circle(0% at calc(100% - 40px) 40px)' }}
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            id="mobile-menu"
+            role="navigation"
+            aria-label={t('common.aria.mobileNav')}
+            className="fixed inset-0 z-40 bg-white dark:bg-[#050505] lg:hidden"
+          >
+            <div className="flex h-full flex-col items-center justify-center px-8">
+              {/* Nav links */}
+              <div className="flex flex-col items-center gap-8">
+                {!isAuthenticated && navLinks.map((link, index) => (
+                  <motion.div
+                    key={link.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 + index * 0.08, duration: 0.4, ease: 'easeOut' }}
+                  >
+                    <Link
+                      to={link.href}
+                      onClick={(e) => {
+                        setIsMobileMenuOpen(false);
+                        if (
+                          link.href.startsWith('/#') &&
+                          window.location.pathname === '/'
+                        ) {
+                          const el = document.getElementById(link.href.slice(2));
+                          if (el) {
+                            e.preventDefault();
+                            el.scrollIntoView({ behavior: 'smooth' });
+                          }
+                        }
+                      }}
+                      className="font-barlow text-4xl font-black tracking-tight text-gray-900 transition-colors hover:text-mintcom-green dark:text-white sm:text-5xl"
+                    >
+                      {link.name}
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Divider */}
+              {!isAuthenticated && (
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ delay: 0.35, duration: 0.4 }}
+                  className="my-10 h-px w-32 bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:via-white/20"
+                />
+              )}
+
+              {/* Action buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.4 }}
+                className="flex w-full max-w-xs flex-col gap-3"
+              >
                 {isAuthenticated ? (
                   <>
                     <Link
                       to="/support"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex w-full items-center justify-center gap-3 rounded-2xl border border-gray-200 bg-white py-5 text-center text-xl font-black tracking-tight text-gray-900 shadow-sm transition-transform active:scale-95 dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white"
+                      className="flex w-full items-center justify-center gap-3 rounded-2xl border border-gray-200 bg-white py-5 text-center text-lg font-black tracking-tight text-gray-900 shadow-sm transition-transform active:scale-95 dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white"
                     >
                       <Headset size={20} />
                       {t('nav.support')}
@@ -339,7 +385,7 @@ export const Navbar = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex w-full items-center justify-center gap-3 rounded-2xl bg-mintcom-green py-5 text-center text-xl font-black tracking-tight text-black shadow-xl shadow-mintcom-green/30 transition-transform hover:scale-[1.02] active:scale-95"
+                      className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-mintcom-green to-emerald-400 py-5 text-center text-lg font-black tracking-tight text-white shadow-xl shadow-mintcom-green/30 transition-transform hover:scale-[1.02] active:scale-95"
                     >
                       <User size={20} />
                       {t('nav.dashboard', 'Dashboard')}
@@ -349,7 +395,7 @@ export const Navbar = () => {
                         setIsMobileMenuOpen(false);
                         handleLogout();
                       }}
-                      className="flex w-full items-center justify-center gap-3 rounded-2xl bg-rose-50 py-5 text-center text-xl font-black tracking-tight text-rose-500 transition-colors hover:bg-rose-100 active:scale-95 dark:bg-rose-500/10 dark:hover:bg-rose-500/20"
+                      className="flex w-full items-center justify-center gap-3 rounded-2xl bg-rose-50 py-5 text-center text-lg font-black tracking-tight text-rose-500 transition-colors hover:bg-rose-100 active:scale-95 dark:bg-rose-500/10 dark:hover:bg-rose-500/20"
                     >
                       <LogOut size={20} />
                       {t('nav.logout')}
@@ -360,22 +406,20 @@ export const Navbar = () => {
                     <Link
                       to="/login"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full rounded-2xl border-2 border-gray-900 py-5 text-center text-xl font-black tracking-tight text-gray-900 transition-colors dark:border-white dark:text-white"
+                      className="w-full rounded-2xl border-2 border-gray-900 py-4 text-center text-lg font-black tracking-tight text-gray-900 transition-all active:scale-95 dark:border-white dark:text-white"
                     >
                       {t('nav.login')}
                     </Link>
                     <Link
                       to="/signup"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full rounded-2xl bg-mintcom-green py-5 text-center text-xl font-black tracking-tight text-black shadow-xl shadow-mintcom-green/30"
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-mintcom-green py-4 text-center text-lg font-black tracking-tight text-black shadow-xl shadow-mintcom-green/30 transition-all active:scale-95"
                     >
                       {t('nav.getStarted')}
                     </Link>
                   </>
                 )}
-              </div>
-
-            </div>
+              </motion.div>
             </div>
           </motion.div>
         )}

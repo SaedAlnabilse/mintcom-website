@@ -570,7 +570,7 @@ export function OwnerBillingPage() {
                                     type="button"
                                     onClick={() => setNextBillSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
                                     className="inline-flex items-center gap-1 hover:text-mintcom-green transition-colors"
-                                    title={`${toHeaderCase(t('owner.billing.nextBill'))}: ${nextBillSortOrder === 'asc' ? toHeaderCase(t('common.next')) : toHeaderCase(t('sort.latest'))}`}
+                                    title={`${toHeaderCase(t('owner.billing.nextBill'))}: ${nextBillSortOrder === 'asc' ? toHeaderCase(t('common.next')) : toHeaderCase(t('community.sort.latest'))}`}
                                 >
                                     <span>{toHeaderCase(t('owner.billing.nextBill'))}</span>
                                     <ArrowUpDown size={12} />

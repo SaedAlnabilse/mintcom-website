@@ -661,12 +661,12 @@ export function ProductFormModal({
   const hasDraftPreview = !imagePreview && Boolean(draftImagePreview);
   const generationElapsedLabel = `${(generationElapsedMs / 1000).toFixed(2)}s`;
   const generateButtonLabel = isGeneratingImage
-    ? t('products.image.generatingTimed', { defaultValue: `Generating... ${generationElapsedLabel}` })
+    ? t('products.image.generatingTimed', { elapsed: generationElapsedLabel })
     : generatedImageNeedsRefresh
-      ? t('products.image.refresh', { defaultValue: 'Refresh image' })
-      : t('products.image.generate', { defaultValue: 'Generate image' });
+      ? t('products.image.refresh')
+      : t('products.image.generate');
   const imageSourceLabel = imageSource === 'pollinations'
-    ? t('products.image.pollinations', { defaultValue: 'AI' })
+    ? t('products.image.pollinations')
     : imageSource === 'fallback'
       ? t('products.image.freeFallback', { defaultValue: 'Free fallback' })
       : imageSource === 'upload'

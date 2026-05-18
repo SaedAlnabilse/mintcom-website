@@ -4,13 +4,43 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ProductFormModal } from '../ProductFormModal';
 import api from '../../../config/api';
 import * as productImageUtils from '../../../utils/productImage';
+import enTranslations from '../../../i18n/locales/en.json';
 
-const mockT = (key: string, options?: { defaultValue?: string }) => {
+function resolveKey(obj: unknown, key: string): string | undefined {
+  const segments = key.split('.');
+  let current: unknown = obj;
+  for (const segment of segments) {
+    if (current && typeof current === 'object' && segment in (current as Record<string, unknown>)) {
+      current = (current as Record<string, unknown>)[segment];
+    } else {
+      return undefined;
+    }
+  }
+  return typeof current === 'string' ? current : undefined;
+}
+
+function interpolate(template: string, vars?: Record<string, unknown>): string {
+  if (!vars) return template;
+  return template.replace(/\{\{(\w+)\}\}/g, (_, name) => {
+    const value = vars[name];
+    return value === undefined || value === null ? '' : String(value);
+  });
+}
+
+const mockT = (key: string, options?: Record<string, unknown> | string) => {
   if (key === 'common.locale') {
     return 'en';
   }
 
-  return options?.defaultValue || key;
+  const opts = typeof options === 'string' ? { defaultValue: options } : (options || {});
+  const resolved = resolveKey(enTranslations, key);
+  if (resolved !== undefined) {
+    return interpolate(resolved, opts as Record<string, unknown>);
+  }
+  if (typeof opts === 'object' && typeof (opts as { defaultValue?: unknown }).defaultValue === 'string') {
+    return interpolate((opts as { defaultValue: string }).defaultValue, opts as Record<string, unknown>);
+  }
+  return key;
 };
 
 vi.mock('react-router-dom', () => ({
@@ -99,11 +129,11 @@ describe('ProductFormModal image generation', () => {
       />
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/products\.form\.namePlaceholder/i), {
+    fireEvent.change(screen.getByPlaceholderText(/Organic Espresso/i), {
       target: { value: 'Espresso' },
     });
 
-    fireEvent.change(screen.getByPlaceholderText(/common\.zero/i), {
+    fireEvent.change(screen.getAllByPlaceholderText(/^0$/i)[0], {
       target: { value: '350' },
     });
 
@@ -147,11 +177,11 @@ describe('ProductFormModal image generation', () => {
       />
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/products\.form\.namePlaceholder/i), {
+    fireEvent.change(screen.getByPlaceholderText(/Organic Espresso/i), {
       target: { value: 'Organic Espresso' },
     });
 
-    fireEvent.change(screen.getByPlaceholderText(/common\.zero/i), {
+    fireEvent.change(screen.getAllByPlaceholderText(/^0$/)[0], {
       target: { value: '350' },
     });
 
@@ -165,7 +195,7 @@ describe('ProductFormModal image generation', () => {
       expect(screen.getByText('Free fallback')).toBeInTheDocument();
     });
 
-    fireEvent.change(screen.getByPlaceholderText(/products\.form\.namePlaceholder/i), {
+    fireEvent.change(screen.getByPlaceholderText(/Organic Espresso/i), {
       target: { value: 'Organic Latte' },
     });
 

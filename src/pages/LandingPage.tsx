@@ -5,6 +5,7 @@ import { Navbar } from '../components/Navbar';
 import { Hero } from '../components/Hero';
 import { Features } from '../components/Features';
 import { WorkflowSupport } from '../components/WorkflowSupport';
+import { CloudControl } from '../components/CloudControl';
 import { AdminControl } from '../components/AdminControl';
 import { Hardware } from '../components/Hardware';
 import { PricingDownload } from '../components/PricingDownload';
@@ -30,6 +31,7 @@ export const LandingPage = () => {
         <Hero isVideoOpen={isVideoOpen} setIsVideoOpen={setIsVideoOpen} />
         <Features />
         <WorkflowSupport />
+        <CloudControl />
         <AdminControl />
         <PricingDownload />
         <Hardware />

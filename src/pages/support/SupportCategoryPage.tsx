@@ -53,6 +53,9 @@ export const SupportCategoryPage = () => {
       { id: 'gs-6', title: t('support.articles.gs6'),                 excerpt: t('support.articles.gs6_excerpt'), readTime: '5 min',  views: '3.5k' },
       { id: 'gs-7', title: t('support.articles.gs7'),                 excerpt: t('support.articles.gs7_excerpt'), readTime: '8 min',  views: '3.1k' },
       { id: 'gs-8', title: t('support.articles.gs8'),                 excerpt: t('support.articles.gs8_excerpt'), readTime: '4 min',  views: '2.8k' },
+      { id: 'gs-9', title: t('support.articles.gs9'),                 excerpt: t('support.articles.gs9_excerpt'), readTime: '5 min',  views: '2.4k' },
+      { id: 'gs-10', title: t('support.articles.gs10'),               excerpt: t('support.articles.gs10_excerpt'), readTime: '6 min', views: '2.0k' },
+      { id: 'gs-11', title: t('support.articles.gs11'),               excerpt: t('support.articles.gs11_excerpt'), readTime: '7 min', views: '1.8k' },
     ],
     billing: [
       { id: 'bl-1', title: t('support.articles.bl1'),            excerpt: t('support.articles.bl1_excerpt'), readTime: '6 min', views: '4.5k', featured: true },
@@ -63,6 +66,9 @@ export const SupportCategoryPage = () => {
       { id: 'bl-6', title: t('support.articles.bl6'),            excerpt: t('support.articles.bl6_excerpt'), readTime: '3 min', views: '1.8k' },
       { id: 'bl-7', title: t('support.articles.bl7'),            excerpt: t('support.articles.bl7_excerpt'), readTime: '5 min', views: '1.5k' },
       { id: 'bl-8', title: t('support.articles.bl8'),            excerpt: t('support.articles.bl8_excerpt'), readTime: '4 min', views: '1.2k' },
+      { id: 'bl-9', title: t('support.articles.bl9'),            excerpt: t('support.articles.bl9_excerpt'), readTime: '4 min', views: '1.1k' },
+      { id: 'bl-10', title: t('support.articles.bl10'),          excerpt: t('support.articles.bl10_excerpt'), readTime: '5 min', views: '0.9k' },
+      { id: 'bl-11', title: t('support.articles.bl11'),          excerpt: t('support.articles.bl11_excerpt'), readTime: '4 min', views: '0.8k' },
     ],
     technical: [
       { id: 'tc-1',  title: t('support.popularArticles.printer'), excerpt: t('support.articles.tc1_excerpt'),  readTime: '8 min',  views: '5.6k', featured: true },
@@ -75,6 +81,9 @@ export const SupportCategoryPage = () => {
       { id: 'tc-8',  title: t('support.articles.tc8'),            excerpt: t('support.articles.tc8_excerpt'),  readTime: '4 min',  views: '2.1k' },
       { id: 'tc-9',  title: t('support.articles.tc9'),            excerpt: t('support.articles.tc9_excerpt'),  readTime: '5 min',  views: '1.9k' },
       { id: 'tc-10', title: t('support.articles.tc10'),           excerpt: t('support.articles.tc10_excerpt'), readTime: '10 min', views: '1.6k' },
+      { id: 'tc-11', title: t('support.articles.tc11'),           excerpt: t('support.articles.tc11_excerpt'), readTime: '6 min',  views: '1.4k' },
+      { id: 'tc-12', title: t('support.articles.tc12'),           excerpt: t('support.articles.tc12_excerpt'), readTime: '5 min',  views: '1.2k' },
+      { id: 'tc-13', title: t('support.articles.tc13'),           excerpt: t('support.articles.tc13_excerpt'), readTime: '4 min',  views: '1.0k' },
     ],
     features: [
       { id: 'ft-1',  title: t('support.popularArticles.reports'), excerpt: t('support.articles.ft1_excerpt'),  readTime: '12 min', views: '6.2k', featured: true },
@@ -87,6 +96,9 @@ export const SupportCategoryPage = () => {
       { id: 'ft-8',  title: t('support.articles.ft8'),            excerpt: t('support.articles.ft8_excerpt'),  readTime: '6 min',  views: '2.5k' },
       { id: 'ft-9',  title: t('support.articles.ft9'),            excerpt: t('support.articles.ft9_excerpt'),  readTime: '8 min',  views: '2.2k' },
       { id: 'ft-10', title: t('support.articles.ft10'),           excerpt: t('support.articles.ft10_excerpt'), readTime: '5 min',  views: '1.9k' },
+      { id: 'ft-11', title: t('support.articles.ft11'),           excerpt: t('support.articles.ft11_excerpt'), readTime: '5 min',  views: '1.7k' },
+      { id: 'ft-12', title: t('support.articles.ft12'),           excerpt: t('support.articles.ft12_excerpt'), readTime: '5 min',  views: '1.5k' },
+      { id: 'ft-13', title: t('support.articles.ft13'),           excerpt: t('support.articles.ft13_excerpt'), readTime: '7 min',  views: '1.3k' },
     ],
   };
 

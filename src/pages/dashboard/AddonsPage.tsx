@@ -472,7 +472,7 @@ export function AddonsPage() {
           }
           toast.success(t('attributes.messages.groupDeleted'));
         } catch {
-          toast.error(t('attributes.errors.errorDeleting'));
+          toast.error(t('attributes.errors.deleteFailed'));
         }
         setConfirmConfig(prev => ({ ...prev, isOpen: false }));
       },
@@ -519,7 +519,7 @@ export function AddonsPage() {
           );
           toast.success(t('attributes.messages.optionDeleted'));
         } catch {
-          toast.error(t('attributes.errors.errorDeleting'));
+          toast.error(t('attributes.errors.deleteFailed'));
         }
         setConfirmConfig(prev => ({ ...prev, isOpen: false }));
       },
@@ -824,7 +824,7 @@ export function AddonsPage() {
                             setShowSubAttributeModal(true);
                           }}
                           className="w-10 h-10 flex items-center justify-center bg-mintcom-green text-black rounded-xl hover:bg-[#5fa888] transition-all shadow-lg shadow-mintcom-green/20 group active:scale-90"
-                          title={t('attributes.addOption')}
+                          title={t('attributes.list.addOption')}
                         >
                           <Plus size={20} strokeWidth={3} className="transition-transform group-hover:rotate-90" />
                         </button>
@@ -864,7 +864,7 @@ export function AddonsPage() {
                         <button
                           onClick={() => openSubAttributeModal(attr.id)}
                           className="w-8 h-8 flex items-center justify-center bg-mintcom-green text-black rounded-lg hover:bg-[#5fa888] transition-all shadow-md shadow-mintcom-green/10 group active:scale-90"
-                          title={t('attributes.addOption')}
+                          title={t('attributes.list.addOption')}
                         >
                           <Plus size={16} strokeWidth={3} className="transition-transform group-hover:rotate-90" />
                         </button>

@@ -1129,13 +1129,11 @@ export function OwnerEmployeesPage() {
                                 <AlertTriangle size={40} />
                             </div>
                             <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3 leading-tight">
-                                {t('popups.deleteEmployee.title', 'Deactivate Team Member')}
+                                {t('security.modes.deleteEmployee.title')}
                             </h3>
                             <p className="text-gray-500 dark:text-gray-400 text-sm font-bold leading-relaxed max-w-[300px]">
-                                {t('popups.deleteEmployee.warning', {
+                                {t('security.modes.deleteEmployee.warning', {
                                     name: `${employeeToDelete.firstName} ${employeeToDelete.lastName}`.trim(),
-                                    defaultValue:
-                                        'You are about to deactivate "{{name}}". They will lose POS and backoffice access, while their past orders, shifts, and reports remain linked for business records.',
                                 })}
                             </p>
                         </div>

@@ -107,7 +107,7 @@ export function AttributeFormModal({
                         <div className="absolute top-0 right-0 w-48 h-48 bg-mintcom-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                         <div>
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                                {t('attributes.form.title')}
+                                {initialData ? t('attributes.editAttribute') : t('attributes.newAttribute')}
                             </h2>
                         </div>
                         <button

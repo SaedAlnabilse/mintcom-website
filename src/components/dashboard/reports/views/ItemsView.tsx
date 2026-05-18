@@ -585,7 +585,7 @@ export const ItemsView = React.memo(function ItemsView({
                     <AnalyticsEmptyState
                       icon={ShoppingBag}
                       title={t('orders.reports.items.noData')}
-                      description={t('orders.reports.items.totalSales')}
+                      description={t('orders.reports.items.noDataDesc')}
                     />
                   </td>
                 </tr>
@@ -868,7 +868,7 @@ export const ItemsView = React.memo(function ItemsView({
                     <AnalyticsEmptyState
                       icon={ShoppingBag}
                       title={t('orders.reports.items.noData')}
-                      description={t('orders.reports.items.subtitle')}
+                      description={t('orders.reports.items.noDataDesc')}
                       compact
                       className="py-20"
                     />

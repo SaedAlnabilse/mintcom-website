@@ -298,6 +298,40 @@
     @apply text-xs font-medium text-gray-500 dark:text-gray-400;
   }
 
+  .dashboard-card-label,
+  .dashboard-card-value,
+  .dashboard-card-meta,
+  .table-cell,
+  .table-cell-muted {
+    min-width: 0;
+  }
+
+  .dashboard-card-label,
+  .dashboard-card-meta,
+  .table-cell,
+  .table-cell-muted {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .table-cell,
+  .table-cell-muted {
+    white-space: nowrap;
+  }
+
+  .overflow-safe-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .overflow-safe-wrap {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
   /* Fallback for legacy over-spaced labels still used in older dashboard/owner/brand cards */
   body.dashboard-font-unified :where(
     [class*="text-xs"][class*="tracking-widest"],

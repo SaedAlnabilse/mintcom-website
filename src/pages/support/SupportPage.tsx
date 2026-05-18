@@ -71,10 +71,10 @@ export const SupportPage = () => {
   }, []);
 
   const categories = [
-    { id: 'getting-started', icon: Zap,      title: t('support.categories.gettingStarted'), description: t('support.categories.gettingStartedDesc'), articles: 8  },
-    { id: 'billing',         icon: CreditCard,title: t('support.categories.billing'),        description: t('support.categories.billingDesc'),        articles: 8  },
-    { id: 'technical',       icon: Settings,  title: t('support.categories.technical'),      description: t('support.categories.technicalDesc'),      articles: 10 },
-    { id: 'features',        icon: BookOpen,  title: t('support.categories.features'),       description: t('support.categories.featuresDesc'),       articles: 10 },
+    { id: 'getting-started', icon: Zap,      title: t('support.categories.gettingStarted'), description: t('support.categories.gettingStartedDesc'), articles: 11 },
+    { id: 'billing',         icon: CreditCard,title: t('support.categories.billing'),        description: t('support.categories.billingDesc'),        articles: 11 },
+    { id: 'technical',       icon: Settings,  title: t('support.categories.technical'),      description: t('support.categories.technicalDesc'),      articles: 13 },
+    { id: 'features',        icon: BookOpen,  title: t('support.categories.features'),       description: t('support.categories.featuresDesc'),       articles: 13 },
   ];
 
   const allArticles = [
@@ -86,6 +86,9 @@ export const SupportPage = () => {
     { id: 'gs-6', title: t('support.articles.gs6'),                 category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
     { id: 'gs-7', title: t('support.articles.gs7'),                 category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
     { id: 'gs-8', title: t('support.articles.gs8'),                 category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
+    { id: 'gs-9', title: t('support.articles.gs9'),                 category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
+    { id: 'gs-10', title: t('support.articles.gs10'),               category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
+    { id: 'gs-11', title: t('support.articles.gs11'),               category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
     { id: 'bl-1', title: t('support.articles.bl1'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
     { id: 'bl-2', title: t('support.popularArticles.payment'),      category: t('support.categories.billing'),        categoryId: 'billing' },
     { id: 'bl-3', title: t('support.articles.bl3'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
@@ -94,6 +97,9 @@ export const SupportPage = () => {
     { id: 'bl-6', title: t('support.articles.bl6'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
     { id: 'bl-7', title: t('support.articles.bl7'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
     { id: 'bl-8', title: t('support.articles.bl8'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
+    { id: 'bl-9', title: t('support.articles.bl9'),                 category: t('support.categories.billing'),        categoryId: 'billing' },
+    { id: 'bl-10', title: t('support.articles.bl10'),               category: t('support.categories.billing'),        categoryId: 'billing' },
+    { id: 'bl-11', title: t('support.articles.bl11'),               category: t('support.categories.billing'),        categoryId: 'billing' },
     { id: 'tc-1', title: t('support.popularArticles.printer'),      category: t('support.categories.technical'),      categoryId: 'technical' },
     { id: 'tc-2', title: t('support.articles.tc2'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
     { id: 'tc-3', title: t('support.articles.tc3'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
@@ -104,6 +110,9 @@ export const SupportPage = () => {
     { id: 'tc-8', title: t('support.articles.tc8'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
     { id: 'tc-9', title: t('support.articles.tc9'),                 category: t('support.categories.technical'),      categoryId: 'technical' },
     { id: 'tc-10', title: t('support.articles.tc10'),               category: t('support.categories.technical'),      categoryId: 'technical' },
+    { id: 'tc-11', title: t('support.articles.tc11'),               category: t('support.categories.technical'),      categoryId: 'technical' },
+    { id: 'tc-12', title: t('support.articles.tc12'),               category: t('support.categories.technical'),      categoryId: 'technical' },
+    { id: 'tc-13', title: t('support.articles.tc13'),               category: t('support.categories.technical'),      categoryId: 'technical' },
     { id: 'ft-1', title: t('support.popularArticles.reports'),      category: t('support.categories.features'),       categoryId: 'features' },
     { id: 'ft-2', title: t('support.articles.ft2'),                 category: t('support.categories.features'),       categoryId: 'features' },
     { id: 'ft-3', title: t('support.articles.ft3'),                 category: t('support.categories.features'),       categoryId: 'features' },
@@ -114,6 +123,9 @@ export const SupportPage = () => {
     { id: 'ft-8', title: t('support.articles.ft8'),                 category: t('support.categories.features'),       categoryId: 'features' },
     { id: 'ft-9', title: t('support.articles.ft9'),                 category: t('support.categories.features'),       categoryId: 'features' },
     { id: 'ft-10', title: t('support.articles.ft10'),               category: t('support.categories.features'),       categoryId: 'features' },
+    { id: 'ft-11', title: t('support.articles.ft11'),               category: t('support.categories.features'),       categoryId: 'features' },
+    { id: 'ft-12', title: t('support.articles.ft12'),               category: t('support.categories.features'),       categoryId: 'features' },
+    { id: 'ft-13', title: t('support.articles.ft13'),               category: t('support.categories.features'),       categoryId: 'features' },
   ];
 
   const searchResults = searchQuery.trim() === ''
@@ -312,7 +324,7 @@ export const SupportPage = () => {
                 {/* bottom strip */}
                 <div className="mt-5 flex items-center gap-2 rounded-xl bg-mintcom-green/8 p-3 dark:bg-mintcom-green/10">
                   <HelpCircle size={15} className="text-mintcom-green" />
-                  <p className="text-xs font-medium text-mintcom-green">36 articles ready to help</p>
+                  <p className="text-xs font-medium text-mintcom-green">48 articles ready to help</p>
                 </div>
               </div>
               {/* decorative floating pill */}

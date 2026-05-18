@@ -65,6 +65,33 @@ i18n
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
     },
+    saveMissing: import.meta.env?.DEV === true,
+    parseMissingKeyHandler: (key) => {
+      // Last-resort fallback so users never see a raw "a.b.c" key in production.
+      // The `validate:locales` script catches missing keys at build time so this
+      // path should normally not be hit. If it is, we humanize the leaf segment
+      // (e.g. "orders.reports.items.totalSales" -> "Total sales") and log loudly
+      // in development so the bug is fixed before shipping.
+      if (typeof key !== 'string') return '';
+      const leaf = key.includes('.') ? key.split('.').pop() || key : key;
+      const humanized = leaf
+        .replace(/[_-]+/g, ' ')
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const sentence = humanized
+        ? humanized.charAt(0).toUpperCase() + humanized.slice(1).toLowerCase()
+        : key;
+      if (import.meta.env?.DEV === true && typeof console !== 'undefined') {
+        console.error(`[i18n] Missing translation key: "${key}". Falling back to "${sentence}".`);
+      }
+      return sentence;
+    },
+    missingKeyHandler: (lngs, _ns, key) => {
+      if (import.meta.env?.DEV === true && typeof console !== 'undefined') {
+        console.error(`[i18n] Missing key "${key}" for languages: ${lngs.join(', ')}`);
+      }
+    },
   });
 
 // Update document direction when language changes

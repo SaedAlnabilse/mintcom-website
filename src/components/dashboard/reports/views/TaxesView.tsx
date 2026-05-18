@@ -178,8 +178,8 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                     <td colSpan={5} className="px-6 py-14">
                       <AnalyticsEmptyState
                         icon={Scale}
-                        title={t('orders.reports.taxes.details')}
-                        description={t('orders.reports.peakHours.noDataDesc')}
+                        title={t('orders.reports.taxes.noData')}
+                        description={t('orders.reports.taxes.noDataDesc')}
                         compact
                       />
                     </td>
@@ -212,15 +212,15 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
               {/* Mock list of exemptions or actual data if available */}
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-gray-500">{t('orders.reports.taxes.resaleCertificates')}</span>
-                <span className="font-bold text-gray-900 dark:text-white">—</span>
+                <span className="font-bold text-gray-900 dark:text-white">ï¿½</span>
               </div>
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-gray-500">{t('orders.reports.taxes.nonProfit')}</span>
-                <span className="font-bold text-gray-900 dark:text-white">—</span>
+                <span className="font-bold text-gray-900 dark:text-white">ï¿½</span>
               </div>
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-gray-500">{t('orders.reports.taxes.govEntities')}</span>
-                <span className="font-bold text-gray-900 dark:text-white">—</span>
+                <span className="font-bold text-gray-900 dark:text-white">ï¿½</span>
               </div>
             </div>
           </div>

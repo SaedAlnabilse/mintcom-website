@@ -13,6 +13,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { PwaUpdatePrompt } from './components/PwaUpdatePrompt';
 import { env } from './config/env';
 import { usePreventNumberInputScroll } from './hooks/usePreventNumberInputScroll';
+import { useTextInputLimits } from './hooks/useTextInputLimits';
 
 // ============================================================================
 // Eager Imports (Critical path - always needed)
@@ -700,6 +701,7 @@ const router = createBrowserRouter([
 // ============================================================================
 function App() {
   usePreventNumberInputScroll();
+  useTextInputLimits();
 
   // Listen for permission-denied events from API interceptor
   useEffect(() => {
