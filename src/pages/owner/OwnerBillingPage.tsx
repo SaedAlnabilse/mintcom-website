@@ -8,7 +8,6 @@ import { SecurityVerificationModal } from '../../components/SecurityVerification
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Pagination } from '../../components/ui';
-import { formatCurrencyCode, formatCompactCurrencyCode } from '../../utils/currency';
 import { StatValue } from '../../components/ui/StatValue';
 
 interface SavedCard {
@@ -71,10 +70,6 @@ export function OwnerBillingPage() {
     const [nextBillSortOrder, setNextBillSortOrder] = useState<'asc' | 'desc'>('asc');
 
     const { refreshEstablishments } = useAuth();
-    const formatUsd = (amount: number, fractionDigits = 2) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
-        minimumFractionDigits: fractionDigits,
-        maximumFractionDigits: fractionDigits,
-    });
 
     const fetchBillingInfo = useCallback(async (silent = false) => {
         try {

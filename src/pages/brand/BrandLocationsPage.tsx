@@ -30,7 +30,6 @@ import type { DatePeriod } from '../../utils/datePeriods';
 import { LinkLocationModal } from '../../components/LinkLocationModal';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder } from '../../utils/textCase';
-import { formatCurrencyCode } from '../../utils/currency';
 import { StatValue } from '../../components/ui/StatValue';
 
 interface LocationStats {
@@ -304,12 +303,7 @@ export function BrandLocationsPage() {
         }
     };
 
-    const formatCurrency = (value: number) => {
-        return formatCurrencyCode(value, 'USD', t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        });
-    };
+
 
     const clearFilters = () => {
         setSearchQuery('');

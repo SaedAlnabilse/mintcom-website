@@ -15,7 +15,6 @@ import {
 import {
     Area,
     ComposedChart,
-    Bar,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -27,7 +26,7 @@ import { useAuth } from '../../context/AuthContext';
 import { SingleSelect } from '../../components/SingleSelect';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CustomTimePicker } from '../../components/CustomTimePicker';
-import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput, getDatePeriodLabel } from '../../utils/datePeriods';
+import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatCurrencyCode } from '../../utils/currency';
@@ -142,7 +141,7 @@ export function OwnerOverviewPage() {
                             <div className={`flex-none w-full xl:w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-mintcom-green/5 border-mintcom-green ring-1 ring-mintcom-green shadow-lg shadow-mintcom-green/10' : 'border-transparent'}`}>
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
-                                    onChange={(val) => setQuickDate(val || 'today')}
+                                    onChange={(val) => setQuickDate((val || 'today') as DatePeriod)}
                                     options={DATE_PERIOD_OPTIONS}
                                     showAllOption={false}
                                     placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}

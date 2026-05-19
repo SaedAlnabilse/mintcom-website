@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,6 @@ import {
     BarChart3,
     Target,
     Award,
-    ArrowRight,
     ChevronRight,
     Globe,
 } from 'lucide-react';
@@ -168,15 +167,7 @@ export function BrandDashboardPage() {
         });
     };
 
-    const formatNumber = (value: number) => {
-        const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
-        if (value >= 1000000) {
-            return `${(value / 1000000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
-        } else if (value >= 1000) {
-            return `${(value / 1000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}K`;
-        }
-        return value.toLocaleString(locale);
-    };
+
 
     const formatCurrency = (value: number) => {
         const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
@@ -612,7 +603,7 @@ export function BrandDashboardPage() {
                                         dataKey="value"
                                         animationDuration={1500}
                                     >
-                                        {categoryBreakdown.slice(0, 6).map((entry, index) => (
+                                        {categoryBreakdown.slice(0, 6).map((_entry, index) => (
                                             <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} stroke="none" />
                                         ))}
                                     </Pie>

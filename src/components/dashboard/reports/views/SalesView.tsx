@@ -26,8 +26,7 @@ import { StatValue } from '../../../../components/ui/StatValue';
 
 const COLORS = ['#7dc6a2', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
-const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
-  const { t } = useTranslation();
+const CurrencyAmount = ({ amount, size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, size?: string, color?: string }) => {
   const { currencySymbol } = useCurrency();
   return (
     <StatValue 

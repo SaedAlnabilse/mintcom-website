@@ -1,6 +1,5 @@
 import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -15,11 +14,9 @@ import {
   MapPin,
   Trash2,
   Edit2,
-  History,
   Award,
   X,
   ShoppingBag,
-  Calendar,
   MoreVertical,
   Download,
   Eye
@@ -928,10 +925,11 @@ export function CustomersPage() {
       <SecurityVerificationModal
         isOpen={showSecurityModal}
         onClose={() => setShowSecurityModal(false)}
-        onVerify={onSecurityVerify}
+        onSuccess={onSecurityVerify}
         onError={handleSecurityError}
-        action="delete_customer"
+        mode="delete-customer"
         targetId={selectedCustomer?.id || ''}
+        targetName={selectedCustomer?.name || ''}
       />
     </div>
   );

@@ -3288,14 +3288,7 @@
     "title": "عرض طلبات العملاء"
   },
   "owner": {
-    "overview": {
-      "totalBrands": "إجمالي العلامات التجارية",
-      "revenueTrend": "اتجاة الإيرادات",
-      "consolidatedPerf": "الأداء الموحد عبر المواقع",
-      "noData": "لا تتوجد بيانات متاحة للفترة المختارة",
-      "activeLocations": "المواقع النشطة",
-      "totalStaff": "إجمالي الموظفين"
-    },
+
     "account": {
       "about": "حول",
       "accountRestored": "تم استعادة الحساب بنجاح",
@@ -3713,7 +3706,11 @@
       "totalProfit": "إجمالي الربح",
       "totalRevenue": "إجمالي الإيرادات",
       "totalSales": "إجمالي المبيعات",
-      "totalStaff": "إجمالي الموظفين"
+      "totalStaff": "إجمالي الموظفين",
+      "totalBrands": "إجمالي العلامات التجارية",
+      "revenueTrend": "اتجاه الإيرادات",
+      "consolidatedPerf": "الأداء الموحد عبر المواقع",
+      "noData": "لا تتوفر بيانات للفترة المختارة"
     },
     "roles": {
       "actions": "إجراءات",

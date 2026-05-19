@@ -27,7 +27,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { Pagination, SelectInput } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { QuickInfo } from '../../components/QuickInfo';
-import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
+import { formatInputPlaceholder } from '../../utils/textCase';
 
 interface SubAttribute {
   id: string;
@@ -1106,7 +1106,7 @@ export function AddonsPage() {
                     </label>
                     <input
                       name="addon-option-name"
-                      maxLength={TEXT_INPUT_LIMITS.SUB_ATTRIBUTE_NAME}
+                      maxLength={TEXT_INPUT_LIMITS.ATTRIBUTE_NAME}
                       type="text"
                       value={subAttributeForm.name}
                       onChange={(e) => {

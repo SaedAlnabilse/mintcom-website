@@ -1,10 +1,7 @@
-import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 
 export function ComingSoonPage() {
-  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center relative overflow-hidden font-barlow selection:bg-[#7dc6a2]/30">

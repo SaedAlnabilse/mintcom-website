@@ -30,6 +30,7 @@ import { SearchInput, SelectInput, Pagination } from '../../components/ui';
 import { PortalDropdown } from '../../components/PortalDropdown';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputLabel, formatInputPlaceholder } from '../../utils/textCase';
+import { StatValue } from '../../components/ui/StatValue';
 
 interface EmployeeAssignment {
     establishmentId: string;

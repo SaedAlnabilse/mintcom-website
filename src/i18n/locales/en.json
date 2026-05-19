@@ -3285,14 +3285,7 @@
     "title": "View Customer Orders"
   },
   "owner": {
-    "overview": {
-      "totalBrands": "Total Brands",
-      "revenueTrend": "Revenue Trend",
-      "consolidatedPerf": "Consolidated Performance Across Locations",
-      "noData": "No data available for the selected period",
-      "activeLocations": "Active Locations",
-      "totalStaff": "Total Staff"
-    },
+
     "account": {
       "about": "About",
       "accountRestored": "Your account has been restored successfully",
@@ -3710,7 +3703,11 @@
       "totalProfit": "Total Profit",
       "totalRevenue": "Total Revenue",
       "totalSales": "Total Sales",
-      "totalStaff": "Total Staff"
+      "totalStaff": "Total Staff",
+      "totalBrands": "Total Brands",
+      "revenueTrend": "Revenue Trend",
+      "consolidatedPerf": "Consolidated Performance Across Locations",
+      "noData": "No data available for the selected period"
     },
     "roles": {
       "actions": "Actions",
