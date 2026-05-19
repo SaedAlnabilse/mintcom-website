@@ -697,10 +697,16 @@ const MobileDemo = ({ t }: { t: any }) => {
 // Faux barcode (CSS only)
 const Barcode = ({ seed }: { seed: string }) => {
   const bars = useMemo(() => {
-    let h = 0;
-    for (let i = 0; i < seed.length; i += 1) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+    const hashBar = (index: number) => {
+      let hash = index + 1;
+      for (let i = 0; i < seed.length; i += 1) {
+        hash = Math.imul(hash ^ seed.charCodeAt(i), 1103515245) + 12345;
+      }
+      return hash >>> 0;
+    };
+
     return Array.from({ length: 38 }, (_, i) => {
-      h = (h * 1103515245 + 12345) & 0x7fffffff;
+      const h = hashBar(i);
       const w = 1 + (h % 4);
       const tall = (h >> 4) % 5 !== 0;
       return { key: i, w, tall };

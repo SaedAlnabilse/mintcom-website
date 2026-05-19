@@ -239,8 +239,8 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
           <div className="p-3 bg-gray-50 dark:bg-white/[0.02] border-t border-gray-100 dark:border-white/5">
             <p className="text-center text-xs text-gray-400">
               {t('support.qa.needMoreHelp')}{' '}
-              <a href="mailto:support@mintcompos.com" className="text-indigo-500 font-medium hover:underline">
-                support@mintcompos.com
+              <a href="mailto:info@mintcompos.com" className="text-indigo-500 font-medium hover:underline">
+                info@mintcompos.com
               </a>
             </p>
           </div>

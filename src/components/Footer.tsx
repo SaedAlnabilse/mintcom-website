@@ -104,7 +104,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
             <div className="flex items-center gap-6">
               <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <Mail size={14} className="text-mintcom-green" />
-                <span dir="ltr">support@mintcompos.com</span>
+                <span dir="ltr">info@mintcompos.com</span>
               </span>
               <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <Phone size={14} className="text-mintcom-green" />
@@ -143,11 +143,11 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
                 {/* Contact info below social icons */}
                 <div className="flex flex-col gap-2 pt-1">
                   <a
-                    href="mailto:support@mintcompos.com"
+                    href="mailto:info@mintcompos.com"
                     className="group flex items-center gap-2 text-[13px] text-gray-500 transition-colors hover:text-mintcom-green dark:text-gray-400"
                   >
                     <Mail size={13} className="shrink-0 text-mintcom-green" />
-                    <span dir="ltr">support@mintcompos.com</span>
+                    <span dir="ltr">info@mintcompos.com</span>
                   </a>
                   <a
                     href="tel:+96279XXXXXXX"

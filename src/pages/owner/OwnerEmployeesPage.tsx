@@ -69,7 +69,7 @@ const MAX_EMPLOYEES_PER_ACCOUNT = 50;
 const MAX_DELETE_PASSWORD_ATTEMPTS = 3;
 const EMPLOYEE_LIMIT_POPUP_MESSAGE =
     `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
-    `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact Mintcom support at support@mintcompos.com with your account email. Never send your password to support.`;
+    `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact Mintcom support at info@mintcompos.com with your account email. Never send your password to support.`;
 
 const getDisplayInitial = (firstName?: string, username?: string) =>
     (firstName?.trim()?.charAt(0) || username?.trim()?.charAt(0) || '?').toUpperCase();

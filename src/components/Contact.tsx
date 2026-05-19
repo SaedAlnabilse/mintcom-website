@@ -6,24 +6,6 @@ import { Send, Mail, Phone, CheckCircle2, Loader2 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 
-const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
-  return (
-    <span className={className}>
-      {text.split(' ').map((word, i) => {
-        const isMintcom = word.toLowerCase().includes('mintcom');
-        return (
-          <span
-            key={i}
-            className={isMintcom ? 'text-mintcom-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-mintcom-green')}
-          >
-            {word}{' '}
-          </span>
-        );
-      })}
-    </span>
-  );
-};
-
 export const Contact = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,15 +51,17 @@ export const Contact = () => {
             {/* Contact Info Sidebar */}
             <div className="lg:w-2/5 bg-gray-100 dark:bg-gray-900 p-8 sm:p-12 lg:p-16 relative overflow-hidden flex flex-col justify-between">
               <div className="relative z-10">
-                <h2 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
-                  <SplitText text={t('landing.contact.title') + ' ' + t('landing.contact.titleHighlight')} />
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-tight tracking-tight">
+                  <span className="text-mintcom-green">{t('landing.contact.title')}</span>
+                  {' '}
+                  <span className="text-gray-900 dark:text-white">{t('landing.contact.titleHighlight')}</span>
                 </h2>
                 <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
                   {t('landing.contact.subtitle')}
                 </p>
                 <div className="space-y-8">
                   {[
-                    { icon: Mail, label: t('common.email'), value: 'support@mintcompos.com', color: 'text-mintcom-green' },
+                    { icon: Mail, label: t('common.email'), value: 'info@mintcompos.com', color: 'text-mintcom-green' },
                     { icon: Phone, label: t('common.phone'), value: '+962 7XXXXXXXX', color: 'text-mintcom-green' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-4 group">

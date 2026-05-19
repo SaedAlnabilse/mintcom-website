@@ -474,7 +474,7 @@ Offline best practices:
 
 ## 14. Support, Security, and Troubleshooting
 
-Support email: `support@mintcompos.com`
+Support email: `info@mintcompos.com`
 
 Security reports: `admin@mintcompos.com`
 

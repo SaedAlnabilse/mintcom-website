@@ -1,6 +1,6 @@
 import { env } from './env';
 
-const DEFAULT_SUPPORT_ADMIN_EMAILS = ['support@mintcompos.com'];
+const DEFAULT_SUPPORT_ADMIN_EMAILS = ['info@mintcompos.com'];
 
 export const SUPPORT_ADMIN_EMAILS = (
   env.VITE_SUPPORT_ADMIN_EMAILS

@@ -1,5 +1,5 @@
 Contact: mailto:admin@mintcompos.com
-Contact: mailto:support@mintcompos.com
+Contact: mailto:info@mintcompos.com
 Policy: https://mintcompos.com/legal/privacy
 Preferred-Languages: en, ar
 Canonical: https://mintcompos.com/.well-known/security.txt

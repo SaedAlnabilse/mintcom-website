@@ -625,7 +625,7 @@ export const CloudControl = () => {
               </span>
             </motion.div>
 
-            <h2 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.15] rtl:leading-[1.3] tracking-tight">
+            <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold font-magilio mb-6 leading-tight tracking-tight">
               <span className="text-gray-900 dark:text-white">In-Sync </span>
               <span className="text-mintcom-green">Cloud Control</span>
               <span className="block text-gray-900 dark:text-white mt-2">

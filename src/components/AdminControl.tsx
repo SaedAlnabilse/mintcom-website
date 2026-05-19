@@ -245,10 +245,22 @@ export const AdminControl = () => {
               </span>
             </motion.div>
 
-            <h2 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 tracking-tight">
+            <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold font-magilio mb-6 leading-tight tracking-tight">
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.admin.title1')} /></span>
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.admin.title2')} /></span>
-              <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.admin.title3')} /></span>
+              <span className="block leading-[1.1] rtl:leading-[1.2]">
+                {(() => {
+                  const words = t('landing.admin.title3').split(' ');
+                  return words.map((word, i) => (
+                    <span
+                      key={i}
+                      className={i === 0 ? 'text-gray-900 dark:text-white' : 'text-mintcom-green'}
+                    >
+                      {word}{i < words.length - 1 ? ' ' : ''}
+                    </span>
+                  ));
+                })()}
+              </span>
             </h2>
 
 

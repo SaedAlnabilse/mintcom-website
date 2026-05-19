@@ -136,9 +136,17 @@ const WorkflowFeatureModal = ({
   const handleDragEnd = (_e: unknown, info: PanInfo) => {
     const threshold = 80;
     if (info.offset.x < -threshold) {
-      isRtl ? onPrev() : onNext();
+      if (isRtl) {
+        onPrev();
+      } else {
+        onNext();
+      }
     } else if (info.offset.x > threshold) {
-      isRtl ? onNext() : onPrev();
+      if (isRtl) {
+        onNext();
+      } else {
+        onPrev();
+      }
     }
   };
 
@@ -434,7 +442,7 @@ export const Features = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12 lg:mb-16 max-w-3xl mx-auto"
+          className="text-center mb-12 lg:mb-16 mx-auto"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -456,12 +464,12 @@ export const Features = () => {
             </span>
           </motion.div>
 
-          <h2 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
+          <h2 className="text-[clamp(1rem,5.2vw,4.5rem)] whitespace-nowrap font-bold font-magilio mb-6 leading-tight tracking-tight">
             <span className="text-gray-900 dark:text-white">{t('landing.workflow.title')} </span>
             <span className="bg-mintcom-green text-gray-900 dark:text-gray-900 px-2 rounded-sm">{t('landing.workflow.titleHighlight')}</span>
           </h2>
           {t('landing.workflow.subtitle') && (
-            <p className="text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
+            <p className="max-w-3xl mx-auto text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
               {t('landing.workflow.subtitle')}
             </p>
           )}

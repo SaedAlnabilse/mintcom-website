@@ -1767,7 +1767,7 @@ export function OnboardingPage() {
                 className="mt-6 text-center"
               >
                 <p className="text-sm text-gray-500">
-                  {t('onboarding.step5.needHelp')} <a href="mailto:support@mintcompos.com" className="text-mintcom-green font-sans font-bold hover:underline">support@mintcompos.com</a>
+                  {t('onboarding.step5.needHelp')} <a href="mailto:info@mintcompos.com" className="text-mintcom-green font-sans font-bold hover:underline">info@mintcompos.com</a>
                 </p>
               </motion.div>
 

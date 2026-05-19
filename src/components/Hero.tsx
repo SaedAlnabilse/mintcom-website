@@ -90,7 +90,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               </span>
             </motion.div>
 
-            <h1 className="mb-6 font-magilio text-[2rem] font-bold tracking-tight xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="mb-6 font-magilio text-4xl font-bold tracking-tight leading-tight sm:text-5xl lg:text-7xl">
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.hero.title1')} /></span>
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.hero.title2')} /></span>
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.hero.title3')} /></span>

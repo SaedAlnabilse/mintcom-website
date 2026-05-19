@@ -120,9 +120,17 @@ const FeatureModal = ({
   const handleDragEnd = (_e: unknown, info: PanInfo) => {
     const threshold = 80;
     if (info.offset.x < -threshold) {
-      isRtl ? onPrev() : onNext();
+      if (isRtl) {
+        onPrev();
+      } else {
+        onNext();
+      }
     } else if (info.offset.x > threshold) {
-      isRtl ? onNext() : onPrev();
+      if (isRtl) {
+        onNext();
+      } else {
+        onPrev();
+      }
     }
   };
 
@@ -429,7 +437,7 @@ export const WhyChooseUs = () => {
             </span>
           </motion.div>
 
-          <h2 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
+          <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold font-magilio mb-6 leading-tight tracking-tight">
             <span className="text-gray-900 dark:text-white">{t('landing.features.title')}</span>{' '}
             <span className="text-mintcom-green">{t('landing.features.titleHighlight')}</span>
           </h2>
