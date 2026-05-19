@@ -31,6 +31,8 @@ import {
     Scale,
     Landmark,
     CreditCard,
+    Library,
+    HelpCircle,
 } from 'lucide-react';
 import api from '../../config/api';
 import { CURRENCIES } from '../../context/CurrencyContext';
@@ -1030,7 +1032,7 @@ export function OwnerAccountManagementPage() {
                         <div className="relative z-10">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                                    <BookOpen className="w-5 h-5 text-blue-500" />
+                                    <Library className="w-5 h-5 text-blue-500" />
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.title')}</h2>
@@ -1096,7 +1098,7 @@ export function OwnerAccountManagementPage() {
                                     className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
-                                        <BookOpen size={20} className="text-purple-500 group-hover/item:scale-110 transition-transform" />
+                                        <HelpCircle size={20} className="text-purple-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
                                         <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.qa.title')}</h4>

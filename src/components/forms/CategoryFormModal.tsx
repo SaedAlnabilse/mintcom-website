@@ -10,6 +10,7 @@ import {
 import { QuickInfo } from '../QuickInfo';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { TEXT_INPUT_LIMITS } from '../../config/textLimits';
 
 // Mapping main app icons (MaterialCommunityIcons) to Lucide equivalents
 export const ICON_MAP: Record<string, React.ElementType> = {
@@ -154,8 +155,6 @@ export function CategoryFormModal({
           </div>
 
           <div className="overflow-y-auto p-6 pt-8 sm:p-8 sm:pt-10 custom-scrollbar flex-1 pb-safe">
-
-
             <form id="category-form" onSubmit={handleSubmit} className="space-y-8">
               {/* Error Banner */}
               {(Object.keys(errors).length > 0 || externalError) && (
@@ -171,7 +170,9 @@ export function CategoryFormModal({
                   {t('categories.form.nameLabel')} <span className="text-mintcom-red">*</span>
                   <QuickInfo text={t('categories.form.nameTip')} />
                 </label>
-                <input maxLength={255}
+                <input
+                  name="category-name"
+                  maxLength={TEXT_INPUT_LIMITS.CATEGORY_NAME}
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
@@ -211,7 +212,6 @@ export function CategoryFormModal({
                   })}
                 </div>
               </div>
-
             </form>
           </div>
 
@@ -276,5 +276,3 @@ export function CategoryFormModal({
     document.body
   );
 }
-
-

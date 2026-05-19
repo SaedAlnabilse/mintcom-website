@@ -11,6 +11,7 @@ import { createPortal } from 'react-dom';
 import { format } from 'date-fns';
 import { getDateLocale } from '../../../../utils/dateLocale';
 import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
+import { StatValue } from '../../../../components/ui/StatValue';
 
 interface ItemsViewProps {
   itemReportData: ItemReportData;
@@ -91,7 +92,9 @@ export const ItemsView = React.memo(function ItemsView({
     const fetchPriceHistory = async () => {
       if (
         itemReportTab !== 'items' &&
-        itemReportTab !== 'modifiers'
+        itemReportTab !== 'categories' &&
+        itemReportTab !== 'modifiers' &&
+        itemReportTab !== 'attributes'
       ) {
         setPriceHistory([]);
         return;
@@ -141,12 +144,11 @@ export const ItemsView = React.memo(function ItemsView({
   }, [itemReportTab, startDate, endDate]);
 
   const formatCurrency = (value: number) => (
-    <span className="inline-flex items-baseline gap-1">
-      <span className="font-bold tracking-tight">
-        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
+    <StatValue 
+      value={value} 
+      currency={currencySymbol} 
+      className="text-sm font-bold"
+    />
   );
 
   const requestSort = (key: string) => {
@@ -171,7 +173,7 @@ export const ItemsView = React.memo(function ItemsView({
     }
 
     if (sortConfig) {
-      items.sort((a, b) => {
+      items.sort((a: any, b: any) => {
         let aValue = a[sortConfig.key];
         let bValue = b[sortConfig.key];
 
@@ -324,10 +326,13 @@ export const ItemsView = React.memo(function ItemsView({
       return '-';
     }
 
-    return `${numericValue.toLocaleString(t('common.locale'), {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })} ${currencySymbol}`;
+    return (
+      <StatValue 
+        value={numericValue} 
+        currency={currencySymbol} 
+        className="text-sm font-bold"
+      />
+    );
   };
 
   const renderHistoryValue = (
@@ -524,7 +529,7 @@ export const ItemsView = React.memo(function ItemsView({
                         <td className="px-8 py-5">
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center font-black text-xs text-gray-500 border border-gray-200 dark:border-white/5 shadow-sm">
-                              {((currentPage - 1) * itemsPerPage + idx + 1).toLocaleString(t('common.locale'))}
+                              <StatValue value={(currentPage - 1) * itemsPerPage + idx + 1} isInteger={true} className="text-xs" />
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name || t('common.unknown')}</span>
@@ -571,7 +576,11 @@ export const ItemsView = React.memo(function ItemsView({
                           </div>
                         </td>
                         <td className="px-8 py-5 text-end font-bold text-gray-700 dark:text-gray-300">
-                          {item.quantity.toLocaleString(t('common.locale'))}
+                          <StatValue 
+                            value={item.quantity} 
+                            isInteger={true}
+                            className="text-sm"
+                          />
                         </td>
                         <td className="px-8 py-5 text-end font-bold text-mintcom-green">
                           {formatCurrency((item.totalSales || item.revenue) || 0)}
@@ -749,19 +758,19 @@ export const ItemsView = React.memo(function ItemsView({
                           </div>
                         )}
                       </div>
-                    )) : (
-                      <div className="py-10 text-center">
-                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                          {historyScope === 'all'
-                            ? t('reports.history.noAllHistory', {
-                                defaultValue: 'No history has been recorded for this item yet.',
-                              })
-                            : t('reports.history.noPeriodHistory', {
-                                defaultValue: 'No changes were recorded for this item in the selected report period.',
-                              })}
-                        </p>
-                      </div>
-                    )}
+                     )) : (
+                       <div className="py-10 text-center">
+                         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                           {historyScope === 'all'
+                             ? t('reports.history.noAllHistory', {
+                                 defaultValue: 'No history has been recorded for this item yet.',
+                               })
+                             : t('reports.history.noPeriodHistory', {
+                                 defaultValue: 'No changes were recorded for this item in the selected report period.',
+                               })}
+                         </p>
+                       </div>
+                     )}
                    </div>
                  </div>
 
@@ -796,99 +805,141 @@ export const ItemsView = React.memo(function ItemsView({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setIsBreakdownModalOpen(false)}
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                className="absolute inset-0"
               />
               <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-2xl rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
+                initial={{ opacity: 0, y: 100, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 100, scale: 0.95 }}
+                className="relative w-full max-w-4xl bg-white dark:bg-[#1E293B] rounded-t-[32px] sm:rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5 flex flex-col max-h-[90vh]"
               >
-                {/* Mobile Drag Handle */}
-                <div className="sm:hidden flex justify-center pt-2 pb-1">
-                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                </div>
                 {/* Header */}
-                <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
-                      <LayoutGrid size={20} />
+                <div className="px-8 py-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
+                      <LayoutGrid size={24} />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                         {selectedCategory?.name}
                       </h3>
-                      <p className="text-xs text-gray-500 mt-0.5">
-                        {t('orders.reports.items.categoryBreakdown')}
+                      <p className="text-xs text-gray-500 mt-1">
+                        {t('orders.reports.items.breakdownTitle', { count: filteredBreakdown.length })}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => setIsBreakdownModalOpen(false)}
-                    className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90"
+                    className="w-12 h-12 rounded-2xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90 shadow-sm"
                   >
-                    <X size={20} />
+                    <X size={24} />
                   </button>
                 </div>
 
-                {/* Content */}
-                <div className="p-6 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
-                  {isFetchingBreakdown ? (
-                    <div className="py-20 flex flex-col items-center justify-center">
-                      <div className="w-10 h-10 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin mb-4" />
-                      <p className="text-sm font-bold text-gray-400">{t('common.loading')}</p>
-                    </div>
-                  ) : filteredBreakdown.length > 0 ? (
-                    <div className="space-y-3">
-                      {filteredBreakdown.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 group hover:border-mintcom-green/30 transition-all"
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 border border-gray-100 dark:border-white/10 shadow-sm group-hover:text-mintcom-green transition-colors">
-                              <ShoppingBag size={18} />
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="font-bold text-gray-900 dark:text-white text-base">{item.itemName || item.name}</span>
-                              <div className="flex items-center gap-2 mt-0.5">
-                                <span className="text-xs font-bold text-gray-400">{item.quantity} {t('orders.reports.items.unitsSold')}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-bold text-mintcom-green text-base">
-                              {formatCurrency((item.totalSales || item.revenue) || 0)}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <AnalyticsEmptyState
-                      icon={ShoppingBag}
-                      title={t('orders.reports.items.noData')}
-                      description={t('orders.reports.items.noDataDesc')}
-                      compact
-                      className="py-20"
+                {/* Filter Bar */}
+                <div className="px-8 py-4 bg-white dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">
+                  <div className="relative">
+                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input maxLength={255}
+                      type="text"
+                      placeholder={t('orders.reports.items.searchPlaceholder', { type: t('orders.reports.items.types.items') })}
+                      value={breakdownSearchQuery}
+                      onChange={(e) => setBreakdownSearchQuery(e.target.value)}
+                      className="w-full pl-12 pr-11 py-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none transition-all focus:ring-2 focus:ring-mintcom-green/20"
                     />
-                  )}
+                    {breakdownSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setBreakdownSearchQuery('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                      >
+                        <X size={12} strokeWidth={2.75} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Table Content */}
+                <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
+                  <table className="w-full">
+                    <thead className="bg-gray-50/50 dark:bg-white/[0.01] sticky top-0 z-10 backdrop-blur-md">
+                      <tr className="border-b border-gray-100 dark:border-white/5">
+                        <th className="px-8 py-4 text-start label-strong font-outfit">{t('orders.reports.items.productName')}</th>
+                        <th className="px-8 py-4 text-end label-strong font-outfit">{t('orders.reports.items.unitsSold')}</th>
+                        <th className="px-8 py-4 text-end label-strong font-outfit">{t('orders.reports.items.grossRevenue')}</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                      {isFetchingBreakdown ? (
+                        [...Array(5)].map((_, i) => (
+                          <tr key={i} className="animate-pulse">
+                            <td className="px-8 py-6"><div className="h-4 bg-gray-100 dark:bg-white/5 rounded w-2/3" /></td>
+                            <td className="px-8 py-6"><div className="h-4 bg-gray-100 dark:bg-white/5 rounded w-1/3 ml-auto" /></td>
+                            <td className="px-8 py-6"><div className="h-4 bg-gray-100 dark:bg-white/5 rounded w-1/3 ml-auto" /></td>
+                          </tr>
+                        ))
+                      ) : filteredBreakdown.length > 0 ? (
+                        filteredBreakdown.map((item, idx) => (
+                          <tr key={idx} className="group hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                            <td className="px-8 py-5">
+                              <div className="flex items-center gap-4">
+                                <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center font-black text-[10px] text-gray-400 border border-gray-100 dark:border-white/5">
+                                  <StatValue value={idx + 1} isInteger={true} className="text-[10px]" />
+                                </div>
+                                <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name || t('common.unknown')}</span>
+                              </div>
+                            </td>
+                            <td className="px-8 py-5 text-end font-bold text-gray-700 dark:text-gray-300">
+                               <StatValue 
+                                value={item.quantity} 
+                                isInteger={true}
+                                className="text-sm"
+                              />
+                            </td>
+                            <td className="px-8 py-5 text-end font-bold text-mintcom-green">
+                              {formatCurrency((item.totalSales || item.revenue) || 0)}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={3} className="py-20 text-center">
+                            <AnalyticsEmptyState
+                              icon={ShoppingBag}
+                              title={t('orders.reports.items.noData')}
+                              description={t('orders.reports.items.noDataDesc')}
+                              compact
+                            />
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-xs font-bold text-gray-400">{t('common.total', 'Total')}:</span>
-                    <span className="text-base font-bold text-gray-900 dark:text-white">
-                      {filteredBreakdown.length} {t('common.items', 'Items')}
-                    </span>
+                <div className="px-8 py-6 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="text-start">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{t('orders.reports.items.totalItems')}</p>
+                      <p className="text-lg font-black text-gray-900 dark:text-white">
+                        <StatValue value={filteredBreakdown.reduce((acc, curr) => acc + curr.quantity, 0)} isInteger={true} className="text-lg" />
+                      </p>
+                    </div>
+                    <div className="w-px h-8 bg-gray-200 dark:bg-white/10" />
+                    <div className="text-start">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{t('orders.reports.items.totalRevenue')}</p>
+                      <p className="text-lg font-black text-mintcom-green">
+                        {formatCurrency(filteredBreakdown.reduce((acc, curr) => acc + (curr.totalSales || curr.revenue || 0), 0))}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-0.5 items-end">
-                    <span className="text-xs font-bold text-gray-400">{t('dashboard.stats.revenue')}:</span>
-                    <span className="text-xl font-bold text-mintcom-green">
-                      {formatCurrency(filteredBreakdown.reduce((acc, curr) => acc + ((curr.totalSales || curr.revenue) || 0), 0))}
-                    </span>
-                  </div>
+                  <button
+                    onClick={() => setIsBreakdownModalOpen(false)}
+                    className="px-8 py-3 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-black font-bold text-sm hover:scale-105 transition-all shadow-lg active:scale-95"
+                  >
+                    {t('common.done')}
+                  </button>
                 </div>
               </motion.div>
             </div>
@@ -899,4 +950,3 @@ export const ItemsView = React.memo(function ItemsView({
     </div>
   );
 });
-

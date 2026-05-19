@@ -31,6 +31,7 @@ import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput, getDatePer
 import type { DatePeriod } from '../../utils/datePeriods';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatCurrencyCode } from '../../utils/currency';
+import { StatValue } from '../../components/ui/StatValue';
 
 interface OverviewStats {
     totalRevenue: number;
@@ -52,63 +53,48 @@ export function OwnerOverviewPage() {
         revenueChange: 0,
         totalProfit: 0,
         profitChange: 0,
-        activeLocations: 1,
-        totalBrands: 1,
+        activeLocations: 0,
+        totalBrands: 0,
         totalEmployees: 0,
         revenueByDay: []
     });
+
     const [chartData, setChartData] = useState<{ name: string; value: number }[]>([]);
-    const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
-    const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
-    const [startTime, setStartTime] = useState('00:00');
-    const [endTime, setEndTime] = useState('23:59');
-    const [selectedDateRange, setSelectedDateRange] = useState<string>('today');
+    const [selectedDateRange, setSelectedDateRange] = useState<DatePeriod>('this_week');
+    const [startDate, setStartDate] = useState<string>(formatDateForInput(calculateDateRange('this_week').start));
+    const [endDate, setEndDate] = useState<string>(formatDateForInput(calculateDateRange('this_week').end));
+    const [startTime, setStartTime] = useState<string>('00:00');
+    const [endTime, setEndTime] = useState<string>('23:59');
 
-    // No longer need manual brands count fetch as it's included in overview-stats
-
-    const setQuickDate = (range: string) => {
-        setSelectedDateRange(range);
-        const { start, end } = calculateDateRange(range as DatePeriod);
-        setStartDate(formatDateForInput(start));
-        setEndDate(formatDateForInput(end));
-        setStartTime('00:00');
-        setEndTime('23:59');
+    const setQuickDate = (period: DatePeriod) => {
+        setSelectedDateRange(period);
+        const range = calculateDateRange(period);
+        setStartDate(formatDateForInput(range.start));
+        setEndDate(formatDateForInput(range.end));
     };
 
     const fetchOverviewStats = useCallback(async () => {
         try {
-            // Map UI filter IDs to API expected parameters
-            // Map UI filter IDs to API expected parameters
-            let query = '';
+            const params = new URLSearchParams();
+            params.append('startDate', `${startDate}T${startTime}:00Z`);
+            params.append('endDate', `${endDate}T${endTime}:59Z`);
 
-            // If using quick selects that map directly to backend presets, we can use them
-            // But strict date/time usage is better for specific checks.
-            // However, existing backend logic supports 'yesterday', '7d', '30d', 'all'.
-            // For now, we will construct custom range query to be precise with the inputs.
+            const response = await api.get(`/owner/overview-stats?${params.toString()}`);
+            const data = response.data;
 
-            // Note: The backend might not support time in the date strings for the simple overview endpoint 
-            // if it expects "YYYY-MM-DD". We will send startDate and endDate as dates.
-            // If the user modified time, we might strictly want to send full ISO. 
-            // Let's assume standard date filtering for overview.
-
-            if (selectedDateRange === 'yesterday') {
-                query = `?range=yesterday`;
-            } else if (selectedDateRange === 'today') {
-                query = `?range=today`;
+            if (data) {
+                setStats({
+                    totalRevenue: data.totalRevenue || 0,
+                    revenueChange: data.revenueChange || 0,
+                    totalProfit: data.totalProfit || 0,
+                    profitChange: data.profitChange || 0,
+                    activeLocations: establishments.length,
+                    totalBrands: data.totalBrands || 0,
+                    totalEmployees: data.totalEmployees || 0,
+                    revenueByDay: data.revenueTrend || []
+                });
+                setChartData(data.revenueTrend || []);
             } else {
-                // For last_30, custom, etc. use explicit dates
-                const startISO = `${startDate}T${startTime}:00`;
-                const endISO = `${endDate}T${endTime}:00`;
-                query = `?range=custom&startDate=${startISO}&endDate=${endISO}`;
-            }
-
-            const response = await api.get(`/api/accounts/overview-stats${query}`);
-
-            if (response.data) {
-                setStats(response.data);
-                setChartData(response.data.revenueByDay || []);
-            } else {
-                // Fallback / Mock for initial state if API is empty
                 setStats({
                     totalRevenue: 0,
                     revenueChange: 0,
@@ -117,13 +103,13 @@ export function OwnerOverviewPage() {
                     activeLocations: establishments.length,
                     totalBrands: 0,
                     totalEmployees: 0,
+                    revenueByDay: []
                 });
                 setChartData([]);
             }
 
         } catch (err) {
             console.error('Failed to fetch overview stats:', err);
-            // Non-blocking error handling for UI
         }
     }, [startDate, endDate, startTime, endTime, selectedDateRange, establishments.length]);
 
@@ -131,25 +117,19 @@ export function OwnerOverviewPage() {
         fetchOverviewStats();
     }, [fetchOverviewStats]);
 
-    const selectedFilterLabel = selectedDateRange === 'custom'
-        ? `${startDate} - ${endDate}`
-        : getDatePeriodLabel(selectedDateRange);
-
     const formatCurrency = (amount: number) => {
         const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
         return formatCurrencyCode(amount, establishments?.[0]?.currency || 'JOD', locale, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
         });
     };
 
     return (
-        <div className="space-y-8 pb-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-            {/* Header */}
+        <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10">
+            {/* Header with Integrated Filter */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
-                    <div className="flex items-center gap-3 mb-2">
-                    </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.overview.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.overview.subtitle', { count: establishments.length, brands: stats.totalBrands })}
@@ -157,11 +137,8 @@ export function OwnerOverviewPage() {
                 </div>
 
                 <div className="flex items-stretch lg:items-center gap-3 w-full lg:w-auto">
-                    {/* Unified Filter Control Deck */}
                     <div className="w-full lg:w-auto bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0">
-
-                            {/* Sector 1: Quick Period Dropdown */}
                             <div className={`flex-none w-full xl:w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-mintcom-green/5 border-mintcom-green ring-1 ring-mintcom-green shadow-lg shadow-mintcom-green/10' : 'border-transparent'}`}>
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
@@ -174,66 +151,53 @@ export function OwnerOverviewPage() {
                                 />
                             </div>
 
-                            {/* Vertical Divider (Desktop) */}
                             <div className="hidden xl:block w-px h-8 bg-gray-100 dark:bg-white/10 mx-3" />
 
-                            {/* Sector 2: Time & Date Controls */}
-                            {(() => {
-                                const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
+                            <div className="flex-1 flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+                                <div className="w-full md:w-auto md:min-w-[240px] relative z-[60]">
+                                    <DateRangePicker
+                                        startDate={startDate}
+                                        endDate={endDate}
+                                        onRangeChange={(start, end) => {
+                                            setStartDate(start);
+                                            setEndDate(end);
+                                            setSelectedDateRange('custom');
+                                        }}
+                                        onClear={() => setQuickDate('today')}
+                                        isActive={selectedDateRange === 'custom'}
+                                        align="left"
+                                        buttonClassName="justify-center md:justify-start"
+                                    />
+                                </div>
 
-                                return (
-                                    <div className="flex-1 flex flex-col md:flex-row gap-4 items-stretch md:items-center">
-                                        {/* Date Input Group */}
-                                        <div className="w-full md:w-auto md:min-w-[240px] relative z-[60]">
-                                            <DateRangePicker
-                                                startDate={startDate}
-                                                endDate={endDate}
-                                                onRangeChange={(start, end) => {
-                                                    setStartDate(start);
-                                                    setEndDate(end);
-                                                    setSelectedDateRange('custom');
-                                                }}
-                                                onClear={() => setQuickDate('today')}
-                                                isActive={selectedDateRange === 'custom'}
-                                                align="left"
+                                <div className="hidden md:block w-px h-6 bg-gray-100 dark:bg-white/10" />
+
+                                <div className={`w-full md:w-auto md:min-w-[180px] relative z-[55]`}>
+                                    <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${startTime !== '00:00' || endTime !== '23:59'
+                                        ? 'bg-mintcom-green/5 border-mintcom-green ring-2 ring-mintcom-green shadow-lg shadow-mintcom-green/10'
+                                        : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-mintcom-green/50'
+                                        }`}>
+                                        <div className="flex items-center gap-2 justify-center md:justify-between relative">
+                                            <CustomTimePicker
+                                                value={startTime}
+                                                onChange={(val) => { setStartTime(val); }}
+                                                className="flex-none"
                                                 buttonClassName="justify-center md:justify-start"
+                                                showIcon={true}
+                                            />
+                                            <span className={`text-xs font-bold transition-colors flex-shrink-0 ${(startTime !== '00:00' || endTime !== '23:59') ? "text-[#7dc6a2]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                                            <CustomTimePicker
+                                                value={endTime}
+                                                onChange={(val) => { setEndTime(val); }}
+                                                className="flex-none"
+                                                buttonClassName="justify-center md:justify-start"
+                                                showIcon={true}
+                                                align="right"
                                             />
                                         </div>
-
-                                        {/* Vertical Divider (Inner) */}
-                                        <div className="hidden md:block w-px h-6 bg-gray-100 dark:bg-white/10" />
-
-                                        {/* Time Input Group */}
-                                        <div className={`w-full md:w-auto md:min-w-[180px] relative z-[55]`}>
-                                            <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
-                                                ? 'bg-mintcom-green/5 border-mintcom-green ring-2 ring-mintcom-green shadow-lg shadow-mintcom-green/10'
-                                                : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-mintcom-green/50'
-                                                }`}>
-                                                <div className="flex items-center gap-2 justify-center md:justify-between relative">
-                                                    <CustomTimePicker
-                                                        value={startTime}
-                                                        onChange={(val) => { setStartTime(val); }}
-                                                        className="flex-none"
-                                                        buttonClassName="justify-center md:justify-start"
-                                                        showIcon={true}
-                                                        isActive={isTimeFiltered}
-                                                    />
-                                                    <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7dc6a2]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
-                                                    <CustomTimePicker
-                                                        value={endTime}
-                                                        onChange={(val) => { setEndTime(val); }}
-                                                        className="flex-none"
-                                                        buttonClassName="justify-center md:justify-start"
-                                                        showIcon={true}
-                                                        align="right"
-                                                        isActive={isTimeFiltered}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
-                                );
-                            })()}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -244,101 +208,114 @@ export function OwnerOverviewPage() {
                 {[
                     {
                         label: t('owner.overview.totalSales'),
-                        value: formatCurrency(stats.totalRevenue),
+                        value: stats.totalRevenue,
                         change: stats.revenueChange,
                         icon: DollarSign,
                         color: 'text-mintcom-green',
                         bg: 'bg-mintcom-green/10',
-                        hideChange: true
+                        isCurrency: true
                     },
                     {
                         label: t('owner.overview.totalProfit'),
-                        value: formatCurrency(stats.totalProfit),
+                        value: stats.totalProfit,
                         change: stats.profitChange,
                         icon: TrendingUp,
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10',
-                        hideChange: true
+                        color: 'text-blue-500',
+                        bg: 'bg-blue-500/10',
+                        isCurrency: true
                     },
                     {
                         label: t('owner.overview.activeLocations'),
                         value: stats.activeLocations,
-                        sub: t('owner.overview.open'),
+                        change: null,
                         icon: Store,
-                        color: 'text-blue-500',
-                        bg: 'bg-blue-500/10'
+                        color: 'text-purple-500',
+                        bg: 'bg-purple-500/10',
+                        isCurrency: false
                     },
                     {
-                        label: t('owner.overview.brands'),
+                        label: t('owner.overview.totalBrands'),
                         value: stats.totalBrands,
-                        sub: t('owner.overview.managed'),
+                        change: null,
                         icon: Building2,
-                        color: 'text-purple-500',
-                        bg: 'bg-purple-500/10'
+                        color: 'text-orange-500',
+                        bg: 'bg-orange-500/10',
+                        isCurrency: false
                     },
                     {
                         label: t('owner.overview.totalStaff'),
-                        value: stats.totalEmployees || '-',
-                        sub: t('owner.overview.total'),
+                        value: stats.totalEmployees,
+                        change: null,
                         icon: Users,
-                        color: 'text-orange-500',
-                        bg: 'bg-orange-500/10'
-                    }
+                        color: 'text-pink-500',
+                        bg: 'bg-pink-500/10',
+                        isCurrency: false
+                    },
                 ].map((stat, i) => (
                     <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 10 }}
+                        key={stat.label}
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
+                        className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm overflow-hidden group relative"
                     >
-                        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-                        <div className="relative z-10 flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
-                                <stat.icon size={24} />
-                            </div>
-                            <div>
-                                <p className="dashboard-stat-title">{stat.label}</p>
-                                <p className="dashboard-card-value text-xl">{stat.value}</p>
-                                {stat.sub && (
-                                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">{stat.sub}</p>
+                        <div className="absolute top-0 end-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-current opacity-5" />
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}>
+                                    <stat.icon size={24} />
+                                </div>
+                                {stat.change !== null && (
+                                    <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
+                                        ? 'bg-mintcom-green/10 text-mintcom-green'
+                                        : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
+                                        }`}>
+                                        {stat.change >= 0 ? '+' : ''}{stat.change}%
+                                    </div>
                                 )}
                             </div>
+                            <p className="dashboard-stat-title mb-1">{stat.label}</p>
+                            <StatValue 
+                                value={stat.value} 
+                                currency={stat.isCurrency ? (establishments?.[0]?.currency || 'JOD') : null}
+                                className="text-2xl"
+                                isInteger={!stat.isCurrency}
+                            />
                         </div>
                     </motion.div>
                 ))}
             </div>
 
-            {/* Main Chart Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+                {/* Revenue Trend */}
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="lg:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm flex flex-col"
+                    className="lg:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm"
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.overview.salesTrends')}</h3>
-                            <p className="card-subtitle">{t('owner.overview.period')}: {selectedFilterLabel}</p>
+                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.overview.revenueTrend')}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('owner.overview.consolidatedPerf')}</p>
                         </div>
-                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5">
-                            <div className="w-2 h-2 rounded-full bg-mintcom-green" />
-                            <span className="text-xs font-medium tracking-wider text-gray-600 dark:text-gray-400">{t('owner.overview.totalRevenue')}</span>
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-mintcom-green" />
+                            <span className="text-xs font-medium text-gray-500">{t('owner.overview.revenue')}</span>
                         </div>
                     </div>
 
-                    <div className="h-[450px] w-full relative flex-1">
-                        {chartData.length > 0 && chartData.some(d => d.value > 0) ? (
+                    <div className="h-[300px] w-full">
+                        {chartData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <ComposedChart data={chartData}>
                                     <defs>
-                                        <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#7dc6a2" stopOpacity={0.2} />
                                             <stop offset="95%" stopColor="#7dc6a2" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" strokeOpacity={0.3} />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" strokeOpacity={0.5} />
                                     <XAxis
                                         dataKey="name"
                                         axisLine={false}
@@ -350,53 +327,33 @@ export function OwnerOverviewPage() {
                                         axisLine={false}
                                         tickLine={false}
                                         tick={{ fill: '#9CA3AF', fontSize: 11 }}
-                                        tickFormatter={(value) => formatCurrencyCode(value, establishments?.[0]?.currency || 'JOD', t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                                        width={80}
-                                        dx={-5}
+                                        tickFormatter={(value) => formatCurrency(value)}
+                                        dx={-10}
                                     />
                                     <Tooltip
-                                        cursor={chartData.length > 1 ? { stroke: '#7dc6a2', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                                         contentStyle={{
-                                            backgroundColor: '#1E293B',
-                                            borderColor: 'rgba(255,255,255,0.05)',
+                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                            borderColor: '#E5E7EB',
                                             borderRadius: '12px',
                                             fontSize: '12px',
-                                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                                            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.1)'
                                         }}
-                                        itemStyle={{ color: '#fff' }}
                                         formatter={(value) => [formatCurrency(value as number), t('owner.overview.revenue')]}
                                     />
-                                    {chartData.length === 1 ? (
-                                        <Bar 
-                                            dataKey="value" 
-                                            fill="url(#revenueGradient)" 
-                                            barSize={60} 
-                                            radius={[8, 8, 0, 0]} 
-                                            animationDuration={1500} 
-                                        />
-                                    ) : (
-                                        <Area
-                                            type="monotone"
-                                            dataKey="value"
-                                            stroke="#7dc6a2"
-                                            strokeWidth={2.5}
-                                            fillOpacity={1}
-                                            fill="url(#revenueGradient)"
-                                        />
-                                    )}
+                                    <Area
+                                        type="monotone"
+                                        dataKey="value"
+                                        stroke="#7dc6a2"
+                                        strokeWidth={4}
+                                        fillOpacity={1}
+                                        fill="url(#colorRevenue)"
+                                    />
                                 </ComposedChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="h-full w-full flex flex-col items-center justify-center">
-                                <div className="w-20 h-20 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-4">
-                                    <Activity size={32} className="text-gray-400 dark:text-gray-500" />
-                                </div>
-                                <h3 className="text-xl font-normal tracking-tight text-gray-900 dark:text-white mb-2">
-                                    {t('owner.overview.noRevenueData')}
-                                </h3>
-                                <p className="text-sm font-normal text-gray-500 text-center">
-                                    {t('owner.overview.noSalesRecorded')}
-                                </p>
+                            <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                                <Activity size={48} strokeWidth={1} className="mb-4 opacity-20" />
+                                <p className="text-sm">{t('owner.overview.noData')}</p>
                             </div>
                         )}
                     </div>
@@ -471,5 +428,3 @@ export function OwnerOverviewPage() {
         </div>
     );
 }
-
-

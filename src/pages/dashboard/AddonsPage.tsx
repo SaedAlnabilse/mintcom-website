@@ -18,6 +18,7 @@ import {
   CheckSquare,
   RotateCcw
 } from 'lucide-react';
+import { TEXT_INPUT_LIMITS } from '../../config/textLimits';
 
 import toast from 'react-hot-toast';
 import api from '../../config/api';
@@ -796,7 +797,7 @@ export function AddonsPage() {
                     </div>
                     <div>
                       <div className="flex items-center gap-3">
-                        <h3 className="font-bold text-gray-900 dark:text-white text-lg">{attr.name}</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white text-lg truncate max-w-[200px] sm:max-w-[300px]">{attr.name}</h3>
                         {attr.isRequired && (
                           <span className="label-strong font-outfit px-2 py-0.5 bg-mintcom-green/10 text-mintcom-green rounded-md border border-mintcom-green/20">{t('attributes.list.mandatory')}</span>
                         )}
@@ -881,7 +882,7 @@ export function AddonsPage() {
                           <div key={sub.id} className="flex items-center justify-between p-4 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 group/sub hover:border-mintcom-green/30 transition-all shadow-sm">
                             <div>
                               <div className="flex items-center gap-2 flex-wrap">
-                                <p className="font-bold text-gray-900 dark:text-white text-base">{sub.name}</p>
+                                <p className="font-bold text-gray-900 dark:text-white text-base truncate max-w-[150px] sm:max-w-[200px]">{sub.name}</p>
                                 <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold ${
                                   isSubAttributeActive(sub)
                                     ? 'bg-mintcom-green/10 text-mintcom-green'
@@ -957,7 +958,9 @@ export function AddonsPage() {
                     <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">
                       {t('attributes.form.groupNameLabel')} <span className="text-mintcom-red">*</span>
                     </label>
-                    <input maxLength={255}
+                    <input
+                      name="addon-group-name"
+                      maxLength={TEXT_INPUT_LIMITS.ATTRIBUTE_NAME}
                       type="text"
                       value={attributeForm.name}
                       onChange={(e) => {
@@ -1073,16 +1076,10 @@ export function AddonsPage() {
               </motion.div>
             </div>
           )}
-        </AnimatePresence>,
-        document.body
-      )}
 
-      {/* Add-on Option Modal */}
-      {createPortal(
-        <AnimatePresence>
           {showSubAttributeModal && (
             <div
-              key="attribute-option-modal-overlay"
+              key="sub-attribute-modal-overlay"
               className="fixed inset-0 z-[10000] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
               dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
             >
@@ -1091,7 +1088,7 @@ export function AddonsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 100 }}
                 transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden h-[92vh] sm:h-auto flex flex-col"
+                className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden h-[92vh] sm:h-auto flex flex-col"
               >
                 <div className="sm:hidden flex justify-center pt-3 pb-1">
                   <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
@@ -1107,43 +1104,40 @@ export function AddonsPage() {
                     <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">
                       {t('attributes.form.optionNameLabel')} <span className="text-mintcom-red">*</span>
                     </label>
-                    <input maxLength={255}
+                    <input
+                      name="addon-option-name"
+                      maxLength={TEXT_INPUT_LIMITS.SUB_ATTRIBUTE_NAME}
                       type="text"
                       value={subAttributeForm.name}
                       onChange={(e) => {
                         setSubAttributeForm({ ...subAttributeForm, name: e.target.value });
                         if (errors.optionName) setErrors({ ...errors, optionName: '' });
                       }}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.optionName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all`}
+                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.optionName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all`}
                       placeholder={formatInputPlaceholder(t('attributes.form.optionNamePlaceholder'), t('common.locale'))}
                     />
                     {errors.optionName && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.optionName}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">{formatInputLabel(t('attributes.form.priceLabel'), t('common.locale'))}</label>
-                    <div className="relative group">
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg">
-                        <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
-                      </div>
-                      <input maxLength={255}
-                        type="text"
-                        inputMode="decimal"
-                        value={subAttributeForm.price === 0 ? '' : subAttributeForm.price.toFixed(2)}
-                        placeholder={formatInputPlaceholder("0.00", t('common.locale'))}
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/\D/g, '');
-                          if (val.length > 19) return;
-                          const numericValue = parseInt(val || '0', 10) / 100;
-                          setSubAttributeForm({ ...subAttributeForm, price: numericValue });
-                        }}                    className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-3.5 text-gray-900 dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+                    <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">
+                      {t('attributes.form.priceLabel')}
+                    </label>
+                    <div className="relative">
+                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold">{currencySymbol}</div>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={subAttributeForm.price}
+                        onChange={(e) => setSubAttributeForm({ ...subAttributeForm, price: Number(e.target.value) })}
+                        className="w-full pl-10 pr-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all"
+                        placeholder="0.00"
                       />
                     </div>
-                    <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle')}</p>
                   </div>
 
                   <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
-                    <div className="flex items-center gap-2">
+                    <div>
                       <p className="text-sm font-medium text-gray-900 dark:text-white tracking-tight">{t('attributes.form.availableLabel')}</p>
                       <QuickInfo text={t('attributes.form.availableTip')} />
                     </div>

@@ -7,6 +7,7 @@ import { useState, useMemo } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
+import { StatValue } from '../../../../components/ui/StatValue';
 
 interface DiscountsViewProps {
   salesData: SalesSummary;
@@ -15,12 +16,18 @@ interface DiscountsViewProps {
 
 export const DiscountsView = React.memo(function DiscountsView({ salesData, isFetching }: DiscountsViewProps) {
   const { t } = useTranslation();
-  const { formatAmount } = useCurrency();
+  const { currencySymbol } = useCurrency();
   const [discountPage, setDiscountPage] = useState(1);
   const itemsPerPage = 10;
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
-  const formatCurrency = (value: number) => formatAmount(value);
+  const formatCurrency = (value: number) => (
+    <StatValue 
+      value={value} 
+      currency={currencySymbol} 
+      className="text-sm font-bold"
+    />
+  );
 
   const requestSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -62,9 +69,11 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
           </div>
           <div>
             <p className="dashboard-stat-title">{t('orders.reports.discounts.totalDiscounted')}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {formatCurrency(salesData.totalDiscounts || 0)}
-            </p>
+            <StatValue 
+              value={salesData.totalDiscounts || 0} 
+              currency={currencySymbol} 
+              className="text-2xl"
+            />
           </div>
         </div>
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300">
@@ -73,9 +82,11 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
           </div>
           <div>
             <p className="dashboard-stat-title">{t('orders.reports.discounts.timesApplied')}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {(salesData.totalDiscountCount || 0).toLocaleString(t('common.locale'))}
-            </p>
+            <StatValue 
+              value={salesData.totalDiscountCount || 0} 
+              className="text-2xl"
+              isInteger={true}
+            />
           </div>
         </div>
       </div>
@@ -129,8 +140,8 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
                       <td className="px-6 py-4 text-start">
                         <span className="font-bold text-gray-900 dark:text-white text-sm">{item.name}</span>
                       </td>
-                      <td className="px-6 py-4 text-center font-bold text-gray-700 dark:text-gray-300">
-                        {item.count.toLocaleString(t('common.locale'))}
+                      <td className="px-6 py-4 text-center font-bold text-gray-700 dark:text-gray-300 flex justify-center">
+                        <StatValue value={item.count} isInteger={true} className="text-sm" />
                       </td>
                       <td className="px-6 py-4 text-center font-black text-orange-500">
                         {formatCurrency(item.value)}
@@ -161,5 +172,3 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
     </div>
   );
 });
-
-

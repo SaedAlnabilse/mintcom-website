@@ -8,30 +8,27 @@ import { useTranslation } from 'react-i18next';
 import { getDateLocale } from '../../../../utils/dateLocale';
 import { Pagination } from '../../../ui';
 import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
+import { StatValue } from '../../../../components/ui/StatValue';
 
 const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
-  const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
   return (
-    <span className={`inline-flex items-baseline gap-1 ${className}`}>
-      <span className={`${size} font-bold ${color} tracking-tight`}>
-        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
+    <StatValue 
+      value={amount} 
+      currency={currencySymbol} 
+      className={`${size} ${color} ${className}`}
+    />
   );
 };
 
 const FormatCurrency = ({ value }: { value: number }) => {
-  const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
   return (
-    <span className="inline-flex items-baseline gap-1">
-      <span className="font-bold tracking-tight">
-        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
+    <StatValue 
+      value={value} 
+      currency={currencySymbol} 
+      className="text-sm"
+    />
   );
 };
 
@@ -77,7 +74,6 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
             <p className="dashboard-stat-title">{t('orders.reports.shifts.cashVariance')}</p>
           </div>
           <div className="flex items-baseline gap-1">
-            {totalVariance > 0 && <span className={`text-2xl font-bold text-amber-500 tracking-tight`}>+</span>}
             <CurrencyAmount 
               amount={totalVariance} 
               color={totalVariance < -0.01 ? 'text-red-500' : totalVariance > 0.01 ? 'text-amber-500' : 'text-mintcom-green'} 
@@ -92,7 +88,11 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
             </div>
             <p className="dashboard-stat-title">{t('dashboard.menu.shiftsReports')}</p>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{shifts.length.toLocaleString(t('common.locale'))}</p>
+          <StatValue 
+            value={shifts.length} 
+            className="text-2xl"
+            isInteger={true}
+          />
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.shifts.activeShifts', { count: activeShiftsCount })}</p>
         </div>
       </div>
@@ -148,7 +148,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                         <span className="font-bold text-mintcom-green">
                           {shift.closingBalance !== null && shift.closingBalance !== undefined
                             ? <FormatCurrency value={shift.closingBalance} />
-                            : '—'}
+                            : '-'}
                         </span>
                       ) : (
                         <span className="label-strong font-outfit">{t('orders.reports.shifts.active')}</span>
@@ -163,7 +163,6 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                               ? 'bg-red-500/10 text-red-500 border-red-500/20'
                               : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
                             }`}>
-                            {shift.discrepancy > 0.001 ? '+' : ''}
                             <CurrencyAmount
                               amount={shift.discrepancy}
                               size="text-[10px]"
@@ -175,7 +174,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                           </span>
                         </div>
                       ) : (
-                        <span className="label-strong font-outfit">—</span>
+                        <span className="label-strong font-outfit">-</span>
                       )}
                     </td>
                     <td className="px-5 py-5 text-center">
@@ -213,5 +212,3 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
     </div>
   );
 });
-
-

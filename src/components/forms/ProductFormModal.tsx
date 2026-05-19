@@ -22,6 +22,7 @@ import { AttributeFormModal } from './AttributeFormModal';
 import { CategoryFormModal } from './CategoryFormModal';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { TEXT_INPUT_LIMITS } from '../../config/textLimits';
 
 
 
@@ -745,7 +746,9 @@ export function ProductFormModal({
                     {t('products.form.nameLabel')} <span className="text-mintcom-red">*</span>
                     <QuickInfo text="Names are used to generate images" />
                   </label>
-                  <input maxLength={255}
+                  <input
+                    name="product-name"
+                    maxLength={TEXT_INPUT_LIMITS.PRODUCT_NAME}
                     type="text"
                     value={name}
                     onChange={(e) => {
@@ -891,7 +894,9 @@ export function ProductFormModal({
                                 <span className="text-gray-400 text-xs font-black">{currencySymbol}</span>
                               </div>
                             </div>
-                            <input maxLength={255}
+                            <input
+                              name="product-cost-price"
+                              maxLength={TEXT_INPUT_LIMITS.AMOUNT}
                               type="text"
                               value={costPrice}
                               onChange={handleCostPriceChange}
@@ -917,7 +922,9 @@ export function ProductFormModal({
                               <span className="text-mintcom-green text-xs font-black">{currencySymbol}</span>
                             </div>
                           </div>
-                          <input maxLength={255}
+                          <input
+                            name="product-price"
+                            maxLength={TEXT_INPUT_LIMITS.AMOUNT}
                             type="text"
                             value={price}
                             onChange={(e) => {
@@ -1007,13 +1014,15 @@ export function ProductFormModal({
                       {t('products.form.descriptionLabel')}
                       <QuickInfo text="Describe your product for customers and employees." />
                     </label>
-                    <span className={`label-strong font-outfit ${description.length >= 30 ? 'text-mintcom-red' : 'text-gray-400'}`}>
-                      {description.length.toLocaleString(t('common.locale'))} / {(30).toLocaleString(t('common.locale'))}
+                    <span className={`label-strong font-outfit ${description.length >= TEXT_INPUT_LIMITS.ITEM_DESCRIPTION ? 'text-mintcom-red' : 'text-gray-400'}`}>
+                      {description.length.toLocaleString(t('common.locale'))} / {TEXT_INPUT_LIMITS.ITEM_DESCRIPTION.toLocaleString(t('common.locale'))}
                     </span>
                   </div>
-                  <textarea maxLength={2000}
+                  <textarea
+                    name="product-description"
+                    maxLength={TEXT_INPUT_LIMITS.ITEM_DESCRIPTION}
                     value={description}
-                    onChange={(e) => setDescription(e.target.value.slice(0, 30))}
+                    onChange={(e) => setDescription(e.target.value.slice(0, TEXT_INPUT_LIMITS.ITEM_DESCRIPTION))}
                     placeholder={formatInputPlaceholder(t('products.form.descriptionPlaceholder'), t('common.locale'))}
                     rows={2}
                     className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all resize-none shadow-sm group-hover:border-mintcom-green/50"
@@ -1339,6 +1348,8 @@ export function ProductFormModal({
                           <span className="text-mintcom-green text-sm">&bull;</span> {t('products.form.inventory.quantity')}
                         </label>
                         <input
+                          name="product-stock"
+                          maxLength={TEXT_INPUT_LIMITS.STOCK}
                           type="number"
                           min="0"
                           value={stock}
@@ -1349,7 +1360,7 @@ export function ProductFormModal({
                           }}
                           onChange={(e) => {
                             let val = e.target.value;
-                            if (val.length > 19) return;
+                            if (val.length > TEXT_INPUT_LIMITS.STOCK) return;
                             
                             // Prevent leading zeros unless it's just "0"
                             if (val.length > 1 && val.startsWith('0')) {
@@ -1379,6 +1390,8 @@ export function ProductFormModal({
                             <span className="text-yellow-500 text-sm">&bull;</span> {t('products.form.inventory.low')}
                           </label>
                           <input
+                            name="product-stock-low"
+                            maxLength={TEXT_INPUT_LIMITS.STOCK}
                             type="number"
                             min="0"
                             value={lowStockYellow}
@@ -1389,7 +1402,7 @@ export function ProductFormModal({
                             }}
                             onChange={(e) => {
                               let val = e.target.value;
-                              if (val.length > 19) return;
+                              if (val.length > TEXT_INPUT_LIMITS.STOCK) return;
 
                               // Prevent leading zeros
                               if (val.length > 1 && val.startsWith('0')) {
@@ -1417,6 +1430,8 @@ export function ProductFormModal({
                             <span className="text-mintcom-red text-sm">&bull;</span> {t('products.form.inventory.veryLow')}
                           </label>
                           <input
+                            name="product-stock-very-low"
+                            maxLength={TEXT_INPUT_LIMITS.STOCK}
                             type="number"
                             min="0"
                             value={lowStockRed}
@@ -1427,7 +1442,7 @@ export function ProductFormModal({
                             }}
                             onChange={(e) => {
                               let val = e.target.value;
-                              if (val.length > 19) return;
+                              if (val.length > TEXT_INPUT_LIMITS.STOCK) return;
 
                               // Prevent leading zeros
                               if (val.length > 1 && val.startsWith('0')) {

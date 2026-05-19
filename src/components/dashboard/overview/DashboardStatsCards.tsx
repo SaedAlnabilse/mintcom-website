@@ -15,6 +15,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { useCurrency } from '../../../context/CurrencyContext';
+import { StatValue } from '../../ui/StatValue';
 
 interface DashboardStats {
   totalRevenue: number;
@@ -229,10 +230,11 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
                 stat.customContent
               ) : (
                 <>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                    {stat.value}
-                    {stat.label.includes(t('dashboard.stats.totalOrders')) || stat.label.includes(t('dashboard.stats.onHold')) ? '' : <span className="text-sm mx-1 text-gray-400 font-black"> {currencySymbol}</span>}
-                  </p>
+                  <StatValue 
+                    value={stat.value} 
+                    currency={stat.label.includes(t('dashboard.stats.totalOrders')) || stat.label.includes(t('dashboard.stats.onHold')) ? null : currencySymbol}
+                    className="text-2xl"
+                  />
                   <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">
                     {stat.sub}
                   </p>
@@ -245,5 +247,3 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     </div>
   );
 });
-
-

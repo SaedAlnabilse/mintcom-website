@@ -35,6 +35,7 @@ export const TEXT_INPUT_LIMITS = {
   UNIT: 12,
   IP_ADDRESS: 45,
   PORT: 5,
+  STOCK: 10,
 } as const;
 
 export type TextInputLimitKey = keyof typeof TEXT_INPUT_LIMITS;

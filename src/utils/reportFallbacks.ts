@@ -65,10 +65,21 @@ export const normalizeSalesSummary = (payload: any): SalesSummary => {
       revenue: toNumber(firstPresent(row?.revenue, row?.sales, row?.total, row?.amount)),
       count: toNumber(firstPresent(row?.count, row?.orders, row?.transactions)),
     })),
-    paymentMethodBreakdown: toArray(source.paymentMethodBreakdown).map((row: any) => ({
-      name: String(row?.name || row?.method || 'Unknown'),
-      value: toNumber(firstPresent(row?.value, row?.amount, row?.total)),
-    })),
+    paymentMethodBreakdown: (() => {
+      const breakdown = toArray(source.paymentMethodBreakdown).map((row: any) => ({
+        name: String(row?.name || row?.method || 'Unknown').toUpperCase(),
+        value: toNumber(firstPresent(row?.value, row?.amount, row?.total)),
+      }));
+
+      const requiredMethods = ['CASH', 'CARD', 'OTHER'];
+      requiredMethods.forEach(method => {
+        if (!breakdown.some(b => b.name === method)) {
+          breakdown.push({ name: method, value: 0 });
+        }
+      });
+
+      return breakdown;
+    })(),
     discountBreakdown: toArray(source.discountBreakdown).map((row: any) => ({
       name: String(row?.name || row?.discountName || 'Unknown'),
       count: toNumber(row?.count),

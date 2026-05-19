@@ -34,6 +34,7 @@ import { SearchInput, Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useCurrency } from '../../context/CurrencyContext';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
+import { StatValue } from '../../components/ui/StatValue';
 
 interface ApiError {
   response?: {
@@ -399,9 +400,9 @@ export function CustomersPage() {
 
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
-          { label: t('customers.stats.total'), value: stats.totalCustomers, icon: User, color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-          { label: t('customers.stats.points'), value: stats.totalPoints, icon: Award, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: t('customers.stats.spent'), value: formatAmount(stats.totalSpent), icon: ShoppingBag, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+          { label: t('customers.stats.total'), value: stats.totalCustomers, icon: User, color: 'text-mintcom-green', bg: 'bg-mintcom-green/10', isCurrency: false },
+          { label: t('customers.stats.points'), value: stats.totalPoints, icon: Award, color: 'text-blue-500', bg: 'bg-blue-500/10', isCurrency: false },
+          { label: t('customers.stats.spent'), value: stats.totalSpent, icon: ShoppingBag, color: 'text-purple-500', bg: 'bg-purple-500/10', isCurrency: true },
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -417,7 +418,12 @@ export function CustomersPage() {
               </div>
               <div>
                 <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{stat.value.toLocaleString(t('common.locale'))}</p>
+                <StatValue 
+                    value={stat.value} 
+                    currency={stat.isCurrency ? currencySymbol : null}
+                    className="text-2xl"
+                    isInteger={!stat.isCurrency}
+                />
               </div>
             </div>
           </motion.div>
@@ -449,170 +455,77 @@ export function CustomersPage() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <User size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-              {searchQuery.trim() ? t('common.noResults') : t('customers.messages.noCustomers')}
-            </h3>
-            <p className="text-sm text-gray-500 max-w-xs mx-auto mb-8">
-              {searchQuery.trim()
-                ? t('common.noMatchingResults', {
-                    entity: 'customers',
-                    query: searchQuery.trim(),
-                    defaultValue: 'No {{entity}} matching "{{query}}"',
-                  })
-                : t('customers.messages.noCustomersDesc')}
-            </p>
-            {!searchQuery.trim() && (
-              <button
-                onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
-              >
-                <Plus size={18} />
-                <span>{t('customers.addCustomer')}</span>
-              </button>
-            )}
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('customers.messages.noCustomers')}</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto">{t('customers.messages.noResults')}</p>
           </div>
         ) : (
           <>
-            {/* Mobile Card View */}
-            <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-              {customers.map((customer, idx) => (
-                <motion.div
-                  key={customer.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: idx * 0.03 }}
-                  onClick={() => { setSelectedCustomer(customer); setShowDetailModal(true); }}
-                  className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04]"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <div>
-                        <p className="font-bold text-gray-900 dark:text-white text-sm">{customer.name}</p>
-                        <p className="text-xs text-gray-500">{customer.totalVisits} {t('customers.details.visits')}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-black text-mintcom-green">{customer.points}</p>
-                      <p className="text-xs text-gray-400">{t('rewards.points')}</p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-gray-100 dark:border-white/5">
-                    <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.form.phoneLabel')}</p>
-                      <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900 dark:text-white truncate">
-                        <Phone size={12} className="text-gray-400 flex-shrink-0" />
-                        <span className="truncate">{customer.phone || t('common.notAvailable')}</span>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('customers.details.spent')}</p>
-                      <p className="text-sm font-bold text-gray-900 dark:text-white">{customer.totalSpent.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-white/5" onClick={(e) => e.stopPropagation()}>
-                    <button
-                      onClick={() => { setSelectedCustomer(customer); setPointsAmount(0); setShowPointsModal(true); }}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-mintcom-green/10 text-mintcom-green text-xs font-bold touch-target"
-                    >
-                      <Award size={14} />
-                      {t('customers.details.points')}
-                    </button>
-                    <button
-                      onClick={() => openEditModal(customer)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 text-xs font-bold touch-target"
-                    >
-                      <Edit2 size={14} />
-                      {t('common.edit')}
-                    </button>
-                    <button
-                      onClick={() => handleDeleteCustomer(customer)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-mintcom-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
-                    >
-                      <Trash2 size={14} />
-                      {t('common.remove')}
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Desktop Table View */}
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-white/[0.02]">
-                  <tr className="border-b border-gray-200 dark:border-white/5">
-                    <th className="px-6 py-4 text-left dashboard-card-label">{t('customers.form.name')}</th>
-                    <th className="px-6 py-4 text-center dashboard-card-label">{t('customers.details.points')}</th>
-                    <th className="px-6 py-4 text-center dashboard-card-label">{t('staff.table.contact')}</th>
-                    <th className="px-6 py-4 text-center dashboard-card-label">{t('customers.details.spent')}</th>
-                    <th className="px-6 py-4 text-center dashboard-card-label">{t('owner.locations.actions')}</th>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+                    <th className="px-6 py-4 text-[11px] font-bold text-gray-400 tracking-widest uppercase">{t('customers.form.name')}</th>
+                    <th className="px-6 py-4 text-[11px] font-bold text-gray-400 tracking-widest uppercase">{t('customers.form.phone')}</th>
+                    <th className="px-6 py-4 text-[11px] font-bold text-gray-400 tracking-widest uppercase">{t('rewards.items.tier', { defaultValue: 'Tier' })}</th>
+                    <th className="px-6 py-4 text-[11px] font-bold text-gray-400 tracking-widest uppercase">{t('customers.details.points')}</th>
+                    <th className="px-6 py-4 text-[11px] font-bold text-gray-400 tracking-widest uppercase text-right">{t('customers.details.spent')}</th>
+                    <th className="px-6 py-4 text-[11px] font-bold text-gray-400 tracking-widest uppercase text-right">{t('common.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                  {customers.map((customer, idx) => (
+                  {customers.map((customer) => (
                     <motion.tr
                       key={customer.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.03 }}
-                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
-                      onClick={() => { setSelectedCustomer(customer); setShowDetailModal(true); }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                     >
                       <td className="px-6 py-4">
-                        <div>
-                          <div>
-                            <p className="font-bold text-gray-900 dark:text-white text-sm">{customer.name}</p>
-                            <p className="dashboard-card-label">{customer.totalVisits} {t('customers.details.visits')}</p>
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-bold text-sm">
+                            {customer.name.charAt(0).toUpperCase()}
                           </div>
+                          <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">
+                            {customer.name}
+                          </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-center">
-                        <div className="flex flex-col gap-1 items-center justify-center">
-                          <p className="text-sm font-black text-mintcom-green">{customer.points}</p>
-                          <p className="dashboard-card-label">{t('rewards.points')}</p>
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 font-medium">{customer.phone || '—'}</td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase border ${
+                          customer.tier === 'GOLD' 
+                            ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' 
+                            : customer.tier === 'SILVER'
+                            ? 'bg-gray-400/10 text-gray-500 border-gray-400/20'
+                            : 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'
+                        }`}>
+                          <Award size={10} />
+                          {customer.tier}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-1">
+                          <span className="text-sm font-bold text-gray-900 dark:text-white">{customer.points.toLocaleString()}</span>
+                          <span className="text-[10px] font-bold text-gray-400">{t('customers.details.points')}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-center">
-                        <div className="space-y-1 flex flex-col items-center justify-center">
-                          <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <Phone size={12} className="text-gray-400" />
-                            <span className="font-medium">{customer.phone}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <Mail size={12} className="text-gray-400" />
-                            <span className="font-medium">{customer.email || t('owner.staff.noEmail')}</span>
-                          </div>
-                        </div>
+                      <td className="px-6 py-4 text-right">
+                        <p className="text-sm font-bold text-gray-900 dark:text-white">{formatAmount(customer.totalSpent)}</p>
+                        <p className="text-[10px] font-bold text-gray-400">{customer.totalVisits} {t('customers.details.visits')}</p>
                       </td>
-                      <td className="px-6 py-4 text-center">
-                        <p className="font-black text-gray-900 dark:text-white text-sm">{customer.totalSpent.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}</p>
-                        <p className="text-xs text-mintcom-green font-black tracking-widest">{t('common.active')}</p>
-                      </td>
-                      <td className="px-6 py-4 text-center" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-center gap-1 sm:gap-2">
-                          <button
-                            onClick={() => { setSelectedCustomer(customer); setPointsAmount(0); setShowPointsModal(true); }}
-                            className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-mintcom-green hover:border-mintcom-green/30 transition-all"
-                            title="Adjust Points"
-                          >
-                            <Award size={18} />
-                          </button>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => openEditModal(customer)}
-                            className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-all"
+                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-mintcom-green hover:text-black hover:border-mintcom-green transition-all"
+                            aria-label="Edit"
                           >
-                            <Edit2 size={18} />
+                            <Edit2 size={16} />
                           </button>
-                          
-                          <TableActionMenu 
-                            customer={customer} 
-                            onViewProfile={(c) => {
-                              setSelectedCustomer(c);
-                              setShowDetailModal(true);
-                            }}
-                            onDelete={(c) => handleDeleteCustomer(c)}
+                          <TableActionMenu
+                            customer={customer}
+                            onViewProfile={(c) => { setSelectedCustomer(c); setShowDetailModal(true); }}
+                            onDelete={handleDeleteCustomer}
                           />
                         </div>
                       </td>
@@ -621,335 +534,405 @@ export function CustomersPage() {
                 </tbody>
               </table>
             </div>
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={setPage}
-              variant="footer"
-            />
+
+            <div className="mt-auto border-t border-gray-100 dark:border-white/5 p-4 bg-gray-50/50 dark:bg-white/[0.02]">
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+              />
+            </div>
           </>
         )}
       </div>
 
-      {/* Modals */}
+      {/* Customer Form Modal */}
       <AnimatePresence>
-        {showModal && createPortal(
-          <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
+        {showModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 100 }}
-              className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowModal(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-white/10"
             >
-              <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="dashboard-card-value">
-                  {editingCustomer ? t('customers.editCustomer') : t('customers.newCustomer')}
-                </h2>
+              <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
+                    {editingCustomer ? <Edit2 size={20} /> : <Plus size={20} />}
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                    {editingCustomer ? t('customers.messages.editCustomer') : t('customers.addCustomer')}
+                  </h2>
+                </div>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors"
                 >
-                  <X size={20} />
+                  <X size={20} className="text-gray-400" />
                 </button>
               </div>
-              <form onSubmit={handleSubmit(handleSaveCustomer)} className="p-8 space-y-8">
-                <div className="space-y-3">
-                  <label className="block text-xs font-normal text-gray-400 tracking-[0.2em] px-1 flex items-center">
-                    {t('customers.form.name')} <span className="text-mintcom-red mx-1">*</span>
-                  </label>
-                  <div className="relative group">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-mintcom-green transition-colors" />
-                    <input maxLength={255}
-                      type="text"
-                      {...register('name')}
-                      placeholder={formatInputPlaceholder(t('customers.form.namePlaceholder'), t('common.locale'))}
-                      className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
-                    />
-                  </div>
-                  {errors.name && <p className="text-mintcom-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.name.message}</p>}
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <label className="block text-xs font-normal text-gray-400 tracking-[0.2em] px-1">
-                      {t('customers.form.phone')} (optional)
+              <form onSubmit={handleSubmit(handleSaveCustomer)} className="p-6 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider px-1">
+                      {formatInputLabel(t('customers.form.name'), t('common.locale'))}
                     </label>
-                    <input maxLength={255}
-                      type="tel"
-                      {...register('phone')}
-                      placeholder={formatInputPlaceholder(t('customers.form.phonePlaceholder'), t('common.locale'))}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.phone ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
-                    />
-                    {errors.phone && <p className="text-mintcom-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.phone.message}</p>}
+                    <div className="relative">
+                      <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <input maxLength={255}
+                        {...register('name')}
+                        placeholder="John Doe"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all"
+                      />
+                    </div>
+                    {errors.name && <p className="text-[10px] font-bold text-mintcom-red px-1">{errors.name.message}</p>}
                   </div>
-                  <div className="space-y-3">
-                    <label className="block text-xs font-normal text-gray-400 tracking-[0.2em] px-1">{t('customers.form.email')} (optional)</label>
-                    <input maxLength={255}
-                      type="email"
-                      {...register('email')}
-                      placeholder={formatInputPlaceholder(t('customers.form.emailPlaceholder'), t('common.locale'))}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
-                    />
-                    {errors.email && <p className="text-mintcom-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.email.message}</p>}
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider px-1">
+                      {formatInputLabel(t('customers.form.phone'), t('common.locale'))}
+                    </label>
+                    <div className="relative">
+                      <Phone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <input maxLength={255}
+                        {...register('phone')}
+                        placeholder="+1 234 567 890"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <label className="block text-xs font-normal text-gray-400 tracking-[0.2em] px-1">{t('customers.form.address')} (optional)</label>
-                  <input maxLength={255}
-                    type="text"
-                    {...register('address')}
-                    placeholder={formatInputPlaceholder(t('customers.form.addressPlaceholder'), t('common.locale'))}
-                    className="w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-normal focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm"
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider px-1">
+                    {formatInputLabel(t('customers.form.email'), t('common.locale'))}
+                  </label>
+                  <div className="relative">
+                    <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input maxLength={255}
+                      {...register('email')}
+                      type="email"
+                      placeholder="john@example.com"
+                      className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider px-1">
+                    {formatInputLabel(t('customers.form.address'), t('common.locale'))}
+                  </label>
+                  <div className="relative">
+                    <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input maxLength={255}
+                      {...register('address')}
+                      placeholder="Street, City, Country"
+                      className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider px-1">
+                    {formatInputLabel(t('common.notes'), t('common.locale'))}
+                  </label>
+                  <textarea maxLength={1000}
+                    {...register('notes')}
+                    rows={3}
+                    className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all resize-none"
                   />
                 </div>
 
-                <div className="pt-4 flex gap-4">
+                <div className="pt-4 flex gap-3">
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-xs rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm"
+                    className="flex-1 py-4 text-sm font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 rounded-2xl transition-colors"
                   >
                     {t('common.cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-[2] py-4 bg-mintcom-green text-black font-black rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 tracking-[0.2em] text-xs shadow-lg shadow-mintcom-green/20"
+                    className="flex-2 py-4 px-8 bg-mintcom-green text-black font-black text-sm rounded-2xl hover:bg-[#5fa888] disabled:opacity-50 transition-all shadow-lg shadow-mintcom-green/20"
                   >
-                    {editingCustomer ? t('customers.form.updateCustomer') : t('customers.form.saveCustomer')}
+                    {isSubmitting ? t('common.saving') : editingCustomer ? t('customers.messages.updateCustomer') : t('customers.messages.saveCustomer')}
                   </button>
                 </div>
               </form>
             </motion.div>
-          </div>,
-          document.body
+          </div>
         )}
       </AnimatePresence>
 
+      {/* Customer Detail Modal */}
       <AnimatePresence>
-        {showPointsModal && selectedCustomer && createPortal(
-          <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowPointsModal(false)}>
+        {showDetailModal && selectedCustomer && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden relative shadow-2xl"
-              onClick={e => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowDetailModal(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-2xl bg-white dark:bg-[#1E293B] rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-white/10"
             >
-              <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">{t('customers.details.adjustLoyalty')}</h2>
+              <div className="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <User size={20} className="text-mintcom-green" />
+                  {t('customers.messages.customerProfile')}
+                </h2>
                 <button
-                  onClick={() => {
-                    setShowPointsModal(false);
-                    setPointsError(null);
-                  }}
-                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                  onClick={() => setShowDetailModal(false)}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors"
                 >
-                  <X size={20} />
+                  <X size={20} className="text-gray-400" />
                 </button>
               </div>
 
               <div className="p-6 space-y-6">
-                <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('customers.details.customer')}</p>
-                  <p className="text-sm font-bold text-gray-900 dark:text-white">{selectedCustomer.name}</p>
+                {/* Profile Header */}
+                <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                  <div className="w-20 h-20 rounded-full bg-mintcom-green text-black flex items-center justify-center text-3xl font-black shadow-lg shadow-mintcom-green/20">
+                    {selectedCustomer.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="text-center sm:text-left flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{selectedCustomer.name}</h3>
+                    <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-2">
+                      <span className="px-2.5 py-1 rounded-lg bg-mintcom-green/10 text-mintcom-green text-[10px] font-black tracking-wider uppercase border border-mintcom-green/20">
+                        {selectedCustomer.tier}
+                      </span>
+                      <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-500 text-[10px] font-black tracking-wider uppercase border border-gray-200 dark:border-white/10">
+                        ID: {selectedCustomer.id.slice(-6).toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => { setShowDetailModal(false); openEditModal(selectedCustomer); }}
+                      className="p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-mintcom-green transition-all"
+                    >
+                      <Edit2 size={18} />
+                    </button>
+                    <button
+                      onClick={() => { setShowDetailModal(false); handleDeleteCustomer(selectedCustomer); }}
+                      className="p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-mintcom-red transition-all"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
                 </div>
 
-                <div className="flex gap-2 p-1 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5">
-                  {['add', 'deduct'].map((action) => (
-                    <button
-                      key={action}
-                      onClick={() => {
-                        setPointsAction(action as 'add' | 'deduct');
-                        setPointsError(null);
-                      }}
-                      className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
-                        pointsAction === action
-                          ? action === 'add'
-                            ? 'bg-mintcom-green text-black shadow-sm'
-                            : 'bg-mintcom-red text-white shadow-sm'
-                          : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
-                      }`}
-                    >
-                      {action === 'add' ? <Plus size={14} /> : <Minus size={14} />}
-                      {t(`customers.details.${action}`)}
-                    </button>
-                  ))}
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t('customers.details.points')}</p>
+                    <p className="text-xl font-black text-gray-900 dark:text-white">{selectedCustomer.points.toLocaleString()}</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t('customers.details.spent')}</p>
+                    <p className="text-xl font-black text-mintcom-green">{formatAmount(selectedCustomer.totalSpent)}</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t('customers.details.visits')}</p>
+                    <p className="text-xl font-black text-gray-900 dark:text-white">{selectedCustomer.totalVisits}</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t('customers.details.avgValue')}</p>
+                    <p className="text-xl font-black text-gray-900 dark:text-white">
+                      {selectedCustomer.totalVisits > 0 
+                        ? formatAmount(selectedCustomer.totalSpent / selectedCustomer.totalVisits)
+                        : formatAmount(0)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Contact Info */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">{t('customers.details.contact')}</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 text-sm text-gray-500">
+                        <Phone size={16} className="text-mintcom-green" />
+                        <span className="font-medium">{selectedCustomer.phone || '—'}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-sm text-gray-500">
+                        <Mail size={16} className="text-mintcom-green" />
+                        <span className="font-medium">{selectedCustomer.email || '—'}</span>
+                      </div>
+                      <div className="flex items-start gap-3 text-sm text-gray-500">
+                        <MapPin size={16} className="text-mintcom-green shrink-0 mt-0.5" />
+                        <span className="font-medium">{selectedCustomer.address || '—'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">{t('common.notes')}</h4>
+                    <p className="text-sm text-gray-500 font-medium leading-relaxed italic">
+                      {selectedCustomer.notes || t('customers.messages.noNotes')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Points Quick Actions */}
+                <div className="pt-4 border-t border-gray-100 dark:border-white/5">
+                  <button
+                    onClick={() => { setShowDetailModal(false); setShowPointsModal(true); }}
+                    className="w-full flex items-center justify-between p-4 rounded-2xl bg-mintcom-green/10 hover:bg-mintcom-green/20 border border-mintcom-green/20 transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-mintcom-green text-black flex items-center justify-center shadow-sm">
+                        <Award size={20} />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-sm font-bold text-gray-900 dark:text-white">{t('customers.details.managePoints')}</p>
+                        <p className="text-[10px] font-bold text-mintcom-green uppercase tracking-wider">{t('customers.details.addOrDeduct')}</p>
+                      </div>
+                    </div>
+                    <Plus size={20} className="text-mintcom-green group-hover:scale-125 transition-transform" />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Points Adjustment Modal */}
+      <AnimatePresence>
+        {showPointsModal && selectedCustomer && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPointsModal(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-md bg-white dark:bg-[#1E293B] rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-white/10"
+            >
+              <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('customers.details.adjustPoints')}</h2>
+                <button
+                  onClick={() => setShowPointsModal(false)}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors"
+                >
+                  <X size={20} className="text-gray-400" />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-6">
+                <div className="flex items-center gap-3 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                  <div className="w-10 h-10 rounded-full bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-bold">
+                    {selectedCustomer.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">{selectedCustomer.name}</p>
+                    <p className="text-xs font-medium text-gray-500">{t('customers.details.currentBalance')}: <span className="text-mintcom-green font-bold">{selectedCustomer.points.toLocaleString()}</span></p>
+                  </div>
+                </div>
+
+                <div className="flex p-1.5 bg-gray-100 dark:bg-white/5 rounded-2xl gap-1.5">
+                  <button
+                    onClick={() => setPointsAction('add')}
+                    className={`flex-1 py-3 rounded-xl text-sm font-black transition-all ${
+                      pointsAction === 'add' 
+                        ? 'bg-mintcom-green text-black shadow-sm' 
+                        : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                    }`}
+                  >
+                    <Plus size={16} className="inline mr-2" />
+                    {t('customers.details.add')}
+                  </button>
+                  <button
+                    onClick={() => setPointsAction('deduct')}
+                    className={`flex-1 py-3 rounded-xl text-sm font-black transition-all ${
+                      pointsAction === 'deduct' 
+                        ? 'bg-mintcom-red text-white shadow-sm' 
+                        : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                    }`}
+                  >
+                    <Minus size={16} className="inline mr-2" />
+                    {t('customers.details.deduct')}
+                  </button>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-normal text-gray-400  tracking-normal">{formatInputLabel(t('customers.details.points'), t('common.locale'))}</label>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider px-1">{t('customers.details.pointsAmount')}</label>
                   <div className="relative">
+                    <Award size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input maxLength={255}
-                      type="text"
-                      inputMode="numeric"
-                      value={pointsAmount === 0 ? '' : pointsAmount}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/\D/g, '');
-                        if (val.length > 19) return;
-                        const numericValue = parseInt(val || '0', 10);
-                        setPointsAmount(numericValue);
-                        setPointsError(null);
-                      }}
-                      className={`w-full px-4 py-3 bg-gray-50 dark:bg-black/20 border ${pointsError ? 'border-mintcom-red' : 'border-gray-200 dark:border-white/10'} rounded-xl text-lg font-bold focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all outline-none`}
-                      placeholder={formatInputPlaceholder("0", t('common.locale'))}
+                      type="number"
+                      value={pointsAmount || ''}
+                      onChange={(e) => setPointsAmount(parseInt(e.target.value) || 0)}
+                      className="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-black focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all"
+                      placeholder="0"
                     />
                   </div>
-                  <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>                  {pointsError && (                    <p className="text-[10px] font-bold text-mintcom-red uppercase tracking-wider">
-                      {pointsError}
-                    </p>
-                  )}
+                  {pointsError && <p className="text-xs font-bold text-mintcom-red px-1">{pointsError}</p>}
                 </div>
 
-                <div className="flex gap-3 pt-2">
-                  <button
-                    onClick={() => setShowPointsModal(false)}
-                    className="flex-1 py-3 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-bold text-xs rounded-xl hover:text-gray-900 dark:hover:text-white transition-all"
-                  >
-                    {t('common.cancel')}
-                  </button>
-                  <button 
-                    onClick={handlePointsUpdate} 
-                    disabled={isSubmitting || pointsAmount <= 0} 
-                    className="flex-[2] py-3 bg-mintcom-green text-black font-bold rounded-xl hover:bg-[#5fa888] transition-all disabled:opacity-50 text-xs"
-                  >
-                    {t('customers.details.confirmAdjustment')}
-                  </button>
-                </div>
+                <button
+                  onClick={handlePointsUpdate}
+                  disabled={isSubmitting || pointsAmount <= 0}
+                  className={`w-full py-4 rounded-2xl font-black text-sm transition-all shadow-lg ${
+                    pointsAction === 'add'
+                      ? 'bg-mintcom-green text-black hover:bg-[#5fa888] shadow-mintcom-green/20'
+                      : 'bg-mintcom-red text-white hover:bg-red-600 shadow-red-500/20'
+                  } disabled:opacity-50`}
+                >
+                  {isSubmitting 
+                    ? t('common.saving') 
+                    : pointsAction === 'add' 
+                      ? t('customers.details.addPoints') 
+                      : t('customers.details.deductPoints')}
+                </button>
               </div>
             </motion.div>
-          </div>,
-          document.body
+          </div>
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {showDetailModal && selectedCustomer && createPortal(
-          <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
-            <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-xl border border-gray-200 dark:border-white/5 w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide shadow-2xl" onClick={e => e.stopPropagation()}>
-              <div className="p-10 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-transparent">
-                <div className="flex justify-between items-start mb-10">
-                  <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
-                      <User size={28} />
-                    </div>
-                    <div>
-                      <h2 className="dashboard-card-value">{selectedCustomer.name}</h2>
-                      <div className="mt-2 flex items-center gap-2 text-mintcom-green">
-                        <Award size={14} className="animate-pulse" />
-                        <p className="text-lg font-black tracking-tight">{selectedCustomer.points} {t('rewards.points')}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <button onClick={() => setShowDetailModal(false)} className="p-3 bg-white dark:bg-white/5 rounded-xl text-gray-400 hover:text-black dark:hover:text-white transition-colors shadow-sm">
-                    <X size={24} />
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-3 gap-6">
-                  {[
-                    { label: t('customers.details.spent'), value: formatAmount(selectedCustomer.totalSpent), icon: ShoppingBag },
-                    { label: t('customers.details.visits'), value: `${selectedCustomer.totalVisits.toLocaleString(t('common.locale'))} ${t('customers.details.orders')}`, icon: Calendar },
-                    { label: t('customers.details.points'), value: `${selectedCustomer.points.toLocaleString(t('common.locale'))} ${t('rewards.points')}`, icon: Award },
-                  ].map((stat, i) => (
-                    <div key={i} className="p-5 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-                      <p className="dashboard-stat-title mb-3">{stat.label}</p>
-                      <p className="dashboard-card-value">{stat.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-10 space-y-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                  <div className="space-y-6">
-                    <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                      <Mail size={12} className="text-mintcom-green" /> {t('customers.details.contactInfo')}
-                    </h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
-                        <Phone size={14} className="text-mintcom-green flex-shrink-0" />
-                        <span className="truncate">{selectedCustomer.phone || t('common.notAvailable')}</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
-                        <Mail size={14} className="text-mintcom-green flex-shrink-0" />
-                        <span className="truncate">{selectedCustomer.email || t('owner.staff.noEmail')}</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
-                        <MapPin size={14} className="text-mintcom-green flex-shrink-0" />
-                        <span className="break-words">{selectedCustomer.address || t('common.notAvailable')}</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-6">
-                    <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                      <History size={12} className="text-mintcom-green" /> {t('customers.details.insights')}
-                    </h3>
-                    <div className="grid grid-cols-1 gap-4">
-                       <div className="p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t('customers.details.visits')}</p>
-                        <p className="text-sm font-bold text-gray-900 dark:text-white">{selectedCustomer.totalVisits} {t('customers.details.orders')}</p>
-                      </div>
-                      <div className="p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t('customers.details.spent')}</p>
-                        <p className="text-sm font-bold text-mintcom-green">{formatAmount(selectedCustomer.totalSpent)}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {selectedCustomer.notes && (
-                  <div className="p-6 bg-mintcom-green/5 border border-mintcom-green/10 rounded-xl">
-                    <p className="label-strong font-outfit text-mintcom-green mb-2">{t('customers.details.notes')}</p>
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
-                      {selectedCustomer.notes}
-                    </p>
-                  </div>
-                )}
-
-                <div className="flex gap-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                  <button onClick={() => { setShowDetailModal(false); handleDeleteCustomer(selectedCustomer); }} className="px-6 py-4 bg-mintcom-red/10 text-mintcom-red font-black rounded-xl text-xs tracking-widest transition-all hover:bg-mintcom-red hover:text-white active:scale-95 shadow-sm">
-                    <Trash2 size={18} />
-                  </button>
-                  <button onClick={() => { setShowDetailModal(false); openEditModal(selectedCustomer); }} className="flex-1 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg active:scale-95">
-                    {t('common.edit')}
-                  </button>
-                  <button onClick={() => { setShowDetailModal(false); setShowPointsModal(true); setPointsAmount(0); }} className="flex-1 py-4 bg-mintcom-green text-black font-black rounded-xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg shadow-mintcom-green/20 active:scale-95">
-                    {t('customers.details.points')}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>,
-          document.body
-        )}
-      </AnimatePresence>
-
+      {/* Security and Confirmation Modals */}
       <ConfirmModal
         isOpen={confirmConfig.isOpen}
-        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
-        onConfirm={confirmConfig.onConfirm}
         title={confirmConfig.title}
         message={confirmConfig.message}
+        onConfirm={() => {
+          setConfirmConfig({ ...confirmConfig, isOpen: false });
+          confirmConfig.onConfirm();
+        }}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
         type={confirmConfig.type}
         confirmText={confirmConfig.confirmText}
-        showCancel={confirmConfig.showCancel}
       />
 
       <SecurityVerificationModal
         isOpen={showSecurityModal}
         onClose={() => setShowSecurityModal(false)}
-        onSuccess={onSecurityVerify}
-        targetId={selectedCustomer?.id || ''}
-        targetName={selectedCustomer?.name || ''}
-        mode="delete-customer"
+        onVerify={onSecurityVerify}
         onError={handleSecurityError}
+        action="delete_customer"
+        targetId={selectedCustomer?.id || ''}
       />
     </div>
   );
 }
-
-
-

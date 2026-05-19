@@ -7,13 +7,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 
+import { StatValue } from '../../../../components/ui/StatValue';
+
 interface PeakHoursViewProps {
   peakHours: PeakHour[];
 }
 
 export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: PeakHoursViewProps) {
   const { t } = useTranslation();
-  const { formatAmount } = useCurrency();
+  const { currencySymbol } = useCurrency();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 
@@ -87,7 +89,14 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
                 }}
                 itemStyle={{ color: '#f97316', fontWeight: 'bold', fontSize: '12px' }}
                 labelStyle={{ color: isDark ? '#fff' : '#000', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
-                formatter={(val: any) => [formatAmount(val), t('orders.reports.peakHours.revenue')]}
+                formatter={(val: any) => [
+                  <StatValue 
+                    value={Number(val)} 
+                    currency={currencySymbol} 
+                    className="text-xs font-bold"
+                  />, 
+                  t('orders.reports.peakHours.revenue')
+                ]}
               />
               <Bar dataKey="total" name={t('orders.reports.peakHours.revenue')} fill="url(#barGradient)" radius={[6, 6, 0, 0]} barSize={40} animationDuration={1500} />
             </BarChart>
@@ -104,4 +113,3 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
     </div>
   );
 });
-

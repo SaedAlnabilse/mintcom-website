@@ -6,7 +6,7 @@ import {
     Wallet,
     Undo2,
     Download,
-  X
+    X
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getDateLocale } from '../../../utils/dateLocale';
@@ -21,7 +21,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { checkPermission } from '../../../hooks/usePermissionGuard';
 import { formatInputPlaceholder } from '../../../utils/textCase';
 import { AnalyticsEmptyState } from './AnalyticsEmptyState';
-
+import { StatValue } from '../../ui/StatValue';
 
 interface ReceiptsReportProps {
     startDate: string;
@@ -29,11 +29,10 @@ interface ReceiptsReportProps {
     employeeId: string | null;
 }
 
-
 export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsReportProps) {
     const { t } = useTranslation();
     const { account } = useAuth();
-    const { formatAmount, currencySymbol } = useCurrency();
+    const { currencySymbol } = useCurrency();
 
     const canExport = useMemo(() => checkPermission(account, ['export_data']), [account]);
 
@@ -62,8 +61,6 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
 
             if (statusFilter === 'HELD') {
                 const response = await api.get('/api/held-orders');
-                // Map held orders... (simplified for brevity, assume similar structure or handle held orders differently if needed)
-                // For now, let's focus on the main history endpoint which is what reports usually show
                 const heldOrders = response.data.map((h: Record<string, any>) => ({
                     id: h.id,
                     orderNumber: h.nickname,
@@ -86,8 +83,6 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                 limit: 20,
                 startDate,
                 endDate,
-                // If employeeId is selected, pass it. Note: 'reports/orders-history' might need specific param
-                // Assuming the backend supports it or we filter client side if not (backend is better)
                 employeeId: employeeId || undefined
             };
 
@@ -95,13 +90,11 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                 params.status = statusFilter;
             }
 
-            // Using the report endpoint which respects date range
             const response = await api.get('/reports/orders-history', { params });
             setOrders(response.data.orders || response.data || []);
             setTotalPages(response.data.totalPages || 1);
         } catch (err) {
             console.error('Failed to fetch receipts', err);
-            // toast.error('Failed to load receipts');
         } finally {
             setIsLoading(false);
         }
@@ -128,8 +121,14 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
         }
     };
 
-    const formatCurrency = (value: number) => {
-        return formatAmount(value);
+    const formatCurrency = (value: number, className = "text-xs font-bold") => {
+        return (
+            <StatValue 
+                value={value} 
+                currency={currencySymbol} 
+                className={className}
+            />
+        );
     };
 
     const isPaidTaxChanged = (order: Order): boolean =>
@@ -184,12 +183,11 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
 
     return (
         <div className="space-y-6">
-            {/* Sub-Header / KPI - Optional, to give some context inside the tab */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                    { label: t('orders.reports.receipts.revenueSelected'), value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)), icon: Wallet, color: 'text-mintcom-green', bg: 'bg-mintcom-green/' },
-                    { label: t('orders.reports.receipts.receiptsCount'), value: orders.length, icon: Receipt, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: t('orders.reports.receipts.refundsHeld'), value: orders.filter(o => o.status === 'HELD' || o.paymentStatus === 'REFUNDED').length, icon: Undo2, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                    { label: t('orders.reports.receipts.revenueSelected'), value: orders.reduce((acc, o) => acc + (o.total || 0), 0), isCurrency: true, icon: Wallet, color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
+                    { label: t('orders.reports.receipts.receiptsCount'), value: orders.length, isCurrency: false, icon: Receipt, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: t('orders.reports.receipts.refundsHeld'), value: orders.filter(o => o.status === 'HELD' || o.paymentStatus === 'REFUNDED').length, isCurrency: false, icon: Undo2, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
@@ -203,15 +201,18 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                         </div>
                         <div>
                             <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                                {typeof stat.value === 'number' ? stat.value.toLocaleString(t('common.locale')) : stat.value}
-                            </p>
+                            <div className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                                <StatValue 
+                                    value={stat.value} 
+                                    currency={stat.isCurrency ? currencySymbol : null}
+                                    isInteger={!stat.isCurrency}
+                                />
+                            </div>
                         </div>
                     </motion.div>
                 ))}
             </div>
 
-            {/* Local Filters (Search & Status) */}
             <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative group bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/[0.05] hover:border-mintcom-green/50 transition-all p-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -260,7 +261,6 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                 </div>
             </div>
 
-            {/* Table */}
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]">
                 {isLoading ? (
                     <div className="flex-1 flex flex-col items-center justify-center py-20">
@@ -277,7 +277,6 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                     />
                 ) : (
                     <div className="w-full">
-                        {/* Desktop Table */}
                         <div className="hidden md:block">
                             <table className="w-full">
                                 <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
@@ -316,7 +315,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                                     <p className="text-xs text-gray-400">{order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')}</p>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <p className="font-bold text-gray-900 dark:text-white text-xs">{formatCurrency(order.total || 0)}</p>
+                                                    <div className="font-bold text-gray-900 dark:text-white text-xs">{formatCurrency(order.total || 0)}</div>
                                                     <p className="text-xs text-gray-400 uppercase">{order.paymentMethod}</p>
                                                 </td>
                                                 <td className="px-6 py-4">
@@ -334,7 +333,6 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                             </table>
                         </div>
 
-                        {/* Mobile List */}
                         <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
                             {orders.map((order) => (
                                 <div key={order.id} className="p-4 active:bg-gray-50 dark:active:bg-white/5" onClick={() => setSelectedOrder(order)}>
@@ -350,7 +348,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                     </div>
                                     <div className="flex justify-between items-center mt-2">
                                         <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{order.customer?.name || t('orders.table.walkIn')}</span>
-                                        <span className="font-bold text-sm text-gray-900 dark:text-white">{formatCurrency(order.total || 0)}</span>
+                                        <div className="font-bold text-sm text-gray-900 dark:text-white">{formatCurrency(order.total || 0, "text-sm font-bold")}</div>
                                     </div>
                                 </div>
                             ))}
@@ -374,5 +372,3 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
         </div>
     );
 }
-
-

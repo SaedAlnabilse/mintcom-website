@@ -22,6 +22,7 @@ import type { SalesSummary } from '../../../../types';
 import { useNavigate, useParams } from 'react-router-dom';
 import React from 'react';
 import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
+import { StatValue } from '../../../../components/ui/StatValue';
 
 const COLORS = ['#7dc6a2', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
@@ -29,25 +30,22 @@ const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "te
   const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
   return (
-    <span className={`inline-flex items-baseline gap-1 ${className}`}>
-      <span className={`${size} font-bold ${color} tracking-tight`}>
-        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
+    <StatValue 
+      value={amount} 
+      currency={currencySymbol} 
+      className={`${size} ${color}`}
+    />
   );
 };
 
 const FormatCurrency = ({ value }: { value: number }) => {
-  const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
   return (
-    <span className="inline-flex items-baseline gap-1">
-      <span className="font-bold tracking-tight">
-        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
+    <StatValue 
+      value={value} 
+      currency={currencySymbol} 
+      className="text-sm"
+    />
   );
 };
 
@@ -67,6 +65,16 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
   const grossSales = salesData.totalRevenue ?? 0;
   const taxCollected = salesData.taxCollected ?? 0;
   const serviceChargeCollected = salesData.netServiceChargeCollected ?? salesData.serviceChargeCollected ?? 0;
+
+  const getMethodName = (name: any) => {
+    if (!name) return '—';
+    const nameStr = String(name).toUpperCase();
+    if (nameStr === 'CARD') return t('orders.payment.allCards');
+    if (nameStr === 'CASH') return t('orders.payment.cash');
+    if (nameStr === 'OTHER') return t('orders.payment.allOther');
+    return nameStr;
+  };
+
   const netSales = Math.max(
     salesData.netSalesBeforeTaxAndServiceCharge ?? (grossSales - taxCollected - serviceChargeCollected),
     0,
@@ -80,8 +88,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
         value: safeValue,
         chartValue: Math.abs(safeValue),
       };
-    })
-    .filter((item: any) => item.chartValue > 0.005);
+    });
 
   return (
     <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -133,13 +140,14 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             sub: t('orders.reports.sales.serviceChargeSub', {
               defaultValue: '{{count}} orders | avg {{avg}}',
               count: salesData.serviceChargeOrderCount ?? 0,
-              avg: `${currencySymbol}${Number(salesData.averageServiceChargePerOrder ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+              avg: <StatValue value={Number(salesData.averageServiceChargePerOrder ?? 0)} currency={currencySymbol} className="text-xs inline-flex" />,
             })
           },
           {
             label: t('orders.reports.sales.numOrders'),
             labelClassName: 'capitalize-none',
-            value: (salesData.totalOrders ?? 0).toLocaleString(t('common.locale')),
+            value: (salesData.totalOrders ?? 0),
+            isCurrency: false,
             suffix: t('dashboard.stats.orders'),
             icon: ShoppingBag,
             color: 'text-mintcom-green',
@@ -157,7 +165,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           },
           {
             label: t('orders.reports.sales.hours'),
-            value: (salesData.totalHoursWorked ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+            value: (salesData.totalHoursWorked ?? 0),
+            isCurrency: false,
             suffix: t('orders.reports.sales.hours'),
             icon: Clock,
             color: 'text-mintcom-green',
@@ -218,16 +227,12 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                 stat.customContent
               ) : (
                 <>
-                  <p className="flex flex-col">
-                    {stat.isCurrency ? (
-                      <CurrencyAmount amount={stat.amount || 0} color={stat.color.startsWith('text-mintcom-green') ? "text-gray-900 dark:text-white" : stat.color} />
-                    ) : (
-                      <span className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                        {stat.value}
-                        {stat.suffix && <span className="text-sm ml-1 text-gray-400 font-black">{stat.suffix}</span>}
-                      </span>
-                    )}
-                  </p>
+                  <StatValue 
+                    value={stat.isCurrency ? (stat.amount || 0) : (stat.value || 0)} 
+                    currency={stat.isCurrency ? currencySymbol : null}
+                    className="text-2xl"
+                    isInteger={!stat.isCurrency}
+                  />
                   <p className="sentence-case-text text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
                     {stat.sub}
                   </p>
@@ -354,6 +359,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                             stroke="#94a3b8"
                             fontSize={10}
                             tickLine={false}
+                            tick={{ fill: isDark ? "#94a3b8" : "#64748b", fontWeight: '700' }}
                             axisLine={false}
                             tickFormatter={(val) => val.toLocaleString(t('common.locale'), { maximumFractionDigits: 1 })}
                             domain={[minY, maxY]}
@@ -518,12 +524,11 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                         formatter={(val: any, _name: any, entry: any) => {
                           const signedValue = Number(entry?.payload?.value ?? val);
                           return (
-                            <span className="inline-flex items-baseline gap-1">
-                              <span className="font-bold tracking-tight">
-                                {signedValue.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                              </span>
-                              <span className="text-[10px] font-black opacity-60 uppercase tracking-widest">{currencySymbol}</span>
-                            </span>
+                            <StatValue 
+                              value={signedValue} 
+                              currency={currencySymbol} 
+                              className="text-sm font-bold"
+                            />
                           );
                         }}
                         position={{ y: -10 }}
@@ -536,7 +541,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                     <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                        <span className="sentence-case-text text-sm font-bold text-gray-700 dark:text-gray-300">{item.name}</span>
+                        <span className="sentence-case-text text-sm font-bold text-gray-700 dark:text-gray-300">{getMethodName(item.name)}</span>
                       </div>
                       <span className="text-sm font-bold text-gray-900 dark:text-white"><FormatCurrency value={item.value} /></span>
                     </div>
@@ -558,5 +563,3 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
     </div>
   );
 });
-
-

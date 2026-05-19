@@ -31,6 +31,7 @@ import { LinkLocationModal } from '../../components/LinkLocationModal';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatCurrencyCode } from '../../utils/currency';
+import { StatValue } from '../../components/ui/StatValue';
 
 interface LocationStats {
     id: string;
@@ -419,9 +420,9 @@ export function BrandLocationsPage() {
                 {[
                     { label: t('owner.locations.total'), value: stats.totalLocations, icon: Store, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: t('owner.locations.active'), value: stats.activeLocations, icon: Activity, color: 'text-mintcom-green', bg: 'bg-mintcom-green/' },
-                    { label: t('brand.dashboard.totalRevenue'), value: formatCurrency(stats.totalRevenue), icon: DollarSign, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                    { label: t('brand.dashboard.totalRevenue'), value: stats.totalRevenue, icon: DollarSign, color: 'text-purple-500', bg: 'bg-purple-500/10' },
                     { label: t('owner.menu.employees'), value: stats.totalEmployees, icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-                    { label: t('brand.dashboard.orders'), value: stats.totalOrders.toLocaleString(), icon: ShoppingBag, color: 'text-pink-500', bg: 'bg-pink-500/10' },
+                    { label: t('brand.dashboard.orders'), value: stats.totalOrders, icon: ShoppingBag, color: 'text-pink-500', bg: 'bg-pink-500/10' },
                 ].map((stat, i) => (
                     <div
                         key={i}
@@ -435,7 +436,12 @@ export function BrandLocationsPage() {
                                 </div>
                             </div>
                             <p className="dashboard-stat-title mb-1">{stat.label}</p>
-                            <p className="dashboard-card-value">{stat.value}</p>
+                            <StatValue 
+                                value={stat.value} 
+                                currency={stat.label === t('brand.dashboard.totalRevenue') ? 'USD' : null}
+                                className="text-2xl"
+                                isInteger={stat.label !== t('brand.dashboard.totalRevenue')}
+                            />
                         </div>
                     </div>
                 ))}
@@ -539,7 +545,7 @@ export function BrandLocationsPage() {
             {filteredLocations.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white">{searchQuery.trim() ? t('common.noResults') : t('owner.locations.noLocations')}</p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">{searchQuery.trim() ? t('common.noResults') : t('brand.dashboard.noLocations')}</p>
                     <p className="text-sm text-gray-500 mt-1">
                         {searchQuery.trim()
                             ? t('common.noMatchingResults', { entity: 'locations', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
@@ -548,21 +554,22 @@ export function BrandLocationsPage() {
                                 : t('brand.dashboard.addLocationsDesc')}
                     </p>
                     <div className="flex items-center justify-center gap-4 mt-6">
-                        {hasFilters && (
+                        {hasActiveFilters ? (
                             <button
                                 onClick={clearFilters}
                                 className="px-6 py-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 text-sm font-bold hover:bg-gray-200 transition-all"
                             >
                                 {t('attributes.filters.reset')}
                             </button>
+                        ) : (
+                            <button
+                                onClick={() => setIsLinkModalOpen(true)}
+                                className="px-6 py-2 rounded-xl bg-mintcom-green text-black text-sm font-bold hover:bg-[#5fa888] transition-all flex items-center gap-2"
+                            >
+                                <Plus size={16} />
+                                {t('owner.overview.addLocation')}
+                            </button>
                         )}
-                        <button
-                            onClick={() => setIsLinkModalOpen(true)}
-                            className="px-6 py-2 rounded-xl bg-mintcom-green text-black text-sm font-bold hover:bg-[#5fa888] transition-all flex items-center gap-2"
-                        >
-                            <Plus size={16} />
-                            {t('owner.overview.addLocation')}
-                        </button>
                     </div>
                 </div>
             ) : (
@@ -616,25 +623,39 @@ export function BrandLocationsPage() {
 
                                         {/* Revenue */}
                                         <div className="col-span-2 flex items-center justify-center">
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                                {formatCurrency(loc.totalRevenue || 0)}
-                                            </span>
+                                            <StatValue 
+                                                value={loc.totalRevenue || 0} 
+                                                currency="USD"
+                                                className="text-sm"
+                                            />
                                         </div>
 
                                         {/* Orders */}
                                         <div className="col-span-1 flex items-center justify-center">
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.orderCount}</span>
+                                            <StatValue 
+                                                value={loc.orderCount} 
+                                                className="text-sm"
+                                                isInteger={true}
+                                            />
                                         </div>
 
                                         {/* Staff */}
                                         <div className="col-span-1 flex items-center justify-center">
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.employeeCount}</span>
+                                            <StatValue 
+                                                value={loc.employeeCount} 
+                                                className="text-sm"
+                                                isInteger={true}
+                                            />
                                         </div>
 
 
                                         {/* Products */}
                                         <div className="col-span-1 flex items-center justify-center">
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white">{loc.itemCount}</span>
+                                            <StatValue 
+                                                value={loc.itemCount} 
+                                                className="text-sm"
+                                                isInteger={true}
+                                            />
                                         </div>
                                         {/* Actions */}
                                         <div className="col-span-2 flex items-center justify-center relative">

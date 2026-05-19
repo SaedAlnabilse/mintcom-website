@@ -35,6 +35,8 @@ import { CustomSelect } from '../../components/CustomSelect';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { Pagination } from '../../components/ui';
 import { SectionLoader } from '../../components/LoadingState';
+import { AnalyticsEmptyState } from '../../components/dashboard/reports/AnalyticsEmptyState';
+import { StatValue } from '../../components/ui/StatValue';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
 interface Brand {
@@ -118,8 +120,6 @@ export function OwnerBrandsPage() {
         targetName: '',
         mode: 'dissolve-brand'
     });
-
-
 
     const createBrandSchemaObj = useMemo(() => z.object({
         name: z.string().min(2, t('owner.brands.validation.nameMin')),
@@ -220,7 +220,6 @@ export function OwnerBrandsPage() {
         },
     });
 
-    // Close menu when clicking outside or scrolling
     useEffect(() => {
         if (!activeMenu) return;
 
@@ -236,11 +235,9 @@ export function OwnerBrandsPage() {
         };
     }, [activeMenu]);
 
-    // Filtered and sorted brands
     const filteredBrands = useMemo(() => {
         let result = [...brands];
 
-        // Apply search filter
         if (searchQuery.trim()) {
             const query = searchQuery.toLowerCase();
             result = result.filter(brand =>
@@ -249,9 +246,7 @@ export function OwnerBrandsPage() {
             );
         }
 
-        // Apply sorting
         result.sort((a, b) => {
-            // Pin the top brand to the very top
             if (a.id === 'cmkek5eme0001vjjqvfm3wjwa') return -1;
             if (b.id === 'cmkek5eme0001vjjqvfm3wjwa') return 1;
 
@@ -526,7 +521,9 @@ export function OwnerBrandsPage() {
                             </div>
                             <div>
                                 <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
-                                <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{stat.value}</p>
+                                <div className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">
+                                    <StatValue value={stat.value} isInteger={true} />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -637,9 +634,9 @@ export function OwnerBrandsPage() {
                                                         <span className="px-2 py-0.5 rounded bg-mintcom-green/10 text-mintcom-green label-strong">
                                                             {t('common.status.active')}
                                                         </span>
-                                                        <span className="dashboard-card-label">
+                                                        <div className="dashboard-card-label flex items-center gap-1">
                                                             {t('owner.brands.locationsCount', { count: brand.establishmentCount })}
-                                                        </span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1060,12 +1057,13 @@ export function OwnerBrandsPage() {
                                     </div>
                                 </div>
                             </div>
-                            </motion.div>
-                            </div>
-                            )}
-                            </AnimatePresence>,
-                            document.body
-                            )}
+                        </motion.div>
+                    </div>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )}
+            
             {/* Security Verification Modal */}
             <SecurityVerificationModal
                 isOpen={securityModal.isOpen}
@@ -1147,5 +1145,3 @@ export function OwnerBrandsPage() {
         </div>
     );
 }
-
-

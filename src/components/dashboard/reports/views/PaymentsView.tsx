@@ -7,32 +7,29 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
+import { StatValue } from '../../../../components/ui/StatValue';
 
 const COLORS = ['#7dc6a2', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
-  const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
   return (
-    <span className={`inline-flex items-baseline gap-1 ${className}`}>
-      <span className={`${size} font-bold ${color} tracking-tight`}>
-        {amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
+    <StatValue 
+      value={amount} 
+      currency={currencySymbol} 
+      className={`${size} ${color} ${className}`}
+    />
   );
 };
 
 const FormatCurrency = ({ value }: { value: number }) => {
-  const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
   return (
-    <span className="inline-flex items-baseline gap-1">
-      <span className="font-bold tracking-tight">
-        {value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-      </span>
-      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{currencySymbol}</span>
-    </span>
+    <StatValue 
+      value={value} 
+      currency={currencySymbol} 
+      className="text-sm"
+    />
   );
 };
 
@@ -54,8 +51,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
     .map((item: any) => ({
       ...item,
       value: Number(item.value) || 0
-    }))
-    .filter((item: any) => item.value > 0);
+    }));
   const paymentTotal = paymentMethodBreakdown.reduce((sum: number, item: any) => sum + item.value, 0);
 
   const getMethodName = (name: any) => {
@@ -94,10 +90,14 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
         <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.payments.txnCount')}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {(salesData.totalOrders || 0).toLocaleString(t('common.locale'))}
-              <span className="text-sm mx-1 text-gray-400 font-black"> {t('dashboard.stats.orders')}</span>
-            </p>
+            <div className="flex items-baseline gap-1">
+              <StatValue 
+                value={salesData.totalOrders || 0} 
+                className="text-2xl"
+                isInteger={true}
+              />
+              <span className="text-sm text-gray-400 font-black"> {t('dashboard.stats.orders')}</span>
+            </div>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.payments.txnCountDesc')}</p>
           </div>
           <div className="absolute right-0 top-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
@@ -145,7 +145,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                               textAnchor="middle"
                               dominantBaseline="central"
                             >
-                              {paymentMethodBreakdown.length.toLocaleString(t('common.locale'))}
+                              <StatValue value={paymentMethodBreakdown.length} isInteger={true} className="text-3xl" />
                             </text>
                             <text
                               x={cx}
@@ -176,12 +176,11 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                       fontSize: '12px'
                     }}
                     formatter={(val: any) => (
-                      <span className="inline-flex items-baseline gap-1">
-                        <span className="font-bold tracking-tight">
-                          {Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </span>
-                        <span className="text-[10px] font-black opacity-60 uppercase tracking-widest">{currencySymbol}</span>
-                      </span>
+                      <StatValue 
+                        value={Number(val)} 
+                        currency={currencySymbol} 
+                        className="text-sm font-bold"
+                      />
                     )}
                     labelFormatter={(name: any) => getMethodName(name)}
                   />
@@ -279,7 +278,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                               <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
                                 <div className="h-full rounded-full" style={{ width: `${(percentage * 100)}%`, backgroundColor: COLORS[i % COLORS.length] }} />
                               </div>
-                              <span className="text-xs font-bold text-gray-500">{percentage.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
+                              <StatValue value={percentage} isPercentage={true} className="text-xs font-bold text-gray-500" />
                             </div>
                           </td>
                         </tr>
@@ -293,7 +292,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                               <FormatCurrency value={card.value} />
                             </td>
                             <td className="px-6 py-3 text-end text-xs font-medium text-gray-400">
-                              {(card.value / item.value).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                              <StatValue value={card.value / item.value} isPercentage={true} className="text-xs font-medium text-gray-400" />
                             </td>
                           </tr>
                         ))}
@@ -307,7 +306,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                               <FormatCurrency value={op.value} />
                             </td>
                             <td className="px-6 py-3 text-end text-xs font-medium text-gray-400">
-                              {(op.value / item.value).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                              <StatValue value={op.value / item.value} isPercentage={true} className="text-xs font-medium text-gray-400" />
                             </td>
                           </tr>
                         ))}
@@ -334,5 +333,3 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
     </div>
   );
 });
-
-

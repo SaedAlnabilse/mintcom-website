@@ -192,8 +192,17 @@ const MAINTENANCE_MODE = true; // Set to false to launch for everyone
 function SecretAccessHandler() {
   useEffect(() => {
     localStorage.setItem('mintcom_preview_access', 'true');
-    // Force a full reload to ensure all states are reset with access
-    window.location.href = '/';
+    toast.success('Preview access granted. Redirecting...', {
+      icon: '🔐',
+      duration: 2000
+    });
+    
+    // Brief delay to allow the toast to be seen before redirecting
+    const timer = setTimeout(() => {
+      window.location.href = '/';
+    }, 1000);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   return <LoadingFallback />;

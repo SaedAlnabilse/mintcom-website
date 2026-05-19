@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import React from 'react';
 import { Pagination } from '../../../ui';
 import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
+import { StatValue } from '../../../../components/ui/StatValue';
 
 interface CashDiscrepancyViewProps {
   shifts: Shift[];
@@ -16,12 +17,18 @@ interface CashDiscrepancyViewProps {
 
 export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shifts }: CashDiscrepancyViewProps) {
   const { t } = useTranslation();
-  const { formatAmount } = useCurrency();
+  const { currencySymbol } = useCurrency();
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<'all' | 'short' | 'over' | 'balanced'>('all');
   const itemsPerPage = 10;
 
-  const formatCurrency = (value: number) => formatAmount(value);
+  const formatCurrency = (value: number, className?: string) => (
+    <StatValue 
+      value={value} 
+      currency={currencySymbol} 
+      className={className || "text-sm font-bold"}
+    />
+  );
   const toNumber = (value: unknown) => Number(value || 0);
   const getCashSales = (shift: any) =>
     toNumber(shift.cashSales ?? shift.totalCashSales ?? shift.cashPayments ?? 0);
@@ -110,9 +117,9 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
   }, [sortedShifts, currentPage]);
 
   // Calculate accuracy rate
-  const accuracyRate = stats.totalShifts > 0
-    ? (stats.balancedCount / stats.totalShifts).toLocaleString(t('common.locale'), { style: 'percent' })
-    : (0).toLocaleString(t('common.locale'), { style: 'percent' });
+  const accuracyRatio = stats.totalShifts > 0
+    ? (stats.balancedCount / stats.totalShifts)
+    : 0;
 
   return (
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -136,9 +143,11 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             </div>
             <span className="dashboard-stat-title">{t('orders.reports.cashGap.netVariance')}</span>
           </div>
-          <p className={`text-2xl font-bold ${stats.netVariance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'} tracking-tight`}>
-            {stats.netVariance >= 0 ? '+' : ''}{formatCurrency(stats.netVariance)}
-          </p>
+          <StatValue 
+            value={stats.netVariance} 
+            currency={currencySymbol} 
+            className={`text-2xl ${stats.netVariance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}
+          />
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
             {stats.netVariance >= 0 ? t('orders.reports.cashGap.overExpected') : t('orders.reports.cashGap.underExpected')}
           </p>
@@ -157,9 +166,11 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             </div>
             <span className="dashboard-stat-title">{t('orders.reports.cashGap.totalOver')}</span>
           </div>
-          <p className="text-2xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">
-            +{formatCurrency(stats.totalOver)}
-          </p>
+          <StatValue 
+            value={stats.totalOver} 
+            currency={currencySymbol} 
+            className="text-2xl text-amber-600 dark:text-amber-400"
+          />
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
             {t('orders.reports.cashGap.shiftsOver', { count: stats.overCount })}
           </p>
@@ -178,9 +189,11 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             </div>
             <span className="dashboard-stat-title">{t('orders.reports.cashGap.totalShort')}</span>
           </div>
-          <p className="text-2xl font-bold text-red-600 dark:text-red-400 tracking-tight">
-            -{formatCurrency(stats.totalShort)}
-          </p>
+          <StatValue 
+            value={-stats.totalShort} 
+            currency={currencySymbol} 
+            className="text-2xl text-red-600 dark:text-red-400"
+          />
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
             {t('orders.reports.cashGap.shiftsShort', { count: stats.shortCount })}
           </p>
@@ -199,9 +212,11 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             </div>
             <span className="dashboard-stat-title">{t('orders.reports.cashGap.accuracyRate')}</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-            {accuracyRate}
-          </p>
+          <StatValue 
+            value={accuracyRatio} 
+            isPercentage={true} 
+            className="text-2xl"
+          />
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
             {t('orders.reports.cashGap.shiftsBalanced', { count: stats.balancedCount, total: stats.totalShifts })}
           </p>
@@ -221,21 +236,33 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-amber-500/10 flex items-center justify-center">
               <TrendingUp size={24} className="text-amber-500" />
             </div>
-            <p className="text-2xl font-black text-amber-600 dark:text-amber-400">{stats.overCount.toLocaleString(t('common.locale'))}</p>
+            <StatValue 
+              value={stats.overCount} 
+              className="text-2xl font-black text-amber-600 dark:text-amber-400"
+              isInteger={true}
+            />
             <p className="text-xs font-bold text-gray-500">{t('orders.reports.cashGap.cashOver')}</p>
           </div>
           <div className="text-center p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
             <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center">
               <Scale size={24} className="text-gray-500" />
             </div>
-            <p className="text-2xl font-black text-gray-700 dark:text-gray-300">{stats.balancedCount.toLocaleString(t('common.locale'))}</p>
+            <StatValue 
+              value={stats.balancedCount} 
+              className="text-2xl font-black text-gray-700 dark:text-gray-300"
+              isInteger={true}
+            />
             <p className="text-xs font-bold text-gray-500">{t('orders.reports.cashGap.balanced')}</p>
           </div>
           <div className="text-center p-4 rounded-xl bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/10">
             <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-red-500/10 flex items-center justify-center">
               <TrendingDown size={24} className="text-red-500" />
             </div>
-            <p className="text-2xl font-black text-red-600 dark:text-red-400">{stats.shortCount.toLocaleString(t('common.locale'))}</p>
+            <StatValue 
+              value={stats.shortCount} 
+              className="text-2xl font-black text-red-600 dark:text-red-400"
+              isInteger={true}
+            />
             <p className="text-xs font-bold text-gray-500">{t('orders.reports.cashGap.cashShort')}</p>
           </div>
         </div>
@@ -256,7 +283,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             </div>
           </div>
           <span className="text-xs font-bold text-gray-400">
-            {t('common.showing')} {Math.min(paginatedShifts.length, itemsPerPage).toLocaleString(t('common.locale'))} {t('common.of')} {sortedShifts.length.toLocaleString(t('common.locale'))} {t('dashboard.menu.shiftsReports')}
+            {t('common.showing')} <StatValue value={Math.min(paginatedShifts.length, itemsPerPage)} isInteger={true} className="text-xs inline-flex" /> {t('common.of')} <StatValue value={sortedShifts.length} isInteger={true} className="text-xs inline-flex" /> {t('dashboard.menu.shiftsReports')}
           </span>
         </div>
 
@@ -381,11 +408,11 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                                 : 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20'
                           }`}>
                             {isOver ? (
-                              <><TrendingUp size={12} /> +{discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</>
+                              <><TrendingUp size={12} /> <StatValue value={discrepancy} currency={currencySymbol} className="text-xs" /></>
                             ) : isShort ? (
-                              <><TrendingDown size={12} /> {discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</>
+                              <><TrendingDown size={12} /> <StatValue value={discrepancy} currency={currencySymbol} className="text-xs" /></>
                             ) : (
-                              <><Scale size={12} /> {(0).toLocaleString(t('common.locale'))}</>
+                              <><Scale size={12} /> <StatValue value={0} currency={currencySymbol} className="text-xs" /></>
                             )}
                           </span>
                         </td>
@@ -432,5 +459,3 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
     </div>
   );
 });
-
-

@@ -6,6 +6,7 @@ import { X, Trash2, MousePointerClick, CheckSquare, AlertCircle } from 'lucide-r
 import { QuickInfo } from '../QuickInfo';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { TEXT_INPUT_LIMITS } from '../../config/textLimits';
 
 interface Attribute {
     id: string;
@@ -134,7 +135,9 @@ export function AttributeFormModal({
                                     {t('attributes.form.nameLabel')} <span className="text-mintcom-red">*</span>
                                     <QuickInfo text={t('attributes.form.nameTip')} />
                                 </label>
-                                <input maxLength={255}
+                                <input
+                                    name="attribute-name"
+                                    maxLength={TEXT_INPUT_LIMITS.ATTRIBUTE_NAME}
                                     type="text"
                                     value={name}
                                     onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}

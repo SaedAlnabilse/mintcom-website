@@ -40,6 +40,7 @@ import type { DatePeriod } from '../../utils/datePeriods';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatCompactCurrencyCode, formatCurrencyCode } from '../../utils/currency';
+import { StatValue } from '../../components/ui/StatValue';
 
 interface BrandStats {
     totalRevenue: number;
@@ -80,8 +81,6 @@ interface CategoryDataPoint {
 // Ported State Logic from OwnerOverviewPage for Unified Filter
 type DateRangePreset = DatePeriod;
 
-
-
 const CHART_COLORS = ['#7dc6a2', '#8B5CF6', '#F59E0B', '#EF4444', '#3B82F6', '#EC4899'];
 
 export function BrandDashboardPage() {
@@ -100,203 +99,65 @@ export function BrandDashboardPage() {
     const [endDate, setEndDate] = useState<string>(formatDateForInput(initialDateRange.end));
     const [startTime, setStartTime] = useState<string>('00:00');
     const [endTime, setEndTime] = useState<string>('23:59');
+    const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
+    const [categoryBreakdown, setCategoryBreakdown] = useState<CategoryDataPoint[]>([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
-    // Remove old state mapping
-    const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
-    const [categoryBreakdown, setCategoryBreakdown] = useState<Array<{ name: string; value: number; quantity: number }>>([]);
-    const hasLoadedOnceRef = useRef(false);
-    const [hasMixedCurrencies, setHasMixedCurrencies] = useState(false);
+    const hasMixedCurrencies = useMemo(() => {
+        if (locations.length === 0) return false;
+        const firstCurrency = locations[0].currency;
+        return locations.some(loc => loc.currency && loc.currency !== firstCurrency);
+    }, [locations]);
 
-    const setQuickDate = (range: DateRangePreset) => {
-        setSelectedDateRange(range);
-        const { start, end } = calculateDateRange(range);
-        setStartDate(formatDateForInput(start));
-        setEndDate(formatDateForInput(end));
-        setStartTime('00:00');
-        setEndTime('23:59');
+    const setQuickDate = (period: DateRangePreset) => {
+        setSelectedDateRange(period);
+        const range = calculateDateRange(period);
+        setStartDate(formatDateForInput(range.start));
+        setEndDate(formatDateForInput(range.end));
     };
 
-    const fetchBrandData = useCallback(async () => {
+    const fetchBrandData = useCallback(async (isInitial = false) => {
+        if (!brandId) return;
+
+        if (isInitial) setIsLoading(true);
+        else setIsRefreshing(true);
+
         try {
-            if (hasLoadedOnceRef.current) {
-                setIsRefreshing(true);
-            } else {
-                setIsLoading(true);
-            }
+            // Build query params
+            const params = new URLSearchParams();
+            if (startDate) params.append('startDate', `${startDate}T${startTime}:00Z`);
+            if (endDate) params.append('endDate', `${endDate}T${endTime}:59Z`);
 
-            // Fetch real dashboard stats from the backend
-            const params: Record<string, any> = {};
+            const response = await api.get(`/brands/${brandId}/dashboard-stats?${params.toString()}`);
+            const data = response.data;
 
-            // Map our UI state to backend params
-            if (selectedDateRange === 'yesterday') {
-                params.timeRange = 'yesterday';
-            } else if (selectedDateRange === 'today') {
-                params.timeRange = '24h'; // or 'today' depending on backend support
-            } else {
-                // For all other cases, use custom range with full time precision
-                params.timeRange = 'custom';
-                params.startDate = `${startDate}T${startTime}:00`;
-                params.endDate = `${endDate}T${endTime}:00`;
-            }
-
-            const [brandResponse, statsResponse] = await Promise.all([
-                api.get(`/api/brands/${brandId}`),
-                api.get(`/api/brands/${brandId}/dashboard-stats`, { params })
-            ]);
-
-            setBrandName(brandResponse.data?.name || t('brand.dashboard.title'));
-
-            const dashboardData = statsResponse.data;
-            const establishments = brandResponse.data?.establishments || [];
-
-            // Read backend currency metadata
-            setHasMixedCurrencies(dashboardData.hasMixedCurrencies || false);
-
-            // Set real stats from backend
-            const totalRevenue = dashboardData.stats?.totalRevenue || 0;
-            const totalOrders = dashboardData.stats?.totalOrders || 0;
-
-            setStats({
-                totalRevenue,
-                totalOrders,
-                totalProducts: dashboardData.stats?.totalProducts || 0,
-                totalEmployees: dashboardData.stats?.totalEmployees || 0,
-                revenueGrowth: dashboardData.stats?.revenueChange || 0,
-                orderGrowth: dashboardData.stats?.ordersChange || 0,
-                avgOrderValue: totalOrders > 0 ? Math.round((totalRevenue / totalOrders) * 100) / 100 : 0,
-                activeLocations: establishments.length,
-            });
-
-            // Use real location performance data from backend
-            const locationPerformance = dashboardData.locationPerformance || [];
-            const locationData = locationPerformance.map((loc: any) => ({
-                id: loc.id,
-                name: loc.name,
-                revenue: loc.revenue || 0,
-                orders: loc.orders || 0,
-                growth: 0, // Backend doesn't provide growth yet
-                employees: loc.employees || 0,
-                currency: loc.currency?.toUpperCase() || 'USD',
-                originalRevenue: loc.originalRevenue ?? loc.revenue ?? 0,
-            }));
-
-            // Sort by revenue descending
-            locationData.sort((a: LocationPerformance, b: LocationPerformance) => b.revenue - a.revenue);
-            setLocations(locationData);
-
-            // Generate chart data based on loaded stats or simple mapping
-            const chartData = generateChartData(selectedDateRange, totalRevenue, totalOrders, startDate, endDate);
-            setRevenueData(chartData);
-
-            const categoryStats = Array.isArray(dashboardData.categoryBreakdown)
-                ? dashboardData.categoryBreakdown
-                : [];
-            const processedCategoryBreakdown = categoryStats
-                .map((category: any) => ({
-                    name: category.categoryName || category.name || t('common.unknown'),
-                    value: Number(category.totalSales ?? category.value ?? category.revenue ?? 0),
-                    quantity: Number(category.quantity ?? category.count ?? 0),
-                }))
-                .filter((category: { value: number }) => category.value > 0)
-                .sort((a: { value: number }, b: { value: number }) => b.value - a.value);
-            setCategoryBreakdown(processedCategoryBreakdown);
-
+            setStats(data.stats);
+            setLocations(data.locations || []);
+            setRevenueData(data.revenueTrend || []);
+            setCategoryBreakdown(data.categoryBreakdown || []);
+            setBrandName(data.brandName || t('brand.dashboard.title'));
         } catch (error) {
-            console.error('Failed to fetch brand data:', error);
+            console.error('Failed to fetch brand dashboard data:', error);
             toast.error(t('brand.dashboard.failedToLoad'));
         } finally {
-            hasLoadedOnceRef.current = true;
             setIsLoading(false);
             setIsRefreshing(false);
         }
-    }, [brandId, endDate, endTime, selectedDateRange, startDate, startTime, t]);
+    }, [brandId, startDate, endDate, startTime, endTime, t]);
 
     useEffect(() => {
-        if (brandId) {
-            hasLoadedOnceRef.current = false;
-            fetchBrandData();
-        }
+        fetchBrandData(true);
     }, [brandId]);
 
+    // Refresh when filters change (debounced for manual date/time input if needed)
     useEffect(() => {
-        if (brandId && hasLoadedOnceRef.current) {
-            fetchBrandData();
+        if (!isLoading) {
+            const timer = setTimeout(() => {
+                fetchBrandData();
+            }, 500);
+            return () => clearTimeout(timer);
         }
-    }, [brandId, fetchBrandData]);
-
-    const generateChartData = (range: DateRangePreset, totalRevenue: number, totalOrders: number, startStr: string, endStr: string): RevenueDataPoint[] => {
-        const data: RevenueDataPoint[] = [];
-        let points = 7;
-        let labels: string[] = [];
-
-        switch (range) {
-            case 'today': {
-                points = 24;
-                labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
-                break;
-            }
-            case 'this_week':
-            case 'last_30':
-            case 'this_month':
-            case 'custom': {
-                const start = new Date(startStr);
-                const end = new Date(endStr);
-                const diffTime = Math.abs(end.getTime() - start.getTime());
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-                if (diffDays <= 7) {
-                    points = diffDays || 7; // prevent 0
-                    labels = Array.from({ length: points }, (_, i) => {
-                        const date = new Date(start);
-                        date.setDate(date.getDate() + i);
-                        return date.toLocaleDateString(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', { weekday: 'short' });
-                    });
-                } else if (diffDays <= 31) {
-                    points = diffDays;
-                    labels = Array.from({ length: diffDays }, (_, i) => {
-                        const date = new Date(start);
-                        date.setDate(date.getDate() + i);
-                        return date.toLocaleDateString(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', { month: 'short', day: 'numeric' });
-                    });
-                } else {
-                    const weeks = Math.ceil(diffDays / 7);
-                    points = Math.min(weeks, 12);
-                    labels = Array.from({ length: points }, (_, i) => `${t('owner.roles.global')} ${i + 1}`);
-                }
-                break;
-            }
-        }
-
-        const avgValue = totalRevenue / points;
-        const avgOrders = totalOrders / points;
-
-        for (let i = 0; i < points; i++) {
-            data.push({
-                name: labels[i],
-                value: Math.round(avgValue * (0.5 + Math.random())),
-                orders: Math.round(avgOrders * (0.5 + Math.random())),
-            });
-        }
-
-        return data;
-    };
-
-    // Category distribution for pie chart
-    const categoryData = useMemo<CategoryDataPoint[]>(() => {
-        const topCategories = categoryBreakdown.slice(0, 6);
-        const totalCategoryRevenue = topCategories.reduce((sum, category) => sum + category.value, 0);
-
-        return topCategories.map((category, index) => ({
-            ...category,
-            color: CHART_COLORS[index % CHART_COLORS.length],
-            share: totalCategoryRevenue > 0 ? Math.round((category.value / totalCategoryRevenue) * 100) : 0,
-        }));
-    }, [categoryBreakdown]);
-    const formatCurrency = (value: number) => {
-        const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
-        return formatCompactCurrencyCode(value, 'USD', locale);
-    };
+    }, [startDate, endDate, startTime, endTime]);
 
     // Format in a location's original (local) currency
     const formatLocalCurrency = (value: number, currencyCode: string) => {
@@ -317,9 +178,9 @@ export function BrandDashboardPage() {
         return value.toLocaleString(locale);
     };
 
-    const getNumericTooltipValue = (value: number | string | ReadonlyArray<number | string> | undefined) => {
-        const normalizedValue = Array.isArray(value) ? value[0] : value;
-        return typeof normalizedValue === 'number' ? normalizedValue : Number(normalizedValue ?? 0);
+    const formatCurrency = (value: number) => {
+        const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
+        return formatCompactCurrencyCode(value, 'USD', locale);
     };
 
     const isTopBrand = brandId === 'cmkek5eme0001vjjqvfm3wjwa';
@@ -448,35 +309,39 @@ export function BrandDashboardPage() {
                 {[
                     {
                         label: t('brand.dashboard.totalRevenue'),
-                        value: formatCurrency(stats?.totalRevenue || 0),
-                        change: null,
+                        value: stats?.totalRevenue || 0,
+                        change: stats?.revenueGrowth || 0,
                         icon: DollarSign,
                         color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/'
+                        bg: 'bg-mintcom-green/',
+                        isCurrency: true
                     },
                     {
                         label: t('brand.dashboard.totalOrders'),
-                        value: formatNumber(stats?.totalOrders || 0),
-                        change: null,
+                        value: stats?.totalOrders || 0,
+                        change: stats?.orderGrowth || 0,
                         icon: ShoppingBag,
                         color: 'text-blue-500',
-                        bg: 'bg-blue-500/10'
+                        bg: 'bg-blue-500/10',
+                        isCurrency: false
                     },
                     {
                         label: t('brand.dashboard.avgOrderValue'),
-                        value: formatCurrencyCode(stats?.avgOrderValue || 0, 'USD', t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+                        value: stats?.avgOrderValue || 0,
                         change: null,
                         icon: Target,
                         color: 'text-purple-500',
-                        bg: 'bg-purple-500/10'
+                        bg: 'bg-purple-500/10',
+                        isCurrency: true
                     },
                     {
                         label: t('brand.dashboard.teamSize'),
-                        value: formatNumber(stats?.totalEmployees || 0),
+                        value: stats?.totalEmployees || 0,
                         change: null,
                         icon: Users,
                         color: 'text-orange-500',
-                        bg: 'bg-orange-500/10'
+                        bg: 'bg-orange-500/10',
+                        isCurrency: false
                     },
                 ].map((stat, i) => (
                     <motion.div
@@ -507,7 +372,12 @@ export function BrandDashboardPage() {
                                 )}
                             </div>
                             <p className="dashboard-stat-title mb-1">{stat.label}</p>
-                            <p className="dashboard-card-value">{stat.value}</p>
+                            <StatValue 
+                                value={stat.value} 
+                                currency={stat.isCurrency ? 'USD' : null}
+                                className="text-2xl"
+                                isInteger={!stat.isCurrency}
+                            />
                         </div>
                     </motion.div>
                 ))}
@@ -537,8 +407,8 @@ export function BrandDashboardPage() {
                 {locations.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16 text-center">
                         <Store size={48} className="text-gray-300 dark:text-gray-700 mb-4" />
-                        <p className="dashboard-card-value">{t('brand.dashboard.noLocations')}</p>
-                        <p className="card-subtitle">{t('brand.dashboard.addLocationsDesc')}</p>
+                        <p className="text-xl font-bold text-gray-900 dark:text-white">{t('brand.dashboard.noLocations')}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('brand.dashboard.addLocationsDesc')}</p>
                     </div>
                 ) : (
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
@@ -563,7 +433,6 @@ export function BrandDashboardPage() {
                                         <h4 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors truncate">
                                             {loc.name}
                                         </h4>
-
                                     </div>
                                     <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
                                         <span className="flex items-center gap-1">
@@ -579,9 +448,11 @@ export function BrandDashboardPage() {
 
                                 {/* Revenue */}
                                 <div className="text-right">
-                                    <p className="text-lg font-bold text-gray-900 dark:text-white">
-                                        {formatCurrency(loc.revenue)}
-                                    </p>
+                                    <StatValue 
+                                        value={loc.revenue} 
+                                        currency="USD"
+                                        className="text-lg"
+                                    />
                                     {loc.currency && loc.currency !== 'USD' && loc.originalRevenue !== undefined && (
                                         <p className="text-[11px] text-amber-600 dark:text-amber-400 font-bold mt-0.5">
                                             {t('brand.dashboard.localRevenue')}: {formatLocalCurrency(loc.originalRevenue, loc.currency)}
@@ -621,10 +492,10 @@ export function BrandDashboardPage() {
                     className={`xl:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
                 >
                     <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{t('brand.dashboard.consolidatedPerformance')}</p>
-                    </div>
+                        <div>
+                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{t('brand.dashboard.consolidatedPerformance')}</p>
+                        </div>
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-mintcom-green" />
@@ -682,31 +553,17 @@ export function BrandDashboardPage() {
                                         ]}
                                     />
                                     {revenueData.length === 1 ? (
-                                        <>
-                                            <Bar
-                                                dataKey="value"
-                                                fill="url(#brandRevenue)"
-                                                barSize={40}
-                                                radius={[8, 8, 0, 0]}
-                                                animationDuration={1500}
-                                            />
-                                            <Bar
-                                                dataKey="orders"
-                                                fill="url(#brandOrders)"
-                                                barSize={40}
-                                                radius={[8, 8, 0, 0]}
-                                                animationDuration={1500}
-                                            />
-                                        </>
+                                        <Bar dataKey="value" barSize={40} fill="url(#brandRevenue)" radius={[10, 10, 0, 0]} />
                                     ) : (
                                         <>
                                             <Area
                                                 type="monotone"
                                                 dataKey="value"
                                                 stroke="#7dc6a2"
-                                                strokeWidth={2.5}
+                                                strokeWidth={4}
                                                 fillOpacity={1}
                                                 fill="url(#brandRevenue)"
+                                                animationDuration={1500}
                                             />
                                             <Area
                                                 type="monotone"
@@ -715,54 +572,48 @@ export function BrandDashboardPage() {
                                                 strokeWidth={2}
                                                 fillOpacity={1}
                                                 fill="url(#brandOrders)"
+                                                strokeDasharray="5 5"
+                                                animationDuration={2000}
                                             />
                                         </>
                                     )}
                                 </ComposedChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-white/[0.02] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                                <div className="p-4 rounded-full bg-gray-100 dark:bg-white/5">
-                                    <BarChart3 size={32} className="text-gray-400 dark:text-gray-600" />
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('owner.overview.noRevenueData')}</p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('owner.overview.noSalesRecorded')}</p>
-                                </div>
+                            <div className="flex flex-col items-center justify-center h-full text-center">
+                                <BarChart3 size={48} className="text-gray-200 dark:text-gray-800 mb-4" />
+                                <p className="text-gray-500 dark:text-gray-400 font-medium">{t('brand.dashboard.noRevenueData')}</p>
                             </div>
                         )}
                     </div>
                 </motion.div>
 
-                {/* Category Distribution */}
+                {/* Category Pie Chart */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                     className={`p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
                 >
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.salesByCategory')}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{t('brand.dashboard.revenueDistribution')}</p>
-                        </div>
-                    </div>
+                    <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-1">{t('brand.dashboard.revenueDistribution')}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">{t('brand.dashboard.salesByCategory')}</p>
 
-                    <div className="h-[200px] w-full">
-                        {categoryData.length > 0 ? (
+                    <div className="h-[260px] relative">
+                        {categoryBreakdown.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <RechartsPieChart>
                                     <Pie
-                                        data={categoryData as unknown as Array<Record<string, string | number>>}
+                                        data={categoryBreakdown.slice(0, 6)}
                                         cx="50%"
                                         cy="50%"
-                                        innerRadius={50}
-                                        outerRadius={80}
-                                        paddingAngle={4}
+                                        innerRadius={65}
+                                        outerRadius={85}
+                                        paddingAngle={5}
                                         dataKey="value"
+                                        animationDuration={1500}
                                     >
-                                        {categoryData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        {categoryBreakdown.slice(0, 6).map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} stroke="none" />
                                         ))}
                                     </Pie>
                                     <Tooltip
@@ -771,100 +622,36 @@ export function BrandDashboardPage() {
                                             borderColor: '#E5E7EB',
                                             borderRadius: '12px',
                                             fontSize: '12px',
+                                            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.2)'
                                         }}
-                                        formatter={(value, _name, item) => [formatCurrency(getNumericTooltipValue(value)), `${item?.payload?.share ?? 0}% ${t('brand.dashboard.share')}`]}
+                                        formatter={(value) => formatCurrency(value as number)}
                                     />
                                 </RechartsPieChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-white/[0.02] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                                <div className="p-4 rounded-full bg-gray-100 dark:bg-white/5">
-                                    <BarChart3 size={32} className="text-gray-400 dark:text-gray-600" />
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('owner.overview.noRevenueData')}</p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('owner.overview.noSalesRecorded')}</p>
+                            <div className="flex flex-col items-center justify-center h-full text-center">
+                                <div className="w-32 h-32 rounded-full border-4 border-gray-100 dark:border-white/5 flex items-center justify-center">
+                                    <ShoppingBag size={32} className="text-gray-200 dark:text-gray-800" />
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="space-y-3 mt-4">
-                        {categoryData.map((cat, i) => (
-                            <div key={i} className="flex items-center justify-between gap-3">
-                                <div className="flex items-center gap-2 min-w-0">
-                                    <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: cat.color }} />
-                                    <span className="text-sm font-bold text-gray-900 dark:text-white truncate">{cat.name}</span>
+                    <div className="grid grid-cols-2 gap-y-3 mt-6">
+                        {categoryBreakdown.slice(0, 6).map((entry, index) => (
+                            <div key={entry.name} className="flex items-center gap-2">
+                                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }} />
+                                <div className="min-w-0">
+                                    <p className="text-[11px] font-bold text-gray-900 dark:text-white truncate">{entry.name}</p>
+                                    <p className="text-[10px] text-gray-500 font-medium">
+                                        {((entry.value / categoryBreakdown.reduce((s, c) => s + c.value, 0)) * 100).toFixed(1)}%
+                                    </p>
                                 </div>
-                                <span className="text-sm font-bold text-gray-900 dark:text-white shrink-0">{cat.share}%</span>
                             </div>
                         ))}
                     </div>
                 </motion.div>
             </div>
-
-            {/* Quick Actions */}
-            <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
-                {[
-                    {
-                        title: t('brand.dashboard.viewAllLocations'),
-                        description: t('brand.dashboard.manageLocationsDesc'),
-                        linkLabel: t('brand.dashboard.links.viewAllLocations'),
-                        icon: Store,
-                        color: 'text-blue-500',
-                        bg: 'bg-blue-500/10',
-                        action: () => navigate(`/brand/${brandId}/locations`)
-                    },
-                    {
-                        title: t('brand.dashboard.manageTeam'),
-                        description: t('brand.dashboard.manageTeamDesc'),
-                        linkLabel: t('brand.dashboard.links.manageStaff'),
-                        icon: Users,
-                        color: 'text-purple-500',
-                        bg: 'bg-purple-500/10',
-                        action: () => navigate(`/brand/${brandId}/team`)
-                    },
-                ].map((action, i) => (
-                    <motion.button
-                        key={i}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 + i * 0.1 }}
-                        onClick={action.action}
-                        className={`p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm text-left transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
-                    >
-                        <div className={`w-12 h-12 rounded-xl ${action.bg} ${action.color} flex items-center justify-center mb-4`}>
-                            <action.icon size={24} />
-                        </div>
-                        <h4 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white mb-1">
-                            {action.title}
-                        </h4>
-                        <p className="text-sm font-medium text-gray-500">{action.description}</p>
-                        <div className="flex items-center gap-1 mt-4 text-xs font-bold text-mintcom-green">
-                            <span>{action.linkLabel}</span>
-                            <ArrowRight size={14} />
-                        </div>
-                    </motion.button>
-                ))}
-            </div>
         </div>
     );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

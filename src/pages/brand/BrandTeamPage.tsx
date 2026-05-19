@@ -32,6 +32,7 @@ import { Pagination } from '../../components/ui';
 import { AppStrings } from '../../constants/AppStrings';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
+import { StatValue } from '../../components/ui/StatValue';
 
 interface Employee {
     id: string;
@@ -397,7 +398,11 @@ export default function BrandTeamPage() {
                                 </div>
                             </div>
                             <p className="dashboard-stat-title mb-1">{stat.label}</p>
-                            <p className="dashboard-card-value">{stat.value}</p>
+                            <StatValue 
+                                 value={stat.value} 
+                                 className="text-2xl"
+                                 isInteger={true}
+                             />
                         </div>
                     </div>
                 ))}

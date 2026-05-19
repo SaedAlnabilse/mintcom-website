@@ -8,7 +8,8 @@ import { SecurityVerificationModal } from '../../components/SecurityVerification
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Pagination } from '../../components/ui';
-import { formatCurrencyCode } from '../../utils/currency';
+import { formatCurrencyCode, formatCompactCurrencyCode } from '../../utils/currency';
+import { StatValue } from '../../components/ui/StatValue';
 
 interface SavedCard {
     id: string;
@@ -384,7 +385,11 @@ export function OwnerBillingPage() {
                             {t('owner.billing.monthly')}
                         </p>
                         <div className="flex items-baseline justify-end">
-                            <span className="dashboard-card-value text-xl">{formatUsd(totalMonthlyCost)}</span>
+                            <StatValue 
+                                value={totalMonthlyCost} 
+                                currency="USD"
+                                className="text-xl"
+                            />
                             <span className="text-xs font-bold text-gray-400 ml-0.5">{t('common.monthly')}</span>
                         </div>
                     </div>
@@ -396,7 +401,11 @@ export function OwnerBillingPage() {
                                     {t('owner.billing.yearly')}
                                 </p>
                                 <div className="flex items-baseline justify-end">
-                                    <span className="dashboard-card-value text-xl text-mintcom-green">{formatUsd(totalYearlyCost)}</span>
+                                    <StatValue 
+                                        value={totalYearlyCost} 
+                                        currency="USD"
+                                        className="text-xl text-mintcom-green"
+                                    />
                                     <span className="text-xs font-bold text-gray-400 ml-0.5">{t('common.yearly')}</span>
                                 </div>
                             </div>
@@ -442,7 +451,15 @@ export function OwnerBillingPage() {
                             </div>
                             <div>
                                 <p className="dashboard-stat-title mb-0.5">{stat.label}</p>
-                                <p className="dashboard-card-value text-xl">{stat.value}</p>
+                                {typeof stat.value === 'number' ? (
+                                    <StatValue 
+                                        value={stat.value} 
+                                        className="text-xl"
+                                        isInteger={true}
+                                    />
+                                ) : (
+                                    <p className="dashboard-card-value text-xl">{stat.value}</p>
+                                )}
                             </div>
                         </div>
                     </motion.div>
@@ -627,9 +644,11 @@ export function OwnerBillingPage() {
                                                 return (
                                                     <div className="flex flex-col items-center">
                                                         <div className="flex items-baseline">
-                                                            <span className="font-bold text-gray-900 dark:text-white text-sm">
-                                                                {formatUsd(price, 0)}
-                                                            </span>
+                                                            <StatValue 
+                                                                value={price} 
+                                                                currency="USD"
+                                                                className="text-sm"
+                                                            />
                                                             <span className="text-xs text-gray-400 ml-0.5">
                                                                 {isYearly ? t('common.yearly') : t('common.monthly')}
                                                             </span>
