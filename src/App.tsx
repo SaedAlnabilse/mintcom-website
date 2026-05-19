@@ -40,6 +40,7 @@ const AboutUsPage = lazy(() => import('./pages/AboutUsPage').then(m => ({ defaul
 const QAPage = lazy(() => import('./pages/QAPage').then(m => ({ default: m.QAPage })));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
 const TermsPage = lazy(() => import('./pages/TermsPage').then(m => ({ default: m.TermsPage })));
+const ComingSoonPage = lazy(() => import('./pages/ComingSoonPage').then(m => ({ default: m.ComingSoonPage })));
 
 // ============================================================================
 // Lazy Imports - Support Pages
@@ -180,22 +181,71 @@ function RouteSeo() {
 }
 
 // ============================================================================
+// Maintenance Mode Configuration
+// ============================================================================
+const MAINTENANCE_MODE = true; // Set to false to launch for everyone
+
+/** 
+ * Handles secret access to the site during maintenance.
+ * Visit /qa-access to bypass the coming soon page.
+ */
+function SecretAccessHandler() {
+  useEffect(() => {
+    localStorage.setItem('mintcom_preview_access', 'true');
+    // Force a full reload to ensure all states are reset with access
+    window.location.href = '/';
+  }, []);
+
+  return <LoadingFallback />;
+}
+
+/**
+ * Wraps the application to show Coming Soon page if maintenance is active
+ * and the user doesn't have a bypass key.
+ */
+function MaintenanceWrapper() {
+  const hasAccess = localStorage.getItem('mintcom_preview_access') === 'true';
+  const { pathname } = useLocation();
+
+  // Always allow access to the secret bypass route
+  if (pathname === '/qa-access') {
+    return <Outlet />;
+  }
+
+  if (MAINTENANCE_MODE && !hasAccess) {
+    return (
+      <PageSuspense>
+        <ComingSoonPage />
+      </PageSuspense>
+    );
+  }
+
+  return (
+    <>
+      <ScrollToTop />
+      <RouteSeo />
+      <Outlet />
+      <CookieConsent />
+      <FeedbackWidget />
+      <ChatWidgetEnhancer />
+    </>
+  );
+}
+
+// ============================================================================
 // Router Configuration
 // ============================================================================
 const router = createBrowserRouter([
   {
     errorElement: <ErrorPage />,
-    element: (
-      <>
-        <ScrollToTop />
-        <RouteSeo />
-        <Outlet />
-        <CookieConsent />
-        <FeedbackWidget />
-        <ChatWidgetEnhancer />
-      </>
-    ),
+    element: <MaintenanceWrapper />,
     children: [
+      // ========== Secret Access Route ==========
+      {
+        path: "/qa-access",
+        element: <SecretAccessHandler />,
+      },
+
       // ========== Public Routes ==========
       {
         path: "/",
