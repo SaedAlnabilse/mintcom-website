@@ -105,7 +105,6 @@ const ActivityLogsPage = lazy(() => import('./pages/dashboard/ActivityLogsPage')
 const AddonsPage = lazy(() => import('./pages/dashboard/AddonsPage').then(m => ({ default: m.AddonsPage })));
 const InventoryPage = lazy(() => import('./pages/dashboard/RecipesPage').then(m => ({ default: m.RecipesPage })));
 const EstablishmentsPage = lazy(() => import('./pages/dashboard/EstablishmentsPage').then(m => ({ default: m.EstablishmentsPage })));
-const BillingPage = lazy(() => import('./pages/dashboard/BillingPage').then(m => ({ default: m.BillingPage })));
 const AdminUsersPage = lazy(() => import('./pages/dashboard/AdminUsersPage').then(m => ({ default: m.AdminUsersPage })));
 const CustomRolesPage = lazy(() => import('./pages/dashboard/CustomRolesPage').then(m => ({ default: m.CustomRolesPage })));
 
@@ -661,14 +660,6 @@ const router = createBrowserRouter([
                 element: (
                   <PageSuspense>
                     <EstablishmentsPage />
-                  </PageSuspense>
-                ),
-              },
-              {
-                path: "billing",
-                element: (
-                  <PageSuspense>
-                    <BillingPage />
                   </PageSuspense>
                 ),
               },

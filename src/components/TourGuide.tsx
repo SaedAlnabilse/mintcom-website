@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, ChevronLeft, HelpCircle } from 'lucide-react';
@@ -18,9 +18,13 @@ interface TourGuideProps {
   onComplete: () => void;
 }
 
+type TooltipSide = 'top' | 'bottom' | 'left' | 'right';
+
 const TOOLTIP_TARGET_WIDTH = 420;
 const TOOLTIP_PADDING = 20;
 const HIGHLIGHT_PADDING = 12;
+// Extra breathing room between the highlighted target and the tooltip card
+const TOOLTIP_GAP = 20;
 
 export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps) => {
   const { t } = useTranslation();
@@ -29,9 +33,19 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const [tooltipHeight, setTooltipHeight] = useState(200);
   const [tooltipWidth, setTooltipWidth] = useState(TOOLTIP_TARGET_WIDTH);
+  const [viewport, setViewport] = useState(() => ({
+    width: typeof window !== 'undefined' ? window.innerWidth : TOOLTIP_TARGET_WIDTH + TOOLTIP_PADDING * 2,
+    height: typeof window !== 'undefined' ? window.innerHeight : 800,
+  }));
 
   const currentStep = steps[currentStepIndex];
   const isLastStep = currentStepIndex === steps.length - 1;
+
+  // Responsive tooltip width: never wider than the viewport (with padding on both sides)
+  const responsiveTooltipWidth = useMemo(() => {
+    const maxAllowed = Math.max(240, viewport.width - TOOLTIP_PADDING * 2);
+    return Math.min(TOOLTIP_TARGET_WIDTH, maxAllowed);
+  }, [viewport.width]);
 
   // Ref to measure tooltip dimensions
   const tooltipRef = useCallback((node: HTMLDivElement | null) => {
@@ -45,6 +59,8 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
   // Function to update the target element's position
   const updateTargetPosition = useCallback(() => {
     if (!isOpen) return;
+
+    setViewport({ width: window.innerWidth, height: window.innerHeight });
 
     const element = document.getElementById(currentStep?.targetId);
     if (element) {
@@ -83,6 +99,121 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
   };
 
   if (!isOpen) return null;
+
+  // Pick a side that actually fits, then compute clamped coordinates so the
+  // tooltip never overlaps the highlighted target on small / narrow screens.
+  const tooltipPlacement = (() => {
+    if (!targetRect) {
+      return {
+        side: 'bottom' as TooltipSide,
+        top: TOOLTIP_PADDING,
+        left: TOOLTIP_PADDING,
+      };
+    }
+
+    const requested = (currentStep?.position ?? 'bottom') as TooltipSide;
+    const totalGap = HIGHLIGHT_PADDING + TOOLTIP_GAP;
+
+    const space = {
+      top: targetRect.top - totalGap,
+      bottom: viewport.height - targetRect.bottom - totalGap,
+      left: targetRect.left - totalGap,
+      right: viewport.width - targetRect.right - totalGap,
+    };
+
+    const fits = {
+      top: space.top >= tooltipHeight + TOOLTIP_PADDING,
+      bottom: space.bottom >= tooltipHeight + TOOLTIP_PADDING,
+      left: space.left >= tooltipWidth + TOOLTIP_PADDING,
+      right: space.right >= tooltipWidth + TOOLTIP_PADDING,
+    };
+
+    // Try the requested side first, then the opposite side, then any side that fits,
+    // and finally fall back to whichever axis has the most room.
+    const opposite: Record<TooltipSide, TooltipSide> = {
+      top: 'bottom',
+      bottom: 'top',
+      left: 'right',
+      right: 'left',
+    };
+
+    const order: TooltipSide[] = [
+      requested,
+      opposite[requested],
+      'bottom',
+      'top',
+      'right',
+      'left',
+    ];
+
+    let side: TooltipSide = order.find((candidate) => fits[candidate]) ?? requested;
+
+    if (!fits[side]) {
+      // Nothing fits comfortably. Prefer the axis with the most space so we
+      // at least avoid covering the target itself.
+      const verticalRoom = Math.max(space.top, space.bottom);
+      const horizontalRoom = Math.max(space.left, space.right);
+      if (verticalRoom >= horizontalRoom) {
+        side = space.bottom >= space.top ? 'bottom' : 'top';
+      } else {
+        side = space.right >= space.left ? 'right' : 'left';
+      }
+    }
+
+    const clamp = (value: number, min: number, max: number) =>
+      Math.min(Math.max(value, min), Math.max(min, max));
+
+    let top = TOOLTIP_PADDING;
+    let left = TOOLTIP_PADDING;
+
+    if (side === 'top') {
+      top = clamp(
+        targetRect.top - tooltipHeight - totalGap,
+        TOOLTIP_PADDING,
+        viewport.height - tooltipHeight - TOOLTIP_PADDING,
+      );
+      left = clamp(
+        targetRect.left + targetRect.width / 2 - tooltipWidth / 2,
+        TOOLTIP_PADDING,
+        viewport.width - tooltipWidth - TOOLTIP_PADDING,
+      );
+    } else if (side === 'bottom') {
+      top = clamp(
+        targetRect.bottom + totalGap,
+        TOOLTIP_PADDING,
+        viewport.height - tooltipHeight - TOOLTIP_PADDING,
+      );
+      left = clamp(
+        targetRect.left + targetRect.width / 2 - tooltipWidth / 2,
+        TOOLTIP_PADDING,
+        viewport.width - tooltipWidth - TOOLTIP_PADDING,
+      );
+    } else if (side === 'left') {
+      top = clamp(
+        targetRect.top + targetRect.height / 2 - tooltipHeight / 2,
+        TOOLTIP_PADDING,
+        viewport.height - tooltipHeight - TOOLTIP_PADDING,
+      );
+      left = clamp(
+        targetRect.left - tooltipWidth - totalGap,
+        TOOLTIP_PADDING,
+        viewport.width - tooltipWidth - TOOLTIP_PADDING,
+      );
+    } else {
+      top = clamp(
+        targetRect.top + targetRect.height / 2 - tooltipHeight / 2,
+        TOOLTIP_PADDING,
+        viewport.height - tooltipHeight - TOOLTIP_PADDING,
+      );
+      left = clamp(
+        targetRect.right + totalGap,
+        TOOLTIP_PADDING,
+        viewport.width - tooltipWidth - TOOLTIP_PADDING,
+      );
+    }
+
+    return { side, top, left };
+  })();
 
   return createPortal(
     <AnimatePresence>
@@ -138,37 +269,12 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
               animate={{ opacity: 1, y: 0, scale: 1 }}
               key={currentStepIndex}
               dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-              className="absolute z-[10000] w-[420px] max-w-[calc(100vw-40px)] bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-5"
+              className="absolute z-[10000] bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-5"
               style={{
-                // Enhanced positioning logic
-                top: (() => {
-                  if (currentStep.position === 'left' || currentStep.position === 'right') {
-                    return Math.min(Math.max(TOOLTIP_PADDING, targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2)), window.innerHeight - tooltipHeight - TOOLTIP_PADDING);
-                  }
-                  
-                  const pos = currentStep.position as string;
-                  const targetBottom = targetRect.bottom + tooltipHeight + TOOLTIP_PADDING + HIGHLIGHT_PADDING;
-                  const showAtTop = pos === 'top' || 
-                                   (pos !== 'left' && 
-                                    pos !== 'right' && 
-                                    !(targetBottom < window.innerHeight));
-                  
-                  if (showAtTop) {
-                    return Math.max(TOOLTIP_PADDING, targetRect.top - tooltipHeight - HIGHLIGHT_PADDING - 12);
-                  }
-                  
-                  return targetRect.bottom + HIGHLIGHT_PADDING + 12;
-                })(),
-                left: (() => {
-                  if (currentStep.position === 'left') {
-                    return Math.max(TOOLTIP_PADDING, targetRect.left - tooltipWidth - HIGHLIGHT_PADDING - 20);
-                  }
-                  if (currentStep.position === 'right') {
-                    return Math.min(window.innerWidth - tooltipWidth - TOOLTIP_PADDING, targetRect.right + HIGHLIGHT_PADDING + 20);
-                  }
-                  // Default, 'top', or 'bottom'
-                  return Math.min(Math.max(TOOLTIP_PADDING, targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2)), window.innerWidth - tooltipWidth - TOOLTIP_PADDING);
-                })()
+                width: responsiveTooltipWidth,
+                maxWidth: `calc(100vw - ${TOOLTIP_PADDING * 2}px)`,
+                top: tooltipPlacement.top,
+                left: tooltipPlacement.left,
               }}
             >
               <div className="flex items-start justify-between mb-3">

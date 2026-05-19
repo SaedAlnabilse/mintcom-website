@@ -38,6 +38,7 @@ export const ChatWidgetEnhancer = () => {
     const [isTasksOpen, setIsTasksOpen] = useState(false);
     const [tasksCount, setTasksCount] = useState(0);
     const [showCongratsPopup, setShowCongratsPopup] = useState(false);
+    const [isHiddenByOverlay, setIsHiddenByOverlay] = useState(false);
     const storageContextId = locationSlug ? `dashboard-${locationSlug}` : 'global';
     const storageKey = getTasksStorageKey(storageContextId);
     const popupSeenKey = getPopupSeenKey(storageContextId);
@@ -97,6 +98,19 @@ export const ChatWidgetEnhancer = () => {
         return () => window.removeEventListener('mintcom-open-tasks', handleOpenTasks);
     }, []);
 
+    // Allow other parts of the app (e.g. landing page modals) to temporarily
+    // hide the chat widget so it doesn't sit on top of their overlays.
+    useEffect(() => {
+        const handleHide = () => setIsHiddenByOverlay(true);
+        const handleShow = () => setIsHiddenByOverlay(false);
+        window.addEventListener('mintcom-chat-widget-hide', handleHide);
+        window.addEventListener('mintcom-chat-widget-show', handleShow);
+        return () => {
+            window.removeEventListener('mintcom-chat-widget-hide', handleHide);
+            window.removeEventListener('mintcom-chat-widget-show', handleShow);
+        };
+    }, []);
+
     const handleCloseAll = () => {
         setIsChatOpen(false);
         setIsFAQOpen(false);
@@ -105,29 +119,33 @@ export const ChatWidgetEnhancer = () => {
 
     return (
         <>
-            <DualLauncher
-                onOpenChat={handleOpenChat}
-                onOpenFAQ={handleOpenFAQ}
-                onOpenTasks={handleOpenTasks}
-                isChatOpen={isChatOpen}
-                isFAQOpen={isFAQOpen}
-                isTasksOpen={isTasksOpen}
-                onCloseAll={handleCloseAll}
-                tasksCount={tasksCount}
-            />
-            <SmartChatbot
-                isOpen={isChatOpen}
-                onClose={() => setIsChatOpen(false)}
-            />
-            <FAQModal
-                isOpen={isFAQOpen}
-                onClose={() => setIsFAQOpen(false)}
-            />
-            <TasksModal 
-                isOpen={isTasksOpen}
-                onClose={() => setIsTasksOpen(false)}
-            />
-
+            <div
+                aria-hidden={isHiddenByOverlay || undefined}
+                className={isHiddenByOverlay ? 'pointer-events-none opacity-0 invisible transition-opacity duration-150' : 'transition-opacity duration-150'}
+            >
+                <DualLauncher
+                    onOpenChat={handleOpenChat}
+                    onOpenFAQ={handleOpenFAQ}
+                    onOpenTasks={handleOpenTasks}
+                    isChatOpen={isChatOpen}
+                    isFAQOpen={isFAQOpen}
+                    isTasksOpen={isTasksOpen}
+                    onCloseAll={handleCloseAll}
+                    tasksCount={tasksCount}
+                />
+                <SmartChatbot
+                    isOpen={isChatOpen}
+                    onClose={() => setIsChatOpen(false)}
+                />
+                <FAQModal
+                    isOpen={isFAQOpen}
+                    onClose={() => setIsFAQOpen(false)}
+                />
+                <TasksModal
+                    isOpen={isTasksOpen}
+                    onClose={() => setIsTasksOpen(false)}
+                />
+            </div>
             {/* Congratulations Popup */}
             <AnimatePresence>
                 {showCongratsPopup && createPortal(

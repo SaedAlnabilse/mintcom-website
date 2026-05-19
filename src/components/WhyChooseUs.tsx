@@ -1,38 +1,21 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import {
-  CreditCard,
-  ShieldCheck,
-  Users,
-  BarChart3,
-  ChefHat,
-  Sparkles,
-  Building2,
-  LayoutDashboard,
-  Zap,
-  Lock,
-  Heart,
-  Smartphone,
-  ChevronLeft,
-  ChevronRight,
-  X,
-  type LucideIcon,
-} from 'lucide-react';
+import { ShieldCheck, Zap, Settings, Store, Play, Sparkles, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
-type WorkflowFeature = {
+type Feature = {
+  icon: React.ReactNode;
   title: string;
   description: string;
-  icon: LucideIcon;
 };
 
-const WorkflowFeatureCard = ({
+const FeatureCard = ({
   feature,
   index,
   t,
   onOpen,
 }: {
-  feature: WorkflowFeature;
+  feature: Feature;
   index: number;
   t: any;
   onOpen: (index: number) => void;
@@ -42,30 +25,31 @@ const WorkflowFeatureCard = ({
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: (index % 4) * 0.08, duration: 0.5 }}
-      whileHover={{ y: -6, scale: 1.02 }}
-      className="group flex flex-col h-full p-6 rounded-2xl border border-gray-100 dark:border-white/5 bg-white dark:bg-[#121212] hover:border-mintcom-green/40 hover:shadow-2xl hover:shadow-mintcom-green/10 shadow-lg shadow-gray-200/30 dark:shadow-none transition-all duration-500 relative overflow-hidden"
+      transition={{ delay: index * 0.1, duration: 0.5 }}
+      whileHover={{ y: -8, scale: 1.02 }}
+      className="flex flex-col p-8 rounded-xl bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 hover:border-mintcom-green/30 shadow-xl shadow-gray-200/20 dark:shadow-none hover:shadow-2xl hover:shadow-mintcom-green/10 transition-all duration-500 group relative overflow-hidden"
     >
-      <div className="absolute top-0 right-0 w-28 h-28 bg-mintcom-green/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-      <div className="flex items-start gap-4 mb-4 relative z-10">
-        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-mintcom-green/10 dark:bg-mintcom-green/15 flex items-center justify-center group-hover:bg-mintcom-green group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-inner">
-          <feature.icon size={22} className="text-mintcom-green group-hover:text-white transition-colors duration-500" />
+      <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-mintcom-green/10 dark:bg-white/5 flex items-center justify-center mb-6 group-hover:bg-mintcom-green group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-inner">
+        <div className="text-mintcom-green group-hover:text-white transition-colors duration-500">
+          {feature.icon}
         </div>
-        <h3 className="font-barlow text-gray-900 dark:text-white font-bold text-base mt-2 group-hover:text-mintcom-green transition-colors leading-tight tracking-tight">
-          {feature.title}
-        </h3>
       </div>
 
-      <div className="flex-1 flex flex-col justify-between relative z-10">
-        <p className="font-barlow text-gray-600 dark:text-gray-400 text-sm leading-relaxed font-medium line-clamp-3">
+      <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-mintcom-green transition-colors leading-snug tracking-tight">
+        {feature.title}
+      </h3>
+
+      <div className="flex-1 flex flex-col justify-between">
+        <p className="font-barlow text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium line-clamp-4">
           {feature.description}
         </p>
 
         <button
           type="button"
           onClick={() => onOpen(index)}
-          className="mt-3 text-xs font-bold font-barlow text-mintcom-green hover:text-mintcom-green/80 self-start transition-colors focus:outline-none"
+          className="mt-4 text-sm font-bold font-barlow text-mintcom-green hover:text-mintcom-green/80 self-start transition-colors focus:outline-none"
         >
           {t('landing.features.readMore', 'Read more')}
         </button>
@@ -76,6 +60,7 @@ const WorkflowFeatureCard = ({
 
 // Slide variants for the inner content panel.
 // `direction` is 1 when going to next, -1 when going to previous.
+// We tilt slightly on the y-axis to give a card-flip feel without being gimmicky.
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction * 80,
@@ -108,7 +93,7 @@ const slideVariants = {
   }),
 };
 
-const WorkflowFeatureModal = ({
+const FeatureModal = ({
   features,
   activeIndex,
   direction,
@@ -119,7 +104,7 @@ const WorkflowFeatureModal = ({
   t,
   isRtl,
 }: {
-  features: WorkflowFeature[];
+  features: Feature[];
   activeIndex: number;
   direction: number;
   onClose: () => void;
@@ -131,7 +116,6 @@ const WorkflowFeatureModal = ({
 }) => {
   const feature = features[activeIndex];
   if (!feature) return null;
-  const Icon = feature.icon;
 
   const handleDragEnd = (_e: unknown, info: PanInfo) => {
     const threshold = 80;
@@ -228,15 +212,17 @@ const WorkflowFeatureModal = ({
               className="relative z-10 cursor-grab p-8 pt-14 md:p-10 md:pt-16 active:cursor-grabbing"
               style={{ transformStyle: 'preserve-3d' }}
             >
+              {/* icon */}
               <motion.div
                 initial={{ scale: 0.6, rotate: -12, opacity: 0 }}
                 animate={{ scale: 1, rotate: 0, opacity: 1 }}
                 transition={{ delay: 0.05, duration: 0.5, type: 'spring', stiffness: 220, damping: 18 }}
                 className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-mintcom-green/10 dark:bg-white/5 text-mintcom-green"
               >
-                <Icon size={28} />
+                <div className="scale-125">{feature.icon}</div>
               </motion.div>
 
+              {/* title */}
               <motion.h3
                 initial={{ y: 14, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -246,6 +232,7 @@ const WorkflowFeatureModal = ({
                 {feature.title}
               </motion.h3>
 
+              {/* description */}
               <motion.p
                 initial={{ y: 16, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -271,15 +258,15 @@ const WorkflowFeatureModal = ({
           </button>
 
           {/* dots */}
-          <div className="flex items-center gap-1.5 overflow-x-auto max-w-[55%] no-scrollbar">
+          <div className="flex items-center gap-2">
             {features.map((_, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => onJumpTo(i)}
                 aria-label={`Go to ${i + 1}`}
-                className={`h-2 rounded-full transition-all duration-300 flex-shrink-0 ${
-                  i === activeIndex ? 'w-5 bg-mintcom-green' : 'w-2 bg-gray-300 hover:bg-gray-400 dark:bg-white/15 dark:hover:bg-white/25'
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  i === activeIndex ? 'w-6 bg-mintcom-green' : 'w-2 bg-gray-300 hover:bg-gray-400 dark:bg-white/15 dark:hover:bg-white/25'
                 }`}
               />
             ))}
@@ -300,76 +287,35 @@ const WorkflowFeatureModal = ({
   );
 };
 
-export const Features = () => {
+export const WhyChooseUs = () => {
   const { t } = useTranslation();
   const isRtl = t('common.locale') === 'ar';
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const [direction, setDirection] = useState(1);
+  const videoRef = useRef<HTMLDivElement>(null);
 
-  // Order matches the requested layout:
-  // POS, Sales Control, Staff Management, Advanced Reporting,
-  // Recipe & Cost Management, AI System, Multi-Branch Management, Simple & Easy Interface,
-  // Fast Staff Onboarding, Secure & Reliable, Loyalty & Customer Management, Mobile App & Notifications
-  const workflowFeatures: WorkflowFeature[] = [
+  const features: Feature[] = [
     {
-      title: t('landing.workflow.pointOfSale.title'),
-      description: t('landing.workflow.pointOfSale.description'),
-      icon: CreditCard,
+      icon: <Store className="w-6 h-6" />,
+      title: t('landing.features.cards.complete.title'),
+      description: t('landing.features.cards.complete.description'),
     },
     {
-      title: t('landing.workflow.salesControl.title'),
-      description: t('landing.workflow.salesControl.description'),
-      icon: ShieldCheck,
+      icon: <Zap className="w-6 h-6" />,
+      title: t('landing.features.cards.realUsers.title'),
+      description: t('landing.features.cards.realUsers.description'),
     },
     {
-      title: t('landing.workflow.staffManagement.title'),
-      description: t('landing.workflow.staffManagement.description'),
-      icon: Users,
+      icon: <ShieldCheck className="w-6 h-6" />,
+      title: t('landing.features.cards.security.title'),
+      description: t('landing.features.cards.security.description'),
     },
     {
-      title: t('landing.workflow.advancedReporting.title'),
-      description: t('landing.workflow.advancedReporting.description'),
-      icon: BarChart3,
-    },
-    {
-      title: t('landing.workflow.production.title'),
-      description: t('landing.workflow.production.description'),
-      icon: ChefHat,
-    },
-    {
-      title: t('landing.workflow.aiSystem.title'),
-      description: t('landing.workflow.aiSystem.description'),
-      icon: Sparkles,
-    },
-    {
-      title: t('landing.workflow.multiBranch.title'),
-      description: t('landing.workflow.multiBranch.description'),
-      icon: Building2,
-    },
-    {
-      title: t('landing.workflow.simpleUI.title'),
-      description: t('landing.workflow.simpleUI.description'),
-      icon: LayoutDashboard,
-    },
-    {
-      title: t('landing.workflow.fastOnboarding.title'),
-      description: t('landing.workflow.fastOnboarding.description'),
-      icon: Zap,
-    },
-    {
-      title: t('landing.workflow.secure.title'),
-      description: t('landing.workflow.secure.description'),
-      icon: Lock,
-    },
-    {
-      title: t('landing.workflow.loyalty.title'),
-      description: t('landing.workflow.loyalty.description'),
-      icon: Heart,
-    },
-    {
-      title: t('landing.workflow.mobileApp.title'),
-      description: t('landing.workflow.mobileApp.description'),
-      icon: Smartphone,
+      icon: <Settings className="w-6 h-6" />,
+      title: t('landing.features.cards.multiBranch.title'),
+      description: t('landing.features.cards.multiBranch.description'),
     },
   ];
 
@@ -380,21 +326,24 @@ export const Features = () => {
   const handleClose = useCallback(() => setActiveCard(null), []);
   const handlePrev = useCallback(() => {
     setDirection(-1);
-    setActiveCard((i) => (i === null ? null : (i - 1 + workflowFeatures.length) % workflowFeatures.length));
-  }, [workflowFeatures.length]);
+    setActiveCard((i) => (i === null ? null : (i - 1 + features.length) % features.length));
+  }, [features.length]);
   const handleNext = useCallback(() => {
     setDirection(1);
-    setActiveCard((i) => (i === null ? null : (i + 1) % workflowFeatures.length));
-  }, [workflowFeatures.length]);
-  const handleJumpTo = useCallback((target: number) => {
-    setActiveCard((i) => {
-      if (i === null) return target;
-      setDirection(target > i ? 1 : -1);
-      return target;
-    });
-  }, []);
+    setActiveCard((i) => (i === null ? null : (i + 1) % features.length));
+  }, [features.length]);
+  const handleJumpTo = useCallback(
+    (target: number) => {
+      setActiveCard((i) => {
+        if (i === null) return target;
+        setDirection(target > i ? 1 : -1);
+        return target;
+      });
+    },
+    []
+  );
 
-  // Keyboard nav, body scroll lock, and chat widget hide while modal is open
+  // Keyboard navigation while modal is open
   useEffect(() => {
     if (activeCard === null) return;
 
@@ -405,9 +354,11 @@ export const Features = () => {
     };
     window.addEventListener('keydown', onKey);
 
+    // lock body scroll
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
+    // hide the floating chat widget while the popup is open
     window.dispatchEvent(new CustomEvent('mintcom-chat-widget-hide'));
 
     return () => {
@@ -417,24 +368,46 @@ export const Features = () => {
     };
   }, [activeCard, handleClose, handleNext, handlePrev, isRtl]);
 
+  // Lazy load video when section comes into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isVideoLoaded) {
+            setIsVideoVisible(true);
+            setIsVideoLoaded(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: '200px', threshold: 0 }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [isVideoLoaded]);
+
   return (
     <section
-      id="features"
-      className="py-16 lg:py-24 bg-white dark:bg-[#0f0f0f] overflow-hidden relative"
+      id="why-mintcom"
+      className="py-16 lg:py-20 bg-gray-50 dark:bg-[#0f0f0f] overflow-hidden relative"
       dir={isRtl ? 'rtl' : 'ltr'}
     >
       {/* Background Decor */}
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-mintcom-green/5 rounded-full blur-[120px] -z-10" />
-      <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-mintcom-green/5 rounded-full blur-[100px] -z-10" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-mintcom-green/5 rounded-full blur-[120px] -z-10" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-mintcom-green/3 rounded-full blur-[100px] -z-10" />
 
       <div className="container mx-auto px-6 md:px-10 lg:px-16 max-w-[1280px]">
-        {/* Heading */}
+        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12 lg:mb-16 max-w-3xl mx-auto"
+          className="text-center mb-12 lg:mb-16"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -452,40 +425,87 @@ export const Features = () => {
               />
             </div>
             <span className="tracking-widest uppercase text-[10px] md:text-[11px] leading-none">
-              {t('landing.workflow.badge')}
+              {t('landing.features.badge')}
             </span>
           </motion.div>
 
           <h2 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
-            <span className="text-gray-900 dark:text-white">{t('landing.workflow.title')} </span>
-            <span className="bg-mintcom-green text-gray-900 dark:text-gray-900 px-2 rounded-sm">{t('landing.workflow.titleHighlight')}</span>
+            <span className="text-gray-900 dark:text-white">{t('landing.features.title')}</span>{' '}
+            <span className="text-mintcom-green">{t('landing.features.titleHighlight')}</span>
           </h2>
-          {t('landing.workflow.subtitle') && (
-            <p className="text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
-              {t('landing.workflow.subtitle')}
-            </p>
-          )}
+          <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl mx-auto">
+            {t('landing.features.subtitle')}
+          </p>
         </motion.div>
 
-        {/* 4-column responsive grid of all 12 features */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6 items-stretch">
-          {workflowFeatures.map((feature, index) => (
-            <WorkflowFeatureCard
-              key={index}
-              feature={feature}
-              index={index}
-              t={t}
-              onOpen={handleOpen}
-            />
-          ))}
+        {/* Cards & Video */}
+        <div className="flex flex-col gap-16 lg:gap-24">
+          {/* Pillar Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
+            {features.map((feature, index) => (
+              <FeatureCard key={index} feature={feature} index={index} t={t} onOpen={handleOpen} />
+            ))}
+          </div>
+
+          {/* Video Section */}
+          <motion.div
+            ref={videoRef}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.7 }}
+            className="w-full max-w-7xl mx-auto"
+          >
+            <div className="relative rounded-xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-white/10 aspect-video bg-gray-900 group">
+              {isVideoVisible ? (
+                <iframe
+                  src=""
+                  className="w-full h-full scale-[1.02] group-hover:scale-100 transition-transform duration-1000"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  style={{ pointerEvents: 'none' }}
+                  loading="lazy"
+                  title={t('landing.features.videoTitle')}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-900">
+                  <div className="text-center">
+                    <div className="w-20 h-20 rounded-full bg-mintcom-green/20 flex items-center justify-center mx-auto mb-6">
+                      <Play className="w-10 h-10 text-mintcom-green" fill="currentColor" />
+                    </div>
+                    <p className="text-white/60 text-sm font-bold uppercase tracking-widest">{t('common.loadingVideo')}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Overlay Content */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+
+              <div className="absolute bottom-8 left-8 right-8 md:bottom-12 md:left-12 text-white z-10 pointer-events-none">
+                <div className="flex items-end justify-between gap-4">
+                  <div>
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 mb-4 shadow-lg">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mintcom-green opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-mintcom-green"></span>
+                      </span>
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/90">{t('landing.features.liveDemo')}</span>
+                    </div>
+                    <h4 className="font-bold font-barlow text-2xl xs:text-3xl md:text-5xl mb-2 tracking-tighter text-white">{t('landing.features.seeInAction')}</h4>
+                    <p className="text-base md:text-lg text-white/70 font-medium">{t('landing.features.seamlessSync')}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
 
       {/* Read more popup */}
       <AnimatePresence>
         {activeCard !== null && (
-          <WorkflowFeatureModal
-            features={workflowFeatures}
+          <FeatureModal
+            features={features}
             activeIndex={activeCard}
             direction={direction}
             onClose={handleClose}

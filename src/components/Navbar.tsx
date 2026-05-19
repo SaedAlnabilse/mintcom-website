@@ -174,7 +174,7 @@ export const Navbar = () => {
                 <>
                   <Link
                     to="/support"
-                    className="group inline-flex items-center gap-2 rounded-full border border-gray-200/80 px-4 py-2 text-[13px] font-semibold text-gray-600 transition-all duration-300 hover:border-mintcom-green/30 hover:text-mintcom-green dark:border-white/10 dark:text-gray-300 dark:hover:border-mintcom-green/30 dark:hover:text-mintcom-green"
+                    className="group inline-flex items-center gap-2 rounded-xl border border-gray-200/80 px-4 py-2 text-[13px] font-semibold text-gray-600 transition-all duration-300 hover:border-mintcom-green/30 hover:text-mintcom-green dark:border-white/10 dark:text-gray-300 dark:hover:border-mintcom-green/30 dark:hover:text-mintcom-green"
                   >
                     <Headset size={14} className="transition-transform duration-300 group-hover:scale-110" />
                     {t('nav.support')}
@@ -183,14 +183,14 @@ export const Navbar = () => {
                     to="/owner"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-mintcom-green to-emerald-400 px-5 py-2.5 text-[13px] font-bold text-white shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_6px_24px_-4px_rgba(124,195,159,0.7)] active:scale-[0.97] dark:from-mintcom-green dark:to-emerald-500"
+                    className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-mintcom-green to-emerald-400 px-5 py-2.5 text-[13px] font-bold text-white shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_6px_24px_-4px_rgba(124,195,159,0.7)] active:scale-[0.97] dark:from-mintcom-green dark:to-emerald-500"
                   >
                     <User size={14} />
                     {t('nav.dashboard', 'Dashboard')}
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="inline-flex items-center gap-2 rounded-full bg-rose-50 px-4 py-2 text-[13px] font-semibold text-rose-500 transition-all duration-300 hover:bg-rose-100 hover:shadow-sm active:scale-[0.97] dark:bg-rose-500/10 dark:hover:bg-rose-500/20"
+                    className="inline-flex items-center gap-2 rounded-xl bg-rose-50 px-4 py-2 text-[13px] font-semibold text-rose-500 transition-all duration-300 hover:bg-rose-100 hover:shadow-sm active:scale-[0.97] dark:bg-rose-500/10 dark:hover:bg-rose-500/20"
                   >
                     <LogOut size={14} />
                     {t('nav.logout')}

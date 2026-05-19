@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { Navbar } from '../components/Navbar';
 import { Hero } from '../components/Hero';
+import { WhyChooseUs } from '../components/WhyChooseUs';
 import { Features } from '../components/Features';
-import { WorkflowSupport } from '../components/WorkflowSupport';
 import { CloudControl } from '../components/CloudControl';
 import { AdminControl } from '../components/AdminControl';
 import { Hardware } from '../components/Hardware';
@@ -20,7 +20,7 @@ export const LandingPage = () => {
     <div className="min-h-screen bg-white dark:bg-mintcom-dark font-sans text-gray-900 dark:text-mintcom-light selection:bg-mintcom-green selection:text-black" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <Helmet>
         <title>{t('metadata.home.title')}</title>
-        <meta name="description" content={t('metadata.home.description')} />
+        <meta name="description" content={t('metadata.home.descriptiamazon')} />
         <meta property="og:title" content={t('metadata.home.title')} />
         <meta property="og:description" content={t('metadata.home.description')} />
         <meta property="og:type" content="website" />
@@ -29,8 +29,8 @@ export const LandingPage = () => {
       <Navbar />
       <main>
         <Hero isVideoOpen={isVideoOpen} setIsVideoOpen={setIsVideoOpen} />
+        <WhyChooseUs />
         <Features />
-        <WorkflowSupport />
         <CloudControl />
         <AdminControl />
         <PricingDownload />

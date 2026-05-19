@@ -62,13 +62,9 @@ export function EstablishmentRequiredRoute() {
   }
 
   // Lock normal dashboard access when billing has suspended the location.
-  // Except for the billing page so they can reactivate
-  const isBillingPage = location.pathname.includes('/billing');
-  if (
-    LOCKED_SUBSCRIPTION_STATUSES.has(currentEstablishment.subscriptionStatus) &&
-    !isBillingPage
-  ) {
-    return <Navigate to={`/dashboard/${locationSlug}/billing`} replace />;
+  // Redirect to the owner-level billing page to reactivate.
+  if (LOCKED_SUBSCRIPTION_STATUSES.has(currentEstablishment.subscriptionStatus)) {
+    return <Navigate to="/owner/billing" replace />;
   }
 
   return <Outlet />;

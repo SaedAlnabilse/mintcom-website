@@ -109,7 +109,7 @@ export const REQUIRED_PERMISSIONS: Record<string, string[]> = {
     'manage_tax_currency',
     'manage_receipt_settings',
   ],
-  'billing': ['manage_billing'],
+  'billing': ['manage_billing'], // owner-level only; dashboard billing route was removed
   'establishments': ['manage_settings'],
 };
 

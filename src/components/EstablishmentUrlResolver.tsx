@@ -111,13 +111,12 @@ export function EstablishmentUrlResolver({ children }: { children: React.ReactNo
         return <LoadingFallback message="Switching location..." />;
     }
 
-    const isBillingPage = location.pathname.includes('/billing');
+    const isOwnerBillingPage = location.pathname.startsWith('/owner/billing');
     if (
         LOCKED_SUBSCRIPTION_STATUSES.has(currentEstablishment.subscriptionStatus) &&
-        !isBillingPage
+        !isOwnerBillingPage
     ) {
-        const basePath = `/dashboard/${locationSlug}`;
-        return <Navigate to={`${basePath}/billing`} replace />;
+        return <Navigate to="/owner/billing" replace />;
     }
 
     return <>{children}</>;

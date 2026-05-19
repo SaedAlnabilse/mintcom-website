@@ -67,21 +67,7 @@ const getApiErrorMessage = (error: any): string => {
   return '';
 };
 
-const getBillingRedirectPath = (): string => {
-  const currentEstablishment = sessionStorage.getItem('currentEstablishment');
-
-  if (!currentEstablishment) {
-    return '/select-establishment';
-  }
-
-  try {
-    const establishment = JSON.parse(currentEstablishment);
-    const slug = establishment?.establishmentLoginId || establishment?.id;
-    return slug ? `/dashboard/${slug}/billing` : '/select-establishment';
-  } catch {
-    return '/select-establishment';
-  }
-};
+const getBillingRedirectPath = (): string => '/owner/billing';
 
 const normalizeEstablishmentHeaderError = (error: any) => {
   const message = getApiErrorMessage(error).trim();
@@ -171,7 +157,7 @@ api.interceptors.response.use(
     const isLoginRequest = error.config?.url?.includes('/api/accounts/login');
     const isLogoutRequest = error.config?.url?.includes('/api/accounts/logout');
     const isLoginPage = window.location.pathname.includes('/login');
-    const isBillingPage = window.location.pathname.includes('/billing');
+    const isOwnerBillingPage = window.location.pathname.startsWith('/owner/billing');
     const isBillingRequest = error.config?.url?.includes('/billing');
     const skipAuthRedirect = Boolean((error.config as any)?.skipAuthRedirect);
     
@@ -202,7 +188,7 @@ api.interceptors.response.use(
     if (
       (error.response?.status === 402 || error.response?.status === 423) &&
       !isLoginPage &&
-      !isBillingPage &&
+      !isOwnerBillingPage &&
       !isBillingRequest
     ) {
       const errorMessage =
