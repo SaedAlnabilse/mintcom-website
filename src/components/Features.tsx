@@ -139,7 +139,7 @@ export const Features = () => {
             </span>
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
+          <h2 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
             <span className="text-gray-900 dark:text-white">{t('landing.features.title')}</span>{' '}
             <span className="text-mintcom-green">{t('landing.features.titleHighlight')}</span>
           </h2>
@@ -201,7 +201,7 @@ export const Features = () => {
                       </span>
                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/90">{t('landing.features.liveDemo')}</span>
                     </div>
-                    <h4 className="font-bold font-barlow text-3xl md:text-5xl mb-2 tracking-tighter">{t('landing.features.seeInAction')}</h4>
+                    <h4 className="font-bold font-barlow text-2xl xs:text-3xl md:text-5xl mb-2 tracking-tighter text-white">{t('landing.features.seeInAction')}</h4>
                     <p className="text-base md:text-lg text-white/70 font-medium">{t('landing.features.seamlessSync')}</p>
                   </div>
                 </div>

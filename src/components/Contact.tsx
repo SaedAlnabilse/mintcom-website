@@ -67,9 +67,9 @@ export const Contact = () => {
           <div className="flex flex-col lg:flex-row items-stretch bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none">
 
             {/* Contact Info Sidebar */}
-            <div className="lg:w-2/5 bg-gray-100 dark:bg-gray-900 p-12 lg:p-16 relative overflow-hidden flex flex-col justify-between">
+            <div className="lg:w-2/5 bg-gray-100 dark:bg-gray-900 p-8 sm:p-12 lg:p-16 relative overflow-hidden flex flex-col justify-between">
               <div className="relative z-10">
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
+                <h2 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
                   <SplitText text={t('landing.contact.title') + ' ' + t('landing.contact.titleHighlight')} />
                 </h2>
                 <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
@@ -95,7 +95,7 @@ export const Contact = () => {
             </div>
 
             {/* Contact Form */}
-            <div className="lg:w-3/5 p-12 lg:p-16 bg-white dark:bg-transparent">
+            <div className="lg:w-3/5 p-8 sm:p-12 lg:p-16 bg-white dark:bg-transparent">
               <AnimatePresence mode="wait">
                 {isSuccess ? (
                   <motion.div

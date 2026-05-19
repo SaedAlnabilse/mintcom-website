@@ -26,7 +26,7 @@ export const AdminControl = () => {
   const { t } = useTranslation();
 
   return (
-    <section id="admin" className="py-16 lg:py-20 bg-white dark:bg-[#0f0f0f] overflow-hidden relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <section id="admin" className="py-16 lg:py-20 bg-white dark:bg-[#0f0f0f] overflow-x-clip relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Background Decor */}
       <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
 
@@ -39,10 +39,10 @@ export const AdminControl = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="w-full lg:w-1/2 relative flex justify-center items-center h-[520px] lg:h-[600px] lg:justify-start"
+            className="w-full lg:w-1/2 relative flex justify-center items-start pt-8 sm:pt-4 lg:pt-0 lg:items-center h-[420px] sm:h-[520px] lg:h-[600px] lg:justify-start"
           >
             {/* iPhone Frame Mockup (Left/Back) */}
-            <div className="absolute left-[5%] lg:left-[2%] w-[280px] h-[600px] lg:w-[300px] lg:h-[640px] bg-[#0a0a0a] rounded-[28px] border-[7px] border-gray-800 shadow-2xl overflow-hidden ring-1 ring-white/10 z-10 transform -rotate-6 opacity-80 scale-[0.78] origin-top">
+            <div className="absolute top-4 sm:top-0 left-1/2 -translate-x-[75%] sm:-translate-x-[70%] lg:left-[2%] lg:translate-x-0 w-[220px] h-[480px] sm:w-[280px] sm:h-[600px] lg:w-[300px] lg:h-[640px] bg-[#0a0a0a] rounded-[28px] border-[7px] border-gray-800 shadow-2xl overflow-hidden ring-1 ring-white/10 z-10 transform -rotate-6 opacity-80 scale-[0.68] sm:scale-[0.78] origin-top">
               {/* iPhone Notch */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-5 bg-gray-800 rounded-b-xl z-30" />
 
@@ -110,7 +110,7 @@ export const AdminControl = () => {
             </div>
 
             {/* Android Frame Mockup (Right/Front) */}
-            <div className="absolute left-[25%] lg:left-[32%] w-[300px] h-[620px] lg:w-[330px] lg:h-[680px] bg-[#0a0a0a] rounded-[30px] border-[7px] border-gray-800 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10 z-20 transform rotate-3 scale-[0.78] origin-top">
+            <div className="absolute top-4 sm:top-0 left-1/2 -translate-x-[35%] sm:-translate-x-[30%] lg:left-[32%] lg:translate-x-0 w-[240px] h-[500px] sm:w-[300px] sm:h-[620px] lg:w-[330px] lg:h-[680px] bg-[#0a0a0a] rounded-[30px] border-[7px] border-gray-800 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10 z-20 transform rotate-3 scale-[0.68] sm:scale-[0.78] origin-top">
               {/* Android Hole Punch */}
               <div className="absolute top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-black border border-gray-800 rounded-full z-30 shadow-inner" />
 
@@ -245,7 +245,7 @@ export const AdminControl = () => {
               </span>
             </motion.div>
 
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 tracking-tight">
+            <h2 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 tracking-tight">
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.admin.title1')} /></span>
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.admin.title2')} /></span>
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.admin.title3')} /></span>
@@ -280,7 +280,7 @@ export const AdminControl = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-10 flex flex-col items-start gap-3 w-fit"
+              className="mt-8 sm:mt-10 flex flex-col items-center sm:items-start gap-3 w-fit mx-auto sm:mx-0"
             >
               <p className="text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400">
                 {t('landing.admin.installBackofficeApp')}

@@ -322,7 +322,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             {(order.serviceChargeAmount || 0) > 0 && (
                                 <div className="flex justify-between text-gray-400">
                                     <span className="label-strong font-outfit flex items-center gap-1">
-                                        {order.serviceChargeName || order.serviceChargeNameSnapshot || t('orders.details.serviceCharge', { defaultValue: 'Service charge' })}
+                                        {order.serviceChargeName || order.serviceChargeNameSnapshot || t('orders.details.serviceCharge', { defaultValue: 'Service Charge' })}
                                     </span>
                                     <span className="text-sm font-bold">{formatCurrency(order.serviceChargeAmount || 0)}</span>
                                 </div>

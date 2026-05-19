@@ -1148,7 +1148,7 @@ export function OrdersPage() {
                 value={serviceChargeFilter === 'all' ? null : serviceChargeFilter}
                 onChange={(val) => { setServiceChargeFilter(val || 'all'); setPage(1); }}
                 disabled={statusFilter === 'HELD'}
-                placeholder={formatInputPlaceholder(t('orders.filters.serviceCharge', { defaultValue: 'Service charge' }), t('common.locale'))}
+                placeholder={formatInputPlaceholder(t('orders.filters.serviceCharge', { defaultValue: 'Service Charge' }), t('common.locale'))}
                 options={[
                   { label: t('orders.filters.serviceChargeApplied', { defaultValue: 'Applied' }), value: 'applied' },
                   { label: t('orders.filters.serviceChargeNotApplied', { defaultValue: 'Not applied' }), value: 'not_applied' },

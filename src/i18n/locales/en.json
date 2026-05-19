@@ -2983,7 +2983,7 @@
       "statusTip": "Current order status",
       "subtotal": "Subtotal",
       "tax": "Tax",
-      "serviceCharge": "Service charge",
+      "serviceCharge": "Service Charge",
       "title": "Order Details",
       "total": "Total"
     },
@@ -2994,7 +2994,7 @@
       "orderNumber": "Order #",
       "paymentMethod": "Payment method",
       "status": "Status",
-      "serviceCharge": "Service charge",
+      "serviceCharge": "Service Charge",
       "total": "Total ({{currency}})"
     },
     "filters": {
@@ -4540,12 +4540,12 @@
       "invalidTaxMessage": "Tax rate must be between 0 and 100%",
       "invalidTaxTitle": "Invalid Tax Rate",
       "serviceChargeLabel": "SERVICE CHARGE",
-      "serviceChargeTitle": "Service charge",
-      "serviceChargeEnabled": "Enable service charge",
+      "serviceChargeTitle": "Service Charge",
+      "serviceChargeEnabled": "Enable Service Charge",
       "serviceChargeName": "Charge name",
       "serviceChargeType": "Charge type",
       "serviceChargeValue": "Charge value",
-      "serviceChargeTaxable": "Taxable service charge",
+      "serviceChargeTaxable": "Taxable Service Charge",
       "serviceChargeAutoApply": "Auto apply to orders",
       "serviceChargeOverride": "Allow cashier override",
       "percentage": "Percentage",

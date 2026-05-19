@@ -178,7 +178,7 @@ export const WorkflowSupport = () => {
             </span>
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight whitespace-nowrap">
+          <h2 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
             <span className="text-gray-900 dark:text-white">{t('landing.workflow.title')} </span>
             <span className="bg-mintcom-green text-gray-900 dark:text-gray-900 px-2 rounded-sm">{t('landing.workflow.titleHighlight')}</span>
           </h2>

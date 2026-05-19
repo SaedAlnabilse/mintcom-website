@@ -389,7 +389,7 @@ const DashboardCard = ({
 const DeviceMockup = ({ t }: { t: any }) => {
   const isRtl = t('common.locale') === 'ar';
   return (
-    <div className="relative w-full h-full flex items-center justify-center min-h-[420px] lg:min-h-[520px]">
+    <div className="relative w-full h-full flex items-center justify-center min-h-[320px] sm:min-h-[420px] lg:min-h-[520px]">
       {/* Decorative background glow */}
       <div className="absolute inset-0 -z-10 flex items-center justify-center">
         <div className="w-[80%] h-[80%] bg-mintcom-green/10 rounded-full blur-[100px]" />
@@ -625,7 +625,7 @@ export const CloudControl = () => {
               </span>
             </motion.div>
 
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.15] rtl:leading-[1.3] tracking-tight">
+            <h2 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.15] rtl:leading-[1.3] tracking-tight">
               <span className="text-gray-900 dark:text-white">In-Sync </span>
               <span className="text-mintcom-green">Cloud Control</span>
               <span className="block text-gray-900 dark:text-white mt-2">
@@ -642,7 +642,7 @@ export const CloudControl = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-10 flex flex-col items-start gap-3 w-fit"
+              className="mt-8 sm:mt-10 flex flex-col items-center sm:items-start gap-3 w-fit mx-auto sm:mx-0"
             >
               <p className="text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400">
                 {t('landing.admin.installApp')}

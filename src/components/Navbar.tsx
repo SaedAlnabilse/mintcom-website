@@ -88,8 +88,8 @@ export const Navbar = () => {
         <div
           className={`relative rounded-[20px] transition-all duration-500 ${
             isScrolled
-              ? 'bg-white/80 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)] dark:bg-[#0a0a0a]/80 dark:shadow-[0_8px_40px_-12px_rgba(125,198,162,0.08)]'
-              : 'bg-white/40 dark:bg-[#0a0a0a]/40'
+              ? 'bg-white/95 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)] dark:bg-[#0a0a0a]/95 dark:shadow-[0_8px_40px_-12px_rgba(125,198,162,0.08)]'
+              : 'bg-white/90 dark:bg-[#0a0a0a]/90'
           }`}
           style={{
             backdropFilter: 'blur(20px) saturate(1.8)',
@@ -97,7 +97,7 @@ export const Navbar = () => {
           }}
         >
           {/* Inner content */}
-          <div className="relative z-10 flex items-center justify-between px-5 py-3 md:px-7">
+          <div className="relative z-10 flex items-center justify-between px-3 py-3 xs:px-4 sm:px-5 md:px-7">
             {/* Left zone: Logo */}
             <Link
               to="/"
@@ -260,11 +260,11 @@ export const Navbar = () => {
             </div>
 
             {/* Mobile controls */}
-            <div className="relative z-[60] flex shrink-0 items-center gap-1.5 xs:gap-2 sm:gap-3 lg:hidden">
-              <LanguageSwitcher compact showGlobeIcon={false} buttonClassName="min-h-10 px-3 rounded-full" />
+            <div className="relative z-[60] flex shrink-0 items-center gap-1 xs:gap-1.5 sm:gap-2 lg:hidden">
+              <LanguageSwitcher compact showGlobeIcon={false} buttonClassName="min-h-9 px-2.5 xs:px-3 rounded-full text-sm" />
               <ThemeToggle
-                iconSize={18}
-                className="h-10 w-10 rounded-full border border-gray-200 bg-gray-50 text-gray-600 hover:text-mintcom-green dark:border-white/10 dark:bg-white/5 dark:text-gray-400 dark:hover:text-mintcom-green"
+                iconSize={17}
+                className="h-9 w-9 rounded-full border border-gray-200 bg-gray-50 text-gray-600 hover:text-mintcom-green dark:border-white/10 dark:bg-white/5 dark:text-gray-400 dark:hover:text-mintcom-green"
               />
               <motion.button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -276,7 +276,7 @@ export const Navbar = () => {
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-menu"
                 whileTap={{ scale: 0.9 }}
-                className="flex min-h-10 min-w-10 items-center justify-center rounded-full p-2 text-gray-900 transition-colors hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
+                className="flex h-9 w-9 items-center justify-center rounded-full p-1.5 text-gray-900 transition-colors hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
               >
                 <AnimatePresence mode="wait">
                   {isMobileMenuOpen ? (

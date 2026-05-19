@@ -90,21 +90,21 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               </span>
             </motion.div>
 
-            <h1 className="mb-8 font-magilio text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="mb-6 font-magilio text-[2rem] font-bold tracking-tight xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.hero.title1')} /></span>
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.hero.title2')} /></span>
               <span className="block leading-[1.1] rtl:leading-[1.2]"><SplitText text={t('landing.hero.title3')} /></span>
             </h1>
 
-            <p className="mb-10 max-w-2xl text-xl font-light leading-relaxed text-gray-600 dark:text-gray-400">
+            <p className="mb-8 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 sm:text-lg md:text-xl">
               {t('landing.hero.description')}
             </p>
 
-            <div className="flex w-full flex-col justify-start gap-4 sm:w-auto sm:flex-row">
+            <div className="flex w-full flex-col justify-start gap-3 sm:w-auto sm:flex-row">
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCtaClick}
-                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-mintcom-green px-8 py-4 text-lg font-bold text-black transition-all sm:w-auto"
+                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-mintcom-green px-6 py-3.5 text-base font-bold text-black transition-all sm:px-8 sm:py-4 sm:text-lg sm:w-auto"
               >
                 {isAuthenticated ? t('nav.dashboard', 'Go to Dashboard') : t('landing.hero.cta')}
                 <ArrowRight size={20} className={`transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} />
@@ -113,7 +113,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsVideoOpen(true)}
-                className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-gray-100 px-8 py-4 text-lg font-bold text-gray-900 transition-colors hover:bg-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 sm:w-auto"
+                className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-gray-100 px-6 py-3.5 text-base font-bold text-gray-900 transition-colors hover:bg-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 sm:px-8 sm:py-4 sm:text-lg sm:w-auto"
               >
                 <Play size={20} fill="currentColor" className="text-mintcom-green" />
                 {t('landing.hero.watchVideo')}
@@ -128,7 +128,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             initial={{ opacity: 0, x: 50, rotateY: -10 }}
             animate={{ opacity: 1, x: 0, rotateY: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="perspective-1000 relative mt-12 w-full max-w-[700px] flex-1 lg:mt-0 lg:max-w-[800px] lg:-translate-x-20 xl:max-w-[900px] xl:-translate-x-28"
+            className="perspective-1000 relative mt-8 w-full max-w-[700px] flex-1 sm:mt-12 lg:mt-0 lg:max-w-[800px] lg:-translate-x-20 xl:max-w-[900px] xl:-translate-x-28"
           >
             <div className="relative w-full aspect-square sm:aspect-[4/3] flex items-center justify-center">
               

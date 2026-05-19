@@ -52,7 +52,7 @@ export const PricingDownload = () => {
                     viewport={{ once: true }}
                     className="text-center mb-10 lg:mb-12"
                 >
-                    <h2 className="text-5xl lg:text-7xl font-bold font-magilio text-gray-900 dark:text-white mb-6 leading-tight tracking-tight">
+                    <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold font-magilio text-gray-900 dark:text-white mb-6 leading-tight tracking-tight">
                         {t('common.locale') === 'ar' ? (
                             <>ابدأ <span className="text-mintcom-green">الآن</span></>
                         ) : (
@@ -77,7 +77,7 @@ export const PricingDownload = () => {
                         transition={{ duration: 0.8, ease: "easeOut" }}
                         className="w-full"
                     >
-                        <div className="bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-white/5 rounded-[3rem] p-10 lg:p-16 shadow-2xl shadow-mintcom-green/5 dark:shadow-none relative overflow-hidden group">
+                        <div className="bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-white/5 rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-10 lg:p-16 shadow-2xl shadow-mintcom-green/5 dark:shadow-none relative overflow-hidden group">
                             <div className="flex flex-col lg:flex-row items-center lg:items-stretch gap-12 lg:gap-20">
                                 
                                 {/* Left Side: Pricing & CTA */}
@@ -91,10 +91,10 @@ export const PricingDownload = () => {
                                         </h3>
 
                                         {/* Billing Toggle — clickable buttons */}
-                                        <div className="flex items-center gap-3 mb-12">
+                                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-10 sm:mb-12">
                                             <button
                                                 onClick={() => setIsYearly(false)}
-                                                className={`px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all duration-200 active:scale-95 ${!isYearly
+                                                className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-black uppercase tracking-widest transition-all duration-200 active:scale-95 ${!isYearly
                                                     ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
                                                     : 'bg-gray-100 dark:bg-white/5 text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-gray-300'
                                                 }`}
@@ -103,7 +103,7 @@ export const PricingDownload = () => {
                                             </button>
                                             <button
                                                 onClick={() => setIsYearly(true)}
-                                                className={`px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all duration-200 active:scale-95 flex items-center gap-2 ${isYearly
+                                                className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-black uppercase tracking-widest transition-all duration-200 active:scale-95 flex items-center gap-2 ${isYearly
                                                     ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
                                                     : 'bg-gray-100 dark:bg-white/5 text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-gray-300'
                                                 }`}
@@ -117,10 +117,10 @@ export const PricingDownload = () => {
 
                                         <div className="mb-12 relative">
                                             <div className="flex items-baseline justify-center lg:justify-start gap-2 mb-2">
-                                                <span className="text-7xl lg:text-8xl font-bold text-gray-900 dark:text-white tracking-tighter transition-all duration-300">
-                                                    {currentPrice}<span className="text-4xl lg:text-5xl ml-1">USD</span>
+                                                <span className="text-5xl sm:text-7xl lg:text-8xl font-bold text-gray-900 dark:text-white tracking-tighter transition-all duration-300">
+                                                    {currentPrice}<span className="text-3xl sm:text-4xl lg:text-5xl ml-1">USD</span>
                                                 </span>
-                                                <span className="text-gray-400 font-medium text-2xl uppercase tracking-widest">
+                                                <span className="text-gray-400 font-medium text-lg sm:text-2xl uppercase tracking-widest">
                                                     {currentPeriod}
                                                 </span>
                                             </div>
