@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
+import { motion, AnimatePresence, type PanInfo, type Variants } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Zap, Settings, Store, Play, Sparkles, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
@@ -61,7 +61,7 @@ const FeatureCard = ({
 // Slide variants for the inner content panel.
 // `direction` is 1 when going to next, -1 when going to previous.
 // We tilt slightly on the y-axis to give a card-flip feel without being gimmicky.
-const slideVariants = {
+const slideVariants: Variants = {
   enter: (direction: number) => ({
     x: direction * 80,
     opacity: 0,

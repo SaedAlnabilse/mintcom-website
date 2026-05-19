@@ -20,7 +20,7 @@ export const LandingPage = () => {
     <div className="min-h-screen bg-white dark:bg-mintcom-dark font-sans text-gray-900 dark:text-mintcom-light selection:bg-mintcom-green selection:text-black" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <Helmet>
         <title>{t('metadata.home.title')}</title>
-        <meta name="description" content={t('metadata.home.descriptiamazon')} />
+        <meta name="description" content={t('metadata.home.description')} />
         <meta property="og:title" content={t('metadata.home.title')} />
         <meta property="og:description" content={t('metadata.home.description')} />
         <meta property="og:type" content="website" />

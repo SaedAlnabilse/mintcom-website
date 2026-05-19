@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
+import { motion, AnimatePresence, type PanInfo, type Variants } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   CreditCard,
@@ -76,7 +76,7 @@ const WorkflowFeatureCard = ({
 
 // Slide variants for the inner content panel.
 // `direction` is 1 when going to next, -1 when going to previous.
-const slideVariants = {
+const slideVariants: Variants = {
   enter: (direction: number) => ({
     x: direction * 80,
     opacity: 0,
