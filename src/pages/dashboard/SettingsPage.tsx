@@ -36,6 +36,13 @@ interface AppSettings {
   logo?: string | null;
   receiptLogo?: string | null;
   taxRate: number;
+  serviceChargeEnabled?: boolean;
+  serviceChargeName?: string;
+  serviceChargeType?: 'PERCENTAGE' | 'FIXED';
+  serviceChargeValue?: number;
+  serviceChargeTaxable?: boolean;
+  serviceChargeAutoApply?: boolean;
+  serviceChargeAllowCashierOverride?: boolean;
   taxIdNumber?: string;
   currency: string;
   showLogoOnReceipt: boolean;
@@ -387,6 +394,13 @@ export function SettingsPage() {
         taxIdNumber: sanitizeDigits(data.taxIdNumber, MAX_ESTABLISHMENT_TAX_ID_LENGTH),
         farewellMessage: sanitizeLimitedText(data.farewellMessage, MAX_RECEIPT_FAREWELL_LENGTH),
         taxRate: data.taxRate ? clampTaxRatePercent(data.taxRate) : 0,
+        serviceChargeEnabled: Boolean(data.serviceChargeEnabled),
+        serviceChargeName: data.serviceChargeName || 'Service charge',
+        serviceChargeType: data.serviceChargeType || 'PERCENTAGE',
+        serviceChargeValue: Number(data.serviceChargeValue || 0),
+        serviceChargeTaxable: Boolean(data.serviceChargeTaxable),
+        serviceChargeAutoApply: data.serviceChargeAutoApply !== false,
+        serviceChargeAllowCashierOverride: Boolean(data.serviceChargeAllowCashierOverride),
         showTaxId: Boolean(data.showTaxId),
         holdOrderTableCount: normalizeHoldOrderTableCount(data.holdOrderTableCount),
       };
@@ -509,6 +523,13 @@ export function SettingsPage() {
         taxIdNumber: sanitizeDigits(data.taxIdNumber, MAX_ESTABLISHMENT_TAX_ID_LENGTH),
         farewellMessage: sanitizeLimitedText(data.farewellMessage, MAX_RECEIPT_FAREWELL_LENGTH),
         taxRate: clampTaxRatePercent(data.taxRate) / 100,
+        serviceChargeEnabled: Boolean(data.serviceChargeEnabled),
+        serviceChargeName: sanitizeLimitedText(data.serviceChargeName || 'Service charge', 80),
+        serviceChargeType: data.serviceChargeType || 'PERCENTAGE',
+        serviceChargeValue: Math.max(0, Number(data.serviceChargeValue || 0)),
+        serviceChargeTaxable: Boolean(data.serviceChargeTaxable),
+        serviceChargeAutoApply: data.serviceChargeAutoApply !== false,
+        serviceChargeAllowCashierOverride: Boolean(data.serviceChargeAllowCashierOverride),
         holdOrderTableCount: normalizeHoldOrderTableCount(data.holdOrderTableCount),
       };
 
@@ -1030,6 +1051,56 @@ export function SettingsPage() {
                     <span className="text-mintcom-green">•</span>
                     {t('settings.sales.taxWarning')}
                   </p>
+                </div>
+
+                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col gap-4 shadow-lg backdrop-blur-sm transition-all hover:border-mintcom-green/20 group/card">
+                  <div>
+                    <p className="text-xs font-black text-mintcom-green tracking-[0.2em] mb-1">
+                      {t('settings.sales.serviceChargeLabel', { defaultValue: 'Service charge' })}
+                    </p>
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      {t('settings.sales.serviceChargeTitle', { defaultValue: 'Service Charge' })}
+                    </h4>
+                  </div>
+                  <label className="flex items-center justify-between gap-3 text-sm font-bold text-gray-700 dark:text-gray-200">
+                    <span>{t('settings.sales.serviceChargeEnabled', { defaultValue: 'Enable service charge' })}</span>
+                    <input type="checkbox" {...register('serviceChargeEnabled')} className="w-5 h-5 accent-mintcom-green" />
+                  </label>
+                  <input
+                    type="text"
+                    {...register('serviceChargeName')}
+                    placeholder={formatInputPlaceholder(t('settings.sales.serviceChargeName', { defaultValue: 'Service charge name' }), t('common.locale'))}
+                    className="w-full px-4 py-3 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.08] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20"
+                  />
+                  <CustomSelect
+                    value={watch('serviceChargeType') || 'PERCENTAGE'}
+                    onChange={(val) => setValue('serviceChargeType', String(val) as 'PERCENTAGE' | 'FIXED', { shouldDirty: true })}
+                    options={[
+                      { label: t('settings.sales.percentage', { defaultValue: 'Percentage' }), value: 'PERCENTAGE' },
+                      { label: t('settings.sales.fixedAmount', { defaultValue: 'Fixed amount' }), value: 'FIXED' },
+                    ]}
+                    placeholder={formatInputPlaceholder(t('settings.sales.serviceChargeType', { defaultValue: 'Type' }), t('common.locale'))}
+                  />
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    {...register('serviceChargeValue', { valueAsNumber: true, min: 0 })}
+                    placeholder={formatInputPlaceholder(t('settings.sales.serviceChargeValue', { defaultValue: 'Value' }), t('common.locale'))}
+                    className="w-full px-4 py-3 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.08] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20"
+                  />
+                  <label className="flex items-center justify-between gap-3 text-sm font-bold text-gray-700 dark:text-gray-200">
+                    <span>{t('settings.sales.serviceChargeTaxable', { defaultValue: 'Taxable' })}</span>
+                    <input type="checkbox" {...register('serviceChargeTaxable')} className="w-5 h-5 accent-mintcom-green" />
+                  </label>
+                  <label className="flex items-center justify-between gap-3 text-sm font-bold text-gray-700 dark:text-gray-200">
+                    <span>{t('settings.sales.serviceChargeAutoApply', { defaultValue: 'Auto apply' })}</span>
+                    <input type="checkbox" {...register('serviceChargeAutoApply')} className="w-5 h-5 accent-mintcom-green" />
+                  </label>
+                  <label className="flex items-center justify-between gap-3 text-sm font-bold text-gray-700 dark:text-gray-200">
+                    <span>{t('settings.sales.serviceChargeOverride', { defaultValue: 'Allow cashier override' })}</span>
+                    <input type="checkbox" {...register('serviceChargeAllowCashierOverride')} className="w-5 h-5 accent-mintcom-green" />
+                  </label>
                 </div>
 
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col shadow-lg backdrop-blur-sm transition-all group/card relative overflow-hidden">

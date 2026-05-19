@@ -111,6 +111,13 @@ export interface ShiftOption {
 export interface SalesSummary {
   totalRevenue: number;
   taxCollected: number;
+  serviceChargeCollected?: number;
+  serviceChargeRefunded?: number;
+  netServiceChargeCollected?: number;
+  serviceChargeOrderCount?: number;
+  averageServiceChargePerOrder?: number;
+  netSalesBeforeTaxAndServiceCharge?: number;
+  grossSalesIncludingTaxAndCharges?: number;
   grossProfit: number;
   totalOrders: number;
   totalRefunds: number;

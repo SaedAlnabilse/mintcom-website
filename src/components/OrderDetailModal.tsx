@@ -49,6 +49,9 @@ export interface Order {
     items?: OrderItem[];
     subtotal?: number;
     discount?: number;
+    serviceChargeAmount?: number;
+    serviceChargeName?: string;
+    serviceChargeNameSnapshot?: string;
     tax?: number;
     total?: number;
     note?: string;
@@ -314,6 +317,14 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                         {t('orders.details.discount')}
                                     </span>
                                     <span className="text-sm font-bold">-{formatCurrency(order.discount || 0)}</span>
+                                </div>
+                            )}
+                            {(order.serviceChargeAmount || 0) > 0 && (
+                                <div className="flex justify-between text-gray-400">
+                                    <span className="label-strong font-outfit flex items-center gap-1">
+                                        {order.serviceChargeName || order.serviceChargeNameSnapshot || t('orders.details.serviceCharge', { defaultValue: 'Service charge' })}
+                                    </span>
+                                    <span className="text-sm font-bold">{formatCurrency(order.serviceChargeAmount || 0)}</span>
                                 </div>
                             )}
                             <div className="flex justify-between text-gray-400">

@@ -25,6 +25,7 @@ export const LEGACY_ALIAS_MAP: Record<string, string> = {
   // Settings
   settings: 'manage_settings',
   manage_taxes: 'change_taxes',
+  manage_service_charge: 'manage_service_charge',
   manage_devices: 'manage_settings',
   manage_loyalty: 'manage_settings',
   manage_loyalty_program: 'manage_loyalty_program',
@@ -50,6 +51,7 @@ export const LEGACY_ALIAS_MAP: Record<string, string> = {
   open_drawer: 'open_cash_drawer',
   reprint_receipts: 'reprint_receipts',
   change_taxes: 'change_taxes',
+  change_service_charge: 'change_service_charge',
   live_chat: 'live_chat',
   pay_in_pay_out: 'pay_in_pay_out',
   restock_items: 'restock_items',
@@ -114,6 +116,7 @@ export const REQUIRED_PERMISSIONS: Record<string, string[]> = {
 export const POS_PERMISSIONS = [
   { id: 'open_cash_drawer', label: 'Open Drawer Without Making Sale', description: '' },
   { id: 'change_taxes', label: 'Change Tax Rate in Order', description: '' },
+  { id: 'change_service_charge', label: 'Change Service Charge in Order', description: '' },
   { id: 'pay_in_pay_out', label: 'Pay-In/Pay-Out (Non-Sales Transactions)', description: '' },
   { id: 'dashboard', label: 'View Current Analytics in Dashboard', description: '' },
   { id: 'view_shift_reports', label: 'View Previous Shift Analytics in Dashboard', description: '' },
@@ -136,6 +139,7 @@ export const BACKOFFICE_PERMISSIONS = [
   { id: 'manage_settings', label: 'Change Establishment Settings', description: '' },
   { id: 'manage_establishment_profile', label: 'Location Profile', description: '' },
   { id: 'manage_tax_currency', label: 'Tax and Currency', description: '' },
+  { id: 'manage_service_charge', label: 'Service Charge', description: '' },
   { id: 'manage_receipt_settings', label: 'Receipts', description: '' },
   { id: 'delete_establishment', label: 'Delete Location', description: '' },
   { id: 'export_data', label: 'Allow Data Export', description: 'Export business data into CSV or PDF formats for external analysis' },

@@ -52,6 +52,14 @@ interface Order {
   total: number;
   subtotal: number;
   tax: number;
+  serviceChargeAmount?: number;
+  serviceChargeName?: string;
+  serviceChargeNameSnapshot?: string;
+  serviceChargeType?: string;
+  serviceChargeValue?: number;
+  serviceChargeTaxable?: boolean;
+  isServiceChargeChanged?: boolean;
+  serviceChargeReason?: string;
   discount: number;
   paymentMethod: string;
   cardType?: string;
@@ -136,6 +144,7 @@ export function OrdersPage() {
     return location.state?.statusFilter || 'all';
   });
   const [paymentFilter, setPaymentFilter] = useState('all');
+  const [serviceChargeFilter, setServiceChargeFilter] = useState('all');
 
   // Helper function to format payment method display
   const formatPaymentMethod = (order: Order): string => {
@@ -560,6 +569,13 @@ export function OrdersPage() {
         total: h.orderData?.total || 0,
         subtotal: h.orderData?.subtotal || 0,
         tax: h.orderData?.tax || 0,
+        serviceChargeAmount: h.orderData?.serviceChargeAmount || 0,
+        serviceChargeName: h.orderData?.serviceChargeName,
+        serviceChargeType: h.orderData?.serviceChargeType,
+        serviceChargeValue: h.orderData?.serviceChargeValue,
+        serviceChargeTaxable: h.orderData?.serviceChargeTaxable,
+        isServiceChargeChanged: h.orderData?.isServiceChargeChanged,
+        serviceChargeReason: h.orderData?.serviceChargeReason,
         discount: h.orderData?.discount?.amount || 0,
         paymentMethod: t('common.none'),
         paymentStatus: 'HELD',
@@ -605,6 +621,10 @@ export function OrdersPage() {
           } else {
             params.paymentMethod = paymentFilter;
           }
+        }
+
+        if (serviceChargeFilter !== 'all') {
+          params.serviceCharge = serviceChargeFilter;
         }
 
         if (debouncedSearchQuery) {
@@ -703,6 +723,7 @@ export function OrdersPage() {
     page,
     statusFilter,
     paymentFilter,
+    serviceChargeFilter,
     startDate,
     endDate,
     selectedDateRange,
@@ -954,6 +975,7 @@ export function OrdersPage() {
       date: formatDate(o.createdAt),
       customer: o.customer?.name || t('orders.table.walkIn'),
       total: o.total,
+      serviceChargeAmount: o.serviceChargeAmount || 0,
       status: o.paymentStatus || o.status,
       paymentMethod: o.paymentMethod
     }));
@@ -963,6 +985,7 @@ export function OrdersPage() {
       date: t('orders.exportFields.date'),
       customer: t('orders.exportFields.customer'),
       total: t('orders.exportFields.total', { currency: currencySymbol }),
+      serviceChargeAmount: t('orders.exportFields.serviceCharge', { defaultValue: 'Service Charge' }),
       status: t('orders.exportFields.status'),
       paymentMethod: t('orders.exportFields.paymentMethod')
     });
@@ -1090,6 +1113,7 @@ export function OrdersPage() {
                   setPage(1);
                   if (val === 'HELD') {
                     setPaymentFilter('all');
+                    setServiceChargeFilter('all');
                   }
                 }}
                 options={[
@@ -1115,6 +1139,23 @@ export function OrdersPage() {
                 options={paymentOptions}
                 showAllOption={true}
                 allOptionLabel={t('orders.payment.all')}
+                className="w-full h-full"
+              />
+            </div>
+
+            <div className="flex-1 relative z-[30]">
+              <SelectInput
+                value={serviceChargeFilter === 'all' ? null : serviceChargeFilter}
+                onChange={(val) => { setServiceChargeFilter(val || 'all'); setPage(1); }}
+                disabled={statusFilter === 'HELD'}
+                placeholder={formatInputPlaceholder(t('orders.filters.serviceCharge', { defaultValue: 'Service charge' }), t('common.locale'))}
+                options={[
+                  { label: t('orders.filters.serviceChargeApplied', { defaultValue: 'Applied' }), value: 'applied' },
+                  { label: t('orders.filters.serviceChargeNotApplied', { defaultValue: 'Not applied' }), value: 'not_applied' },
+                  { label: t('orders.filters.serviceChargeChanged', { defaultValue: 'Changed / removed' }), value: 'changed' },
+                ]}
+                showAllOption={true}
+                allOptionLabel={t('orders.filters.serviceChargeAll', { defaultValue: 'All orders' })}
                 className="w-full h-full"
               />
             </div>
@@ -1191,8 +1232,8 @@ export function OrdersPage() {
           <div
             key={i}
             onClick={stat.onClick}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink 
-              ${stat.onClick ? 'cursor-pointer' : 'cursor-default'} 
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink
+              ${stat.onClick ? 'cursor-pointer' : 'cursor-default'}
               ${stat.active
                 ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
                 : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'}`}
@@ -1359,7 +1400,7 @@ export function OrdersPage() {
       )}
 
       {/* Orders List Container */}
-      <div 
+      <div
         ref={ordersListRef}
         className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]"
       >
@@ -1730,9 +1771,4 @@ export function OrdersPage() {
     </div>
   );
 }
-
-
-
-
-
 

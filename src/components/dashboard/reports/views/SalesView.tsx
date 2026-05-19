@@ -66,7 +66,11 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
   const { locationSlug } = useParams();
   const grossSales = salesData.totalRevenue ?? 0;
   const taxCollected = salesData.taxCollected ?? 0;
-  const netSales = Math.max(grossSales - taxCollected, 0);
+  const serviceChargeCollected = salesData.netServiceChargeCollected ?? salesData.serviceChargeCollected ?? 0;
+  const netSales = Math.max(
+    salesData.netSalesBeforeTaxAndServiceCharge ?? (grossSales - taxCollected - serviceChargeCollected),
+    0,
+  );
   const paymentMethodBreakdown = (salesData.paymentMethodBreakdown || [])
     .map((item: any) => {
       const value = Number(item.value ?? item.amount ?? item.total ?? 0);
@@ -118,6 +122,19 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             color: 'text-mintcom-green',
             bg: 'bg-mintcom-green/10',
             sub: t('orders.reports.sales.taxAmount')
+          },
+          {
+            label: t('orders.reports.sales.serviceCharge', { defaultValue: 'Service Charge' }),
+            amount: serviceChargeCollected,
+            isCurrency: true,
+            icon: CreditCard,
+            color: 'text-mintcom-green',
+            bg: 'bg-mintcom-green/10',
+            sub: t('orders.reports.sales.serviceChargeSub', {
+              defaultValue: '{{count}} orders | avg {{avg}}',
+              count: salesData.serviceChargeOrderCount ?? 0,
+              avg: `${currencySymbol}${Number(salesData.averageServiceChargePerOrder ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+            })
           },
           {
             label: t('orders.reports.sales.numOrders'),
