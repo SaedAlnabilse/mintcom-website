@@ -60,6 +60,7 @@ interface Employee {
     isAccountOwner?: boolean;
     isOwnerAccount?: boolean;
     isProtected?: boolean;
+    isAdminEquivalent?: boolean;
 }
 
 type ViewMode = 'grid' | 'list';
@@ -81,6 +82,15 @@ const isOwnerEmployee = (employee: Pick<Employee, 'role' | 'isAccountOwner' | 'i
         employee.isOwnerAccount ||
         employee.isProtected ||
         employee.role?.toUpperCase() === 'ACCOUNT_OWNER',
+    );
+
+const isAdminEquivalentEmployee = (
+    employee: Pick<Employee, 'role' | 'isAccountOwner' | 'isOwnerAccount' | 'isProtected' | 'isAdminEquivalent'>,
+) =>
+    Boolean(
+        employee.isAdminEquivalent ||
+        isOwnerEmployee(employee) ||
+        employee.role?.toUpperCase() === 'ADMIN',
     );
 
 export function OwnerEmployeesPage() {
@@ -243,7 +253,7 @@ export function OwnerEmployeesPage() {
     const openEditEmployee = (emp: Employee) => {
         if (isOwnerEmployee(emp)) {
             toast.error(t('owner.staff.ownerEditProtected', {
-                defaultValue: 'The owner profile is managed from Account settings.',
+                defaultValue: 'Owner profiles can only be edited through Account Management in the Owner Portal',
             }));
             return;
         }
@@ -309,7 +319,11 @@ export function OwnerEmployeesPage() {
                 `${emp.firstName} ${emp.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 emp.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 (emp.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
-            const matchesRole = roleFilter === 'ALL' || (roleFilter === 'USER' ? emp.role !== 'ADMIN' : emp.role === roleFilter);
+            const matchesRole =
+                roleFilter === 'ALL' ||
+                (roleFilter === 'USER'
+                    ? !isAdminEquivalentEmployee(emp)
+                    : isAdminEquivalentEmployee(emp));
             const matchesStatus = statusFilter === 'ALL' ||
                 (statusFilter === 'ACTIVE' ? emp.isActive : !emp.isActive);
             return matchesSearch && matchesRole && matchesStatus;
@@ -435,8 +449,8 @@ export function OwnerEmployeesPage() {
 
     const stats = useMemo(() => ({
         total: employees.length,
-        admins: employees.filter(e => e.role === 'ADMIN').length,
-        staff: employees.filter(e => e.role !== 'ADMIN' && !isOwnerEmployee(e)).length,
+        admins: employees.filter(isAdminEquivalentEmployee).length,
+        staff: employees.filter(e => !isAdminEquivalentEmployee(e)).length,
         active: employees.filter(e => e.hasActiveShift).length
     }), [employees]);
 
@@ -595,11 +609,6 @@ export function OwnerEmployeesPage() {
                                                 <div>
                                                     <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
                                                         {emp.firstName} {emp.lastName}
-                                                        {isOwnerEmployee(emp) && (
-                                                            <span className="ml-2 align-middle px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide">
-                                                                {t('staff.roles.accountOwner', { defaultValue: 'Owner' })}
-                                                            </span>
-                                                        )}
                                                     </h3>
                                                     <p className="text-xs text-gray-500 mt-1">
                                                         {emp.username}
@@ -726,11 +735,6 @@ export function OwnerEmployeesPage() {
                                                     <div>
                                                         <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
                                                             <span>{emp.firstName} {emp.lastName}</span>
-                                                            {isOwnerEmployee(emp) && (
-                                                                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide">
-                                                                    {t('staff.roles.accountOwner', { defaultValue: 'Owner' })}
-                                                                </span>
-                                                            )}
                                                         </p>
                                                         <p className="text-xs text-gray-500">{emp.username}</p>
                                                     </div>
@@ -875,11 +879,6 @@ export function OwnerEmployeesPage() {
                                                             <div>
                                                                 <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
                                                                     <span>{emp.firstName} {emp.lastName}</span>
-                                                                    {isOwnerEmployee(emp) && (
-                                                                        <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide">
-                                                                            {t('staff.roles.accountOwner', { defaultValue: 'Owner' })}
-                                                                        </span>
-                                                                    )}
                                                                 </p>
                                                                 <p className="text-xs text-gray-500">{emp.username}</p>
                                                             </div>

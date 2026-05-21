@@ -191,7 +191,7 @@ export interface ItemReportBreakdown {
   quantity: number;
   totalSales?: number;
   revenue?: number;
-  [key: string]: string | number | undefined; // Allow for dynamic sorting keys
+  [key: string]: string | number | boolean | string[] | null | undefined; // Allow backend lifecycle metadata
 }
 
 export interface ItemReportData {

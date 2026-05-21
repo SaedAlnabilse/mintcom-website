@@ -4,6 +4,8 @@ import { Wallet, CreditCard } from 'lucide-react';
 import { PieChart as RechartsPie, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { useTheme } from '../../../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import { StatValue } from '../../ui/StatValue';
+import { useCurrency } from '../../../context/CurrencyContext';
 
 interface PaymentMethodsBreakdownProps {
   paymentMethodBreakdown: { name: string; value: number }[];
@@ -17,7 +19,17 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const { resolvedTheme } = useTheme();
+  const { currencySymbol } = useCurrency();
   const isDark = resolvedTheme === 'dark';
+  const paymentTotal = (paymentMethodBreakdown || []).reduce((sum, item) => sum + Math.max(Number(item.value) || 0, 0), 0);
+
+  const getMethodName = (name: string) => {
+    const nameStr = String(name).toUpperCase();
+    if (nameStr === 'CARD') return t('orders.payment.allCards');
+    if (nameStr === 'CASH') return t('orders.payment.cash');
+    if (nameStr === 'OTHER') return t('orders.payment.allOther');
+    return nameStr;
+  };
 
   return (
     <div id="tour-capital-sources" className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col transition-all duration-300 overflow-hidden">
@@ -73,15 +85,22 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
                 </ResponsiveContainer>
               </div>
               <div className="space-y-2 mt-4">
-                {paymentMethodBreakdown.slice(0, 3).map((item, i) => (
-                  <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                {paymentMethodBreakdown.slice(0, 3).map((item, i) => {
+                  const percentage = paymentTotal > 0 ? item.value / paymentTotal : 0;
+
+                  return (
+                  <div key={i} className="flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                      <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{item.name}</span>
+                      <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{getMethodName(item.name)}</span>
                     </div>
-                    <span className="text-xs font-bold text-gray-900 dark:text-white">{item.value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    <div className="flex items-center gap-2">
+                      <StatValue value={item.value} currency={currencySymbol} className="text-xs" />
+                      <StatValue value={percentage} isPercentage={true} className="text-xs font-bold text-gray-500 min-w-[36px] text-end" />
+                    </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </>
           ) : (

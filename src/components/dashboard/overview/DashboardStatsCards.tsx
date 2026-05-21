@@ -56,43 +56,48 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
   const statCards: any[] = [
     {
       label: t('dashboard.stats.totalSales'),
-      value: grossSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: grossSales,
       sub: t('dashboard.stats.includingTax'),
       icon: Wallet,
       color: 'text-mintcom-green',
-      bg: 'bg-mintcom-green/10'
+      bg: 'bg-mintcom-green/10',
+      isCurrency: true
     },
     {
       label: t('dashboard.stats.netSales'),
-      value: netSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: netSales,
       sub: t('dashboard.stats.excludingTax'),
       icon: DollarSign,
       color: 'text-mintcom-green',
-      bg: 'bg-mintcom-green/10'
+      bg: 'bg-mintcom-green/10',
+      isCurrency: true
     },
     {
       label: t('dashboard.stats.profit'),
-      value: (stats?.grossProfit ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: stats?.grossProfit ?? 0,
       sub: t('dashboard.stats.netSalesCosts'),
       icon: TrendingUp,
       color: 'text-mintcom-green',
-      bg: 'bg-mintcom-green/10'
+      bg: 'bg-mintcom-green/10',
+      isCurrency: true
     },
     {
       label: t('dashboard.stats.tax'),
-      value: (stats?.taxCollected ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: stats?.taxCollected ?? 0,
       sub: t('dashboard.stats.totalTax'),
       icon: Percent,
       color: 'text-mintcom-green',
-      bg: 'bg-mintcom-green/10'
+      bg: 'bg-mintcom-green/10',
+      isCurrency: true
     },
     {
       label: t('dashboard.stats.totalOrders'),
-      value: (stats?.totalOrders ?? 0).toLocaleString(t('common.locale')),
+      value: stats?.totalOrders ?? 0,
       sub: viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h'),
       icon: Receipt,
       color: 'text-mintcom-green',
       bg: 'bg-mintcom-green/10',
+      isCurrency: false,
       onClick: () => {
         const state: any = { statusFilter: 'all' };
         if (viewMode === 'current_shift') state.selectedDateRange = 'current_shift';
@@ -102,11 +107,12 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     },
     {
       label: t('dashboard.stats.onHold'),
-      value: (stats?.pendingOrders ?? 0).toLocaleString(t('common.locale')),
+      value: stats?.pendingOrders ?? 0,
       sub: `${t('dashboard.stats.pendingOrders')} (${t('dashboard.stats.last24h')})`,
       icon: ShoppingBag,
       color: 'text-mintcom-green',
       bg: 'bg-mintcom-green/10',
+      isCurrency: false,
       onClick: () => {
         const state: any = { statusFilter: 'HELD', selectedDateRange: 'last_24_hours' };
         navigate(`/dashboard/${locationSlug}/orders`, { state });
@@ -117,19 +123,21 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
   statCards.push(
     {
       label: t('dashboard.stats.avgOrder'),
-      value: (stats?.averageOrderValue ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: stats?.averageOrderValue ?? 0,
       sub: t('dashboard.stats.averageValue'),
       icon: Scale,
       color: 'text-mintcom-green',
-      bg: 'bg-mintcom-green/10'
+      bg: 'bg-mintcom-green/10',
+      isCurrency: true
     },
     {
       label: t('dashboard.stats.refunds'),
-      value: (stats?.totalRefunds ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      value: stats?.totalRefunds ?? 0,
       sub: viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h'),
       icon: ArrowDownRight,
       color: 'text-mintcom-green',
-      bg: 'bg-mintcom-green/10'
+      bg: 'bg-mintcom-green/10',
+      isCurrency: true
     },
     {
       label: t('dashboard.stats.nonSales'),
@@ -140,14 +148,14 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       bg: 'bg-mintcom-green/10',
       customContent: (
         <div className="space-y-3 mt-6">
-          <div className="flex items-center justify-between">
+          <div className="flex min-w-0 items-center justify-between gap-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.payIn')}</span>
-            <span className="text-sm font-bold text-mintcom-green tracking-tight">+{ (stats?.totalPayIn ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
+            <StatValue value={stats?.totalPayIn ?? 0} currency={currencySymbol} prefix="+" className="text-sm text-mintcom-green" />
           </div>
           <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
-          <div className="flex items-center justify-between">
+          <div className="flex min-w-0 items-center justify-between gap-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.payOut')}</span>
-            <span className="text-sm font-bold text-red-500 tracking-tight">-{ (stats?.totalPayOut ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
+            <StatValue value={stats?.totalPayOut ?? 0} currency={currencySymbol} prefix="-" className="text-sm text-red-500" />
           </div>
         </div>
       ),
@@ -165,25 +173,25 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       bg: previousShiftSnapshot.discrepancy > 0.01 ? 'bg-amber-500/10' : previousShiftSnapshot.discrepancy < -0.01 ? 'bg-red-500/10' : 'bg-mintcom-green/10',
       customContent: (
         <div className="space-y-3 mt-6">
-          <div className="flex items-center justify-between">
+          <div className="flex min-w-0 items-center justify-between gap-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.expected')}</span>
-            <span className="text-sm font-bold text-gray-700 dark:text-gray-300 tracking-tight">{ (previousShiftSnapshot.drawerAmount || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
+            <StatValue value={previousShiftSnapshot.drawerAmount || 0} currency={currencySymbol} className="text-sm text-gray-700 dark:text-gray-300" />
           </div>
           <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
-          <div className="flex items-center justify-between">
+          <div className="flex min-w-0 items-center justify-between gap-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.actual')}</span>
-            <span className="text-sm font-bold text-mintcom-green tracking-tight">{ (previousShiftSnapshot.closingBalance || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
+            <StatValue value={previousShiftSnapshot.closingBalance || 0} currency={currencySymbol} className="text-sm text-mintcom-green" />
           </div>
           <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
-          <div className="flex items-center justify-between">
+          <div className="flex min-w-0 items-center justify-between gap-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.variance')}</span>
-            <span className={`text-sm font-bold tracking-tight ${previousShiftSnapshot.discrepancy > 0.01 ? 'text-amber-500' : previousShiftSnapshot.discrepancy < -0.01 ? 'text-red-500' : 'text-gray-500'}`}>
-              {previousShiftSnapshot.discrepancy > 0.01
-                ? `+${previousShiftSnapshot.discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t('dashboard.stats.over')}`
-                : previousShiftSnapshot.discrepancy < -0.01
-                  ? `${previousShiftSnapshot.discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t('dashboard.stats.short')}`
-                  : `${t('dashboard.stats.perfect')} ${(0).toLocaleString(t('common.locale'))}`}
-            </span>
+            {previousShiftSnapshot.discrepancy > 0.01 ? (
+              <StatValue value={previousShiftSnapshot.discrepancy} currency={currencySymbol} prefix="+" suffix={t('dashboard.stats.over')} className="text-sm text-amber-500" />
+            ) : previousShiftSnapshot.discrepancy < -0.01 ? (
+              <StatValue value={Math.abs(previousShiftSnapshot.discrepancy)} currency={currencySymbol} prefix="-" suffix={t('dashboard.stats.short')} className="text-sm text-red-500" />
+            ) : (
+              <StatValue value={0} currency={currencySymbol} prefix={`${t('dashboard.stats.perfect')} `} className="text-sm text-gray-500" />
+            )}
           </div>
         </div>
       ),
@@ -232,8 +240,9 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
                 <>
                   <StatValue 
                     value={stat.value} 
-                    currency={stat.label.includes(t('dashboard.stats.totalOrders')) || stat.label.includes(t('dashboard.stats.onHold')) ? null : currencySymbol}
+                    currency={stat.isCurrency ? currencySymbol : null}
                     className="text-2xl"
+                    isInteger={!stat.isCurrency}
                   />
                   <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize">
                     {stat.sub}

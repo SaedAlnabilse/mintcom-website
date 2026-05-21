@@ -28,6 +28,7 @@ import { ProductFormModal } from '../../components/forms/ProductFormModal';
 import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
 import { LoadingFallback } from '../../components/LoadingFallback';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { StatValue } from '../../components/ui/StatValue';
 import { OptimizedImage, ThumbnailImage } from '../../components/OptimizedImage';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
@@ -1035,9 +1036,7 @@ export function ProductsPage() {
                             <ExternalLink size={14} />
                         </div>
                     </div>
-                    <p className={`text-2xl font-bold tracking-tight ${stockFilter === 'all' ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`}>
-                        {stats.total.toLocaleString(t('common.locale'))}
-                    </p>
+                    <StatValue value={stats.total} isInteger={true} className={`text-2xl ${stockFilter === 'all' ? 'text-blue-500' : ''}`} />
                     <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
                         {t('products.stats.totalDesc')}
                     </p>
@@ -1062,9 +1061,7 @@ export function ProductsPage() {
                             <ExternalLink size={14} />
                         </div>
                     </div>
-                    <p className="text-2xl font-bold text-[#ffc107] tracking-tight">
-                        {stats.yellowThreshold.toLocaleString(t('common.locale'))}
-                    </p>
+                    <StatValue value={stats.yellowThreshold} isInteger={true} className="text-2xl text-[#ffc107]" />
                     <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
                         {t('products.stats.lowDesc')}
                     </p>
@@ -1089,9 +1086,7 @@ export function ProductsPage() {
                             <ExternalLink size={14} />
                         </div>
                     </div>
-                    <p className="text-2xl font-bold text-[#D55263] tracking-tight">
-                        {stats.redThreshold.toLocaleString(t('common.locale'))}
-                    </p>
+                    <StatValue value={stats.redThreshold} isInteger={true} className="text-2xl text-[#D55263]" />
                     <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
                         {t('products.stats.criticalDesc')}
                     </p>
@@ -1116,9 +1111,7 @@ export function ProductsPage() {
                             <ExternalLink size={14} />
                         </div>
                     </div>
-                    <p className="text-2xl font-bold text-slate-500 tracking-tight">
-                        {stats.outOfStock.toLocaleString(t('common.locale'))}
-                    </p>
+                    <StatValue value={stats.outOfStock} isInteger={true} className="text-2xl text-slate-500" />
                     <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
                         {t('products.stats.outOfStockDesc')}
                     </p>

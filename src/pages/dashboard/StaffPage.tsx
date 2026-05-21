@@ -25,6 +25,7 @@ import { SecurityVerificationModal } from '../../components/SecurityVerification
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { exportToCSV } from '../../utils/export';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { StatValue } from '../../components/ui/StatValue';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { PortalDropdown } from '../../components/PortalDropdown';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -45,6 +46,7 @@ interface Staff {
   isAccountOwner?: boolean;
   isOwnerAccount?: boolean;
   isProtected?: boolean;
+  isAdminEquivalent?: boolean;
 }
 
 interface Discount {
@@ -63,6 +65,15 @@ const isOwnerStaff = (member: Pick<Staff, 'role' | 'isAccountOwner' | 'isOwnerAc
     member.isOwnerAccount ||
     member.isProtected ||
     member.role?.toUpperCase() === 'ACCOUNT_OWNER',
+  );
+
+const isAdminEquivalentStaff = (
+  member: Pick<Staff, 'role' | 'isAccountOwner' | 'isOwnerAccount' | 'isProtected' | 'isAdminEquivalent'>,
+) =>
+  Boolean(
+    member.isAdminEquivalent ||
+    isOwnerStaff(member) ||
+    member.role?.toUpperCase() === 'ADMIN',
   );
 
 const MAX_EMPLOYEES_PER_ACCOUNT = 50;
@@ -180,7 +191,9 @@ export function StaffPage() {
 
   const filteredStaff = useMemo(() => {
     const result = (Array.isArray(staff) ? staff : []).filter(s => {
-      const matchesRole = filterRole === 'ALL' || (filterRole === 'USER' ? s.role !== 'ADMIN' : s.role === filterRole);
+      const matchesRole =
+        filterRole === 'ALL' ||
+        (filterRole === 'USER' ? !isAdminEquivalentStaff(s) : isAdminEquivalentStaff(s));
       const matchesStatus = filterStatus === 'ALL' || (filterStatus === 'ACTIVE' ? s.isActive : !s.isActive);
       const matchesSearch = (s.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
         s.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -268,7 +281,7 @@ export function StaffPage() {
   const openEditModal = (member: Staff) => {
     if (isOwnerStaff(member)) {
       toast.error(t('staff.messages.ownerProtected', {
-        defaultValue: 'The owner account is managed from Account settings.',
+        defaultValue: 'Owner profiles can only be edited through Account Management in the Owner Portal',
       }));
       return;
     }
@@ -452,8 +465,8 @@ export function StaffPage() {
         {[
           { label: t('owner.employees.totalUsers'), info: t('owner.staff.usersInfo'), value: staff.length, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
           { label: t('owner.employees.activeNow'), info: t('owner.staff.activeInfo'), value: staff.filter(s => s.isClockedIn).length, icon: UserCheck, color: 'text-mintcom-green', bg: 'bg-mintcom-green/' },
-          { label: t('owner.staff.admins'), info: t('owner.staff.adminsInfo'), value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-          { label: t('owner.staff.standardUsers'), info: t('owner.staff.standardInfo'), value: staff.filter(s => s.role !== 'ADMIN' && !isOwnerStaff(s)).length, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+          { label: t('owner.staff.admins'), info: t('owner.staff.adminsInfo'), value: staff.filter(isAdminEquivalentStaff).length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+          { label: t('owner.staff.standardUsers'), info: t('owner.staff.standardInfo'), value: staff.filter(s => !isAdminEquivalentStaff(s)).length, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
           <div
             key={i}
@@ -468,7 +481,7 @@ export function StaffPage() {
               </div>
               <div>
                 <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none mb-1">{stat.value.toLocaleString(t('common.locale'))}</p>
+                <StatValue value={stat.value} isInteger={true} className="text-2xl mb-1" />
                 <p className="hidden sm:block text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{stat.info}</p>
               </div>
             </div>
@@ -558,11 +571,6 @@ export function StaffPage() {
                       <div>
                         <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
                           <span>{member.name}</span>
-                          {isOwnerStaff(member) && (
-                            <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide">
-                              {t('staff.roles.accountOwner', { defaultValue: 'Owner' })}
-                            </span>
-                          )}
                         </p>
                         <p className="text-xs text-gray-500">{member.username}</p>
                       </div>
@@ -687,11 +695,6 @@ export function StaffPage() {
                           <div>
                             <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
                               <span>{member.name}</span>
-                              {isOwnerStaff(member) && (
-                                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black tracking-wide">
-                                  {t('staff.roles.accountOwner', { defaultValue: 'Owner' })}
-                                </span>
-                              )}
                             </p>
                             <p className="text-xs text-gray-500">{member.username}</p>
                           </div>

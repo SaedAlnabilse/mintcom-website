@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Package, PieChart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useCurrency } from '../../../context/CurrencyContext';
+import { StatValue } from '../../ui/StatValue';
 
 interface TopProduct {
   name: string;
@@ -26,6 +28,7 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({
   const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
+  const { currencySymbol } = useCurrency();
 
   return (
     <div id="tour-top-products" className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm transition-all duration-300">
@@ -70,12 +73,12 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({
                   </div>
                   <div className="min-w-0">
                     <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/item:text-mintcom-green transition-colors truncate max-w-[120px]">{item.name}</p>
-                    <p className="text-xs text-gray-500 font-medium">{item.orders.toLocaleString(t('common.locale'))} {t('dashboard.stats.sold')}</p>
+                    <div className="text-xs text-gray-500 font-medium">
+                      <StatValue value={item.orders} isInteger={true} suffix={t('dashboard.stats.sold')} className="text-xs text-gray-500 inline-flex" />
+                    </div>
                   </div>
                 </div>
-                <p className="text-xs font-bold text-gray-900 dark:text-white">
-                  {item.revenue.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
+                <StatValue value={item.revenue} currency={currencySymbol} className="text-xs" />
               </motion.div>
             )) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
@@ -102,12 +105,12 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({
                   </div>
                   <div className="min-w-0">
                     <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/cat:text-purple-500 transition-colors truncate max-w-[120px]">{cat.name}</p>
-                    <p className="text-xs text-gray-500 font-medium">{(cat.count || 0).toLocaleString(t('common.locale'))} {t('dashboard.stats.orders')}</p>
+                    <div className="text-xs text-gray-500 font-medium">
+                      <StatValue value={cat.count || 0} isInteger={true} suffix={t('dashboard.stats.orders')} className="text-xs text-gray-500 inline-flex" />
+                    </div>
                   </div>
                 </div>
-                <p className="text-xs font-bold text-gray-900 dark:text-white">
-                  {cat.value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
+                <StatValue value={cat.value} currency={currencySymbol} className="text-xs" />
               </motion.div>
             )) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">

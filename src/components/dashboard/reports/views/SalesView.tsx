@@ -88,6 +88,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
         chartValue: Math.abs(safeValue),
       };
     });
+  const paymentMethodTotal = paymentMethodBreakdown.reduce((sum, item) => sum + Math.max(item.value, 0), 0);
 
   return (
     <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -536,15 +537,22 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                   </ResponsiveContainer>
                 </div>
                 <div className="space-y-2 mt-4">
-                  {paymentMethodBreakdown.slice(0, 3).map((item, i) => (
+                  {paymentMethodBreakdown.slice(0, 3).map((item, i) => {
+                    const percentage = paymentMethodTotal > 0 ? item.value / paymentMethodTotal : 0;
+
+                    return (
                     <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                         <span className="sentence-case-text text-sm font-bold text-gray-700 dark:text-gray-300">{getMethodName(item.name)}</span>
                       </div>
-                      <span className="text-sm font-bold text-gray-900 dark:text-white"><FormatCurrency value={item.value} /></span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold text-gray-900 dark:text-white"><FormatCurrency value={item.value} /></span>
+                        <StatValue value={percentage} isPercentage={true} className="text-xs font-bold text-gray-500 min-w-[36px] text-end" />
+                      </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             ) : (

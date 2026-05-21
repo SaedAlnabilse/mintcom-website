@@ -153,7 +153,7 @@ The Categories page supports CSV import with a required Name column and a maximu
 
 Categories can be active or inactive. Use the status filter to view active, inactive, or all categories.
 
-If you archive a category, it is removed from normal POS category selection. You can reactivate it later when you need it again.
+If you archive a category, it is removed from normal POS category selection. Categories cannot be reactivated; create a new category when you need that menu grouping again. Historical reports keep the archived category visible as `[Deleted]`.
 
 ### Archive, delete, and historical protection
 

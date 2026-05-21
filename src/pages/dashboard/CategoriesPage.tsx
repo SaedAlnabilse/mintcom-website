@@ -19,8 +19,7 @@ import {
   AlertTriangle,
   Grid,
   List,
-  Upload,
-  RotateCcw
+  Upload
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -28,6 +27,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { CategoryFormModal, ICON_MAP } from '../../components/forms/CategoryFormModal';
 import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { StatValue } from '../../components/ui/StatValue';
 import { ThumbnailImage } from '../../components/OptimizedImage';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -391,14 +391,10 @@ export function CategoriesPage() {
           setConfirmConfig({
             isOpen: true,
             title: 'Archived category found',
-            message: `An archived category named "${archived.displayName}" already exists. Restore it, or create a new category with the same name?`,
+            message: `An archived category named "${archived.displayName}" already exists. Categories cannot be reactivated, but historical reports keep the archived category as [Deleted]. Create a new category with this name?`,
             type: 'warning',
-            confirmText: 'Restore archived',
-            secondaryText: 'Create new anyway',
+            confirmText: 'Create new category',
             onConfirm: async () => {
-              await reactivateCategory(archived.id);
-            },
-            onSecondary: async () => {
               setIsSubmitting(true);
               try {
                 await saveCategory(payload);
@@ -491,38 +487,6 @@ export function CategoriesPage() {
     }
   };
 
-  const reactivateCategory = async (categoryId: string) => {
-    try {
-      await api.post(`/api/categories/${categoryId}/reactivate`);
-      toast.success(t('categories.messages.reactivated', { defaultValue: 'Category reactivated' }));
-      setViewingCategory((current) =>
-        current?.id === categoryId
-          ? { ...current, isActive: true, deletedAt: null, deactivatedAt: null }
-          : current,
-      );
-      setShowModal(false);
-      fetchData();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || t('categories.messages.reactivateFailed', { defaultValue: 'Failed to reactivate category' }));
-    }
-  };
-
-  const handleReactivate = (category: Category) => {
-    setConfirmConfig({
-      isOpen: true,
-      title: t('common.reactivate', { defaultValue: 'Reactivate' }),
-      message: t('categories.reactivate.message', {
-        name: category.name,
-        defaultValue: `Reactivate "${category.name}" so it can be used for new products again? Historical receipts keep their original category snapshots.`,
-      }),
-      type: 'success',
-      confirmText: t('common.reactivate', { defaultValue: 'Reactivate' }),
-      onConfirm: async () => {
-        await reactivateCategory(category.id);
-      },
-    });
-  };
-
   const stats = useMemo(() => {
     const sortedCats = [...categories].sort((a, b) => (b._count?.items || 0) - (a._count?.items || 0));
     const topCategory = sortedCats[0];
@@ -597,9 +561,13 @@ export function CategoriesPage() {
               <div className="min-w-0 flex-1">
                 <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
                 <div className="flex flex-col">
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight truncate">
-                    {typeof stat.value === 'number' ? stat.value.toLocaleString(t('common.locale')) : stat.value}
-                  </p>
+                  {typeof stat.value === 'number' ? (
+                    <StatValue value={stat.value} isInteger={true} className="text-2xl" />
+                  ) : (
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight truncate">
+                      {stat.value}
+                    </p>
+                  )}
                   {stat.sub && (
                     <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-2 truncate">{stat.sub}</p>
                   )}
@@ -690,28 +658,22 @@ export function CategoriesPage() {
                           <IconComponent size={24} />
                         </div>
                         <div className="flex gap-1">
-                          <button
-                            onClick={(e) => openEditModal(e, category)}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-mintcom-green transition-colors"
-                          >
-                            <Edit2 size={16} />
-                          </button>
-                          {isCategoryActive(category) ? (
-                            <button
-                              onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
-                              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-mintcom-red transition-colors"
-                              title={t('common.archive')}
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          ) : (
-                            <button
-                              onClick={(e) => { e.stopPropagation(); handleReactivate(category); }}
-                              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-mintcom-green transition-colors"
-                              title={t('common.reactivate', { defaultValue: 'Reactivate' })}
-                            >
-                              <RotateCcw size={16} />
-                            </button>
+                          {isCategoryActive(category) && (
+                            <>
+                              <button
+                                onClick={(e) => openEditModal(e, category)}
+                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-mintcom-green transition-colors"
+                              >
+                                <Edit2 size={16} />
+                              </button>
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
+                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-mintcom-red transition-colors"
+                                title={t('common.archive')}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </>
                           )}
                         </div>
                       </div>
@@ -797,28 +759,22 @@ export function CategoriesPage() {
                           </td>
                           <td className="px-6 py-4 text-center">
                             <div className="flex items-center justify-center gap-2">
-                              <button
-                                onClick={(e) => openEditModal(e, category)}
-                                className="p-2 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"
-                              >
-                                <Edit2 size={16} />
-                              </button>
-                              {isCategoryActive(category) ? (
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
-                                  className="p-2 text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 rounded-lg transition-colors"
-                                  title={t('common.archive')}
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); handleReactivate(category); }}
-                                  className="p-2 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"
-                                  title={t('common.reactivate', { defaultValue: 'Reactivate' })}
-                                >
-                                  <RotateCcw size={16} />
-                                </button>
+                              {isCategoryActive(category) && (
+                                <>
+                                  <button
+                                    onClick={(e) => openEditModal(e, category)}
+                                    className="p-2 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"
+                                  >
+                                    <Edit2 size={16} />
+                                  </button>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
+                                    className="p-2 text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 rounded-lg transition-colors"
+                                    title={t('common.archive')}
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                </>
                               )}
                             </div>
                           </td>
@@ -880,21 +836,13 @@ export function CategoriesPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    {isCategoryActive(viewingCategory) ? (
+                    {isCategoryActive(viewingCategory) && (
                       <button
                         onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
                         className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-mintcom-green transition-colors"
                         title={t('common.add')}
                       >
                         <Plus size={20} />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleReactivate(viewingCategory)}
-                        className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-mintcom-green transition-colors"
-                        title={t('common.reactivate', { defaultValue: 'Reactivate' })}
-                      >
-                        <RotateCcw size={20} />
                       </button>
                     )}
                     <button
@@ -914,21 +862,13 @@ export function CategoriesPage() {
                       </div>
                       <h3 className="dashboard-card-value mb-2">{t('products.messages.noProducts')}</h3>
                       <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-6">{t('products.messages.noProductsDesc')}</p>
-                      {isCategoryActive(viewingCategory) ? (
+                      {isCategoryActive(viewingCategory) && (
                         <button
                           onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
                           className="px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-colors flex items-center gap-2 shadow-sm"
                         >
                           <Plus size={18} />
                           {t('common.add')}
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleReactivate(viewingCategory)}
-                          className="px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-colors flex items-center gap-2 shadow-sm"
-                        >
-                          <RotateCcw size={18} />
-                          {t('common.reactivate', { defaultValue: 'Reactivate' })}
                         </button>
                       )}
                     </div>
@@ -989,7 +929,6 @@ export function CategoriesPage() {
         onClose={() => setShowModal(false)}
         onSubmit={onSubmit}
         onDelete={editingCategory && isCategoryActive(editingCategory) ? () => handleDelete(editingCategory.id) : undefined}
-        onReactivate={editingCategory && !isCategoryActive(editingCategory) ? reactivateCategory : undefined}
         initialData={editingCategory}
         isSubmitting={isSubmitting}
         externalError={formError}

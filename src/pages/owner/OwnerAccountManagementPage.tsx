@@ -38,6 +38,7 @@ import api from '../../config/api';
 import { CURRENCIES } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 import { PasswordResetOtpModal } from '../../components/PasswordResetOtpModal';
+import { StatValue } from '../../components/ui/StatValue';
 import toast from 'react-hot-toast';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { SectionLoader } from '../../components/LoadingState';
@@ -532,9 +533,7 @@ export function OwnerAccountManagementPage() {
                             <p className="dashboard-stat-title mb-1 truncate">
                                 {t('owner.account.stats.locations')}
                             </p>
-                            <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                                {establishments?.length || 0}
-                            </p>
+                            <StatValue value={establishments?.length || 0} isInteger={true} className="text-xl" />
                         </div>
                     </div>
                 </div>
@@ -551,9 +550,7 @@ export function OwnerAccountManagementPage() {
                             <p className="dashboard-stat-title mb-1 truncate">
                                 {t('owner.account.stats.brands')}
                             </p>
-                            <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                                {brands.length}
-                            </p>
+                            <StatValue value={brands.length} isInteger={true} className="text-xl" />
                         </div>
                     </div>
                 </div>
@@ -570,9 +567,7 @@ export function OwnerAccountManagementPage() {
                             <p className="dashboard-stat-title mb-1 truncate">
                                 {t('owner.account.stats.admins')}
                             </p>
-                            <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                                {adminUsers.length}
-                            </p>
+                            <StatValue value={adminUsers.length} isInteger={true} className="text-xl" />
                         </div>
                     </div>
                 </div>

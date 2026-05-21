@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +26,7 @@ export interface OrderItem {
     basePrice?: number;
     total?: number;
     finalPrice?: number;
+    refundedFromOrderItemId?: string | null;
 }
 
 export interface Order {
@@ -55,7 +56,52 @@ export interface Order {
     tax?: number;
     total?: number;
     note?: string;
+    refundOrders?: Array<{ items?: OrderItem[] }>;
 }
+
+const getOrderItemId = (item: any): string => String(item?.id || item?.orderItemId || '');
+
+const getItemTotal = (item: any): number => {
+    const numeric = Number(item?.total ?? item?.finalPrice ?? item?.price ?? 0);
+    return Number.isFinite(numeric) ? Math.abs(numeric) : 0;
+};
+
+const getItemUnitTotal = (item: any): number =>
+    getItemTotal(item) / Math.max(1, Number(item?.quantity || 1));
+
+const getRefundItemSignature = (item: any): string => {
+    const itemId = String(item?.itemId || item?.item?.id || '');
+    const basePrice = Math.abs(
+        Number(item?.basePrice ?? item?.unitPrice ?? item?.price ?? 0),
+    ).toFixed(4);
+    const attributes = (item?.chosenAttributes || item?.selectedAttributes || [])
+        .map((attr: any) =>
+            String(attr?.subAttributeId || attr?.subAttribute?.id || attr?.id || ''),
+        )
+        .filter(Boolean)
+        .sort()
+        .join(',');
+
+    return `${itemId}|${basePrice}|${attributes}`;
+};
+
+const getRefundedQuantities = (order: any) => {
+    const refunded = new Map<string, number>();
+    (order?.refundOrders || []).forEach((refundOrder: any) => {
+        (refundOrder?.items || []).forEach((item: any) => {
+            const quantity = Math.max(0, Number(item?.quantity || 0));
+            const originalId = item?.refundedFromOrderItemId;
+            if (originalId) {
+                refunded.set(originalId, (refunded.get(originalId) || 0) + quantity);
+                return;
+            }
+
+            const signature = getRefundItemSignature(item);
+            refunded.set(signature, (refunded.get(signature) || 0) + quantity);
+        });
+    });
+    return refunded;
+};
 
 export interface OrderDetailModalProps {
     order: Order;
@@ -71,6 +117,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
     const [refundReasonError, setRefundReasonError] = useState('');
     const [isRefundSubmitting, setIsRefundSubmitting] = useState(false);
     const [restockItems, setRestockItems] = useState(false);
+    const [selectedRefundItems, setSelectedRefundItems] = useState<Record<string, number>>({});
 
     // Compute if any item has trackStock enabled - check both possible data shapes
     const hasStockTrackedItems = order?.items?.some((item: any) => item?.trackStock || item?.item?.trackStock) || false;
@@ -112,6 +159,41 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
         order.status === 'COMPLETED' ||
         order.status === 'PARTIALLY_REFUNDED';
 
+    const refundableItems = useMemo(() => {
+        const refunded = getRefundedQuantities(order);
+        return (order.items || [])
+            .map((item: any) => {
+                const orderItemId = getOrderItemId(item);
+                const refundedQuantity =
+                    refunded.get(orderItemId) || refunded.get(getRefundItemSignature(item)) || 0;
+                const remainingRefundQuantity = Math.max(
+                    0,
+                    Number(item?.quantity || 0) - refundedQuantity,
+                );
+                return { ...item, orderItemId, remainingRefundQuantity };
+            })
+            .filter((item: any) => item.orderItemId && item.remainingRefundQuantity > 0);
+    }, [order]);
+
+    const selectedRefundLines = useMemo(
+        () =>
+            refundableItems
+                .map((item: any) => {
+                    const quantity = Math.min(
+                        Math.max(0, Number(selectedRefundItems[item.orderItemId] || 0)),
+                        Number(item.remainingRefundQuantity || 0),
+                    );
+                    return { item, orderItemId: item.orderItemId, quantity };
+                })
+                .filter(line => line.quantity > 0),
+        [refundableItems, selectedRefundItems],
+    );
+
+    const selectedRefundAmount = selectedRefundLines.reduce(
+        (sum, line) => sum + getItemUnitTotal(line.item) * line.quantity,
+        0,
+    );
+
     const handleRefund = async () => {
         if (!canRefund) {
             toast.error(t('orders.messages.refundFailed'));
@@ -121,6 +203,12 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
         setRefundReason('');
         setRefundReasonError('');
         setRestockItems(false);
+        setSelectedRefundItems(
+            refundableItems.reduce((acc: Record<string, number>, item: any) => {
+                acc[item.orderItemId] = Number(item.remainingRefundQuantity || 1);
+                return acc;
+            }, {}),
+        );
         setIsRefundReasonModalOpen(true);
     };
 
@@ -142,13 +230,20 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
             setRefundReasonError('Refund reason is required');
             return;
         }
+        if (selectedRefundLines.length === 0) {
+            setRefundReasonError('Select at least one item to refund');
+            return;
+        }
 
         try {
             setIsRefundSubmitting(true);
-            await api.post(`/api/orders/${order.id}/refund`, {
-                reason: trimmedReason,
+            await api.post(`/api/orders/${order.id}/refund-items`, {
                 refundReason: trimmedReason,
                 restockItems: restockItems,
+                items: selectedRefundLines.map(line => ({
+                    orderItemId: line.orderItemId,
+                    quantity: line.quantity,
+                })),
             });
             toast.success(t('orders.messages.refundSuccess'));
             setIsRefundReasonModalOpen(false);
@@ -397,6 +492,89 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
                                 {t('orders.details.refundConfirmMessage')}
                             </p>
+                            <div className="mt-4 space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                        {t('orders.details.items')}
+                                    </span>
+                                    <span className="text-sm font-bold text-mintcom-red">
+                                        {formatCurrency(selectedRefundAmount)}
+                                    </span>
+                                </div>
+                                <div className="max-h-56 overflow-y-auto space-y-2 pr-1">
+                                    {refundableItems.map((item: any) => {
+                                        const selectedQty = Number(selectedRefundItems[item.orderItemId] || 0);
+                                        const selected = selectedQty > 0;
+                                        const remaining = Number(item.remainingRefundQuantity || 0);
+                                        return (
+                                            <div
+                                                key={item.orderItemId}
+                                                className={`rounded-xl border p-3 ${selected
+                                                    ? 'border-mintcom-red bg-mintcom-red/5'
+                                                    : 'border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-white/5'
+                                                    }`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setSelectedRefundItems(prev => {
+                                                                const next = { ...prev };
+                                                                if (next[item.orderItemId]) {
+                                                                    delete next[item.orderItemId];
+                                                                } else {
+                                                                    next[item.orderItemId] = 1;
+                                                                }
+                                                                return next;
+                                                            });
+                                                        }}
+                                                        className={`h-5 w-5 rounded-full border ${selected ? 'border-mintcom-red bg-mintcom-red' : 'border-gray-400'}`}
+                                                    />
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="truncate text-sm font-bold text-gray-900 dark:text-white">{item.name}</p>
+                                                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                                                            Remaining: {remaining}
+                                                        </p>
+                                                    </div>
+                                                    {selected && (
+                                                        <div className="flex items-center gap-2">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    setSelectedRefundItems(prev => ({
+                                                                        ...prev,
+                                                                        [item.orderItemId]: Math.max(1, selectedQty - 1),
+                                                                    }))
+                                                                }
+                                                                disabled={selectedQty <= 1}
+                                                                className="h-8 w-8 rounded-full border border-gray-300 text-sm font-bold disabled:opacity-40 dark:border-white/15"
+                                                            >
+                                                                -
+                                                            </button>
+                                                            <span className="min-w-5 text-center text-sm font-black text-gray-900 dark:text-white">
+                                                                {selectedQty}
+                                                            </span>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    setSelectedRefundItems(prev => ({
+                                                                        ...prev,
+                                                                        [item.orderItemId]: Math.min(remaining, selectedQty + 1),
+                                                                    }))
+                                                                }
+                                                                disabled={selectedQty >= remaining}
+                                                                className="h-8 w-8 rounded-full border border-gray-300 text-sm font-bold disabled:opacity-40 dark:border-white/15"
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
                             <div className="mt-4">
                                 <label className="block text-sm font-normal text-gray-800 dark:text-gray-100 mb-2">
                                     Refund reason
@@ -450,6 +628,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                         setIsRefundReasonModalOpen(false);
                                         setRefundReason('');
                                         setRefundReasonError('');
+                                        setSelectedRefundItems({});
                                     }}
                                     className="flex-1 rounded-xl border border-gray-300 dark:border-white/15 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5"
                                 >

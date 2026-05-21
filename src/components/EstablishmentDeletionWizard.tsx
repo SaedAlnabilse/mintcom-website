@@ -26,6 +26,7 @@ import {
 import api from '../config/api';
 import toast from 'react-hot-toast';
 import { QuickInfo } from './QuickInfo';
+import { StatValue } from './ui/StatValue';
 
 interface ApiError {
     response?: {
@@ -614,13 +615,10 @@ function StatCard({
     label: string;
     value: number;
 }) {
-    const { t } = useTranslation();
     return (
         <div className="bg-gray-100 dark:bg-white/5 rounded-xl p-4 text-center">
             <Icon size={20} className="text-mintcom-red mx-auto mb-2" />
-            <div className="text-2xl font-bold text-gray-900 dark:text-white tracking-tighter">
-                {value.toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
-            </div>
+            <StatValue value={value} isInteger={true} className="text-2xl" containerClassName="justify-center" />
             <div className="text-xs text-gray-500 dark:text-gray-400 font-black tracking-widest mt-1">
                 {label}
             </div>
@@ -663,9 +661,7 @@ function ExportOption({
                 <div className="text-xs text-gray-500 dark:text-gray-400">{description}</div>
             </div>
             <div className="text-right">
-                <div className="text-sm font-bold text-gray-900 dark:text-white">
-                    {count.toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
-                </div>
+                <StatValue value={count} isInteger={true} className="text-sm" containerClassName="justify-end" />
                 <div className="text-xs text-gray-500 dark:text-gray-400">{countLabel}</div>
             </div>
             <button
@@ -723,7 +719,7 @@ export function PendingDeletionBanner({
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="text-center">
-                        <div className="text-2xl sm:text-3xl font-bold">{(deletionStatus.daysRemaining || 0).toLocaleString(t('common.locale'))}</div>
+                        <StatValue value={deletionStatus.daysRemaining || 0} isInteger={true} className="text-2xl sm:text-3xl text-white" containerClassName="justify-center" />
                         <div className="text-xs text-white/80">{t('security.deletion.banner.daysLeft')}</div>
                     </div>
                     <button

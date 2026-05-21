@@ -1177,13 +1177,13 @@ export function ProductFormModal({
                       setShowAddonsDropdown(!showAddonsDropdown);
                       setShowCategoryDropdown(false);
                     }}
-                    className={`w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-left flex items-center justify-between text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm ${attributes.length === 0 ? 'opacity-50 cursor-not-allowed' : 'group-hover:border-mintcom-green/50'}`}
+                    className={`w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-left flex min-w-0 items-center justify-between gap-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm ${attributes.length === 0 ? 'opacity-50 cursor-not-allowed' : 'group-hover:border-mintcom-green/50'}`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 flex items-center justify-center">
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <div className="w-8 h-8 shrink-0 rounded-lg bg-mintcom-green/10 flex items-center justify-center">
                         <Plus size={16} className="text-mintcom-green" strokeWidth={2.5} />
                       </div>
-                      <span className={selectedAttributeIds.length > 0 ? 'text-sm font-bold text-gray-900 dark:text-white' : 'text-sm font-bold text-gray-400'}>
+                      <span className={`min-w-0 truncate ${selectedAttributeIds.length > 0 ? 'text-sm font-bold text-gray-900 dark:text-white' : 'text-sm font-bold text-gray-400'}`}>
                         {selectedAttributeIds.length === 0
                           ? (attributes.length === 0 ? t('products.messages.noAddons') : t('products.form.searchAddons'))
                           : selectedAttributeIds.length === 1
@@ -1191,7 +1191,7 @@ export function ProductFormModal({
                             : t('products.messages.linked', { count: selectedAttributeIds.length })}
                       </span>
                     </div>
-                    <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${showAddonsDropdown ? 'rotate-180 text-mintcom-green' : ''}`} />
+                    <ChevronDown size={20} className={`shrink-0 text-gray-400 transition-transform duration-300 ${showAddonsDropdown ? 'rotate-180 text-mintcom-green' : ''}`} />
                   </button>
 
                   <AnimatePresence>
@@ -1247,10 +1247,10 @@ export function ProductFormModal({
                                   }
                                   setShowAddonsDropdown(false);
                                 }}
-                                className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5 last:border-none"
+                                className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex min-w-0 items-center justify-between gap-3 group transition-colors border-b border-gray-100 dark:border-white/5 last:border-none"
                               >
-                                <div className="flex flex-col">
-                                  <span className={`text-sm font-bold ${selectedAttributeIds.includes(attr.id) ? 'text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                <div className="flex min-w-0 flex-1 flex-col">
+                                  <span className={`min-w-0 overflow-safe-wrap line-clamp-2 text-sm font-bold leading-snug ${selectedAttributeIds.includes(attr.id) ? 'text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`} title={attr.name}>
                                     {attr.name}
                                   </span>
                                   <span className="text-xs text-gray-400 tracking-widest font-black mt-0.5">
@@ -1259,7 +1259,7 @@ export function ProductFormModal({
                                       : t('products.messages.options', { count: attr.subAttributes?.length || 0 })}
                                   </span>
                                 </div>
-                                <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${selectedAttributeIds.includes(attr.id) ? 'bg-mintcom-green border-mintcom-green shadow-sm' : 'border-gray-300 dark:border-white/10'}`}>
+                                <div className={`w-6 h-6 shrink-0 rounded-lg border-2 flex items-center justify-center transition-all ${selectedAttributeIds.includes(attr.id) ? 'bg-mintcom-green border-mintcom-green shadow-sm' : 'border-gray-300 dark:border-white/10'}`}>
                                   {selectedAttributeIds.includes(attr.id) && <Check size={14} className="text-black" strokeWidth={3} />}
                                 </div>
                               </button>
@@ -1287,12 +1287,12 @@ export function ProductFormModal({
                         const attr = attributes.find(a => a.id === id);
                         if (!attr) return null;
                         return (
-                          <div key={id} className="flex items-center gap-2 bg-mintcom-green/10 text-mintcom-green px-4 py-2 rounded-xl border border-mintcom-green/20 shadow-sm transition-all hover:bg-mintcom-green/20">
-                            <span className="text-xs font-bold tracking-widest">{attr.name}</span>
+                          <div key={id} className="flex min-w-0 max-w-full items-center gap-2 bg-mintcom-green/10 text-mintcom-green px-4 py-2 rounded-xl border border-mintcom-green/20 shadow-sm transition-all hover:bg-mintcom-green/20">
+                            <span className="min-w-0 overflow-safe-wrap line-clamp-2 text-xs font-bold leading-snug tracking-widest" title={attr.name}>{attr.name}</span>
                             <button
                               type="button"
                               onClick={() => setSelectedAttributeIds(selectedAttributeIds.filter(idx => idx !== id))}
-                              className="hover:text-mintcom-red transition-colors active:scale-90"
+                              className="shrink-0 hover:text-mintcom-red transition-colors active:scale-90"
                             >
                               <X size={14} />
                             </button>

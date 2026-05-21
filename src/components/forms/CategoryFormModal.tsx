@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, Trash2, Tag, Coffee, IceCream, Pizza, ShoppingBag, Gift, Star, Heart,
   Utensils, CupSoda, Martini, UtensilsCrossed, Cake, Croissant, Cookie,
-  Sandwich, Drumstick, Fish, Apple, Carrot, RotateCcw
+  Sandwich, Drumstick, Fish, Apple, Carrot
 } from 'lucide-react';
 import { QuickInfo } from '../QuickInfo';
 import { useScrollLock } from '../../hooks/useScrollLock';
@@ -54,7 +54,6 @@ interface CategoryFormModalProps {
   onClose: () => void;
   onSubmit: (name: string, icon: string, sortOrder: number) => Promise<void>;
   onDelete?: (id: string) => void;
-  onReactivate?: (id: string) => void | Promise<void>;
   initialData?: Category | null;
   isSubmitting?: boolean;
   externalError?: string | null;
@@ -65,13 +64,11 @@ export function CategoryFormModal({
   onClose,
   onSubmit,
   onDelete,
-  onReactivate,
   initialData,
   isSubmitting = false,
   externalError,
 }: CategoryFormModalProps) {
   const { t } = useTranslation();
-  const isReactivationMode = Boolean(initialData?.id && onReactivate);
   const [name, setName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState('tag');
   const [sortOrder, setSortOrder] = useState(0);
@@ -99,9 +96,6 @@ export function CategoryFormModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isReactivationMode) {
-      return;
-    }
     if (!name.trim()) {
       setErrors({ name: t('categories.errors.nameRequired') });
       // Scroll to the first field that has an error
@@ -217,58 +211,35 @@ export function CategoryFormModal({
 
           {/* Footer */}
           <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-gray-50 dark:bg-black/20 transition-colors sticky bottom-0 pb-safe">
-            {isReactivationMode ? (
-              <>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-barlow font-black text-xs tracking-widest hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
-                >
-                  {t('common.cancel')}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => initialData && onReactivate?.(initialData.id)}
-                  disabled={isSubmitting}
-                  className="flex-1 h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
-                >
-                  <RotateCcw size={18} />
-                  <span>{t('common.reactivate', { defaultValue: 'Reactivate' })}</span>
-                </button>
-              </>
-            ) : (
-              <>
-                {initialData && onDelete && (
-                  <button
-                    type="button"
-                    onClick={() => onDelete(initialData.id)}
-                    title={t('common.delete', { defaultValue: 'Delete' })}
-                    className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-mintcom-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90"
-                  >
-                    <Trash2 size={24} className="group-hover:scale-110 transition-transform" />
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-barlow font-black text-xs tracking-widest hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
-                >
-                  {t('common.cancel')}
-                </button>
-                <button
-                  type="submit"
-                  form="category-form"
-                  disabled={isSubmitting}
-                  className="flex-[2] h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
-                >
-                  {isSubmitting ? (
-                    <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                  ) : (
-                    initialData ? t('common.save') : t('common.add')
-                  )}
-                </button>
-              </>
+            {initialData && onDelete && (
+              <button
+                type="button"
+                onClick={() => onDelete(initialData.id)}
+                title={t('common.delete', { defaultValue: 'Delete' })}
+                className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-mintcom-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90"
+              >
+                <Trash2 size={24} className="group-hover:scale-110 transition-transform" />
+              </button>
             )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-barlow font-black text-xs tracking-widest hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
+            >
+              {t('common.cancel')}
+            </button>
+            <button
+              type="submit"
+              form="category-form"
+              disabled={isSubmitting}
+              className="flex-[2] h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
+            >
+              {isSubmitting ? (
+                <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
+              ) : (
+                initialData ? t('common.save') : t('common.add')
+              )}
+            </button>
           </div>
         </motion.div>
       </div>

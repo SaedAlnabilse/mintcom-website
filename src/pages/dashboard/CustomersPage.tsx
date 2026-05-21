@@ -738,23 +738,23 @@ export function CustomersPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t('customers.details.points')}</p>
-                    <p className="text-xl font-black text-gray-900 dark:text-white">{selectedCustomer.points.toLocaleString()}</p>
+                    <StatValue value={selectedCustomer.points} isInteger={true} className="text-xl font-black" />
                   </div>
                   <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t('customers.details.spent')}</p>
-                    <p className="text-xl font-black text-mintcom-green">{formatAmount(selectedCustomer.totalSpent)}</p>
+                    <StatValue value={selectedCustomer.totalSpent} currency={currencySymbol} className="text-xl font-black text-mintcom-green" />
                   </div>
                   <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t('customers.details.visits')}</p>
-                    <p className="text-xl font-black text-gray-900 dark:text-white">{selectedCustomer.totalVisits}</p>
+                    <StatValue value={selectedCustomer.totalVisits} isInteger={true} className="text-xl font-black" />
                   </div>
                   <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t('customers.details.avgValue')}</p>
-                    <p className="text-xl font-black text-gray-900 dark:text-white">
-                      {selectedCustomer.totalVisits > 0 
-                        ? formatAmount(selectedCustomer.totalSpent / selectedCustomer.totalVisits)
-                        : formatAmount(0)}
-                    </p>
+                    <StatValue
+                      value={selectedCustomer.totalVisits > 0 ? selectedCustomer.totalSpent / selectedCustomer.totalVisits : 0}
+                      currency={currencySymbol}
+                      className="text-xl font-black"
+                    />
                   </div>
                 </div>
 

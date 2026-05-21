@@ -314,6 +314,7 @@ export function BrandLocationsPage() {
     };
 
     const hasActiveFilters = searchQuery || statusFilter !== 'all' || typeFilter !== 'all';
+    const isFilterOnlyEmptyState = !searchQuery.trim() && (statusFilter !== 'all' || typeFilter !== 'all');
     const hasFilters = statusFilter !== 'all' || typeFilter !== 'all';
 
     if (isLoading) {
@@ -539,14 +540,20 @@ export function BrandLocationsPage() {
             {filteredLocations.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white">{searchQuery.trim() ? t('common.noResults') : t('brand.dashboard.noLocations')}</p>
-                    <p className="text-sm text-gray-500 mt-1">
-                        {searchQuery.trim()
-                            ? t('common.noMatchingResults', { entity: 'locations', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
-                            : hasActiveFilters
-                                ? t('brand.dashboard.adjustFilters')
-                                : t('brand.dashboard.addLocationsDesc')}
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">
+                        {isFilterOnlyEmptyState
+                            ? `${t('brand.dashboard.noLocations')} - ${t('brand.dashboard.adjustFilters')}`
+                            : searchQuery.trim()
+                                ? t('common.noResults')
+                                : t('brand.dashboard.noLocations')}
                     </p>
+                    {!isFilterOnlyEmptyState && (
+                        <p className="text-sm text-gray-500 mt-1">
+                            {searchQuery.trim()
+                                ? t('common.noMatchingResults', { entity: 'locations', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
+                                : t('brand.dashboard.addLocationsDesc')}
+                        </p>
+                    )}
                     <div className="flex items-center justify-center gap-4 mt-6">
                         {hasActiveFilters ? (
                             <button

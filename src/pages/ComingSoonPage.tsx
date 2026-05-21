@@ -2,135 +2,169 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 
 export function ComingSoonPage() {
-
   return (
-    <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center relative overflow-hidden font-barlow selection:bg-[#7dc6a2]/30">
+    <div className="min-h-screen bg-white dark:bg-[#0f0f0f] flex flex-col items-center justify-center relative overflow-hidden font-sans selection:bg-mintcom-green/30">
       <Helmet>
-        <title>Mintcom POS | Future of Business</title>
+        <title>Mintcom POS | Coming Soon — The Smarter Way to Run Your Business</title>
+        <meta name="description" content="Mintcom is a complete 360° POS solution. Manage sales, inventory, staff, reporting, and multi-branch operations from one simple system. Launching soon." />
       </Helmet>
 
-      {/* Modern Gradient Background Architecture */}
+      {/* Animated Background — matches Hero section style */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-[#7dc6a2]/10 rounded-full blur-[140px] animate-pulse-slow" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] bg-[#3b82f6]/5 rounded-full blur-[140px] animate-pulse-slow" style={{ animationDelay: '3s' }} />
-        <div className="absolute top-[20%] right-[-5%] w-96 h-96 bg-[#f8b30a]/5 blur-[120px] rounded-full" />
-        
-        {/* Animated Grid Overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-        
-        {/* Grainy Texture */}
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay" />
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.2, 0.4, 0.2],
+            x: [0, 50, 0],
+            y: [0, 30, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-mintcom-green/20 rounded-full blur-[120px]"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.15, 0.3, 0.15],
+            x: [0, -30, 0],
+            y: [0, -50, 0],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+          className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-mintcom-green/10 rounded-full blur-[100px]"
+        />
+        <motion.div
+          animate={{ opacity: [0.05, 0.12, 0.05] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
+          className="absolute top-[30%] left-[50%] -translate-x-1/2 w-[400px] h-[400px] bg-[#f8b30a]/5 rounded-full blur-[100px]"
+        />
       </div>
 
-      <motion.div 
+      {/* Main Content */}
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-        className="z-10 text-center px-6 max-w-4xl w-full"
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+        className="z-10 text-center px-6 max-w-3xl w-full"
       >
-        {/* Status Badge */}
+        {/* Badge — matches website badge style */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-          className="mb-10 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] backdrop-blur-md shadow-2xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="mb-8 inline-flex items-center gap-2.5 rounded-[12px] border border-mintcom-green/20 bg-mintcom-green/5 dark:bg-mintcom-green/10 px-3.5 py-1.5 text-xs font-bold text-mintcom-green shadow-[0_0_15px_rgba(124,195,159,0.05)] backdrop-blur-md"
         >
-          <div className="relative flex h-1.5 w-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7dc6a2] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#7dc6a2]"></span>
+          <div className="relative flex items-center justify-center w-5 h-5 rounded-full bg-mintcom-green/20 text-mintcom-green overflow-hidden">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mintcom-green opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-mintcom-green"></span>
+            </span>
           </div>
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">
-            System Operational • Initializing Release
+          <span className="tracking-widest uppercase text-[10px] md:text-[11px] leading-none">
+            Launching Soon
           </span>
         </motion.div>
 
-        {/* Brand Identity */}
-        <motion.div 
+        {/* Logo */}
+        <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 1 }}
-          className="mb-14 flex justify-center"
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="mb-10 flex justify-center"
         >
-          <div className="relative group">
-            <div className="absolute -inset-4 bg-gradient-to-r from-[#7dc6a2]/20 to-[#3b82f6]/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-            <img 
-              src="/mintcom-logo-white.svg" 
-              alt="Mintcom Logo" 
-              className="h-12 md:h-14 relative drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] transition-transform duration-700 group-hover:scale-105"
-            />
+          <img
+            src="/mintcom-logo-white.svg"
+            alt="Mintcom Logo"
+            className="h-10 md:h-12 hidden dark:block"
+          />
+          <img
+            src="/mintcom-logo.svg"
+            alt="Mintcom Logo"
+            className="h-10 md:h-12 dark:hidden"
+          />
+        </motion.div>
+
+        {/* Headline — uses the website's Magilio font and green accent style */}
+        <motion.h1
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.7 }}
+          className="mb-6 font-magilio text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+        >
+          <span className="text-gray-900 dark:text-white">Earn More. </span>
+          <span className="text-mintcom-green">Manage Better.</span>
+          <br />
+          <span className="text-gray-900 dark:text-white">Work </span>
+          <span className="text-mintcom-green">Smarter.</span>
+        </motion.h1>
+
+        {/* Description — POS-focused curiosity text */}
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.7 }}
+          className="mb-10 max-w-2xl mx-auto text-base sm:text-lg font-light leading-relaxed text-gray-600 dark:text-gray-400"
+        >
+          A complete 360° POS solution is almost here. Sales, inventory, staff management, 
+          real-time reporting, loyalty programs, and multi-branch control — all from one 
+          simple system. No hidden costs. No complexity.
+        </motion.p>
+
+        {/* Feature Pills — key selling points to build curiosity */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.7 }}
+          className="flex flex-wrap justify-center gap-3 mb-12"
+        >
+          {[
+            'Cloud POS',
+            'Multi-Branch',
+            'Real-Time Reports',
+            'Inventory Tracking',
+            'Staff Management',
+            'Loyalty & Discounts',
+          ].map((feature, idx) => (
+            <motion.span
+              key={feature}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.7 + idx * 0.08 }}
+              className="px-4 py-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-medium text-gray-700 dark:text-gray-300 hover:border-mintcom-green/40 hover:text-mintcom-green transition-all duration-300 cursor-default"
+            >
+              {feature}
+            </motion.span>
+          ))}
+        </motion.div>
+
+        {/* CTA teaser */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, duration: 0.7 }}
+          className="mb-16"
+        >
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">
+            From login to first sale in under 10 minutes
+          </p>
+          <div className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green/10 border border-mintcom-green/20 text-mintcom-green font-bold text-sm">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
+            </svg>
+            We're putting the finishing touches — stay tuned
           </div>
         </motion.div>
 
-        {/* Headline Section */}
-        <h1 className="text-2xl md:text-4xl font-black text-white mb-6 tracking-tighter leading-[1.1] font-outfit">
-          Engineering the future of <br />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#7dc6a2] via-[#ace2bf] to-[#7dc6a2] animate-gradient-x">
-            unified business operations.
-          </span>
-        </h1>
-        
-        <p className="text-slate-400 text-xs md:text-sm max-w-lg mx-auto mb-10 font-medium leading-relaxed opacity-80">
-          The ultimate Cloud POS & Business Management ecosystem designed for the next generation of global commerce. 
-          <span className="text-white/40 block mt-3 font-bold tracking-wider uppercase text-[9px]">Excellence is arriving shortly.</span>
-        </p>
-
-        {/* Interactive Features Grid (Miniature) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-20">
-          {[
-            { label: 'Cloud First', icon: '☁️' },
-            { label: 'AI Powered', icon: '🤖' },
-            { label: 'Global Scale', icon: '🌐' }
-          ].map((feature, idx) => (
-            <motion.div
-              key={feature.label}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 + (idx * 0.1) }}
-              className="px-6 py-4 rounded-2xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-sm flex flex-col items-center gap-2 group hover:bg-white/[0.04] transition-all cursor-default"
-            >
-              <span className="text-xl grayscale group-hover:grayscale-0 transition-all">{feature.icon}</span>
-              <span className="text-[11px] font-bold uppercase tracking-widest text-white/50 group-hover:text-[#7dc6a2] transition-colors">
-                {feature.label}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Fine Print / Credits */}
-        <div className="pt-10 border-t border-white/[0.05] flex flex-col items-center">
-          <p className="text-slate-500 text-[9px] uppercase tracking-[0.5em] font-black mb-8 opacity-40">
-            © 2024 Mintcom Technology • Built for Growth
+        {/* Footer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.1, duration: 0.7 }}
+          className="pt-8 border-t border-gray-200 dark:border-white/10"
+        >
+          <p className="text-xs text-gray-400 dark:text-gray-500 font-medium">
+            © {new Date().getFullYear()} Mintcom Technology • Simple is Superior
           </p>
-          
-          <div className="flex gap-8 items-center opacity-30 hover:opacity-100 transition-opacity duration-500">
-             <div className="h-[1px] w-12 bg-white/20" />
-             <div className="flex gap-4">
-                <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
-             </div>
-             <div className="h-[1px] w-12 bg-white/20" />
-          </div>
-        </div>
+        </motion.div>
       </motion.div>
-
-      {/* Floating Ambient Elements */}
-      <motion.div 
-        animate={{ 
-          y: [0, -20, 0],
-          rotate: [0, 5, 0]
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[15%] right-[15%] w-2 h-2 rounded-full bg-[#7dc6a2]/40 blur-sm"
-      />
-      <motion.div 
-        animate={{ 
-          y: [0, 20, 0],
-          rotate: [0, -5, 0]
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute bottom-[15%] left-[15%] w-3 h-3 rounded-full bg-[#3b82f6]/40 blur-sm"
-      />
     </div>
   );
 }

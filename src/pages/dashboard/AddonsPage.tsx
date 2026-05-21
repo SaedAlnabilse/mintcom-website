@@ -25,6 +25,7 @@ import api from '../../config/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { Pagination, SelectInput } from '../../components/ui';
+import { StatValue } from '../../components/ui/StatValue';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { QuickInfo } from '../../components/QuickInfo';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -642,7 +643,7 @@ export function AddonsPage() {
               <div>
                 <p className="dashboard-stat-title mb-1.5">{stat.label}</p>
                 <div className="flex items-baseline gap-2">
-                  <p className="dashboard-card-value">{stat.value.toLocaleString(t('common.locale'))}</p>
+                  <StatValue value={stat.value} isInteger={true} />
                 </div>
                 {stat.sub && <p className="text-xs font-medium text-gray-400 dark:text-gray-500">{stat.sub}</p>}
               </div>
@@ -789,23 +790,23 @@ export function AddonsPage() {
                 <div className="absolute left-0 top-0 h-full w-1 bg-mintcom-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div
                   onClick={() => setExpandedId(expandedId === attr.id ? null : attr.id)}
-                  className="flex items-center justify-between p-6 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer"
+                  className="flex min-w-0 items-start justify-between gap-4 p-6 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer sm:items-center"
                 >
-                  <div className="flex items-center gap-5">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black border ${attr.isRequired ? 'bg-mintcom-green text-black border-mintcom-green' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10'}`}>
+                  <div className="flex min-w-0 flex-1 items-start gap-5 sm:items-center">
+                    <div className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center font-black border ${attr.isRequired ? 'bg-mintcom-green text-black border-mintcom-green' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10'}`}>
                       {attr.name.charAt(0).toUpperCase()}
                     </div>
-                    <div>
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-bold text-gray-900 dark:text-white text-lg truncate max-w-[200px] sm:max-w-[300px]">{attr.name}</h3>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
+                        <h3 className="min-w-0 flex-1 overflow-safe-wrap line-clamp-2 font-bold text-gray-900 dark:text-white text-lg leading-snug" title={attr.name}>{attr.name}</h3>
                         {attr.isRequired && (
-                          <span className="label-strong font-outfit px-2 py-0.5 bg-mintcom-green/10 text-mintcom-green rounded-md border border-mintcom-green/20">{t('attributes.list.mandatory')}</span>
+                          <span className="label-strong font-outfit shrink-0 px-2 py-0.5 bg-mintcom-green/10 text-mintcom-green rounded-md border border-mintcom-green/20">{t('attributes.list.mandatory')}</span>
                         )}
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
                           isAttributeActive(attr)
                             ? 'bg-mintcom-green/10 text-mintcom-green'
                             : 'bg-mintcom-red/10 text-mintcom-red'
-                        }`}>
+                        } shrink-0`}>
                           {isAttributeActive(attr) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                         </span>
                       </div>
@@ -814,7 +815,7 @@ export function AddonsPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex shrink-0 items-center gap-4">
                     <div className="flex gap-3">
                       {isAttributeActive(attr) && (
                         <button
@@ -879,15 +880,15 @@ export function AddonsPage() {
                           return true;
                         })
                         .map((sub) => (
-                          <div key={sub.id} className="flex items-center justify-between p-4 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 group/sub hover:border-mintcom-green/30 transition-all shadow-sm">
-                            <div>
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <p className="font-bold text-gray-900 dark:text-white text-base truncate max-w-[150px] sm:max-w-[200px]">{sub.name}</p>
+                          <div key={sub.id} className="flex min-w-0 items-start justify-between gap-3 p-4 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 group/sub hover:border-mintcom-green/30 transition-all shadow-sm">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex min-w-0 items-center gap-2 flex-wrap">
+                                <p className="min-w-0 flex-1 overflow-safe-wrap line-clamp-2 font-bold text-gray-900 dark:text-white text-base leading-snug" title={sub.name}>{sub.name}</p>
                                 <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold ${
                                   isSubAttributeActive(sub)
                                     ? 'bg-mintcom-green/10 text-mintcom-green'
                                     : 'bg-mintcom-red/10 text-mintcom-red'
-                                }`}>
+                                } shrink-0`}>
                                   {isSubAttributeActive(sub) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                                 </span>
                               </div>
@@ -895,7 +896,7 @@ export function AddonsPage() {
                                 {Number(sub.price) > 0 ? `+${formatAmount(Number(sub.price))}` : t('attributes.list.complimentary')}
                               </p>
                             </div>
-                            <div className="flex gap-1 transition-opacity">
+                            <div className="flex shrink-0 gap-1 transition-opacity">
                               <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10" title={t('common.edit')}>
                                 <Edit2 size={14} />
                               </button>

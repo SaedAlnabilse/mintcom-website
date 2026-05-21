@@ -33,6 +33,7 @@ import { DateRangePicker } from '../../components/DateRangePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { StatValue } from '../../components/ui/StatValue';
 import { SingleSelect } from '../../components/SingleSelect';
 import { checkPermission, usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { PortalDropdown } from '../../components/PortalDropdown';
@@ -110,7 +111,7 @@ interface ShiftStatus {
 export function OrdersPage() {
   const { t } = useTranslation();
   usePermissionGuard();
-  const { formatAmount, currencySymbol } = useCurrency();
+  const { currencySymbol } = useCurrency();
   const { account, currentEstablishment } = useAuth();
   const location = useLocation();
   const canUsePosFeatures = useMemo(
@@ -1189,11 +1190,10 @@ export function OrdersPage() {
         {[
           {
             label: t('orders.kpi.totalAmount'),
-            value: formatAmount(
-              statusFilter === 'HELD'
-                ? heldOrders.reduce((acc, o) => acc + (o.total || 0), 0)
-                : completedOrderRevenue
-            ),
+            value: statusFilter === 'HELD'
+              ? heldOrders.reduce((acc, o) => acc + (o.total || 0), 0)
+              : completedOrderRevenue,
+            isCurrency: true,
             sub: statusFilter === 'HELD'
               ? t('orders.status.onHold')
               : t('dashboard.stats.completedOrders', { defaultValue: 'Completed orders' }),
@@ -1205,11 +1205,10 @@ export function OrdersPage() {
           },
           {
             label: t('orders.kpi.totalOrders'),
-            value: (
-              statusFilter === 'HELD'
-                ? totalHeldCount
-                : completedOrderCount
-            ).toLocaleString(t('common.locale')),
+            value: statusFilter === 'HELD'
+              ? totalHeldCount
+              : completedOrderCount,
+            isCurrency: false,
             sub: statusFilter === 'HELD'
               ? t('orders.status.onHold')
               : t('dashboard.stats.completedOrders', { defaultValue: 'Completed orders' }),
@@ -1221,7 +1220,8 @@ export function OrdersPage() {
           },
           {
             label: t('orders.kpi.onHold'),
-            value: totalHeldCount.toLocaleString(t('common.locale')),
+            value: totalHeldCount,
+            isCurrency: false,
             icon: Clock,
             color: 'text-orange-500',
             bg: 'bg-orange-500/10',
@@ -1245,7 +1245,12 @@ export function OrdersPage() {
               </div>
               <div>
                 <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{stat.value}</p>
+                <StatValue
+                  value={stat.value}
+                  currency={stat.isCurrency ? currencySymbol : null}
+                  isInteger={!stat.isCurrency}
+                  className="text-2xl"
+                />
                 {stat.sub && (
                   <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 capitalize truncate">{stat.sub}</p>
                 )}
@@ -1363,7 +1368,7 @@ export function OrdersPage() {
                       )}
                       <div className="flex items-center justify-between">
                         <span className="dashboard-card-meta">{order.items.length} {t('hero.items')}</span>
-                        <span className="dashboard-card-value">{formatAmount(order.total)}</span>
+                        <StatValue value={order.total} currency={currencySymbol} className="text-2xl" />
                       </div>
                     </div>
 
@@ -1477,7 +1482,7 @@ export function OrdersPage() {
                     </p>
                   </div>
                   <div className="text-right ml-4 flex-shrink-0">
-                    <p className="font-bold text-gray-900 dark:text-white text-lg">{formatAmount(order.total)}</p>
+                    <StatValue value={order.total} currency={currencySymbol} className="text-lg" containerClassName="justify-end" />
                   </div>
                 </div>
 
@@ -1595,7 +1600,7 @@ export function OrdersPage() {
                       <p className="text-xs text-gray-500">{order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')}</p>
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <p className="font-bold text-gray-900 dark:text-white">{formatAmount(order.total)}</p>
+                      <StatValue value={order.total} currency={currencySymbol} className="text-base" containerClassName="justify-center" />
                       <p className="text-xs text-gray-500 font-bold tracking-wider">{formatPaymentMethod(order)}</p>
                     </td>
                     <td className="px-6 py-4 text-center">

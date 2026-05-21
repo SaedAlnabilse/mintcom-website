@@ -20,6 +20,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { CustomSelect } from '../../components/CustomSelect';
 import { Pagination } from '../../components/ui';
+import { StatValue } from '../../components/ui/StatValue';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { formatInputPlaceholder } from '../../utils/textCase';
 
@@ -208,7 +209,7 @@ export function OwnerEstablishmentsPage() {
                         </div>
                         <div>
                             <p className="dashboard-stat-title">{t('owner.locations.total')}</p>
-                            <p className="dashboard-card-value text-xl">{establishments.length}</p>
+                            <StatValue value={establishments.length} isInteger={true} className="text-xl" />
                         </div>
                     </div>
                 </div>
@@ -223,9 +224,7 @@ export function OwnerEstablishmentsPage() {
                         </div>
                         <div>
                             <p className="dashboard-stat-title">{t('owner.locations.active')}</p>
-                            <p className="dashboard-card-value text-xl">
-                                {establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
-                            </p>
+                            <StatValue value={establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length} isInteger={true} className="text-xl" />
                         </div>
                     </div>
                 </div>
@@ -240,9 +239,7 @@ export function OwnerEstablishmentsPage() {
                         </div>
                         <div>
                             <p className="dashboard-stat-title">{t('owner.locations.trial')}</p>
-                            <p className="dashboard-card-value text-xl">
-                                {establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
-                            </p>
+                            <StatValue value={establishments.filter(e => e.subscriptionStatus === 'TRIAL').length} isInteger={true} className="text-xl" />
                         </div>
                     </div>
                 </div>

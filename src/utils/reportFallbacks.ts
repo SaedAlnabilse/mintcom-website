@@ -10,6 +10,29 @@ const firstPresent = (...values: unknown[]) =>
 
 const toArray = <T = any>(value: unknown): T[] => (Array.isArray(value) ? value.filter(Boolean) as T[] : []);
 
+export const normalizePaymentMethodBreakdown = (value: unknown): { name: string; value: number }[] => {
+  const requiredMethods = ['CASH', 'CARD', 'OTHER'];
+  const totals = new Map<string, number>(requiredMethods.map((method) => [method, 0]));
+  const extraMethods: string[] = [];
+
+  toArray(value).forEach((row: any) => {
+    const method = String(firstPresent(row?.name, row?.method, 'Unknown')).toUpperCase();
+    const amount = toNumber(firstPresent(row?.value, row?.amount, row?.total));
+
+    if (!totals.has(method)) {
+      totals.set(method, 0);
+      extraMethods.push(method);
+    }
+
+    totals.set(method, (totals.get(method) || 0) + amount);
+  });
+
+  return [...requiredMethods, ...extraMethods].map((method) => ({
+    name: method,
+    value: totals.get(method) || 0,
+  }));
+};
+
 export const emptySalesSummary = (): SalesSummary => ({
   totalRevenue: 0,
   taxCollected: 0,
@@ -27,7 +50,7 @@ export const emptySalesSummary = (): SalesSummary => ({
   totalPayIn: 0,
   totalPayOut: 0,
   dailyBreakdown: [],
-  paymentMethodBreakdown: [],
+  paymentMethodBreakdown: normalizePaymentMethodBreakdown([]),
   discountBreakdown: [],
   cardTypeBreakdown: [],
   otherPaymentBreakdown: [],
@@ -65,21 +88,7 @@ export const normalizeSalesSummary = (payload: any): SalesSummary => {
       revenue: toNumber(firstPresent(row?.revenue, row?.sales, row?.total, row?.amount)),
       count: toNumber(firstPresent(row?.count, row?.orders, row?.transactions)),
     })),
-    paymentMethodBreakdown: (() => {
-      const breakdown = toArray(source.paymentMethodBreakdown).map((row: any) => ({
-        name: String(row?.name || row?.method || 'Unknown').toUpperCase(),
-        value: toNumber(firstPresent(row?.value, row?.amount, row?.total)),
-      }));
-
-      const requiredMethods = ['CASH', 'CARD', 'OTHER'];
-      requiredMethods.forEach(method => {
-        if (!breakdown.some(b => b.name === method)) {
-          breakdown.push({ name: method, value: 0 });
-        }
-      });
-
-      return breakdown;
-    })(),
+    paymentMethodBreakdown: normalizePaymentMethodBreakdown(source.paymentMethodBreakdown),
     discountBreakdown: toArray(source.discountBreakdown).map((row: any) => ({
       name: String(row?.name || row?.discountName || 'Unknown'),
       count: toNumber(row?.count),
@@ -107,7 +116,7 @@ export const emptyDashboardStats = (): DashboardStats => ({
   grossProfit: 0,
   totalPayIn: 0,
   totalPayOut: 0,
-  paymentMethodBreakdown: [],
+  paymentMethodBreakdown: normalizePaymentMethodBreakdown([]),
   categoryBreakdown: [],
   dailyBreakdown: [],
 });
@@ -128,7 +137,7 @@ export const normalizeDashboardStats = (payload: any, overrides: Partial<Dashboa
     grossProfit: toNumber(source.grossProfit),
     totalPayIn: toNumber(source.totalPayIn),
     totalPayOut: toNumber(source.totalPayOut),
-    paymentMethodBreakdown: toArray(source.paymentMethodBreakdown),
+    paymentMethodBreakdown: normalizePaymentMethodBreakdown(source.paymentMethodBreakdown),
     categoryBreakdown: toArray(source.categoryBreakdown),
     dailyBreakdown: toArray(source.dailyBreakdown),
     ...overrides,

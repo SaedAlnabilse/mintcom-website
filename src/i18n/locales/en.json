@@ -499,7 +499,7 @@
   "categories": {
     "delete": {
       "blocked": "This category has active products. Move or archive those products first; historical reports will stay protected.",
-      "message": "Are you sure you want to archive category \"{{name}}\"? It will be removed from POS category selection and can only be reactivated from Location Portal website (back-office).",
+      "message": "Are you sure you want to archive category \"{{name}}\"? It will be removed from POS category selection, while historical reports keep it as [Deleted]. Categories cannot be reactivated.",
       "title": "Archive Category"
     },
     "editCategory": "Edit Category",
@@ -529,15 +529,15 @@
       "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
       "noResults": "No results found",
       "noResultsDesc": "No categories matching \"{{query}}\"",
-      "reactivated": "Category reactivated",
-      "reactivateFailed": "Failed to reactivate category",
+      "reactivated": "Category archived in history",
+      "reactivateFailed": "Categories cannot be reactivated",
       "saveFailed": "Failed to save category",
       "updated": "Category updated",
       "verifyFailed": "Failed to verify category status"
     },
     "newCategory": "New Category",
     "reactivate": {
-      "message": "Reactivate \"{{name}}\" so it can be used for new products again? Historical receipts keep their original category snapshots."
+      "message": "Categories cannot be reactivated. Create a new category instead; historical reports keep deleted categories as [Deleted]."
     },
     "searchPlaceholder": "Search categories...",
     "stats": {
@@ -2988,6 +2988,8 @@
       "paymentTip": "Payment method used for this order",
       "processed": "Processed",
       "qty": "Qty",
+      "refundItems": "Refund items",
+      "remaining": "Remaining",
       "refundConfirmMessage": "Are you sure you want to refund this order? This action cannot be undone.",
       "refundConfirmTitle": "Confirm Refund",
       "refundedBy": "Refunded by",
@@ -3793,7 +3795,7 @@
       "noStaff": "No Staff Found",
       "noStaffDesc": "Start by adding your first team member.",
       "noStaffFound": "No Staff Found",
-      "ownerEditProtected": "The owner profile is managed from Account settings.",
+      "ownerEditProtected": "Owner profiles can only be edited through Account Management in the Owner Portal",
       "ownerProtected": "The account owner cannot be deactivated from employee management.",
       "passwordPlaceholder": "Enter password",
       "remove": "Remove",
@@ -4675,7 +4677,7 @@
       "noStaff": "No Staff Found",
       "noStaffDesc": "Start building your team by adding your first employee.",
       "ownerDeactivateBlocked": "The account owner cannot be deactivated from employee management.",
-      "ownerProtected": "The owner account is managed from Account settings.",
+      "ownerProtected": "Owner profiles can only be edited through Account Management in the Owner Portal",
       "resetSuccess": "Password reset successful",
       "saveFailed": "Failed to save employee",
       "updated": "Employee updated successfully"
