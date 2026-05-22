@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { format, subHours } from 'date-fns';
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
 import { useTranslation } from 'react-i18next';
@@ -49,11 +50,59 @@ type ViewMode = 'current_shift' | 'previous_shift' | 'last_24_hours';
 const AUTO_REFRESH_INTERVAL = 60 * 60 * 1000;
 const NEW_LOCATION_WELCOME_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 const DASHBOARD_SETUP_STORAGE_VERSION = 'v6';
+const DASHBOARD_WELCOME_SEEN_STORAGE_VERSION = 'v1';
 const DASHBOARD_WELCOME_OVERLAY_ID = 'mintcom-dashboard-welcome-popup';
+const DASHBOARD_SETUP_DISMISSED_COMPAT_VERSIONS = ['v3', 'v4', 'v5', 'v6'] as const;
+
+const getBrowserStorage = (type: 'localStorage' | 'sessionStorage'): Storage | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    return window[type];
+  } catch {
+    return null;
+  }
+};
+
+const readStorageFlag = (storage: Storage | null, key: string) => {
+  try {
+    return storage?.getItem(key) === 'true';
+  } catch {
+    return false;
+  }
+};
+
+const writeStorageFlag = (storage: Storage | null, key: string) => {
+  try {
+    storage?.setItem(key, 'true');
+  } catch {
+    // Storage can be unavailable in strict privacy modes; the in-memory guard still prevents repeats in this tab.
+  }
+};
+
+const removeStorageItem = (storage: Storage | null, key: string) => {
+  try {
+    storage?.removeItem(key);
+  } catch {
+    // Ignore unavailable storage.
+  }
+};
+
+const welcomeSeenKey = (scope: string, locationKey: string) =>
+  `mintcom.dashboard.welcome.seen.${DASHBOARD_WELCOME_SEEN_STORAGE_VERSION}.${scope}${locationKey}`;
+
+const setupDismissedKey = (version: string, scope: string, locationKey: string) =>
+  `mintcom.dashboard.setup.dismissed.${version}.${scope}${locationKey}`;
+
+const setupSessionDismissedKey = (version: string, scope: string, locationKey: string) =>
+  `mintcom.dashboard.setup.session.dismissed.${version}.${scope}${locationKey}`;
 
 export const DashboardPage = () => {
   const { t } = useTranslation();
   const isRTL = t('common.locale') === 'ar';
+  const { resolvedTheme } = useTheme();
   const { locationSlug } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -87,8 +136,12 @@ export const DashboardPage = () => {
   const [showPayInOutModal, setShowPayInOutModal] = useState(false);
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
   const [showTasksTour, setShowTasksTour] = useState(false);
-  const welcomeHandledRef = useRef(false);
+  const welcomeHandledRef = useRef<string | null>(null);
   const scopedStoragePrefix = `${account?.id || 'anonymous'}.`;
+  const primaryLocationKey = useMemo(
+    () => currentEstablishment?.id || currentEstablishment?.establishmentLoginId || locationSlug || null,
+    [currentEstablishment?.establishmentLoginId, currentEstablishment?.id, locationSlug],
+  );
   const locationStorageKeys = useMemo(
     () =>
       Array.from(
@@ -102,6 +155,62 @@ export const DashboardPage = () => {
   );
   const dashboardSetupKey = currentEstablishment?.id || currentEstablishment?.establishmentLoginId || locationSlug || null;
   const isSetupLaunchRequest = searchParams.get('setup') === '1' || searchParams.get('welcome') === '1';
+  const hasSeenWelcomeForLocation = useCallback(() => {
+    const local = getBrowserStorage('localStorage');
+    const session = getBrowserStorage('sessionStorage');
+
+    return locationStorageKeys.some((key) => {
+      const hasVersionedDismissal = DASHBOARD_SETUP_DISMISSED_COMPAT_VERSIONS.some(
+        (version) =>
+          readStorageFlag(local, setupDismissedKey(version, scopedStoragePrefix, key)) ||
+          readStorageFlag(session, setupSessionDismissedKey(version, scopedStoragePrefix, key)),
+      );
+
+      return (
+        readStorageFlag(local, welcomeSeenKey(scopedStoragePrefix, key)) ||
+        readStorageFlag(local, `mintcom.dashboard.visited.${key}`) ||
+        readStorageFlag(local, `mintcom.dashboard.setup.dismissed.${key}`) ||
+        hasVersionedDismissal
+      );
+    });
+  }, [locationStorageKeys, scopedStoragePrefix]);
+  const markWelcomeSeenForLocation = useCallback(() => {
+    if (!primaryLocationKey || locationStorageKeys.length === 0) {
+      return;
+    }
+
+    const local = getBrowserStorage('localStorage');
+    const session = getBrowserStorage('sessionStorage');
+
+    writeStorageFlag(
+      session,
+      setupSessionDismissedKey(DASHBOARD_SETUP_STORAGE_VERSION, scopedStoragePrefix, primaryLocationKey),
+    );
+
+    locationStorageKeys.forEach((key) => {
+      writeStorageFlag(local, welcomeSeenKey(scopedStoragePrefix, key));
+      writeStorageFlag(local, setupDismissedKey(DASHBOARD_SETUP_STORAGE_VERSION, scopedStoragePrefix, key));
+      writeStorageFlag(local, `mintcom.dashboard.visited.${key}`);
+      removeStorageItem(local, `mintcom.dashboard.welcome.pending.${key}`);
+    });
+  }, [locationStorageKeys, primaryLocationKey, scopedStoragePrefix]);
+  const clearSetupLaunchParams = useCallback(() => {
+    if (!isSetupLaunchRequest) {
+      return;
+    }
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('setup');
+    nextParams.delete('welcome');
+    const nextSearch = nextParams.toString();
+    navigate(
+      {
+        pathname: location.pathname,
+        search: nextSearch ? `?${nextSearch}` : '',
+      },
+      { replace: true },
+    );
+  }, [isSetupLaunchRequest, location.pathname, navigate, searchParams]);
   const isRecentlyCreatedLocation = useMemo(() => {
     if (!currentEstablishment?.createdAt) {
       return false;
@@ -118,69 +227,77 @@ export const DashboardPage = () => {
 
   // Check if setup welcome should open for this dashboard tab.
   useEffect(() => {
-    if (showWelcomePopup || welcomeHandledRef.current) {
+    if (!dashboardSetupKey || !primaryLocationKey || locationStorageKeys.length === 0) {
       return;
     }
 
-    if (dashboardSetupKey && locationStorageKeys.length > 0) {
-      try {
-        const primaryLocationKey = currentEstablishment?.id || locationSlug || dashboardSetupKey;
-        const sessionDismissedKey = `mintcom.dashboard.setup.session.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${primaryLocationKey}`;
-        const hasPendingWelcome = locationStorageKeys.some(
-          (key) => localStorage.getItem(`mintcom.dashboard.welcome.pending.${key}`) === 'true',
-        );
-        const hasDismissedThisTab = sessionStorage.getItem(sessionDismissedKey) === 'true';
-        const shouldShowWelcome =
-          isSetupLaunchRequest ||
-          hasPendingWelcome ||
-          (isRecentlyCreatedLocation && !hasDismissedThisTab) ||
-          !hasDismissedThisTab;
+    if (showWelcomePopup || welcomeHandledRef.current === primaryLocationKey) {
+      return;
+    }
 
-        const debugState = {
-          version: DASHBOARD_SETUP_STORAGE_VERSION,
-          pathname: location.pathname,
-          accountId: account?.id || null,
-          currentEstablishmentId: currentEstablishment?.id || null,
-          currentEstablishmentLoginId: currentEstablishment?.establishmentLoginId || null,
-          locationSlug: locationSlug || null,
-          locationKeys: locationStorageKeys,
-          sessionDismissedKey,
-          hasPendingWelcome,
-          hasDismissedThisTab,
-          isRecentlyCreatedLocation,
-          isSetupLaunchRequest,
-          isLoading,
-          shouldShowWelcome,
-          showWelcomePopup,
-        };
+    const local = getBrowserStorage('localStorage');
+    const hasPendingWelcome = locationStorageKeys.some((key) =>
+      readStorageFlag(local, `mintcom.dashboard.welcome.pending.${key}`),
+    );
+    const hasSeenWelcome = hasSeenWelcomeForLocation();
+    const shouldShowWelcome = !hasSeenWelcome;
 
-        console.log('[Mintcom Setup Debug]', debugState);
-        (window as any).__mintcomSetupDebug = debugState;
-        (window as any).__mintcomShowSetupPopup = () => {
-          welcomeHandledRef.current = false;
-          setShowWelcomePopup(true);
-        };
+    const debugState = {
+      version: DASHBOARD_SETUP_STORAGE_VERSION,
+      welcomeSeenVersion: DASHBOARD_WELCOME_SEEN_STORAGE_VERSION,
+      pathname: location.pathname,
+      accountId: account?.id || null,
+      currentEstablishmentId: currentEstablishment?.id || null,
+      currentEstablishmentLoginId: currentEstablishment?.establishmentLoginId || null,
+      locationSlug: locationSlug || null,
+      locationKeys: locationStorageKeys,
+      primaryLocationKey,
+      hasPendingWelcome,
+      hasSeenWelcome,
+      isRecentlyCreatedLocation,
+      isSetupLaunchRequest,
+      isLoading,
+      shouldShowWelcome,
+      showWelcomePopup,
+    };
 
-        if (shouldShowWelcome) {
-          console.log('[Mintcom Setup Debug] opening welcome popup now');
-          setShowWelcomePopup(true);
-        }
-      } catch (e) {
-        console.warn('Failed to access localStorage for welcome popup:', e);
-        setShowWelcomePopup(true);
-      }
+    (window as any).__mintcomSetupDebug = debugState;
+    (window as any).__mintcomShowSetupPopup = () => {
+      welcomeHandledRef.current = null;
+      markWelcomeSeenForLocation();
+      setShowWelcomePopup(true);
+    };
+
+    welcomeHandledRef.current = primaryLocationKey;
+
+    if (shouldShowWelcome) {
+      markWelcomeSeenForLocation();
+      setShowWelcomePopup(true);
+      return;
+    }
+
+    if (hasPendingWelcome) {
+      markWelcomeSeenForLocation();
+    }
+
+    if (isSetupLaunchRequest) {
+      clearSetupLaunchParams();
     }
   }, [
     dashboardSetupKey,
     account?.id,
+    clearSetupLaunchParams,
     currentEstablishment?.establishmentLoginId,
     currentEstablishment?.id,
+    hasSeenWelcomeForLocation,
     isLoading,
     isRecentlyCreatedLocation,
     isSetupLaunchRequest,
     location.pathname,
     locationSlug,
     locationStorageKeys,
+    markWelcomeSeenForLocation,
+    primaryLocationKey,
     scopedStoragePrefix,
     showWelcomePopup,
   ]);
@@ -211,6 +328,31 @@ export const DashboardPage = () => {
     document.getElementById(DASHBOARD_WELCOME_OVERLAY_ID)?.remove();
     document.body.classList.remove('app-loading');
 
+    const isDark = resolvedTheme === 'dark';
+    const palette = isDark
+      ? {
+          overlayBg: 'rgba(0, 0, 0, 0.72)',
+          cardBg: '#0F172A',
+          cardBorder: '1px solid rgba(255, 255, 255, 0.12)',
+          cardShadow: '0 24px 80px rgba(0, 0, 0, 0.45)',
+          titleColor: '#fff',
+          messageColor: '#CBD5E1',
+          iconBg: 'rgba(124, 195, 159, 0.14)',
+          closeBg: 'rgba(255, 255, 255, 0.08)',
+          closeColor: '#CBD5E1',
+        }
+      : {
+          overlayBg: 'rgba(15, 23, 42, 0.45)',
+          cardBg: '#FFFFFF',
+          cardBorder: '1px solid rgba(15, 23, 42, 0.08)',
+          cardShadow: '0 24px 80px rgba(15, 23, 42, 0.18)',
+          titleColor: '#0F172A',
+          messageColor: '#475569',
+          iconBg: 'rgba(124, 195, 159, 0.18)',
+          closeBg: 'rgba(15, 23, 42, 0.06)',
+          closeColor: '#475569',
+        };
+
     const overlay = document.createElement('div');
     overlay.id = DASHBOARD_WELCOME_OVERLAY_ID;
     overlay.dir = isRTL ? 'rtl' : 'ltr';
@@ -221,7 +363,7 @@ export const DashboardPage = () => {
     overlay.style.alignItems = 'center';
     overlay.style.justifyContent = 'center';
     overlay.style.padding = '16px';
-    overlay.style.background = 'rgba(0, 0, 0, 0.72)';
+    overlay.style.background = palette.overlayBg;
     overlay.style.backdropFilter = 'blur(6px)';
     overlay.style.pointerEvents = 'auto';
 
@@ -229,10 +371,10 @@ export const DashboardPage = () => {
     card.style.width = '100%';
     card.style.maxWidth = '384px';
     card.style.borderRadius = '32px';
-    card.style.border = '1px solid rgba(255, 255, 255, 0.12)';
-    card.style.background = '#0F172A';
-    card.style.color = '#fff';
-    card.style.boxShadow = '0 24px 80px rgba(0, 0, 0, 0.45)';
+    card.style.border = palette.cardBorder;
+    card.style.background = palette.cardBg;
+    card.style.color = palette.titleColor;
+    card.style.boxShadow = palette.cardShadow;
     card.style.position = 'relative';
     card.style.overflow = 'hidden';
     card.style.fontFamily = 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
@@ -255,7 +397,7 @@ export const DashboardPage = () => {
     icon.style.fontSize = '30px';
     icon.style.fontWeight = '800';
     icon.style.color = '#7dc6a2';
-    icon.style.background = 'rgba(124, 195, 159, 0.14)';
+    icon.style.background = palette.iconBg;
     icon.innerHTML = `
       <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7dc6a2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M5.8 11.3 2 22l10.7-3.79" />
@@ -274,7 +416,7 @@ export const DashboardPage = () => {
     title.style.margin = '0 0 8px';
     title.style.fontSize = '24px';
     title.style.fontWeight = '800';
-    title.style.color = '#fff';
+    title.style.color = palette.titleColor;
     title.style.display = 'flex';
     title.style.alignItems = 'center';
     title.style.justifyContent = 'center';
@@ -291,7 +433,7 @@ export const DashboardPage = () => {
       location: currentEstablishment?.name || 'this location',
     });
     message.style.margin = '0 0 24px';
-    message.style.color = '#CBD5E1';
+    message.style.color = palette.messageColor;
     message.style.lineHeight = '1.6';
     message.style.fontSize = '14px';
 
@@ -320,8 +462,8 @@ export const DashboardPage = () => {
     closeButton.style.height = '34px';
     closeButton.style.border = '0';
     closeButton.style.borderRadius = '999px';
-    closeButton.style.background = 'rgba(255, 255, 255, 0.08)';
-    closeButton.style.color = '#CBD5E1';
+    closeButton.style.background = palette.closeBg;
+    closeButton.style.color = palette.closeColor;
     closeButton.style.fontSize = '18px';
     closeButton.style.lineHeight = '1';
     closeButton.style.cursor = 'pointer';
@@ -352,52 +494,20 @@ export const DashboardPage = () => {
   }, [
     currentEstablishment?.name,
     isRTL,
+    resolvedTheme,
     showWelcomePopup,
     t,
   ]);
 
   const handleCloseWelcome = useCallback(() => {
-    welcomeHandledRef.current = true;
+    welcomeHandledRef.current = primaryLocationKey;
     setShowWelcomePopup(false);
-    if (locationStorageKeys.length > 0) {
-      const primaryLocationKey = currentEstablishment?.id || locationSlug || dashboardSetupKey;
-      sessionStorage.setItem(
-        `mintcom.dashboard.setup.session.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${primaryLocationKey}`,
-        'true',
-      );
-      locationStorageKeys.forEach((key) => {
-        localStorage.setItem(
-          `mintcom.dashboard.setup.dismissed.${DASHBOARD_SETUP_STORAGE_VERSION}.${scopedStoragePrefix}${key}`,
-          'true',
-        );
-        localStorage.setItem(`mintcom.dashboard.visited.${key}`, 'true');
-        localStorage.removeItem(`mintcom.dashboard.welcome.pending.${key}`);
-      });
-    }
-
-    if (isSetupLaunchRequest) {
-      const nextParams = new URLSearchParams(searchParams);
-      nextParams.delete('setup');
-      nextParams.delete('welcome');
-      const nextSearch = nextParams.toString();
-      navigate(
-        {
-          pathname: location.pathname,
-          search: nextSearch ? `?${nextSearch}` : '',
-        },
-        { replace: true },
-      );
-    }
+    markWelcomeSeenForLocation();
+    clearSetupLaunchParams();
   }, [
-    currentEstablishment?.id,
-    dashboardSetupKey,
-    isSetupLaunchRequest,
-    location.pathname,
-    locationSlug,
-    locationStorageKeys,
-    navigate,
-    scopedStoragePrefix,
-    searchParams,
+    clearSetupLaunchParams,
+    markWelcomeSeenForLocation,
+    primaryLocationKey,
   ]);
 
   const waitForTasksGuideTargets = useCallback(async () => {

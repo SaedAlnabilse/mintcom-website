@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +10,8 @@ import {
     Activity,
     Zap,
     DollarSign,
-    UserPlus
+    UserPlus,
+    ExternalLink
 } from 'lucide-react';
 import {
     Area,
@@ -31,6 +32,7 @@ import type { DatePeriod } from '../../utils/datePeriods';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatCurrencyCode } from '../../utils/currency';
 import { StatValue } from '../../components/ui/StatValue';
+import { QuickInfo } from '../../components/QuickInfo';
 
 interface OverviewStats {
     totalRevenue: number;
@@ -72,14 +74,22 @@ export function OwnerOverviewPage() {
         setEndDate(formatDateForInput(range.end));
     };
 
+    const localizedDateOptions = useMemo(() =>
+        DATE_PERIOD_OPTIONS.map(opt => ({
+            ...opt,
+            label: t(`common.datePeriods.${opt.value}`)
+        })), [t]);
+
     const fetchOverviewStats = useCallback(async () => {
         try {
             const params = new URLSearchParams();
+            params.append('range', 'custom');
             params.append('startDate', `${startDate}T${startTime}:00Z`);
             params.append('endDate', `${endDate}T${endTime}:59Z`);
 
-            const response = await api.get(`/owner/overview-stats?${params.toString()}`);
+            const response = await api.get(`/accounts/overview-stats?${params.toString()}`);
             const data = response.data;
+            const revenueTrend = data.revenueTrend || data.revenueByDay || [];
 
             if (data) {
                 setStats({
@@ -90,9 +100,9 @@ export function OwnerOverviewPage() {
                     activeLocations: establishments.length,
                     totalBrands: data.totalBrands || 0,
                     totalEmployees: data.totalEmployees || 0,
-                    revenueByDay: data.revenueTrend || []
+                    revenueByDay: revenueTrend
                 });
-                setChartData(data.revenueTrend || []);
+                setChartData(revenueTrend);
             } else {
                 setStats({
                     totalRevenue: 0,
@@ -142,7 +152,7 @@ export function OwnerOverviewPage() {
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
                                     onChange={(val) => setQuickDate((val || 'today') as DatePeriod)}
-                                    options={DATE_PERIOD_OPTIONS}
+                                    options={localizedDateOptions}
                                     showAllOption={false}
                                     placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                                     className="w-full"
@@ -212,7 +222,9 @@ export function OwnerOverviewPage() {
                         icon: DollarSign,
                         color: 'text-mintcom-green',
                         bg: 'bg-mintcom-green/10',
-                        isCurrency: true
+                        isCurrency: true,
+                        info: null as string | null,
+                        route: null as string | null,
                     },
                     {
                         label: t('owner.overview.totalProfit'),
@@ -221,7 +233,9 @@ export function OwnerOverviewPage() {
                         icon: TrendingUp,
                         color: 'text-blue-500',
                         bg: 'bg-blue-500/10',
-                        isCurrency: true
+                        isCurrency: true,
+                        info: t('owner.overview.totalProfitInfo'),
+                        route: null as string | null,
                     },
                     {
                         label: t('owner.overview.activeLocations'),
@@ -230,7 +244,9 @@ export function OwnerOverviewPage() {
                         icon: Store,
                         color: 'text-purple-500',
                         bg: 'bg-purple-500/10',
-                        isCurrency: false
+                        isCurrency: false,
+                        info: t('owner.overview.activeLocationsInfo'),
+                        route: '/owner/establishments',
                     },
                     {
                         label: t('owner.overview.totalBrands'),
@@ -239,7 +255,9 @@ export function OwnerOverviewPage() {
                         icon: Building2,
                         color: 'text-orange-500',
                         bg: 'bg-orange-500/10',
-                        isCurrency: false
+                        isCurrency: false,
+                        info: null as string | null,
+                        route: '/owner/brands',
                     },
                     {
                         label: t('owner.overview.totalStaff'),
@@ -248,17 +266,32 @@ export function OwnerOverviewPage() {
                         icon: Users,
                         color: 'text-pink-500',
                         bg: 'bg-pink-500/10',
-                        isCurrency: false
+                        isCurrency: false,
+                        info: null as string | null,
+                        route: '/owner/employees',
                     },
-                ].map((stat, i) => (
+                ].map((stat, i) => {
+                    const isClickable = !!stat.route;
+                    return (
                     <motion.div
                         key={stat.label}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm overflow-hidden group relative"
+                        onClick={isClickable ? () => navigate(stat.route as string) : undefined}
+                        role={isClickable ? 'button' : undefined}
+                        tabIndex={isClickable ? 0 : undefined}
+                        onKeyDown={isClickable ? (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                navigate(stat.route as string);
+                            }
+                        } : undefined}
+                        className={`p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm overflow-hidden group relative ${isClickable ? 'cursor-pointer hover:border-mintcom-green/40 hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-mintcom-green/40' : ''}`}
                     >
-                        <div className="absolute top-0 end-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-current opacity-5" />
+                        {!isClickable && (
+                            <div className={`absolute top-0 end-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+                        )}
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-4">
                                 <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}>
@@ -272,8 +305,20 @@ export function OwnerOverviewPage() {
                                         {stat.change >= 0 ? '+' : ''}{stat.change}%
                                     </div>
                                 )}
+                                {stat.change === null && isClickable && (
+                                    <div className="w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-mintcom-green group-hover:bg-mintcom-green/10 transition-colors">
+                                        <ExternalLink size={16} />
+                                    </div>
+                                )}
                             </div>
-                            <p className="dashboard-stat-title mb-1">{stat.label}</p>
+                            <p className="dashboard-stat-title mb-1 flex items-center">
+                                {stat.label}
+                                {stat.info && (
+                                    <span onClick={(e) => e.stopPropagation()}>
+                                        <QuickInfo text={stat.info} />
+                                    </span>
+                                )}
+                            </p>
                             <StatValue 
                                 value={stat.value} 
                                 currency={stat.isCurrency ? (establishments?.[0]?.currency || 'JOD') : null}
@@ -282,7 +327,8 @@ export function OwnerOverviewPage() {
                             />
                         </div>
                     </motion.div>
-                ))}
+                    );
+                })}
             </div>
 
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">

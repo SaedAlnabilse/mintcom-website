@@ -24,7 +24,7 @@ const TOOLTIP_TARGET_WIDTH = 420;
 const TOOLTIP_PADDING = 20;
 const HIGHLIGHT_PADDING = 12;
 // Extra breathing room between the highlighted target and the tooltip card
-const TOOLTIP_GAP = 20;
+const TOOLTIP_GAP = 40;
 
 export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps) => {
   const { t } = useTranslation();

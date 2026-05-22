@@ -270,10 +270,9 @@ export function SingleSelect({
                 ref={buttonRef}
                 type="button"
                 onClick={toggleOpen}
-                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-start flex items-center transition-[color,background-color,border-color,box-shadow,ring] outline-none shadow-sm
+                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-start flex items-center transition-[color,background-color,border-color,box-shadow] duration-150 ease-out outline-none shadow-sm
                     ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:border-mintcom-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
-                    ${isOpen || isFilterActive ? 'ring-[3px] ring-mintcom-green/10 border-mintcom-green bg-mintcom-green/5 dark:bg-mintcom-green/10' : ''
-                    } ${buttonClassName} ${isOpen || isFilterActive ? '!bg-mintcom-green/5 dark:!bg-mintcom-green/10 !border-mintcom-green !text-mintcom-green !ring-[3px] !ring-mintcom-green/10' : ''} ${buttonClassName.includes('justify-center') ? 'justify-center' : 'justify-between'}`}
+                    ${buttonClassName} ${isOpen || isFilterActive ? '!bg-mintcom-green/5 dark:!bg-mintcom-green/10 !border-mintcom-green !text-mintcom-green !ring-[3px] !ring-mintcom-green/10' : ''} ${buttonClassName.includes('justify-center') ? 'justify-center' : 'justify-between'}`}
             >
                 <div className={`flex items-center gap-2 overflow-hidden ${buttonClassName.includes('justify-center') ? 'flex-none' : 'flex-1'}`}>
                      {selectedOption?.icon && (

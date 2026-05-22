@@ -30,15 +30,15 @@ export interface DatePeriodOption {
 export const DATE_PERIOD_OPTIONS: DatePeriodOption[] = [
   { label: 'Today', value: 'today' },
   { label: 'Yesterday', value: 'yesterday' },
-  { label: 'This Week (Sun-Today)', value: 'this_week' },
-  { label: 'Last Week (Sun-Sat)', value: 'last_week' },
+  { label: 'This Week', value: 'this_week' },
+  { label: 'Last Week', value: 'last_week' },
   { label: 'Last 7 Days', value: 'last_7_days' },
   { label: 'Last 28 Days', value: 'last_28_days' },
   { label: 'Last 30 Days', value: 'last_30_days' },
   { label: 'Last 90 Days', value: 'last_90_days' },
   { label: 'Last 12 Months', value: 'last_12_months' },
   { label: 'Last Calendar Year', value: 'last_calendar_year' },
-  { label: 'This Year (Jan-Today)', value: 'this_year' },
+  { label: 'Year to Date', value: 'this_year' },
 ];
 
 /**

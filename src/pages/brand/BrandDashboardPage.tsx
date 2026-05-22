@@ -115,6 +115,12 @@ export function BrandDashboardPage() {
         setEndDate(formatDateForInput(range.end));
     };
 
+    const localizedDateOptions = useMemo(() =>
+        DATE_PERIOD_OPTIONS.map(opt => ({
+            ...opt,
+            label: t(`common.datePeriods.${opt.value}`)
+        })), [t]);
+
     const fetchBrandData = useCallback(async (isInitial = false) => {
         if (!brandId) return;
 
@@ -225,7 +231,7 @@ export function BrandDashboardPage() {
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
                                     onChange={(val) => setQuickDate(val as DateRangePreset || 'today')}
-                                    options={DATE_PERIOD_OPTIONS}
+                                    options={localizedDateOptions}
                                     showAllOption={false}
                                     placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                                     className="w-full"

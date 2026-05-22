@@ -759,9 +759,9 @@
       "last_7_days": "Last 7 days",
       "last_90_days": "Last 90 days",
       "last_calendar_year": "Last calendar year",
-      "last_week": "Last week (Sun-Sat)",
-      "this_week": "This week (Sun-Today)",
-      "this_year": "This year (Jan-Today)",
+      "last_week": "Last week",
+      "this_week": "This week",
+      "this_year": "Year to date",
       "today": "Today",
       "yesterday": "Yesterday"
     },
@@ -2108,7 +2108,7 @@
         "unlimitedStaff": "Multiple staff accounts"
       },
       "fullAccess": "FULL ACCESS",
-      "getStarted": "Get Started",
+      "getStarted": "Start 1 Month Free",
       "goToDashboard": "Go to Dashboard",
       "includedDesc": "All features included in a single plan.",
       "includedTitle": "Everything You Need",
@@ -3707,6 +3707,8 @@
       "totalSales": "Total Sales",
       "totalStaff": "Total Staff",
       "totalBrands": "Total Brands",
+      "totalProfitInfo": "The total sales amount minus the total product costs based on the cost set for each item.",
+      "activeLocationsInfo": "Locations with a current shift opened.",
       "revenueTrend": "Revenue Trend",
       "consolidatedPerf": "Consolidated Performance Across Locations",
       "noData": "No data available for the selected period"

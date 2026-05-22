@@ -1104,9 +1104,9 @@ export function OrdersPage() {
           <div className="hidden 2xl:block w-px self-stretch bg-gray-100 dark:bg-white/10 my-1" />
 
           {/* Status & Payment filters - side by side on mobile */}
-          <div className="flex gap-2 w-full sm:w-auto sm:flex-1 sm:min-w-[300px]">
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto sm:flex-1 sm:min-w-[260px]">
             {/* Status Select */}
-            <div className="flex-1 relative z-[50]">
+            <div className="flex-1 min-w-[140px] relative z-[50]">
               <SelectInput
                 value={statusFilter === 'all' ? null : statusFilter}
                 onChange={(val) => {
@@ -1131,7 +1131,7 @@ export function OrdersPage() {
             </div>
 
             {/* Payment Method Select */}
-            <div className="flex-1 relative z-[40]">
+            <div className="flex-1 min-w-[140px] relative z-[40]">
               <SelectInput
                 value={paymentFilter === 'all' ? null : paymentFilter}
                 onChange={(val) => { setPaymentFilter(val || 'all'); setPage(1); }}
@@ -1144,7 +1144,7 @@ export function OrdersPage() {
               />
             </div>
 
-            <div className="flex-1 relative z-[30]">
+            <div className="flex-1 min-w-[160px] relative z-[30]">
               <SelectInput
                 value={serviceChargeFilter === 'all' ? null : serviceChargeFilter}
                 onChange={(val) => { setServiceChargeFilter(val || 'all'); setPage(1); }}

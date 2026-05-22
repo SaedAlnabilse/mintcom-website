@@ -92,6 +92,12 @@ export function ActivityLogsPage() {
 
   const canExport = useMemo(() => checkPermission(account, ['export_data']), [account]);
 
+  const localizedDateOptions = useMemo(() =>
+    DATE_PERIOD_OPTIONS.map(opt => ({
+      ...opt,
+      label: t(`common.datePeriods.${opt.value}`)
+    })), [t]);
+
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -371,7 +377,7 @@ export function ActivityLogsPage() {
                   onChange={(val) => {
                     if (val) handlePresetChange(val);
                   }}
-                  options={DATE_PERIOD_OPTIONS}
+                  options={localizedDateOptions}
                   placeholder={formatInputPlaceholder(t('activity.customRange'), t('common.locale'))}
                   showAllOption={false}
                   allowClear={false}
