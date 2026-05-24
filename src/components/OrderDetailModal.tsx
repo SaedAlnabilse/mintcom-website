@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,7 @@ import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { useCurrency } from '../context/CurrencyContext';
-import { formatInputPlaceholder } from '../utils/textCase';
+import { formatInputLabel, formatInputPlaceholder } from '../utils/textCase';
 
 interface ApiError {
     response?: {
@@ -20,13 +20,21 @@ interface ApiError {
 
 export interface OrderItem {
     id: string;
+    orderItemId?: string;
+    itemId?: string;
     name: string;
     quantity: number;
     price?: number;
     basePrice?: number;
+    unitPrice?: number;
+    finalUnitPrice?: number;
     total?: number;
     finalPrice?: number;
     refundedFromOrderItemId?: string | null;
+    trackStock?: boolean;
+    item?: { id?: string; trackStock?: boolean };
+    chosenAttributes?: any[];
+    selectedAttributes?: any[];
 }
 
 export interface Order {
@@ -108,9 +116,12 @@ export interface OrderDetailModalProps {
     onClose: () => void;
     onRefundSuccess?: () => void;
     canRefund?: boolean;
+    openRefundKey?: string | number | null;
 }
 
-export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = true }: OrderDetailModalProps) {
+type RefundMode = 'items' | 'order';
+
+export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = true, openRefundKey = null }: OrderDetailModalProps) {
     const { t } = useTranslation();
     const [isRefundReasonModalOpen, setIsRefundReasonModalOpen] = useState(false);
     const [refundReason, setRefundReason] = useState('');
@@ -118,6 +129,8 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
     const [isRefundSubmitting, setIsRefundSubmitting] = useState(false);
     const [restockItems, setRestockItems] = useState(false);
     const [selectedRefundItems, setSelectedRefundItems] = useState<Record<string, number>>({});
+    const [refundMode, setRefundMode] = useState<RefundMode>('items');
+    const lastAutoOpenedRefundKeyRef = useRef<string | number | null>(null);
 
     // Compute if any item has trackStock enabled - check both possible data shapes
     const hasStockTrackedItems = order?.items?.some((item: any) => item?.trackStock || item?.item?.trackStock) || false;
@@ -194,23 +207,47 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
         0,
     );
 
-    const handleRefund = async () => {
-        if (!canRefund) {
-            toast.error(t('orders.messages.refundFailed'));
-            return;
-        }
+    const selectedRefundItemCount = selectedRefundLines.reduce(
+        (sum, line) => sum + line.quantity,
+        0,
+    );
 
-        setRefundReason('');
-        setRefundReasonError('');
-        setRestockItems(false);
-        setSelectedRefundItems(
+    const getAllRefundableSelections = useCallback(
+        () =>
             refundableItems.reduce((acc: Record<string, number>, item: any) => {
                 acc[item.orderItemId] = Number(item.remainingRefundQuantity || 1);
                 return acc;
             }, {}),
-        );
+        [refundableItems],
+    );
+
+    const handleRefund = useCallback(() => {
+        if (!canRefund) {
+            toast.error(t('orders.messages.refundFailed'));
+            return;
+        }
+        if (refundableItems.length === 0) {
+            toast.error(t('orders.messages.noRefundableItems', { defaultValue: 'No refundable items remaining for this order.' }));
+            return;
+        }
+
+        setRefundMode('items');
+        setRefundReason('');
+        setRefundReasonError('');
+        setRestockItems(false);
+        setSelectedRefundItems(getAllRefundableSelections());
         setIsRefundReasonModalOpen(true);
-    };
+    }, [canRefund, getAllRefundableSelections, refundableItems.length, t]);
+
+    useEffect(() => {
+        if (openRefundKey === null || openRefundKey === undefined) return;
+        if (lastAutoOpenedRefundKeyRef.current === openRefundKey) return;
+
+        lastAutoOpenedRefundKeyRef.current = openRefundKey;
+        if (isRefundable) {
+            handleRefund();
+        }
+    }, [handleRefund, isRefundable, openRefundKey]);
 
     const getOrderStatusLabel = (): string => {
         const isTaxChangedPaid =
@@ -227,7 +264,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
     const submitRefundWithReason = async () => {
         const trimmedReason = refundReason.trim();
         if (!trimmedReason) {
-            setRefundReasonError('Refund reason is required');
+            setRefundReasonError('Refund Reason is required');
             return;
         }
         if (selectedRefundLines.length === 0) {
@@ -247,6 +284,8 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
             });
             toast.success(t('orders.messages.refundSuccess'));
             setIsRefundReasonModalOpen(false);
+            setSelectedRefundItems({});
+            setRefundMode('items');
             if (onRefundSuccess) onRefundSuccess();
             onClose();
         } catch (err) {
@@ -492,15 +531,58 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
                                 {t('orders.details.refundConfirmMessage')}
                             </p>
+
+                            <div className="mt-4 grid grid-cols-2 gap-2 rounded-2xl border border-gray-200 bg-gray-50 p-1 dark:border-white/10 dark:bg-white/5">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setRefundMode('items');
+                                        if (selectedRefundLines.length === 0) {
+                                            setSelectedRefundItems(getAllRefundableSelections());
+                                        }
+                                    }}
+                                    disabled={isRefundSubmitting}
+                                    className={`rounded-xl px-3 py-2 text-xs font-black transition-all ${refundMode === 'items'
+                                        ? 'bg-mintcom-red/10 text-mintcom-red shadow-sm'
+                                        : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                                        }`}
+                                >
+                                    {formatInputLabel(t('orders.details.refundItems', { defaultValue: 'Refund Items' }), t('common.locale'))}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setRefundMode('order');
+                                        setSelectedRefundItems(getAllRefundableSelections());
+                                    }}
+                                    disabled={isRefundSubmitting}
+                                    className={`rounded-xl px-3 py-2 text-xs font-black transition-all ${refundMode === 'order'
+                                        ? 'bg-mintcom-green/10 text-mintcom-green shadow-sm'
+                                        : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                                        }`}
+                                >
+                                    {formatInputLabel(t('orders.details.refundEntireOrder', { defaultValue: 'Refund Entire Order' }), t('common.locale'))}
+                                </button>
+                            </div>
+
                             <div className="mt-4 space-y-2">
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm font-bold text-gray-900 dark:text-white">
                                         {t('orders.details.items')}
                                     </span>
-                                    <span className="text-sm font-bold text-mintcom-red">
-                                        {formatCurrency(selectedRefundAmount)}
-                                    </span>
+                                    <div className="text-right">
+                                        <span className="block text-sm font-bold text-mintcom-red">
+                                            {formatCurrency(selectedRefundAmount)}
+                                        </span>
+                                        <span className="block text-[11px] font-semibold text-gray-500 dark:text-gray-400">
+                                            {t('orders.details.selectedItems', {
+                                                defaultValue: '{{count}} item(s)',
+                                                count: selectedRefundItemCount,
+                                            })}
+                                        </span>
+                                    </div>
                                 </div>
+                                {refundMode === 'items' && (
                                 <div className="max-h-56 overflow-y-auto space-y-2 pr-1">
                                     {refundableItems.map((item: any) => {
                                         const selectedQty = Number(selectedRefundItems[item.orderItemId] || 0);
@@ -533,7 +615,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                                     <div className="min-w-0 flex-1">
                                                         <p className="truncate text-sm font-bold text-gray-900 dark:text-white">{item.name}</p>
                                                         <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-                                                            Remaining: {remaining}
+                                                            {t('orders.details.remaining', { defaultValue: 'Remaining' })}: {remaining}
                                                         </p>
                                                     </div>
                                                     {selected && (
@@ -574,10 +656,11 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                         );
                                     })}
                                 </div>
+                                )}
                             </div>
                             <div className="mt-4">
                                 <label className="block text-sm font-normal text-gray-800 dark:text-gray-100 mb-2">
-                                    Refund reason
+                                    {formatInputLabel('Refund Reason', t('common.locale'))}
                                 </label>
                                 <textarea maxLength={2000}
                                     value={refundReason}
@@ -629,6 +712,8 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                         setRefundReason('');
                                         setRefundReasonError('');
                                         setSelectedRefundItems({});
+                                        setRestockItems(false);
+                                        setRefundMode('items');
                                     }}
                                     className="flex-1 rounded-xl border border-gray-300 dark:border-white/15 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5"
                                 >

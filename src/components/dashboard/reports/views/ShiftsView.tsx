@@ -105,9 +105,9 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
               <tr className="border-b border-gray-200 dark:border-white/5">
                 <th className="px-5 py-5 text-start label-strong font-outfit">{t('orders.reports.shifts.staff')}</th>
                 <th className="px-5 py-5 text-start label-strong font-outfit">{t('orders.reports.shifts.time')}</th>
-                <th className="px-5 py-5 text-end label-strong font-outfit">{t('orders.reports.shifts.opening')}</th>
-                <th className="px-5 py-5 text-end label-strong font-outfit">{t('orders.stats.totalSales')}</th>
-                <th className="px-5 py-5 text-end label-strong font-outfit">{t('orders.reports.shifts.closing')}</th>
+                <th className="px-5 py-5 text-center label-strong font-outfit">{t('orders.reports.shifts.opening')}</th>
+                <th className="px-5 py-5 text-center label-strong font-outfit">{t('orders.stats.totalSales')}</th>
+                <th className="px-5 py-5 text-center label-strong font-outfit">{t('orders.reports.shifts.closing')}</th>
                 <th className="px-5 py-5 text-center label-strong font-outfit">{t('orders.reports.shifts.variance')}</th>
                 <th className="px-5 py-5 text-center label-strong font-outfit">{t('orders.reports.shifts.status')}</th>
               </tr>
@@ -137,44 +137,46 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                         </span>
                       </div>
                     </td>
-                    <td className="px-5 py-5 text-end font-medium text-gray-500">
-                      <FormatCurrency value={shift.openingBalance} />
+                    <td className="px-5 py-5">
+                      <div className="flex justify-center font-medium text-gray-500">
+                        <FormatCurrency value={shift.openingBalance} />
+                      </div>
                     </td>
-                    <td className="px-5 py-5 text-end font-bold text-mintcom-green">
-                      <FormatCurrency value={shift.totalSales} />
+                    <td className="px-5 py-5">
+                      <div className="flex justify-center font-bold text-mintcom-green">
+                        <FormatCurrency value={shift.totalSales} />
+                      </div>
                     </td>
-                    <td className="px-5 py-5 text-end">
+                    <td className="px-5 py-5">
                       {shift.status === 'CLOSED' ? (
-                        <span className="font-bold text-mintcom-green">
+                        <div className="flex justify-center font-bold text-mintcom-green">
                           {shift.closingBalance !== null && shift.closingBalance !== undefined
                             ? <FormatCurrency value={shift.closingBalance} />
-                            : '-'}
-                        </span>
+                            : <span className="text-gray-400">-</span>}
+                        </div>
                       ) : (
-                        <span className="label-strong font-outfit">{t('orders.reports.shifts.active')}</span>
+                        <div className="flex justify-center label-strong font-outfit">{t('orders.reports.shifts.active')}</div>
                       )}
                     </td>
                     <td className="px-5 py-5 text-center">
                       {shift.status === 'CLOSED' && shift.discrepancy !== null && shift.discrepancy !== undefined ? (
-                        <div className="flex flex-col items-center">
-                          <span className={`px-2.5 py-1 rounded-lg flex items-center gap-1 label-strong font-outfit border ${shift.discrepancy > 0.001
-                            ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
-                            : shift.discrepancy < -0.001
-                              ? 'bg-red-500/10 text-red-500 border-red-500/20'
-                              : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
-                            }`}>
-                            <CurrencyAmount
-                              amount={shift.discrepancy}
-                              size="text-[10px]"
-                              color={shift.discrepancy > 0.001 ? 'text-amber-500' : shift.discrepancy < -0.001 ? 'text-red-500' : 'text-blue-600 dark:text-blue-400'}
-                            />
-                            <span className="ml-1">
-                              {shift.discrepancy > 0.001 ? t('orders.reports.shifts.over') : shift.discrepancy < -0.001 ? t('orders.reports.shifts.short') : ''}
-                            </span>
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${shift.discrepancy > 0.001
+                          ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                          : shift.discrepancy < -0.001
+                            ? 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20'
+                            : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
+                          }`}>
+                          <CurrencyAmount
+                            amount={shift.discrepancy}
+                            size="text-xs"
+                            color={shift.discrepancy > 0.001 ? 'text-amber-600 dark:text-amber-400' : shift.discrepancy < -0.001 ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400'}
+                          />
+                          <span className="uppercase">
+                            {shift.discrepancy > 0.001 ? t('orders.reports.shifts.over') : shift.discrepancy < -0.001 ? t('orders.reports.shifts.short') : t('orders.reports.cashGap.isBalanced')}
                           </span>
-                        </div>
+                        </span>
                       ) : (
-                        <span className="label-strong font-outfit">-</span>
+                        <span className="label-strong font-outfit text-gray-400">-</span>
                       )}
                     </td>
                     <td className="px-5 py-5 text-center">

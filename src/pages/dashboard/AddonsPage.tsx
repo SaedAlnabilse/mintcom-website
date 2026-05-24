@@ -1125,13 +1125,15 @@ export function AddonsPage() {
                       {t('attributes.form.priceLabel')}
                     </label>
                     <div className="relative">
-                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold">{currencySymbol}</div>
+                      <div className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-xs font-bold uppercase tracking-wider text-gray-400">
+                        {currencySymbol}
+                      </div>
                       <input
                         type="number"
                         step="0.01"
                         value={subAttributeForm.price}
                         onChange={(e) => setSubAttributeForm({ ...subAttributeForm, price: Number(e.target.value) })}
-                        className="w-full pl-10 pr-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all"
+                        className="w-full pl-16 pr-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all"
                         placeholder="0.00"
                       />
                     </div>

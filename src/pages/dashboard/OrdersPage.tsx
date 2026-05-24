@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { createPortal } from 'react-dom';
 import { startOfDay, endOfDay, format } from 'date-fns';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
@@ -82,14 +81,24 @@ interface Order {
   refundReason?: string;
   note?: string;
   status: string;
+  refundOrders?: Array<{ items?: OrderItem[] }>;
 }
 
 interface OrderItem {
   id: string;
+  orderItemId?: string;
+  itemId?: string;
   name: string;
   quantity: number;
   price: number;
+  basePrice?: number;
+  finalPrice?: number;
   total: number;
+  refundedFromOrderItemId?: string | null;
+  trackStock?: boolean;
+  item?: { id?: string; trackStock?: boolean };
+  chosenAttributes?: any[];
+  selectedAttributes?: any[];
 }
 
 interface ShiftInfo {
@@ -139,6 +148,8 @@ export function OrdersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [, setError] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [orderDetailLoadingId, setOrderDetailLoadingId] = useState<string | null>(null);
+  const [openRefundKey, setOpenRefundKey] = useState<string | number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState(() => {
@@ -198,12 +209,6 @@ export function OrdersPage() {
     message: '',
     onConfirm: () => { },
   });
-  const [isRefundReasonModalOpen, setIsRefundReasonModalOpen] = useState(false);
-  const [refundTargetOrder, setRefundTargetOrder] = useState<Order | null>(null);
-  const [refundReason, setRefundReason] = useState('');
-  const [refundReasonError, setRefundReasonError] = useState('');
-  const [isRefundSubmitting, setIsRefundSubmitting] = useState(false);
-
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const ordersListRef = useRef<HTMLDivElement | null>(null);
   const isInitialMount = useRef(true);
@@ -898,43 +903,52 @@ export function OrdersPage() {
     return options;
   };
 
+  const loadOrderDetails = useCallback(async (order: Order): Promise<Order> => {
+    if (order.paymentStatus === 'HELD' || order.status === 'HELD') {
+      return order;
+    }
+
+    try {
+      const response = await api.get(`/reports/orders/${order.id}`);
+      const detail = response.data || {};
+      return {
+        ...order,
+        ...detail,
+        paymentStatus: detail.paymentStatus || detail.status || order.paymentStatus,
+        items: Array.isArray(detail.items) ? detail.items : order.items,
+        refundOrders: Array.isArray(detail.refundOrders) ? detail.refundOrders : order.refundOrders,
+      };
+    } catch (err) {
+      console.warn('Failed to load order details before opening refund modal:', err);
+      return order;
+    }
+  }, []);
+
+  const openOrderDetails = useCallback(async (order: Order, options?: { openRefund?: boolean }) => {
+    const nextRefundKey = options?.openRefund ? `${order.id}-${Date.now()}` : null;
+
+    setActiveActionMenu(null);
+    setOpenRefundKey(null);
+    setOrderDetailLoadingId(order.id);
+
+    try {
+      const detailedOrder = await loadOrderDetails(order);
+      setSelectedOrder(detailedOrder);
+      if (nextRefundKey) {
+        setOpenRefundKey(nextRefundKey);
+      }
+    } finally {
+      setOrderDetailLoadingId(current => (current === order.id ? null : current));
+    }
+  }, [loadOrderDetails]);
+
   const handleRefund = (order: Order) => {
     if (!canCancelReceipts) {
       toast.error(t('orders.messages.refundFailed'));
       return;
     }
 
-    setRefundTargetOrder(order);
-    setRefundReason('');
-    setRefundReasonError('');
-    setIsRefundReasonModalOpen(true);
-  };
-
-  const submitRefundWithReason = async () => {
-    if (!refundTargetOrder) return;
-    const trimmedReason = refundReason.trim();
-    if (!trimmedReason) {
-      setRefundReasonError('Refund reason is required');
-      return;
-    }
-
-    try {
-      setIsRefundSubmitting(true);
-      await api.post(`/api/orders/${refundTargetOrder.id}/refund`, {
-        reason: trimmedReason,
-        refundReason: trimmedReason,
-      });
-      toast.success(t('orders.messages.refundSuccess'));
-      setIsRefundReasonModalOpen(false);
-      setRefundTargetOrder(null);
-      setRefundReason('');
-      setRefundReasonError('');
-      fetchOrders();
-    } catch (err) {
-      toast.error((err as ApiError).response?.data?.message || t('orders.messages.refundFailed'));
-    } finally {
-      setIsRefundSubmitting(false);
-    }
+    void openOrderDetails(order, { openRefund: true });
   };
 
   const getStatusStyle = (status: string) => {
@@ -1342,7 +1356,7 @@ export function OrdersPage() {
                   key={order.id}
                   onClick={() => {
                     if (Date.now() - lastHeldArrowClickRef.current < 450) return;
-                    setSelectedOrder(order);
+                    void openOrderDetails(order);
                   }}
                   className="group flex-none basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4 bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-orange-200 dark:border-orange-500/20 shadow-sm hover:shadow-md transition-all cursor-pointer relative overflow-hidden"
                 >
@@ -1407,6 +1421,7 @@ export function OrdersPage() {
       {/* Orders List Container */}
       <div
         ref={ordersListRef}
+        aria-busy={Boolean(orderDetailLoadingId)}
         className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]"
       >
 
@@ -1450,7 +1465,7 @@ export function OrdersPage() {
               <div
                 key={order.id}
                 data-order-id={order.id}
-                onClick={() => setSelectedOrder(order)}
+                onClick={() => void openOrderDetails(order)}
                 className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04]"
               >
                 {/* Card Header: Order # and Status */}
@@ -1491,7 +1506,7 @@ export function OrdersPage() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedOrder(order);
+                      void openOrderDetails(order);
                     }}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                   >
@@ -1581,7 +1596,7 @@ export function OrdersPage() {
                   <tr
                     key={order.id}
                     data-order-id={order.id}
-                    onClick={() => setSelectedOrder(order)}
+                    onClick={() => void openOrderDetails(order)}
                     className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer"
                   >
                     <td className="px-6 py-4">
@@ -1638,8 +1653,7 @@ export function OrdersPage() {
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setSelectedOrder(order);
-                                  setActiveActionMenu(null);
+                                  void openOrderDetails(order);
                                 }}
                                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                               >
@@ -1697,9 +1711,13 @@ export function OrdersPage() {
       {selectedOrder && (
         <OrderDetailModal
           order={selectedOrder}
-          onClose={() => setSelectedOrder(null)}
+          onClose={() => {
+            setSelectedOrder(null);
+            setOpenRefundKey(null);
+          }}
           onRefundSuccess={fetchOrders}
           canRefund={canCancelReceipts}
+          openRefundKey={openRefundKey}
         />
       )}
 
@@ -1714,65 +1732,6 @@ export function OrdersPage() {
         showCancel={confirmConfig.showCancel}
       />
 
-      {isRefundReasonModalOpen && createPortal(
-        <div className="fixed inset-0 z-[10000] popup-surface flex items-center justify-center bg-black/50 p-4">
-          <div
-            className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 p-5 sm:p-6 shadow-2xl"
-            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-          >
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-              {t('orders.messages.refundConfirmTitle')}
-            </h3>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-              {t('orders.messages.refundConfirmMessage')}
-            </p>
-
-            <div className="mt-4">
-              <label className="block text-sm font-normal text-gray-800 dark:text-gray-100 mb-2">
-                Refund reason
-              </label>
-              <textarea maxLength={2000}
-                value={refundReason}
-                onChange={(e) => {
-                  setRefundReason(e.target.value);
-                  if (refundReasonError && e.target.value.trim()) {
-                    setRefundReasonError('');
-                  }
-                }}
-                placeholder={formatInputPlaceholder("Enter refund reason", t('common.locale'))}
-                rows={4}
-                className="w-full rounded-xl border border-gray-300 dark:border-white/15 bg-white dark:bg-[#0F172A] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-mintcom-green/40"
-              />
-              {refundReasonError && (
-                <p className="mt-2 text-sm text-red-600">{refundReasonError}</p>
-              )}
-            </div>
-
-            <div className="mt-5 flex gap-3">
-              <button
-                onClick={() => {
-                  if (isRefundSubmitting) return;
-                  setIsRefundReasonModalOpen(false);
-                  setRefundTargetOrder(null);
-                  setRefundReason('');
-                  setRefundReasonError('');
-                }}
-                className="flex-1 rounded-xl border border-gray-300 dark:border-white/15 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5"
-              >
-                {t('common.cancel')}
-              </button>
-              <button
-                onClick={submitRefundWithReason}
-                disabled={isRefundSubmitting}
-                className="flex-1 rounded-xl bg-mintcom-red px-4 py-2.5 text-sm font-semibold text-white hover:bg-mintcom-red/90 disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {isRefundSubmitting ? t('common.loading') : t('orders.actions.refund')}
-              </button>
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
     </div>
   );
 }

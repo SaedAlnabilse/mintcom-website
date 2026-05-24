@@ -493,7 +493,13 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             {paymentMethodBreakdown.length > 0 ? (
               <>
                 <div className="h-[180px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                    minWidth={1}
+                    minHeight={1}
+                    initialDimension={{ width: 320, height: 180 }}
+                  >
                     <PieChart>
                       <Pie
                         data={paymentMethodBreakdown}

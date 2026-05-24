@@ -1,9 +1,9 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign, Copy, Key, Shield } from 'lucide-react';
-import api from '../../config/api';
+import api, { extractErrorMessage } from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { EstablishmentDeletionWizard, PendingDeletionBanner } from '../../components/EstablishmentDeletionWizard';
@@ -17,6 +17,27 @@ import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
+import {
+  MAX_ESTABLISHMENT_NAME_LENGTH,
+  MAX_ESTABLISHMENT_TAGLINE_LENGTH,
+  MAX_ESTABLISHMENT_ADDRESS_LENGTH,
+  MAX_ESTABLISHMENT_EMAIL_LENGTH,
+  MAX_ESTABLISHMENT_TAX_ID_LENGTH,
+  MAX_RECEIPT_FAREWELL_LENGTH,
+  MAX_TAX_RATE_PERCENT,
+  MAX_TAX_RATE_INPUT_DIGITS,
+  MAX_HOLD_ORDER_TABLE_COUNT,
+  MAX_HOLD_ORDER_TABLE_DIGITS,
+  MAX_SERVICE_CHARGE_NAME_LENGTH,
+  MAX_SERVICE_CHARGE_VALUE,
+  buildAppSettingsUpdatePayload,
+  clampTaxRatePercent,
+  getChangedAppSettingsKeys,
+  normalizeBackendTaxRateForForm,
+  normalizeHoldOrderTableCount,
+  sanitizeDigits,
+  sanitizeLimitedText,
+} from '../../utils/settingsPayload';
 
 interface ApiError {
   response?: {
@@ -87,37 +108,6 @@ interface EstablishmentInfo {
   id: string;
   name: string;
 }
-
-const MAX_ESTABLISHMENT_NAME_LENGTH = 120;
-const MAX_ESTABLISHMENT_TAGLINE_LENGTH = 255;
-const MAX_ESTABLISHMENT_ADDRESS_LENGTH = 255;
-const MAX_ESTABLISHMENT_EMAIL_LENGTH = 254;
-const MAX_ESTABLISHMENT_TAX_ID_LENGTH = 50;
-const MAX_RECEIPT_FAREWELL_LENGTH = 255;
-const MAX_TAX_RATE_PERCENT = 100;
-const MAX_TAX_RATE_INPUT_DIGITS = 5;
-const MAX_HOLD_ORDER_TABLE_COUNT = 300;
-const MAX_HOLD_ORDER_TABLE_DIGITS = 3;
-
-const sanitizeLimitedText = (value: unknown, maxLength: number) =>
-  String(value ?? '').slice(0, maxLength);
-
-const sanitizeDigits = (value: unknown, maxLength: number) =>
-  String(value ?? '')
-    .replace(/\D/g, '')
-    .slice(0, maxLength);
-
-const clampTaxRatePercent = (value: unknown) => {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed)) return 0;
-  return Math.min(MAX_TAX_RATE_PERCENT, Math.max(0, Math.round(parsed * 100) / 100));
-};
-
-const normalizeHoldOrderTableCount = (value: unknown, fallback = 20) => {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed)) return fallback;
-  return Math.min(MAX_HOLD_ORDER_TABLE_COUNT, Math.max(0, Math.floor(parsed)));
-};
 
 export function SettingsPage() {
   const { t } = useTranslation();
@@ -225,6 +215,66 @@ export function SettingsPage() {
 
   const { register, handleSubmit, reset, watch, setValue, clearErrors, formState: { errors } } = useForm<AppSettings>();
 
+  // Scroll the Service Charge expanded panel into view when its master toggle flips on
+  const serviceChargeSectionRef = useRef<HTMLDivElement | null>(null);
+  const serviceChargePanelRef = useRef<HTMLDivElement | null>(null);
+  const serviceChargeEnabled = watch('serviceChargeEnabled');
+  const prevServiceChargeEnabled = useRef<boolean | undefined>(undefined);
+  const shouldScrollServiceChargeRef = useRef(false);
+
+  // Find the nearest scrolling ancestor (the dashboard's main content area)
+  const findScrollableAncestor = (el: HTMLElement | null): HTMLElement | Window => {
+    let node: HTMLElement | null = el?.parentElement ?? null;
+    while (node) {
+      const style = window.getComputedStyle(node);
+      const overflowY = style.overflowY;
+      if ((overflowY === 'auto' || overflowY === 'scroll') && node.scrollHeight > node.clientHeight) {
+        return node;
+      }
+      node = node.parentElement;
+    }
+    return window;
+  };
+
+  const scrollToServiceCharge = () => {
+    const panel = serviceChargePanelRef.current ?? serviceChargeSectionRef.current;
+    if (!panel) return;
+    const scroller = findScrollableAncestor(panel);
+    // Extra padding past the bottom of the panel so the last row isn't flush against the viewport edge
+    const EXTRA_OFFSET = 160;
+    if (scroller === window) {
+      const rect = panel.getBoundingClientRect();
+      const target = window.scrollY + rect.bottom - window.innerHeight + EXTRA_OFFSET;
+      window.scrollTo({ top: target, behavior: 'smooth' });
+    } else {
+      const container = scroller as HTMLElement;
+      const cRect = container.getBoundingClientRect();
+      const pRect = panel.getBoundingClientRect();
+      const target = container.scrollTop + (pRect.bottom - cRect.bottom) + EXTRA_OFFSET;
+      container.scrollTo({ top: target, behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    // Skip on first hydration so we don't auto-scroll on initial load when it's already on
+    if (prevServiceChargeEnabled.current === undefined) {
+      prevServiceChargeEnabled.current = !!serviceChargeEnabled;
+      return;
+    }
+    if (!prevServiceChargeEnabled.current && serviceChargeEnabled && activeTab === 'sales') {
+      // Mark that the next animation completion should scroll. Also use a fallback
+      // timeout in case onAnimationComplete fires before the ref attaches.
+      shouldScrollServiceChargeRef.current = true;
+      window.setTimeout(() => {
+        if (shouldScrollServiceChargeRef.current) {
+          shouldScrollServiceChargeRef.current = false;
+          scrollToServiceCharge();
+        }
+      }, 350);
+    }
+    prevServiceChargeEnabled.current = !!serviceChargeEnabled;
+  }, [serviceChargeEnabled, activeTab]);
+
   const restaurantNameField = register('restaurantName', {
     maxLength: { value: MAX_ESTABLISHMENT_NAME_LENGTH, message: t('common.maxLength', { count: MAX_ESTABLISHMENT_NAME_LENGTH }) },
     setValueAs: (value) => sanitizeLimitedText(value, MAX_ESTABLISHMENT_NAME_LENGTH),
@@ -271,32 +321,17 @@ export function SettingsPage() {
 
 
 
-  // Check if form has changes by comparing watched values with initial settings
-  const hasFormChanges = (() => {
-    if (!initialSettings) return false;
-    // Compare relevant form fields that are actually in the form
-    const fieldsToCompare = [
-      'restaurantName', 'restaurantDescription', 'restaurantAddress', 'email',
-      'taxIdNumber', 'taxRate', 'currency', 'showLogoOnReceipt', 'receiptHeader',
-      'farewellMessage', 'showRestaurantName', 'showDescription', 'showAddress',
-      'showTaxId', 'showFarewellMessage', 'holdOrderTableCount'
-    ];
-    for (const field of fieldsToCompare) {
-      const watchedVal = watchedValues[field as keyof AppSettings];
-      const initialVal = initialSettings[field as keyof AppSettings];
+  const changedSettingKeys = useMemo(
+    () => (initialSettings ? getChangedAppSettingsKeys(watchedValues, initialSettings) : new Set<string>()),
+    [watchedValues, initialSettings],
+  );
 
-      // Normalize values for comparison (handle null/undefined/empty string)
-      const normWatched = (watchedVal === undefined || watchedVal === null) ? '' : watchedVal;
-      const normInitial = (initialVal === undefined || initialVal === null) ? '' : initialVal;
+  // Compare operating schedule separately with deep equality
+  const hasScheduleChanges = initialSettings
+    ? JSON.stringify(watchedValues.operatingSchedule) !== JSON.stringify(initialSettings.operatingSchedule)
+    : false;
 
-      if (normWatched !== normInitial) return true;
-    }
-    // Compare operating schedule separately with deep equality
-    if (JSON.stringify(watchedValues.operatingSchedule) !== JSON.stringify(initialSettings.operatingSchedule)) {
-      return true;
-    }
-    return false;
-  })();
+  const hasFormChanges = changedSettingKeys.size > 0 || hasScheduleChanges;
 
   // Combined dirty state
   const hasUnsavedChanges = hasFormChanges || !!selectedLogo || !!selectedReceiptLogo || removeLogo;
@@ -393,7 +428,7 @@ export function SettingsPage() {
         email: sanitizeLimitedText(data.email, MAX_ESTABLISHMENT_EMAIL_LENGTH),
         taxIdNumber: sanitizeDigits(data.taxIdNumber, MAX_ESTABLISHMENT_TAX_ID_LENGTH),
         farewellMessage: sanitizeLimitedText(data.farewellMessage, MAX_RECEIPT_FAREWELL_LENGTH),
-        taxRate: data.taxRate ? clampTaxRatePercent(data.taxRate) : 0,
+        taxRate: normalizeBackendTaxRateForForm(data.taxRate),
         serviceChargeEnabled: Boolean(data.serviceChargeEnabled),
         serviceChargeName: data.serviceChargeName || 'Service Charge',
         serviceChargeType: data.serviceChargeType || 'PERCENTAGE',
@@ -514,24 +549,13 @@ export function SettingsPage() {
         }
       }
 
-      const submissionData = {
-        ...data,
-        restaurantName: sanitizeLimitedText(data.restaurantName, MAX_ESTABLISHMENT_NAME_LENGTH),
-        restaurantDescription: sanitizeLimitedText(data.restaurantDescription, MAX_ESTABLISHMENT_TAGLINE_LENGTH),
-        restaurantAddress: sanitizeLimitedText(data.restaurantAddress, MAX_ESTABLISHMENT_ADDRESS_LENGTH),
-        email: sanitizeLimitedText(data.email, MAX_ESTABLISHMENT_EMAIL_LENGTH),
-        taxIdNumber: sanitizeDigits(data.taxIdNumber, MAX_ESTABLISHMENT_TAX_ID_LENGTH),
-        farewellMessage: sanitizeLimitedText(data.farewellMessage, MAX_RECEIPT_FAREWELL_LENGTH),
-        taxRate: clampTaxRatePercent(data.taxRate) / 100,
-        serviceChargeEnabled: Boolean(data.serviceChargeEnabled),
-        serviceChargeName: sanitizeLimitedText(data.serviceChargeName || 'Service Charge', 80),
-        serviceChargeType: data.serviceChargeType || 'PERCENTAGE',
-        serviceChargeValue: Math.max(0, Number(data.serviceChargeValue || 0)),
-        serviceChargeTaxable: Boolean(data.serviceChargeTaxable),
-        serviceChargeAutoApply: data.serviceChargeAutoApply !== false,
-        serviceChargeAllowCashierOverride: Boolean(data.serviceChargeAllowCashierOverride),
-        holdOrderTableCount: normalizeHoldOrderTableCount(data.holdOrderTableCount),
-      };
+      const changedKeys = initialSettings
+        ? getChangedAppSettingsKeys(data, initialSettings)
+        : new Set<string>();
+      if (selectedLogo || removeLogo) changedKeys.add('logo');
+      if (selectedReceiptLogo) changedKeys.add('receiptLogo');
+
+      const submissionData = buildAppSettingsUpdatePayload(data, changedKeys);
 
       await api.put('/app-settings', submissionData);
 
@@ -569,7 +593,7 @@ export function SettingsPage() {
         console.error('[Settings] Failed to refresh establishments after save:', error);
       });
     } catch (err) {
-      toast.error((err as ApiError).response?.data?.message || t('settings.messages.saveFailed'));
+      toast.error(extractErrorMessage(err) || t('settings.messages.saveFailed'));
     } finally {
       setIsSaving(false);
     }
@@ -716,6 +740,30 @@ export function SettingsPage() {
     }
   };
 
+  const showFormValidationError = (errs: any) => {
+    const message =
+      errs.taxRate?.message ||
+      errs.holdOrderTableCount?.message ||
+      errs.serviceChargeName?.message ||
+      errs.serviceChargeValue?.message;
+
+    if (!message) {
+      toast.error(t('settings.messages.formErrors'));
+      return;
+    }
+
+    setConfirmConfig({
+      isOpen: true,
+      title: t('settings.confirm.entryErrorTitle', t('common.error')),
+      message,
+      type: 'danger',
+      confirmText: t('common.gotIt'),
+      showCancel: false,
+      onConfirm: () => { },
+      onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+    });
+  };
+
   const handleTabChange = (newTab: SettingsTab) => {
     if (activeTab === newTab) return;
 
@@ -781,33 +829,7 @@ export function SettingsPage() {
 
         <button
           type="button"
-          onClick={handleSubmit(onSubmit, (errs) => {
-            if (errs.taxRate) {
-              setConfirmConfig({
-                isOpen: true,
-                title: t('common.error'),
-                message: errs.taxRate.message as string || t('settings.confirm.invalidTaxMessage'),
-                type: 'danger',
-                confirmText: t('common.gotIt'),
-                showCancel: false,
-                onConfirm: () => { },
-                onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
-              });
-            } else if (errs.holdOrderTableCount) {
-              setConfirmConfig({
-                isOpen: true,
-                title: t('common.error'),
-                message: errs.holdOrderTableCount.message as string || t('settings.sales.holdOrderTableCountErrorRange'),
-                type: 'danger',
-                confirmText: t('common.gotIt'),
-                showCancel: false,
-                onConfirm: () => { },
-                onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
-              });
-            } else {
-              toast.error(t('settings.messages.formErrors'));
-            }
-          })}
+          onClick={handleSubmit(onSubmit, showFormValidationError)}
           disabled={isSaving || !hasUnsavedChanges}
           className="flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm disabled:opacity-50 disabled:shadow-none"
         >
@@ -840,31 +862,7 @@ export function SettingsPage() {
         })}
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit, (errs) => {
-        if (errs.taxRate) {
-          setConfirmConfig({
-            isOpen: true,
-            title: t('settings.confirm.entryErrorTitle'),
-            message: errs.taxRate.message as string || t('settings.confirm.invalidTaxMessage'),
-            type: 'danger',
-            confirmText: t('common.gotIt'),
-            showCancel: false,
-            onConfirm: () => { },
-            onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
-          });
-        } else if (errs.holdOrderTableCount) {
-          setConfirmConfig({
-            isOpen: true,
-            title: t('settings.confirm.entryErrorTitle'),
-            message: errs.holdOrderTableCount.message as string || t('settings.sales.holdOrderTableCountErrorRange'),
-            type: 'danger',
-            confirmText: t('common.gotIt'),
-            showCancel: false,
-            onConfirm: () => { },
-            onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
-          });
-        }
-      })} className="space-y-8">
+      <form onSubmit={handleSubmit(onSubmit, showFormValidationError)} className="space-y-8">
         {activeTab === 'profile' && (() => {
           const profileEstablishments = (account as any)?.establishments || [];
           const contextEstablishments = establishments || [];
@@ -996,10 +994,12 @@ export function SettingsPage() {
           );
         })()}
 
-        {activeTab === 'sales' && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8 shadow-sm">
-              <div className="flex items-center gap-4">
+        {activeTab === 'sales' && (() => {
+          const isRTL = t('common.locale') === 'ar';
+          return (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-6 sm:p-8 space-y-8 rounded-2xl shadow-sm font-sans">
+              {/* Header */}
+              <div className="flex items-center gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
                 <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-sm">
                   <DollarSign size={20} />
                 </div>
@@ -1009,16 +1009,23 @@ export function SettingsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col shadow-lg backdrop-blur-sm transition-all hover:border-mintcom-green/20 group/card">
-                  <div className="flex items-center justify-between mb-6">
-                    <div>
-                      <p className="text-xs font-black text-mintcom-green tracking-[0.2em] mb-1">{t('settings.sales.taxLabel')}</p>
-                      <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{t('settings.sales.taxRate')}</h4>
-                    </div>
-                    <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-mintcom-green text-black text-xs font-bold tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-mintcom-green/10">{t('settings.sales.update')}</button>
+              {/* Row 1: Tax · Currency · Hold Order — three slim fields side-by-side */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Tax Rate */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="label-strong font-outfit block">
+                      {formatInputLabel(t('settings.sales.taxRate'), t('common.locale'))}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={updateTaxRate}
+                      className="px-2.5 py-1 bg-mintcom-green hover:bg-[#5fa888] text-black text-[10px] font-bold rounded-lg transition-all shadow-sm shadow-mintcom-green/10"
+                    >
+                      {t('settings.sales.update')}
+                    </button>
                   </div>
-                  <div className={`relative group transition-all`}>
+                  <div className="relative group transition-all">
                     <input type="hidden" {...taxRateField} />
                     <input
                       type="text"
@@ -1031,83 +1038,27 @@ export function SettingsPage() {
                         setValue('taxRate', numericValue, { shouldDirty: true, shouldValidate: true });
                         if (errors.taxRate) clearErrors('taxRate');
                       }}
-                      className={`w-full h-16 bg-white dark:bg-white/[0.03] border ${errors.taxRate ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-6 font-semibold text-3xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.taxRate ? 'focus:ring-red-500/20' : 'focus:ring-mintcom-green/20'} transition-all pr-16 group-hover:border-mintcom-green/50 shadow-sm`}
+                      className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-white/5 border ${errors.taxRate ? 'border-red-500 bg-red-500/5 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-mintcom-green/20 focus:border-mintcom-green'} rounded-xl text-sm font-semibold text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all ${isRTL ? 'pl-9' : 'pr-9'}`}
                     />
-                    <div className={`absolute ${t('common.locale') === 'ar' ? 'left-6' : 'right-6'} top-1/2 -translate-y-1/2 font-semibold text-xl transition-colors ${errors.taxRate ? 'text-red-500' : 'text-gray-400 group-focus-within:text-mintcom-green'}`}>%</div>
+                    <div className={`absolute ${isRTL ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 font-semibold text-sm text-gray-400 group-focus-within:text-mintcom-green`}>%</div>
                   </div>
-                  <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
-                  {errors.taxRate && (
-                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
-                        <AlertTriangle size={18} className="text-red-500" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-red-500 tracking-widest leading-none mb-1">{t('settings.sales.invalidInput')}</p>
-                        <p className="text-xs font-medium text-red-500/80 tracking-tight">{errors.taxRate.message as string || t('settings.sales.taxErrorGeneric')}</p>
-                      </div>
-                    </motion.div>
-                  )}
-                  <p className="text-xs font-medium text-gray-400 mt-auto pt-6 leading-relaxed tracking-tight flex items-start gap-2">
-                    <span className="text-mintcom-green">•</span>
-                    {t('settings.sales.taxWarning')}
-                  </p>
-                </div>
-
-                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col gap-4 shadow-lg backdrop-blur-sm transition-all hover:border-mintcom-green/20 group/card">
-                  <div>
-                    <p className="text-xs font-black text-mintcom-green tracking-[0.2em] mb-1">
-                      {t('settings.sales.serviceChargeLabel', { defaultValue: 'Service Charge' })}
+                  {errors.taxRate ? (
+                    <p className="text-[11px] font-medium text-red-500 leading-relaxed flex items-start gap-1.5">
+                      <AlertTriangle size={12} className="mt-0.5 shrink-0" />
+                      {errors.taxRate.message as string || t('settings.sales.taxErrorGeneric')}
                     </p>
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {t('settings.sales.serviceChargeTitle', { defaultValue: 'Service Charge' })}
-                    </h4>
-                  </div>
-                  <label className="flex items-center justify-between gap-3 text-sm font-bold text-gray-700 dark:text-gray-200">
-                    <span>{t('settings.sales.serviceChargeEnabled', { defaultValue: 'Enable Service Charge' })}</span>
-                    <input type="checkbox" {...register('serviceChargeEnabled')} className="w-5 h-5 accent-mintcom-green" />
-                  </label>
-                  <input
-                    type="text"
-                    {...register('serviceChargeName')}
-                    placeholder={formatInputPlaceholder(t('settings.sales.serviceChargeName', { defaultValue: 'Service Charge Name' }), t('common.locale'))}
-                    className="w-full px-4 py-3 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.08] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20"
-                  />
-                  <CustomSelect
-                    value={watch('serviceChargeType') || 'PERCENTAGE'}
-                    onChange={(val) => setValue('serviceChargeType', String(val) as 'PERCENTAGE' | 'FIXED', { shouldDirty: true })}
-                    options={[
-                      { label: t('settings.sales.percentage', { defaultValue: 'Percentage' }), value: 'PERCENTAGE' },
-                      { label: t('settings.sales.fixedAmount', { defaultValue: 'Fixed amount' }), value: 'FIXED' },
-                    ]}
-                    placeholder={formatInputPlaceholder(t('settings.sales.serviceChargeType', { defaultValue: 'Type' }), t('common.locale'))}
-                  />
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    {...register('serviceChargeValue', { valueAsNumber: true, min: 0 })}
-                    placeholder={formatInputPlaceholder(t('settings.sales.serviceChargeValue', { defaultValue: 'Value' }), t('common.locale'))}
-                    className="w-full px-4 py-3 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.08] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20"
-                  />
-                  <label className="flex items-center justify-between gap-3 text-sm font-bold text-gray-700 dark:text-gray-200">
-                    <span>{t('settings.sales.serviceChargeTaxable', { defaultValue: 'Taxable' })}</span>
-                    <input type="checkbox" {...register('serviceChargeTaxable')} className="w-5 h-5 accent-mintcom-green" />
-                  </label>
-                  <label className="flex items-center justify-between gap-3 text-sm font-bold text-gray-700 dark:text-gray-200">
-                    <span>{t('settings.sales.serviceChargeAutoApply', { defaultValue: 'Auto apply' })}</span>
-                    <input type="checkbox" {...register('serviceChargeAutoApply')} className="w-5 h-5 accent-mintcom-green" />
-                  </label>
-                  <label className="flex items-center justify-between gap-3 text-sm font-bold text-gray-700 dark:text-gray-200">
-                    <span>{t('settings.sales.serviceChargeOverride', { defaultValue: 'Allow cashier override' })}</span>
-                    <input type="checkbox" {...register('serviceChargeAllowCashierOverride')} className="w-5 h-5 accent-mintcom-green" />
-                  </label>
+                  ) : (
+                    <p className="text-[11px] font-medium text-gray-400 leading-snug">
+                      {t('settings.sales.taxWarning')}
+                    </p>
+                  )}
                 </div>
 
-                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col shadow-lg backdrop-blur-sm transition-all group/card relative overflow-hidden">
-                  <div className="mb-6">
-                    <p className="text-xs font-black text-blue-500 tracking-[0.2em] mb-1">{t('settings.sales.currencyLabel')}</p>
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{t('settings.sales.currency')}</h4>
-                  </div>
+                {/* Currency */}
+                <div className="space-y-2">
+                  <label className="label-strong font-outfit block">
+                    {formatInputLabel(t('settings.sales.currency'), t('common.locale'))}
+                  </label>
                   <div className="relative">
                     <input type="hidden" {...register('currency')} />
                     <CustomSelect
@@ -1130,86 +1081,227 @@ export function SettingsPage() {
                       ]}
                     />
                   </div>
-                  <div className="mt-auto pt-6 space-y-3">
-                    <p className="text-xs font-medium text-gray-400 leading-relaxed tracking-tight flex items-start gap-2">
-                      <span className="text-blue-500">•</span>
-                      {t('settings.sales.currencyDesc')}
-                    </p>
-                    <div className="flex items-start gap-2.5 p-3.5 bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.05] rounded-xl transition-all hover:bg-gray-100/50 dark:hover:bg-white/[0.05]">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
-                      <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
-                        {t('settings.sales.currencyOwnerOnly')}
-                        <a
-                          href="/owner/account"
-                          className="ml-1 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-bold hover:underline transition-all underline-offset-2"
-                        >
-                          {t('nav.owner')}
-                        </a>
-                      </p>
-                    </div>
-                  </div>
+                  <p className="text-[11px] font-medium text-gray-400 leading-snug">
+                    {t('settings.sales.currencyOwnerOnly')}
+                    <a
+                      href="/owner/account"
+                      className="ml-1 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-bold hover:underline underline-offset-2"
+                    >
+                      {t('nav.owner')}
+                    </a>
+                  </p>
                 </div>
 
-                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col shadow-lg backdrop-blur-sm transition-all hover:border-indigo-500/20 group/card">
-                  <div className="mb-6">
-                    <p className="text-xs font-black text-indigo-500 tracking-[0.2em] mb-1">{t('settings.sales.holdOrderTableCountLabel')}</p>
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{t('settings.sales.holdOrderTableCountTitle')}</h4>
+                {/* Hold Order / Table Count */}
+                <div className="space-y-2">
+                  <label className="label-strong font-outfit block">
+                    {formatInputLabel(t('settings.sales.holdOrderTableCountTitle'), t('common.locale'))}
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max={MAX_HOLD_ORDER_TABLE_COUNT}
+                    step="1"
+                    maxLength={MAX_HOLD_ORDER_TABLE_DIGITS}
+                    inputMode="numeric"
+                    onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                      const target = e.target as HTMLInputElement;
+                      const onlyDigits = target.value.replace(/[^\d]/g, '').slice(0, MAX_HOLD_ORDER_TABLE_DIGITS);
+                      if (!onlyDigits) {
+                        target.value = '';
+                        return;
+                      }
+                      const parsed = parseInt(onlyDigits, 10);
+                      target.value = String(Math.min(parsed, MAX_HOLD_ORDER_TABLE_COUNT));
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E') {
+                        e.preventDefault();
+                      }
+                    }}
+                    {...register('holdOrderTableCount', {
+                      valueAsNumber: true,
+                      min: { value: 0, message: t('settings.sales.holdOrderTableCountErrorRange') },
+                      max: { value: MAX_HOLD_ORDER_TABLE_COUNT, message: t('settings.sales.holdOrderTableCountErrorRange') },
+                      setValueAs: (value) => normalizeHoldOrderTableCount(value, 10),
+                    })}
+                    className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-white/5 border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-mintcom-green/20 focus:border-mintcom-green'} rounded-xl text-sm font-semibold text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all`}
+                    placeholder={formatInputPlaceholder(t('settings.sales.holdOrderTableCountPlaceholder'), t('common.locale'))}
+                  />
+                  {errors.holdOrderTableCount ? (
+                    <p className="text-[11px] font-medium text-red-500 leading-relaxed flex items-start gap-1.5">
+                      <AlertTriangle size={12} className="mt-0.5 shrink-0" />
+                      {errors.holdOrderTableCount.message as string || t('settings.sales.holdOrderTableCountErrorRange')}
+                    </p>
+                  ) : (
+                    <p className="text-[11px] font-medium text-gray-400 leading-snug">
+                      {t('settings.sales.holdOrderTableCountDesc')}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Section divider — Service Charge as a form section, not a chunky card */}
+              <div ref={serviceChargeSectionRef} className="pt-2 border-t border-gray-100 dark:border-white/5 scroll-mt-24">
+                <div className="flex items-center justify-between pt-6 pb-4">
+                  <div>
+                    <h4 className="text-base font-bold text-gray-900 dark:text-white">
+                      {t('settings.sales.serviceChargeTitle', { defaultValue: 'Service Charge Setup' })}
+                    </h4>
                   </div>
-                  <div className="relative group transition-all">
-                    <input
-                      type="number"
-                      min="0"
-                      max={MAX_HOLD_ORDER_TABLE_COUNT}
-                      step="1"
-                      maxLength={MAX_HOLD_ORDER_TABLE_DIGITS}
-                      inputMode="numeric"
-                      onInput={(e: React.FormEvent<HTMLInputElement>) => {
-                        const target = e.target as HTMLInputElement;
-                        const onlyDigits = target.value.replace(/[^\d]/g, '').slice(0, MAX_HOLD_ORDER_TABLE_DIGITS);
-                        if (!onlyDigits) {
-                          target.value = '';
-                          return;
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" {...register('serviceChargeEnabled')} className="sr-only peer" />
+                    <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                  </label>
+                </div>
+
+                <AnimatePresence initial={false}>
+                  {watch('serviceChargeEnabled') && (
+                    <motion.div
+                      ref={serviceChargePanelRef}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: 'easeInOut' }}
+                      onAnimationComplete={(definition) => {
+                        // Only scroll on the open animation, not on exit
+                        const target = (definition as { height?: string | number } | undefined)?.height;
+                        if (shouldScrollServiceChargeRef.current && target === 'auto') {
+                          shouldScrollServiceChargeRef.current = false;
+                          scrollToServiceCharge();
                         }
-                        const parsed = parseInt(onlyDigits, 10);
-                        target.value = String(Math.min(parsed, MAX_HOLD_ORDER_TABLE_COUNT));
                       }}
-                      onKeyDown={(e) => {
-                        if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E') {
-                          e.preventDefault();
-                        }
-                      }}
-                      {...register('holdOrderTableCount', {
-                        valueAsNumber: true,
-                        min: { value: 0, message: t('settings.sales.holdOrderTableCountErrorRange') },
-                        max: { value: MAX_HOLD_ORDER_TABLE_COUNT, message: t('settings.sales.holdOrderTableCountErrorRange') },
-                        setValueAs: (value) => {
-                          return normalizeHoldOrderTableCount(value, 10);
-                        },
-                      })}
-                      className={`w-full h-16 bg-white dark:bg-white/[0.03] border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-6 font-semibold text-3xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.holdOrderTableCount ? 'focus:ring-red-500/20' : 'focus:ring-indigo-500/20'} transition-all group-hover:border-indigo-500/50 shadow-sm`}
-                      placeholder={formatInputPlaceholder(t('settings.sales.holdOrderTableCountPlaceholder'), t('common.locale'))}
-                    />
-                  </div>
-                  {errors.holdOrderTableCount && (
-                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
-                        <AlertTriangle size={18} className="text-red-500" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-red-500 tracking-widest leading-none mb-1">{t('settings.sales.invalidInput')}</p>
-                        <p className="text-xs font-medium text-red-500/80 tracking-tight">{errors.holdOrderTableCount.message as string || t('settings.sales.holdOrderTableCountErrorRange')}</p>
+                      className="overflow-hidden"
+                    >
+                      <div className="space-y-5 pt-2">
+                        {/* Row: Name · Type · Value — inline form row */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="space-y-2">
+                            <label className="text-xs font-bold text-gray-500 dark:text-gray-400 block">
+                              {t('settings.sales.serviceChargeName', { defaultValue: 'Charge Name' })}
+                            </label>
+                            <input
+                              type="text"
+                              maxLength={MAX_SERVICE_CHARGE_NAME_LENGTH}
+                              {...register('serviceChargeName', {
+                                maxLength: {
+                                  value: MAX_SERVICE_CHARGE_NAME_LENGTH,
+                                  message: t('common.maxLength', { count: MAX_SERVICE_CHARGE_NAME_LENGTH }),
+                                },
+                                setValueAs: (value) => sanitizeLimitedText(value, MAX_SERVICE_CHARGE_NAME_LENGTH),
+                              })}
+                              placeholder={formatInputPlaceholder(t('settings.sales.serviceChargeName', { defaultValue: 'e.g. Service Charge' }), t('common.locale'))}
+                              className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-white/5 border ${errors.serviceChargeName ? 'border-red-500 bg-red-500/5 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-mintcom-green/20 focus:border-mintcom-green'} rounded-xl text-sm font-semibold text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all`}
+                            />
+                            {errors.serviceChargeName && (
+                              <p className="text-[11px] font-medium text-red-500 leading-relaxed flex items-start gap-1.5">
+                                <AlertTriangle size={12} className="mt-0.5 shrink-0" />
+                                {errors.serviceChargeName.message as string}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-xs font-bold text-gray-500 dark:text-gray-400 block">
+                              {t('settings.sales.serviceChargeType', { defaultValue: 'Type' })}
+                            </label>
+                            <CustomSelect
+                              value={watch('serviceChargeType') || 'PERCENTAGE'}
+                              onChange={(val) => setValue('serviceChargeType', String(val) as 'PERCENTAGE' | 'FIXED', { shouldDirty: true })}
+                              options={[
+                                { label: t('settings.sales.percentage', { defaultValue: 'Percentage (%)' }), value: 'PERCENTAGE' },
+                                { label: t('settings.sales.fixedAmount', { defaultValue: 'Fixed Amount' }), value: 'FIXED' },
+                              ]}
+                              placeholder={formatInputPlaceholder(t('settings.sales.serviceChargeType', { defaultValue: 'Type' }), t('common.locale'))}
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-xs font-bold text-gray-500 dark:text-gray-400 block">
+                              {t('settings.sales.serviceChargeValue', { defaultValue: 'Value' })}
+                            </label>
+                            <input
+                              type="number"
+                              min="0"
+                              max={MAX_SERVICE_CHARGE_VALUE}
+                              step="0.01"
+                              onKeyDown={(e) => {
+                                if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+                                  e.preventDefault();
+                                }
+                              }}
+                              {...register('serviceChargeValue', {
+                                valueAsNumber: true,
+                                min: {
+                                  value: 0,
+                                  message: t('settings.sales.serviceChargeValueErrorRange', {
+                                    max: MAX_SERVICE_CHARGE_VALUE,
+                                    defaultValue: `Charge value must be between 0 and ${MAX_SERVICE_CHARGE_VALUE}.`,
+                                  }),
+                                },
+                                max: {
+                                  value: MAX_SERVICE_CHARGE_VALUE,
+                                  message: t('settings.sales.serviceChargeValueErrorRange', {
+                                    max: MAX_SERVICE_CHARGE_VALUE,
+                                    defaultValue: `Charge value must be between 0 and ${MAX_SERVICE_CHARGE_VALUE}.`,
+                                  }),
+                                },
+                              })}
+                              placeholder={formatInputPlaceholder(t('settings.sales.serviceChargeValue', { defaultValue: '0.00' }), t('common.locale'))}
+                              className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-white/5 border ${errors.serviceChargeValue ? 'border-red-500 bg-red-500/5 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-mintcom-green/20 focus:border-mintcom-green'} rounded-xl text-sm font-semibold text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all`}
+                            />
+                            {errors.serviceChargeValue && (
+                              <p className="text-[11px] font-medium text-red-500 leading-relaxed flex items-start gap-1.5">
+                                <AlertTriangle size={12} className="mt-0.5 shrink-0" />
+                                {errors.serviceChargeValue.message as string}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Toggle rows — compact inline list */}
+                        <div className="pt-3 mt-1 border-t border-gray-100 dark:border-white/5 divide-y divide-gray-100 dark:divide-white/5">
+                          <div className="flex items-center justify-between py-3">
+                            <div>
+                              <span className="block text-xs font-bold text-gray-700 dark:text-gray-200">{t('settings.sales.serviceChargeTaxable', { defaultValue: 'Taxable' })}</span>
+                              <span className="block text-[10px] text-gray-400 mt-0.5">{t('settings.sales.serviceChargeTaxableDesc', { defaultValue: 'Apply sales tax to this service charge' })}</span>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input type="checkbox" {...register('serviceChargeTaxable')} className="sr-only peer" />
+                              <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                            </label>
+                          </div>
+
+                          <div className="flex items-center justify-between py-3">
+                            <div>
+                              <span className="block text-xs font-bold text-gray-700 dark:text-gray-200">{t('settings.sales.serviceChargeAutoApply', { defaultValue: 'Auto Apply' })}</span>
+                              <span className="block text-[10px] text-gray-400 mt-0.5">{t('settings.sales.serviceChargeAutoApplyDesc', { defaultValue: 'Add charge to all new orders automatically' })}</span>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input type="checkbox" {...register('serviceChargeAutoApply')} className="sr-only peer" />
+                              <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                            </label>
+                          </div>
+
+                          <div className="flex items-center justify-between py-3">
+                            <div>
+                              <span className="block text-xs font-bold text-gray-700 dark:text-gray-200">{t('settings.sales.serviceChargeOverride', { defaultValue: 'Allow Cashier Override' })}</span>
+                              <span className="block text-[10px] text-gray-400 mt-0.5">{t('settings.sales.serviceChargeOverrideDesc', { defaultValue: 'Allow cashiers to remove or modify this charge' })}</span>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input type="checkbox" {...register('serviceChargeAllowCashierOverride')} className="sr-only peer" />
+                              <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                            </label>
+                          </div>
+                        </div>
                       </div>
                     </motion.div>
                   )}
-                  <p className="text-xs font-medium text-gray-400 mt-auto pt-6 leading-relaxed tracking-tight flex items-start gap-2">
-                    <span className="text-indigo-500">•</span>
-                    {t('settings.sales.holdOrderTableCountDesc')}
-                  </p>
-                </div>
+                </AnimatePresence>
               </div>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          );
+        })()}
 
         {activeTab === 'receipt' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">

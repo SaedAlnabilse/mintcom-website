@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Star, CheckCircle2 } from 'lucide-react';
+import { MessageSquare, X, Send, Star, CheckCircle2, ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -211,18 +211,18 @@ export const FeedbackWidget = () => {
                                     <form onSubmit={handleSubmit} className="space-y-6">
                                         <div>
                                             <label className="block text-xs font-sans font-normal text-gray-500 mb-3">{formatInputLabel(t('feedback.rateExperience'), t('common.locale'))}</label>
-                                            <div className="flex justify-between gap-2">
+                                            <div className="flex justify-start gap-2.5">
                                                 {[1, 2, 3, 4, 5].map((s) => (
                                                     <button
                                                         key={s}
                                                         type="button"
                                                         onClick={() => setRating(s)}
-                                                        className={`flex-1 aspect-square rounded-xl flex items-center justify-center transition-all duration-200 ${rating >= s
+                                                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${rating >= s
                                                                 ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20'
                                                                 : 'bg-gray-50 dark:bg-[#1E293B] text-gray-300 hover:bg-gray-100 dark:hover:bg-[#334155]'
                                                             }`}
                                                     >
-                                                        <Star size={20} fill={rating >= s ? "currentColor" : "none"} strokeWidth={2.5} />
+                                                        <Star size={16} fill={rating >= s ? "currentColor" : "none"} strokeWidth={2.5} />
                                                     </button>
                                                 ))}
                                             </div>
@@ -231,32 +231,42 @@ export const FeedbackWidget = () => {
                                         <div className="grid grid-cols-1 gap-4">
                                             <div>
                                                 <label className="block text-xs font-sans font-normal text-gray-500 mb-3">{formatInputLabel(t('feedback.category'), t('common.locale'))}</label>
-                                                <select
-                                                    value={category}
-                                                    onChange={(e) => setCategory(e.target.value)}
-                                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
-                                                >
-                                                    {categoryOptions.map((option) => (
-                                                        <option key={option.value} value={option.value}>
-                                                            {option.label}
-                                                        </option>
-                                                    ))}
-                                                </select>
+                                                <div className="relative">
+                                                    <select
+                                                        value={category}
+                                                        onChange={(e) => setCategory(e.target.value)}
+                                                        className={`w-full ${isRTL ? 'pl-10 pr-4' : 'pr-10 pl-4'} py-3 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 appearance-none transition-all`}
+                                                    >
+                                                        {categoryOptions.map((option) => (
+                                                            <option key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    <div className={`absolute inset-y-0 ${isRTL ? 'left-4' : 'right-4'} flex items-center pointer-events-none text-gray-500 dark:text-gray-400`}>
+                                                        <ChevronDown size={18} />
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div>
                                                 <label className="block text-xs font-sans font-normal text-gray-500 mb-3">{formatInputLabel(t('feedback.area'), t('common.locale'))}</label>
-                                                <select
-                                                    value={area}
-                                                    onChange={(e) => setArea(e.target.value)}
-                                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
-                                                >
-                                                    {areaOptions.map((option) => (
-                                                        <option key={option.value} value={option.value}>
-                                                            {option.label}
-                                                        </option>
-                                                    ))}
-                                                </select>
+                                                <div className="relative">
+                                                    <select
+                                                        value={area}
+                                                        onChange={(e) => setArea(e.target.value)}
+                                                        className={`w-full ${isRTL ? 'pl-10 pr-4' : 'pr-10 pl-4'} py-3 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 appearance-none transition-all`}
+                                                    >
+                                                        {areaOptions.map((option) => (
+                                                            <option key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    <div className={`absolute inset-y-0 ${isRTL ? 'left-4' : 'right-4'} flex items-center pointer-events-none text-gray-500 dark:text-gray-400`}>
+                                                        <ChevronDown size={18} />
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
