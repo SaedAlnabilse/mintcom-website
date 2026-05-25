@@ -93,7 +93,7 @@ const normalizeEstablishmentHeaderError = (error: any) => {
 
 const shouldSanitizeTextPayload = (url?: string): boolean => {
   if (!url) return true;
-  return !/(?:\/api)?\/(support|contact)\b/.test(url);
+  return !/(?:\/api)?\/(support|contact|accounts\/google-auth)\b/.test(url);
 };
 
 // Request interceptor to add establishment ID and ensure /api prefix
