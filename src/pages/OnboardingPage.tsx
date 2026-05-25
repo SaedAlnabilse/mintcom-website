@@ -353,6 +353,85 @@ export function OnboardingPage() {
     goToStep(4);
   };
 
+  const findOwnedEstablishmentByLoginId = async (loginId: string) => {
+    const normalizedLoginId = String(loginId || '').trim().toLowerCase();
+    if (!normalizedLoginId) return null;
+
+    const latestEstablishments = await refreshEstablishments();
+    return latestEstablishments.find(
+      (est) => est.establishmentLoginId?.toLowerCase() === normalizedLoginId
+    ) || null;
+  };
+
+  const createOnboardingAdminEmployee = async (establishmentId: string) => {
+    await api.post('/api/employees', {
+      username: formData.username,
+      password: formData.password,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      establishmentId,
+      role: 'ADMIN',
+      permissions: [],
+      allowedDiscounts: []
+    }, {
+      headers: {
+        'X-Establishment-Id': establishmentId
+      }
+    });
+  };
+
+  const finishOnboardingWithEstablishment = async (establishment: any) => {
+    const estId = establishment?.id;
+    if (!estId) {
+      throw new Error('Failed to get establishment Id');
+    }
+
+    const nextEstablishment = {
+      ...establishment,
+      id: estId,
+      name: establishment.name || formData.name,
+      type: establishment.type || formData.type,
+      address: establishment.address || formData.address,
+      currency: establishment.currency || formData.currency,
+      establishmentLoginId: establishment.establishmentLoginId || formData.establishmentLoginId,
+    } as any;
+
+    setCurrentEstablishment(nextEstablishment);
+    localStorage.setItem('selectedEstablishmentId', estId);
+
+    try {
+      const welcomeTargets = new Set<string>([
+        estId,
+        nextEstablishment.establishmentLoginId,
+        formData.establishmentLoginId,
+      ].filter(Boolean) as string[]);
+
+      welcomeTargets.forEach((target) => {
+        localStorage.removeItem(`mintcom.dashboard.setup.dismissed.${target}`);
+        localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v3.${account?.id || 'anonymous'}.${target}`);
+        localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v3.anonymous.${target}`);
+        localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
+        localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v6.anonymous.${target}`);
+        sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v4.${account?.id || 'anonymous'}.${target}`);
+        sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v4.anonymous.${target}`);
+        sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v5.${account?.id || 'anonymous'}.${target}`);
+        sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v5.anonymous.${target}`);
+        sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
+        sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v6.anonymous.${target}`);
+        localStorage.removeItem(`mintcom.dashboard.visited.${target}`);
+        localStorage.setItem(`mintcom.dashboard.welcome.pending.${target}`, 'true');
+      });
+    } catch (storageError) {
+      console.warn('[Onboarding] Failed to persist welcome popup trigger:', storageError);
+    }
+
+    setFormData((prev: any) => ({ ...prev, establishmentId: estId }));
+    goToStep(5);
+    toast.success(t('onboarding.messages.complete'));
+    sessionStorage.removeItem('onboardingFormData');
+    await refreshEstablishments();
+  };
+
 
   const onStep4Submit = async (data: any) => {
     setIsLoading(true);
@@ -364,6 +443,13 @@ export function OnboardingPage() {
       });
 
       if (!response.data?.available) {
+          const existingOwnedEstablishment = await findOwnedEstablishmentByLoginId(formData.establishmentLoginId);
+          if (existingOwnedEstablishment) {
+            await createOnboardingAdminEmployee(existingOwnedEstablishment.id);
+            await finishOnboardingWithEstablishment(existingOwnedEstablishment);
+            return;
+          }
+
           toast.error(response.data?.message || t('owner.brands.validation.loginIdTakenHint', { defaultValue: 'This Establishment ID is already in use. Please choose a different one.' }));
           setIsLoading(false);
           goToStep(2);
@@ -448,80 +534,28 @@ export function OnboardingPage() {
         duplicatePaymentMethods: formData.duplicatePaymentMethods,
       };
 
-      const estRes = await api.post('/api/establishments', establishmentPayload, {
-        headers: {
-          'X-Skip-Establishment-Header': 'true'
-        }
-      });
-      const estId = estRes.data.establishment?.id || estRes.data.id;
-
-      if (!estId) {
-        throw new Error('Failed to get establishment Id');
-      }
-
-      // Persist the new establishment immediately so the next scoped request uses the new location.
-      setCurrentEstablishment({
-        ...(estRes.data.establishment || {}),
-        id: estId,
-        name: formData.name,
-        type: formData.type,
-        address: formData.address,
-        currency: formData.currency,
-        establishmentLoginId: formData.establishmentLoginId,
-      } as any);
-      localStorage.setItem('selectedEstablishmentId', estId);
-
+      let createdEstablishment: any;
       try {
-        const welcomeTargets = new Set<string>([
-          estId,
-          estRes.data.establishment?.establishmentLoginId,
-          formData.establishmentLoginId,
-        ].filter(Boolean) as string[]);
-
-        welcomeTargets.forEach((target) => {
-          localStorage.removeItem(`mintcom.dashboard.setup.dismissed.${target}`);
-          localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v3.${account?.id || 'anonymous'}.${target}`);
-          localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v3.anonymous.${target}`);
-          localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
-          localStorage.removeItem(`mintcom.dashboard.setup.dismissed.v6.anonymous.${target}`);
-          sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v4.${account?.id || 'anonymous'}.${target}`);
-          sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v4.anonymous.${target}`);
-          sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v5.${account?.id || 'anonymous'}.${target}`);
-          sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v5.anonymous.${target}`);
-          sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v6.${account?.id || 'anonymous'}.${target}`);
-          sessionStorage.removeItem(`mintcom.dashboard.setup.session.dismissed.v6.anonymous.${target}`);
-          localStorage.removeItem(`mintcom.dashboard.visited.${target}`);
-          localStorage.setItem(`mintcom.dashboard.welcome.pending.${target}`, 'true');
+        const estRes = await api.post('/api/establishments', establishmentPayload, {
+          headers: {
+            'X-Skip-Establishment-Header': 'true'
+          }
         });
-      } catch (storageError) {
-        console.warn('[Onboarding] Failed to persist welcome popup trigger:', storageError);
+        createdEstablishment = estRes.data.establishment || estRes.data;
+      } catch (err: any) {
+        const status = err.response?.status;
+        const message = String(err.response?.data?.message || '');
+        if (status === 409 || message.toLowerCase().includes('establishment id')) {
+          createdEstablishment = await findOwnedEstablishmentByLoginId(formData.establishmentLoginId);
+        }
+
+        if (!createdEstablishment) {
+          throw err;
+        }
       }
 
-      // Save the establishment ID for navigation
-      setFormData((prev: any) => ({ ...prev, establishmentId: estId }));
-
-      // 2. Create Admin Employee
-      await api.post('/api/employees', {
-        username: formData.username,
-        password: formData.password,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: account?.email, // Link to main account email
-        establishmentId: estId,
-        role: 'ADMIN',
-        permissions: [],
-        allowedDiscounts: []
-      }, {
-        headers: {
-          'X-Establishment-Id': estId
-        }
-      });
-
-      goToStep(5); // Success Step
-      toast.success(t('onboarding.messages.complete'));
-      // Clear onboarding data upon successful completion
-      sessionStorage.removeItem('onboardingFormData');
-      await refreshEstablishments();
+      await createOnboardingAdminEmployee(createdEstablishment.id);
+      await finishOnboardingWithEstablishment(createdEstablishment);
     } catch (err: any) {
       const errorData = err.response?.data?.message;
       const errorMessage = Array.isArray(errorData)

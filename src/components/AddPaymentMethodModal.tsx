@@ -86,9 +86,22 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
         if (!name) newErrors.name = t('common.required');
 
         const cleanNumber = cardNumber.replace(/\D/g, '');
-        const [expMonth, expYear] = expiry.split('/').map(p => parseInt(p, 10));
+        const [expMonthStr, expYearStr] = expiry.split('/');
+        const expMonth = parseInt(expMonthStr, 10);
+        const expYear = expYearStr?.length === 2 ? 2000 + parseInt(expYearStr, 10) : NaN;
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth() + 1;
 
-        if (expiry && (!expMonth || !expYear || expMonth < 1 || expMonth > 12)) {
+        if (
+            expiry &&
+            (!expMonth ||
+                !Number.isFinite(expYear) ||
+                expMonth < 1 ||
+                expMonth > 12 ||
+                expYear < currentYear ||
+                (expYear === currentYear && expMonth < currentMonth))
+        ) {
             newErrors.expiry = t('paymentMethods.modal.errors.invalidExpiry');
         }
 
