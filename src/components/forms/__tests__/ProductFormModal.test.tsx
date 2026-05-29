@@ -216,4 +216,50 @@ describe('ProductFormModal image generation', () => {
     expect(imageFile).toBeInstanceOf(File);
     expect((imageFile as File).name).toContain('organic-espresso-fallback');
   });
+
+  it('blocks reactivation until an active category is selected', async () => {
+    const onReactivate = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <ProductFormModal
+        isOpen
+        onClose={vi.fn()}
+        onSubmit={vi.fn()}
+        onReactivate={onReactivate}
+        initialData={{
+          id: 'item-1',
+          name: 'Archived Latte',
+          price: 3.5,
+          isAvailable: false,
+          categoryId: 'old-category',
+          deletedAt: '2026-01-01T00:00:00.000Z',
+        }}
+        categories={[
+          {
+            id: 'old-category',
+            name: 'Old Category',
+            isActive: false,
+            deletedAt: '2026-01-01T00:00:00.000Z',
+          },
+          { id: 'coffee', name: 'Coffee', isActive: true },
+        ]}
+      />
+    );
+
+    expect(screen.getByText('Category needs attention')).toBeInTheDocument();
+    expect(screen.getByText(/inactive category/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Reactivate/i })).toBeDisabled();
+
+    fireEvent.click(screen.getByText('Old Category (Inactive)'));
+    fireEvent.click(screen.getByText('Coffee'));
+
+    const reactivateButton = screen.getByRole('button', { name: /Reactivate/i });
+    expect(reactivateButton).not.toBeDisabled();
+    fireEvent.click(reactivateButton);
+
+    const confirmButtons = screen.getAllByRole('button', { name: /Reactivate/i });
+    fireEvent.click(confirmButtons[confirmButtons.length - 1]);
+
+    expect(onReactivate).toHaveBeenCalledWith('item-1', 'coffee');
+  });
 });

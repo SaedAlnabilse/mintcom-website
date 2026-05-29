@@ -1,4 +1,5 @@
 import { MobileAppModal } from './MobileAppModal';
+import { ANDROID_DOWNLOAD_URL, IOS_DOWNLOAD_URL } from '../config/downloads';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
@@ -938,6 +939,7 @@ export function DashboardLayout() {
       {/* Bottom Navigation - Mobile Only */}
       <BottomNavigation
         onMenuClick={() => setMobileMenuOpen(true)}
+        onMobileAppClick={() => setMobileAppModalOpen(true)}
         items={mobileBottomNavItems}
       />
 
@@ -951,10 +953,12 @@ export function DashboardLayout() {
         cancelText={t('common.cancel')}
         type="danger"
       />
-
-
-
-      <MobileAppModal isOpen={mobileAppModalOpen} onClose={() => setMobileAppModalOpen(false)} />
+      <MobileAppModal
+        isOpen={mobileAppModalOpen}
+        onClose={() => setMobileAppModalOpen(false)}
+        androidUrl={ANDROID_DOWNLOAD_URL}
+        iosUrl={IOS_DOWNLOAD_URL}
+      />
     </div>
   );
 }

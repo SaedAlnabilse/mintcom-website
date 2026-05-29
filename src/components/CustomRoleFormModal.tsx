@@ -7,6 +7,7 @@ import { QuickInfo } from './QuickInfo';
 import {
   POS_PERMISSIONS as CANONICAL_POS_PERMISSIONS,
   BACKOFFICE_PERMISSIONS as CANONICAL_BACKOFFICE_PERMISSIONS,
+  BASIC_POS_ASSIGNABLE_PERMISSION_IDS,
   normalizePermissions,
 } from '../config/permissions';
 import { useScrollLock } from '../hooks/useScrollLock';
@@ -71,23 +72,6 @@ const SETTINGS_SUB_PERMISSION_IDS = new Set([
   'manage_receipt_settings',
   'delete_establishment',
 ]);
-const BASIC_POS_ASSIGNABLE_PERMISSION_IDS = new Set([
-  'pos',
-  'void_items',
-  'open_cash_drawer',
-  'change_taxes',
-  'pay_in_pay_out',
-  'dashboard',
-  'view_shift_reports',
-  'restock_items',
-  'manage_open_tickets',
-  'refunds',
-  'discounts',
-  'loyalty_system_access',
-  'reprint_receipts',
-  'live_chat',
-]);
-
 const normalizePermissionList = (values: string[] | undefined): string[] => {
   if (!Array.isArray(values)) return [];
   return normalizePermissions(values);

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Send, Mail, Phone, CheckCircle2, Loader2 } from 'lucide-react';
+import { Send, Mail, CheckCircle2, Loader2 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 
@@ -62,7 +62,6 @@ export const Contact = () => {
                 <div className="space-y-8">
                   {[
                     { icon: Mail, label: t('common.email'), value: 'info@mintcompos.com', color: 'text-mintcom-green' },
-                    { icon: Phone, label: t('common.phone'), value: '+962 7XXXXXXXX', color: 'text-mintcom-green' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-4 group">
                       <div className="w-12 h-12 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center transition-transform duration-500 shadow-sm dark:shadow-none shrink-0 aspect-square">

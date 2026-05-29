@@ -12,6 +12,10 @@ const envSchema = z.object({
   VITE_SUPPORT_ADMIN_EMAILS: z.string().optional(),
   VITE_ANDROID_DOWNLOAD_URL: z.string().optional(),
   VITE_IOS_DOWNLOAD_URL: z.string().optional(),
+  VITE_OWNER_ANDROID_DOWNLOAD_URL: z.string().optional(),
+  VITE_OWNER_IOS_DOWNLOAD_URL: z.string().optional(),
+  VITE_ONBOARDING_VIDEO_URL: z.string().optional(),
+  VITE_MAINTENANCE_MODE: z.string().optional(),
   VITE_APP_NAME: z.string().default('Mintcom'),
   VITE_SITE_URL: z.string().url().default('https://mintcompos.com'),
   PROD: z.boolean(),
@@ -28,6 +32,10 @@ const envData = {
   VITE_SUPPORT_ADMIN_EMAILS: import.meta.env.VITE_SUPPORT_ADMIN_EMAILS,
   VITE_ANDROID_DOWNLOAD_URL: import.meta.env.VITE_ANDROID_DOWNLOAD_URL,
   VITE_IOS_DOWNLOAD_URL: import.meta.env.VITE_IOS_DOWNLOAD_URL,
+  VITE_OWNER_ANDROID_DOWNLOAD_URL: import.meta.env.VITE_OWNER_ANDROID_DOWNLOAD_URL,
+  VITE_OWNER_IOS_DOWNLOAD_URL: import.meta.env.VITE_OWNER_IOS_DOWNLOAD_URL,
+  VITE_ONBOARDING_VIDEO_URL: import.meta.env.VITE_ONBOARDING_VIDEO_URL,
+  VITE_MAINTENANCE_MODE: import.meta.env.VITE_MAINTENANCE_MODE,
   VITE_APP_NAME: import.meta.env.VITE_APP_NAME,
   VITE_SITE_URL: import.meta.env.VITE_SITE_URL,
   PROD: import.meta.env.PROD,
@@ -45,4 +53,15 @@ if (!result.success) {
   }
 }
 
-export const env = result.success ? result.data : envSchema.parse({});
+const parsedEnv = result.success ? result.data : envSchema.parse({});
+
+const parseBooleanFlag = (value: string | undefined, defaultValue = false) => {
+  if (!value) return defaultValue;
+
+  return ['1', 'true', 'yes', 'on'].includes(value.trim().toLowerCase());
+};
+
+export const env = {
+  ...parsedEnv,
+  VITE_MAINTENANCE_MODE: parseBooleanFlag(parsedEnv.VITE_MAINTENANCE_MODE),
+};

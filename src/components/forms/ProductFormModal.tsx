@@ -43,6 +43,7 @@ interface Product {
   lowStockThresholdYellow?: number;
   lowStockThresholdRed?: number;
   type?: 'ITEM' | 'ADDON';
+  category?: Category;
 }
 
 interface Category {
@@ -50,6 +51,9 @@ interface Category {
   name: string;
   icon?: string;
   sortOrder?: number;
+  isActive?: boolean;
+  deletedAt?: string | null;
+  deactivatedAt?: string | null;
 }
 
 interface Attribute {
@@ -68,7 +72,7 @@ interface ProductFormModalProps {
   onClose: () => void;
   onSubmit: (formData: FormData) => Promise<void>;
   onDelete?: (id: string) => void;
-  onReactivate?: (id: string) => void | Promise<void>;
+  onReactivate?: (id: string, categoryId?: string) => void | Promise<void>;
   initialData?: Product | null;
   categories: Category[];
   isSubmitting?: boolean;
@@ -77,6 +81,12 @@ interface ProductFormModalProps {
 }
 
 type ProductImageSource = 'existing' | 'upload' | 'pollinations' | 'fallback' | null;
+
+const isInactiveCategory = (category?: Category | null) =>
+  !category ||
+  category.isActive === false ||
+  !!category.deletedAt ||
+  !!category.deactivatedAt;
 
 export function ProductFormModal({
   isOpen,
@@ -251,6 +261,12 @@ export function ProductFormModal({
     () => localCategories.find((category) => category.id === categoryId)?.name || '',
     [categoryId, localCategories]
   );
+  const selectedCategory = useMemo(
+    () => localCategories.find((category) => category.id === categoryId) || initialData?.category || null,
+    [categoryId, initialData?.category, localCategories],
+  );
+  const selectedCategoryInactive = isInactiveCategory(selectedCategory);
+  const reactivationCategoryProblem = isReactivationMode && selectedCategoryInactive;
 
   const currentImageContext = useMemo(
     () => ({
@@ -643,7 +659,9 @@ export function ProductFormModal({
     }
   }, [showCategoryDropdown]);
 
-  const filteredCategories = localCategories.filter(cat =>
+  const activeCategories = localCategories.filter(cat => !isInactiveCategory(cat));
+
+  const filteredCategories = activeCategories.filter(cat =>
     cat.name.toLowerCase().includes(categorySearchQuery.toLowerCase())
   );
 
@@ -1044,12 +1062,30 @@ export function ProductFormModal({
                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.category ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm group-hover:border-mintcom-green/50`}
                   >
                     <span className={categoryId ? 'text-sm font-bold text-gray-900 dark:text-white' : 'text-sm font-bold text-gray-400'}>
-                      {localCategories.find(c => c.id === categoryId)?.name || t('products.form.selectCategory')}
+                      {selectedCategory
+                        ? `${selectedCategory.name}${selectedCategoryInactive ? ` (${t('common.inactive', { defaultValue: 'Inactive' })})` : ''}`
+                        : t('products.form.selectCategory')}
                     </span>
                     <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${showCategoryDropdown ? 'rotate-180 text-mintcom-green' : ''}`} />
                   </button>
                   {errors.category && (
                     <p className="mt-1.5 px-1 text-xs font-bold text-mintcom-red">{errors.category}</p>
+                  )}
+                  {reactivationCategoryProblem && (
+                    <div className="mt-3 rounded-2xl border border-mintcom-red/20 bg-mintcom-red/5 p-4 flex items-start gap-3">
+                      <AlertCircle size={18} className="text-mintcom-red shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs font-black text-gray-900 dark:text-white">
+                          {t('products.reactivate.categoryTitle', { defaultValue: 'Category needs attention' })}
+                        </p>
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 leading-relaxed mt-1">
+                          {t('products.reactivate.categoryProblem', {
+                            category: selectedCategory?.name || t('products.form.selectCategory', { defaultValue: 'selected category' }),
+                            defaultValue: 'This product belongs to an inactive category. Choose an active category or create a replacement category before reactivating.',
+                          })}
+                        </p>
+                      </div>
+                    </div>
                   )}
 
                   <AnimatePresence>
@@ -1088,19 +1124,21 @@ export function ProductFormModal({
 
                         {/* Scrollable List */}
                         <div className="overflow-y-auto custom-scrollbar flex-1">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setCategoryId('');
-                              setShowCategoryDropdown(false);
-                            }}
-                            className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5"
-                          >
-                            <span className={`text-xs font-bold ${!categoryId ? 'text-mintcom-green' : 'text-gray-400'}`}>
-                              {t('products.messages.noneSelected')}
-                            </span>
-                            {!categoryId && <Check size={18} className="text-mintcom-green" strokeWidth={3} />}
-                          </button>
+                          {!isReactivationMode && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setCategoryId('');
+                                setShowCategoryDropdown(false);
+                              }}
+                              className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5"
+                            >
+                              <span className={`text-xs font-bold ${!categoryId ? 'text-mintcom-green' : 'text-gray-400'}`}>
+                                {t('products.messages.noneSelected')}
+                              </span>
+                              {!categoryId && <Check size={18} className="text-mintcom-green" strokeWidth={3} />}
+                            </button>
+                          )}
 
                           {filteredCategories.length === 0 && (
                             <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
@@ -1488,7 +1526,7 @@ export function ProductFormModal({
                   <button
                     type="button"
                     onClick={() => setShowReactivateConfirm(true)}
-                    disabled={isSubmitting || isGeneratingImage}
+                    disabled={isSubmitting || isGeneratingImage || reactivationCategoryProblem}
                     className="flex-1 h-12 sm:h-14 bg-mintcom-green text-black font-barlow font-bold text-sm rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
                   >
                     <RotateCcw size={18} />
@@ -1572,7 +1610,13 @@ export function ProductFormModal({
             isOpen={showReactivateConfirm}
             onClose={() => setShowReactivateConfirm(false)}
             onConfirm={() => {
-              onReactivate(initialData.id!);
+              if (reactivationCategoryProblem) {
+                toast.error(t('products.reactivate.selectActiveCategory', {
+                  defaultValue: 'Select an active category before reactivating this product.',
+                }));
+                return;
+              }
+              onReactivate(initialData.id!, categoryId);
               onClose();
             }}
             title={t('common.reactivate', { defaultValue: 'Reactivate' })}

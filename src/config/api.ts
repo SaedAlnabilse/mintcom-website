@@ -24,6 +24,7 @@ export const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'x-client-app': 'website',
+    'X-Requested-With': 'XMLHttpRequest',
   },
   withCredentials: true, // Required for HttpOnly cookie authentication - CRITICAL for cross-origin
 });

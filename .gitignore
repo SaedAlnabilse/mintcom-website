@@ -5,6 +5,7 @@ build/
 .cache/
 .env
 .env.*
+!.env.example
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -25,7 +26,8 @@ src/**/*.map
 /.env.local
 /.env.development.local
 /.env.test.local
-/.env.production.local# Logs
+/.env.production.local
+# Logs
 logs
 *.log
 npm-debug.log*
@@ -37,6 +39,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+playwright-report/
 *.local
 
 # Editor directories and files

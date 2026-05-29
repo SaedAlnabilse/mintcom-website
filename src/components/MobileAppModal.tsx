@@ -6,14 +6,19 @@ import { useScrollLock } from '../hooks/useScrollLock';
 import MintcomLeafIcon from '../assets/small-logo.svg';
 import AppStoreBadge from '../assets/app-store-badge.svg';
 import GooglePlayBadge from '../assets/google-play-badge.svg';
+import { isDirectInstallerDownload } from '../config/downloads';
 
 interface MobileAppModalProps {
   isOpen: boolean;
   onClose: () => void;
+  androidUrl?: string;
+  iosUrl?: string;
 }
 
-export function MobileAppModal({ isOpen, onClose }: MobileAppModalProps) {
+export function MobileAppModal({ isOpen, onClose, androidUrl = '', iosUrl = '' }: MobileAppModalProps) {
   const { t } = useTranslation();
+  const hasAndroidDownload = Boolean(androidUrl);
+  const hasIosDownload = Boolean(iosUrl);
 
   useScrollLock(isOpen);
 
@@ -56,100 +61,66 @@ export function MobileAppModal({ isOpen, onClose }: MobileAppModalProps) {
 
             {/* Content */}
             <div className="p-6 pt-2 pb-6">
-              {/* QR Code Container */}
-              <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-6 mb-4 flex items-center justify-center shadow-inner border border-gray-100 dark:border-white/5">
-                <div className="w-48 aspect-square bg-white relative overflow-hidden rounded-xl p-2 shadow-sm">
-                  <svg viewBox="0 0 100 100" className="w-full h-full">
-                    {/* QR code pattern - simplified fake version */}
-                    <rect width="100" height="100" fill="white" />
-                    {/* Corner squares */}
-                    <rect x="5" y="5" width="25" height="25" fill="black" />
-                    <rect x="8" y="8" width="19" height="19" fill="white" />
-                    <rect x="11" y="11" width="13" height="13" fill="black" />
-
-                    <rect x="70" y="5" width="25" height="25" fill="black" />
-                    <rect x="73" y="8" width="19" height="19" fill="white" />
-                    <rect x="76" y="11" width="13" height="13" fill="black" />
-
-                    <rect x="5" y="70" width="25" height="25" fill="black" />
-                    <rect x="8" y="73" width="19" height="19" fill="white" />
-                    <rect x="11" y="76" width="13" height="13" fill="black" />
-
-                    {/* Random pattern blocks */}
-                    <rect x="35" y="5" width="5" height="5" fill="black" />
-                    <rect x="45" y="5" width="5" height="5" fill="black" />
-                    <rect x="55" y="5" width="5" height="5" fill="black" />
-                    <rect x="35" y="15" width="5" height="5" fill="black" />
-                    <rect x="50" y="15" width="5" height="5" fill="black" />
-                    <rect x="60" y="15" width="5" height="5" fill="black" />
-                    <rect x="40" y="25" width="5" height="5" fill="black" />
-                    <rect x="55" y="25" width="5" height="5" fill="black" />
-
-                    <rect x="5" y="35" width="5" height="5" fill="black" />
-                    <rect x="15" y="35" width="5" height="5" fill="black" />
-                    <rect x="25" y="35" width="5" height="5" fill="black" />
-                    <rect x="5" y="45" width="5" height="5" fill="black" />
-                    <rect x="20" y="45" width="5" height="5" fill="black" />
-                    <rect x="5" y="55" width="5" height="5" fill="black" />
-                    <rect x="15" y="55" width="5" height="5" fill="black" />
-                    <rect x="25" y="55" width="5" height="5" fill="black" />
-
-                    <rect x="35" y="35" width="30" height="30" fill="black" />
-                    <rect x="40" y="40" width="20" height="20" fill="white" />
-                    <rect x="45" y="45" width="10" height="10" fill="black" />
-
-                    <rect x="70" y="35" width="5" height="5" fill="black" />
-                    <rect x="80" y="35" width="5" height="5" fill="black" />
-                    <rect x="90" y="35" width="5" height="5" fill="black" />
-                    <rect x="75" y="45" width="5" height="5" fill="black" />
-                    <rect x="85" y="45" width="5" height="5" fill="black" />
-                    <rect x="70" y="55" width="5" height="5" fill="black" />
-                    <rect x="80" y="55" width="5" height="5" fill="black" />
-
-                    <rect x="35" y="70" width="5" height="5" fill="black" />
-                    <rect x="45" y="70" width="5" height="5" fill="black" />
-                    <rect x="55" y="70" width="5" height="5" fill="black" />
-                    <rect x="70" y="70" width="5" height="5" fill="black" />
-                    <rect x="80" y="70" width="5" height="5" fill="black" />
-                    <rect x="90" y="70" width="5" height="5" fill="black" />
-                    <rect x="40" y="80" width="5" height="5" fill="black" />
-                    <rect x="50" y="80" width="5" height="5" fill="black" />
-                    <rect x="75" y="80" width="5" height="5" fill="black" />
-                    <rect x="85" y="80" width="5" height="5" fill="black" />
-                    <rect x="35" y="90" width="5" height="5" fill="black" />
-                    <rect x="55" y="90" width="5" height="5" fill="black" />
-                    <rect x="70" y="90" width="5" height="5" fill="black" />
-                    <rect x="90" y="90" width="5" height="5" fill="black" />
-                  </svg>
-                  {/* Center logo placeholder */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-md border border-gray-100">
-                      <img src={MintcomLeafIcon} alt="Mintcom" className="w-6 h-6 object-contain" />
-                    </div>
+              <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-6 mb-4 border border-gray-100 dark:border-white/5">
+                <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.04] px-5 py-6 text-center shadow-sm">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-mintcom-green/10">
+                    <img src={MintcomLeafIcon} alt="Mintcom" className="h-8 w-8 object-contain" />
                   </div>
+                  <p className="text-base font-bold text-gray-900 dark:text-white leading-tight">
+                    {t('brand.name')} {t('common.app')}
+                  </p>
+                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    {t('dashboard.menu.getMobileApp')}
+                  </p>
                 </div>
               </div>
 
               {/* Text & Badges */}
               <div className="text-center">
                 <p className="text-base font-bold text-gray-900 dark:text-white leading-tight mb-4">
-                  {t('dashboard.menu.scanToDownload')} <span className="text-mintcom-green">{t('brand.name')} {t('common.app')}</span>
+                  <span className="text-mintcom-green">{t('brand.name')} {t('common.app')}</span>
                 </p>
                 <div className="flex flex-row items-center justify-center gap-3">
-                  <a
-                    href="#"
-                    className="block transition-transform hover:scale-[1.03] active:scale-[0.98] focus:outline-none"
-                    aria-label="Download on the App Store"
-                  >
-                    <img src={AppStoreBadge} alt="App Store" className="block h-[44px] w-[140px] object-contain" />
-                  </a>
-                  <a
-                    href="#"
-                    className="block transition-transform hover:scale-[1.03] active:scale-[0.98] focus:outline-none"
-                    aria-label="Get it on Google Play"
-                  >
-                    <img src={GooglePlayBadge} alt="Google Play" className="block h-[44px] w-[140px] object-contain" />
-                  </a>
+                  {hasIosDownload ? (
+                    <a
+                      href={iosUrl}
+                      download={isDirectInstallerDownload(iosUrl) ? true : undefined}
+                      rel="noopener noreferrer"
+                      className="block transition-transform hover:scale-[1.03] active:scale-[0.98] focus:outline-none"
+                      aria-label="Download on the App Store"
+                    >
+                      <img src={AppStoreBadge} alt="App Store" className="block h-[44px] w-[140px] object-contain" />
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="block opacity-50 cursor-not-allowed"
+                      aria-label={t('landing.download.comingSoon')}
+                    >
+                      <img src={AppStoreBadge} alt="App Store" className="block h-[44px] w-[140px] object-contain" />
+                    </button>
+                  )}
+                  {hasAndroidDownload ? (
+                    <a
+                      href={androidUrl}
+                      download={isDirectInstallerDownload(androidUrl) ? true : undefined}
+                      rel="noopener noreferrer"
+                      className="block transition-transform hover:scale-[1.03] active:scale-[0.98] focus:outline-none"
+                      aria-label="Get it on Google Play"
+                    >
+                      <img src={GooglePlayBadge} alt="Google Play" className="block h-[44px] w-[140px] object-contain" />
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="block opacity-50 cursor-not-allowed"
+                      aria-label={t('landing.download.comingSoon')}
+                    >
+                      <img src={GooglePlayBadge} alt="Google Play" className="block h-[44px] w-[140px] object-contain" />
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

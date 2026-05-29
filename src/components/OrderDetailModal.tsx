@@ -1,22 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import api from '../config/api';
 import { QuickInfo } from './QuickInfo';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { useCurrency } from '../context/CurrencyContext';
-import { formatInputLabel, formatInputPlaceholder } from '../utils/textCase';
-
-interface ApiError {
-    response?: {
-        data?: {
-            message?: string;
-        };
-    };
-}
+import { OrderRefundModal } from './OrderRefundModal';
 
 export interface OrderItem {
     id: string;
@@ -67,73 +58,17 @@ export interface Order {
     refundOrders?: Array<{ items?: OrderItem[] }>;
 }
 
-const getOrderItemId = (item: any): string => String(item?.id || item?.orderItemId || '');
-
-const getItemTotal = (item: any): number => {
-    const numeric = Number(item?.total ?? item?.finalPrice ?? item?.price ?? 0);
-    return Number.isFinite(numeric) ? Math.abs(numeric) : 0;
-};
-
-const getItemUnitTotal = (item: any): number =>
-    getItemTotal(item) / Math.max(1, Number(item?.quantity || 1));
-
-const getRefundItemSignature = (item: any): string => {
-    const itemId = String(item?.itemId || item?.item?.id || '');
-    const basePrice = Math.abs(
-        Number(item?.basePrice ?? item?.unitPrice ?? item?.price ?? 0),
-    ).toFixed(4);
-    const attributes = (item?.chosenAttributes || item?.selectedAttributes || [])
-        .map((attr: any) =>
-            String(attr?.subAttributeId || attr?.subAttribute?.id || attr?.id || ''),
-        )
-        .filter(Boolean)
-        .sort()
-        .join(',');
-
-    return `${itemId}|${basePrice}|${attributes}`;
-};
-
-const getRefundedQuantities = (order: any) => {
-    const refunded = new Map<string, number>();
-    (order?.refundOrders || []).forEach((refundOrder: any) => {
-        (refundOrder?.items || []).forEach((item: any) => {
-            const quantity = Math.max(0, Number(item?.quantity || 0));
-            const originalId = item?.refundedFromOrderItemId;
-            if (originalId) {
-                refunded.set(originalId, (refunded.get(originalId) || 0) + quantity);
-                return;
-            }
-
-            const signature = getRefundItemSignature(item);
-            refunded.set(signature, (refunded.get(signature) || 0) + quantity);
-        });
-    });
-    return refunded;
-};
-
 export interface OrderDetailModalProps {
     order: Order;
     onClose: () => void;
     onRefundSuccess?: () => void;
     canRefund?: boolean;
-    openRefundKey?: string | number | null;
+    canRestock?: boolean;
 }
 
-type RefundMode = 'items' | 'order';
-
-export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = true, openRefundKey = null }: OrderDetailModalProps) {
+export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = true, canRestock = true }: OrderDetailModalProps) {
     const { t } = useTranslation();
-    const [isRefundReasonModalOpen, setIsRefundReasonModalOpen] = useState(false);
-    const [refundReason, setRefundReason] = useState('');
-    const [refundReasonError, setRefundReasonError] = useState('');
-    const [isRefundSubmitting, setIsRefundSubmitting] = useState(false);
-    const [restockItems, setRestockItems] = useState(false);
-    const [selectedRefundItems, setSelectedRefundItems] = useState<Record<string, number>>({});
-    const [refundMode, setRefundMode] = useState<RefundMode>('items');
-    const lastAutoOpenedRefundKeyRef = useRef<string | number | null>(null);
-
-    // Compute if any item has trackStock enabled - check both possible data shapes
-    const hasStockTrackedItems = order?.items?.some((item: any) => item?.trackStock || item?.item?.trackStock) || false;
+    const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
 
     useScrollLock(!!order);
 
@@ -172,82 +107,13 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
         order.status === 'COMPLETED' ||
         order.status === 'PARTIALLY_REFUNDED';
 
-    const refundableItems = useMemo(() => {
-        const refunded = getRefundedQuantities(order);
-        return (order.items || [])
-            .map((item: any) => {
-                const orderItemId = getOrderItemId(item);
-                const refundedQuantity =
-                    refunded.get(orderItemId) || refunded.get(getRefundItemSignature(item)) || 0;
-                const remainingRefundQuantity = Math.max(
-                    0,
-                    Number(item?.quantity || 0) - refundedQuantity,
-                );
-                return { ...item, orderItemId, remainingRefundQuantity };
-            })
-            .filter((item: any) => item.orderItemId && item.remainingRefundQuantity > 0);
-    }, [order]);
-
-    const selectedRefundLines = useMemo(
-        () =>
-            refundableItems
-                .map((item: any) => {
-                    const quantity = Math.min(
-                        Math.max(0, Number(selectedRefundItems[item.orderItemId] || 0)),
-                        Number(item.remainingRefundQuantity || 0),
-                    );
-                    return { item, orderItemId: item.orderItemId, quantity };
-                })
-                .filter(line => line.quantity > 0),
-        [refundableItems, selectedRefundItems],
-    );
-
-    const selectedRefundAmount = selectedRefundLines.reduce(
-        (sum, line) => sum + getItemUnitTotal(line.item) * line.quantity,
-        0,
-    );
-
-    const selectedRefundItemCount = selectedRefundLines.reduce(
-        (sum, line) => sum + line.quantity,
-        0,
-    );
-
-    const getAllRefundableSelections = useCallback(
-        () =>
-            refundableItems.reduce((acc: Record<string, number>, item: any) => {
-                acc[item.orderItemId] = Number(item.remainingRefundQuantity || 1);
-                return acc;
-            }, {}),
-        [refundableItems],
-    );
-
-    const handleRefund = useCallback(() => {
+    const handleRefund = () => {
         if (!canRefund) {
-            toast.error(t('orders.messages.refundFailed'));
+            toast.error(t('orders.messages.noRefundPermission'));
             return;
         }
-        if (refundableItems.length === 0) {
-            toast.error(t('orders.messages.noRefundableItems', { defaultValue: 'No refundable items remaining for this order.' }));
-            return;
-        }
-
-        setRefundMode('items');
-        setRefundReason('');
-        setRefundReasonError('');
-        setRestockItems(false);
-        setSelectedRefundItems(getAllRefundableSelections());
-        setIsRefundReasonModalOpen(true);
-    }, [canRefund, getAllRefundableSelections, refundableItems.length, t]);
-
-    useEffect(() => {
-        if (openRefundKey === null || openRefundKey === undefined) return;
-        if (lastAutoOpenedRefundKeyRef.current === openRefundKey) return;
-
-        lastAutoOpenedRefundKeyRef.current = openRefundKey;
-        if (isRefundable) {
-            handleRefund();
-        }
-    }, [handleRefund, isRefundable, openRefundKey]);
+        setIsRefundModalOpen(true);
+    };
 
     const getOrderStatusLabel = (): string => {
         const isTaxChangedPaid =
@@ -259,40 +125,6 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
         const rawStatus = (order.paymentStatus || order.status || 'PENDING').toLowerCase();
         const statusKey = rawStatus === 'pending' || rawStatus === 'held' ? 'onHold' : rawStatus;
         return t(`orders.status.${statusKey}` as any);
-    };
-
-    const submitRefundWithReason = async () => {
-        const trimmedReason = refundReason.trim();
-        if (!trimmedReason) {
-            setRefundReasonError('Refund Reason is required');
-            return;
-        }
-        if (selectedRefundLines.length === 0) {
-            setRefundReasonError('Select at least one item to refund');
-            return;
-        }
-
-        try {
-            setIsRefundSubmitting(true);
-            await api.post(`/api/orders/${order.id}/refund-items`, {
-                refundReason: trimmedReason,
-                restockItems: restockItems,
-                items: selectedRefundLines.map(line => ({
-                    orderItemId: line.orderItemId,
-                    quantity: line.quantity,
-                })),
-            });
-            toast.success(t('orders.messages.refundSuccess'));
-            setIsRefundReasonModalOpen(false);
-            setSelectedRefundItems({});
-            setRefundMode('items');
-            if (onRefundSuccess) onRefundSuccess();
-            onClose();
-        } catch (err) {
-            toast.error((err as ApiError).response?.data?.message || t('orders.messages.refundFailed'));
-        } finally {
-            setIsRefundSubmitting(false);
-        }
     };
 
     return createPortal(
@@ -522,214 +354,14 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                     </div>
                 </motion.div>
 
-                {isRefundReasonModalOpen && (
-                    <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/60 p-4">
-                        <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 p-5 sm:p-6">
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                                {t('orders.details.refundConfirmTitle')}
-                            </h3>
-                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                                {t('orders.details.refundConfirmMessage')}
-                            </p>
-
-                            <div className="mt-4 grid grid-cols-2 gap-2 rounded-2xl border border-gray-200 bg-gray-50 p-1 dark:border-white/10 dark:bg-white/5">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setRefundMode('items');
-                                        if (selectedRefundLines.length === 0) {
-                                            setSelectedRefundItems(getAllRefundableSelections());
-                                        }
-                                    }}
-                                    disabled={isRefundSubmitting}
-                                    className={`rounded-xl px-3 py-2 text-xs font-black transition-all ${refundMode === 'items'
-                                        ? 'bg-mintcom-red/10 text-mintcom-red shadow-sm'
-                                        : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
-                                        }`}
-                                >
-                                    {formatInputLabel(t('orders.details.refundItems', { defaultValue: 'Refund Items' }), t('common.locale'))}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setRefundMode('order');
-                                        setSelectedRefundItems(getAllRefundableSelections());
-                                    }}
-                                    disabled={isRefundSubmitting}
-                                    className={`rounded-xl px-3 py-2 text-xs font-black transition-all ${refundMode === 'order'
-                                        ? 'bg-mintcom-green/10 text-mintcom-green shadow-sm'
-                                        : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
-                                        }`}
-                                >
-                                    {formatInputLabel(t('orders.details.refundEntireOrder', { defaultValue: 'Refund Entire Order' }), t('common.locale'))}
-                                </button>
-                            </div>
-
-                            <div className="mt-4 space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                        {t('orders.details.items')}
-                                    </span>
-                                    <div className="text-right">
-                                        <span className="block text-sm font-bold text-mintcom-red">
-                                            {formatCurrency(selectedRefundAmount)}
-                                        </span>
-                                        <span className="block text-[11px] font-semibold text-gray-500 dark:text-gray-400">
-                                            {t('orders.details.selectedItems', {
-                                                defaultValue: '{{count}} item(s)',
-                                                count: selectedRefundItemCount,
-                                            })}
-                                        </span>
-                                    </div>
-                                </div>
-                                {refundMode === 'items' && (
-                                <div className="max-h-56 overflow-y-auto space-y-2 pr-1">
-                                    {refundableItems.map((item: any) => {
-                                        const selectedQty = Number(selectedRefundItems[item.orderItemId] || 0);
-                                        const selected = selectedQty > 0;
-                                        const remaining = Number(item.remainingRefundQuantity || 0);
-                                        return (
-                                            <div
-                                                key={item.orderItemId}
-                                                className={`rounded-xl border p-3 ${selected
-                                                    ? 'border-mintcom-red bg-mintcom-red/5'
-                                                    : 'border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-white/5'
-                                                    }`}
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setSelectedRefundItems(prev => {
-                                                                const next = { ...prev };
-                                                                if (next[item.orderItemId]) {
-                                                                    delete next[item.orderItemId];
-                                                                } else {
-                                                                    next[item.orderItemId] = 1;
-                                                                }
-                                                                return next;
-                                                            });
-                                                        }}
-                                                        className={`h-5 w-5 rounded-full border ${selected ? 'border-mintcom-red bg-mintcom-red' : 'border-gray-400'}`}
-                                                    />
-                                                    <div className="min-w-0 flex-1">
-                                                        <p className="truncate text-sm font-bold text-gray-900 dark:text-white">{item.name}</p>
-                                                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-                                                            {t('orders.details.remaining', { defaultValue: 'Remaining' })}: {remaining}
-                                                        </p>
-                                                    </div>
-                                                    {selected && (
-                                                        <div className="flex items-center gap-2">
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    setSelectedRefundItems(prev => ({
-                                                                        ...prev,
-                                                                        [item.orderItemId]: Math.max(1, selectedQty - 1),
-                                                                    }))
-                                                                }
-                                                                disabled={selectedQty <= 1}
-                                                                className="h-8 w-8 rounded-full border border-gray-300 text-sm font-bold disabled:opacity-40 dark:border-white/15"
-                                                            >
-                                                                -
-                                                            </button>
-                                                            <span className="min-w-5 text-center text-sm font-black text-gray-900 dark:text-white">
-                                                                {selectedQty}
-                                                            </span>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    setSelectedRefundItems(prev => ({
-                                                                        ...prev,
-                                                                        [item.orderItemId]: Math.min(remaining, selectedQty + 1),
-                                                                    }))
-                                                                }
-                                                                disabled={selectedQty >= remaining}
-                                                                className="h-8 w-8 rounded-full border border-gray-300 text-sm font-bold disabled:opacity-40 dark:border-white/15"
-                                                            >
-                                                                +
-                                                            </button>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                                )}
-                            </div>
-                            <div className="mt-4">
-                                <label className="block text-sm font-normal text-gray-800 dark:text-gray-100 mb-2">
-                                    {formatInputLabel('Refund Reason', t('common.locale'))}
-                                </label>
-                                <textarea maxLength={2000}
-                                    value={refundReason}
-                                    onChange={(e) => {
-                                        setRefundReason(e.target.value);
-                                        if (refundReasonError && e.target.value.trim()) {
-                                            setRefundReasonError('');
-                                        }
-                                    }}
-                                    placeholder={formatInputPlaceholder("Enter refund reason", t('common.locale'))}
-                                    rows={4}
-                                    className="w-full rounded-xl border border-gray-300 dark:border-white/15 bg-white dark:bg-[#0F172A] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-mintcom-green/40"
-                                />
-                                {refundReasonError && (
-                                    <p className="mt-2 text-sm text-red-600">{refundReasonError}</p>
-                                )}
-                            </div>
-
-                            {/* Restock Toggle */}
-                            {hasStockTrackedItems && (
-                                <div className="mt-4 flex items-center justify-between rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-4">
-                                    <div className="flex flex-col">
-                                        <div className="flex items-center gap-2">
-                                            <span className={`text-sm font-semibold ${restockItems ? 'text-mintcom-green dark:text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`}>
-                                                {t('orders.reports.restockItems')}
-                                            </span>
-                                        </div>
-                                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                            {t('orders.reports.restockDescription')}
-                                        </span>
-                                    </div>
-                                    <label className="relative inline-flex cursor-pointer items-center">
-                                        <input
-                                            type="checkbox"
-                                            className="peer sr-only"
-                                            checked={restockItems}
-                                            onChange={(e) => setRestockItems(e.target.checked)}
-                                        />
-                                        <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-mintcom-green peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-mintcom-green/20 dark:border-gray-600 dark:bg-gray-700"></div>
-                                    </label>
-                                </div>
-                            )}
-
-                            <div className="mt-5 flex gap-3">
-                                <button
-                                    onClick={() => {
-                                        if (isRefundSubmitting) return;
-                                        setIsRefundReasonModalOpen(false);
-                                        setRefundReason('');
-                                        setRefundReasonError('');
-                                        setSelectedRefundItems({});
-                                        setRestockItems(false);
-                                        setRefundMode('items');
-                                    }}
-                                    className="flex-1 rounded-xl border border-gray-300 dark:border-white/15 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5"
-                                >
-                                    {t('common.cancel')}
-                                </button>
-                                <button
-                                    onClick={submitRefundWithReason}
-                                    disabled={isRefundSubmitting}
-                                    className="flex-1 rounded-xl bg-mintcom-red px-4 py-2.5 text-sm font-semibold text-white hover:bg-mintcom-red/90 disabled:opacity-60 disabled:cursor-not-allowed"
-                                >
-                                    {isRefundSubmitting ? t('common.loading') : t('orders.actions.refund')}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <OrderRefundModal
+                    order={order}
+                    isOpen={isRefundModalOpen}
+                    onClose={() => setIsRefundModalOpen(false)}
+                    onRefundSuccess={onRefundSuccess}
+                    canRefund={canRefund}
+                    canRestock={canRestock}
+                />
             </div>
         </AnimatePresence>,
         document.body

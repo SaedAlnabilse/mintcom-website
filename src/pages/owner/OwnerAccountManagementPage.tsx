@@ -35,6 +35,7 @@ import {
     HelpCircle,
 } from 'lucide-react';
 import api from '../../config/api';
+import { ONBOARDING_VIDEO_URL } from '../../config/downloads';
 import { CURRENCIES } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 import { PasswordResetOtpModal } from '../../components/PasswordResetOtpModal';
@@ -91,6 +92,7 @@ export function OwnerAccountManagementPage() {
     const { t } = useTranslation();
     const { account, establishments, logout, updateAccount } = useAuth();
     const navigate = useNavigate();
+    const hasOnboardingVideo = Boolean(ONBOARDING_VIDEO_URL);
     const [accountDetails, setAccountDetails] = useState<AccountDetails | null>(null);
     const [brands, setBrands] = useState<BrandCredential[]>([]);
     const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
@@ -1069,21 +1071,39 @@ export function OwnerAccountManagementPage() {
                                 </a>
 
                                 {/* Video Tutorial */}
-                                <a
-                                    href=""
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
-                                >
-                                    <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
-                                        <PlayCircle size={20} className="text-red-500 group-hover/item:scale-110 transition-transform" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.videoTutorial.title')}</h4>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.videoTutorial.desc')}</p>
-                                    </div>
-                                    <ExternalLink size={16} className="text-gray-400 group-hover/item:text-red-500 transition-colors" />
-                                </a>
+                                {hasOnboardingVideo ? (
+                                    <a
+                                        href={ONBOARDING_VIDEO_URL}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
+                                    >
+                                        <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
+                                            <PlayCircle size={20} className="text-red-500 group-hover/item:scale-110 transition-transform" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.videoTutorial.title')}</h4>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.videoTutorial.desc')}</p>
+                                        </div>
+                                        <ExternalLink size={16} className="text-gray-400 group-hover/item:text-red-500 transition-colors" />
+                                    </a>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        disabled
+                                        aria-label="Video guide coming soon"
+                                        className="flex w-full items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all opacity-60 cursor-not-allowed text-left"
+                                    >
+                                        <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
+                                            <PlayCircle size={20} className="text-red-500" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <h4 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.videoTutorial.title')}</h4>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.videoTutorial.desc')}</p>
+                                        </div>
+                                        <ExternalLink size={16} className="text-gray-400" />
+                                    </button>
+                                )}
 
                                 {/* Q&A */}
                                 <a
@@ -1498,7 +1518,3 @@ export function OwnerAccountManagementPage() {
         </div>
     );
 }
-
-
-
-

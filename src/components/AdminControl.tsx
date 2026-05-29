@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Laptop, BarChart2, ShoppingCart, Users, TrendingUp, Bell, User, Package } from 'lucide-react';
 import AppStoreBadge from '../assets/app-store-badge.svg';
 import GooglePlayBadge from '../assets/google-play-badge.svg';
+import { OWNER_ANDROID_DOWNLOAD_URL, OWNER_IOS_DOWNLOAD_URL } from '../config/downloads';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -24,6 +25,8 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
 
 export const AdminControl = () => {
   const { t } = useTranslation();
+  const hasOwnerAndroidDownload = Boolean(OWNER_ANDROID_DOWNLOAD_URL);
+  const hasOwnerIosDownload = Boolean(OWNER_IOS_DOWNLOAD_URL);
 
   return (
     <section id="admin" className="py-16 lg:py-20 bg-white dark:bg-[#0f0f0f] overflow-x-clip relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -298,36 +301,70 @@ export const AdminControl = () => {
                 {t('landing.admin.installBackofficeApp')}
               </p>
               <div className="flex flex-wrap items-center gap-3">
-                <a
-                  href="https://apps.apple.com/app/Mintcom-owner/id0000000001"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={t('landing.admin.downloadOnAppStore')}
-                  className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green/60 rounded-[11px]"
-                >
-                  <img
-                    src={AppStoreBadge}
-                    alt={t('landing.admin.downloadOnAppStore')}
-                    className="block h-[52px] w-auto object-contain"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </a>
-                <a
-                  href="https://play.google.com/store/apps/details?id=com.Mintcom.owner"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={t('landing.admin.getItOnGooglePlay')}
-                  className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green/60 rounded-[11px]"
-                >
-                  <img
-                    src={GooglePlayBadge}
-                    alt={t('landing.admin.getItOnGooglePlay')}
-                    className="block h-[52px] w-auto object-contain"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </a>
+                {hasOwnerIosDownload ? (
+                  <a
+                    href={OWNER_IOS_DOWNLOAD_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t('landing.admin.downloadOnAppStore')}
+                    className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green/60 rounded-[11px]"
+                  >
+                    <img
+                      src={AppStoreBadge}
+                      alt={t('landing.admin.downloadOnAppStore')}
+                      className="block h-[52px] w-auto object-contain"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    disabled
+                    aria-label="Owner iOS app download coming soon"
+                    className="block opacity-50 cursor-not-allowed rounded-[11px]"
+                  >
+                    <img
+                      src={AppStoreBadge}
+                      alt={t('landing.admin.downloadOnAppStore')}
+                      className="block h-[52px] w-auto object-contain"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                )}
+                {hasOwnerAndroidDownload ? (
+                  <a
+                    href={OWNER_ANDROID_DOWNLOAD_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t('landing.admin.getItOnGooglePlay')}
+                    className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green/60 rounded-[11px]"
+                  >
+                    <img
+                      src={GooglePlayBadge}
+                      alt={t('landing.admin.getItOnGooglePlay')}
+                      className="block h-[52px] w-auto object-contain"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    disabled
+                    aria-label="Owner Android app download coming soon"
+                    className="block opacity-50 cursor-not-allowed rounded-[11px]"
+                  >
+                    <img
+                      src={GooglePlayBadge}
+                      alt={t('landing.admin.getItOnGooglePlay')}
+                      className="block h-[52px] w-auto object-contain"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                )}
               </div>
             </motion.div>
           </motion.div>

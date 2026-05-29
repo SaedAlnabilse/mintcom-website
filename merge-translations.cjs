@@ -934,7 +934,7 @@ const properEnglish = {
         "h5": "Upgrading Your Plan",
         "h6": "Cancellation & Refunds",
         "li1": "Monthly subscription covers all features",
-        "li2": "7-day free trial for new locations",
+        "li2": "30-day free trial for new locations",
         "li3": "No setup fees or hidden charges",
         "li4": "Cancel anytime with 30-day notice",
         "li5": "Credit and debit cards accepted",

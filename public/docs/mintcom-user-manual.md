@@ -306,7 +306,7 @@ Current pricing:
 
 - First location: 20 USD/month or 210 USD/year
 - Additional locations: 17 USD/month or 180 USD/year
-- New accounts include a 14-day trial when enabled by the billing flow
+- New accounts include a 30-day trial when enabled by the billing flow
 
 Billing actions may include:
 

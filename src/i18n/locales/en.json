@@ -8,8 +8,9 @@
     },
     "story": {
       "description": "Mintcom was founded with a mission to simplify business operations for merchants everywhere.",
-      "p1": "Mintcom LLC is a Jordanian company operating globally. The platform officially launched in 2025, built on insights gathered from years of research into the POS and retail technology space.",
-      "p2": "Development spanned more than three years, with a strong focus on security, performance, and scalability. Every feature was designed to meet real-world business needs and compete confidently with leading global POS solutions. Today, Mintcom stands as a modern, secure, and scalable system built to support businesses of all sizes, anywhere in the world.",
+      "p1": "Mintcom officially launched in 2025, shaped by years of in-depth research into the evolving POS and retail technology landscape.",
+      "p2": "Over three years of dedicated development went into building a platform that combines powerful performance, enterprise-grade security, and seamless scalability. Every feature was thoughtfully crafted around real business challenges, creating an experience that is intuitive, reliable, and ready to grow with businesses at every stage.",
+      "p3": "Today, Mintcom empowers businesses around the world with a modern POS ecosystem designed to simplify operations, enhance efficiency, and deliver the flexibility needed in a fast-moving retail environment.",
       "title": "Our Story"
     },
     "title": "About Mintcom",
@@ -1693,7 +1694,7 @@
     "cta": "Start Free Trial",
     "customers": "Customers",
     "description": "Mintcom is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
-    "freeTrial": "14-Day Free Trial",
+    "freeTrial": "30-Day Free Trial",
     "fromYesterday": "from yesterday",
     "growth": "Growth",
     "items": "items",
@@ -1904,7 +1905,7 @@
       "title": "Get Started Today",
       "titleHighlight": "Transform Your Business",
       "totalSales": "Total Sales",
-      "universal": "Universal tablet & phone support",
+      "universal": "Universal tablet and mobile device support",
       "updateLinkAlert": "The download link will be available soon. Please check back shortly!",
       "version": "Version 2.0"
     },
@@ -2128,7 +2129,7 @@
             "Unlimited Locations",
             "Dedicated Account Manager",
             "Custom Integrations",
-            "24/7 Phone Support"
+            "24/7 Priority Support"
           ],
           "name": "Enterprise",
           "price": "Custom"
@@ -2736,7 +2737,7 @@
       "title": "Cookie Policy | Mintcom"
     },
     "home": {
-      "description": "Simplify your business with Mintcom. Fast sales, real-time inventory, and powerful analytics on any device. Start your 14-day free trial today.",
+      "description": "Simplify your business with Mintcom. Fast sales, real-time inventory, and powerful analytics on any device. Start your 30-day free trial today.",
       "title": "Mintcom | All-in-One Cloud POS & Business Management"
     },
     "login": {
@@ -2752,7 +2753,7 @@
       "title": "Questions & Answers | Mintcom Support"
     },
     "signup": {
-      "description": "Join thousands of businesses using Mintcom. Create your account and start your 14-day free trial.",
+      "description": "Join thousands of businesses using Mintcom. Create your account and start your 30-day free trial.",
       "title": "Sign Up | Start Your Free Trial With Mintcom"
     },
     "terms": {
@@ -2849,20 +2850,19 @@
       "activateDesc": "Your card will be charged {{amount}} for this new location.",
       "activateTitle": "Activate Subscription",
       "addNew": "Add New Card",
-      "afterTrial": "After 7 days",
+      "afterTrial": "After 30 days",
       "cardName": "Cardholder Name",
-      "cardNumber": "Card Number",
-      "cvc": "CVC",
+      "cardLast4": "Card last 4",
+      "brand": "Brand",
       "differentMethod": "Use a different payment method",
       "discountedAdditionalLocation": "Discounted rate for additional locations",
       "errors": {
         "cardNameRequired": "Name on card is required",
-        "cardNumberMin": "Card number must be 16 digits",
-        "cvcRequired": "Cvc required",
+        "cardLast4Exact": "Enter exactly the last 4 digits",
         "expiryRequired": "MM/YY required"
       },
       "expiry": "Expiry",
-      "freeDays": "7 DAYS FREE",
+      "freeDays": "30 DAYS FREE",
       "monthly": "Monthly",
       "priceMonth": "20 USD/MONTH",
       "startTrialButton": "Start Free Trial",
@@ -3919,11 +3919,12 @@
     },
     "modal": {
       "cardholder": "Cardholder Name",
-      "cardNumber": "Card Number",
-      "cvc": "CVV",
+      "cardLast4": "Card last 4",
+      "brand": "Brand",
       "encrypted": "256-Bit Ssl Encrypted",
       "errors": {
         "correctErrors": "Please correct the errors below",
+        "invalidCard": "Enter the last 4 digits only",
         "invalidExpiry": "Invalid expiry date"
       },
       "expiry": "Expiry",
@@ -4118,7 +4119,10 @@
     },
     "newProduct": "New Product",
     "reactivate": {
-      "message": "Reactivate \"{{name}}\" so it can be used in new sales again? Historical receipts keep their original snapshots."
+      "categoryProblem": "This product belongs to inactive category \"{{category}}\". Choose an active category or create a replacement category before reactivating.",
+      "categoryTitle": "Category needs attention",
+      "message": "Reactivate \"{{name}}\" so it can be used in new sales again? Historical receipts keep their original snapshots.",
+      "selectActiveCategory": "Select an active category before reactivating this product."
     },
     "searchPlaceholder": "Search products...",
     "stats": {
@@ -4709,6 +4713,7 @@
         "manage_payment_methods": "Payment Methods",
         "manage_pos_devices": "POS Devices",
         "manage_settings": "Change Establishment Settings",
+        "manage_service_charge": "Service Charge",
         "manage_taxes_backoffice": "Taxes",
         "refunds": "Refunds",
         "view_activity_logs": "Activity Log",
@@ -4726,6 +4731,7 @@
         "live_chat": "",
         "loyalty_system_access": "",
         "manage_billing": "Manage Subscriptions and Payments",
+        "change_service_charge": "Allow changing service charge on orders",
         "manage_customers": "Manage Customer Database",
         "manage_discounts": "",
         "manage_employees": "",
@@ -4736,6 +4742,7 @@
         "manage_payment_methods": "",
         "manage_pos_devices": "Manage POS Registers and Devices",
         "manage_settings": "",
+        "manage_service_charge": "Manage service charge rules and defaults",
         "manage_taxes_backoffice": "Manage Tax Configurations",
         "open_cash_drawer": "",
         "pay_in_pay_out": "",
@@ -4753,6 +4760,7 @@
       "pos": "Basic Sales Permissions",
       "pos_list": {
         "change_taxes": "Change Tax Rate in Order",
+        "change_service_charge": "Change Service Charge in Order",
         "dashboard": "View Current Analytics in Dashboard",
         "discounts": "Apply Discounts",
         "live_chat": "Access Support Portal",
@@ -4843,7 +4851,7 @@
         "li17": "Access continues until end of current billing period",
         "li18": "Data retained for 30 days after cancellation",
         "li19": "Export your data before the retention period ends",
-        "li2": "14-day free trial for new locations",
+        "li2": "30-day free trial for new locations",
         "li20": "Refunds processed within 5-7 business days",
         "li21": "Contact support for billing disputes",
         "li3": "No setup fees or hidden charges",

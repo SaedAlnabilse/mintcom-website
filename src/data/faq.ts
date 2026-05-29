@@ -93,8 +93,8 @@ export const FAQ_DATA: FAQItem[] = [
     category: 'billing',
     question: 'What are the pricing plans?',
     questionAr: 'ما هي خطط الأسعار؟',
-    answer: 'The first location costs 20 USD/month or 210 USD/year. Each additional location costs 17 USD/month or 180 USD/year. New accounts get a 14-day free trial with full access.',
-    answerAr: 'الموقع الأول يكلف 20 دولاراً شهرياً أو 210 دولارات سنوياً. كل موقع إضافي يكلف 17 دولاراً شهرياً أو 180 دولاراً سنوياً. وتحصل الحسابات الجديدة على تجربة مجانية لمدة 14 يوماً مع وصول كامل.',
+    answer: 'The first location costs 20 USD/month or 210 USD/year. Each additional location costs 17 USD/month or 180 USD/year. New accounts get a 30-day free trial with full access.',
+    answerAr: 'الموقع الأول يكلف 20 دولاراً شهرياً أو 210 دولارات سنوياً. كل موقع إضافي يكلف 17 دولاراً شهرياً أو 180 دولاراً سنوياً. وتحصل الحسابات الجديدة على تجربة مجانية لمدة 30 يوماً مع وصول كامل.',
   },
   {
     id: 'accept-payments',

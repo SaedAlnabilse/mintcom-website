@@ -26,6 +26,7 @@ import {
 import api from '../../config/api';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { OrderDetailModal } from '../../components/OrderDetailModal';
+import { OrderRefundModal } from '../../components/OrderRefundModal';
 import { exportToCSV } from '../../utils/export';
 import { toast } from 'react-hot-toast';
 import { DateRangePicker } from '../../components/DateRangePicker';
@@ -135,6 +136,10 @@ export function OrdersPage() {
     () => checkPermission(account, ['cancel_receipts', 'refunds']),
     [account],
   );
+  const canRestockRefundItems = useMemo(
+    () => checkPermission(account, ['restock_items', 'manage_inventory']),
+    [account],
+  );
   const canExport = useMemo(
     () => checkPermission(account, ['export_data']),
     [account],
@@ -148,8 +153,9 @@ export function OrdersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [, setError] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedRefundOrder, setSelectedRefundOrder] = useState<Order | null>(null);
   const [orderDetailLoadingId, setOrderDetailLoadingId] = useState<string | null>(null);
-  const [openRefundKey, setOpenRefundKey] = useState<string | number | null>(null);
+  const [refundLoadingId, setRefundLoadingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState(() => {
@@ -924,32 +930,34 @@ export function OrdersPage() {
     }
   }, []);
 
-  const openOrderDetails = useCallback(async (order: Order, options?: { openRefund?: boolean }) => {
-    const nextRefundKey = options?.openRefund ? `${order.id}-${Date.now()}` : null;
-
+  const openOrderDetails = useCallback(async (order: Order) => {
     setActiveActionMenu(null);
-    setOpenRefundKey(null);
     setOrderDetailLoadingId(order.id);
 
     try {
       const detailedOrder = await loadOrderDetails(order);
       setSelectedOrder(detailedOrder);
-      if (nextRefundKey) {
-        setOpenRefundKey(nextRefundKey);
-      }
     } finally {
       setOrderDetailLoadingId(current => (current === order.id ? null : current));
     }
   }, [loadOrderDetails]);
 
-  const handleRefund = (order: Order) => {
+  const handleRefund = useCallback(async (order: Order) => {
     if (!canCancelReceipts) {
-      toast.error(t('orders.messages.refundFailed'));
+      toast.error(t('orders.messages.noRefundPermission'));
       return;
     }
 
-    void openOrderDetails(order, { openRefund: true });
-  };
+    setActiveActionMenu(null);
+    setRefundLoadingId(order.id);
+
+    try {
+      const detailedOrder = await loadOrderDetails(order);
+      setSelectedRefundOrder(detailedOrder);
+    } finally {
+      setRefundLoadingId(current => (current === order.id ? null : current));
+    }
+  }, [canCancelReceipts, loadOrderDetails, t]);
 
   const getStatusStyle = (status: string) => {
     switch (status) {
@@ -1421,7 +1429,7 @@ export function OrdersPage() {
       {/* Orders List Container */}
       <div
         ref={ordersListRef}
-        aria-busy={Boolean(orderDetailLoadingId)}
+        aria-busy={Boolean(orderDetailLoadingId || refundLoadingId)}
         className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]"
       >
 
@@ -1520,9 +1528,9 @@ export function OrdersPage() {
                         onClick={(e) => {
                           e.stopPropagation();
                           if (!canCancelReceipts) return;
-                          handleRefund(order);
+                          void handleRefund(order);
                         }}
-                        disabled={!canCancelReceipts}
+                        disabled={!canCancelReceipts || refundLoadingId === order.id}
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
                           ? 'text-mintcom-red hover:bg-mintcom-red/10'
                           : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
@@ -1666,17 +1674,17 @@ export function OrdersPage() {
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     if (!canCancelReceipts) return;
-                                    handleRefund(order);
+                                    void handleRefund(order);
                                     setActiveActionMenu(null);
                                   }}
-                                  disabled={!canCancelReceipts}
+                                  disabled={!canCancelReceipts || refundLoadingId === order.id}
                                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
                                     ? 'text-mintcom-red hover:bg-mintcom-red/10'
                                     : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
                                     }`}
                                 >
                                   <Undo2 size={14} />
-                                  {t('orders.actions.refundOrder')}
+                                  {refundLoadingId === order.id ? t('common.loading') : t('orders.actions.refundOrder')}
                                 </button>
                               )}
                               {!canCancelReceipts && isRefundableOrder(order) && (
@@ -1711,13 +1719,21 @@ export function OrdersPage() {
       {selectedOrder && (
         <OrderDetailModal
           order={selectedOrder}
-          onClose={() => {
-            setSelectedOrder(null);
-            setOpenRefundKey(null);
-          }}
+          onClose={() => setSelectedOrder(null)}
           onRefundSuccess={fetchOrders}
           canRefund={canCancelReceipts}
-          openRefundKey={openRefundKey}
+          canRestock={canRestockRefundItems}
+        />
+      )}
+
+      {selectedRefundOrder && (
+        <OrderRefundModal
+          order={selectedRefundOrder}
+          isOpen={Boolean(selectedRefundOrder)}
+          onClose={() => setSelectedRefundOrder(null)}
+          onRefundSuccess={fetchOrders}
+          canRefund={canCancelReceipts}
+          canRestock={canRestockRefundItems}
         />
       )}
 

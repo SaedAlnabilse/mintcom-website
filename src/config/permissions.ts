@@ -129,6 +129,12 @@ export const POS_PERMISSIONS = [
   { id: 'live_chat', label: 'Access Support Portal', description: '' },
 ] as const;
 
+export const BASIC_POS_ASSIGNABLE_PERMISSION_IDS = new Set<string>([
+  'pos',
+  'void_items',
+  ...POS_PERMISSIONS.map(({ id }) => id),
+]);
+
 export const BACKOFFICE_PERMISSIONS = [
   { id: 'view_reports', label: 'Access Full Report', description: 'Access detailed sales analytics, peak hours, and financial summaries' },
   { id: 'cancel_receipts', label: 'Make Refunds', description: 'Authorize order refunds and receipt cancellations from the back office' },

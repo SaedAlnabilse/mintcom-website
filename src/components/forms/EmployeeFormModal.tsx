@@ -7,6 +7,7 @@ import api from '../../config/api';
 import {
   POS_PERMISSIONS as CANONICAL_POS_PERMISSIONS,
   BACKOFFICE_PERMISSIONS as CANONICAL_BACKOFFICE_PERMISSIONS,
+  BASIC_POS_ASSIGNABLE_PERMISSION_IDS,
   normalizePermissions,
 } from '../../config/permissions';
 import { useAuth } from '../../context/AuthContext';
@@ -113,22 +114,6 @@ const ALLOWED_POS_PERMISSION_IDS: Set<string> = new Set(CANONICAL_POS_PERMISSION
 const ALLOWED_BACKOFFICE_PERMISSION_IDS: Set<string> = new Set([
   ...CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id),
   ...BACKOFFICE_DEFAULT_PERMISSION_IDS,
-]);
-const BASIC_POS_ASSIGNABLE_PERMISSION_IDS = new Set([
-  'pos',
-  'void_items',
-  'open_cash_drawer',
-  'change_taxes',
-  'pay_in_pay_out',
-  'dashboard',
-  'view_shift_reports',
-  'restock_items',
-  'manage_open_tickets',
-  'refunds',
-  'discounts',
-  'loyalty_system_access',
-  'reprint_receipts',
-  'live_chat',
 ]);
 const EMPLOYEE_PASSWORD_POLICY_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 

@@ -183,7 +183,7 @@ function RouteSeo() {
 // ============================================================================
 // Maintenance Mode Configuration
 // ============================================================================
-const MAINTENANCE_MODE = true; // Set to false to launch for everyone
+const MAINTENANCE_MODE = env.VITE_MAINTENANCE_MODE;
 
 /** 
  * Handles secret access to the site during maintenance.

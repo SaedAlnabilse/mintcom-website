@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
   Mail,
-  Phone,
   Instagram,
   Youtube,
   ArrowUpRight,
@@ -106,10 +105,6 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
                 <Mail size={14} className="text-mintcom-green" />
                 <span dir="ltr">info@mintcompos.com</span>
               </span>
-              <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                <Phone size={14} className="text-mintcom-green" />
-                <span dir="ltr">+962 79X XXX XXX</span>
-              </span>
             </div>
           </div>
         ) : (
@@ -148,13 +143,6 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
                   >
                     <Mail size={13} className="shrink-0 text-mintcom-green" />
                     <span dir="ltr">info@mintcompos.com</span>
-                  </a>
-                  <a
-                    href="tel:+96279XXXXXXX"
-                    className="group flex items-center gap-2 text-[13px] text-gray-500 transition-colors hover:text-mintcom-green dark:text-gray-400"
-                  >
-                    <Phone size={13} className="shrink-0 text-mintcom-green" />
-                    <span dir="ltr">+962 79X XXX XXX</span>
                   </a>
                 </div>
               </div>

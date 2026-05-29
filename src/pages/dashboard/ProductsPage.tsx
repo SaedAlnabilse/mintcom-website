@@ -43,6 +43,9 @@ interface Category {
     name: string;
     icon?: string;
     sortOrder?: number;
+    isActive?: boolean;
+    deletedAt?: string | null;
+    deactivatedAt?: string | null;
 }
 
 interface Product {
@@ -62,6 +65,7 @@ interface Product {
     type?: 'ITEM' | 'ADDON';
     deletedAt?: string | null;
     deactivatedAt?: string | null;
+    category?: Category;
 }
 
 type ProductSortKey = keyof Product | 'category' | 'status';
@@ -69,6 +73,9 @@ type StatusFilterValue = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
 const isArchivedRecord = (record: { deletedAt?: string | null; deactivatedAt?: string | null; isActive?: boolean }) =>
     !!record?.deletedAt || !!record?.deactivatedAt || record?.isActive === false;
+
+const isInactiveCategory = (category?: Category | null) =>
+    !category || isArchivedRecord(category);
 
 const sortArchivedLastByNewest = <T extends { id?: string; deletedAt?: string | null; deactivatedAt?: string | null; isActive?: boolean }>(
     records: T[],
@@ -336,9 +343,9 @@ export function ProductsPage() {
         });
     };
 
-    const reactivateProduct = async (id: string) => {
+    const reactivateProduct = async (id: string, categoryId?: string) => {
         try {
-            await api.post(`/api/items/${id}/reactivate`);
+            await api.post(`/api/items/${id}/reactivate`, categoryId ? { categoryId } : {});
             toast.success(t('common.reactivate', { defaultValue: 'Reactivated' }));
             setShowModal(false);
             fetchData(true);
@@ -348,19 +355,31 @@ export function ProductsPage() {
         }
     };
 
-    const handleReactivate = (id: string, name: string) => {
+    const handleReactivate = (product: Product) => {
+        const category = categories.find((cat) => cat.id === product.categoryId) || product.category || null;
+
+        if (isInactiveCategory(category)) {
+            toast.error(t('products.reactivate.categoryProblem', {
+                category: category?.name || t('products.form.selectCategory', { defaultValue: 'selected category' }),
+                defaultValue: 'This product belongs to an inactive category. Choose an active category or create a replacement category before reactivating.',
+            }));
+            setEditingProduct(product);
+            setShowModal(true);
+            return;
+        }
+
         setConfirmConfig({
             isOpen: true,
             title: t('common.reactivate', { defaultValue: 'Reactivate' }),
             message: t('products.reactivate.message', {
-                name,
-                defaultValue: `Reactivate "${name}" so it can be used in new sales again? Historical receipts and reports keep their original snapshots.`,
+                name: product.name,
+                defaultValue: `Reactivate "${product.name}" so it can be used in new sales again? Historical receipts and reports keep their original snapshots.`,
             }),
-            productName: name,
+            productName: product.name,
             type: 'success',
             confirmText: t('common.reactivate', { defaultValue: 'Reactivate' }),
             onConfirm: async () => {
-                await reactivateProduct(id);
+                await reactivateProduct(product.id, product.categoryId);
             },
         });
     };
@@ -423,7 +442,14 @@ export function ProductsPage() {
                         confirmText: 'Restore archived',
                         secondaryText: 'Create new anyway',
                         onConfirm: async () => {
-                            await reactivateProduct(archived.id);
+                            const categoryId = String(formData.get('categoryId') || '').trim();
+                            if (!categoryId || isInactiveCategory(categories.find((cat) => cat.id === categoryId))) {
+                                toast.error(t('products.reactivate.selectActiveCategory', {
+                                    defaultValue: 'Select an active category before restoring this product.',
+                                }));
+                                return;
+                            }
+                            await reactivateProduct(archived.id, categoryId);
                         },
                         onSecondary: async () => {
                             setIsSubmitting(true);
@@ -1166,7 +1192,7 @@ export function ProductsPage() {
                                                 {isProductActive(p) ? (
                                                     <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-mintcom-red hover:bg-red-500 hover:text-white transition-colors shadow-sm"><Trash2 size={18} /></button>
                                                 ) : (
-                                                    <button onClick={(e) => { e.stopPropagation(); handleReactivate(p.id, p.name); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-mintcom-green hover:bg-mintcom-green hover:text-black transition-colors shadow-sm"><RotateCcw size={18} /></button>
+                                                    <button onClick={(e) => { e.stopPropagation(); handleReactivate(p); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-mintcom-green hover:bg-mintcom-green hover:text-black transition-colors shadow-sm"><RotateCcw size={18} /></button>
                                                 )}
                                             </div>
                                         </div>
@@ -1336,7 +1362,7 @@ export function ProductsPage() {
                                                         {isProductActive(p) ? (
                                                             <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
                                                         ) : (
-                                                            <button onClick={(e) => { e.stopPropagation(); handleReactivate(p.id, p.name); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"><RotateCcw size={18} /></button>
+                                                            <button onClick={(e) => { e.stopPropagation(); handleReactivate(p); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"><RotateCcw size={18} /></button>
                                                         )}
                                                     </div>
                                                 </td>

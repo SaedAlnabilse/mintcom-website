@@ -12,10 +12,11 @@ interface BottomNavItem {
 
 interface BottomNavigationProps {
   onMenuClick: () => void;
+  onMobileAppClick?: () => void;
   items?: BottomNavItem[];
 }
 
-export function BottomNavigation({ onMenuClick, items }: BottomNavigationProps) {
+export function BottomNavigation({ onMenuClick, onMobileAppClick, items }: BottomNavigationProps) {
   const { t } = useTranslation();
 
   const defaultItems: BottomNavItem[] = [
@@ -71,14 +72,15 @@ export function BottomNavigation({ onMenuClick, items }: BottomNavigationProps) 
         })}
 
         {/* Mobile App Link */}
-        <a
-          href="#"
+        <button
+          type="button"
+          onClick={onMobileAppClick}
           aria-label={t('dashboard.menu.getMobileApp')}
           className="flex flex-col items-center justify-center flex-1 h-full touch-target text-gray-400 hover:text-mintcom-green transition-colors"
         >
           <Smartphone size={22} />
           <span className="mt-1 label-strong font-outfit">{t('common.app')}</span>
-        </a>
+        </button>
 
 
         {/* Menu button */}

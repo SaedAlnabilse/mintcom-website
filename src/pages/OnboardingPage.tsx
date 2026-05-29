@@ -49,7 +49,14 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { QuickInfo } from '../components/QuickInfo';
 import { formatCurrencyCode } from '../utils/currency';
-import { ANDROID_DOWNLOAD_URL, IOS_DOWNLOAD_URL, isDirectInstallerDownload } from '../config/downloads';
+import {
+  ANDROID_DOWNLOAD_URL,
+  IOS_DOWNLOAD_URL,
+  OWNER_ANDROID_DOWNLOAD_URL,
+  OWNER_IOS_DOWNLOAD_URL,
+  ONBOARDING_VIDEO_URL,
+  isDirectInstallerDownload,
+} from '../config/downloads';
 import {
   BILLING_CYCLES,
   type BillingCycle,
@@ -65,12 +72,59 @@ import AppStoreBadge from '../assets/app-store-badge.svg';
 import GooglePlayBadge from '../assets/google-play-badge.svg';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
+const ONBOARDING_LAUNCH_STORAGE_KEY = 'mintcom.onboarding.launch.v1';
+
+const readStoredLaunchData = () => {
+  if (typeof window === 'undefined') {
+    return {};
+  }
+
+  try {
+    const rawValue = sessionStorage.getItem(ONBOARDING_LAUNCH_STORAGE_KEY);
+    if (!rawValue) {
+      return {};
+    }
+
+    const parsedValue = JSON.parse(rawValue);
+    return parsedValue && typeof parsedValue === 'object' ? parsedValue : {};
+  } catch {
+    return {};
+  }
+};
+
+const persistStoredLaunchData = (value: Record<string, unknown>) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    sessionStorage.setItem(ONBOARDING_LAUNCH_STORAGE_KEY, JSON.stringify(value));
+  } catch (error) {
+    console.warn('[Onboarding] Failed to persist launch data:', error);
+  }
+};
+
+const clearStoredLaunchData = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    sessionStorage.removeItem(ONBOARDING_LAUNCH_STORAGE_KEY);
+  } catch (error) {
+    console.warn('[Onboarding] Failed to clear launch data:', error);
+  }
+};
+
 
 export function OnboardingPage() {
   const { t } = useTranslation();
   const isRTL = t('common.locale') === 'ar';
   const hasAndroidDownload = Boolean(ANDROID_DOWNLOAD_URL);
   const hasIosDownload = Boolean(IOS_DOWNLOAD_URL);
+  const hasOwnerAndroidDownload = Boolean(OWNER_ANDROID_DOWNLOAD_URL);
+  const hasOwnerIosDownload = Boolean(OWNER_IOS_DOWNLOAD_URL);
+  const hasVideoGuide = Boolean(ONBOARDING_VIDEO_URL);
   const formatWholeUsd = (amount: number) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
@@ -113,11 +167,16 @@ export function OnboardingPage() {
     lastName: z.string().min(2, t('onboarding.step4.errors.lastNameMin')),
   });
 
-  // Step 4: Payment Method (Mock)
+  // Step 4: Payment Method
   const step4Schema = z.object({
-    cardNumber: z.string().min(16, t('onboarding.step2.errors.cardNumberMin')).max(19),
+    cardLast4: z.string().regex(
+      /^\d{4}$/,
+      t('onboarding.step2.errors.cardLast4Exact', {
+        defaultValue: 'Enter exactly the last 4 digits',
+      }),
+    ),
+    brand: z.string().min(2, t('common.required')),
     expiryDate: z.string().min(5, t('onboarding.step2.errors.expiryRequired')),
-    cvc: z.string().min(3, t('onboarding.step2.errors.cvcRequired')),
     cardName: z.string().min(1, t('onboarding.step2.errors.cardNameRequired')),
   });
 
@@ -125,11 +184,7 @@ export function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [formData, setFormData] = useState<any>({});
-
-  useEffect(() => {
-    sessionStorage.removeItem('onboardingFormData');
-  }, []);
+  const [formData, setFormData] = useState<any>(() => readStoredLaunchData());
 
   const [useSavedCard, setUseSavedCard] = useState(true); // Default to using saved card if available
   const [billingCycle, setBillingCycle] = useState<BillingCycle>(MINTCOM_PRICING.defaultBillingCycle);
@@ -176,10 +231,26 @@ export function OnboardingPage() {
     navigate(`/onboarding/step/${clampedStep}`);
   };
 
+  const updateFormData = (updater: any) => {
+    setFormData((previousValue: any) => {
+      const nextValue = typeof updater === 'function' ? updater(previousValue) : updater;
+      if (nextValue?.establishmentId) {
+        persistStoredLaunchData(nextValue);
+      }
+      return nextValue;
+    });
+  };
+
   useEffect(() => {
     const parsedStep = Number(stepParam);
     const normalizedStep = Number.isInteger(parsedStep) && parsedStep >= 1 && parsedStep <= 5 ? parsedStep : 1;
     setStep(normalizedStep);
+
+    if (normalizedStep === 1 && formData.establishmentId) {
+      clearStoredLaunchData();
+      setFormData({});
+      return;
+    }
 
     // Redirect to step 1 if data is missing on later steps (2, 3, 4)
     if (normalizedStep > 1 && normalizedStep < 5 && !formData.name) {
@@ -187,10 +258,15 @@ export function OnboardingPage() {
       return;
     }
 
+    if (normalizedStep === 5 && !formData.establishmentLoginId) {
+      navigate('/onboarding/step/1', { replace: true });
+      return;
+    }
+
     if (stepParam !== String(normalizedStep)) {
       navigate(`/onboarding/step/${normalizedStep}`, { replace: true });
     }
-  }, [navigate, stepParam, formData.name]);
+  }, [navigate, stepParam, formData.establishmentId, formData.establishmentLoginId, formData.name]);
 
   const launchCenterTourSteps: TourStep[] = [
     {
@@ -271,16 +347,8 @@ export function OnboardingPage() {
     }
   }, [establishments, form1]);
 
-  // Format card number with spaces (0000 0000 0000 0000)
-  const formatCardNumber = (value: string) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    const matches = v.match(/\d{4,16}/g);
-    const match = (matches && matches[0]) || '';
-    const parts = [];
-    for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4));
-    }
-    return parts.length ? parts.join(' ') : v;
+  const formatCardLast4 = (value: string) => {
+    return value.replace(/[^0-9]/g, '').substring(0, 4);
   };
 
   // Format expiry date (MM/YY)
@@ -292,11 +360,6 @@ export function OnboardingPage() {
     return v;
   };
 
-  // Format Cvc (max 4 digits)
-  const formatCVC = (value: string) => {
-    return value.replace(/[^0-9]/gi, '').substring(0, 4);
-  };
-
   const onStep1Submit = (data: any) => {
     // If currency is disabled, it might be missing from data
     const finalData = {
@@ -305,7 +368,7 @@ export function OnboardingPage() {
     };
 
     // Save duplication preferences
-    setFormData((prev: any) => ({
+    updateFormData((prev: any) => ({
       ...prev,
       ...finalData,
       duplicateFromId,
@@ -344,12 +407,12 @@ export function OnboardingPage() {
     }
 
     setIsLoading(false);
-    setFormData((prev: any) => ({ ...prev, ...data }));
+    updateFormData((prev: any) => ({ ...prev, ...data }));
     goToStep(3);
   };
 
   const onStep3Submit = (data: any) => {
-    setFormData((prev: any) => ({ ...prev, ...data }));
+    updateFormData((prev: any) => ({ ...prev, ...data }));
     goToStep(4);
   };
 
@@ -425,10 +488,9 @@ export function OnboardingPage() {
       console.warn('[Onboarding] Failed to persist welcome popup trigger:', storageError);
     }
 
-    setFormData((prev: any) => ({ ...prev, establishmentId: estId }));
+    updateFormData((prev: any) => ({ ...prev, establishmentId: estId }));
     goToStep(5);
     toast.success(t('onboarding.messages.complete'));
-    sessionStorage.removeItem('onboardingFormData');
     await refreshEstablishments();
   };
 
@@ -467,25 +529,18 @@ export function OnboardingPage() {
       paymentMethodToken = 'use_saved_card';
       savedCardId = account?.defaultCardId || '';
     } else if (!isTrialFlow) {
-      // New card - save the card to the account
-      const cardNumber = data.cardNumber?.replace(/\s/g, '') || '';
-      const last4Digits = cardNumber.slice(-4);
+      // New billing method - save non-sensitive card metadata only.
+      const last4Digits = data.cardLast4?.replace(/\D/g, '') || '';
       const expiry = data.expiryDate || '';
       const [expMonthStr, expYearStr] = expiry.split('/');
       const expMonth = parseInt(expMonthStr, 10);
       const expYear = parseInt('20' + expYearStr, 10); // Assume 20XX
 
-      // Simple brand detection
-      let brand = 'Unknown';
-      if (cardNumber.startsWith('4')) brand = 'Visa';
-      else if (cardNumber.startsWith('5')) brand = 'Mastercard';
-      else if (cardNumber.startsWith('3')) brand = 'Amex';
-
       try {
         // Save the card to the account
         const response = await api.post('/api/accounts/cards', {
           last4: last4Digits,
-          brand: brand,
+          brand: data.brand,
           expMonth: expMonth,
           expYear: expYear,
           cardholderName: data.cardName,
@@ -1248,7 +1303,7 @@ export function OnboardingPage() {
                           </div>
                           <div className="flex-1">
                             <p className="text-sm font-sans font-bold text-gray-900 dark:text-white">{t('onboarding.step2.useSaved')}</p>
-                            <p className="text-xs font-sans text-gray-500">•••• •••• •••• {savedCardLast4}</p>
+                            <p className="text-xs font-sans text-gray-500">**** **** **** {savedCardLast4}</p>
                           </div>
                           <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${useSavedCard ? 'border-mintcom-green bg-mintcom-green' : 'border-gray-300'
                             }`}>
@@ -1285,26 +1340,41 @@ export function OnboardingPage() {
                   {(!hasSavedCard || !useSavedCard) && (
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel(t('onboarding.step2.cardNumber'), t('common.locale'))}</label>
+                        <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel('Card last 4', t('common.locale'))}</label>
                         <div className="relative group">
                           <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                           <input
                             type="text"
                             autoComplete="new-password"
-                            {...form4.register('cardNumber')}
+                            {...form4.register('cardLast4')}
                             onChange={(e) => {
-                              const formatted = formatCardNumber(e.target.value);
-                              form4.setValue('cardNumber', formatted);
+                              const formatted = formatCardLast4(e.target.value);
+                              form4.setValue('cardLast4', formatted);
                             }}
-                            maxLength={19}
-                            placeholder={formatInputPlaceholder("0000 0000 0000 0000", t('common.locale'))}
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.cardNumber ? 'border-mintcom-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50`}
+                            maxLength={4}
+                            inputMode="numeric"
+                            placeholder={formatInputPlaceholder("1234", t('common.locale'))}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.cardLast4 ? 'border-mintcom-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50`}
                           />
                         </div>
-                        {form4.formState.errors.cardNumber && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 ml-1">{form4.formState.errors.cardNumber.message as string}</p>}
+                        {form4.formState.errors.cardLast4 && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 ml-1">{form4.formState.errors.cardLast4.message as string}</p>}
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel('Brand', t('common.locale'))}</label>
+                          <select
+                            {...form4.register('brand')}
+                            defaultValue="CARD"
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.brand ? 'border-mintcom-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/50`}
+                          >
+                            <option value="CARD">Card</option>
+                            <option value="VISA">Visa</option>
+                            <option value="MASTERCARD">Mastercard</option>
+                            <option value="AMEX">American Express</option>
+                            <option value="DISCOVER">Discover</option>
+                          </select>
+                        </div>
                         <div className="space-y-2">
                           <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel(t('onboarding.step2.expiry'), t('common.locale'))}</label>
                           <input
@@ -1318,21 +1388,6 @@ export function OnboardingPage() {
                             maxLength={5}
                             placeholder={formatInputPlaceholder("MM/YY", t('common.locale'))}
                             className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.expiryDate ? 'border-mintcom-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 text-center`}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-xs font-sans text-gray-400 ml-1">{formatInputLabel(t('onboarding.step2.cvc'), t('common.locale'))}</label>
-                          <input
-                            type="text"
-                            autoComplete="new-password"
-                            {...form4.register('cvc')}
-                            onChange={(e) => {
-                              const formatted = formatCVC(e.target.value);
-                              form4.setValue('cvc', formatted);
-                            }}
-                            maxLength={4}
-                            placeholder={formatInputPlaceholder("123", t('common.locale'))}
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form4.formState.errors.cvc ? 'border-mintcom-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 text-center`}
                           />
                         </div>
                       </div>
@@ -1593,24 +1648,46 @@ export function OnboardingPage() {
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 pt-2">
-                      <a
-                        href="https://play.google.com/store/apps/details?id=com.Mintcom.owner"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Get it on Google Play"
-                        className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
-                      >
-                        <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
-                      </a>
-                      <a
-                        href="https://apps.apple.com/app/Mintcom-owner/id0000000001"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Download on the App Store"
-                        className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
-                      >
-                        <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
-                      </a>
+                      {hasOwnerAndroidDownload ? (
+                        <a
+                          href={OWNER_ANDROID_DOWNLOAD_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Get it on Google Play"
+                          className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
+                        >
+                          <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          aria-label="Owner Android app download coming soon"
+                          className="block opacity-50 cursor-not-allowed"
+                        >
+                          <img src={GooglePlayBadge} alt="Get it on Google Play" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
+                        </button>
+                      )}
+                      {hasOwnerIosDownload ? (
+                        <a
+                          href={OWNER_IOS_DOWNLOAD_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Download on the App Store"
+                          className="block transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
+                        >
+                          <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          aria-label="Owner iOS app download coming soon"
+                          className="block opacity-50 cursor-not-allowed"
+                        >
+                          <img src={AppStoreBadge} alt="Download on the App Store" className="block h-[52px] w-auto max-w-full object-contain mx-auto" />
+                        </button>
+                      )}
                     </div>
                   </motion.div>
 
@@ -1649,7 +1726,7 @@ export function OnboardingPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">{t('onboarding.step5.password')}</p>
                         <p className="text-gray-900 dark:text-white font-sans font-bold text-sm truncate font-mono tracking-wider">
-                          {showEstablishmentPassword ? formData.establishmentPassword : '••••••••'}
+                          {showEstablishmentPassword ? formData.establishmentPassword : '********'}
                         </p>
                       </div>
                       <div className="flex items-center gap-1">
@@ -1720,18 +1797,33 @@ export function OnboardingPage() {
                       </a>
 
                       {/* Video Tutorial */}
-                      <a
-                        href=""
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all"
-                      >
-                        <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                          <PlayCircle size={20} className="text-red-500" />
-                        </div>
-                        <h4 className="font-barlow font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.videoGuide')}</h4>
-                        <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.quickStart')}</p>
-                      </a>
+                      {hasVideoGuide ? (
+                        <a
+                          href={ONBOARDING_VIDEO_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all"
+                        >
+                          <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <PlayCircle size={20} className="text-red-500" />
+                          </div>
+                          <h4 className="font-barlow font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.videoGuide')}</h4>
+                          <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.quickStart')}</p>
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          aria-label="Video guide coming soon"
+                          className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl opacity-60 cursor-not-allowed text-left"
+                        >
+                          <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-3">
+                            <PlayCircle size={20} className="text-red-500" />
+                          </div>
+                          <h4 className="font-barlow font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.videoGuide')}</h4>
+                          <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.quickStart')}</p>
+                        </button>
+                      )}
 
                       {/* Q&A Center */}
                       <a

@@ -637,17 +637,16 @@ export function OwnerBillingPage() {
                                                 const price = getEstablishmentPrice(est, fullIndex);
                                                 const isYearly = est.billingCycle === 'yearly';
                                                 return (
-                                                    <div className="flex flex-col items-center">
-                                                        <div className="flex items-baseline">
-                                                            <StatValue 
-                                                                value={price} 
-                                                                currency="USD"
-                                                                className="text-sm"
-                                                            />
-                                                            <span className="text-xs text-gray-400 ml-0.5">
-                                                                {isYearly ? t('common.yearly') : t('common.monthly')}
-                                                            </span>
-                                                        </div>
+                                                    <div className="flex min-w-0 flex-col items-center gap-0.5">
+                                                        <StatValue
+                                                            value={price}
+                                                            currency="USD"
+                                                            className="text-sm"
+                                                            containerClassName="justify-center whitespace-nowrap"
+                                                        />
+                                                        <span className="whitespace-nowrap text-[11px] font-medium text-gray-400 dark:text-gray-500">
+                                                            {isYearly ? t('common.yearly') : t('common.monthly')}
+                                                        </span>
                                                     </div>
                                                 );
                                             })()}

@@ -112,8 +112,11 @@ export const AboutUsPage = () => {
                         <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-6 leading-relaxed text-center max-w-3xl mx-auto">
                             {t('about.story.p1')}
                         </p>
-                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed text-center max-w-3xl mx-auto">
+                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-6 leading-relaxed text-center max-w-3xl mx-auto">
                             {t('about.story.p2')}
+                        </p>
+                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed text-center max-w-3xl mx-auto">
+                            {t('about.story.p3')}
                         </p>
                     </motion.div>
                 </div>

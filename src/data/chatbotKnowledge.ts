@@ -95,7 +95,7 @@ It is built to keep daily operations organized and fast.`,
 4. Click **"Sign Up"** to create your account
 5. Check your email and click the **verification link**
 
-Once verified, you'll go through our onboarding wizard to set up your first establishment. New users get a **14-day free trial** with full access to all features!`,
+Once verified, you'll go through our onboarding wizard to set up your first establishment. New users get a **30-day free trial** with full access to all features!`,
     answerAr: `إنشاء حساب مينتكوم سريع وسهل!
 
 1. اضغط **"تسجيل"** أو زر صفحة التسجيل
@@ -104,7 +104,7 @@ Once verified, you'll go through our onboarding wizard to set up your first esta
 4. اضغط **"تسجيل"** لإنشاء حسابك
 5. افتح بريدك واضغط على **رابط التأكيد**
 
-بعد التأكيد، ستمر بمعالج الإعداد لتجهيز أول موقع لك. يحصل المستخدمون الجدد على **تجربة مجانية لمدة 14 يوماً** مع وصول كامل إلى كل الميزات.`,
+بعد التأكيد، ستمر بمعالج الإعداد لتجهيز أول موقع لك. يحصل المستخدمون الجدد على **تجربة مجانية لمدة 30 يوماً** مع وصول كامل إلى كل الميزات.`,
     category: 'getting-started',
     navigationPath: '/signup'
   },
@@ -180,7 +180,7 @@ The reset link expires in **24 hours** for security.`,
 - Currency settings
 
 **Step 2: Subscription & Payment**
-- New users get a 14-day free trial
+- New users get a 30-day free trial
 - Securely link your payment card
 
 **Step 3: Establishment Credentials**
@@ -199,7 +199,7 @@ If you already have a brand and only want to connect an existing location to it,
 - إعدادات العملة
 
 **الخطوة 2: الاشتراك والدفع**
-- يحصل المستخدم الجديد على تجربة مجانية لمدة 14 يوماً
+- يحصل المستخدم الجديد على تجربة مجانية لمدة 30 يوماً
 - ربط بطاقة الدفع بشكل آمن
 
 **الخطوة 3: بيانات المنشأة**
@@ -982,7 +982,7 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
     keywords: ['billing', 'subscription', 'plan', 'pricing', 'invoice', 'payment', 'yearly', 'annual', 'monthly', 'location', 'branch', 'فوترة', 'اشتراك', 'خطة', 'أسعار', 'فاتورة', 'دفع', 'سنوي', 'شهري', 'فرع'],
     question: 'How does billing work?',
     questionAr: 'كيف تعمل الفوترة؟',
-    answer: `**Trial:** 14-day free trial with full access.
+    answer: `**Trial:** 30-day free trial with full access.
 
 **Monthly Plan:** 20 USD/month for your first location with full access to all features.
 
@@ -991,7 +991,7 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
 **Additional Locations:** Each extra location after the first is 17 USD/month or 180 USD/year (instead of 204 USD). That's a discounted rate for multi-branch businesses!
 
 **Manage:** Go to **Owner > Billing** to view plans, switch billing cycles, update payment methods, and download invoices.`,
-    answerAr: `**التجربة:** تجربة مجانية لمدة 14 يوماً مع وصول كامل.
+    answerAr: `**التجربة:** تجربة مجانية لمدة 30 يوماً مع وصول كامل.
 
 **الخطة الشهرية:** 20 دولاراً شهرياً للموقع الأول مع وصول كامل إلى جميع الميزات.
 

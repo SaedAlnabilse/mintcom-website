@@ -80,7 +80,7 @@ Mintcom offers transparent pricing models.
 | **Premium Plan** | **$20/month** | Small to Medium Businesses | • Full Software License<br>• Cash Drawer Included<br>• 24/7 Priority Support<br>• Mobile Admin Portal<br>• Inventory & Staff Tracking |
 | **Custom Plan** | **Custom Quote** | Franchises & Enterprises | • All Premium Features<br>• API Access<br>• White Label Options<br>• Dedicated Account Manager<br>• Multi-branch Management |
 
-*Note: A "Free Trial" is often available for the Premium Plan.*
+*Note: New accounts get a 30-day free trial on the Premium Plan.*
 
 ---
 

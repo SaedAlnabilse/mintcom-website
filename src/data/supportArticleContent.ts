@@ -154,7 +154,7 @@ export const SUPPORT_ARTICLE_CONTENT: Record<string, string[]> = {
     '### Current Pricing',
     '- First location: 20 USD per month or 210 USD per year.',
     '- Additional locations: 17 USD per month or 180 USD per year.',
-    '- New accounts include a 14-day trial when enabled by the billing flow.',
+    '- New accounts include a 30-day trial when enabled by the billing flow.',
     '### Status Meanings',
     '- **Trial**: The location is in the trial period.',
     '- **Active**: The subscription is paid and available.',

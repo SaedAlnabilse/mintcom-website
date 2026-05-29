@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronDown, ChevronRight, Check, Shield, BarChart3, Globe } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { X, ChevronDown, ChevronRight, Check, Shield, BarChart3, Globe, Cookie } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { updateConsentState } from '../utils/analytics';
 
@@ -21,6 +21,7 @@ const defaultPreferences: CookiePreferences = {
 
 export function CookieConsent() {
   const { t } = useTranslation();
+  const location = useLocation();
   const [showBanner, setShowBanner] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
   const [expandedSection, setExpandedSection] = useState<keyof CookiePreferences | null>(null);
@@ -45,10 +46,16 @@ export function CookieConsent() {
     // Check if user has already consented
     const savedConsent = localStorage.getItem('mintcom-cookie-consent');
     if (!savedConsent) {
+      if (location.pathname.startsWith('/onboarding')) {
+        setShowBanner(false);
+        return;
+      }
+
       // Delay showing the banner slightly for better UX
       const timer = setTimeout(() => setShowBanner(true), 1000);
       return () => clearTimeout(timer);
     } else {
+      setShowBanner(false);
       // Ensure analytics are updated on mount if consent exists
       try {
         const parsed = JSON.parse(savedConsent);
@@ -57,7 +64,7 @@ export function CookieConsent() {
         // Ignore
       }
     }
-  }, []);
+  }, [location.pathname]);
 
   // Listen for custom event to open preferences
   useEffect(() => {
@@ -111,7 +118,8 @@ export function CookieConsent() {
             <div className="max-w-7xl mx-auto bg-white dark:bg-[#0F172A] rounded-2xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] border border-gray-200 dark:border-white/10 p-6 md:flex md:items-center md:justify-between gap-8 ring-1 ring-black/5">
               <div className="flex-1 space-y-2">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  🍪 {t('cookies.banner.title')}
+                  <Cookie size={18} className="text-amber-500" />
+                  {t('cookies.banner.title')}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl">
                   {t('cookies.banner.description')}

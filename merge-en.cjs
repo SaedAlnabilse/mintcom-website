@@ -848,7 +848,7 @@ const articleContent = {
   'support.articles.gs1.p1': 'Creating your first location is the first step to getting started with Mintcom.',
   'support.articles.gs1.p2': 'Follow this guide to set up your business location in minutes.',
   'support.articles.gs1.p3': 'Enter your business name, select your type, and choose your currency.',
-  'support.articles.gs1.p4': 'Choose a payment plan or start the 7-day free trial.',
+  'support.articles.gs1.p4': 'Choose a payment plan or start the 30-day free trial.',
   'support.articles.gs1.p5': 'Create a unique Location ID and password for your POS app.',
   'support.articles.gs1.p6': 'Set up your personal admin credentials.',
   'support.articles.gs1.p7': 'Your location is now ready. Download the POS app to start selling.',

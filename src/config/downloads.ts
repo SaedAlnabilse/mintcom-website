@@ -1,12 +1,15 @@
+import { env } from './env';
+
 const PLACEHOLDER_DOWNLOAD_PATTERNS = [
   /your-cdn-url/i,
   /example\./i,
   /YOUR_/i,
   /placeholder/i,
   /mintcom-android\.apk\.apps\.googleusercontent\.com/i,
+  /id0{6,}/i,
 ];
 
-const isSafeDownloadUrl = (value?: string): value is string => {
+export const isSafeDownloadUrl = (value?: string): value is string => {
   if (!value) return false;
 
   const trimmed = value.trim();
@@ -21,12 +24,20 @@ const isSafeDownloadUrl = (value?: string): value is string => {
   }
 };
 
-export const ANDROID_DOWNLOAD_URL = isSafeDownloadUrl(import.meta.env.VITE_ANDROID_DOWNLOAD_URL)
-  ? import.meta.env.VITE_ANDROID_DOWNLOAD_URL.trim()
-  : '';
+const readSafeDownloadUrl = (value?: string, fallback = '') =>
+  isSafeDownloadUrl(value) ? value.trim() : fallback;
 
-export const IOS_DOWNLOAD_URL = isSafeDownloadUrl(import.meta.env.VITE_IOS_DOWNLOAD_URL)
-  ? import.meta.env.VITE_IOS_DOWNLOAD_URL.trim()
-  : '';
+export const ANDROID_DOWNLOAD_URL = readSafeDownloadUrl(env.VITE_ANDROID_DOWNLOAD_URL);
+
+export const IOS_DOWNLOAD_URL = readSafeDownloadUrl(env.VITE_IOS_DOWNLOAD_URL);
+
+export const OWNER_ANDROID_DOWNLOAD_URL = readSafeDownloadUrl(
+  env.VITE_OWNER_ANDROID_DOWNLOAD_URL,
+  'https://play.google.com/store/apps/details?id=com.Mintcom.owner'
+);
+
+export const OWNER_IOS_DOWNLOAD_URL = readSafeDownloadUrl(env.VITE_OWNER_IOS_DOWNLOAD_URL);
+
+export const ONBOARDING_VIDEO_URL = readSafeDownloadUrl(env.VITE_ONBOARDING_VIDEO_URL);
 
 export const isDirectInstallerDownload = (url: string) => /\.(apk|ipa)(?:$|\?)/i.test(url);

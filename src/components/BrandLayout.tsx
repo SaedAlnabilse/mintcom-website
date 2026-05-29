@@ -1,4 +1,5 @@
 import { MobileAppModal } from './MobileAppModal';
+import { OWNER_ANDROID_DOWNLOAD_URL, OWNER_IOS_DOWNLOAD_URL } from '../config/downloads';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -590,7 +591,12 @@ export function BrandLayout() {
         
       
     
-            <MobileAppModal isOpen={mobileAppModalOpen} onClose={() => setMobileAppModalOpen(false)} />
+            <MobileAppModal
+                isOpen={mobileAppModalOpen}
+                onClose={() => setMobileAppModalOpen(false)}
+                androidUrl={OWNER_ANDROID_DOWNLOAD_URL}
+                iosUrl={OWNER_IOS_DOWNLOAD_URL}
+            />
         </div>
     );
 }
