@@ -65,8 +65,15 @@ declare global {
   }
 }
 
-// Get Google Client ID from environment
-export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+// Public OAuth client ID. The env var still wins, but keeping the known public
+// client ID here prevents the Google UI from disappearing on builds where the
+// deploy environment forgot to define VITE_GOOGLE_CLIENT_ID.
+const DEFAULT_GOOGLE_CLIENT_ID =
+  '661509890911-nhmhvntnrllqh36vd4s0jdvnkkaqdgt3.apps.googleusercontent.com';
+
+export const GOOGLE_CLIENT_ID = (
+  import.meta.env.VITE_GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID
+).trim();
 
 type GoogleCredentialCallback = (credential: string) => void;
 
@@ -88,7 +95,7 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
     // Load Google Identity Services script
     useEffect(() => {
       if (!GOOGLE_CLIENT_ID) {
-        console.warn('[GoogleAuth] No VITE_GOOGLE_CLIENT_ID found in environment');
+        console.warn('[GoogleAuth] No Google client ID configured');
         return;
       }
 
