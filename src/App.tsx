@@ -11,6 +11,7 @@ import { CookieConsent } from './components/CookieConsent';
 import { FeedbackWidget } from './components/FeedbackWidget';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { PwaUpdatePrompt } from './components/PwaUpdatePrompt';
+import { ConsentReprompt } from './components/ConsentReprompt';
 import { env } from './config/env';
 import { usePreventNumberInputScroll } from './hooks/usePreventNumberInputScroll';
 import { useTextInputLimits } from './hooks/useTextInputLimits';
@@ -137,6 +138,8 @@ const routeSeo = [
   { path: '/login', title: 'Login | Mintcom POS', description: 'Sign in securely to your Mintcom account.' },
   { path: '/signup', title: 'Create Account | Mintcom POS', description: 'Create a Mintcom account for your business.' },
   { path: '/support', title: 'Support | Mintcom POS', description: 'Find Mintcom help articles and support tickets.' },
+  { path: '/privacy', title: 'Privacy Policy | Mintcom POS', description: 'Read how Mintcom POS protects your data and how to request account or data deletion.' },
+  { path: '/legal/privacy', title: 'Privacy Policy | Mintcom POS', description: 'Read how Mintcom POS protects your data and how to request account or data deletion.' },
   { path: '/about', title: 'About Mintcom', description: 'Learn about Mintcom POS and business management.' },
   { path: '/dashboard', title: 'Dashboard | Mintcom POS', description: 'Manage your Mintcom business dashboard.' },
   { path: '/owner', title: 'Owner Portal | Mintcom POS', description: 'Manage Mintcom account ownership, billing, brands, and establishments.' },
@@ -331,6 +334,14 @@ const router = createBrowserRouter([
       },
       {
         path: "/legal/privacy",
+        element: (
+          <PageSuspense>
+            <PrivacyPolicyPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/privacy",
         element: (
           <PageSuspense>
             <PrivacyPolicyPage />
@@ -775,6 +786,7 @@ function App() {
           <CurrencyProvider>
             <div id="global-blocking-overlay" />
             <RouterProvider router={router} />
+            <ConsentReprompt />
             <PwaUpdatePrompt />
             <Toaster
               position="top-right"

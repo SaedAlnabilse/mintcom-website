@@ -2402,6 +2402,14 @@
     }
   },
   "legal": {
+    "consent": {
+      "title": "We've updated our policies",
+      "body": "Our Terms of Service and Privacy Policy have been updated. Please review and accept them to continue using Mintcom.",
+      "reviewPrivacy": "Review Privacy Policy",
+      "reviewTerms": "Review Terms of Service",
+      "acceptButton": "Accept and continue",
+      "declineButton": "Decline and sign out"
+    },
     "cookies": {
       "backToHome": "Back to Home",
       "banner": {
@@ -2426,7 +2434,7 @@
         "fbDesc": "Used to measure the effectiveness of our advertising campaigns on Facebook and to deliver targeted ads.",
         "ga": "Google Analytics",
         "gaDesc": "Used to collect anonymous data about how visitors use our site, including pages visited, time spent, and traffic sources.",
-        "questionsDesc": "If you have any questions about our use of cookies, please contact us at info@mintcompos.com",
+        "questionsDesc": "If you have any questions about our use of cookies, please contact us at support@mintcompos.com",
         "questionsTitle": "Questions About Cookies",
         "thirdParty_1": "If configured and accepted, we may use third-party technologies from Google Analytics and Meta Pixel to measure site traffic, campaign performance, and advertising effectiveness.",
         "thirdPartyTitle": "Third-Party Services",
@@ -2489,10 +2497,19 @@
         "desc": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date."
       },
       "children": {
-        "desc": "Our services are not directed to individuals under the age of 16. We do not knowingly collect personal information from children."
+        "desc": "Our services are not directed to individuals under the age of 18. We do not knowingly collect personal information from children."
       },
       "contact": {
-        "desc": "If you have any questions about this Privacy Policy or our data practices, please contact us at info@mintcompos.com"
+        "desc": "If you have any questions about this Privacy Policy or our data practices, please contact us at support@mintcompos.com"
+      },
+      "deletion": {
+        "desc": "You can request deletion of your Mintcom account and associated personal data at any time.",
+        "emailLabel": "Send deletion requests to:",
+        "retention": "We will delete or anonymize eligible personal data after verifying the request. Some records may be retained where required for billing, tax, fraud prevention, dispute resolution, security, or legal compliance.",
+        "step1": "Email support@mintcompos.com from the email address connected to your Mintcom account, or include enough information for us to verify account ownership.",
+        "step2": "Use the subject line \"Account and data deletion request\" and include the business, brand, or establishment name connected to the account.",
+        "step3": "We will review the request, confirm any required verification steps, and complete eligible deletion or anonymization within a reasonable period.",
+        "title": "Account and Data Deletion Requests"
       },
       "cookies": {
         "c1": "Essential cookies for site functionality and authentication",
@@ -2504,7 +2521,7 @@
         "analytics": "Usage analytics and interaction data",
         "billingAddress": "Billing and shipping addresses",
         "businessInfo": "Business name, type, and registration details",
-        "cardDetails": "Payment card details submitted for subscription billing and stored or tokenized by payment infrastructure where enabled",
+        "cardDetails": "Payment card details you submit for subscription billing are processed and tokenized by our third-party payment processor; we do not store full card numbers or CVV codes on our servers",
         "cookies": "Cookie identifiers and tracking data",
         "credentials": "Login credentials (passwords stored as hashed values)",
         "deviceInfo": "Device type, operating system, and browser information",
@@ -2525,13 +2542,13 @@
       "intro": "Mintcom LLC (\"we\", \"us\", or \"our\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our services.",
       "lastUpdated": "LAST UPDATED",
       "retention": {
-        "deletionRequest": "You may request deletion of your personal data by contacting us or using the account deletion feature where available. Some records may be retained when needed for legal, billing, security, or audit purposes.",
+        "deletionRequest": "You may request deletion of your account and all associated data at any time by emailing support@mintcompos.com from your registered email address, or by using the in-app account deletion option where available. After we verify your request, we delete or anonymize your personal data within 30 days, except records we must retain for legal, billing, tax, security, audit, or dispute-resolution purposes.",
         "r1": "Account data: Retained for the duration of your account plus 30 days after deletion request",
         "r2": "Transaction records: Retained for 7 years as required by financial regulations",
         "r3": "Analytics and diagnostic data: retained in aggregated or de-identified form where practical"
       },
       "rights": {
-        "contact": "To exercise any of these rights, please contact us at info@mintcompos.com",
+        "contact": "To exercise any of these rights, please contact us at support@mintcompos.com",
         "ri1": "Right to access your personal data and request a copy",
         "ri2": "Right to correct inaccurate or incomplete personal data",
         "ri3": "Right to request deletion of your personal data",
@@ -2561,7 +2578,7 @@
         "s4_desc": "We do not sell your personal information. We may share data with service providers who help us operate the platform, subject to appropriate confidentiality and security obligations.",
         "s5": "5. Multi-Branch & Account Access",
         "s5_desc": "Mintcom supports multiple locations, brands, owners, admins, and employees. Access to operational data depends on account role, selected establishment, and assigned permissions.",
-        "s6": "6. Data Retention",
+        "s6": "6. Data Retention & Account Deletion",
         "s6_desc": "We retain information for as long as needed to provide the services, maintain business records, resolve disputes, enforce agreements, and meet legal or tax obligations.",
         "s7": "7. Your Rights",
         "s7_desc": "Depending on your location, you may have rights regarding your personal information, including access, correction, deletion, restriction, objection, and portability.",
@@ -2602,7 +2619,7 @@
         "desc": "We strive to maintain high availability but do not guarantee uninterrupted service. We may perform scheduled maintenance with advance notice."
       },
       "contact": {
-        "desc": "For questions about these Terms of Service, please contact us at info@mintcompos.com"
+        "desc": "For questions about these Terms of Service, please contact us at support@mintcompos.com"
       },
       "intro": "Welcome to Mintcom. By accessing or using our services, you agree to be bound by these Terms of Service. Please read them carefully.",
       "ip": {
@@ -2610,7 +2627,7 @@
       },
       "lastUpdated": "LAST UPDATED",
       "law": {
-        "desc": "These Terms are governed by the laws applicable to Mintcom LLC and the jurisdiction where it is registered, unless mandatory local law provides otherwise."
+        "desc": "These Terms are governed by the laws of the Hashemite Kingdom of Jordan, unless mandatory local law provides otherwise."
       },
       "liability": {
         "desc": "To the maximum extent permitted by law, Mintcom LLC shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of our services."

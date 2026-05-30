@@ -236,20 +236,20 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
 
     return (
       <div className={`relative w-full ${disabled || isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
-        {/* Custom-styled visible button (visual only, sits behind) */}
-        <div
-          className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:border-gray-300 hover:shadow-md hover:-translate-y-px active:translate-y-0 dark:border-white/10 dark:bg-white/[0.04] dark:text-gray-100 dark:hover:border-white/20 dark:hover:bg-white/[0.07]"
-        >
-          <GoogleIcon />
-          <span>{isLoading ? t('common.connecting') : buttonText}</span>
-        </div>
+        {!isScriptLoaded && (
+          <div
+            className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-all dark:border-white/10 dark:bg-white/[0.04] dark:text-gray-100"
+          >
+            <GoogleIcon />
+            <span>{t('common.connecting')}</span>
+          </div>
+        )}
 
-        {/* Official Google button — transparent overlay on top so the real click triggers OAuth */}
         {isScriptLoaded && (
           <div
             ref={buttonRef}
             aria-label={buttonText}
-            className="absolute inset-0 z-10 cursor-pointer overflow-hidden rounded-xl opacity-[0.01] [&>div]:!w-full [&>div]:!h-full [&_iframe]:!w-full [&_iframe]:!h-full [&_iframe]:!min-h-full"
+            className="google-auth-button overflow-hidden rounded-xl [&>div]:!w-full [&_iframe]:!w-full"
           />
         )}
       </div>

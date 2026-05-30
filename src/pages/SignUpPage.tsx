@@ -100,6 +100,7 @@ export function SignUpPage() {
       const result = await registerAccount({
         email: data.email, password: data.password,
         firstName: data.firstName, lastName: data.lastName, subscribeToNews,
+        acceptedTerms: !!data.agreeToTerms,
       });
       if (result.success) {
         setRegisteredEmail(data.email);

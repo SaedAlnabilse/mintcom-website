@@ -30,7 +30,7 @@ export const TermsPage = () => {
                         </div>
                         <h1 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('legal.terms.title')}</h1>
                         <p className="label-strong font-outfit">
-                            {t('legal.terms.lastUpdated')}: {new Date('2025-02-05').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
+                            {t('legal.terms.lastUpdated')}: {new Date('2026-05-29').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
                         </p>
                     </motion.div>
                 </div>
@@ -141,7 +141,7 @@ export const TermsPage = () => {
                                 {t('legal.terms.contact.desc')}
                             </p>
                             <div className="flex items-center gap-3 text-sm font-medium text-gray-600 dark:text-gray-300">
-                                <a href="mailto:info@mintcompos.com" className="text-blue-500 hover:underline">info@mintcompos.com</a>
+                                <a href="mailto:support@mintcompos.com" className="text-blue-500 hover:underline">support@mintcompos.com</a>
                             </div>
                         </section>
                     </div>

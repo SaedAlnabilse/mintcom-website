@@ -45,6 +45,8 @@ interface RegisterData {
   lastName: string;
   phone?: string;
   subscribeToNews?: boolean;
+  // Records the user's acceptance of the Terms of Service and Privacy Policy.
+  acceptedTerms: boolean;
 }
 
 interface AuthResult {

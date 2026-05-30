@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
-import { GoogleAuthButton, AuthDivider } from '../components/GoogleAuthButton';
+import { GoogleAuthButton, AuthDivider, GOOGLE_CLIENT_ID } from '../components/GoogleAuthButton';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
@@ -181,15 +181,19 @@ export function LoginPage() {
           <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-mintcom-green/10 blur-3xl" />
 
           <div className="relative">
-            {/* Google */}
-            <GoogleAuthButton
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              text="signin_with"
-              disabled={isSubmitting}
-            />
+            {/* Google — only shown (with its divider) when Google auth is configured */}
+            {GOOGLE_CLIENT_ID && (
+              <>
+                <GoogleAuthButton
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  text="signin_with"
+                  disabled={isSubmitting}
+                />
 
-            <AuthDivider />
+                <AuthDivider />
+              </>
+            )}
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               {/* Email */}

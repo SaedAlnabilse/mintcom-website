@@ -29,7 +29,7 @@ export const PrivacyPolicyPage = () => {
                         </div>
                         <h1 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('legal.privacy.title')}</h1>
                         <p className="label-strong font-outfit">
-                            {t('legal.privacy.lastUpdated')}: {new Date('2025-02-05').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
+                            {t('legal.privacy.lastUpdated')}: {new Date('2026-05-29').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
                         </p>
                     </motion.div>
                 </div>
@@ -160,8 +160,8 @@ export const PrivacyPolicyPage = () => {
                             </ul>
                         </section>
 
-                        {/* 6. Data Retention */}
-                        <section>
+                        {/* 6. Data Retention & Account Deletion */}
+                        <section id="account-deletion">
                             <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.sections.s6')}</h2>
                             <p className="text-sm font-medium mb-4">{t('legal.privacy.sections.s6_desc')}:</p>
                             <ul className="list-disc pr-5 pl-5 space-y-2 text-sm font-medium mb-6">
@@ -183,7 +183,22 @@ export const PrivacyPolicyPage = () => {
                                 <li>{t('legal.privacy.rights.ri4')}</li>
                             </ul>
                             <p className="text-sm font-medium">
-                                {t('legal.privacy.rights.contact')} <a href="mailto:info@mintcompos.com" className="text-mintcom-green hover:underline font-bold">info@mintcompos.com</a>
+                                {t('legal.privacy.rights.contact')} <a href="mailto:support@mintcompos.com" className="text-mintcom-green hover:underline font-bold">support@mintcompos.com</a>
+                            </p>
+                        </section>
+
+                        {/* Account and Data Deletion Requests */}
+                        <section className="bg-mintcom-green/5 p-6 rounded-2xl border border-mintcom-green/20">
+                            <h2 className="font-magilio text-xl font-bold text-gray-900 dark:text-white mb-4">{t('legal.privacy.deletion.title')}</h2>
+                            <p className="text-sm font-medium mb-4">{t('legal.privacy.deletion.desc')}</p>
+                            <ul className="list-disc pr-5 pl-5 space-y-2 text-sm font-medium mb-6">
+                                <li>{t('legal.privacy.deletion.step1')}</li>
+                                <li>{t('legal.privacy.deletion.step2')}</li>
+                                <li>{t('legal.privacy.deletion.step3')}</li>
+                            </ul>
+                            <p className="text-sm font-medium mb-3">{t('legal.privacy.deletion.retention')}</p>
+                            <p className="text-sm font-medium">
+                                {t('legal.privacy.deletion.emailLabel')} <a href="mailto:support@mintcompos.com?subject=Account%20and%20data%20deletion%20request" className="text-mintcom-green hover:underline font-bold">support@mintcompos.com</a>
                             </p>
                         </section>
 
@@ -235,7 +250,7 @@ export const PrivacyPolicyPage = () => {
                                 </div>
                                 <div className="flex items-center gap-3 text-sm font-medium text-gray-600 dark:text-gray-300">
                                     <span className={t('common.locale') === 'ar' ? 'ml-2' : 'w-20'}>{t('common.email')}:</span>
-                                    <a href="mailto:info@mintcompos.com" className="text-mintcom-green hover:underline">info@mintcompos.com</a>
+                                    <a href="mailto:support@mintcompos.com" className="text-mintcom-green hover:underline">support@mintcompos.com</a>
                                 </div>
                                 <div className="flex items-center gap-3 text-sm font-medium text-gray-600 dark:text-gray-300">
                                     <span className={t('common.locale') === 'ar' ? 'ml-2' : 'w-20'}>{t('common.website')}:</span>
