@@ -51,6 +51,7 @@ interface IntegrationStatus {
   isConnected: boolean;
   tenantId?: string | null;
   tenantName?: string | null;
+  country?: string;
   maskedAccessToken?: string;
   tokenExpiresAt?: string | null;
   syncAutoOnClose?: boolean;
@@ -106,6 +107,8 @@ export const AccountingSettingsTab: React.FC = () => {
   const [disconnecting, setDisconnecting] = useState(false);
   const [retryingShiftId, setRetryingShiftId] = useState<string | null>(null);
   const [refreshingLogs, setRefreshingLogs] = useState(false);
+
+  const isUS = (status?.country || 'GB').toUpperCase() === 'US';
 
   // Fetch initial data
   const fetchData = useCallback(async () => {
@@ -335,7 +338,9 @@ export const AccountingSettingsTab: React.FC = () => {
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
                 {t(
                   'settings.accounting.subtitle',
-                  'Automatically sync daily aggregated Z-Reports into Xero or QuickBooks with multi-tax UK VAT split and rounding drift protection on shift close.',
+                  isUS
+                    ? 'Automatically sync daily aggregated Z-Reports into Xero or QuickBooks with single-rate sales tax and rounding drift protection on shift close.'
+                    : 'Automatically sync daily aggregated Z-Reports into Xero or QuickBooks with multi-tax UK VAT split and rounding drift protection on shift close.',
                 )}
               </p>
             </div>
@@ -494,69 +499,87 @@ export const AccountingSettingsTab: React.FC = () => {
               </div>
             </div>
 
-            {/* Section B: Sales Revenue Accounts (UK VAT Buckets) */}
+            {/* Section B: Sales Revenue Accounts */}
             <div className="pt-6 border-t border-gray-100 dark:border-gray-800">
               <h4 className="text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <span>Sales Revenue Buckets (Credits - Net of VAT)</span>
+                <span>
+                  {isUS
+                    ? 'Sales Revenue Buckets (Credits - Net of Sales Tax)'
+                    : 'Sales Revenue Buckets (Credits - Net of VAT)'}
+                </span>
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Standard Rate (20% VAT) Sales <span className="text-red-500">*</span>
+                    {isUS ? 'Taxable Sales Account' : 'Standard Rate (20% VAT) Sales'}{' '}
+                    <span className="text-red-500">*</span>
                   </label>
                   <AccountSelect
                     accounts={accounts}
                     value={mappingForm.salesStandardVatAccountId}
                     onChange={(code) => setMappingForm((prev) => ({ ...prev, salesStandardVatAccountId: code }))}
-                    placeholder="e.g. 200 - Sales Standard 20%"
+                    placeholder={isUS ? 'e.g. 200 - Taxable Sales' : 'e.g. 200 - Sales Standard 20%'}
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-1">Dine-in hot meals, hot drinks, soft drinks</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {isUS
+                      ? 'General taxable menu sales subject to state/local sales tax'
+                      : 'Dine-in hot meals, hot drinks, soft drinks'}
+                  </p>
                 </div>
+
+                {!isUS && (
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                      Reduced Rate (5% VAT) Sales (Optional)
+                    </label>
+                    <AccountSelect
+                      accounts={accounts}
+                      value={mappingForm.salesReducedVatAccountId || ''}
+                      onChange={(code) => setMappingForm((prev) => ({ ...prev, salesReducedVatAccountId: code }))}
+                      placeholder="e.g. 201 - Sales Reduced 5%"
+                    />
+                    <p className="text-xs text-gray-400 mt-1">Special hospitality reduced rates</p>
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Reduced Rate (5% VAT) Sales (Optional)
-                  </label>
-                  <AccountSelect
-                    accounts={accounts}
-                    value={mappingForm.salesReducedVatAccountId || ''}
-                    onChange={(code) => setMappingForm((prev) => ({ ...prev, salesReducedVatAccountId: code }))}
-                    placeholder="e.g. 201 - Sales Reduced 5%"
-                  />
-                  <p className="text-xs text-gray-400 mt-1">Special hospitality reduced rates</p>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Zero Rate (0% VAT) Sales <span className="text-red-500">*</span>
+                    {isUS ? 'Exempt / Non-Taxable Sales Account' : 'Zero Rate (0% VAT) Sales'}{' '}
+                    <span className="text-red-500">*</span>
                   </label>
                   <AccountSelect
                     accounts={accounts}
                     value={mappingForm.salesZeroVatAccountId}
                     onChange={(code) => setMappingForm((prev) => ({ ...prev, salesZeroVatAccountId: code }))}
-                    placeholder="e.g. 202 - Sales Zero 0%"
+                    placeholder={isUS ? 'e.g. 202 - Non-Taxable Sales' : 'e.g. 202 - Sales Zero 0%'}
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-1">Cold takeaway food, bakery, groceries</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {isUS
+                      ? 'Non-taxable groceries, gift cards, or exempt items'
+                      : 'Cold takeaway food, bakery, groceries'}
+                  </p>
                 </div>
+
+                {!isUS && (
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                      Exempt Sales (Optional)
+                    </label>
+                    <AccountSelect
+                      accounts={accounts}
+                      value={mappingForm.salesExemptAccountId || ''}
+                      onChange={(code) => setMappingForm((prev) => ({ ...prev, salesExemptAccountId: code }))}
+                      placeholder="e.g. 203 - Sales Exempt"
+                    />
+                    <p className="text-xs text-gray-400 mt-1">VAT exempt sales and vouchers</p>
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Exempt Sales (Optional)
-                  </label>
-                  <AccountSelect
-                    accounts={accounts}
-                    value={mappingForm.salesExemptAccountId || ''}
-                    onChange={(code) => setMappingForm((prev) => ({ ...prev, salesExemptAccountId: code }))}
-                    placeholder="e.g. 203 - Sales Exempt"
-                  />
-                  <p className="text-xs text-gray-400 mt-1">VAT exempt sales and vouchers</p>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Mandatory Service Charge Revenue (Optional)
+                    {isUS ? 'Service Charge Revenue (Optional)' : 'Mandatory Service Charge Revenue (Optional)'}
                   </label>
                   <AccountSelect
                     accounts={accounts}
@@ -564,7 +587,11 @@ export const AccountingSettingsTab: React.FC = () => {
                     onChange={(code) => setMappingForm((prev) => ({ ...prev, serviceChargeAccountId: code }))}
                     placeholder="e.g. 204 - Service Charge Revenue"
                   />
-                  <p className="text-xs text-gray-400 mt-1">Mandatory service charge (subject to 20% standard VAT)</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {isUS
+                      ? 'Service charges and gratuities revenue'
+                      : 'Mandatory service charge (subject to 20% standard VAT)'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -577,16 +604,21 @@ export const AccountingSettingsTab: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Output VAT Liability Account <span className="text-red-500">*</span>
+                    {isUS ? 'Sales Tax Payable Account' : 'Output VAT Liability Account'}{' '}
+                    <span className="text-red-500">*</span>
                   </label>
                   <AccountSelect
                     accounts={accounts}
                     value={mappingForm.vatLiabilityAccountId}
                     onChange={(code) => setMappingForm((prev) => ({ ...prev, vatLiabilityAccountId: code }))}
-                    placeholder="e.g. 820 - Output VAT Liability (HMRC)"
+                    placeholder={isUS ? 'e.g. 820 - Sales Tax Payable' : 'e.g. 820 - Output VAT Liability (HMRC)'}
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-1">Current liability account for HMRC quarterly VAT return</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {isUS
+                      ? 'Current liability account for state and local sales tax remittance'
+                      : 'Current liability account for HMRC quarterly VAT return'}
+                  </p>
                 </div>
 
                 <div>
