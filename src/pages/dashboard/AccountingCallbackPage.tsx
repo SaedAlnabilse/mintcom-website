@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Loader2, AlertCircle, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api, { extractErrorMessage } from '../../config/api';
-import { getAccountingRedirectUri } from '../../utils/accountingOAuth';
 
 export const AccountingCallbackPage: React.FC = () => {
   const { t } = useTranslation();
@@ -40,22 +39,21 @@ export const AccountingCallbackPage: React.FC = () => {
       const savedProvider =
         sessionStorage.getItem('pending_accounting_provider') ||
         (realmId ? 'QUICKBOOKS' : 'XERO');
-      const savedRedirectUri =
-        sessionStorage.getItem('pending_accounting_redirect_uri') ||
-        getAccountingRedirectUri();
       const returnUrl =
         sessionStorage.getItem('accounting_return_url') || '/select-establishment';
 
       try {
+        // The server resolves the redirect URI itself and verifies `state`, so
+        // neither is ours to send. redirectUri is not merely unused: the
+        // ValidationPipe runs forbidNonWhitelisted, so a stray field is a 400
+        // reading "property redirectUri should not exist".
         await api.post(`/api/accounting/oauth/${savedProvider.toLowerCase()}/callback`, {
           code,
-          redirectUri: savedRedirectUri,
+          state,
           realmId: realmId || undefined,
-          state: state || undefined,
         });
 
         sessionStorage.removeItem('pending_accounting_provider');
-        sessionStorage.removeItem('pending_accounting_redirect_uri');
         sessionStorage.removeItem('accounting_return_url');
 
         toast.success(
