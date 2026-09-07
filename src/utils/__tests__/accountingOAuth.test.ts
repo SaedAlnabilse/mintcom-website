@@ -5,7 +5,6 @@ describe('getAccountingRedirectUri', () => {
   const originalLocation = window.location;
 
   beforeEach(() => {
-    // Mock window.location
     delete (window as any).location;
     window.location = {
       origin: 'http://localhost:5173',
@@ -19,11 +18,11 @@ describe('getAccountingRedirectUri', () => {
     (window as any).location = originalLocation;
   });
 
-  it('returns clean origin + pathname without query params or hash', () => {
+  it('returns clean origin + /accounting/callback without query params or location slugs', () => {
     const uri = getAccountingRedirectUri();
-    expect(uri).toBe('http://localhost:5173/dashboard/test-store/settings');
+    expect(uri).toBe('http://localhost:5173/accounting/callback');
     expect(uri).not.toContain('?tab=accounting');
-    expect(uri).not.toContain('#section');
+    expect(uri).not.toContain('test-store');
   });
 
   it('rewrites 127.0.0.1 to localhost for Xero compatibility', () => {
@@ -33,12 +32,12 @@ describe('getAccountingRedirectUri', () => {
     } as any;
 
     const uri = getAccountingRedirectUri();
-    expect(uri).toBe('http://localhost:5173/dashboard/test-store/settings');
+    expect(uri).toBe('http://localhost:5173/accounting/callback');
   });
 
   it('prioritizes explicit customEnvUri if passed or defined', () => {
-    const custom = 'https://app.mintcompos.com/oauth/accounting/callback';
+    const custom = 'https://app.mintcompos.com/accounting/callback';
     const uri = getAccountingRedirectUri(custom);
-    expect(uri).toBe('https://app.mintcompos.com/oauth/accounting/callback');
+    expect(uri).toBe('https://app.mintcompos.com/accounting/callback');
   });
 });

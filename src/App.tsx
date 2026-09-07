@@ -128,6 +128,7 @@ const EstablishmentsPage = lazy(() => import('./pages/dashboard/EstablishmentsPa
 const AdminUsersPage = lazy(() => import('./pages/dashboard/AdminUsersPage').then(m => ({ default: m.AdminUsersPage })));
 const CustomRolesPage = lazy(() => import('./pages/dashboard/CustomRolesPage').then(m => ({ default: m.CustomRolesPage })));
 const NotificationsPage = lazy(() => import('./pages/dashboard/NotificationsPage').then(m => ({ default: m.NotificationsPage })));
+const AccountingCallbackPage = lazy(() => import('./pages/dashboard/AccountingCallbackPage').then(m => ({ default: m.AccountingCallbackPage })));
 
 // ============================================================================
 // Lazy Imports - Community
@@ -607,6 +608,14 @@ const router = createBrowserRouter([
             element: (
               <PageSuspense>
                 <AccountRecoveryPage />
+              </PageSuspense>
+            ),
+          },
+          {
+            path: "/accounting/callback",
+            element: (
+              <PageSuspense>
+                <AccountingCallbackPage />
               </PageSuspense>
             ),
           },

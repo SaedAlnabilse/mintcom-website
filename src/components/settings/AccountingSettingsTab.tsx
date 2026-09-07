@@ -207,6 +207,7 @@ export const AccountingSettingsTab: React.FC = () => {
       const redirectUri = getAccountingRedirectUri();
       sessionStorage.setItem('pending_accounting_provider', provider);
       sessionStorage.setItem('pending_accounting_redirect_uri', redirectUri);
+      sessionStorage.setItem('accounting_return_url', window.location.pathname + window.location.search);
 
       const res = await api.get<{ authorizationUrl: string }>(
         `/api/accounting/oauth/${provider.toLowerCase()}/authorize?redirectUri=${encodeURIComponent(redirectUri)}`,

@@ -1,14 +1,14 @@
 /**
  * Resolves the exact redirect URI to use for Xero and QuickBooks OAuth flows.
  * 
- * Follows Xero OAuth 2.0 specifications:
- * - Standard Auth Code Flow: https://developer.xero.com/documentation/guides/oauth2/auth-flow/
- * - Troubleshooting Guide: https://developer.xero.com/documentation/guides/oauth2/troubleshooting
+ * Uses a dedicated, location-agnostic callback route:
+ * - Local development: http://localhost:5173/accounting/callback
+ * - Production:        https://app.mintcompos.com/accounting/callback
  * 
  * Rules:
  * 1. Honors explicit VITE_XERO_REDIRECT_URI if set in the environment.
- * 2. Rewrites 127.0.0.1 to localhost (Xero rejects 127.0.0.1 and requires localhost for local development).
- * 3. Strips query parameters and hash so the redirect URI matches character-for-character with developer portal registration.
+ * 2. Rewrites 127.0.0.1 to localhost (Xero strictly rejects 127.0.0.1 and requires localhost for local dev).
+ * 3. Returns the clean /accounting/callback pathname (no query params, no dynamic location slugs).
  */
 export const getAccountingRedirectUri = (customEnvUri?: string): string => {
   const envUri = (customEnvUri ?? (import.meta.env?.VITE_XERO_REDIRECT_URI as string | undefined))?.trim();
@@ -25,5 +25,5 @@ export const getAccountingRedirectUri = (customEnvUri?: string): string => {
     origin = origin.replace('//127.0.0.1', '//localhost');
   }
 
-  return `${origin}${window.location.pathname}`;
+  return `${origin}/accounting/callback`;
 };
