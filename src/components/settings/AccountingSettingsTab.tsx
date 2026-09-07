@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   BookOpen,
   CheckCircle2,
@@ -15,7 +14,6 @@ import {
   ShieldCheck,
   Calendar,
   Layers,
-  HelpCircle,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api, { extractErrorMessage } from '../../config/api';
@@ -275,7 +273,7 @@ export const AccountingSettingsTab: React.FC = () => {
   const handleRetrySync = async (shiftId: string) => {
     try {
       setRetryingShiftId(shiftId);
-      const res = await api.post(`/api/accounting/sync/${shiftId}`);
+      await api.post(`/api/accounting/sync/${shiftId}`);
       toast.success(t('settings.accounting.syncRetrySuccess', 'Shift synced successfully!'));
       await fetchData();
     } catch (err) {
@@ -291,7 +289,7 @@ export const AccountingSettingsTab: React.FC = () => {
       const res = await api.get<SyncLog[]>('/api/accounting/logs');
       setLogs(res.data || []);
       toast.success(t('common.refreshed', 'Logs refreshed'));
-    } catch (err) {
+    } catch {
       toast.error('Failed to refresh sync logs');
     } finally {
       setRefreshingLogs(false);
