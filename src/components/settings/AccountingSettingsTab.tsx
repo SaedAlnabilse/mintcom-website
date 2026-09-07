@@ -307,30 +307,32 @@ export const AccountingSettingsTab: React.FC = () => {
   }
 
   return (
-    <div className="space-y-8 max-w-6xl">
+    <div className="w-full space-y-6 sm:space-y-8 font-sans">
       {/* 1. Provider Connection Card */}
-      <div className="bg-white dark:bg-[#1E2024] rounded-2xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-100 dark:border-gray-800">
+      <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-mintcom-green/10 rounded-2xl text-mintcom-green">
-              <BookOpen size={28} />
+            <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm shrink-0">
+              <BookOpen size={22} />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <span>{t('settings.accounting.title', 'Accounting & VAT Integration')}</span>
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {t('settings.accounting.title', 'Accounting & VAT Integration')}
+                </h3>
                 {status?.isConnected ? (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-950/60 dark:text-green-300">
-                    <CheckCircle2 size={14} />
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-950/60 dark:text-green-300">
+                    <CheckCircle2 size={13} />
                     {status.provider === 'XERO' ? 'Xero' : 'QuickBooks Online'} Connected
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                    <XCircle size={14} />
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                    <XCircle size={13} />
                     Not Connected
                   </span>
                 )}
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
                 {t(
                   'settings.accounting.subtitle',
                   'Automatically sync daily aggregated Z-Reports into Xero or QuickBooks with multi-tax UK VAT split and rounding drift protection on shift close.',
@@ -359,7 +361,7 @@ export const AccountingSettingsTab: React.FC = () => {
         {/* Connection Details or Connect Buttons */}
         <div className="mt-6">
           {status?.isConnected ? (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200/60 dark:border-gray-800">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200/60 dark:border-white/10">
               <div>
                 <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Organization / Tenant</p>
                 <p className="text-sm font-semibold text-gray-900 dark:text-white mt-1 flex items-center gap-1.5">
@@ -427,15 +429,19 @@ export const AccountingSettingsTab: React.FC = () => {
 
       {/* 2. Chart of Accounts Mapping Card */}
       {status?.isConnected && (
-        <div className="bg-white dark:bg-[#1E2024] rounded-2xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800 shadow-sm">
-          <div className="pb-6 border-b border-gray-100 dark:border-gray-800">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Layers size={22} className="text-mintcom-green" />
-              <span>Chart of Accounts Mapping</span>
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              Select which General Ledger accounts in {status.provider === 'XERO' ? 'Xero' : 'QuickBooks Online'} map to each Mintcom POS tender, revenue, and tax liability bucket.
-            </p>
+        <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-6 sm:p-8 shadow-sm">
+          <div className="flex items-start gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
+            <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm shrink-0">
+              <Layers size={22} />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                Chart of Accounts Mapping
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+                Select which General Ledger accounts in {status.provider === 'XERO' ? 'Xero' : 'QuickBooks Online'} map to each Mintcom POS tender, revenue, and tax liability bucket.
+              </p>
+            </div>
           </div>
 
           <form onSubmit={handleSaveMapping} className="mt-6 space-y-8">
@@ -646,23 +652,27 @@ export const AccountingSettingsTab: React.FC = () => {
       )}
 
       {/* 3. Z-Report Sync Logs Table */}
-      <div className="bg-white dark:bg-[#1E2024] rounded-2xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800 shadow-sm">
-        <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-gray-800">
-          <div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Calendar size={22} className="text-mintcom-green" />
-              <span>Recent Z-Report Shift Sync Logs</span>
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              History of double-entry journals posted automatically on shift close or manually retried.
-            </p>
+      <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm shrink-0">
+              <Calendar size={22} />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                Recent Z-Report Shift Sync Logs
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+                History of double-entry journals posted automatically on shift close or manually retried.
+              </p>
+            </div>
           </div>
 
           <button
             type="button"
             onClick={handleRefreshLogs}
             disabled={refreshingLogs}
-            className="p-2 rounded-xl text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+            className="p-2.5 rounded-xl text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all self-end sm:self-center"
             title="Refresh logs"
           >
             <RotateCw size={18} className={refreshingLogs ? 'animate-spin text-mintcom-green' : ''} />
@@ -671,13 +681,21 @@ export const AccountingSettingsTab: React.FC = () => {
 
         <div className="mt-6 overflow-x-auto">
           {logs.length === 0 ? (
-            <div className="text-center py-12 text-gray-500 dark:text-gray-400 text-sm">
-              No shift journals synced yet. Once a register shift ends, daily Z-reports will appear here.
+            <div className="flex flex-col items-center justify-center py-14 px-4 text-center">
+              <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 mb-3">
+                <Calendar size={22} />
+              </div>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                No shift journals synced yet
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm">
+                Once a register shift is closed, daily double-entry Z-reports will appear here automatically.
+              </p>
             </div>
           ) : (
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-gray-100 dark:border-gray-800 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                <tr className="border-b border-gray-100 dark:border-white/5 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   <th className="pb-3 pr-4">Shift Time</th>
                   <th className="pb-3 px-4">Cashier</th>
                   <th className="pb-3 px-4">Debits / Credits</th>
@@ -687,7 +705,7 @@ export const AccountingSettingsTab: React.FC = () => {
                   <th className="pb-3 pl-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800 font-medium">
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5 font-medium">
                 {logs.map((log) => (
                   <tr key={log.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors">
                     <td className="py-4 pr-4 text-gray-900 dark:text-white whitespace-nowrap">
