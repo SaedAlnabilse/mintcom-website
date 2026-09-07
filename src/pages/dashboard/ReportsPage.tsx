@@ -41,7 +41,7 @@ import { SalesView } from '../../components/dashboard/reports/views/SalesView';
 import { ItemsView } from '../../components/dashboard/reports/views/ItemsView';
 import { StaffView } from '../../components/dashboard/reports/views/StaffView';
 import { ShiftsView } from '../../components/dashboard/reports/views/ShiftsView';
-import { clampNowToRangeEnd, formatDurationMs, getShiftDurationMs } from '../../utils/shiftDuration';
+import { clampNowToRangeEnd, formatDurationMs, getShiftDurationMs, hoursToMs } from '../../utils/shiftDuration';
 import { PeakHoursView } from '../../components/dashboard/reports/views/PeakHoursView';
 import { PaymentsView } from '../../components/dashboard/reports/views/PaymentsView';
 import { DiscountsView } from '../../components/dashboard/reports/views/DiscountsView';
@@ -642,7 +642,11 @@ export function ReportsPage() {
     rows.push(
       moneyMetric(t('orders.reports.sales.payIn'), salesData.totalPayIn ?? 0),
       moneyMetric(t('orders.reports.sales.payOut'), salesData.totalPayOut ?? 0),
-      metric(t('orders.reports.sales.hours'), num(salesData.totalHoursWorked ?? 0)),
+      // Same duration shape as the screen it was exported from.
+      metric(
+          t('orders.reports.sales.hours'),
+          formatDurationMs(t, hoursToMs(salesData.totalHoursWorked ?? 0)),
+      ),
     );
     return rows;
   };

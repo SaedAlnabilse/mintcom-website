@@ -23,6 +23,7 @@ import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 import { StatValue } from '../../../../components/ui/StatValue';
 import { formatPaymentBrandName } from '../../../../utils/paymentCard';
 import { formatBucketLabel } from '../../../../utils/reportBuckets';
+import { formatDurationMs, hoursToMs } from '../../../../utils/shiftDuration';
 
 const COLORS = [
   '#7dc6a2',
@@ -296,13 +297,25 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           },
           {
             label: t('orders.reports.sales.hours'),
-            value: (salesData.totalHoursWorked ?? 0),
+            value: null,
             isCurrency: false,
-            suffix: t('orders.reports.sales.hours'),
             icon: biIcon('bi-clock-history'),
             color: 'text-mintcom-green',
             bg: 'bg-mintcom-green/10',
             sub: t('orders.reports.sales.staffHours'),
+            // Same "2h 15m" shape as the Shifts and Staff tabs (and the POS and
+            // admin app) — a bare "7.5" reads as money and never matches the
+            // per-shift durations it is the sum of.
+            customContent: (
+              <>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {formatDurationMs(t, hoursToMs(salesData.totalHoursWorked ?? 0))}
+                </p>
+                <p className="sentence-case-text text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+                  {t('orders.reports.sales.staffHours')}
+                </p>
+              </>
+            ),
             onClick: () => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
               setTimeout(() => navigate(`/dashboard/${locationSlug}/reports/shifts`), 700);

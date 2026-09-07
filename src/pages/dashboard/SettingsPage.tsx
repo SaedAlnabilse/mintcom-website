@@ -227,13 +227,15 @@ export function SettingsPage() {
     }
   }, [tabs, activeTab]);
 
-  // Support deep-linking directly to a settings tab from widget tasks.
+  // Support deep-linking directly to a settings tab from widget tasks or OAuth callbacks.
   useEffect(() => {
     const state = location.state as { openSettingsTab?: SettingsTab | 'tax' } | null;
-    const queryTab = normalizeSettingsTab(new URLSearchParams(location.search).get('tab'));
+    const searchParams = new URLSearchParams(location.search);
+    const queryTab = normalizeSettingsTab(searchParams.get('tab'));
+    const isOAuthCallback = searchParams.has('code') || searchParams.has('realmId');
     const requestedTab = isLocationDeletionRecoveryDeepLink(location.search)
       ? 'danger'
-      : normalizeSettingsTab(state?.openSettingsTab) || queryTab;
+      : normalizeSettingsTab(state?.openSettingsTab) || queryTab || (isOAuthCallback ? 'accounting' : null);
     if (!requestedTab) return;
 
     if (tabs.some((tab: any) => tab.id === requestedTab)) {

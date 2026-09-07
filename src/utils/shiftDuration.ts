@@ -69,3 +69,13 @@ export const clampNowToRangeEnd = (now: number, rangeEnd?: string | Date | null)
     return Number.isFinite(end) ? Math.min(now, end) : now;
 };
 
+/**
+ * Decimal hours (what the reports API returns for aggregate "hours worked") as
+ * milliseconds, so those totals render in the same "2h 15m" shape as a single
+ * shift's duration instead of a bare "7.5".
+ */
+export const hoursToMs = (hours?: number | null): number | null => {
+    const numeric = Number(hours);
+    if (!Number.isFinite(numeric)) return null;
+    return Math.max(numeric, 0) * 3_600_000;
+};

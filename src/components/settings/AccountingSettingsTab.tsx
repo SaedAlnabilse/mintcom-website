@@ -14,9 +14,12 @@ import {
   ShieldCheck,
   Calendar,
   Layers,
+  Copy,
+  Info,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api, { extractErrorMessage } from '../../config/api';
+import { getAccountingRedirectUri } from '../../utils/accountingOAuth';
 
 interface AccountInfo {
   code: string;
@@ -159,25 +162,27 @@ export const AccountingSettingsTab: React.FC = () => {
       const realmId = params.get('realmId');
       const state = params.get('state');
       const savedProvider = sessionStorage.getItem('pending_accounting_provider') || (realmId ? 'QUICKBOOKS' : 'XERO');
+      const savedRedirectUri = sessionStorage.getItem('pending_accounting_redirect_uri') || getAccountingRedirectUri();
 
       if (code) {
         try {
           toast.loading(t('settings.accounting.connecting', 'Connecting to accounting provider...'), { id: 'oauth-exchange' });
-          const redirectUri = `${window.location.origin}${window.location.pathname}?tab=accounting`;
 
           await api.post(`/api/accounting/oauth/${savedProvider.toLowerCase()}/callback`, {
             code,
-            redirectUri,
+            redirectUri: savedRedirectUri,
             realmId: realmId || undefined,
             state: state || undefined,
           });
 
           sessionStorage.removeItem('pending_accounting_provider');
-          // Clear query params cleanly
+          sessionStorage.removeItem('pending_accounting_redirect_uri');
+          // Clear query params cleanly and keep tab=accounting
           params.delete('code');
           params.delete('state');
           params.delete('realmId');
-          const cleanUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}${window.location.hash}`;
+          params.set('tab', 'accounting');
+          const cleanUrl = `${window.location.pathname}?${params.toString()}${window.location.hash}`;
           window.history.replaceState({}, document.title, cleanUrl);
 
           toast.success(t('settings.accounting.connectedSuccess', 'Successfully connected to {{provider}}!', { provider: savedProvider }), { id: 'oauth-exchange' });
@@ -199,8 +204,9 @@ export const AccountingSettingsTab: React.FC = () => {
   const handleConnect = async (provider: 'XERO' | 'QUICKBOOKS') => {
     try {
       setConnectingProvider(provider);
+      const redirectUri = getAccountingRedirectUri();
       sessionStorage.setItem('pending_accounting_provider', provider);
-      const redirectUri = `${window.location.origin}${window.location.pathname}?tab=accounting`;
+      sessionStorage.setItem('pending_accounting_redirect_uri', redirectUri);
 
       const res = await api.get<{ authorizationUrl: string }>(
         `/api/accounting/oauth/${provider.toLowerCase()}/authorize?redirectUri=${encodeURIComponent(redirectUri)}`,
@@ -424,6 +430,40 @@ export const AccountingSettingsTab: React.FC = () => {
                   )}
                   <span>Connect to QuickBooks Online</span>
                 </button>
+              </div>
+
+              {/* OAuth Redirect URI Helper Card */}
+              <div className="mt-4 p-4 rounded-xl bg-blue-50/60 dark:bg-blue-900/10 border border-blue-200/70 dark:border-blue-800/40 text-xs text-blue-950 dark:text-blue-200 space-y-2.5">
+                <div className="flex items-center justify-between font-semibold">
+                  <span className="flex items-center gap-1.5 text-blue-900 dark:text-blue-300 font-bold">
+                    <Info size={15} className="text-[#13B5EA] shrink-0" />
+                    Xero & QuickBooks OAuth Redirect URI
+                  </span>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300">
+                    Exact Match Required
+                  </span>
+                </div>
+                <p className="text-blue-800/90 dark:text-blue-300/90 leading-relaxed">
+                  In your <a href="https://developer.xero.com/app/manage" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-[#13B5EA]">Xero Developer Portal</a> under <strong>Configuration &gt; Redirect URIs</strong>, register this exact URL verbatim (no trailing slash or query params):
+                </p>
+                <div className="flex items-center gap-2 bg-white dark:bg-black/30 border border-blue-200 dark:border-blue-800/50 rounded-lg px-3 py-2 font-mono text-[11px] select-all break-all shadow-inner">
+                  <span className="flex-1 text-gray-800 dark:text-gray-200 select-all">{getAccountingRedirectUri()}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(getAccountingRedirectUri());
+                      toast.success(t('common.copied', 'Copied redirect URI to clipboard!'));
+                    }}
+                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors text-gray-600 dark:text-gray-300 shrink-0 flex items-center gap-1"
+                    title="Copy Redirect URI"
+                  >
+                    <Copy size={13} />
+                    <span className="font-sans text-[11px] font-medium">Copy</span>
+                  </button>
+                </div>
+                <p className="text-[11px] text-blue-700/80 dark:text-blue-400/80">
+                  ⚠️ Note: Xero requires <code className="bg-blue-100 dark:bg-blue-950/80 px-1 py-0.5 rounded font-mono">http://localhost</code> for local development (IP addresses like <code className="bg-blue-100 dark:bg-blue-950/80 px-1 py-0.5 rounded font-mono">127.0.0.1</code> are disallowed) and <code className="bg-blue-100 dark:bg-blue-950/80 px-1 py-0.5 rounded font-mono">https://</code> in production.
+                </p>
               </div>
             </div>
           )}

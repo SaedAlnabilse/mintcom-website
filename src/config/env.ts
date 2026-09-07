@@ -9,6 +9,7 @@ const envSchema = z.object({
   VITE_GOOGLE_CLIENT_ID: z.string().optional(),
   VITE_APPLE_SERVICE_ID: z.string().optional(),
   VITE_APPLE_REDIRECT_URI: z.string().optional(),
+  VITE_XERO_REDIRECT_URI: z.string().optional(),
   // Public GA4 Measurement ID. Defaulted here (not just .env) because .env is
   // git-ignored, so the Cloudflare build would otherwise bake in an empty value
   // and the analytics loader would self-disable. The ID is already public.
@@ -36,6 +37,7 @@ const envData = {
   VITE_GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID,
   VITE_APPLE_SERVICE_ID: import.meta.env.VITE_APPLE_SERVICE_ID,
   VITE_APPLE_REDIRECT_URI: import.meta.env.VITE_APPLE_REDIRECT_URI,
+  VITE_XERO_REDIRECT_URI: import.meta.env.VITE_XERO_REDIRECT_URI,
   VITE_GA_MEASUREMENT_ID: import.meta.env.VITE_GA_MEASUREMENT_ID,
   VITE_META_PIXEL_ID: import.meta.env.VITE_META_PIXEL_ID,
   VITE_SUPPORT_ADMIN_EMAILS: import.meta.env.VITE_SUPPORT_ADMIN_EMAILS,
