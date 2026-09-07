@@ -873,6 +873,7 @@
     "activate": "Activate",
     "deleted": "Deleted",
     "retry": "Try again",
+    "refreshed": "Refreshed",
     "active": "Active",
     "activeFilters": "Active filters",
     "add": "Add",
@@ -5915,7 +5916,20 @@
       "receipts": "Receipts",
       "sales": "Sales Setup",
       "tax": "E-Invoicing",
-      "pos": "POS & Shifts"
+      "pos": "POS & Shifts",
+      "accounting": "Accounting & VAT"
+    },
+    "accounting": {
+      "title": "Accounting & VAT Integration",
+      "subtitle": "Automatically sync daily aggregated Z-Reports into Xero or QuickBooks with multi-tax UK VAT split and rounding drift protection on shift close.",
+      "connecting": "Connecting to accounting provider...",
+      "connectedSuccess": "Successfully connected to {{provider}}!",
+      "confirmDisconnect": "Are you sure you want to disconnect your accounting software? Automatic Z-report sync will be suspended.",
+      "disconnectedSuccess": "Accounting software disconnected.",
+      "requiredFieldMissing": "Please fill in all required account mappings.",
+      "mappingSaved": "Chart of Accounts mapping saved successfully!",
+      "syncRetrySuccess": "Shift synced successfully!",
+      "disconnect": "Disconnect"
     },
     "fiscal": {
       "title": "E-Invoicing & Tax Compliance",

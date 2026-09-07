@@ -2,9 +2,10 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign, Copy, Key, Shield, ShieldCheck, MonitorSmartphone } from 'lucide-react';
+import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign, Copy, Key, Shield, ShieldCheck, MonitorSmartphone, BookOpen } from 'lucide-react';
 import api, { extractErrorMessage } from '../../config/api';
 import { FiscalComplianceCard } from '../../components/FiscalComplianceCard';
+import { AccountingSettingsTab } from '../../components/settings/AccountingSettingsTab';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { ChangeCurrencyModal } from '../../components/ChangeCurrencyModal';
@@ -118,7 +119,7 @@ interface AppSettings {
 
 
 
-type SettingsTab = 'profile' | 'sales' | 'pos' | 'receipt' | 'einvoicing' | 'loyalty' | 'danger';
+type SettingsTab = 'profile' | 'sales' | 'pos' | 'receipt' | 'einvoicing' | 'accounting' | 'loyalty' | 'danger';
 
 /** Older links used ?tab=tax — map them to the E-Invoicing tab. */
 const normalizeSettingsTab = (tab: string | null | undefined): SettingsTab | null => {
@@ -130,6 +131,7 @@ const normalizeSettingsTab = (tab: string | null | undefined): SettingsTab | nul
     tab === 'pos' ||
     tab === 'receipt' ||
     tab === 'einvoicing' ||
+    tab === 'accounting' ||
     tab === 'loyalty' ||
     tab === 'danger'
   ) {
@@ -193,6 +195,7 @@ export function SettingsPage() {
       { id: 'pos', label: t('settings.tabs.pos', { defaultValue: 'POS & Shifts' }), icon: MonitorSmartphone, permission: 'manage_pos_devices' },
       { id: 'receipt', label: t('settings.tabs.receipts'), icon: Receipt, permission: 'manage_receipt_settings' },
       { id: 'einvoicing', label: t('settings.tabs.tax', 'E-Invoicing'), icon: ShieldCheck, permission: 'manage_settings' },
+      { id: 'accounting', label: t('settings.tabs.accounting', { defaultValue: 'Accounting & VAT' }), icon: BookOpen, permission: 'manage_settings' },
       { id: 'danger', label: t('settings.tabs.danger'), icon: Trash2, isDanger: true, permission: 'delete_establishment' },
     ];
 
@@ -872,7 +875,7 @@ export function SettingsPage() {
                     </p>
         </div>
 
-        {activeTab !== 'einvoicing' && activeTab !== 'danger' && (
+        {activeTab !== 'einvoicing' && activeTab !== 'danger' && activeTab !== 'accounting' && (
           <button
             type="button"
             onClick={handleSubmit(onSubmit, showFormValidationError)}
@@ -1627,6 +1630,12 @@ export function SettingsPage() {
               initial={fiscalInitial}
               onSaved={() => fetchSettings(false)}
             />
+          </div>
+        )}
+
+        {activeTab === 'accounting' && (
+          <div className="space-y-6">
+            <AccountingSettingsTab />
           </div>
         )}
 
