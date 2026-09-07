@@ -162,21 +162,21 @@ export const AccountingSettingsTab: React.FC = () => {
       const realmId = params.get('realmId');
       const state = params.get('state');
       const savedProvider = sessionStorage.getItem('pending_accounting_provider') || (realmId ? 'QUICKBOOKS' : 'XERO');
-      const savedRedirectUri = sessionStorage.getItem('pending_accounting_redirect_uri') || getAccountingRedirectUri();
 
       if (code) {
         try {
           toast.loading(t('settings.accounting.connecting', 'Connecting to accounting provider...'), { id: 'oauth-exchange' });
 
+          // The server resolves the redirect URI itself and verifies `state`,
+          // so neither is ours to choose. state is required: without it the
+          // callback is refused.
           await api.post(`/api/accounting/oauth/${savedProvider.toLowerCase()}/callback`, {
             code,
-            redirectUri: savedRedirectUri,
+            state,
             realmId: realmId || undefined,
-            state: state || undefined,
           });
 
           sessionStorage.removeItem('pending_accounting_provider');
-          sessionStorage.removeItem('pending_accounting_redirect_uri');
           // Clear query params cleanly and keep tab=accounting
           params.delete('code');
           params.delete('state');
@@ -204,13 +204,11 @@ export const AccountingSettingsTab: React.FC = () => {
   const handleConnect = async (provider: 'XERO' | 'QUICKBOOKS') => {
     try {
       setConnectingProvider(provider);
-      const redirectUri = getAccountingRedirectUri();
       sessionStorage.setItem('pending_accounting_provider', provider);
-      sessionStorage.setItem('pending_accounting_redirect_uri', redirectUri);
       sessionStorage.setItem('accounting_return_url', window.location.pathname + window.location.search);
 
       const res = await api.get<{ authorizationUrl: string }>(
-        `/api/accounting/oauth/${provider.toLowerCase()}/authorize?redirectUri=${encodeURIComponent(redirectUri)}`,
+        `/api/accounting/oauth/${provider.toLowerCase()}/authorize`,
       );
 
       if (res.data?.authorizationUrl) {
