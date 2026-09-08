@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { createBrowserRouter, RouterProvider, Outlet, Navigate, useLocation } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, Navigate, useLocation, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { EstablishmentUrlResolver } from './components/EstablishmentUrlResolver';
 import { Toaster, toast } from 'react-hot-toast';
@@ -48,6 +48,16 @@ function LegacyRecipesRedirect() {
   const location = useLocation();
   const inventoryPath = location.pathname.replace(/\/recipes\/?$/, '/inventory');
   return <Navigate to={`${inventoryPath}${location.search}`} replace />;
+}
+
+function LegacyAdminTicketRedirect() {
+  const { ticketId } = useParams<{ ticketId?: string }>();
+  return <Navigate to={ticketId ? `/support/admin/${ticketId}` : '/support/admin'} replace />;
+}
+
+function LegacyCustomerTicketRedirect() {
+  const { ticketId } = useParams<{ ticketId?: string }>();
+  return <Navigate to={ticketId ? `/support/tickets/${ticketId}` : '/support/tickets'} replace />;
 }
 // Draft marketing pages (kept on disk; hidden from public routes until review is done)
 // IndustriesPage, SecurityPage, PricingPage, HowItWorksPage, LoyaltyPage (marketing),
@@ -537,6 +547,12 @@ const router = createBrowserRouter([
           </PageSuspense>
         ),
       },
+
+      // ========== Legacy Support Routes (Permanent Redirects for Immutable Emails) ==========
+      { path: "/admin/support", element: <Navigate to="/support/admin" replace /> },
+      { path: "/admin/support/:ticketId", element: <LegacyAdminTicketRedirect /> },
+      { path: "/dashboard/support", element: <Navigate to="/support/tickets" replace /> },
+      { path: "/dashboard/support/:ticketId", element: <LegacyCustomerTicketRedirect /> },
 
       // ========== Community Routes (Public read, feature-flagged) ==========
       {
