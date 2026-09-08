@@ -3929,6 +3929,7 @@
     "exportFields": {
       "customer": "العميل",
       "date": "التاريخ",
+      "invoiceNumber": "الفاتورة",
       "orderNumber": "رقم الطلب",
       "paymentMethod": "طريقة الدفع",
       "serviceCharge": "رسوم الخدمة",
@@ -3936,6 +3937,7 @@
       "total": "الإجمالي ({{currency}})",
       "paymentBreakdown": "تفاصيل الدفع"
     },
+    "receiptOutsidePeriod": "بحث الإيصال يتجاهل الفترة المحددة — قد تكون النتيجة خارجها.",
     "filters": {
       "serviceCharge": "رسوم الخدمة",
       "serviceChargeAll": "كل الطلبات",
@@ -6742,6 +6744,7 @@
       "sarah": "سارة (الدعم)",
       "searchPlaceholder": "البحث في التذاكر...",
       "sendReply": "إرسال الرد",
+      "attach": "إرفاق ملف",
       "stats": {
         "inProgress": "قيد التنفيذ",
         "open": "مفتوحة",

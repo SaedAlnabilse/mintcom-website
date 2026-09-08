@@ -18,7 +18,9 @@ import {
   Copy,
   Check,
   Inbox,
-  MessageSquare
+  MessageSquare,
+  Paperclip,
+  X
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
@@ -66,10 +68,11 @@ export const TicketDetailPage = () => {
 
   const [copiedId, setCopiedId] = useState(false);
   const [loadingDetail, setLoadingDetail] = useState(true);
+  const [replyFiles, setReplyFiles] = useState<File[]>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load ticket from the support API. A 404 means the ticket genuinely does not
   // exist; any other failure is a transient/load error that we surface with a
@@ -129,33 +132,132 @@ export const TicketDetailPage = () => {
     fetchTicket();
   }, [fetchTicket]);
 
+  // Real-time live updates: background polling every 8s while tab is visible and ticket is open
+  useEffect(() => {
+    if (!ticketId || !ticket || ticket.status === 'closed') return;
+
+    const interval = setInterval(async () => {
+      if (document.hidden) return;
+      try {
+        const res = await api.get(`/api/support/tickets/${ticketId}`);
+        const data = res.data;
+        if (data && Array.isArray(data.messages)) {
+          setTicket((prev) => {
+            if (!prev) return prev;
+            if (data.messages.length > prev.messages.length || data.status !== prev.status) {
+              const mappedMessages = data.messages.map((m: Record<string, unknown>) => {
+                const rawAtts = (m.attachments as Array<{ name?: string; url?: string; sizeBytes?: number; type?: string }>) || [];
+                const parsedAtts = Array.isArray(rawAtts) ? rawAtts.map((a) => ({
+                  name: a.name || 'file',
+                  url: a.url || '',
+                  size: a.sizeBytes ? (a.sizeBytes > 1024 * 1024 ? `${(a.sizeBytes / 1024 / 1024).toFixed(1)} MB` : `${Math.round(a.sizeBytes / 1024)} KB`) : '',
+                  type: a.type || 'file',
+                })) : [];
+                return {
+                  id: m.id as string,
+                  sender: (m.senderType as string) === 'support' ? 'support' : 'user',
+                  senderName: m.senderName as string,
+                  content: m.content as string,
+                  timestamp: m.createdAt as string,
+                  attachments: parsedAtts,
+                } as TicketMessage;
+              });
+              return {
+                ...prev,
+                status: data.status as TicketStatus,
+                messages: mappedMessages,
+                updatedAt: data.updatedAt,
+              };
+            }
+            return prev;
+          });
+        }
+      } catch {
+        // Silent background polling catch
+      }
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, [ticketId, ticket?.status, ticket?.messages.length]);
+
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [ticket?.messages.length]);
 
-
-
   // ─── Handlers ────────────────────────────────────────────────────────────
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const selected = Array.from(e.target.files);
+    const valid = selected.filter((file) => {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error(`${file.name} is too large (max 10MB)`);
+        return false;
+      }
+      return true;
+    });
+
+    if (replyFiles.length + valid.length > 5) {
+      toast.error('Maximum 5 attachments allowed per reply');
+      return;
+    }
+
+    setReplyFiles((prev) => [...prev, ...valid]);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const removeReplyFile = (index: number) => {
+    setReplyFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim() || !ticket) return;
+    if ((!newMessage.trim() && replyFiles.length === 0) || !ticket) return;
 
     setIsSending(true);
 
     try {
+      let uploadedAttachments: Array<{
+        name: string;
+        url: string;
+        storageKey?: string;
+        sizeBytes?: number;
+        type?: string;
+      }> = [];
+
+      if (replyFiles.length > 0) {
+        const formData = new FormData();
+        replyFiles.forEach((file) => formData.append('files', file));
+
+        const uploadRes = await api.post('/api/support/tickets/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        uploadedAttachments = uploadRes.data?.attachments || [];
+      }
+
       // Send via API
       const res = await api.post(`/api/support/tickets/${ticket.id}/messages`, {
-        content: newMessage.trim(),
+        content: newMessage.trim() || undefined,
+        attachments: uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
       });
 
       const apiMessage = res.data.message;
+      const rawAtts = (apiMessage.attachments as Array<{ name?: string; url?: string; sizeBytes?: number; type?: string }>) || [];
+      const parsedAtts = Array.isArray(rawAtts) ? rawAtts.map((a) => ({
+        name: a.name || 'file',
+        url: a.url || '',
+        size: a.sizeBytes ? (a.sizeBytes > 1024 * 1024 ? `${(a.sizeBytes / 1024 / 1024).toFixed(1)} MB` : `${Math.round(a.sizeBytes / 1024)} KB`) : '',
+        type: a.type || 'file',
+      })) : [];
+
       const msg: TicketMessage = {
         id: apiMessage.id,
         sender: 'user',
         senderName: apiMessage.senderName || (account?.firstName ? `${account.firstName} ${account.lastName || ''}`.trim() : 'You'),
         content: apiMessage.content,
         timestamp: apiMessage.createdAt,
+        attachments: parsedAtts,
       };
 
       const updated: Ticket = {
@@ -167,6 +269,7 @@ export const TicketDetailPage = () => {
 
       setTicket(updated);
       setNewMessage('');
+      setReplyFiles([]);
       toast.success(t('support.tickets.replySent', { defaultValue: 'Reply sent' }));
     } catch {
       // The reply did NOT reach support. Never report success or silently store
@@ -535,10 +638,52 @@ export const TicketDetailPage = () => {
                     <p className="text-xs text-gray-400 mt-1.5">{t('support.tickets.sendShortcutHint')}</p>
                   </div>
 
-                  <div className="flex items-center justify-end gap-3">
+                  {/* Attachment chips */}
+                  {replyFiles.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {replyFiles.map((file, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/10 text-xs font-medium text-gray-700 dark:text-gray-300"
+                        >
+                          <Paperclip size={13} className="text-gray-400" />
+                          <span className="max-w-[150px] truncate">{file.name}</span>
+                          <button
+                            type="button"
+                            onClick={() => removeReplyFile(idx)}
+                            className="hover:text-red-500 transition-colors ml-1 p-0.5 rounded"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        multiple
+                        accept="image/*,application/pdf"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 text-xs font-medium text-gray-700 dark:text-gray-300 transition-colors"
+                        title="Attach files (max 5, 10MB each)"
+                      >
+                        <Paperclip size={15} />
+                        <span>{t('support.tickets.attach', { defaultValue: 'Attach File' })}</span>
+                      </button>
+                    </div>
+
                     <button
                       type="submit"
-                      disabled={!newMessage.trim() || isSending}
+                      disabled={(!newMessage.trim() && replyFiles.length === 0) || isSending}
                       className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] disabled:opacity-50 shadow-lg shadow-mintcom-green/20"
                     >
                       {isSending ? (

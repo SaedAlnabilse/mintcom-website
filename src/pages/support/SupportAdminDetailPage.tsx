@@ -23,6 +23,8 @@ import {
     Image as ImageIcon,
     TimerReset,
     ClipboardCheck,
+    Paperclip,
+    X,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Navbar } from '../../components/Navbar';
@@ -151,10 +153,12 @@ export const SupportAdminDetailPage = () => {
     const [notFound, setNotFound] = useState(false);
     const [replyText, setReplyText] = useState('');
     const [sending, setSending] = useState(false);
+    const [replyFiles, setReplyFiles] = useState<File[]>([]);
     const [showStatusMenu, setShowStatusMenu] = useState(false);
     const [copied, setCopied] = useState(false);
     const [internalNote, setInternalNote] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const isSupportTeam = isSupportAdminEmail(account?.email);
 
@@ -177,6 +181,30 @@ export const SupportAdminDetailPage = () => {
         }
     }, [isAuthenticated, isSupportTeam, fetchTicket]);
 
+    // Real-time live updates: background polling every 8s while tab is visible and ticket is open
+    useEffect(() => {
+        if (!ticketId || !isAuthenticated || !isSupportTeam || ticket?.status === 'closed') return;
+        const interval = setInterval(async () => {
+            if (document.hidden) return;
+            try {
+                const res = await api.get(`/api/support/admin/tickets/${ticketId}`);
+                const data = res.data;
+                if (data && Array.isArray(data.messages)) {
+                    setTicket((prev) => {
+                        if (!prev) return prev;
+                        if (data.messages.length > prev.messages.length || data.status !== prev.status) {
+                            return data;
+                        }
+                        return prev;
+                    });
+                }
+            } catch {
+                // Silent polling catch
+            }
+        }, 8000);
+        return () => clearInterval(interval);
+    }, [ticketId, isAuthenticated, isSupportTeam, ticket?.status, ticket?.messages?.length]);
+
     // Auto-scroll to bottom
     useEffect(() => {
         if (ticket?.messages) {
@@ -198,13 +226,56 @@ export const SupportAdminDetailPage = () => {
         }
     }, [internalNote, ticketId]);
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+        const selected = Array.from(e.target.files);
+        const valid = selected.filter((file) => {
+            if (file.size > 10 * 1024 * 1024) {
+                toast.error(`${file.name} is too large (max 10MB)`);
+                return false;
+            }
+            return true;
+        });
+
+        if (replyFiles.length + valid.length > 5) {
+            toast.error('Maximum 5 attachments allowed per reply');
+            return;
+        }
+
+        setReplyFiles((prev) => [...prev, ...valid]);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
+    const removeReplyFile = (index: number) => {
+        setReplyFiles((prev) => prev.filter((_, i) => i !== index));
+    };
+
     // Send reply
     const handleSendReply = async () => {
-        if (!replyText.trim() || !ticket) return;
+        if ((!replyText.trim() && replyFiles.length === 0) || !ticket) return;
         setSending(true);
         try {
+            let uploadedAttachments: Array<{
+                name: string;
+                url: string;
+                storageKey?: string;
+                sizeBytes?: number;
+                type?: string;
+            }> = [];
+
+            if (replyFiles.length > 0) {
+                const formData = new FormData();
+                replyFiles.forEach((file) => formData.append('files', file));
+
+                const uploadRes = await api.post('/api/support/tickets/upload', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+                uploadedAttachments = uploadRes.data?.attachments || [];
+            }
+
             const res = await api.post(`/api/support/admin/tickets/${ticket.id}/messages`, {
-                content: replyText.trim(),
+                content: replyText.trim() || undefined,
+                attachments: uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
             });
             // Add the new message to the conversation
             setTicket((prev) =>
@@ -217,6 +288,7 @@ export const SupportAdminDetailPage = () => {
                     : prev,
             );
             setReplyText('');
+            setReplyFiles([]);
             toast.success('Reply sent! Customer has been notified by email.');
         } catch {
             toast.error('Failed to send reply');
@@ -488,6 +560,26 @@ export const SupportAdminDetailPage = () => {
                                     <Shield className="w-3 h-3" />
                                     Replying as Mintcom Support
                                 </div>
+                                {replyFiles.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mb-3">
+                                        {replyFiles.map((file, idx) => (
+                                            <div
+                                                key={idx}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/10 text-xs font-medium text-gray-700 dark:text-gray-300"
+                                            >
+                                                <Paperclip size={13} className="text-gray-400" />
+                                                <span className="max-w-[150px] truncate">{file.name}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeReplyFile(idx)}
+                                                    className="hover:text-red-500 transition-colors ml-1 p-0.5 rounded"
+                                                >
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                                 <div className="flex gap-3">
                                     <textarea maxLength={2000}
                                         value={replyText}
@@ -501,14 +593,33 @@ export const SupportAdminDetailPage = () => {
                                             }
                                         }}
                                     />
-                                    <button
-                                        onClick={handleSendReply}
-                                        disabled={!replyText.trim() || sending}
-                                        className="self-end px-4 py-3 bg-mintcom-green text-black font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-                                    >
-                                        {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                                        Send
-                                    </button>
+                                    <div className="flex flex-col gap-2 self-end">
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            multiple
+                                            accept="image/*,application/pdf"
+                                            className="hidden"
+                                            onChange={handleFileChange}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => fileInputRef.current?.click()}
+                                            className="px-3 py-2 border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
+                                            title="Attach files (max 5, 10MB each)"
+                                        >
+                                            <Paperclip size={14} />
+                                            <span>Attach</span>
+                                        </button>
+                                        <button
+                                            onClick={handleSendReply}
+                                            disabled={(!replyText.trim() && replyFiles.length === 0) || sending}
+                                            className="px-4 py-2.5 bg-mintcom-green text-black font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        >
+                                            {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                                            Send
+                                        </button>
+                                    </div>
                                 </div>
                                 <p className="mt-2 text-[10px] text-gray-400">Ctrl+Enter to send. Customer will be notified by email.</p>
                             </div>

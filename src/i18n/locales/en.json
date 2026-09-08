@@ -3929,6 +3929,7 @@
     "exportFields": {
       "customer": "Customer",
       "date": "Date",
+      "invoiceNumber": "Invoice",
       "orderNumber": "Order #",
       "paymentMethod": "Payment method",
       "serviceCharge": "Service Charge",
@@ -3936,6 +3937,7 @@
       "total": "Total ({{currency}})",
       "paymentBreakdown": "Payment Breakdown"
     },
+    "receiptOutsidePeriod": "Receipt search ignores the selected period — result may be from outside it.",
     "filters": {
       "serviceCharge": "Service Charge",
       "serviceChargeAll": "All orders",
@@ -6742,6 +6744,7 @@
       "sarah": "Sarah from Support",
       "searchPlaceholder": "Search tickets...",
       "sendReply": "Send Reply",
+      "attach": "Attach File",
       "stats": {
         "inProgress": "In Progress",
         "open": "Open",
