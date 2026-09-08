@@ -47,14 +47,15 @@ const SECURITY_HEADERS: Record<string, string> = {
         // raw.githubusercontent.com hosts the seeded card-brand logos (see
         // establishments.service.ts defaults) — without it Visa/Mastercard
         // images are CSP-blocked while wikimedia-hosted ones still load.
-        "img-src 'self' data: blob: https://mintcompos.com https://www.mintcompos.com https://images.unsplash.com https://*.unsplash.com https://upload.wikimedia.org https://raw.githubusercontent.com https://cdn-icons-png.flaticon.com https://accounts.google.com https://*.googleusercontent.com https://www.gstatic.com https://ssl.gstatic.com https://*.gstatic.com https://*.google.com",
+        // *.r2.dev and *.mintcompos.com allow product and media images from Cloudflare R2 / S3.
+        "img-src 'self' data: blob: https://mintcompos.com https://*.mintcompos.com https://*.r2.dev https://images.unsplash.com https://*.unsplash.com https://upload.wikimedia.org https://raw.githubusercontent.com https://cdn-icons-png.flaticon.com https://accounts.google.com https://*.googleusercontent.com https://www.gstatic.com https://ssl.gstatic.com https://*.gstatic.com https://*.google.com",
         "font-src 'self' data: https://fonts.gstatic.com https://fonts.cdnfonts.com",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com https://accounts.google.com",
         // gsi/client + button iframe assets load from accounts.google.com and gstatic
         "script-src 'self' https://www.googletagmanager.com https://connect.facebook.net https://accounts.google.com https://apis.google.com https://www.gstatic.com https://*.gstatic.com https://appleid.cdn-apple.com https://static.cloudflareinsights.com",
         // 'self' covers same-origin /api proxy; api.mintcompos.com is for any direct API calls;
         // apex + www listed explicitly so CSP never blocks if host/www differs mid-session.
-        "connect-src 'self' https://mintcompos.com https://www.mintcompos.com wss://mintcompos.com wss://www.mintcompos.com https://api.mintcompos.com wss://api.mintcompos.com https://accounts.google.com https://*.google.com https://*.googleapis.com https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://connect.facebook.net https://appleid.apple.com https://cloudflareinsights.com",
+        "connect-src 'self' https://mintcompos.com https://*.mintcompos.com https://*.r2.dev https://www.mintcompos.com wss://mintcompos.com wss://www.mintcompos.com https://api.mintcompos.com wss://api.mintcompos.com https://accounts.google.com https://*.google.com https://*.googleapis.com https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://connect.facebook.net https://appleid.apple.com https://cloudflareinsights.com",
         // GIS button is an iframe under accounts.google.com/gsi/...
         "frame-src https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com https://accounts.google.com https://*.google.com https://appleid.apple.com",
         "media-src 'self' https://player.vimeo.com",
