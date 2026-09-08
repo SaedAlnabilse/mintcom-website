@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -43,14 +43,15 @@ import { StatValue } from '../../components/ui/StatValue';
 import { parseChartDate } from '../../utils/chartDate';
 import { getDateLocale } from '../../utils/dateLocale';
 import { useTheme } from '../../context/ThemeContext';
+import { buildBrandDateParams } from '../../utils/brandDateParams';
 
 interface BrandStats {
     totalRevenue: number;
     totalOrders: number;
     totalProducts: number;
     totalEmployees: number;
-    revenueGrowth: number;
-    orderGrowth: number;
+    revenueGrowth: number | null;
+    orderGrowth: number | null;
     avgOrderValue: number;
     activeLocations: number;
 }
@@ -212,19 +213,24 @@ export function BrandDashboardPage() {
         else setIsRefreshing(true);
 
         try {
-            // Build query params
+            const brandParams = buildBrandDateParams({ startDate, endDate, startTime, endTime });
             const params = new URLSearchParams();
-            if (startDate) params.append('startDate', `${startDate}T${startTime}:00Z`);
-            if (endDate) params.append('endDate', `${endDate}T${endTime}:59Z`);
+            if (startDate) params.append('startDate', brandParams.startDate);
+            if (endDate) params.append('endDate', brandParams.endDate);
 
             const response = await api.get(`/brands/${brandId}/dashboard-stats?${params.toString()}`);
             const data = response.data;
 
+            const toGrowth = (v: unknown): number | null => {
+              if (v === null || v === undefined) return null;
+              const n = typeof v === 'number' ? v : Number(v);
+              return Number.isFinite(n) ? n : null;
+            };
             setStats(data.stats
                 ? {
                     ...data.stats,
-                    revenueGrowth: toFiniteNumber(data.stats.revenueGrowth ?? data.stats.revenueChange),
-                    orderGrowth: toFiniteNumber(data.stats.orderGrowth ?? data.stats.ordersChange),
+                    revenueGrowth: toGrowth(data.stats.revenueGrowth ?? data.stats.revenueChange),
+                    orderGrowth: toGrowth(data.stats.orderGrowth ?? data.stats.ordersChange),
                 }
                 : null);
             setLocations(data.locationPerformance || data.locations || []);
@@ -246,19 +252,19 @@ export function BrandDashboardPage() {
         }
     }, [brandId, brand?.name, startDate, endDate, startTime, endTime, t]);
 
+    const hasLoadedRef = useRef(false);
     useEffect(() => {
-        fetchBrandData(true);
-    }, [brandId]);
-
-    // Refresh when filters change (debounced for manual date/time input if needed)
-    useEffect(() => {
-        if (!isLoading) {
-            const timer = setTimeout(() => {
-                fetchBrandData();
-            }, 500);
-            return () => clearTimeout(timer);
+        if (!brandId) return;
+        if (!hasLoadedRef.current) {
+            hasLoadedRef.current = true;
+            fetchBrandData(true);
+            return;
         }
-    }, [startDate, endDate, startTime, endTime]);
+        const timer = setTimeout(() => {
+            fetchBrandData();
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [brandId, startDate, endDate, startTime, endTime]);
 
     // Format in a location's original (local) currency
     const formatLocalCurrency = (value: number, currencyCode: string) => {
@@ -418,7 +424,7 @@ export function BrandDashboardPage() {
                     {
                         label: t('brand.dashboard.totalRevenue'),
                         value: stats?.totalRevenue || 0,
-                        change: stats?.revenueGrowth || 0,
+                        change: stats?.revenueGrowth ?? null,
                         icon: biIcon('bi-wallet2'),
                         color: 'text-mintcom-green',
                         bg: 'bg-mintcom-green/10',
@@ -427,7 +433,7 @@ export function BrandDashboardPage() {
                     {
                         label: t('brand.dashboard.totalOrders'),
                         value: stats?.totalOrders || 0,
-                        change: stats?.orderGrowth || 0,
+                        change: stats?.orderGrowth ?? null,
                         icon: biIcon('bi-receipt-cutoff'),
                         color: 'text-mintcom-green',
                         bg: 'bg-mintcom-green/10',
@@ -469,7 +475,7 @@ export function BrandDashboardPage() {
                                     }`}>
                                     <stat.icon size={24} />
                                 </div>
-                                {stat.change !== null && (
+                                {Number.isFinite(stat.change) && (
                                     <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
                                         ? 'bg-mintcom-green/10 text-mintcom-green dark:bg-mintcom-green/ dark:text-mintcom-green'
                                         : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'

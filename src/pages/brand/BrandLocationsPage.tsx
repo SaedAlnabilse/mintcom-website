@@ -28,6 +28,7 @@ import { LinkLocationModal } from '../../components/LinkLocationModal';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatBusinessTypeLabel } from '../../utils/businessTypeLabel';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { buildBrandDateParams } from '../../utils/brandDateParams';
 import { StatValue } from '../../components/ui/StatValue';
 
 interface LocationStats {
@@ -138,11 +139,7 @@ export function BrandLocationsPage() {
                 setIsLoading(true);
             }
 
-            const params: Record<string, string> = {
-                timeRange: 'custom',
-                startDate: `${startDate}T${startTime}:00`,
-                endDate: `${endDate}T${endTime}:00`,
-            };
+            const params = buildBrandDateParams({ startDate, endDate, startTime, endTime });
 
             // Fetch brand details
             const brandResponse = await api.get(`/api/brands/${brandId}`);
@@ -198,18 +195,14 @@ export function BrandLocationsPage() {
         }
     }, [brandId, endDate, endTime, startDate, startTime, t, fetchBrands]);
 
+    const prevBrandIdRef = useRef<string | undefined>(brandId as string | undefined);
     useEffect(() => {
-        if (brandId) {
-            hasLoadedOnceRef.current = false;
-            fetchLocations();
-        }
-    }, [brandId, fetchLocations]);
-
-    useEffect(() => {
-        if (brandId && hasLoadedOnceRef.current) {
-            fetchLocations();
-        }
-    }, [brandId, fetchLocations]);
+        if (!brandId) return;
+        const isBrandSwitch = prevBrandIdRef.current !== brandId;
+        if (isBrandSwitch) hasLoadedOnceRef.current = false;
+        prevBrandIdRef.current = brandId as string | undefined;
+        fetchLocations();
+    }, [fetchLocations]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -273,15 +266,14 @@ export function BrandLocationsPage() {
         return filteredLocations.slice(start, start + ITEMS_PER_PAGE);
     }, [filteredLocations, currentPage]);
 
-    // Stats calculations
+    // Stats — render — when statsData absent (no fallback reduce: that double-counts shared staff and masks 0)
     const stats = useMemo(() => {
         return {
             totalLocations: locations.length,
             activeLocations: locations.filter(l => l.subscriptionStatus === 'ACTIVE').length,
-            totalRevenue: statsData?.totalRevenue || locations.reduce((sum, l) => sum + (l.totalRevenue || 0), 0),
-            // Use unique employee count from backend to avoid double counting shared employees
-            totalEmployees: statsData?.totalEmployees || locations.reduce((sum, l) => sum + l.employeeCount, 0),
-            totalOrders: statsData?.totalOrders || locations.reduce((sum, l) => sum + l.orderCount, 0),
+            totalRevenue: statsData?.totalRevenue ?? null,
+            totalEmployees: statsData?.totalEmployees ?? null,
+            totalOrders: statsData?.totalOrders ?? null,
         };
     }, [locations, statsData]);
 
@@ -443,8 +435,8 @@ export function BrandLocationsPage() {
                             </div>
                             <p className="dashboard-stat-title mb-1">{stat.label}</p>
                             <StatValue 
-                                value={stat.value} 
-                                currency={stat.label === t('brand.dashboard.totalRevenue') ? baseCurrency : null}
+                                value={stat.value ?? '—'} 
+                                currency={stat.value != null && stat.label === t('brand.dashboard.totalRevenue') ? baseCurrency : null}
                                 className="text-2xl"
                                 isInteger={stat.label !== t('brand.dashboard.totalRevenue')}
                             />
