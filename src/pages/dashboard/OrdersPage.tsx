@@ -832,6 +832,8 @@ export function OrdersPage() {
         const fetchedOrders = Array.isArray(responseData.orders) ? responseData.orders : (Array.isArray(responseData) ? responseData : []);
         const totalOrders = responseData.totalOrders || responseData.total || fetchedOrders.length;
         const serverTotalPages = responseData.totalPages || Math.ceil(totalOrders / PAGE_SIZE) || 1;
+        // Server flag: receipt-ID search bypassed the date range (single source of truth)
+        setDateRangeBypassed(Boolean((responseData as any).dateRangeBypassed));
 
         // Held orders are always shown in their own dedicated section above,
         // so we no longer mix them into the main orders table.
