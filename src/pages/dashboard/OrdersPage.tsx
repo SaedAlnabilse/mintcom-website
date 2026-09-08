@@ -828,12 +828,18 @@ export function OrdersPage() {
         setOrders((Array.isArray(heldOrdersList) ? heldOrdersList : []).slice(startIndex, startIndex + PAGE_SIZE));
       } else {
         // Show Regular Orders (possibly mixed with held if page 1)
-        const responseData = mainRes?.data || {};
+        const responseData: {
+          orders?: Order[];
+          totalOrders?: number;
+          total?: number;
+          totalPages?: number;
+          dateRangeBypassed?: boolean;
+        } = mainRes?.data || {};
         const fetchedOrders = Array.isArray(responseData.orders) ? responseData.orders : (Array.isArray(responseData) ? responseData : []);
         const totalOrders = responseData.totalOrders || responseData.total || fetchedOrders.length;
         const serverTotalPages = responseData.totalPages || Math.ceil(totalOrders / PAGE_SIZE) || 1;
         // Server flag: receipt-ID search bypassed the date range (single source of truth)
-        setDateRangeBypassed(Boolean((responseData as any).dateRangeBypassed));
+        setDateRangeBypassed(Boolean(responseData.dateRangeBypassed));
 
         // Held orders are always shown in their own dedicated section above,
         // so we no longer mix them into the main orders table.
