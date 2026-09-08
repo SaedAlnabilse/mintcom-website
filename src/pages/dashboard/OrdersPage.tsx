@@ -286,6 +286,9 @@ export function OrdersPage() {
     selectedDateRange !== 'all' ||
     Boolean(selectedEmployeeId) ||
     Boolean(selectedShiftId);
+  // dateRangeBypassed comes from the server (single source of truth) —
+  // never re-derive the receipt rule client-side (would drift from backend)
+  const [dateRangeBypassed, setDateRangeBypassed] = useState(false);
 
   const requestSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -1430,6 +1433,16 @@ export function OrdersPage() {
         </div>
       )}
 
+      {dateRangeBypassed && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/15">
+          <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
+            {t('orders.receiptOutsidePeriod', {
+              defaultValue: 'Receipt search ignores the selected period — result may be from outside it.',
+            })}
+          </span>
+        </div>
+      )}
+
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
           {
@@ -1880,7 +1893,7 @@ export function OrdersPage() {
 
       {selectedOrder && (
         <OrderDetailModal
-          order={selectedOrder}
+          order={{ ...selectedOrder, orderNumber: String(selectedOrder.orderNumber) }}
           onClose={() => setSelectedOrder(null)}
           onRefundSuccess={handleRefundSuccess}
           canRefund={canCancelReceipts}
@@ -1890,7 +1903,7 @@ export function OrdersPage() {
 
       {selectedRefundOrder && (
         <OrderRefundModal
-          order={selectedRefundOrder}
+          order={{ ...selectedRefundOrder, orderNumber: String(selectedRefundOrder.orderNumber) } as any}
           isOpen={Boolean(selectedRefundOrder)}
           onClose={() => setSelectedRefundOrder(null)}
           onRefundSuccess={handleRefundSuccess}
