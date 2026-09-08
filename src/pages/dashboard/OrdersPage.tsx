@@ -51,7 +51,9 @@ interface ApiError {
 
 interface Order {
   id: string;
-  orderNumber: string;
+  orderNumber: number;
+  invoiceNumber?: string | null;
+  documentType?: 'INVOICE' | 'CREDIT_NOTE';
   total: number;
   subtotal: number;
   tax: number;
@@ -1143,6 +1145,7 @@ export function OrdersPage() {
 
   const handleExport = (format: ExportFormat) => {
     const exportData = orders.map(o => ({
+      invoiceNumber: (o as any).invoiceNumber ?? o.orderNumber,
       orderNumber: o.orderNumber,
       date: formatDate(o.createdAt),
       customer: o.customer?.name || t('orders.table.walkIn'),
@@ -1163,6 +1166,7 @@ export function OrdersPage() {
       title: t('orders.title'),
       meta: currentEstablishment?.name ? [{ label: t('common.location'), value: currentEstablishment.name }] : undefined,
       columns: [
+        { key: 'invoiceNumber', label: t('orders.exportFields.invoiceNumber', { defaultValue: 'Invoice' }) },
         { key: 'orderNumber', label: t('orders.exportFields.orderNumber') },
         { key: 'date', label: t('orders.exportFields.date') },
         { key: 'customer', label: t('orders.exportFields.customer') },
@@ -1248,7 +1252,7 @@ export function OrdersPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onClear={() => { setSearchQuery(''); setDebouncedSearchQuery(''); setPage(1); }}
               onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
-              placeholder={formatInputPlaceholder(t('orders.searchPlaceholder'), t('common.locale'))}
+              placeholder={formatInputPlaceholder(t('orders.searchPlaceholder', { defaultValue: 'Search by receipt INV-… / order # / customer…' }), t('common.locale'))}
               className="w-full h-full"
             />
           </div>
@@ -1546,7 +1550,7 @@ export function OrdersPage() {
                         <Clock size={18} />
                       </div>
                       <div>
-                        <p className="font-black text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
+                        <p className="font-black text-gray-900 dark:text-white text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
                       </div>
                     </div>
                   </div>
@@ -1639,7 +1643,7 @@ export function OrdersPage() {
                       <ShoppingCart size={16} />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
+                      <p className="font-bold text-gray-900 dark:text-white text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">
                         {formatDate(order.createdAt)}
                       </p>
@@ -1769,7 +1773,7 @@ export function OrdersPage() {
                           <ShoppingCart size={16} />
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
+                          <p className="font-bold text-gray-900 dark:text-white text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
                           <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">{formatDate(order.createdAt)}</p>
                         </div>
                       </div>
