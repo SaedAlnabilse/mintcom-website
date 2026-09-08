@@ -475,7 +475,7 @@ export function BrandDashboardPage() {
                                     }`}>
                                     <stat.icon size={24} />
                                 </div>
-                                {Number.isFinite(stat.change) && (
+                                {typeof stat.change === 'number' && Number.isFinite(stat.change) && (
                                     <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
                                         ? 'bg-mintcom-green/10 text-mintcom-green dark:bg-mintcom-green/ dark:text-mintcom-green'
                                         : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
