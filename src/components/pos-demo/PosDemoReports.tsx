@@ -817,6 +817,13 @@ function taxRatePercent(order: ReportOrder) {
   return Number(((order.tax / taxable) * 100).toFixed(2));
 }
 
+// Demo-only mock of the legal receipt number (production: Order.invoiceNumber,
+// INV-YYYY-NNNNN from EstablishmentSequence). Demo orders carry orderNo only,
+// so derive the same shape here to keep screenshots/mockups faithful.
+function demoInvoiceNumber(orderNo: number) {
+  return `INV-${new Date().getFullYear()}-${String(orderNo).padStart(5, '0')}`;
+}
+
 /**
  * Exact POS order-details UI: "Payment Receipt" header + green print button,
  * monospace thermal-receipt body (ReportsScreen order details modal).
@@ -892,7 +899,7 @@ function PaymentReceiptModal({
 
             {/* Order meta — two columns like POS */}
             <div className="mb-1 flex items-start justify-between gap-2 text-[13px]">
-              <span>Order: #{order.orderNo}</span>
+              <span>Invoice: {demoInvoiceNumber(order.orderNo)}</span>
               <span>Date: {formatReceiptDate(order.at)}</span>
             </div>
             <div className="mb-1 flex items-start justify-between gap-2 text-[13px]">
