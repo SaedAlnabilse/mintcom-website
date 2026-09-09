@@ -11,9 +11,16 @@
  * 3. Returns the clean /accounting/callback pathname (no query params, no dynamic location slugs).
  */
 export const getAccountingRedirectUri = (customEnvUri?: string): string => {
+  const stripTrailingSlash = (uri: string): string =>
+    uri.length > 0 ? uri.replace(/\/+$/, '') : uri;
+
   const envUri = (customEnvUri ?? (import.meta.env?.VITE_XERO_REDIRECT_URI as string | undefined))?.trim();
   if (envUri) {
-    return envUri;
+    // Providers compare character-for-character: `.../callback` vs
+    // `.../callback/` is a mismatch that surfaces only as
+    // "Invalid redirect_uri" at Xero. Normalize to match the server
+    // (AccountingRedirectService.assertUsable).
+    return stripTrailingSlash(envUri);
   }
 
   if (typeof window === 'undefined') {

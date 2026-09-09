@@ -16,6 +16,7 @@ import {
   Layers,
   Copy,
   Info,
+  Sparkles,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api, { extractErrorMessage } from '../../config/api';
@@ -104,10 +105,17 @@ export const AccountingSettingsTab: React.FC = () => {
   });
 
   const [savingMapping, setSavingMapping] = useState(false);
+  const [autoSettingUp, setAutoSettingUp] = useState(false);
   const [connectingProvider, setConnectingProvider] = useState<string | null>(null);
   const [disconnecting, setDisconnecting] = useState(false);
   const [retryingShiftId, setRetryingShiftId] = useState<string | null>(null);
   const [refreshingLogs, setRefreshingLogs] = useState(false);
+  // Load failures used to be swallowed (`.catch(() => [])`), leaving empty
+  // dropdowns and an empty sync table with no explanation. Surfaced instead
+  // so the user knows whether mapping can't save because Xero didn't return
+  // accounts, or logs can't load because of permissions/network.
+  const [accountsError, setAccountsError] = useState<string | null>(null);
+  const [logsError, setLogsError] = useState<string | null>(null);
 
   const isUS = (status?.country || 'GB').toUpperCase() === 'US';
 
@@ -115,9 +123,15 @@ export const AccountingSettingsTab: React.FC = () => {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
+      setAccountsError(null);
+      setLogsError(null);
       const [statusRes, logsRes] = await Promise.all([
         api.get<IntegrationStatus>('/api/accounting/status'),
-        api.get<SyncLog[]>('/api/accounting/logs').catch(() => ({ data: [] })),
+        api.get<SyncLog[]>('/api/accounting/logs').catch((err) => {
+          const msg = extractErrorMessage(err) || 'Failed to load sync logs.';
+          setLogsError(msg);
+          return { data: [] as SyncLog[] };
+        }),
       ]);
 
       const integStatus = statusRes.data;
@@ -143,8 +157,18 @@ export const AccountingSettingsTab: React.FC = () => {
       }
 
       if (integStatus?.isConnected) {
-        const accsRes = await api.get<AccountInfo[]>('/api/accounting/accounts').catch(() => ({ data: [] }));
-        setAccounts(accsRes.data || []);
+        try {
+          const accsRes = await api.get<AccountInfo[]>('/api/accounting/accounts');
+          setAccounts(accsRes.data || []);
+        } catch (err) {
+          // Chart of Accounts is what the mapping dropdowns are built from.
+          // An empty list here is exactly what makes "Save" refuse to save,
+          // so say so loudly instead of rendering empty selects.
+          const msg = extractErrorMessage(err) || 'Failed to load Chart of Accounts from provider.';
+          setAccountsError(msg);
+          setAccounts([]);
+          toast.error(msg);
+        }
       }
     } catch (err) {
       console.error('[Accounting] Failed to load status:', err);
@@ -154,13 +178,21 @@ export const AccountingSettingsTab: React.FC = () => {
     }
   }, []);
 
-  // Handle OAuth code exchange if redirected from Xero / QuickBooks
+  // Handle OAuth code exchange if redirected from Xero / QuickBooks.
+  // Fallback only: the canonical handler is AccountingCallbackPage on the
+  // dedicated /accounting/callback route. This covers provider app
+  // registrations that still point at the settings page from before the
+  // dedicated route existed. It must stay behavior-compatible with it:
+  // same request shape, same sessionStorage cleanup.
   useEffect(() => {
     const handleOAuthCallback = async () => {
       const params = new URLSearchParams(window.location.search);
       const code = params.get('code');
       const realmId = params.get('realmId');
       const state = params.get('state');
+      // Only act when the provider actually returned us here with a code.
+      // Otherwise this would fire on every settings visit.
+      if (!code) return;
       const savedProvider = sessionStorage.getItem('pending_accounting_provider') || (realmId ? 'QUICKBOOKS' : 'XERO');
 
       if (code) {
@@ -177,6 +209,7 @@ export const AccountingSettingsTab: React.FC = () => {
           });
 
           sessionStorage.removeItem('pending_accounting_provider');
+          sessionStorage.removeItem('accounting_return_url');
           // Clear query params cleanly and keep tab=accounting
           params.delete('code');
           params.delete('state');
@@ -218,6 +251,10 @@ export const AccountingSettingsTab: React.FC = () => {
       }
     } catch (err) {
       toast.error(extractErrorMessage(err) || `Failed to initiate ${provider} connection.`);
+      // Don't leave stale handshake keys behind: a failed initiate would
+      // otherwise poison the next callback's provider/return-URL fallback.
+      sessionStorage.removeItem('pending_accounting_provider');
+      sessionStorage.removeItem('accounting_return_url');
       setConnectingProvider(null);
     }
   };
@@ -236,6 +273,30 @@ export const AccountingSettingsTab: React.FC = () => {
       toast.error(extractErrorMessage(err) || 'Failed to disconnect accounting software.');
     } finally {
       setDisconnecting(false);
+    }
+  };
+
+  // One-click setup: website matches the live Xero Chart of Accounts,
+  // creates the missing POS accounts, and saves the mapping. The owner
+  // reviews the result below and can still change any dropdown by hand.
+  const handleAutoSetup = async () => {
+    try {
+      setAutoSettingUp(true);
+      const res = await api.post<{
+        created: Array<{ code: string; name: string; role: string }>;
+        matched: Record<string, string>;
+      }>('/api/accounting/auto-setup');
+      const createdCount = res.data?.created?.length || 0;
+      toast.success(
+        createdCount > 0
+          ? `Mapping ready! Matched your Xero accounts and created ${createdCount} missing ${createdCount === 1 ? 'account' : 'accounts'}.`
+          : 'Mapping ready! All needed accounts were matched in your Xero.',
+      );
+      await fetchData();
+    } catch (err) {
+      toast.error(extractErrorMessage(err) || 'Auto-setup failed.');
+    } finally {
+      setAutoSettingUp(false);
     }
   };
 
@@ -264,7 +325,21 @@ export const AccountingSettingsTab: React.FC = () => {
 
     try {
       setSavingMapping(true);
-      await api.put('/api/accounting/mapping', mappingForm);
+      // Unselected optional dropdowns are '' in the form. Send them as
+      // undefined so they store as NULL, not empty-string account codes.
+      const optionalKeys: (keyof AccountingMapping)[] = [
+        'deliveryClearingAccountId',
+        'deliveryCommissionExpenseAccountId',
+        'salesReducedVatAccountId',
+        'salesExemptAccountId',
+        'serviceChargeAccountId',
+        'staffTipsPayableAccountId',
+      ];
+      const payload: Record<string, string | undefined> = { ...mappingForm };
+      for (const key of optionalKeys) {
+        if (!payload[key]?.trim()) payload[key] = undefined;
+      }
+      await api.put('/api/accounting/mapping', payload);
       toast.success(t('settings.accounting.mappingSaved', 'Chart of Accounts mapping saved successfully!'));
       await fetchData();
     } catch (err) {
@@ -291,11 +366,14 @@ export const AccountingSettingsTab: React.FC = () => {
   const handleRefreshLogs = async () => {
     try {
       setRefreshingLogs(true);
+      setLogsError(null);
       const res = await api.get<SyncLog[]>('/api/accounting/logs');
       setLogs(res.data || []);
       toast.success(t('common.refreshed', 'Logs refreshed'));
-    } catch {
-      toast.error('Failed to refresh sync logs');
+    } catch (err) {
+      const msg = extractErrorMessage(err) || 'Failed to refresh sync logs';
+      setLogsError(msg);
+      toast.error(msg);
     } finally {
       setRefreshingLogs(false);
     }
@@ -472,19 +550,63 @@ export const AccountingSettingsTab: React.FC = () => {
       {/* 2. Chart of Accounts Mapping Card */}
       {status?.isConnected && (
         <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-6 sm:p-8 shadow-sm">
-          <div className="flex items-start gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
-            <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm shrink-0">
-              <Layers size={22} />
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm shrink-0">
+                <Layers size={22} />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Chart of Accounts Mapping
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+                  {status.provider === 'XERO'
+                    ? 'Press Auto-setup and the website matches your Xero accounts, creates the missing POS ones, and fills this in — or pick each account by hand.'
+                    : 'Select which General Ledger accounts map to each Mintcom POS tender, revenue, and tax liability bucket.'}
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                Chart of Accounts Mapping
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
-                Select which General Ledger accounts in {status.provider === 'XERO' ? 'Xero' : 'QuickBooks Online'} map to each Mintcom POS tender, revenue, and tax liability bucket.
-              </p>
-            </div>
+            {status.provider === 'XERO' && (
+              <button
+                type="button"
+                onClick={handleAutoSetup}
+                disabled={autoSettingUp || savingMapping}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm disabled:opacity-50 self-start shrink-0"
+              >
+                {autoSettingUp ? (
+                  <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                ) : (
+                  <Sparkles size={16} />
+                )}
+                <span>{autoSettingUp ? 'Setting up…' : 'Auto-setup accounts'}</span>
+              </button>
+            )}
           </div>
+
+          {accountsError && (
+            <div className="mt-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 text-sm text-red-800 dark:text-red-300 flex items-start gap-3">
+              <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="font-semibold">Couldn't load your {status.provider === 'XERO' ? 'Xero' : 'QuickBooks'} Chart of Accounts</p>
+                <p className="mt-1 break-words">{accountsError}</p>
+                <p className="mt-1 text-xs opacity-80">Without these accounts the dropdowns stay empty and mapping can't be saved. Reconnecting your provider usually fixes expired tokens.</p>
+                <button
+                  type="button"
+                  onClick={() => fetchData()}
+                  className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-red-100 hover:bg-red-200 dark:bg-red-900/40 dark:hover:bg-red-900/60 rounded-lg transition-colors"
+                >
+                  <RotateCw size={13} />
+                  Retry loading accounts
+                </button>
+              </div>
+            </div>
+          )}
+          {!accountsError && accounts.length === 0 && (
+            <div className="mt-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 text-sm text-amber-800 dark:text-amber-300 flex items-start gap-3">
+              <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+              <p>No accounts were returned from your provider. Mapping can't be saved until accounts load — check your provider organisation has a Chart of Accounts, then retry above.</p>
+            </div>
+          )}
 
           <form onSubmit={handleSaveMapping} className="mt-6 space-y-8">
             {/* Section A: Clearing Accounts (Tenders) */}
@@ -757,9 +879,23 @@ export const AccountingSettingsTab: React.FC = () => {
               <p className="text-sm font-semibold text-gray-900 dark:text-white">
                 No shift journals synced yet
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm">
-                Once a register shift is closed, daily double-entry Z-reports will appear here automatically.
-              </p>
+              {logsError ? (
+                <p className="text-xs text-red-600 dark:text-red-400 mt-1 max-w-sm break-words">
+                  Couldn't load sync logs: {logsError}
+                </p>
+              ) : !status?.isConnected ? (
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm">
+                  Connect Xero or QuickBooks above to start logging automatic Z-report syncs. Shifts closed while disconnected leave no log entries.
+                </p>
+              ) : !status?.mapping ? (
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm">
+                  Connected, but your Chart of Accounts mapping isn't saved yet. Shifts closed until then can't sync — save the mapping above, close a shift, and its journal will appear here.
+                </p>
+              ) : (
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm">
+                  Once a register shift is closed, daily double-entry Z-reports will appear here automatically.
+                </p>
+              )}
             </div>
           ) : (
             <table className="w-full text-left text-sm">
