@@ -3721,7 +3721,8 @@
         "currencyRequired": "Currency is required",
         "nameRequired": "Location name is required",
         "typeRequired": "Business type is required",
-        "nameMax": "Location name must be at most {{count}} characters"
+        "nameMax": "Location name must be at most {{count}} characters",
+        "timezoneRequired": "Timezone is required"
       },
       "locationName": "Location Name",
       "locationNamePlaceholder": "e.g. The Coffee House",
@@ -3735,7 +3736,9 @@
       "startFresh": "Do not import (Start fresh)",
       "subtitle": "Tell Us About Your Business Location",
       "title": "Location Details",
-      "currencyLinkedToCountry": "Currency is set from the selected country. You can change it if needed."
+      "currencyLinkedToCountry": "Currency is set from the selected country. You can change it if needed.",
+      "timezone": "Store timezone",
+      "timezoneHint": "All sales, shifts and reports use this timezone. Current time there: {{time}}."
     },
     "step2": {
       "activateButton": "Activate & Pay",

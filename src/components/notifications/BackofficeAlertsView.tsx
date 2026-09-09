@@ -269,7 +269,7 @@ export function BackofficeAlertsView({
       const date = new Date(alert.createdAt);
       const valid = Number.isFinite(date.getTime());
       const key = valid
-        ? formatInEstablishmentTimezone(date, 'en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }, currentEstablishment)
+        ? formatInEstablishmentTimezone(date, 'en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }, establishmentTz)
         : 'unknown';
       if (!groups.has(key)) {
         const label = !valid
@@ -283,13 +283,13 @@ export function BackofficeAlertsView({
                   year: 'numeric',
                   month: 'short',
                   day: 'numeric',
-                }, currentEstablishment);
+                }, establishmentTz);
         groups.set(key, { label, alerts: [] });
       }
       groups.get(key)!.alerts.push(alert);
     });
     return Array.from(groups.entries()).map(([key, group]) => ({ key, ...group }));
-  }, [filteredAlerts, locale, t, currentEstablishment?.timezone, establishmentTz]);
+  }, [filteredAlerts, locale, t, establishmentTz]);
 
   const tabs: Array<{ id: AlertTab; count: number }> = [
     { id: 'all', count: stats.total },

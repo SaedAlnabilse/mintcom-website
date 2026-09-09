@@ -32,9 +32,10 @@ export function resolveEstablishmentTimeZone(
 
 export function useEstablishmentTimeZone(): string {
   const { currentEstablishment } = useAuth();
+  const establishmentTimeZone = currentEstablishment?.timezone;
   return useMemo(
-    () => resolveEstablishmentTimeZone(currentEstablishment),
-    [currentEstablishment?.timezone],
+    () => resolveEstablishmentTimeZone({ timezone: establishmentTimeZone } as Establishment),
+    [establishmentTimeZone],
   );
 }
 

@@ -3670,7 +3670,8 @@
         "currencyRequired": "请选择货币",
         "nameRequired": "请填写门店名称",
         "typeRequired": "请选择业务类型",
-        "nameMax": "门店名称最多 {{count}} 个字符"
+        "nameMax": "门店名称最多 {{count}} 个字符",
+        "timezoneRequired": "请选择时区"
       },
       "locationName": "门店名称",
       "locationNamePlaceholder": "例如：The Coffee House",
@@ -3684,7 +3685,9 @@
       "startFresh": "不导入（从零开始）",
       "subtitle": "介绍一下您的营业地点",
       "title": "门店信息",
-      "currencyLinkedToCountry": "货币会根据所选国家自动设置。如有需要可手动更改。"
+      "currencyLinkedToCountry": "货币会根据所选国家自动设置。如有需要可手动更改。",
+      "timezone": "门店时区",
+      "timezoneHint": "所有销售、班次和报告均使用此时区。当地当前时间：{{time}}。"
     },
     "step2": {
       "activateButton": "激活并付款",
