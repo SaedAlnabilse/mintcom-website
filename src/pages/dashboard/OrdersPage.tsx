@@ -1097,6 +1097,14 @@ export function OrdersPage() {
       return;
     }
 
+    // Block refund BEFORE opening modal when no active shift exists.
+    if (shiftStatus?.shiftStatus !== 'ACTIVE') {
+      toast.error(t('orders.messages.noActiveShift', {
+        defaultValue: 'A refund cannot be processed without an active register shift. Please open a shift first.',
+      }));
+      return;
+    }
+
     setActiveActionMenu(null);
     setRefundLoadingId(order.id);
 
@@ -1106,11 +1114,11 @@ export function OrdersPage() {
     } finally {
       setRefundLoadingId(current => (current === order.id ? null : current));
     }
-  }, [canCancelReceipts, loadOrderDetails, t]);
+  }, [canCancelReceipts, loadOrderDetails, t, shiftStatus]);
 
   const handleRefundSuccess = useCallback(async (_updatedOrder?: any) => {
-    // Silently refresh the orders table so BusyOverlay doesn't block the user
-    void fetchOrders(true);
+    // Full refresh so the refunded order updates immediately in the list.
+    void fetchOrders(false);
 
     // If order detail modal is currently open, refresh its data too
     if (selectedOrder) {

@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import {
-  Check,
   CheckCircle2,
   Circle,
   List,
@@ -68,6 +67,7 @@ export interface RefundOrder {
   }>;
 }
 
+type ActiveShiftOption = { id: string; employeeName: string; registerId: string | null; startTime: string };
 type RefundMode = 'item' | 'order';
 
 type SelectedRefundLine = {
@@ -188,29 +188,6 @@ const buildRefundableItems = (orderDetails: RefundOrder): RefundOrderItem[] => {
   return withRefundAllocation(orderDetails, refundableItems);
 };
 
-const getRefundedAmountFromResult = (
-  result: any,
-  fallbackAmount: number,
-): number => {
-  if (typeof result?.refundedAmount === 'number') {
-    return Math.abs(result.refundedAmount);
-  }
-
-  const refundOrders = Array.isArray(result?.refundOrders)
-    ? result.refundOrders
-    : [];
-  const latestRefundOrder = refundOrders[refundOrders.length - 1];
-  if (typeof latestRefundOrder?.total === 'number') {
-    return Math.abs(latestRefundOrder.total);
-  }
-
-  if (typeof result?.total === 'number') {
-    return Math.abs(result.total);
-  }
-
-  return fallbackAmount;
-};
-
 const isRefundableOrder = (order: RefundOrder): boolean =>
   order.paymentStatus === 'COMPLETED' ||
   order.status === 'COMPLETED' ||
@@ -232,8 +209,38 @@ export function OrderRefundModal({
   const [refundReasonError, setRefundReasonError] = useState('');
   const [restockItems, setRestockItems] = useState(false);
   const [isRefundSubmitting, setIsRefundSubmitting] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [refundedAmount, setRefundedAmount] = useState(0);
+
+  // Active-shift resolution — required for EVERY refund.
+  const [activeShifts, setActiveShifts] = useState<ActiveShiftOption[]>([]);
+  const [selectedShiftId, setSelectedShiftId] = useState('');
+  const [isLoadingShifts, setIsLoadingShifts] = useState(false);
+  const [shiftError, setShiftError] = useState('');
+
+  const fetchActiveShifts = useCallback(async () => {
+    setIsLoadingShifts(true);
+    setShiftError('');
+    try {
+      const res = await api.get('/api/shifts/establishment/active');
+      const list: ActiveShiftOption[] = res.data?.shifts || [];
+      setActiveShifts(list);
+      if (list.length === 1) {
+        setSelectedShiftId(list[0].id);
+      } else {
+        setSelectedShiftId('');
+      }
+    } catch (err: any) {
+      console.warn('Failed to fetch active shifts:', err);
+      setShiftError(err?.response?.data?.message || 'Failed to load active shifts');
+      setActiveShifts([]);
+    } finally {
+      setIsLoadingShifts(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    fetchActiveShifts();
+  }, [isOpen, fetchActiveShifts]);
 
   useScrollLock(isOpen);
 
@@ -285,8 +292,8 @@ export function OrderRefundModal({
     setRefundReasonError('');
     setRestockItems(false);
     setIsRefundSubmitting(false);
-    setShowSuccessModal(false);
-    setRefundedAmount(0);
+    setSelectedShiftId('');
+    setShiftError('');
   }, [isOpen, order.id, refundableItems]);
 
   const closeRefundModal = useCallback(() => {
@@ -294,10 +301,6 @@ export function OrderRefundModal({
     onClose();
   }, [isRefundSubmitting, onClose]);
 
-  const closeSuccessModal = useCallback(() => {
-    setShowSuccessModal(false);
-    onClose();
-  }, [onClose]);
 
   const updateRefundItemQuantity = useCallback(
     (item: RefundOrderItem, quantity: number) => {
@@ -380,6 +383,27 @@ const generateClientRequestId = (): string => {
       return;
     }
 
+    // Guard: must have an active shift to process any refund.
+    if (isLoadingShifts) return;
+    if (activeShifts.length === 0) {
+      setRefundReasonError(t('orders.messages.noActiveShift', {
+        defaultValue: 'A refund cannot be processed without an active register shift. Please open a shift first.',
+      }));
+      toast.error(t('orders.messages.noActiveShift', {
+        defaultValue: 'A refund cannot be processed without an active register shift. Please open a shift first.',
+      }));
+      return;
+    }
+    if (activeShifts.length > 1 && !selectedShiftId) {
+      setRefundReasonError(t('orders.messages.multipleActiveShifts', {
+        defaultValue: 'Multiple active shifts are open. Please select a register before refunding.',
+      }));
+      toast.error(t('orders.messages.multipleActiveShifts', {
+        defaultValue: 'Multiple active shifts are open. Please select a register before refunding.',
+      }));
+      return;
+    }
+
     setIsRefundSubmitting(true);
     setRefundReasonError('');
 
@@ -393,6 +417,7 @@ const generateClientRequestId = (): string => {
             refundReason: trimmedReason,
             restockItems,
             disposition,
+            shiftId: selectedShiftId || (activeShifts.length === 1 ? activeShifts[0].id : undefined),
             items: selectedRefundLines.map(line => ({
               orderItemId: line.orderItemId,
               quantity: line.quantity,
@@ -405,18 +430,20 @@ const generateClientRequestId = (): string => {
             refundReason: trimmedReason,
             restockItems,
             disposition,
+            shiftId: selectedShiftId || (activeShifts.length === 1 ? activeShifts[0].id : undefined),
           });
 
-      const fallbackAmount = isItemRefund
-        ? selectedRefundItemsAmount
-        : Math.abs(Number(order.total || 0));
-      const amount = getRefundedAmountFromResult(response.data, fallbackAmount);
-      setRefundedAmount(amount);
       setRefundReason('');
       setSelectedRefundItems({});
       setRestockItems(false);
-      setShowSuccessModal(true);
-      onRefundSuccess?.(response.data);
+      // Close immediately after a brief confirmation flash, then force a full page refresh.
+      toast.success(t('orders.messages.refundSuccess', {
+        defaultValue: 'Refund processed successfully.',
+      }));
+      setTimeout(() => {
+        onClose();
+        onRefundSuccess?.(response.data);
+      }, 800);
     } catch (err) {
       const message =
         extractErrorMessage(err) ||
@@ -439,41 +466,12 @@ const generateClientRequestId = (): string => {
       dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
       className="fixed inset-0 z-[10000] flex items-end justify-center bg-black/50 p-0 backdrop-blur-sm sm:items-center sm:p-4"
     >
-      <div className="absolute inset-0" onClick={showSuccessModal ? closeSuccessModal : closeRefundModal} />
+      <div className="absolute inset-0" onClick={closeRefundModal} />
 
-      {showSuccessModal ? (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="relative w-full max-w-sm rounded-t-2xl border border-gray-200 bg-white p-6 text-center shadow-2xl dark:border-white/10 dark:bg-[#1E293B] sm:rounded-2xl"
-        >
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-mintcom-green text-white">
-            <Check size={30} />
-          </div>
-          <h3 className="mt-4 text-lg font-bold text-gray-900 dark:text-white">
-            {t('reports.refundReasonAdded', {
-              defaultValue: 'Refund Reason Added Successfully',
-            })}
-          </h3>
-          <p className="mt-2 text-sm font-semibold text-gray-500 dark:text-gray-300">
-            {t('reports.refundAmountLabel', {
-              defaultValue: 'Refund Amount: {{amount}}',
-              amount: formatAmount(refundedAmount),
-            })}
-          </p>
-          <button
-            type="button"
-            onClick={closeSuccessModal}
-            className="mt-5 w-full rounded-xl bg-mintcom-green px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-mintcom-green/90"
-          >
-            {t('common.close')}
-          </button>
-        </div>
-      ) : (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="refund-order-title"
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="refund-order-title"
           className="relative flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#1E293B] sm:max-h-[86vh] sm:rounded-2xl"
         >
           <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/10 sm:px-6">
@@ -637,6 +635,75 @@ const generateClientRequestId = (): string => {
               </div>
             )}
 
+            {/* Active-shift resolution UI */}
+            {isLoadingShifts ? (
+              <div className="mb-4 flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-800 dark:bg-blue-950">
+                <Loader2 size={16} className="animate-spin text-blue-500" />
+                <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
+                  {t('orders.details.loadingShifts', { defaultValue: 'Checking active register shifts...' })}
+                </span>
+              </div>
+            ) : activeShifts.length === 0 ? (
+              <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 dark:border-red-800 dark:bg-red-950">
+                <p className="text-sm font-bold text-red-700 dark:text-red-300">
+                  ⚠️ {t('orders.details.noActiveShiftTitle', { defaultValue: 'Active Register Shift Required' })}
+                </p>
+                <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                  {shiftError || t('orders.details.noActiveShiftMessage', {
+                    defaultValue: 'A refund cannot be processed without an active register shift. Please open a shift on a register terminal.',
+                  })}
+                </p>
+              </div>
+            ) : activeShifts.length === 1 ? (
+              <div className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 dark:border-green-800 dark:bg-green-950">
+                <p className="text-sm font-bold text-green-700 dark:text-green-300">
+                  🟢 {t('orders.details.singleShiftTitle', { defaultValue: 'Active Register Shift' })}
+                </p>
+                <p className="mt-1 text-xs text-green-600 dark:text-green-400">
+                  {t('orders.details.singleShiftMessage', {
+                    defaultValue: 'Refund will be recorded on {{name}} ({{register}})',
+                    name: activeShifts[0].employeeName,
+                    register: activeShifts[0].registerId ? `Register ${activeShifts[0].registerId}` : 'Register',
+                  })}
+                </p>
+              </div>
+            ) : (
+              <div className="mb-4 rounded-xl border border-gray-200 bg-white px-4 py-3 dark:border-white/10 dark:bg-white/5">
+                <p className="mb-3 text-sm font-bold text-gray-900 dark:text-white">
+                  {t('orders.details.selectShiftTitle', { defaultValue: 'Select Register for Refund:' })}
+                </p>
+                {activeShifts.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => setSelectedShiftId(s.id)}
+                    className={`mb-2 flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-start transition-colors ${
+                      selectedShiftId === s.id
+                        ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950'
+                        : 'border-gray-200 hover:bg-gray-50 dark:border-white/10 dark:hover:bg-white/5'
+                    }`}
+                  >
+                    <div className={`flex h-4 w-4 shrink-0 rounded-full border-2 ${
+                      selectedShiftId === s.id ? 'border-blue-500 bg-blue-500' : 'border-gray-300 dark:border-gray-500'
+                    }`}>
+                      {selectedShiftId === s.id && (
+                        <div className="mx-auto my-auto h-1.5 w-1.5 rounded-full bg-white" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                        {s.employeeName}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {s.registerId ? `Register ${s.registerId} • ` : ''}
+                        Started {new Date(s.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
             {hasStockTrackedItems && (
               <label className="mb-4 flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-white/10 dark:bg-white/5">
                 <span className="min-w-0">
@@ -706,7 +773,6 @@ const generateClientRequestId = (): string => {
             </button>
           </div>
         </div>
-      )}
     </div>,
     document.body,
   );
