@@ -2732,7 +2732,7 @@
         "unlimitedStaff": "Multiple staff accounts"
       },
       "fullAccess": "FULL ACCESS",
-      "getStarted": "Start 1 Month Free",
+      "getStarted": "Start 14-Day Free Trial",
       "goToDashboard": "Go to Dashboard",
       "includedDesc": "All features included in a single plan.",
       "includedTitle": "Everything You Need",
@@ -6900,7 +6900,7 @@
       "subtitle": "No hardware packages, no confusing add-ons. Mintcom is software that runs on the devices you already own, with transparent pricing per location.",
       "perLocation": "per location",
       "extraLocation": "Additional locations from {{price}} USD {{period}}, discounted so growth stays affordable.",
-      "trialNote": "Start with a free trial. Cancel anytime from your owner portal.",
+      "trialNote": "Start with a 14-day free trial. Cancel anytime from your owner portal.",
       "includedTitle": "What’s included",
       "noHardware": "We don’t sell hardware. Use your own tablets, phones, or computers. Mintcom works with what you already have.",
       "save": "Save ${{amount}}",
@@ -6928,7 +6928,7 @@
         },
         "q3": {
           "q": "Is there a free trial?",
-          "a": "Yes. You can start a free trial when you create your account and explore POS, dashboard, and reports before committing."
+          "a": "Yes. You get a 14-day free trial when you create your account and explore POS, dashboard, and reports before committing."
         },
         "q4": {
           "q": "Are there hidden fees?",

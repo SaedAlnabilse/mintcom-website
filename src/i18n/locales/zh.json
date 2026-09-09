@@ -2723,7 +2723,7 @@
         "unlimitedStaff": "多个员工账户"
       },
       "fullAccess": "完整权限",
-      "getStarted": "免费试用 1 个月",
+      "getStarted": "免费试用 14 天",
       "goToDashboard": "前往仪表盘",
       "includedDesc": "所有功能包含在同一套餐中。",
       "includedTitle": "您需要的一切",
@@ -7056,7 +7056,7 @@
       "perLocation": "每家门店",
       "save": "节省 ${{amount}}",
       "extraLocation": "新增门店 {{price}} 美元{{period}}起，享折扣价，让增长依然负担得起。",
-      "trialNote": "先免费试用。可随时在业主后台取消。",
+      "trialNote": "先免费试用 14 天。可随时在业主后台取消。",
       "noHardware": "我们不卖硬件。用您自己的平板、手机或电脑即可，Mintcom 适配您现有的设备。",
       "includedTitle": "方案包含内容",
       "included": {
@@ -7083,7 +7083,7 @@
         },
         "q3": {
           "q": "有免费试用吗？",
-          "a": "有。创建账户时即可开始免费试用，在正式付费前充分体验 POS、仪表盘和报表。"
+          "a": "有。创建账户时即可开始 14 天免费试用，在正式付费前充分体验 POS、仪表盘和报表。"
         },
         "q4": {
           "q": "有隐藏费用吗？",
