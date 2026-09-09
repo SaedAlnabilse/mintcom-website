@@ -3916,8 +3916,8 @@
       "changed": "معدّلة",
       "customized": "مخصص",
       "serviceCharge": "رسوم الخدمة",
-      "staff": "الموظف",
-      "staffTip": "الموظف الذي تعامل مع الطلب",
+      "staff": "استلمها",
+      "staffTip": "الموظف الذي استلم هذا الطلب",
       "status": "الحالة",
       "statusTip": "حالة الطلب الحالية",
       "subtotal": "المجموع الفرعي",
@@ -3932,7 +3932,8 @@
       "noActiveShiftMessage": "لا يمكن تنفيذ الاسترداد بدون وردية صندوق نشطة. يرجى فتح وردية على جهاز الصندوق.",
       "singleShiftTitle": "وردية الصندوق النشطة",
       "singleShiftMessage": "سيُسجَّل الاسترداد على {{name}} ({{register}})",
-      "selectShiftTitle": "اختر الصندوق للاسترداد:"
+      "selectShiftTitle": "اختر الصندوق للاسترداد:",
+      "takenBy": "استلمها"
     },
     "export": "تصدير",
     "exportFields": {
@@ -4341,7 +4342,9 @@
       "payment": "الدفع",
       "staff": "الموظف",
       "status": "الحالة",
-      "walkIn": "عميل زائر"
+      "walkIn": "عميل زائر",
+      "takenBy": "استلمها",
+      "refundedBy": "استردها"
     },
     "title": "عرض طلبات العملاء"
   },

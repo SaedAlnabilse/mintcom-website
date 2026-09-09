@@ -3916,8 +3916,8 @@
       "changed": "Changed",
       "customized": "Customized",
       "serviceCharge": "Service Charge",
-      "staff": "Staff",
-      "staffTip": "Staff member who processed this order",
+      "staff": "Taken by",
+      "staffTip": "Staff member who took this order",
       "status": "Status",
       "statusTip": "Current order status",
       "subtotal": "Subtotal",
@@ -3932,7 +3932,8 @@
       "noActiveShiftMessage": "A refund cannot be processed without an active register shift. Please open a shift on a register terminal.",
       "singleShiftTitle": "Active Register Shift",
       "singleShiftMessage": "Refund will be recorded on {{name}} ({{register}})",
-      "selectShiftTitle": "Select Register for Refund:"
+      "selectShiftTitle": "Select Register for Refund:",
+      "takenBy": "Taken by"
     },
     "export": "Export",
     "exportFields": {
@@ -4341,7 +4342,9 @@
       "payment": "Payment",
       "staff": "Staff",
       "status": "Status",
-      "walkIn": "Walk-in Customer"
+      "walkIn": "Walk-in Customer",
+      "takenBy": "Taken by",
+      "refundedBy": "Refunded by"
     },
     "title": "View Customer Orders"
   },

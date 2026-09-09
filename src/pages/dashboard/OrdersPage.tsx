@@ -313,12 +313,9 @@ export function OrdersPage() {
       let bValue: any = b[sortConfig.key as keyof Order];
 
       // Handle nested properties
-      if (sortConfig.key === 'customer') {
-        aValue = a.customer?.name || t('orders.table.walkIn');
-        bValue = b.customer?.name || t('orders.table.walkIn');
-      } else if (sortConfig.key === 'staff') {
-        aValue = a.user?.username || '';
-        bValue = b.user?.username || '';
+      if (sortConfig.key === 'staff') {
+        aValue = a.refundedByName || a.employeeName || a.user?.username || '';
+        bValue = b.refundedByName || b.employeeName || b.user?.username || '';
       } else if (sortConfig.key === 'date') {
         aValue = new Date(a.createdAt).getTime();
         bValue = new Date(b.createdAt).getTime();
@@ -1692,12 +1689,25 @@ export function OrdersPage() {
                 {/* Card Body: Customer and Amount */}
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-gray-800 dark:text-gray-300 text-sm truncate">
-                      {order.customer?.name || t('orders.table.walkIn')}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')} &bull; {formatPaymentMethod(order)}
-                    </p>
+                    {order.refundedByName ? (
+                      <>
+                        <p className="font-bold text-mintcom-red text-sm truncate">
+                          {order.refundedByName}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {t('orders.table.refundedBy')} &bull; {formatPaymentMethod(order)}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="font-bold text-gray-800 dark:text-gray-300 text-sm truncate">
+                          {order.employeeName || order.user?.username || t('common.pos')}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {t('orders.table.takenBy')} &bull; {formatPaymentMethod(order)}
+                        </p>
+                      </>
+                    )}
                   </div>
                   <div className="text-right ml-4 flex-shrink-0">
                     <StatValue value={order.total} currency={currencySymbol} className="text-lg" containerClassName="justify-end" />
@@ -1765,12 +1775,12 @@ export function OrdersPage() {
                     </div>
                   </th>
                   <th
-                    className={`px-6 py-4 text-start label-strong font-sans whitespace-nowrap cursor-pointer select-none transition-colors group ${sortConfig?.key === 'customer' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
-                    onClick={() => requestSort('customer')}
+                    className={`px-6 py-4 text-start label-strong font-sans whitespace-nowrap cursor-pointer select-none transition-colors group ${sortConfig?.key === 'staff' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    onClick={() => requestSort('staff')}
                   >
                     <div className="flex items-center gap-2">
-                      {t('orders.table.customer')}
-                      <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'customer' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
+                      {t('orders.table.staff')}
+                      <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'staff' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                     </div>
                   </th>
                   <th
@@ -1814,8 +1824,17 @@ export function OrdersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-start">
-                      <p className="font-bold text-gray-800 dark:text-gray-300 text-sm">{order.customer?.name || t('orders.table.walkIn')}</p>
-                      <p className="text-xs text-gray-500">{order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')}</p>
+                      {order.refundedByName ? (
+                        <>
+                          <p className="font-bold text-mintcom-red text-sm">{order.refundedByName}</p>
+                          <p className="text-xs text-gray-500">{t('orders.table.refundedBy')}</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="font-bold text-gray-800 dark:text-gray-300 text-sm">{order.employeeName || order.user?.username || t('common.pos')}</p>
+                          <p className="text-xs text-gray-500">{t('orders.table.takenBy')}</p>
+                        </>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-end">
                       <StatValue value={order.total} currency={currencySymbol} className="text-base" containerClassName="justify-end w-full" />

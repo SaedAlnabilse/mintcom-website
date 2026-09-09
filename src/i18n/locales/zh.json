@@ -3865,8 +3865,8 @@
       "changed": "已更改",
       "customized": "已自定义",
       "serviceCharge": "服务费",
-      "staff": "员工",
-      "staffTip": "处理此订单的员工",
+      "staff": "接单人",
+      "staffTip": "受理此订单的员工",
       "status": "状态",
       "statusTip": "当前订单状态",
       "subtotal": "小计",
@@ -3881,7 +3881,8 @@
       "noActiveShiftMessage": "没有进行中的收银班次无法处理退款。请先在收银终端开启班次。",
       "singleShiftTitle": "进行中的收银班次",
       "singleShiftMessage": "退款将记录在 {{name}}（{{register}}）",
-      "selectShiftTitle": "选择退款收银机："
+      "selectShiftTitle": "选择退款收银机：",
+      "takenBy": "接单人"
     },
     "export": "导出",
     "exportFields": {
@@ -4288,7 +4289,9 @@
       "payment": "支付",
       "staff": "员工",
       "status": "状态",
-      "walkIn": "散客"
+      "walkIn": "散客",
+      "takenBy": "接单人",
+      "refundedBy": "退款人"
     },
     "title": "查看顾客订单"
   },
