@@ -789,13 +789,3 @@ const generateClientRequestId = (): string => {
 }
 
 export default OrderRefundModal;
-  {isRefundSubmitting ? t('common.loading') : t('orders.actions.refund')}
-            </button>
-          </div>
-        </div>
-    </div>,
-    document.body,
-  );
-}
-
-export default OrderRefundModal;
