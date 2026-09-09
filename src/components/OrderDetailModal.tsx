@@ -39,6 +39,7 @@ export interface OrderItem {
 export interface Order {
     id: string;
     orderNumber: string;
+    invoiceNumber?: string | null;
     createdAt: string;
     status: string;
     paymentStatus?: string;
@@ -261,7 +262,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                     {t('orders.details.title')}
                                 </p>
                                 <h2 className="text-xl font-bold text-gray-900 dark:text-white truncate">
-                                    {t('orders.table.order')} #{order.orderNumber}
+                                    {t('orders.table.order')} {order.invoiceNumber ?? `#${order.orderNumber}`}
                                 </h2>
                             </div>
                             <button
