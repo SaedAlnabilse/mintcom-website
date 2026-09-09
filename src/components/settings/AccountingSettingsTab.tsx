@@ -335,9 +335,9 @@ export const AccountingSettingsTab: React.FC = () => {
         'serviceChargeAccountId',
         'staffTipsPayableAccountId',
       ];
-      const payload: Record<string, string | undefined> = { ...mappingForm };
+      const payload: Record<string, string | null | undefined> = { ...mappingForm };
       for (const key of optionalKeys) {
-        if (!payload[key]?.trim()) payload[key] = undefined;
+        if (!payload[key]?.trim()) payload[key] = null;
       }
       await api.put('/api/accounting/mapping', payload);
       toast.success(t('settings.accounting.mappingSaved', 'Chart of Accounts mapping saved successfully!'));
