@@ -29,6 +29,7 @@ import {
   getActorName,
   getMetadataEntries,
 } from '../../utils/activityLog';
+import { formatInEstablishmentTimezone } from '../../utils/establishmentTime';
 import type { ActivityLogEntry, MetadataFormatOptions } from '../../utils/activityLog';
 import { ActivityTimeline } from '../../components/dashboard/activity/ActivityTimeline';
 
@@ -379,18 +380,19 @@ export function ActivityLogsPage() {
       locale: dateLocale,
       yesLabel: t('common.yes', { defaultValue: 'Yes' }),
       noLabel: t('common.no', { defaultValue: 'No' }),
+      timeZone: currentEstablishment?.timezone || undefined,
     }),
-    [dateLocale, t],
+    [dateLocale, t, currentEstablishment?.timezone],
   );
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString(dateLocale, {
+    return formatInEstablishmentTimezone(dateString, dateLocale, {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
-    });
+    }, currentEstablishment);
   };
 
   const getActionLabel = (action: string) => {

@@ -52,6 +52,12 @@ import { formatInputPlaceholder } from '../../utils/textCase';
 import { bucketHasActivity, formatBucketLabel } from '../../utils/reportBuckets';
 import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
+import {
+  formatInEstablishmentTimezone,
+  resolveEstablishmentTimeZone,
+  useEstablishmentTimeZone,
+  zonedWallTimeToUtc,
+} from '../../utils/establishmentTime';
 
 type ReportType = 'sales' | 'top-items' | 'top-categories' | 'top-modifiers' | 'peak-hours' | 'shifts' | 'staff-sales' | 'payments' | 'discounts' | 'taxes' | 'receipts' | 'cash-discrepancy';
 
@@ -71,13 +77,7 @@ export function ReportsPage() {
 
   const canExport = useMemo(() => checkPermission(account, ['export_data']), [account]);
 
-  const browserTimeZone = useMemo(() => {
-    try {
-      return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
-    } catch {
-      return 'UTC';
-    }
-  }, []);
+  const establishmentTimeZone = useEstablishmentTimeZone();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -172,8 +172,11 @@ export function ReportsPage() {
   }, [location.state]);
 
   const effectiveDateRange = useMemo(() => {
-    const start = new Date(`${startDate}T${startTime}`);
-    const end = new Date(`${endDate}T${endTime}`);
+    // Wall-clock inputs are the STORE's wall clock in establishmentTimeZone,
+    // not the viewer's browser zone (London owner vs Dubai store).
+    const tz = resolveEstablishmentTimeZone(currentEstablishment);
+    const start = zonedWallTimeToUtc(startDate, startTime, tz);
+    const end = zonedWallTimeToUtc(endDate, endTime, tz);
 
     if (selectedShiftId) {
       const shift = employeeShifts.find(s => s.value === selectedShiftId);
@@ -190,7 +193,7 @@ export function ReportsPage() {
     }
 
     return { start: start.toISOString(), end: end.toISOString() };
-  }, [selectedShiftId, employeeShifts, startDate, endDate, startTime, endTime]);
+  }, [selectedShiftId, employeeShifts, startDate, endDate, startTime, endTime, currentEstablishment?.timezone]);
 
   const [salesData, setSalesData] = useState<SalesSummary>(emptySalesSummary);
   const [peakHours, setPeakHours] = useState<PeakHour[]>([]);
@@ -233,16 +236,18 @@ export function ReportsPage() {
         // range selectable even when a time-of-day filter is narrower. Parse as
         // local (`T00:00`) — `new Date('yyyy-MM-dd')` is UTC midnight, which
         // shifts the day by one behind UTC.
+        const tz = resolveEstablishmentTimeZone(currentEstablishment);
         const res = await api.get('/reports/shifts', {
           params: {
             employeeId: selectedEmployeeId,
-            startDate: startOfDay(new Date(`${startDate}T00:00`)).toISOString(),
-            endDate: endOfDay(new Date(`${endDate}T00:00`)).toISOString(),
+            startDate: zonedWallTimeToUtc(startDate, '00:00', tz).toISOString(),
+            endDate: zonedWallTimeToUtc(endDate, '23:59', tz).toISOString(),
           }
         });
         const sortedShifts = (res.data || []).sort((a: any, b: any) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+        const shiftLocale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
         setEmployeeShifts(sortedShifts.map((s: any) => ({
-          label: `${format(new Date(s.startTime), 'MMM d, HH:mm', { locale: getDateLocale(t('common.locale')) })} - ${s.endTime ? format(new Date(s.endTime), 'HH:mm', { locale: getDateLocale(t('common.locale')) }) : t('dashboard.shiftStatus.activeOnly')}`,
+          label: `${formatInEstablishmentTimezone(s.startTime, shiftLocale, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }, currentEstablishment)} - ${s.endTime ? formatInEstablishmentTimezone(s.endTime, shiftLocale, { hour: '2-digit', minute: '2-digit' }, currentEstablishment) : t('dashboard.shiftStatus.activeOnly')}`,
           value: s.id,
           startTime: s.startTime,
           endTime: s.endTime,
@@ -257,7 +262,7 @@ export function ReportsPage() {
       }
     };
     fetchEmployeeShifts();
-  }, [currentEstablishment?.id, selectedEmployeeId, startDate, endDate]);
+  }, [currentEstablishment?.id, currentEstablishment?.timezone, selectedEmployeeId, startDate, endDate]);
 
   const [isFetching, setIsFetching] = useState(false);
   const prevReportType = useRef<ReportType>(reportType);
@@ -318,7 +323,7 @@ export function ReportsPage() {
         case 'sales':
         case 'payments':
         case 'taxes': {
-          const salesRes = await api.get('/reports/historical-summary', { params: { ...commonParams, timezone: browserTimeZone } });
+          const salesRes = await api.get('/reports/historical-summary', { params: { ...commonParams, timezone: establishmentTimeZone } });
           if (isStale()) return;
           setSalesData(normalizeSalesSummary(salesRes.data));
           break;
@@ -358,7 +363,7 @@ export function ReportsPage() {
           break;
         }
         case 'peak-hours': {
-          const peakRes = await api.get('/reports/peak-hours', { params: { ...commonParams, timezone: browserTimeZone } });
+          const peakRes = await api.get('/reports/peak-hours', { params: { ...commonParams, timezone: establishmentTimeZone } });
           if (isStale()) return;
           setPeakHours(normalizePeakHours(peakRes.data));
           break;
@@ -502,9 +507,7 @@ export function ReportsPage() {
   };
 
   const buildMeta = (): ExportMeta => {
-    const fmt = (iso: string) => {
-      try { return new Date(iso).toLocaleString(localeTag); } catch { return iso; }
-    };
+    const fmt = (iso: string) => formatInEstablishmentTimezone(iso, localeTag, undefined, currentEstablishment);
     const meta: ExportMeta = [
       { label: t('orders.exportFields.date'), value: `${fmt(effectiveDateRange.start)} — ${fmt(effectiveDateRange.end)}` },
     ];
@@ -542,7 +545,7 @@ export function ReportsPage() {
         : (variance > 0.001 ? `+${money(variance)} ${t('dashboard.stats.over')}` : variance < -0.001 ? `${money(variance)} ${t('dashboard.stats.short')}` : money(0));
     return {
       username: s.user?.username || t('common.pos'),
-      period: `${start.toLocaleString(localeTag)} - ${s.endTime ? end.toLocaleString(localeTag) : t('dashboard.shiftStatus.live')}`,
+      period: `${formatInEstablishmentTimezone(start, localeTag, undefined, currentEstablishment)} - ${s.endTime ? formatInEstablishmentTimezone(end, localeTag, undefined, currentEstablishment) : t('dashboard.shiftStatus.live')}`,
       hoursWorked,
       duration,
       opening: money(s.openingBalance),

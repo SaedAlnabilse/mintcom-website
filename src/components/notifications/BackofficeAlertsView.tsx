@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { isToday, isYesterday } from 'date-fns';
+import {
+  formatInEstablishmentTimezone,
+  isTodayInTimezone,
+  isYesterdayInTimezone,
+  resolveEstablishmentTimeZone,
+} from '../../utils/establishmentTime';
+import { useAuth } from '../../context/AuthContext';
 import {
   AlertCircle,
   BellOff,
@@ -106,6 +112,8 @@ export function BackofficeAlertsView({
   feedTitle,
 }: BackofficeAlertsViewProps) {
   const { t, i18n } = useTranslation();
+  const { currentEstablishment } = useAuth();
+  const establishmentTz = resolveEstablishmentTimeZone(currentEstablishment);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<AlertTab>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -261,27 +269,27 @@ export function BackofficeAlertsView({
       const date = new Date(alert.createdAt);
       const valid = Number.isFinite(date.getTime());
       const key = valid
-        ? `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+        ? formatInEstablishmentTimezone(date, 'en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }, currentEstablishment)
         : 'unknown';
       if (!groups.has(key)) {
         const label = !valid
           ? t('notifications.time.unknownDate')
-          : isToday(date)
+          : isTodayInTimezone(date, establishmentTz)
             ? t('notifications.time.today')
-            : isYesterday(date)
+            : isYesterdayInTimezone(date, establishmentTz)
               ? t('notifications.time.yesterday')
-              : new Intl.DateTimeFormat(locale, {
+              : formatInEstablishmentTimezone(date, locale, {
                   weekday: 'short',
                   year: 'numeric',
                   month: 'short',
                   day: 'numeric',
-                }).format(date);
+                }, currentEstablishment);
         groups.set(key, { label, alerts: [] });
       }
       groups.get(key)!.alerts.push(alert);
     });
     return Array.from(groups.entries()).map(([key, group]) => ({ key, ...group }));
-  }, [filteredAlerts, locale, t]);
+  }, [filteredAlerts, locale, t, currentEstablishment?.timezone, establishmentTz]);
 
   const tabs: Array<{ id: AlertTab; count: number }> = [
     { id: 'all', count: stats.total },

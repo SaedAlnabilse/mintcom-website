@@ -53,6 +53,10 @@ import {
   normalizeDashboardStats,
   normalizePeakHours,
 } from '../../utils/reportFallbacks';
+import {
+  formatInEstablishmentTimezone,
+  useEstablishmentTimeZone,
+} from '../../utils/establishmentTime';
 import type { SetupGuideController } from '../../hooks/useSetupGuideFirstRun';
 
 // View mode types
@@ -208,13 +212,7 @@ export const DashboardPage = () => {
     [account?.permissions, isPrivilegedAccount],
   );
 
-  const browserTimeZone = useMemo(() => {
-    try {
-      return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
-    } catch {
-      return 'UTC';
-    }
-  }, []);
+  const establishmentTimeZone = useEstablishmentTimeZone();
 
   // Ref for click outside handling
   const viewModeRef = useRef<HTMLDivElement>(null);
@@ -321,9 +319,9 @@ export const DashboardPage = () => {
       // On Hold KPI must use HeldOrder count (same source as Orders page), not
       // historical-summary.pendingOrders — that field is never populated by the API.
       const [summaryRes, topItemsRes, peakRes, categoryRes, heldOrdersCountRes] = await Promise.all([
-        api.get('/reports/historical-summary', { params: { startDate: start, endDate: end, timezone: browserTimeZone } }).catch((err) => { hasError = true; console.error('Summary API error:', err); return { data: null }; }),
+        api.get('/reports/historical-summary', { params: { startDate: start, endDate: end, timezone: establishmentTimeZone } }).catch((err) => { hasError = true; console.error('Summary API error:', err); return { data: null }; }),
         api.get('/reports/top-selling-items', { params: { startDate: start, endDate: end, limit: 5 } }).catch((err) => { hasError = true; console.error('Top items API error:', err); return { data: [] }; }),
-        api.get('/reports/peak-hours', { params: { startDate: start, endDate: end, timezone: browserTimeZone } }).catch((err) => { hasError = true; console.error('Peak hours API error:', err); return { data: [] }; }),
+        api.get('/reports/peak-hours', { params: { startDate: start, endDate: end, timezone: establishmentTimeZone } }).catch((err) => { hasError = true; console.error('Peak hours API error:', err); return { data: [] }; }),
         api.get('/reports/category-report', { params: { startDate: start, endDate: end } }).catch((err) => { hasError = true; console.error('Category API error:', err); return { data: { breakdown: [] } }; }),
         api.get('/api/held-orders/count').catch((err) => { hasError = true; console.error('Held orders count API error:', err); return { data: { count: 0 } }; })
       ]);
@@ -383,7 +381,7 @@ export const DashboardPage = () => {
     } finally {
       if (!silent) setIsLoading(false);
     }
-  }, [browserTimeZone, canViewDashboardAnalytics, t, viewMode, shiftStatus]);
+  }, [establishmentTimeZone, canViewDashboardAnalytics, t, viewMode, shiftStatus]);
 
   // Initial load: fetch shift status first
   useEffect(() => {
@@ -539,7 +537,7 @@ export const DashboardPage = () => {
     const localeTag = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
     const money = (n: number) => (Number(n) || 0).toLocaleString(localeTag, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const numFmt = (n: number) => (Number(n) || 0).toLocaleString(localeTag);
-    const fmtDate = (iso: string) => { try { return new Date(iso).toLocaleString(localeTag); } catch { return iso; } };
+    const fmtDate = (iso: string) => formatInEstablishmentTimezone(iso, localeTag, undefined, currentEstablishment);
 
     const cur = (label: string) => `${label} (${currencySymbol})`;
     const title = `${t('dashboard.menu.salesAndReporting')} — ${currentViewModeInfo?.label || ''}`.trim();

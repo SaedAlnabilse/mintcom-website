@@ -10,6 +10,8 @@ import { useCurrency } from '../context/CurrencyContext';
 import { OrderRefundModal } from './OrderRefundModal';
 import { StatValue } from './ui/StatValue';
 import { formatPaymentBrandName } from '../utils/paymentCard';
+import { formatInEstablishmentTimezone } from '../utils/establishmentTime';
+import { useAuth } from '../context/AuthContext';
 
 const stripNameMarkers = (raw: string) =>
     (raw || '')
@@ -104,6 +106,7 @@ export interface OrderDetailModalProps {
 
 export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = true, canRestock = true }: OrderDetailModalProps) {
     const { t } = useTranslation();
+    const { currentEstablishment } = useAuth();
     const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
 
     useScrollLock(!!order);
@@ -175,13 +178,13 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
     }, [order, t]);
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', {
+        return formatInEstablishmentTimezone(dateString, t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
-        });
+        }, currentEstablishment);
     };
 
     const getStatusColor = (status: string) => {

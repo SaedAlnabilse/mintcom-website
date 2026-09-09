@@ -79,8 +79,10 @@ import {
   getBestTimeZoneForCountry,
   getCountryOptions,
   getCountryPrimaryCurrency,
+  getCountryTimeZones,
   getCurrencyOptions,
   getDeviceTimeZone,
+  normalizeTimeZone,
 } from '../data/globalLocaleOptions';
 import { getLocalizedManual } from '../utils/localizedDocs';
 import { getPasswordSchema } from '../utils/validation';
@@ -286,6 +288,7 @@ export function OnboardingPage() {
     country: z.string().min(1, t('onboarding.step1.errors.countryRequired', { defaultValue: 'Country is required' })),
     address: z.string().min(1, t('onboarding.step1.errors.addressRequired')),
     currency: z.string().min(1, t('onboarding.step1.errors.currencyRequired')),
+    timezone: z.string().min(1, t('onboarding.step1.errors.timezoneRequired', { defaultValue: 'Timezone is required' })),
   });
 
   // Step 2: Location Login
@@ -672,7 +675,12 @@ export function OnboardingPage() {
   // Forms
   const form1 = useForm({
     resolver: zodResolver(step1Schema),
-    defaultValues: { currency: 'JOD', type: 'restaurant', country: 'JO' }
+    defaultValues: {
+      currency: 'JOD',
+      type: 'restaurant',
+      country: 'JO',
+      timezone: getBestTimeZoneForCountry('JO', getDeviceTimeZone()),
+    }
   });
 
   const form2 = useForm({
@@ -755,6 +763,7 @@ export function OnboardingPage() {
   }, [establishments, form1]);
 
   const selectedCountry = form1.watch('country');
+  const selectedTimezone = form1.watch('timezone');
   const isCurrencyLocked = establishments.length > 0;
 
   // When the country changes on first registration, auto-select that country's
@@ -767,6 +776,31 @@ export function OnboardingPage() {
       form1.setValue('currency', primaryCurrency, { shouldValidate: true, shouldDirty: true });
     }
   }, [selectedCountry, isCurrencyLocked, form1]);
+
+  // Timezone follows the country by default (device TZ when it belongs to the
+  // country, else the country's primary zone) but stays user-editable per
+  // location — this is the worldwide store clock for all reports/dates.
+  const timezoneOptions = useMemo(() => {
+    const list = getCountryTimeZones(selectedCountry);
+    const device = getDeviceTimeZone();
+    if (device && !list.includes(device)) return [...list, device];
+    return list.length > 0 ? list : [device || 'UTC'];
+  }, [selectedCountry]);
+
+  useEffect(() => {
+    if (!selectedCountry) return;
+    const current = form1.getValues('timezone');
+    const dirty = form1.getFieldState('timezone').isDirty;
+    // Auto-fill on first paint and on country change until the user overrides.
+    if (!current || !dirty) {
+      const best = getBestTimeZoneForCountry(selectedCountry, getDeviceTimeZone());
+      form1.setValue('timezone', best, { shouldValidate: true });
+    } else if (!timezoneOptions.includes(current)) {
+      const best = getBestTimeZoneForCountry(selectedCountry, getDeviceTimeZone());
+      form1.setValue('timezone', best, { shouldValidate: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCountry]);
 
   // Always offer the full currency list so owners can override the country default.
   const currencyOptions = allCurrencyOptions;
@@ -791,7 +825,7 @@ export function OnboardingPage() {
     const finalData = {
       ...data,
       currency: establishments.length > 0 ? establishments[0].currency : data.currency,
-      timezone: getBestTimeZoneForCountry(data.country || formData.country, getDeviceTimeZone()),
+      timezone: normalizeTimeZone(data.timezone) || getBestTimeZoneForCountry(data.country || formData.country, getDeviceTimeZone()),
       duplicateFromId: duplicateFromId || undefined,
       duplicateInventory: duplicateFromId ? duplicateInventory : false,
       duplicateDiscounts: duplicateFromId ? duplicateDiscounts : false,
@@ -1302,6 +1336,37 @@ export function OnboardingPage() {
                         <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
                       </div>
                       {form1.formState.errors.country && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.country.message as string}</p>}
+                    </div>
+
+                    {/* Store timezone — per-location wall clock for all dates/reports */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                        {t('onboarding.step1.timezone', { defaultValue: 'Store timezone' })} <span className="text-mintcom-red mx-1">*</span>
+                      </label>
+                      <div className="relative">
+                        <CalendarClock className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
+                        <select
+                          {...form1.register('timezone')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.timezone ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
+                        >
+                          {timezoneOptions.map((tz) => (
+                            <option key={tz} value={tz}>
+                              {tz}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
+                      </div>
+                      <p className="text-xs font-sans text-gray-500 dark:text-gray-400 mt-1.5 mx-1 flex items-center gap-1.5">
+                        <Info size={14} className="flex-shrink-0" />
+                        <span>
+                          {t('onboarding.step1.timezoneHint', {
+                            defaultValue: 'All sales, shifts and reports use this timezone. Current time there: {{time}}.',
+                            time: (() => { try { return new Intl.DateTimeFormat(locale || 'en-US', { hour: '2-digit', minute: '2-digit', timeZone: selectedTimezone || timezoneOptions[0] }).format(new Date()); } catch { return ''; } })(),
+                          })}
+                        </span>
+                      </p>
+                      {form1.formState.errors.timezone && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.timezone.message as string}</p>}
                     </div>
 
                     {/* Base Currency Row: auto-filled from country, always free to change on first location */}

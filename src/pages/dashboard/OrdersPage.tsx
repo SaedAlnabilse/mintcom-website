@@ -156,6 +156,10 @@ interface EmployeeShiftOption {
 const PAGE_SIZE = 15;
 
 import { formatPaymentBreakdown } from '../../utils/paymentBreakdownFormat';
+import {
+  formatInEstablishmentTimezone,
+  useEstablishmentTimeZone,
+} from '../../utils/establishmentTime';
 export { formatPaymentBreakdown };
 
 export function OrdersPage() {
@@ -163,6 +167,7 @@ export function OrdersPage() {
   usePermissionGuard();
   const { currencySymbol } = useCurrency();
   const { account, currentEstablishment } = useAuth();
+  const useEstablishmentTimeZoneValue = useEstablishmentTimeZone();
   const location = useLocation();
   const canUsePosFeatures = useMemo(
     () => checkPermission(account, ['pos']),
@@ -353,8 +358,8 @@ export function OrdersPage() {
 
       if (showToast) {
         if (res.data?.shiftStatus === 'ACTIVE') {
-          const dateLocale = getDateLocale(t('common.locale'));
-          const time = res.data.activeShift?.startTime ? format(new Date(res.data.activeShift.startTime), 'h:mm a', { locale: dateLocale }) : '';
+          const localeTag = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
+          const time = res.data.activeShift?.startTime ? formatInEstablishmentTimezone(res.data.activeShift.startTime, localeTag, { hour: 'numeric', minute: '2-digit' }, currentEstablishment) : '';
           toast.success(t('orders.messages.shiftFound', { time: time ? ` (${time})` : '' }));
         } else {
           toast.error(t('orders.messages.noShiftFound'));
@@ -377,7 +382,7 @@ export function OrdersPage() {
         toast.error(errorMessage);
       }
     }
-  }, [canUseShiftFeatures, t]);
+  }, [canUseShiftFeatures, t, currentEstablishment?.timezone]);
 
   // Fetch shift status on mount or establishment change
   useEffect(() => {
@@ -694,7 +699,7 @@ export function OrdersPage() {
           params: {
             startDate: start.toISOString(),
             endDate: end.toISOString(),
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+            timezone: useEstablishmentTimeZoneValue,
             ...(selectedEmployeeId ? { employeeId: selectedEmployeeId } : {}),
           },
         })
@@ -1006,11 +1011,8 @@ export function OrdersPage() {
 
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    if (t('common.locale') === 'ar') {
-      return format(date, 'MMM d, HH:mm', { locale: getDateLocale(t('common.locale')) });
-    }
-    return format(date, 'MMM d, HH:mm');
+    const localeTag = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
+    return formatInEstablishmentTimezone(dateString, localeTag, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }, currentEstablishment);
   };
 
   const setQuickDate = (range: string) => {

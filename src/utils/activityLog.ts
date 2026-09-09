@@ -38,6 +38,7 @@ export interface MetadataFormatOptions {
   locale?: string;
   yesLabel?: string;
   noLabel?: string;
+  timeZone?: string;
 }
 
 /** Longest value shown inline before it is cut at a word boundary. */
@@ -79,7 +80,7 @@ export function formatMetadataValue(
   value: unknown,
   options: MetadataFormatOptions = {},
 ): string {
-  const { locale = 'en', yesLabel = 'Yes', noLabel = 'No' } = options;
+  const { locale = 'en', yesLabel = 'Yes', noLabel = 'No', timeZone } = options;
 
   if (typeof value === 'boolean') return value ? yesLabel : noLabel;
   if (typeof value === 'number') return value.toLocaleString(locale);
@@ -92,12 +93,22 @@ export function formatMetadataValue(
     if (ISO_DATE_PATTERN.test(trimmed)) {
       const parsed = new Date(trimmed);
       if (!Number.isNaN(parsed.getTime())) {
-        return parsed.toLocaleString(locale, {
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        });
+        try {
+          return new Intl.DateTimeFormat(locale, {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            ...(timeZone ? { timeZone } : {}),
+          }).format(parsed);
+        } catch {
+          return parsed.toLocaleString(locale, {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+        }
       }
     }
 

@@ -16,6 +16,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import type { BackofficeAlert } from '../../services/backofficeAlertsApi';
 import { formatCurrencyCode } from '../../utils/currency';
+import { formatInEstablishmentTimezone } from '../../utils/establishmentTime';
+import { useAuth } from '../../context/AuthContext';
 import {
   getAlertPresentation,
   isCashAlertKind,
@@ -90,6 +92,7 @@ export function AlertRow({
   showDismiss = true,
 }: AlertRowProps) {
   const { t, i18n } = useTranslation();
+  const { currentEstablishment } = useAuth();
   const presentation = getAlertPresentation(alert);
   const tone = TONE_STYLES[presentation.tone];
   const Icon = ICONS[presentation.icon];
@@ -124,11 +127,11 @@ export function AlertRow({
       return t('notifications.time.daysAgo', { count: elapsedDays });
     }
 
-    return new Intl.DateTimeFormat(locale, {
+    return formatInEstablishmentTimezone(timestamp, locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-    }).format(new Date(timestamp));
+    }, currentEstablishment);
   })();
 
   const description = (() => {
