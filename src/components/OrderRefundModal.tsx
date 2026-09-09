@@ -228,6 +228,9 @@ export function OrderRefundModal({
       } else {
         setSelectedShiftId('');
       }
+      // Clear any stale error left from a previous render cycle
+      setShiftError('');
+      setRefundReasonError('');
     } catch (err: any) {
       console.warn('Failed to fetch active shifts:', err);
       setShiftError(err?.response?.data?.message || 'Failed to load active shifts');
@@ -383,9 +386,21 @@ const generateClientRequestId = (): string => {
       return;
     }
 
+    // Re-fetch shifts fresh right before submit — the modal may have been
+    // open long enough for the drawer situation to change.
+    let shifts = activeShifts;
+    try {
+      const res = await api.get('/api/shifts/establishment/active');
+      const fresh: ActiveShiftOption[] = res.data?.shifts || [];
+      setActiveShifts(fresh);
+      setSelectedShiftId(fresh.length === 1 ? fresh[0].id : '');
+      shifts = fresh;
+    } catch {
+      // Fall through to client-side state if the refresh itself fails.
+    }
+
     // Guard: must have an active shift to process any refund.
-    if (isLoadingShifts) return;
-    if (activeShifts.length === 0) {
+    if (shifts.length === 0) {
       setRefundReasonError(t('orders.messages.noActiveShift', {
         defaultValue: 'A refund cannot be processed without an active register shift. Please open a shift first.',
       }));
@@ -394,7 +409,7 @@ const generateClientRequestId = (): string => {
       }));
       return;
     }
-    if (activeShifts.length > 1 && !selectedShiftId) {
+    if (shifts.length > 1 && !selectedShiftId) {
       setRefundReasonError(t('orders.messages.multipleActiveShifts', {
         defaultValue: 'Multiple active shifts are open. Please select a register before refunding.',
       }));
@@ -417,7 +432,7 @@ const generateClientRequestId = (): string => {
             refundReason: trimmedReason,
             restockItems,
             disposition,
-            shiftId: selectedShiftId || (activeShifts.length === 1 ? activeShifts[0].id : undefined),
+            shiftId: selectedShiftId || (shifts.length === 1 ? shifts[0].id : undefined),
             items: selectedRefundLines.map(line => ({
               orderItemId: line.orderItemId,
               quantity: line.quantity,
@@ -430,7 +445,7 @@ const generateClientRequestId = (): string => {
             refundReason: trimmedReason,
             restockItems,
             disposition,
-            shiftId: selectedShiftId || (activeShifts.length === 1 ? activeShifts[0].id : undefined),
+            shiftId: selectedShiftId || (shifts.length === 1 ? shifts[0].id : undefined),
           });
 
       setRefundReason('');
@@ -635,15 +650,9 @@ const generateClientRequestId = (): string => {
               </div>
             )}
 
-            {/* Active-shift resolution UI */}
-            {isLoadingShifts ? (
-              <div className="mb-4 flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-800 dark:bg-blue-950">
-                <Loader2 size={16} className="animate-spin text-blue-500" />
-                <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
-                  {t('orders.details.loadingShifts', { defaultValue: 'Checking active register shifts...' })}
-                </span>
-              </div>
-            ) : activeShifts.length === 0 ? (
+            {/* Active-shift resolution UI — only render after fetch completes
+                so we never flash a stale error before the real result arrives. */}
+            {!isLoadingShifts && activeShifts.length === 0 && (
               <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 dark:border-red-800 dark:bg-red-950">
                 <p className="text-sm font-bold text-red-700 dark:text-red-300">
                   ⚠️ {t('orders.details.noActiveShiftTitle', { defaultValue: 'Active Register Shift Required' })}
@@ -654,7 +663,8 @@ const generateClientRequestId = (): string => {
                   })}
                 </p>
               </div>
-            ) : activeShifts.length === 1 ? (
+            )}
+            {!isLoadingShifts && activeShifts.length === 1 && (
               <div className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 dark:border-green-800 dark:bg-green-950">
                 <p className="text-sm font-bold text-green-700 dark:text-green-300">
                   🟢 {t('orders.details.singleShiftTitle', { defaultValue: 'Active Register Shift' })}
@@ -667,7 +677,8 @@ const generateClientRequestId = (): string => {
                   })}
                 </p>
               </div>
-            ) : (
+            )}
+            {!isLoadingShifts && activeShifts.length > 1 && (
               <div className="mb-4 rounded-xl border border-gray-200 bg-white px-4 py-3 dark:border-white/10 dark:bg-white/5">
                 <p className="mb-3 text-sm font-bold text-gray-900 dark:text-white">
                   {t('orders.details.selectShiftTitle', { defaultValue: 'Select Register for Refund:' })}
@@ -703,7 +714,6 @@ const generateClientRequestId = (): string => {
                 ))}
               </div>
             )}
-
             {hasStockTrackedItems && (
               <label className="mb-4 flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-white/10 dark:bg-white/5">
                 <span className="min-w-0">
@@ -770,6 +780,16 @@ const generateClientRequestId = (): string => {
             >
               {isRefundSubmitting && <Loader2 size={16} className="animate-spin" />}
               {isRefundSubmitting ? t('common.loading') : t('orders.actions.refund')}
+            </button>
+          </div>
+        </div>
+    </div>,
+    document.body,
+  );
+}
+
+export default OrderRefundModal;
+  {isRefundSubmitting ? t('common.loading') : t('orders.actions.refund')}
             </button>
           </div>
         </div>

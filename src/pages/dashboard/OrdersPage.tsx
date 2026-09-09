@@ -201,6 +201,7 @@ export function OrdersPage() {
   const [selectedRefundOrder, setSelectedRefundOrder] = useState<Order | null>(null);
   const [orderDetailLoadingId, setOrderDetailLoadingId] = useState<string | null>(null);
   const [refundLoadingId, setRefundLoadingId] = useState<string | null>(null);
+  const [refundErrorPopup, setRefundErrorPopup] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState(() => {
@@ -1099,9 +1100,12 @@ export function OrdersPage() {
 
     // Block refund BEFORE opening modal when no active shift exists.
     if (shiftStatus?.shiftStatus !== 'ACTIVE') {
-      toast.error(t('orders.messages.noActiveShift', {
-        defaultValue: 'A refund cannot be processed without an active register shift. Please open a shift first.',
-      }));
+      setRefundErrorPopup({
+        open: true,
+        message: t('orders.messages.noActiveShift', {
+          defaultValue: 'A refund cannot be processed without an active register shift. Please open a shift first.',
+        }),
+      });
       return;
     }
 
@@ -1928,6 +1932,32 @@ export function OrdersPage() {
           canRefund={canCancelReceipts}
           canRestock={canRestockRefundItems}
         />
+      )}
+
+      {/* Refund shift-required error popup */}
+      {refundErrorPopup.open && (
+        <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#1E293B]">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+              <svg className="h-6 w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-lg font-bold text-gray-900 dark:text-white">
+              {t('common.error', { defaultValue: 'Error' })}
+            </h3>
+            <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">
+              {refundErrorPopup.message}
+            </p>
+            <button
+              type="button"
+              onClick={() => setRefundErrorPopup({ open: false, message: '' })}
+              className="w-full rounded-xl bg-mintcom-red py-3 text-sm font-bold text-white transition-colors hover:bg-mintcom-red/90"
+            >
+              {t('common.ok', { defaultValue: 'OK' })}
+            </button>
+          </div>
+        </div>
       )}
 
       <ConfirmModal
