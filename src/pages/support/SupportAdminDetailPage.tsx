@@ -157,6 +157,8 @@ export const SupportAdminDetailPage = () => {
     const [showStatusMenu, setShowStatusMenu] = useState(false);
     const [copied, setCopied] = useState(false);
     const [internalNote, setInternalNote] = useState('');
+    const [staffNotes, setStaffNotes] = useState<Array<{ id: string; authorName: string; content: string; createdAt: string }>>([]);
+    const [isSavingNote, setIsSavingNote] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -212,19 +214,48 @@ export const SupportAdminDetailPage = () => {
         }
     }, [ticket?.messages]);
 
+    // Staff internal notes live in PostgreSQL (staff-only). On load, fetch
+    // them and run a one-time non-destructive migration sweep: any legacy
+    // browser-local note is submitted to the API, then removed locally only
+    // after the server confirms it was saved.
     useEffect(() => {
-        if (!ticketId) return;
-        setInternalNote(localStorage.getItem(`mintcom-support-note-${ticketId}`) || '');
-    }, [ticketId]);
-
-    useEffect(() => {
-        if (!ticketId) return;
-        if (internalNote.trim()) {
-            localStorage.setItem(`mintcom-support-note-${ticketId}`, internalNote);
-        } else {
-            localStorage.removeItem(`mintcom-support-note-${ticketId}`);
+        if (!ticketId || !isAuthenticated || !isSupportTeam) return;
+        const legacyKey = `mintcom-support-note-${ticketId}`;
+        let legacyDraft = '';
+        try {
+            legacyDraft = localStorage.getItem(legacyKey) || '';
+        } catch {
+            legacyDraft = '';
         }
-    }, [internalNote, ticketId]);
+        if (legacyDraft.trim()) setInternalNote(legacyDraft);
+        (async () => {
+            try {
+                const res = await api.get(`/api/support/admin/tickets/${ticketId}/internal-notes`);
+                setStaffNotes(res.data?.notes || []);
+            } catch {
+                // Notes are auxiliary; ticket view works without them.
+            }
+            if (legacyDraft.trim()) {
+                try {
+                    await api.post(`/api/support/admin/tickets/${ticketId}/internal-notes`, {
+                        content: legacyDraft.trim().slice(0, 5000),
+                    });
+                    try {
+                        localStorage.removeItem(legacyKey);
+                    } catch {
+                        // Storage unavailable — ignore.
+                    }
+                    const refreshed = await api.get(`/api/support/admin/tickets/${ticketId}/internal-notes`);
+                    setStaffNotes(refreshed.data?.notes || []);
+                    setInternalNote('');
+                    toast.success('Migrated a local staff note to the team notes.');
+                } catch {
+                    // Keep the legacy value locally; retry on next load.
+                }
+            }
+        })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ticketId, isAuthenticated, isSupportTeam]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
@@ -318,6 +349,24 @@ export const SupportAdminDetailPage = () => {
         navigator.clipboard.writeText(ticket.ticketNumber);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+    };
+
+    // Save staff internal note (team-visible, never sent to customer)
+    const handleSaveInternalNote = async () => {
+        if (!internalNote.trim() || !ticket || isSavingNote) return;
+        setIsSavingNote(true);
+        try {
+            const res = await api.post(`/api/support/admin/tickets/${ticket.id}/internal-notes`, {
+                content: internalNote.trim(),
+            });
+            if (res.data?.note) setStaffNotes((prev) => [...prev, res.data.note]);
+            setInternalNote('');
+            toast.success('Internal note saved for the team.');
+        } catch {
+            toast.error('Failed to save internal note');
+        } finally {
+            setIsSavingNote(false);
+        }
     };
 
     const insertQuickReply = (text: string) => {
@@ -705,15 +754,37 @@ export const SupportAdminDetailPage = () => {
                         </div>
 
                         <div className="rounded-xl border border-gray-100 bg-white p-4 dark:border-white/5 dark:bg-white/[0.03]">
-                            <div className="mb-3 text-sm font-bold text-gray-900 dark:text-white">Internal Note</div>
+                            <div className="mb-1 text-sm font-bold text-gray-900 dark:text-white">Internal Notes</div>
+                            <p className="mb-3 text-[11px] font-medium text-gray-400">Team-only. Never sent to the customer.</p>
+                            {staffNotes.length > 0 && (
+                                <div className="mb-3 max-h-48 space-y-2 overflow-y-auto">
+                                    {staffNotes.map((note) => (
+                                        <div key={note.id} className="rounded-lg bg-gray-50 p-2.5 dark:bg-white/5">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <span className="text-[11px] font-bold text-gray-700 dark:text-gray-200">{note.authorName}</span>
+                                                <span className="text-[10px] font-medium text-gray-400">{note.createdAt ? new Date(note.createdAt).toLocaleString() : ''}</span>
+                                            </div>
+                                            <p className="mt-1 whitespace-pre-wrap text-xs font-medium text-gray-600 dark:text-gray-300">{note.content}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                             <textarea
                                 value={internalNote}
                                 onChange={(e) => setInternalNote(e.target.value)}
-                                rows={5}
-                                maxLength={1000}
-                                placeholder="Private note for this browser. Not sent to the customer."
+                                rows={4}
+                                maxLength={5000}
+                                placeholder="Private note for the support team. Not sent to the customer."
                                 className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs font-medium text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
                             />
+                            <button
+                                type="button"
+                                onClick={handleSaveInternalNote}
+                                disabled={!internalNote.trim() || isSavingNote}
+                                className="mt-2 w-full rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white dark:text-gray-900"
+                            >
+                                {isSavingNote ? 'Saving…' : 'Save team note'}
+                            </button>
                         </div>
                     </aside>
                     </div>
