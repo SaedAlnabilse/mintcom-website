@@ -361,10 +361,9 @@ export function OwnerBillingPage() {
     };
 
 
-    // Apply correct pricing: first location = 20 USD/mo, additional = 17 USD/mo.
-    // The backend may return flat 20 USD for all, so we override client-side.
+    // Apply correct pricing: all locations = 20 USD/mo, 200 USD/yr.
     const FIRST_LOCATION_PRICE = 20;
-    const ADDITIONAL_LOCATION_PRICE = 17;
+    const ADDITIONAL_LOCATION_PRICE = 20;
 
     const activeEstablishments = billingData?.establishments.filter(
         est => est.subscriptionStatus?.toUpperCase() !== 'CANCELED'
@@ -377,7 +376,7 @@ export function OwnerBillingPage() {
     activeEstablishments.forEach((est, index) => {
         if (est.billingCycle === 'yearly') {
             hasYearlyPlan = true;
-            totalYearlyCost += est.yearlyPrice || (index === 0 ? 210 : 180);
+            totalYearlyCost += est.yearlyPrice || 200;
         } else {
             totalMonthlyCost += index === 0 ? FIRST_LOCATION_PRICE : ADDITIONAL_LOCATION_PRICE;
         }
@@ -387,9 +386,9 @@ export function OwnerBillingPage() {
     const getEstablishmentPrice = (est: EstablishmentBilling, index: number) => {
         // If backend provides billingCycle=yearly, use yearly price
         if (est.billingCycle === 'yearly') {
-            return est.yearlyPrice || (index === 0 ? 210 : 180);
+            return est.yearlyPrice || 200;
         }
-        // Monthly: first location = 20 USD, additional = 17 USD.
+        // All locations = 20 USD/mo.
         return index === 0 ? FIRST_LOCATION_PRICE : ADDITIONAL_LOCATION_PRICE;
     };
 

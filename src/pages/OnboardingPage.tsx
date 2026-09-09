@@ -392,10 +392,10 @@ export function OnboardingPage() {
     amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 0, maximumFractionDigits: 0 });
   const selectedUnitLabel = `${MINTCOM_PRICING.currency} ${selectedPeriodLabel}`;
 
-  // The backend gives the first establishment a 30-day free trial (TRIAL_DAYS = 30),
-  // billing from now + 30 days. Compute the same date here so the disclosure shows
+  // The backend gives the first establishment a 14-day free trial (TRIAL_DAYS = 14),
+  // billing from now + 14 days. Compute the same date here so the disclosure shows
   // the exact day the card will first be charged.
-  const TRIAL_DAYS = 30;
+  const TRIAL_DAYS = 14;
   const trialEndDate = useMemo(() => {
     const d = new Date();
     d.setDate(d.getDate() + TRIAL_DAYS);
@@ -2008,7 +2008,7 @@ export function OnboardingPage() {
                         <span className="text-sm font-sans font-bold">
                           {isTrialFlow
                             ? t('onboarding.step2.trialThenPrice', {
-                                defaultValue: `Then ${selectedPriceWithPeriod}, billed after your 30-day trial`,
+                                defaultValue: `Then ${selectedPriceWithPeriod}, billed after your 14-day trial`,
                                 price: selectedPriceWithPeriod,
                               })
                             : t('onboarding.step2.billedCycle', {
@@ -2065,7 +2065,7 @@ export function OnboardingPage() {
                           </p>
                           <p className="mt-1 text-xs font-sans text-gray-600 dark:text-gray-300">
                             {t('onboarding.step2.trialDisclosureBody', {
-                              defaultValue: `After your 30-day free trial ends on ${trialEndDateLabel}, you'll start paying ${selectedPriceWithPeriod} for this location. Cancel anytime before then and you won't be charged.`,
+                              defaultValue: `After your 14-day free trial ends on ${trialEndDateLabel}, you'll start paying ${selectedPriceWithPeriod} for this location. Cancel anytime before then and you won't be charged.`,
                               date: trialEndDateLabel,
                               price: selectedPriceWithPeriod,
                               days: TRIAL_DAYS,
@@ -2320,7 +2320,7 @@ export function OnboardingPage() {
                         <p className="text-center text-xs font-sans text-gray-500 dark:text-gray-400">
                           {t('onboarding.step2.trialPayNote', {
                             defaultValue:
-                              "You're covered by your 30-day trial, so nothing is charged until it ends.",
+                              "You're covered by your 14-day trial, so nothing is charged until it ends.",
                             days: TRIAL_DAYS,
                           })}
                         </p>

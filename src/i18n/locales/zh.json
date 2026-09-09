@@ -2161,7 +2161,7 @@
     "cta": "开始免费试用",
     "customers": "顾客",
     "description": "Mintcom 是为现代企业打造的完整 360° POS 解决方案。销售、库存、员工、报表和运营，全部通过一个简单的系统管理。",
-    "freeTrial": "30 天免费试用",
+    "freeTrial": "14 天免费试用",
     "fromYesterday": "较昨日",
     "growth": "增长",
     "items": "件商品",
@@ -3529,7 +3529,7 @@
       "title": "Cookie 政策 | Mintcom"
     },
     "home": {
-      "description": "用 Mintcom 简化您的业务。任何设备上的快速销售、实时库存和强大分析。立即开始 30 天免费试用。",
+      "description": "用 Mintcom 简化您的业务。任何设备上的快速销售、实时库存和强大分析。立即开始 14 天免费试用。",
       "title": "Mintcom | 一体化云 POS 与业务管理"
     },
     "login": {
@@ -3545,7 +3545,7 @@
       "title": "问答 | Mintcom 支持"
     },
     "signup": {
-      "description": "加入数千家使用 Mintcom 的企业。创建账户，开始 30 天免费试用。",
+      "description": "加入数千家使用 Mintcom 的企业。创建账户，开始 14 天免费试用。",
       "title": "注册 | 开始您的 Mintcom 免费试用"
     },
     "terms": {
@@ -3691,8 +3691,8 @@
       "activateDesc": "您的卡将为这家新门店扣款 {{amount}}。",
       "activateTitle": "激活订阅",
       "addNew": "添加新卡",
-      "afterTrial": "30 天后",
-      "trialThenPrice": "之后为 {{price}}，在 30 天试用结束后计费",
+      "afterTrial": "14 天后",
+      "trialThenPrice": "之后为 {{price}}，在 14 天试用结束后计费",
       "trialDisclosureTitle": "免费至 {{date}}",
       "trialDisclosureBody": "您的 {{days}} 天免费试用于 {{date}} 结束后，将开始为该门店支付 {{price}}。在此之前随时取消均不会产生费用。",
       "trialChooseCycleHint": "选择免费试用结束后的计费方式",
@@ -3708,7 +3708,7 @@
         "expiryRequired": "请填写月/年（MM/YY）"
       },
       "expiry": "有效期",
-      "freeDays": "30 天免费",
+      "freeDays": "14 天免费",
       "monthly": "按月",
       "priceMonth": "20 美元/月",
       "startTrialButton": "开始免费试用",
@@ -3721,7 +3721,7 @@
       "billedCycle": "按{{cycle}}计费",
       "existingAccountBenefit": "现有账户权益",
       "paymentDetails": "付款信息",
-      "trialPayNote": "您正在 30 天试用期内，试用结束前不会产生任何费用。"
+      "trialPayNote": "您正在 14 天试用期内，试用结束前不会产生任何费用。"
     },
     "step3": {
       "errors": {
@@ -6187,7 +6187,7 @@
         "li17": "访问权限持续到当前计费周期结束",
         "li18": "取消后数据保留 30 天",
         "li19": "请在保留期结束前导出您的数据",
-        "li2": "新门店享 30 天免费试用",
+        "li2": "新门店享 14 天免费试用",
         "li20": "退款在 5-7 个工作日内处理",
         "li21": "账单争议请联系客服",
         "li3": "无安装费或隐藏收费",

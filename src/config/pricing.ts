@@ -10,11 +10,11 @@ export const MINTCOM_PRICING = {
   defaultBillingCycle: BILLING_CYCLES.MONTHLY as BillingCycle,
   primary: {
     monthly: 20,
-    yearly: 210,
+    yearly: 200,
   },
   additionalLocation: {
-    monthly: 17,
-    yearly: 180,
+    monthly: 20,
+    yearly: 200,
   },
 } as const;
 

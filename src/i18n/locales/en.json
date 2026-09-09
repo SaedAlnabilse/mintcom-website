@@ -2170,7 +2170,7 @@
     "cta": "Start Free Trial",
     "customers": "Customers",
     "description": "Mintcom is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations, all from one simple system.",
-    "freeTrial": "30-Day Free Trial",
+    "freeTrial": "14-Day Free Trial",
     "fromYesterday": "from yesterday",
     "growth": "Growth",
     "items": "items",
@@ -3580,7 +3580,7 @@
       "title": "Cookie Policy | Mintcom"
     },
     "home": {
-      "description": "Simplify your business with Mintcom. Fast sales, real-time inventory, and powerful analytics on any device. Start your 30-day free trial today.",
+      "description": "Simplify your business with Mintcom. Fast sales, real-time inventory, and powerful analytics on any device. Start your 14-day free trial today.",
       "title": "Mintcom | All-in-One Cloud POS & Business Management"
     },
     "login": {
@@ -3596,7 +3596,7 @@
       "title": "Questions & Answers | Mintcom Support"
     },
     "signup": {
-      "description": "Join thousands of businesses using Mintcom. Create your account and start your 30-day free trial.",
+      "description": "Join thousands of businesses using Mintcom. Create your account and start your 14-day free trial.",
       "title": "Sign Up | Start Your Free Trial with Mintcom"
     },
     "terms": {
@@ -3742,8 +3742,8 @@
       "activateDesc": "Your card will be charged {{amount}} for this new location.",
       "activateTitle": "Activate Subscription",
       "addNew": "Add New Card",
-      "afterTrial": "After 30 days",
-      "trialThenPrice": "Then {{price}}, billed after your 30-day trial",
+      "afterTrial": "After 14 days",
+      "trialThenPrice": "Then {{price}}, billed after your 14-day trial",
       "trialDisclosureTitle": "Free until {{date}}",
       "trialDisclosureBody": "After your {{days}}-day free trial ends on {{date}}, you'll start paying {{price}} for this location. Cancel anytime before then and you won't be charged.",
       "trialChooseCycleHint": "Pick what you'll be billed after your free trial",
@@ -3759,7 +3759,7 @@
         "expiryRequired": "MM/YY required"
       },
       "expiry": "Expiry",
-      "freeDays": "30 DAYS FREE",
+      "freeDays": "14 DAYS FREE",
       "monthly": "Monthly",
       "paymentDetails": "Payment Details",
       "priceMonth": "20 USD/MONTH",
@@ -3772,7 +3772,7 @@
       "addedLocation": "Added Location",
       "billedCycle": "Billed {{cycle}}",
       "existingAccountBenefit": "Existing Account Benefit",
-      "trialPayNote": "You're covered by your 30-day trial, so nothing is charged until it ends."
+      "trialPayNote": "You're covered by your 14-day trial, so nothing is charged until it ends."
     },
     "step3": {
       "errors": {
@@ -6252,7 +6252,7 @@
         "li17": "Access continues until end of current billing period",
         "li18": "Data retained for 30 days after cancellation",
         "li19": "Export your data before the retention period ends",
-        "li2": "30-day free trial for new locations",
+        "li2": "14-day free trial for new locations",
         "li20": "Refunds processed within 5-7 business days",
         "li21": "Contact support for billing disputes",
         "li3": "No setup fees or hidden charges",
