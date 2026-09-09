@@ -162,8 +162,11 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
     const handleExport = () => {
         const exportData = orders.map(o => ({
             orderNumber: o.orderNumber,
+            invoiceNumber: o.invoiceNumber ?? o.orderNumber,
             date: formatDate(o.createdAt),
             customer: o.customer?.name || t('orders.table.walkIn'),
+            discount: o.discount ?? 0,
+            tax: o.tax ?? 0,
             total: o.total || 0,
             status: o.paymentStatus || o.status,
             paymentMethod: o.paymentMethod || t('common.unknown')
@@ -171,8 +174,11 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
 
         exportToCSV(exportData, 'receipts_history', {
             orderNumber: t('orders.table.order'),
+            invoiceNumber: t('orders.exportFields.invoiceNumber'),
             date: t('orders.reports.shifts.time'),
             customer: t('orders.table.customer'),
+            discount: t('orders.details.discount', { defaultValue: 'Discount' }),
+            tax: t('orders.details.tax', { defaultValue: 'Tax' }),
             total: `${t('dashboard.stats.revenue')} (${currencySymbol})`,
             status: t('orders.table.status'),
             paymentMethod: t('orders.reports.payments.method')
@@ -303,7 +309,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                                             <Receipt size={16} />
                                                         </div>
                                                         <div>
-                                                            <p className="font-bold text-gray-900 dark:text-white text-xs">#{order.orderNumber}</p>
+                                                            <p className="font-bold text-gray-900 dark:text-white text-xs">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
                                                             <p className="text-xs text-gray-500 font-medium">{formatDate(order.createdAt)}</p>
                                                         </div>
                                                     </div>
@@ -344,7 +350,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                 <div key={order.id} className="p-4 active:bg-gray-50 dark:active:bg-white/5" onClick={() => setSelectedOrder(order)}>
                                     <div className="flex justify-between items-start mb-2">
                                         <div>
-                                            <span className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</span>
+                                            <span className="font-bold text-gray-900 dark:text-white text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</span>
                                             <span className="mx-2 text-gray-300">|</span>
                                             <span className="text-xs text-gray-500">{formatDate(order.createdAt)}</span>
                                         </div>

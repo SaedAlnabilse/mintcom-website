@@ -3878,6 +3878,7 @@
     "exportFields": {
       "customer": "顾客",
       "date": "日期",
+      "invoiceNumber": "发票",
       "orderNumber": "订单号",
       "paymentMethod": "支付方式",
       "serviceCharge": "服务费",
@@ -3885,6 +3886,7 @@
       "total": "合计（{{currency}}）",
       "paymentBreakdown": "支付明细"
     },
+    "receiptOutsidePeriod": "收据搜索忽略所选日期范围——结果可能来自其外部。",
     "filters": {
       "serviceCharge": "服务费",
       "serviceChargeAll": "全部订单",
