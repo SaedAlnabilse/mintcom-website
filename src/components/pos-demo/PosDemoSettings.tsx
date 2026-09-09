@@ -106,6 +106,11 @@ export interface DemoTaxRate {
 
 const QUICK_TAX_RATES = ['0', '5', '10', '16'];
 
+// Module-scope id generator for demo entities created in event handlers.
+// Kept outside the component so render stays pure (react-hooks/purity).
+let demoIdSeq = 0;
+const nextDemoId = (prefix: string): string => `${prefix}-${Date.now()}-${(demoIdSeq += 1)}`;
+
 /* Category icon picker set — mirrors the POS CategoryFormModal AVAILABLE_ICONS. */
 const CATEGORY_ICONS: { key: string; Icon: typeof Coffee }[] = [
   { key: 'utensils', Icon: Utensils },
@@ -794,7 +799,7 @@ export function DemoSettingsScreen({
       }
     } else {
       const newTax: DemoTaxRate = {
-        id: `tax-${Date.now()}`,
+        id: nextDemoId('tax'),
         name: taxEditor.name.trim(),
         rate: rateFraction,
         isDefault: false,
@@ -1275,7 +1280,7 @@ export function DemoSettingsScreen({
       logActivity('Edited product', value.name);
       softCatalogPing('Product updated');
     } else {
-      const id = `p-${Date.now()}`;
+      const id = nextDemoId('p');
       setProducts((list) => [
         ...list,
         {
@@ -1536,7 +1541,7 @@ export function DemoSettingsScreen({
         );
         softCatalogPing('Attribute updated');
       } else {
-        const newId = `ag-${Date.now()}`;
+        const newId = nextDemoId('ag');
         setAddons((groups) => [
           ...groups,
           { id: newId, name: draftName.trim(), multi: draftMulti, required: draftRequired, options: [] },

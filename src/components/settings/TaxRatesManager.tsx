@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Percent, Plus, Star, Trash2, Settings2, X, Search, Edit3 } from 'lucide-react';
+import { Percent, Plus, Trash2, Settings2, X, Search, Edit3 } from 'lucide-react';
 import api, { extractErrorMessage } from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../ConfirmModal';
@@ -98,6 +98,7 @@ export function TaxRatesManager() {
       toast.error(t('settings.taxes.cannotDeleteDefault', 'The default tax rate cannot be deleted. You can edit it instead.'));
       return;
     }
+    if (loadingImpact) return;
     setDeleteTarget(tax);
     setDeleteReferencedCount(0);
     setLoadingImpact(true);
@@ -112,7 +113,7 @@ export function TaxRatesManager() {
   };
 
   const confirmDelete = async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget || deleting) return;
     setDeleting(true);
     try {
       await api.delete(`/api/taxes/${deleteTarget.id}`);

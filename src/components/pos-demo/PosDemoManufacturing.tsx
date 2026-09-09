@@ -6,7 +6,7 @@
  * - Add/edit materials, restock, manufacture/produce, recipe + ingredients
  * Local demo state only.
  */
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -475,9 +475,6 @@ function Segmented<T extends string>({
   );
 }
 
-const primaryCtaCls =
-  'flex w-full items-center justify-center gap-1.5 rounded-xl bg-mintcom-green py-2 text-[13px] font-semibold text-white transition-opacity hover:opacity-95 active:opacity-90';
-
 function Toast({ msg }: { msg: string | null }) {
   return (
     <AnimatePresence>
@@ -555,14 +552,14 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
 
   const q = search.trim().toLowerCase();
 
-  const getAvailable = (ing: Ingredient): number => {
+  const getAvailable = useCallback((ing: Ingredient): number => {
     if (ing.source === 'raw') {
       return rawMaterials.find((m) => m.id === ing.ingredientId)?.quantity ?? 0;
     }
     return subRecipes.find((s) => s.id === ing.ingredientId)?.quantity ?? 0;
-  };
+  }, [rawMaterials, subRecipes]);
 
-  const checkCanMake = (ings: Ingredient[], multiplier = 1) => {
+  const checkCanMake = useCallback((ings: Ingredient[], multiplier = 1) => {
     const missing: { name: string; need: number; have: number; unit: string }[] = [];
     for (const ing of ings) {
       const need = ing.quantity * multiplier;
@@ -572,7 +569,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
       }
     }
     return { ok: missing.length === 0, missing };
-  };
+  }, [getAvailable]);
 
   const deductIngredients = (ings: Ingredient[], multiplier: number) => {
     setRawMaterials((list) =>
@@ -878,12 +875,12 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
 
   const readyToPrepCount = useMemo(
     () => subRecipes.filter((r) => r.active && checkCanMake(r.ingredients, 1).ok).length,
-    [subRecipes, rawMaterials],
+    [subRecipes, checkCanMake],
   );
 
   const shortagePrepCount = useMemo(
     () => subRecipes.filter((r) => r.active && !checkCanMake(r.ingredients, 1).ok).length,
-    [subRecipes, rawMaterials],
+    [subRecipes, checkCanMake],
   );
 
   const filteredRaw = useMemo(() => {
@@ -908,7 +905,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
       list = list.filter((r) => r.active && !checkCanMake(r.ingredients, 1).ok);
     }
     return list;
-  }, [subRecipes, q, prepFilter]);
+  }, [subRecipes, q, prepFilter, checkCanMake]);
 
   const productRecipesCount = useMemo(
     () => finalRecipes.filter((r) => r.menuItemType !== 'addon').length,

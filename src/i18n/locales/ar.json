@@ -3926,7 +3926,13 @@
       "title": "تفاصيل الطلب",
       "total": "الإجمالي",
       "refundReason": "سبب الاسترجاع",
-      "refundedTenders": "المبالغ المستردة"
+      "refundedTenders": "المبالغ المستردة",
+      "loadingShifts": "جارٍ التحقق من ورديات الصندوق النشطة...",
+      "noActiveShiftTitle": "يلزم وجود وردية صندوق نشطة",
+      "noActiveShiftMessage": "لا يمكن تنفيذ الاسترداد بدون وردية صندوق نشطة. يرجى فتح وردية على جهاز الصندوق.",
+      "singleShiftTitle": "وردية الصندوق النشطة",
+      "singleShiftMessage": "سيُسجَّل الاسترداد على {{name}} ({{register}})",
+      "selectShiftTitle": "اختر الصندوق للاسترداد:"
     },
     "export": "تصدير",
     "exportFields": {
@@ -3970,7 +3976,9 @@
       "refundFailed": "فشل في معالجة الاسترداد",
       "refundReasonWeb": "تم الاسترداد عبر لوحة التحكم",
       "refundSuccess": "تم استرداد الطلب بنجاح",
-      "shiftFound": "تم العثور على الوردية"
+      "shiftFound": "تم العثور على الوردية",
+      "noActiveShift": "لا يمكن معالجة الاسترداد بدون وردية نشطة. يرجى فتح وردية أولاً.",
+      "multipleActiveShifts": "هناك عدة ورديات نشطة مفتوحة. يرجى اختيار سجل قبل الاسترداد."
     },
     "payment": {
       "all": "كل المدفوعات",

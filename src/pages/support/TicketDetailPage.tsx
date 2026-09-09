@@ -178,7 +178,7 @@ export const TicketDetailPage = () => {
     }, 8000);
 
     return () => clearInterval(interval);
-  }, [ticketId, ticket?.status, ticket?.messages.length]);
+  }, [ticketId, ticket, ticket?.status, ticket?.messages.length]);
 
   // Scroll to bottom when messages change
   useEffect(() => {

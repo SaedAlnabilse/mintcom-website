@@ -19,7 +19,6 @@ import {
   Inbox,
   Info,
   LayoutGrid,
-  LayoutList,
   List,
   Lock,
   LogOut,
@@ -27,8 +26,6 @@ import {
   Minus,
   PauseCircle,
   Package,
-  PanelRightClose,
-  PanelRightOpen,
   Pencil,
   Percent,
   PieChart,
@@ -52,7 +49,6 @@ import {
   Users,
   Utensils,
   UtensilsCrossed,
-  Wifi,
   X,
 } from 'lucide-react';
 import {
@@ -600,7 +596,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
   const [returnToSalesAfterShift, setReturnToSalesAfterShift] = useState(false);
   const [showHoldModal, setShowHoldModal] = useState(false);
   /** Mirrors POS SalesHeader retail / sort controls */
-  const [retailMode, setRetailMode] = useState(false);
+  const [retailMode] = useState(false);
   /** Sync badge & SyncSliderDrawer state (mirrors POS SyncStatusBadge + SyncSliderDrawer) */
   const [isSyncDrawerOpen, setIsSyncDrawerOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -5319,15 +5315,6 @@ function PayTile({
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between text-text-secondary dark:text-mintcom-textSecondary">
-      <span>{label}</span>
-      <span className="tabular-nums">{value}</span>
-    </div>
-  );
-}
-
 function orderTypeLabel(t: OrderType) {
   if (t === 'dine-in') return 'Dine in';
   if (t === 'takeaway') return 'Takeaway';
@@ -6113,11 +6100,9 @@ function ServiceChargeEditModal({
 function PaymentCheckoutPanel({
   cart,
   orderNo,
-  orderType,
   orderNote = '',
   subtotal,
   discount,
-  discountPct,
   serviceChargeAmount = 0,
   serviceChargeName = 'Service Charge',
   tax,
@@ -6127,7 +6112,6 @@ function PaymentCheckoutPanel({
   onClose,
   onComplete,
   staffName = 'Cashier',
-  businessName,
 }: {
   cart: CartLine[];
   orderNo: number;

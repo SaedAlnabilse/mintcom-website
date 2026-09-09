@@ -8,10 +8,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  Activity,
-  Calendar,
-  Check,
-  ChevronDown,
   Clock,
   TrendingUp,
   X,
@@ -195,13 +191,6 @@ function seedLast30Days(): Point[] {
   ];
 }
 
-const MODE_LABEL: Record<ViewMode, string> = {
-  live: 'Active shift',
-  lastShift: 'Last shift',
-  last7Days: 'Last 7 days',
-  last30Days: 'Last 30 days',
-};
-
 export function DemoSalesTrendChart({
   shiftOpen,
   startedAt,
@@ -218,7 +207,6 @@ export function DemoSalesTrendChart({
   otherSales: number;
 }) {
   const [viewMode, setViewMode] = useState<ViewMode>(shiftOpen ? 'live' : 'lastShift');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [visible, setVisible] = useState<Visible>({
     net: true,
     cash: true,

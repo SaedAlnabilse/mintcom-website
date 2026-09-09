@@ -78,7 +78,6 @@ export function CustomerModal({
   onAdjustPoints,
   onDeleteCustomer,
   currencySymbol = '$',
-  formatAmount = (n) => `${currencySymbol}${n.toFixed(2)}`,
   initialTab = 'profile',
 }: CustomerModalProps) {
   const { t } = useTranslation();

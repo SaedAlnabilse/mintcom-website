@@ -180,7 +180,6 @@ export function DemoProductFormModal({
     return price - price / (1 + rate);
   }, [price, effectiveTaxRate]);
   const netPrice = Math.max(0, price - taxShare);
-  const netCapital = price - cost;
 
   if (!open) return null;
 

@@ -202,7 +202,7 @@ export function BrandLocationsPage() {
         if (isBrandSwitch) hasLoadedOnceRef.current = false;
         prevBrandIdRef.current = brandId as string | undefined;
         fetchLocations();
-    }, [fetchLocations]);
+    }, [fetchLocations, brandId]);
 
     useEffect(() => {
         setCurrentPage(1);

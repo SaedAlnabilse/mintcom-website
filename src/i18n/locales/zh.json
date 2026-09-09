@@ -3875,7 +3875,13 @@
       "title": "订单详情",
       "total": "合计",
       "refundReason": "退款原因",
-      "refundedTenders": "退款明细"
+      "refundedTenders": "退款明细",
+      "loadingShifts": "正在检查在班收银班次...",
+      "noActiveShiftTitle": "需要进行中的收银班次",
+      "noActiveShiftMessage": "没有进行中的收银班次无法处理退款。请先在收银终端开启班次。",
+      "singleShiftTitle": "进行中的收银班次",
+      "singleShiftMessage": "退款将记录在 {{name}}（{{register}}）",
+      "selectShiftTitle": "选择退款收银机："
     },
     "export": "导出",
     "exportFields": {
@@ -3919,7 +3925,9 @@
       "refundFailed": "处理退款失败",
       "refundReasonWeb": "通过网页后台退款",
       "refundSuccess": "订单退款成功",
-      "shiftFound": "已找到班次"
+      "shiftFound": "已找到班次",
+      "noActiveShift": "无法处理退款，因为没有活跃的班次。请先打开一个班次。",
+      "multipleActiveShifts": "有多个活跃班次。请在退款前选择一个收银机。"
     },
     "payment": {
       "all": "全部支付",

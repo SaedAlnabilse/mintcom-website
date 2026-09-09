@@ -3926,7 +3926,13 @@
       "title": "Order Details",
       "total": "Total",
       "refundReason": "Refund Reason",
-      "refundedTenders": "Refunded Tenders"
+      "refundedTenders": "Refunded Tenders",
+      "loadingShifts": "Checking active register shifts...",
+      "noActiveShiftTitle": "Active Register Shift Required",
+      "noActiveShiftMessage": "A refund cannot be processed without an active register shift. Please open a shift on a register terminal.",
+      "singleShiftTitle": "Active Register Shift",
+      "singleShiftMessage": "Refund will be recorded on {{name}} ({{register}})",
+      "selectShiftTitle": "Select Register for Refund:"
     },
     "export": "Export",
     "exportFields": {
@@ -3970,7 +3976,9 @@
       "refundFailed": "Failed to process refund",
       "refundReasonWeb": "Refunded via web dashboard",
       "refundSuccess": "Order refunded successfully",
-      "shiftFound": "Shift found"
+      "shiftFound": "Shift found",
+      "noActiveShift": "A refund cannot be processed without an active register shift. Please open a shift first.",
+      "multipleActiveShifts": "Multiple active shifts are open. Please select a register before refunding."
     },
     "payment": {
       "all": "All Payments",
