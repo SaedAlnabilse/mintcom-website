@@ -19,9 +19,6 @@ describe('settings update payload', () => {
       updatedAt: '2026-05-24T00:00:00.000Z',
       discounts: [{ id: 'discount_1' }],
       paymentMethods: [{ id: 'payment_1' }],
-      operatingSchedule: {
-        monday: { isOpen: true, open: '09:00', close: '22:00' },
-      },
       email: 'store@example.com',
       loginId: 'mintcom-cafe',
       receiptHeader: 'Welcome',
@@ -42,6 +39,20 @@ describe('settings update payload', () => {
     for (const key of FORBIDDEN_APP_SETTINGS_UPDATE_KEYS) {
       expect(payload).not.toHaveProperty(key);
     }
+  });
+
+  it('sends a sanitized weekly operatingSchedule as raw HH:mm wall-time', () => {
+    const payload = buildAppSettingsUpdatePayload({
+      operatingSchedule: {
+        monday: { isOpen: true, open: '09:00', close: '22:00' },
+        funday: { isOpen: true, open: '09:00', close: '22:00' },
+        tuesday: { isOpen: true, open: '9am', close: '22:00' },
+      },
+    });
+
+    expect(payload.operatingSchedule).toEqual({
+      monday: { isOpen: true, open: '09:00', close: '22:00' },
+    });
   });
 
   it('builds the sales setup fields in the backend format', () => {

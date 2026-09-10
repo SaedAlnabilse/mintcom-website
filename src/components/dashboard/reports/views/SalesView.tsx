@@ -120,7 +120,7 @@ interface SalesViewProps {
 }
 
 export const SalesView = React.memo(function SalesView({ salesData, selectedDateRange, setShowPayInOutModal }: SalesViewProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { currencySymbol } = useCurrency();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
@@ -309,7 +309,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             customContent: (
               <>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {formatDurationMs(t, hoursToMs(salesData.totalHoursWorked ?? 0))}
+                  {formatDurationMs(hoursToMs(salesData.totalHoursWorked ?? 0), i18n.language)}
                 </p>
                 <p className="sentence-case-text text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
                   {t('orders.reports.sales.staffHours')}

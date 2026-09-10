@@ -692,11 +692,15 @@ export function DemoDashboardScreen({
     };
   }, [renderedAt, shift.startedAt]);
 
-  // POS dashboard card: "0h 9m"
-  const hoursLabel = `${hoursParts.h}h ${hoursParts.m}m`;
-  // POS closed review: "0 hours 9 minutes"
-  const hoursLongLabel = `${hoursParts.h} hours ${hoursParts.m} minutes`;
-  const displayHoursLabel = isOpen ? hoursLabel : '8h 0m';
+  // Same shape as utils/shiftDuration formatDurationMs ("142h 19m" / "4h" / "45m").
+  // POS dashboard card + closed review both use the short form.
+  const hoursLabel =
+    hoursParts.h === 0
+      ? `${hoursParts.m}m`
+      : hoursParts.m === 0
+        ? `${hoursParts.h}h`
+        : `${hoursParts.h}h ${hoursParts.m}m`;
+  const displayHoursLabel = isOpen ? hoursLabel : '8h';
 
   // POS: formatCurrentDateInJordan('EEEE, d MMM yyyy') → "Tuesday, 14 Jul 2026"
   const dateLabel = new Date().toLocaleDateString('en-GB', {
@@ -968,7 +972,7 @@ export function DemoDashboardScreen({
                   payIn: shift.payIn,
                   payOut: shift.payOut,
                   orders: shift.orders,
-                  hoursLabel: hoursLongLabel,
+                  hoursLabel,
                   startedAt: shift.startedAt,
                 };
                 onCloseShift(amount);

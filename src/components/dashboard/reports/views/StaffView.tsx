@@ -49,7 +49,7 @@ interface StaffViewProps {
 }
 
 export const StaffView = React.memo(function StaffView({ shifts, selectedEmployeeId, employees, rangeEnd }: StaffViewProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { locationSlug, slug } = useParams();
   const activeSlug = locationSlug || slug;
@@ -201,7 +201,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
             {/* Same "2h 15m" shape the Shifts report uses — decimal hours read
                 as a bare number and round a short shift down to "0.0". */}
             <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {formatDurationMs(t, totalMs)}
+              {formatDurationMs(totalMs, i18n.language)}
             </p>
           </div>
 

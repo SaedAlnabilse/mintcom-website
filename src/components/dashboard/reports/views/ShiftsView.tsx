@@ -64,7 +64,7 @@ const toNumber = (value: unknown) => {
 const MIN_MS_FOR_RATE = 5 * 60_000;
 
 export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: ShiftsViewProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -165,7 +165,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: S
             <p className="dashboard-stat-title">{t('orders.reports.staff.totalHours')}</p>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-            {formatDurationMs(t, totals.ms)}
+            {formatDurationMs(totals.ms, i18n.language)}
           </p>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.shifts.timeOnTill', { defaultValue: 'Time on the till' })}</p>
         </div>
@@ -243,8 +243,8 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: S
                     <td className="px-5 py-5 text-start">
                       <span className="text-xs font-bold text-gray-900 dark:text-white whitespace-nowrap">
                         {formatDurationMs(
-                          t,
                           getShiftDurationMs(shift.startTime, shift.endTime, openShiftCutoff),
+                          i18n.language,
                         )}
                       </span>
                     </td>

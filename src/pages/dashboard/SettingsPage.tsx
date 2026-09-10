@@ -595,6 +595,7 @@ export function SettingsPage() {
         : new Set<string>();
       if (selectedLogo || removeLogo) changedKeys.add('logo');
       if (selectedReceiptLogo) changedKeys.add('receiptLogo');
+      if (hasScheduleChanges) changedKeys.add('operatingSchedule');
 
       const submissionData = buildAppSettingsUpdatePayload(data, changedKeys);
 

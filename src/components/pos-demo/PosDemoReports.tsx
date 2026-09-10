@@ -2036,9 +2036,14 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
   }, [itemMainTab, filteredItemBreakdown, filteredModifierBreakdown, summary.orders]);
 
   const hoursWorked = useMemo(() => {
+    // Same shape as utils/shiftDuration formatDurationMs ("142h 19m" / "4h" / "45m").
     const fmt = (ms: number) => {
-      const h = Math.floor(ms / 3_600_000);
-      const m = Math.floor((ms % 3_600_000) / 60_000);
+      const totalMinutes = Math.floor(Math.max(ms, 0) / 60_000);
+      if (totalMinutes < 1) return '<1m';
+      const h = Math.floor(totalMinutes / 60);
+      const m = totalMinutes % 60;
+      if (h === 0) return `${m}m`;
+      if (m === 0) return `${h}h`;
       return `${h}h ${m}m`;
     };
     if (activeShift) {

@@ -1,4 +1,18 @@
-import type { TFunction } from 'i18next';
+/**
+ * UI locale for Intl narrow units. Callers pass their i18next language
+ * (e.g. `i18n.language`); the default keeps pure-logic consumers free of
+ * the app's i18n singleton.
+ *
+ * Bare "ar" falls back to Western digits in ICU, so it is normalized to
+ * ar-EG (Eastern Arabic digits), matching the rest of the Arabic UI.
+ * Region variants (ar-SA, ar-EG, …) already use Eastern digits untouched.
+ */
+const normalizeDurationLocale = (locale: string): string => {
+    if (!locale) return 'en-US';
+    const low = locale.toLowerCase();
+    if (low === 'ar') return 'ar-EG';
+    return locale;
+};
 
 /**
  * Elapsed time of a shift in milliseconds.
@@ -29,28 +43,49 @@ export const getShiftDurationMs = (
 };
 
 /**
- * Human duration ("2h 15m" / "45m"). Anything under a minute collapses to
- * "<1m" so a one-second shift doesn't read as a zero-length one.
+ * Human duration ("142h 19m" / "4h" / "45m"). Anything under a minute
+ * collapses to "<1m" so a one-second shift doesn't read as a zero-length
+ * one. Zero minutes are dropped ("4h", not "4h 0m").
+ *
+ * Units come from Intl.NumberFormat (narrow), so digits and unit labels
+ * follow the UI locale (incl. RTL) instead of hardcoded "h"/"m".
+ * Times are raw elapsed wall-time — never UTC-converted.
  */
-export const formatDurationMs = (t: TFunction, ms: number | null): string => {
-    if (ms === null) return '-';
+const hourPart = (value: number, locale: string): string =>
+    new Intl.NumberFormat(locale, {
+        style: 'unit',
+        unit: 'hour',
+        unitDisplay: 'narrow',
+    }).format(value);
 
-    const totalMinutes = Math.floor(ms / 60_000);
+const minutePart = (value: number, locale: string): string =>
+    new Intl.NumberFormat(locale, {
+        style: 'unit',
+        unit: 'minute',
+        unitDisplay: 'narrow',
+    }).format(value);
+
+export const formatDurationMs = (ms: number | null, locale: string = 'en-US'): string => {
+    const resolved = normalizeDurationLocale(locale);
+    if (ms === null || ms === undefined) return '-';
+
+    const totalMinutes = Math.floor(Math.max(ms, 0) / 60_000);
     if (totalMinutes < 1) {
-        return t('orders.reports.shifts.durationUnderMinute', { defaultValue: '<1m' });
+        return `<${minutePart(1, resolved)}`;
     }
 
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
 
     if (hours === 0) {
-        return t('orders.reports.shifts.durationMinutes', { minutes, defaultValue: '{{minutes}}m' });
+        return minutePart(minutes, resolved);
     }
-    return t('orders.reports.shifts.durationHoursMinutes', {
-        hours,
-        minutes,
-        defaultValue: '{{hours}}h {{minutes}}m',
-    });
+    if (minutes === 0) {
+        return hourPart(hours, resolved);
+    }
+    const h = hourPart(hours, resolved);
+    const m = minutePart(minutes, resolved);
+    return resolved.toLowerCase().startsWith('zh') ? `${h}${m}` : `${h} ${m}`;
 };
 
 /**

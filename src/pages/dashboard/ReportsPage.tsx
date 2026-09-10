@@ -67,7 +67,7 @@ interface EmployeeOption {
 }
 
 export function ReportsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { account, currentEstablishment } = useAuth();
   const { currencySymbol } = useCurrency();
   usePermissionGuard(['view_reports']);
@@ -533,7 +533,7 @@ export function ReportsPage() {
     const hoursWorked = (durationMs / (1000 * 60 * 60)).toLocaleString(localeTag, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     // Decimal hours round a short shift down to "0.0"; ship the readable
     // h/m duration alongside it so exports match what the table shows.
-    const duration = formatDurationMs(t, durationMs);
+    const duration = formatDurationMs(durationMs, i18n.language);
     const variance = s.discrepancy ?? s.variance ?? 0;
     // A drawer the POS closed by itself was balanced to the expected amount,
     // so its 0.00 is not a verified count. Never export it as one.
@@ -648,7 +648,7 @@ export function ReportsPage() {
       // Same duration shape as the screen it was exported from.
       metric(
           t('orders.reports.sales.hours'),
-          formatDurationMs(t, hoursToMs(salesData.totalHoursWorked ?? 0)),
+          formatDurationMs(hoursToMs(salesData.totalHoursWorked ?? 0), i18n.language),
       ),
     );
     return rows;

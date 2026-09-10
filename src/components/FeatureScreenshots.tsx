@@ -1675,7 +1675,7 @@ function SimpleUiShot() {
   const displayPayIn = 85;
   const displayPayOut = 40;
   const displayOrders = 42;
-  const displayHours = '8h 0m';
+  const displayHours = '8h';
 
   const netPts = [80, 140, 220, 310, 420, 540, 680, 820, 980, 1120, 1260, 1397];
   const cashPts = [30, 55, 90, 120, 160, 200, 250, 300, 350, 400, 430, 465];
