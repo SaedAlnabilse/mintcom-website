@@ -41,6 +41,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
     const [statusFilter, setStatusFilter] = useState('all');
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [isExporting, setIsExporting] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
     // Fetch orders when filters change
@@ -159,20 +160,59 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
         }
     };
 
-    const handleExport = () => {
-        const exportData = orders.map(o => ({
-            orderNumber: o.orderNumber,
-            invoiceNumber: o.invoiceNumber ?? o.orderNumber,
-            date: formatDate(o.createdAt),
-            customer: o.customer?.name || t('orders.table.walkIn'),
-            discount: o.discount ?? 0,
-            tax: o.tax ?? 0,
-            total: o.total || 0,
-            status: o.paymentStatus || o.status,
-            paymentMethod: o.paymentMethod || t('common.unknown')
-        }));
+    const handleExport = async () => {
+        if (isExporting) return;
+        setIsExporting(true);
+        try {
+            // Fetch ALL matching receipts across every page — not just the 20 visible rows.
+            let allOrders: Order[] = [];
+            if (statusFilter === 'HELD') {
+                const response = await api.get('/api/held-orders');
+                allOrders = (Array.isArray(response.data) ? response.data : []).map((h: Record<string, any>) => ({
+                    id: h.id,
+                    orderNumber: h.nickname,
+                    total: h.orderData?.total || 0,
+                    paymentMethod: t('common.notAvailable'),
+                    paymentStatus: 'HELD',
+                    status: 'HELD',
+                    createdAt: h.pinnedAt,
+                    items: [],
+                    user: { username: h.heldBy?.username || t('common.unknown') }
+                } as unknown as Order));
+            } else {
+                const baseParams: Record<string, any> = {
+                    startDate,
+                    endDate,
+                    employeeId: employeeId || undefined,
+                };
+                if (statusFilter !== 'all') baseParams.status = statusFilter;
+                for (let exportPage = 1; exportPage <= 100; exportPage++) {
+                    const res = await api.get('/reports/orders-history', {
+                        params: { ...baseParams, page: exportPage, limit: 100 },
+                    });
+                    const batch: Order[] = res.data.orders || res.data || [];
+                    const rows = Array.isArray(batch) ? batch : [];
+                    allOrders.push(...rows);
+                    const total = res.data.totalOrders || res.data.total || 0;
+                    if (rows.length === 0 || rows.length < 100) break;
+                    if (total && allOrders.length >= total) break;
+                }
+            }
+            const exportData = allOrders.map(o => ({
+                orderNumber: o.orderNumber,
+                invoiceNumber: o.invoiceNumber ?? o.orderNumber,
+                date: formatDate(o.createdAt),
+                customer: o.customer?.name || t('orders.table.walkIn'),
+                discount: o.discount ?? 0,
+                tax: o.tax ?? 0,
+                total: o.total || 0,
+                status: o.paymentStatus || o.status,
+                paymentMethod: o.paymentMethod || t('common.unknown')
+            }));
 
-        exportToCSV(exportData, 'receipts_history', {
+            if (exportData.length === 0) return;
+
+            exportToCSV(exportData, `receipts_history_${exportData.length}_records`, {
             orderNumber: t('orders.table.order'),
             invoiceNumber: t('orders.exportFields.invoiceNumber'),
             date: t('orders.reports.shifts.time'),
@@ -183,6 +223,11 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
             status: t('orders.table.status'),
             paymentMethod: t('orders.reports.payments.method')
         });
+        } catch (err) {
+            console.error('Failed to export receipts', err);
+        } finally {
+            setIsExporting(false);
+        }
     };
 
     return (
@@ -256,7 +301,8 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                     {canExport && (
                         <button
                             onClick={handleExport}
-                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.05] text-gray-900 dark:text-white font-bold text-xs hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                            disabled={isExporting}
+                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.05] text-gray-900 dark:text-white font-bold text-xs hover:bg-gray-50 dark:hover:bg-white/5 transition-all disabled:opacity-50"
                         >
                             <Download size={16} className="text-mintcom-green" />
                             <span>{t('orders.export')}</span>

@@ -156,6 +156,7 @@ export function ActivityLogsPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalLogs, setTotalLogs] = useState(0);
+  const [isExporting, setIsExporting] = useState(false);
   const [selectedLog, setSelectedLog] = useState<ActivityLog | null>(null);
 
   const myStaffId = useMemo(() => {
@@ -406,34 +407,82 @@ export function ActivityLogsPage() {
     [t],
   );
 
-  const handleExport = (format: ExportFormat) => {
-    const logsToExport = Array.isArray(logs) ? logs : [];
-    const exportData = logsToExport.map(l => ({
-      time: formatDate(l.timestamp),
-      user: getActorName(l, t('activity.owner')),
-      action: getActionLabel(l.action),
-      desc: l.description,
-      data: formatMetadataForExport(l.metadata, metadataOptions),
-    }));
-
-    if (exportData.length === 0) {
+  const handleExport = async (format: ExportFormat) => {
+    if (isExporting) return;
+    if (userFilter === USER_FILTER_ME && !myPerformedById) {
       toast.error(t('dashboard.messages.noData', { defaultValue: 'No data to export' }));
       return;
     }
+    setIsExporting(true);
+    toast.loading(`${t('common.export', { defaultValue: 'Export' })}...`, { id: 'activity-export' });
+    try {
+      // Rebuild the exact list filters so the file contains ALL matching
+      // logs across every page — not just the 10 visible rows.
+      const baseParams: Record<string, any> = { search: searchQuery };
+      if (actionFilter !== 'all') baseParams.action = actionFilter;
+      if (resourceFilter !== 'all') baseParams.resource = resourceFilter;
+      if (resolvedPerformedById) baseParams.performedById = resolvedPerformedById;
+      if (dateRange.start) {
+        const start = new Date(dateRange.start);
+        start.setHours(0, 0, 0, 0);
+        baseParams.startDate = start.toISOString();
+      }
+      if (dateRange.end) {
+        const end = new Date(dateRange.end);
+        end.setHours(23, 59, 59, 999);
+        baseParams.endDate = end.toISOString();
+      }
 
-    return exportTable(format, {
-      filename: 'activity_log',
-      title: t('activity.title'),
-      meta: currentEstablishment?.name ? [{ label: t('common.location'), value: currentEstablishment.name }] : undefined,
-      columns: [
-        { key: 'time', label: t('activity.time') },
-        { key: 'user', label: t('activity.user') },
-        { key: 'action', label: t('activity.action') },
-        { key: 'desc', label: t('activity.details') },
-        { key: 'data', label: t('activity.data', { defaultValue: 'Data' }) },
-      ],
-      rows: exportData,
-    });
+      const allLogs: ActivityLog[] = [];
+      const EXPORT_PAGE_SIZE = 100;
+      for (let exportPage = 1; exportPage <= 100; exportPage++) {
+        const response = await api.get('/activity-log', {
+          params: { ...baseParams, page: exportPage, limit: EXPORT_PAGE_SIZE },
+        });
+        const batch = response.data.logs || response.data;
+        const rows: ActivityLog[] = Array.isArray(batch) ? batch : [];
+        allLogs.push(...rows);
+        const total = response.data.total || 0;
+        if (rows.length === 0) break;
+        if (rows.length < EXPORT_PAGE_SIZE) break;
+        if (total && allLogs.length >= total) break;
+      }
+
+      const exportData = allLogs.map(l => ({
+        time: formatDate(l.timestamp),
+        user: getActorName(l, t('activity.owner')),
+        action: getActionLabel(l.action),
+        desc: l.description,
+        data: formatMetadataForExport(l.metadata, metadataOptions),
+      }));
+
+      if (exportData.length === 0) {
+        toast.error(t('dashboard.messages.noData', { defaultValue: 'No data to export' }), { id: 'activity-export' });
+        return;
+      }
+
+      await exportTable(format, {
+        filename: 'activity_log',
+        title: t('activity.title'),
+        meta: [
+          ...(currentEstablishment?.name ? [{ label: t('common.location'), value: currentEstablishment.name }] : []),
+          { label: t('common.datePeriods.all', { defaultValue: 'Records' }), value: String(exportData.length) },
+        ],
+        columns: [
+          { key: 'time', label: t('activity.time') },
+          { key: 'user', label: t('activity.user') },
+          { key: 'action', label: t('activity.action') },
+          { key: 'desc', label: t('activity.details') },
+          { key: 'data', label: t('activity.data', { defaultValue: 'Data' }) },
+        ],
+        rows: exportData,
+      });
+      toast.success(`${t('common.export', { defaultValue: 'Exported' })} (${exportData.length})`, { id: 'activity-export' });
+    } catch {
+      toast.error(t('activity.syncError'), { id: 'activity-export' });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -457,7 +506,7 @@ export function ActivityLogsPage() {
 
         <div className="flex items-center gap-3">
           {canExport && (
-            <ExportMenu onExport={handleExport} />
+            <ExportMenu onExport={handleExport} disabled={isExporting} />
           )}
         </div>
       </div>

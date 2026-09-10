@@ -3174,12 +3174,17 @@
   },
   "legal": {
     "consent": {
-      "acceptButton": "接受并继续",
-      "body": "我们的《服务条款》和《隐私政策》已更新。请查阅并接受后继续使用 Mintcom。",
-      "declineButton": "拒绝并退出登录",
-      "reviewPrivacy": "查阅隐私政策",
-      "reviewTerms": "查阅服务条款",
-      "title": "我们更新了政策"
+      "title": "服务条款更新",
+      "body": "我们正在更新服务条款和隐私政策。现在是回顾它们的好时机。",
+      "changelogLink": "查看变更内容",
+      "gotItButton": "知道了",
+      "footnote": "更新政策有助于保护您的账户安全。"
+    },
+    "changelog": {
+      "title": "政策变更日志",
+      "subtitle": "Mintcom 服务条款和隐私政策每一次更新的完整记录。",
+      "empty": "目前尚未发布任何政策更新。",
+      "current": "当前版本"
     },
     "cookies": {
       "backToHome": "返回首页",
@@ -3551,6 +3556,10 @@
     "terms": {
       "description": "查阅使用 Mintcom 平台和服务的服务条款。",
       "title": "服务条款 | Mintcom"
+    },
+    "changelog": {
+      "description": "查看 Mintcom POS 服务条款和隐私政策的更新历史记录。",
+      "title": "政策变更日志 | Mintcom"
     },
     "howItWorks": {
       "title": "使用流程 | Mintcom POS",

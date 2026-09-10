@@ -213,10 +213,18 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
   const fetchAllInvoices = useCallback(async (): Promise<SubscriptionInvoiceData[]> => {
     if (!establishmentId) return [];
     if (total <= invoices.length) return invoices;
-    const response = await api.get<InvoiceListResponse>('/api/accounts/invoices', {
-      params: { establishmentId, page: 1, limit: 100 },
-    });
-    return response.data.invoices || [];
+    const all: SubscriptionInvoiceData[] = [];
+    for (let fetchPage = 1; fetchPage <= 50; fetchPage++) {
+      const response = await api.get<InvoiceListResponse>('/api/accounts/invoices', {
+        params: { establishmentId, page: fetchPage, limit: 100 },
+      });
+      const batch = response.data.invoices || [];
+      all.push(...batch);
+      const totalCount = response.data.total || 0;
+      if (batch.length === 0 || batch.length < 100) break;
+      if (totalCount && all.length >= totalCount) break;
+    }
+    return all;
   }, [establishmentId, invoices, total]);
 
   const withExport = useCallback(

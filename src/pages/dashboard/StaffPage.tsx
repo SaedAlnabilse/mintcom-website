@@ -336,7 +336,9 @@ export function StaffPage() {
   };
 
   const handleExport = (format: ExportFormat) => {
-    const exportData = staff.map(s => ({
+    // Export the filtered list (all pages) so the file matches the filters
+    // on screen — not just the visible page, and not the unfiltered roster.
+    const exportData = (Array.isArray(filteredStaff) ? filteredStaff : []).map(s => ({
       username: s.username,
       name: s.name,
       role: getRoleLabel(s),

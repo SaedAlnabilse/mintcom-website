@@ -19,7 +19,7 @@ import { getConsentStatus, recordConsent } from '../services/legalConsent';
  */
 export function ConsentReprompt() {
   const { t } = useTranslation();
-  const { isAuthenticated, isLoading, account, logout } = useAuth();
+  const { isAuthenticated, isLoading, account } = useAuth();
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   // Track which account id we've already checked so we fetch once per session.
@@ -50,9 +50,10 @@ export function ConsentReprompt() {
     };
   }, [isLoading, isAuthenticated, isOwner, account]);
 
-  const handleAccept = async () => {
+  const handleGotIt = async () => {
     setSubmitting(true);
     try {
+      // Record acceptance silently — the user acknowledges they've seen the update.
       await recordConsent(true);
       setOpen(false);
     } catch {
@@ -60,12 +61,6 @@ export function ConsentReprompt() {
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const handleDecline = async () => {
-    setSubmitting(true);
-    // logout() handles its own overlay + hard redirect to /login.
-    await logout();
   };
 
   return (
@@ -95,52 +90,39 @@ export function ConsentReprompt() {
               <h3 className="font-barlow text-2xl font-bold text-gray-900 dark:text-white">
                 {t('legal.consent.title')}
               </h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                {t('legal.consent.body')}
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                {t('legal.consent.body')}{' '}
+                <a
+                  href="/legal/changelog"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-mintcom-green font-semibold hover:underline"
+                >
+                  {t('legal.consent.changelogLink')}
+                </a>
+                .
               </p>
-            </div>
-
-            <div className="mb-6 flex flex-col gap-2 text-center">
-              <a
-                href="/legal/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-bold text-mintcom-green hover:underline"
-              >
-                {t('legal.consent.reviewPrivacy')}
-              </a>
-              <a
-                href="/legal/terms"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-bold text-mintcom-green hover:underline"
-              >
-                {t('legal.consent.reviewTerms')}
-              </a>
             </div>
 
             <div className="flex flex-col gap-3">
               <motion.button
                 whileHover={{ y: -1 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={handleAccept}
+                onClick={handleGotIt}
                 disabled={submitting}
-                className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all disabled:opacity-60"
+                className="group relative inline-flex h-14 w-full items-center justify-center overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all disabled:opacity-60"
               >
                 <span
                   aria-hidden
                   className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full"
                 />
-                <span className="relative">{t('legal.consent.acceptButton')}</span>
+                <span className="relative">{t('legal.consent.gotItButton')}</span>
               </motion.button>
-              <button
-                onClick={handleDecline}
-                disabled={submitting}
-                className="w-full rounded-2xl border border-gray-200 py-3 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-60 dark:border-white/10 dark:text-gray-400 dark:hover:bg-white/5"
-              >
-                {t('legal.consent.declineButton')}
-              </button>
             </div>
+
+            <p className="mt-4 text-center text-xs text-gray-400 dark:text-gray-500">
+              {t('legal.consent.footnote', { defaultValue: 'Updating policies helps us protect your account.' })}
+            </p>
           </motion.div>
         </div>
       )}

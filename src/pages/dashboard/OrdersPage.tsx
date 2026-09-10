@@ -196,6 +196,7 @@ export function OrdersPage() {
   const [completedOrderCount, setCompletedOrderCount] = useState(0);
   const [completedOrderRevenue, setCompletedOrderRevenue] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
   const [, setError] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [selectedRefundOrder, setSelectedRefundOrder] = useState<Order | null>(null);
@@ -1165,41 +1166,174 @@ export function OrdersPage() {
     return t(`orders.status.${statusKey}` as any);
   };
 
-  const handleExport = (format: ExportFormat) => {
-    const exportData = orders.map(o => ({
-      invoiceNumber: (o as any).invoiceNumber ?? o.orderNumber,
-      orderNumber: o.orderNumber,
-      date: formatDate(o.createdAt),
-      customer: o.customer?.name || t('orders.table.walkIn'),
-      total: o.total,
-      serviceChargeAmount: o.serviceChargeAmount || 0,
-      status: o.paymentStatus || o.status,
-      paymentMethod: o.paymentMethod,
-      paymentBreakdown: formatPaymentBreakdown(o),
-    }));
+  const handleExport = async (format: ExportFormat) => {
+    if (isExporting) return;
+    setIsExporting(true);
+    toast.loading(t('common.export', { defaultValue: 'Exporting' }) + '...', { id: 'orders-export' });
+    try {
+      const effectiveStatusFilter =
+        !canUsePosFeatures && statusFilter === 'HELD' ? 'all' : statusFilter;
 
-    if (exportData.length === 0) {
-      toast.error(t('dashboard.messages.noData', { defaultValue: 'No data to export' }));
-      return;
+      // Same date-window logic as fetchOrders so the export respects the
+      // period / shift filters currently on screen.
+      let start: Date;
+      let end: Date;
+      if (selectedEmployeeShift) {
+        start = new Date(selectedEmployeeShift.startTime);
+        end = selectedEmployeeShift.endTime ? new Date(selectedEmployeeShift.endTime) : new Date();
+      } else if (selectedDateRange === 'current_shift' && activeShiftStartTime) {
+        start = new Date(activeShiftStartTime);
+        end = new Date();
+      } else if (selectedDateRange === 'previous_shift' && previousShiftStartTime && previousShiftEndTime) {
+        start = new Date(previousShiftStartTime);
+        end = new Date(previousShiftEndTime);
+      } else if (selectedDateRange === 'last_24_hours') {
+        end = new Date();
+        start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+      } else if (selectedDateRange === 'all') {
+        start = new Date(0);
+        end = new Date(8640000000000000);
+      } else {
+        start = startOfDay(new Date(startDate));
+        end = endOfDay(new Date(endDate));
+      }
+
+      const search = (debouncedSearchQuery || searchQuery).trim();
+      let allOrders: Order[] = [];
+
+      if (effectiveStatusFilter === 'HELD') {
+        // Held orders endpoint returns the full list (no server pagination).
+        const heldRes = await api.get('/api/held-orders');
+        const raw = Array.isArray(heldRes.data) ? heldRes.data : [];
+        allOrders = raw.map((h: Record<string, any>) => ({
+          id: h.id,
+          orderNumber: h.nickname,
+          total: h.orderData?.total || 0,
+          subtotal: h.orderData?.subtotal || 0,
+          tax: h.orderData?.tax || 0,
+          serviceChargeAmount: h.orderData?.serviceChargeAmount || 0,
+          discount: h.orderData?.discount?.amount || 0,
+          paymentMethod: t('common.none'),
+          paymentStatus: 'HELD',
+          status: 'HELD',
+          createdAt: h.pinnedAt,
+          items: (h.orderData?.items || []).map((item: Record<string, any>) => ({
+            id: item.itemId,
+            name: item.name,
+            quantity: item.quantity,
+            price: item.basePrice,
+            total: item.finalPrice,
+          })),
+          user: { username: h.heldBy?.username || t('common.notAvailable') },
+          note: h.orderData?.note,
+        }));
+      } else {
+        // Same filter params as the list fetch, but loop every page so the
+        // file contains ALL matching orders — not just the visible page.
+        const baseParams: Record<string, any> = {
+          startDate: start.toISOString(),
+          endDate: end.toISOString(),
+          ...(selectedEmployeeId ? { employeeId: selectedEmployeeId } : {}),
+        };
+        if (effectiveStatusFilter !== 'all') baseParams.status = effectiveStatusFilter;
+        if (paymentFilter !== 'all') {
+          if (paymentFilter.startsWith('CARD_TYPE:')) {
+            baseParams.paymentMethod = 'CARD';
+            baseParams.cardType = paymentFilter.replace('CARD_TYPE:', '');
+          } else if (paymentFilter.startsWith('OTHER_METHOD:')) {
+            baseParams.paymentMethod = 'OTHER';
+            baseParams.otherPaymentMethod = paymentFilter.replace('OTHER_METHOD:', '');
+          } else {
+            baseParams.paymentMethod = paymentFilter;
+          }
+        }
+        if (serviceChargeFilter !== 'all') baseParams.serviceCharge = serviceChargeFilter;
+        if (search) baseParams.search = search;
+
+        const EXPORT_PAGE_SIZE = 100;
+        for (let exportPage = 1; exportPage <= 100; exportPage++) {
+          const res = await api.get('/reports/orders-history', {
+            params: { ...baseParams, page: exportPage, limit: EXPORT_PAGE_SIZE },
+          });
+          const data = res.data || {};
+          const batch: Order[] = Array.isArray(data.orders)
+            ? data.orders
+            : Array.isArray(data) ? data : [];
+          allOrders.push(...batch);
+          const totalOrders = data.totalOrders || data.total || 0;
+          if (batch.length === 0) break;
+          if (batch.length < EXPORT_PAGE_SIZE) break;
+          if (totalOrders && allOrders.length >= totalOrders) break;
+        }
+      }
+
+      // Keep the on-screen sort order in the exported file.
+      if (sortConfig) {
+        const sorted = [...allOrders];
+        sorted.sort((a, b) => {
+          let aValue: any = a[sortConfig.key as keyof Order];
+          let bValue: any = b[sortConfig.key as keyof Order];
+          if (sortConfig.key === 'staff') {
+            aValue = a.refundedByName || a.employeeName || a.user?.username || '';
+            bValue = b.refundedByName || b.employeeName || b.user?.username || '';
+          } else if (sortConfig.key === 'date') {
+            aValue = new Date(a.createdAt).getTime();
+            bValue = new Date(b.createdAt).getTime();
+          } else if (sortConfig.key === 'status') {
+            aValue = a.paymentStatus || a.status || '';
+            bValue = b.paymentStatus || b.status || '';
+          }
+          if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+          if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+          return 0;
+        });
+        allOrders = sorted;
+      }
+
+      const exportData = allOrders.map(o => ({
+        invoiceNumber: (o as any).invoiceNumber ?? o.orderNumber,
+        orderNumber: o.orderNumber,
+        date: formatDate(o.createdAt),
+        customer: o.customer?.name || t('orders.table.walkIn'),
+        total: o.total,
+        serviceChargeAmount: o.serviceChargeAmount || 0,
+        status: o.paymentStatus || o.status,
+        paymentMethod: o.paymentMethod,
+        paymentBreakdown: formatPaymentBreakdown(o),
+      }));
+
+      if (exportData.length === 0) {
+        toast.error(t('dashboard.messages.noData', { defaultValue: 'No data to export' }), { id: 'orders-export' });
+        return;
+      }
+
+      await exportTable(format, {
+        filename: 'orders_history',
+        title: t('orders.title'),
+        meta: [
+          ...(currentEstablishment?.name ? [{ label: t('common.location'), value: currentEstablishment.name }] : []),
+          { label: t('common.datePeriods.all', { defaultValue: 'Records' }), value: String(exportData.length) },
+        ],
+        columns: [
+          { key: 'invoiceNumber', label: t('orders.exportFields.invoiceNumber', { defaultValue: 'Invoice' }) },
+          { key: 'orderNumber', label: t('orders.exportFields.orderNumber') },
+          { key: 'date', label: t('orders.exportFields.date') },
+          { key: 'customer', label: t('orders.exportFields.customer') },
+          { key: 'total', label: t('orders.exportFields.total', { currency: currencySymbol }) },
+          { key: 'serviceChargeAmount', label: t('orders.exportFields.serviceCharge', { defaultValue: 'Service Charge' }) },
+          { key: 'status', label: t('orders.exportFields.status') },
+          { key: 'paymentMethod', label: t('orders.exportFields.paymentMethod') },
+          { key: 'paymentBreakdown', label: t('orders.exportFields.paymentBreakdown', { defaultValue: 'Payment Breakdown' }) },
+        ],
+        rows: exportData,
+      });
+      toast.success(t('common.export', { defaultValue: 'Exported' }) + ` (${exportData.length})`, { id: 'orders-export' });
+    } catch (err) {
+      console.error('[Orders] export failed', err);
+      toast.error(t('dashboard.messages.noData', { defaultValue: 'Export failed' }), { id: 'orders-export' });
+    } finally {
+      setIsExporting(false);
     }
-
-    return exportTable(format, {
-      filename: 'orders_history',
-      title: t('orders.title'),
-      meta: currentEstablishment?.name ? [{ label: t('common.location'), value: currentEstablishment.name }] : undefined,
-      columns: [
-        { key: 'invoiceNumber', label: t('orders.exportFields.invoiceNumber', { defaultValue: 'Invoice' }) },
-        { key: 'orderNumber', label: t('orders.exportFields.orderNumber') },
-        { key: 'date', label: t('orders.exportFields.date') },
-        { key: 'customer', label: t('orders.exportFields.customer') },
-        { key: 'total', label: t('orders.exportFields.total', { currency: currencySymbol }) },
-        { key: 'serviceChargeAmount', label: t('orders.exportFields.serviceCharge', { defaultValue: 'Service Charge' }) },
-        { key: 'status', label: t('orders.exportFields.status') },
-        { key: 'paymentMethod', label: t('orders.exportFields.paymentMethod') },
-        { key: 'paymentBreakdown', label: t('orders.exportFields.paymentBreakdown', { defaultValue: 'Payment Breakdown' }) },
-      ],
-      rows: exportData,
-    });
   };
 
   return (
@@ -1257,7 +1391,7 @@ export function OrdersPage() {
           )}
 
           {canExport && (
-            <ExportMenu onExport={handleExport} />
+            <ExportMenu onExport={handleExport} disabled={isExporting} />
           )}
         </div>
       </div>

@@ -369,19 +369,21 @@ export function ReportsPage() {
           break;
         }
         case 'staff-sales': {
-          const staffSalesRes = await api.get('/reports/shifts', { params: { ...shiftScopedParams, limit: 50 } });
+          // No `limit` — the backend returns all shifts in range when omitted,
+          // so the table paging + export both cover every shift, not just 50.
+          const staffSalesRes = await api.get('/reports/shifts', { params: { ...shiftScopedParams } });
           if (isStale()) return;
           setShifts(normalizeShifts(staffSalesRes.data));
           break;
         }
         case 'shifts': {
-          const shiftsRes = await api.get('/reports/shifts', { params: { ...shiftScopedParams, limit: 100 } });
+          const shiftsRes = await api.get('/reports/shifts', { params: { ...shiftScopedParams } });
           if (isStale()) return;
           setShifts(normalizeShifts(shiftsRes.data));
           break;
         }
         case 'cash-discrepancy': {
-          const shiftsRes = await api.get('/reports/shifts', { params: { ...shiftScopedParams, limit: 100 } });
+          const shiftsRes = await api.get('/reports/shifts', { params: { ...shiftScopedParams } });
           if (isStale()) return;
           setShifts(normalizeShifts(shiftsRes.data));
           break;

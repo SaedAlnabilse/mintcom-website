@@ -51,3 +51,18 @@ export const recordConsent = async (
   });
   return data;
 };
+
+export interface PolicyChangelogEntry {
+  id: string;
+  policyVersion: string;
+  effectiveDate: string;
+  summary: string;
+  createdAt: string;
+}
+
+/** Public changelog — no auth required; anyone can read version history. */
+export const getPolicyChangelog = async (): Promise<PolicyChangelogEntry[]> => {
+  const { data } = await api.get<PolicyChangelogEntry[]>('/api/legal/changelog');
+  return data;
+};
+

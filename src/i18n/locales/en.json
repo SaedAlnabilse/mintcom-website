@@ -3183,12 +3183,17 @@
   },
   "legal": {
     "consent": {
-      "acceptButton": "Accept and continue",
-      "body": "Our Terms of Service and Privacy Policy have been updated. Please review and accept them to continue using Mintcom.",
-      "declineButton": "Decline and sign out",
-      "reviewPrivacy": "Review Privacy Policy",
-      "reviewTerms": "Review Terms of Service",
-      "title": "We've Updated Our Policies"
+      "title": "Updates to our Terms of Service",
+      "body": "We're updating our Terms of Service and Privacy Policy. Now's a great chance to review them.",
+      "changelogLink": "see what changed",
+      "gotItButton": "Got it",
+      "footnote": "Updating policies helps us protect your account."
+    },
+    "changelog": {
+      "title": "Policy Changelog",
+      "subtitle": "A history of every change we make to Mintcom's Terms of Service and Privacy Policy.",
+      "empty": "No policy updates have been published yet.",
+      "current": "Current"
     },
     "cookies": {
       "backToHome": "Back to Home",
@@ -3602,6 +3607,10 @@
     "terms": {
       "description": "Review our terms of service for using the Mintcom platform and services.",
       "title": "Terms of Service | Mintcom"
+    },
+    "changelog": {
+      "description": "View the history of updates to Mintcom POS Terms of Service and Privacy Policy.",
+      "title": "Policy Changelog | Mintcom"
     },
     "industries": {
       "title": "Industries | Mintcom POS",

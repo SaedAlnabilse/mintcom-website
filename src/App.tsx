@@ -65,6 +65,7 @@ function LegacyCustomerTicketRedirect() {
 const QAPage = lazy(() => import('./pages/QAPage').then(m => ({ default: m.QAPage })));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
 const TermsPage = lazy(() => import('./pages/TermsPage').then(m => ({ default: m.TermsPage })));
+const ChangelogPage = lazy(() => import('./pages/ChangelogPage').then(m => ({ default: m.ChangelogPage })));
 const ComingSoonPage = lazy(() => import('./pages/ComingSoonPage').then(m => ({ default: m.ComingSoonPage })));
 const AppDownloadRedirectPage = lazy(() => import('./pages/AppDownloadRedirectPage'));
 
@@ -201,6 +202,7 @@ const routeSeo = [
   { path: '/support', title: 'Support | Mintcom POS', description: 'Find Mintcom help articles and support tickets.' },
   { path: '/privacy', title: 'Privacy Policy | Mintcom POS', description: 'Read how Mintcom POS protects your data and how to request account or data deletion.' },
   { path: '/legal/privacy', title: 'Privacy Policy | Mintcom POS', description: 'Read how Mintcom POS protects your data and how to request account or data deletion.' },
+  { path: '/legal/changelog', title: 'Policy Changelog | Mintcom POS', description: 'View the history of updates to Mintcom POS Terms of Service and Privacy Policy.' },
   { path: '/about', title: 'About Mintcom', description: 'Learn about Mintcom POS and business management.' },
   { path: '/dashboard', title: 'Dashboard | Mintcom POS', description: 'Manage your Mintcom business dashboard.' },
   { path: '/owner', title: 'Owner Portal | Mintcom POS', description: 'Manage Mintcom account ownership, billing, brands, and establishments.' },
@@ -484,6 +486,14 @@ const router = createBrowserRouter([
         element: (
           <PageSuspense>
             <TermsPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/legal/changelog",
+        element: (
+          <PageSuspense>
+            <ChangelogPage />
           </PageSuspense>
         ),
       },
