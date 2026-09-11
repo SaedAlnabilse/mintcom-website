@@ -49,6 +49,7 @@ interface SecurityVerificationModalProps {
     targetName: string;
     mode: SecurityMode;
     price?: number;
+    currency?: string;
     isResuming?: boolean;
     onError?: (error: ApiError) => boolean | void;
     /**
@@ -76,6 +77,7 @@ export function SecurityVerificationModal({
     targetName,
     mode,
     price,
+    currency,
     isResuming,
     onError,
     extraBody,
@@ -233,7 +235,8 @@ export function SecurityVerificationModal({
                         ? t('security.modes.reactivate.warningResume')
                         : t('security.modes.reactivate.warningRestart', {
                               name: targetName,
-                              price: price?.toFixed(2) || '20.00'
+                              price: price?.toFixed(2) || '20.00',
+                              currency: currency || 'USD',
                           }),
                     buttonText: t('security.modes.reactivate.button'),
                     icon: ShieldCheck,

@@ -978,16 +978,16 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
     questionAr: 'كيف تعمل الفوترة؟',
     answer: `**Trial:** 14-day free trial with full access.
 
-**Monthly Plan:** 20 USD/month per location with full access to all features.
+**Monthly Plan:** 20 USD/month per location (or local currency equivalent based on country) with full access to all features.
 
-**Yearly Plan:** 200 USD/year (instead of 240 USD) — save 40 USD (2 months free)! You can switch between monthly and yearly anytime.
+**Yearly Plan:** 220 USD/year (or local equivalent — save 20 USD/year)! You can switch between monthly and yearly anytime.
 
 **Manage:** Go to **Owner > Billing** to view plans, switch billing cycles, update payment methods, and download invoices.`,
     answerAr: `**التجربة:** تجربة مجانية لمدة 14 يوماً مع وصول كامل.
 
-**الخطة الشهرية:** 20 دولاراً شهرياً لكل موقع مع وصول كامل إلى جميع الميزات.
+**الخطة الشهرية:** 20 دولاراً شهرياً لكل موقع (أو ما يعادلها بالعملة المحلية حسب بلدك) مع وصول كامل إلى جميع الميزات.
 
-**الخطة السنوية:** 200 دولار سنوياً (بدلاً من 240 دولاراً) مع توفير 40 دولاراً (شهران مجاناً). ويمكنك التبديل بين الشهري والسنوي في أي وقت.
+**الخطة السنوية:** 220 دولاراً سنوياً (أو ما يعادلها محلياً — توفير 20 دولاراً سنوياً). ويمكنك التبديل بين الشهري والسنوي في أي وقت.
 
 **الإدارة:** انتقل إلى **المالك > الفوترة** لعرض الخطط وتبديل دورة الفوترة وتحديث طرق الدفع وتنزيل الفواتير.`,
     category: 'billing',

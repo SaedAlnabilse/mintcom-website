@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Check, ArrowRight, Tag } from 'lucide-react';
+import { Check, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import { BILLING_CYCLES, getMintcomPrice, MINTCOM_PRICING } from '../config/pricing';
+import { BILLING_CYCLES, MINTCOM_PRICING, getMintcomDiscountPercent, getMintcomEffectiveMonthlyPrice } from '../config/pricing';
 import { ONBOARDING_START_PATH } from '../utils/onboardingLaunch';
 
 const SplitPricingText = ({ text, highlightColor = "text-mintcom-green", baseColor = "text-gray-900 dark:text-white" }: { text: string; highlightColor?: string; baseColor?: string }) => {
@@ -36,10 +36,11 @@ export const PricingDownload = () => {
     const { isAuthenticated, needsOnboarding } = useAuth();
     const [isYearly, setIsYearly] = useState(MINTCOM_PRICING.defaultBillingCycle === BILLING_CYCLES.YEARLY);
 
-    const currentBillingCycle = isYearly ? BILLING_CYCLES.YEARLY : BILLING_CYCLES.MONTHLY;
-    const currentPrice = getMintcomPrice(currentBillingCycle);
-    const currentPeriod = isYearly ? t('landing.pricing.perYear') : t('landing.pricing.perMonth');
-    const currentAdditionalPrice = getMintcomPrice(currentBillingCycle, true);
+    const monthlyPrice = MINTCOM_PRICING.primary.monthly;
+    const yearlyPrice = MINTCOM_PRICING.primary.yearly;
+    const discountPercent = getMintcomDiscountPercent();
+    const effectiveMonthlyPrice = getMintcomEffectiveMonthlyPrice();
+    const currency = MINTCOM_PRICING.currency;
 
     const features = [
         t('landing.pricing.features.pos'),
@@ -48,7 +49,8 @@ export const PricingDownload = () => {
         t('landing.pricing.features.adminApp'),
         t('landing.pricing.features.support'),
         t('landing.pricing.features.reports'),
-        t('landing.pricing.features.aiSystem')
+        t('landing.pricing.features.aiSystem'),
+        t('landing.pricing.features.inventory')
     ];
 
     const [showAlreadySignedIn, setShowAlreadySignedIn] = useState(false);
@@ -94,10 +96,10 @@ export const PricingDownload = () => {
                         className="w-full"
                     >
                         <div className="relative overflow-hidden rounded-[1.75rem] border border-gray-100 bg-white p-5 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.06),0_4px_12px_-4px_rgba(0,0,0,0.04)] group sm:rounded-[2.5rem] sm:p-8 lg:p-10 dark:border-white/5 dark:bg-[#1a1a1a] dark:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.35)]">
-                            <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-stretch lg:gap-12">
+                            <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:gap-12">
                                 
                                 {/* Left Side: Pricing & CTA */}
-                                <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left">
+                                <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left justify-center w-full">
                                     <div className="w-full">
                                         <span className="mb-2.5 block text-xs font-black uppercase tracking-[0.2em] text-mintcom-green">
                                             {t('landing.pricing.fullAccess')}
@@ -106,68 +108,67 @@ export const PricingDownload = () => {
                                             {isYearly ? t('landing.pricing.yearlyPlan') : t('landing.pricing.monthlyPlan')}
                                         </h3>
 
-                                        {/* Billing Toggle — clickable buttons */}
-                                        <div className="mb-6 flex flex-wrap items-center gap-2 sm:mb-7 sm:gap-3">
-                                            <button
-                                                onClick={() => setIsYearly(false)}
-                                                className={`rounded-xl px-4 py-2 text-xs font-black uppercase tracking-widest transition-all duration-200 active:scale-95 sm:px-5 sm:py-2.5 sm:text-sm ${!isYearly
-                                                    ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
-                                                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 dark:bg-white/5 dark:hover:bg-white/10 dark:hover:text-gray-300'
-                                                }`}
-                                            >
-                                                {t('landing.pricing.monthly')}
-                                            </button>
-                                            <button
-                                                onClick={() => setIsYearly(true)}
-                                                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-black uppercase tracking-widest transition-all duration-200 active:scale-95 sm:px-5 sm:py-2.5 sm:text-sm ${isYearly
-                                                    ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
-                                                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 dark:bg-white/5 dark:hover:bg-white/10 dark:hover:text-gray-300'
-                                                }`}
-                                            >
-                                                {t('landing.pricing.yearly')}
-                                                <span className={`rounded-xl px-2 py-0.5 text-[9px] font-black tracking-wider transition-colors duration-200 ${isYearly ? 'bg-black text-mintcom-green' : 'bg-mintcom-green/20 text-mintcom-green'}`}>
-                                                    {t('landing.pricing.save')}
-                                                </span>
-                                            </button>
+                                        {/* Billing Toggle — Claude-style segmented pill */}
+                                        <div className="mb-6 flex flex-wrap items-center sm:mb-7">
+                                            <div className="inline-flex items-center p-1 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200/80 dark:border-white/10">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsYearly(false)}
+                                                    className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition-all duration-200 ${!isYearly
+                                                        ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20'
+                                                        : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                                                    }`}
+                                                >
+                                                    {t('landing.pricing.monthly')}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsYearly(true)}
+                                                    className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition-all duration-200 ${isYearly
+                                                        ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20'
+                                                        : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                                                    }`}
+                                                >
+                                                    <span>{t('landing.pricing.yearly')}</span>
+                                                    {discountPercent > 0 && (
+                                                        <span className={`text-xs font-black tracking-tight ${isYearly ? 'text-black/80' : 'text-mintcom-green'}`}>
+                                                            · {t('landing.pricing.savePercent', { percent: discountPercent, defaultValue: `Save ${discountPercent}%` })}
+                                                        </span>
+                                                    )}
+                                                </button>
+                                            </div>
                                         </div>
 
-                                        <div className="relative mb-7">
-                                            <div className="mb-1.5 flex items-baseline justify-center gap-2 lg:justify-start">
+                                        <div className="relative mb-6 sm:mb-7">
+                                            <div className="mb-1.5 flex items-baseline justify-center gap-3 lg:justify-start">
                                                 <span className="text-5xl font-bold tracking-tighter text-gray-900 transition-all duration-300 dark:text-white sm:text-6xl lg:text-7xl">
-                                                    {currentPrice}<span className="ml-1 text-2xl sm:text-3xl lg:text-4xl">USD</span>
+                                                    ${isYearly ? effectiveMonthlyPrice : monthlyPrice}
                                                 </span>
-                                                <span className="text-base font-medium uppercase tracking-widest text-gray-400 sm:text-xl">
-                                                    {currentPeriod}
-                                                </span>
+                                                <div className="flex flex-col text-left rtl:text-right">
+                                                    <span className="text-sm sm:text-base font-bold text-gray-700 dark:text-gray-200">
+                                                        USD / {t('common.month', { defaultValue: 'month' })}
+                                                    </span>
+                                                    <span className="text-xs sm:text-sm font-medium text-gray-400 dark:text-gray-400">
+                                                        {isYearly
+                                                            ? `$${yearlyPrice} USD ${t('landing.pricing.billedAnnually', { defaultValue: 'Billed annually.' })}`
+                                                            : t('landing.pricing.noCommitment', { defaultValue: 'Billed monthly.' })}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <p className="text-sm italic text-gray-500 dark:text-gray-400">
-                                                {isYearly ? t('landing.pricing.billedAnnually') : t('landing.pricing.noCommitment')}
-                                            </p>
                                         </div>
-                                    </div>
 
-                                    <div className="mt-auto w-full space-y-3.5">
-                                        <button
-                                            onClick={handleCtaAction}
-                                            className="group/btn flex w-full items-center justify-center gap-2.5 rounded-xl bg-mintcom-green py-3.5 text-base font-semibold tracking-tight text-gray-900 shadow-[0_8px_28px_-8px_rgba(125,198,162,0.55)] transition-all hover:bg-mintcom-green/90 hover:shadow-[0_12px_32px_-8px_rgba(125,198,162,0.65)] active:scale-[0.98] sm:py-4 sm:text-[17px]"
-                                        >
-                                            <span className="font-semibold">{t('landing.pricing.getStarted', 'Get Started')}</span>
-                                            <ArrowRight size={18} strokeWidth={2} className={`opacity-80 transition-transform duration-300 group-hover/btn:translate-x-1.5 ${t('common.locale') === 'ar' && 'rotate-180 group-hover/btn:-translate-x-1.5'}`} />
-                                        </button>
-
-                                        {/* Additional Locations Hint */}
-                                        <div className="group/discount flex items-center justify-center gap-2.5 rounded-xl border border-mintcom-green/20 bg-mintcom-green/10 px-3 py-2.5 transition-all duration-300 hover:bg-mintcom-green/15 lg:justify-start">
-                                            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-mintcom-green/20 transition-transform group-hover/discount:scale-110">
-                                                <Tag size={14} className="text-mintcom-green" />
-                                            </div>
-                                            <span className="text-[13px] font-medium leading-snug tracking-tight text-gray-700 dark:text-gray-300 sm:text-sm">
-                                                <Trans 
-                                                    i18nKey="landing.pricing.additionalDiscount"
-                                                    defaults="Additional locations receive a <1>DISCOUNT</1> for "
-                                                    components={{ 1: <span className="font-semibold uppercase text-gray-900 dark:text-white" /> }}
-                                                />
-                                                <span className="font-semibold text-gray-900 dark:text-white">{currentAdditionalPrice} USD {currentPeriod}</span>
-                                            </span>
+                                        {/* CTA Button directly aligned under price */}
+                                        <div className="w-full">
+                                            <button
+                                                onClick={handleCtaAction}
+                                                className="group/btn flex w-full items-center justify-center gap-2.5 rounded-xl bg-mintcom-green py-3.5 text-base font-semibold tracking-tight text-gray-900 shadow-[0_8px_28px_-8px_rgba(125,198,162,0.55)] transition-all hover:bg-mintcom-green/90 hover:shadow-[0_12px_32px_-8px_rgba(125,198,162,0.65)] active:scale-[0.98] sm:py-4 sm:text-[17px]"
+                                            >
+                                                <span className="font-semibold">{t('landing.pricing.getStarted', 'Get Started')}</span>
+                                                <ArrowRight size={18} strokeWidth={2} className={`opacity-80 transition-transform duration-300 group-hover/btn:translate-x-1.5 ${t('common.locale') === 'ar' && 'rotate-180 group-hover/btn:-translate-x-1.5'}`} />
+                                            </button>
+                                            <p className="mt-3 text-center text-xs font-medium text-gray-400 dark:text-gray-500 lg:text-left rtl:lg:text-right">
+                                                {t('pages.pricing.trialNote', { defaultValue: 'Start with a 14-day free trial. Cancel anytime.' })}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -187,13 +188,13 @@ export const PricingDownload = () => {
                                         </p>
                                     </div>
                                     
-                                    <ul className="grid grid-cols-1 gap-x-8 gap-y-3.5 sm:grid-cols-2 lg:grid-cols-1">
+                                    <ul className="grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2">
                                         {features.map((feature, i) => (
-                                            <li key={i} className="group/item flex items-center gap-3.5 text-base font-semibold text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-300 dark:hover:text-white sm:text-[17px]">
-                                                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-mintcom-green/10 transition-colors group-hover/item:bg-mintcom-green/20">
+                                            <li key={i} className="group/item flex items-start gap-3.5 text-base font-semibold text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-300 dark:hover:text-white sm:text-[17px]">
+                                                <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-mintcom-green/10 transition-colors group-hover/item:bg-mintcom-green/20">
                                                     <Check size={15} className="stroke-[4px] text-mintcom-green" />
                                                 </div>
-                                                {feature}
+                                                <span className="leading-snug">{feature}</span>
                                             </li>
                                         ))}
                                     </ul>

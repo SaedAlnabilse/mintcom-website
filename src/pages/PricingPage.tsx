@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet-async';
 import { Check, ArrowRight, ChevronDown } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { BILLING_CYCLES, getMintcomPrice, getMintcomYearlySavings, MINTCOM_PRICING } from '../config/pricing';
+import { BILLING_CYCLES, MINTCOM_PRICING, getMintcomDiscountPercent, getMintcomEffectiveMonthlyPrice } from '../config/pricing';
 
 const INCLUDED_KEYS = [
   'pages.pricing.included.pos',
@@ -29,10 +29,11 @@ export const PricingPage = () => {
   const [yearly, setYearly] = useState(MINTCOM_PRICING.defaultBillingCycle === BILLING_CYCLES.YEARLY);
   const [openFaq, setOpenFaq] = useState<string | null>('q1');
 
-  const cycle = yearly ? BILLING_CYCLES.YEARLY : BILLING_CYCLES.MONTHLY;
-  const price = getMintcomPrice(cycle);
-  const extra = getMintcomPrice(cycle, true);
-  const savings = getMintcomYearlySavings();
+  const monthlyPrice = MINTCOM_PRICING.primary.monthly;
+  const yearlyPrice = MINTCOM_PRICING.primary.yearly;
+  const discountPercent = getMintcomDiscountPercent();
+  const effectiveMonthlyPrice = getMintcomEffectiveMonthlyPrice();
+  const currency = MINTCOM_PRICING.currency;
 
   return (
     <div
@@ -60,30 +61,32 @@ export const PricingPage = () => {
 
       <section className="px-6 pb-20">
         <div className="mx-auto w-full">
-          <div className="mb-8 flex justify-center gap-2">
-            <button
-              type="button"
-              onClick={() => setYearly(false)}
-              className={`rounded-xl px-5 py-2.5 text-xs font-black uppercase tracking-widest transition ${
-                !yearly ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20' : 'bg-gray-100 text-gray-500 dark:bg-white/5'
-              }`}
-            >
-              {t('landing.pricing.monthly')}
-            </button>
-            <button
-              type="button"
-              onClick={() => setYearly(true)}
-              className={`rounded-xl px-5 py-2.5 text-xs font-black uppercase tracking-widest transition ${
-                yearly ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20' : 'bg-gray-100 text-gray-500 dark:bg-white/5'
-              }`}
-            >
-              {t('landing.pricing.yearly')}
-              {savings > 0 && (
-                <span className="ms-2 rounded-md bg-black/10 px-1.5 py-0.5 text-[10px]">
-                  {t('pages.pricing.save', { amount: savings })}
-                </span>
-              )}
-            </button>
+          <div className="mb-8 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+            <div className="inline-flex items-center p-1 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200/80 dark:border-white/10">
+              <button
+                type="button"
+                onClick={() => setYearly(false)}
+                className={`rounded-xl px-5 py-2 text-xs sm:text-sm font-bold transition ${
+                  !yearly ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                }`}
+              >
+                {t('landing.pricing.monthly')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setYearly(true)}
+                className={`flex items-center gap-1.5 rounded-xl px-5 py-2 text-xs sm:text-sm font-bold transition ${
+                  yearly ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                }`}
+              >
+                <span>{t('landing.pricing.yearly')}</span>
+                {discountPercent > 0 && (
+                  <span className={`text-xs font-black tracking-tight ${yearly ? 'text-black/80' : 'text-mintcom-green'}`}>
+                    · {t('landing.pricing.savePercent', { percent: discountPercent, defaultValue: `Save ${discountPercent}%` })}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-5">
@@ -94,15 +97,23 @@ export const PricingPage = () => {
             >
               <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-mintcom-green">{t('landing.pricing.fullAccess')}</p>
               <h2 className="mb-6 font-barlow text-2xl font-bold">{yearly ? t('landing.pricing.yearlyPlan') : t('landing.pricing.monthlyPlan')}</h2>
-              <div className="mb-2 flex items-end gap-1">
-                <span className="font-magilio text-5xl font-bold text-gray-900 dark:text-white">{price}</span>
-                <span className="mb-2 text-sm font-bold text-gray-500">USD</span>
+              <div className="mb-2 flex items-baseline gap-3">
+                <span className="font-magilio text-5xl font-bold text-gray-900 dark:text-white sm:text-6xl">
+                  ${yearly ? effectiveMonthlyPrice : monthlyPrice}
+                </span>
+                <div className="flex flex-col text-left rtl:text-right">
+                  <span className="text-sm font-bold text-gray-700 dark:text-gray-200">
+                    USD / {t('common.month', { defaultValue: 'month' })}
+                  </span>
+                  <span className="text-xs font-medium text-gray-400 dark:text-gray-400">
+                    {yearly
+                      ? `$${yearlyPrice} USD ${t('landing.pricing.billedAnnually', { defaultValue: 'billed annually' })}`
+                      : t('landing.pricing.noCommitment', { defaultValue: 'Billed monthly' })}
+                  </span>
+                </div>
               </div>
-              <p className="mb-6 text-sm font-medium text-gray-500">
-                {yearly ? t('landing.pricing.perYear') : t('landing.pricing.perMonth')} · {t('pages.pricing.perLocation')}
-              </p>
-              <p className="mb-8 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-medium text-gray-600 dark:bg-white/5 dark:text-gray-300">
-                {t('pages.pricing.extraLocation', { price: extra, period: yearly ? t('landing.pricing.perYear') : t('landing.pricing.perMonth') })}
+              <p className="mb-8 text-xs font-medium text-gray-500">
+                {t('pages.pricing.perLocation')}
               </p>
               <Link
                 to="/signup"

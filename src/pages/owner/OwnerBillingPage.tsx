@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Plus, CreditCard, DollarSign, Trash2, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, ArrowUpDown, RotateCcw, Check, FileText, X } from 'lucide-react';
 
 import api from '../../config/api';
+import { BILLING_CYCLES, getMintcomPrice } from '../../config/pricing';
 import { AddPaymentMethodModal } from '../../components/AddPaymentMethodModal';
 import { type SubscriptionInvoiceData } from '../../components/billing/SubscriptionInvoice';
 import { InvoiceHistoryModal } from '../../components/billing/InvoiceHistoryModal';
@@ -48,6 +49,7 @@ interface EstablishmentBilling {
     monthlyPrice: number;
     billingCycle?: 'monthly' | 'yearly';
     yearlyPrice?: number;
+    currency?: string;
     nextBillDate?: string;
     paymentCard: { id: string; brand: string; last4: string; isInherited?: boolean } | null;
 }
@@ -74,6 +76,7 @@ export function OwnerBillingPage() {
         targetName: string,
         mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'reactivate',
         price?: number,
+        currency?: string,
         isResuming?: boolean
     }>({
         isOpen: false,
@@ -280,7 +283,7 @@ export function OwnerBillingPage() {
         } else {
             // Find index for correct price
             const fullIndex = billingData?.establishments.findIndex(e => e.id === establishmentId) ?? 0;
-            const price = est ? getEstablishmentPrice(est, fullIndex) : 20;
+            const price = est ? getEstablishmentPrice(est, fullIndex) : getMintcomPrice(BILLING_CYCLES.MONTHLY, false, billingCurrency);
 
             setSecurityModal({
                 isOpen: true,
@@ -288,6 +291,7 @@ export function OwnerBillingPage() {
                 targetName: name,
                 mode: 'reactivate',
                 price: price,
+                currency: est?.currency || billingCurrency,
                 // A locked/finalized subscription starts a paid cycle. The
                 // current period date is not authority for no-charge resume.
                 isResuming: false
@@ -361,13 +365,21 @@ export function OwnerBillingPage() {
     };
 
 
-    // Apply correct pricing: all locations = 20 USD/mo, 200 USD/yr.
-    const FIRST_LOCATION_PRICE = 20;
-    const ADDITIONAL_LOCATION_PRICE = 20;
-
     const activeEstablishments = billingData?.establishments.filter(
         est => est.subscriptionStatus?.toUpperCase() !== 'CANCELED'
     ) || [];
+
+    const billingCurrency = activeEstablishments[0]?.currency || 'USD';
+
+    // Helper to get correct price for an establishment by its index and currency
+    const getEstablishmentPrice = (est: EstablishmentBilling, index: number) => {
+        const estCurrency = est.currency || billingCurrency;
+        const isAdditional = index > 0;
+        if (est.billingCycle === 'yearly') {
+            return est.yearlyPrice || getMintcomPrice(BILLING_CYCLES.YEARLY, isAdditional, estCurrency);
+        }
+        return est.monthlyPrice || getMintcomPrice(BILLING_CYCLES.MONTHLY, isAdditional, estCurrency);
+    };
 
     let totalMonthlyCost = 0;
     let totalYearlyCost = 0;
@@ -376,21 +388,11 @@ export function OwnerBillingPage() {
     activeEstablishments.forEach((est, index) => {
         if (est.billingCycle === 'yearly') {
             hasYearlyPlan = true;
-            totalYearlyCost += est.yearlyPrice || 200;
+            totalYearlyCost += getEstablishmentPrice(est, index);
         } else {
-            totalMonthlyCost += index === 0 ? FIRST_LOCATION_PRICE : ADDITIONAL_LOCATION_PRICE;
+            totalMonthlyCost += getEstablishmentPrice(est, index);
         }
     });
-
-    // Helper to get correct price for an establishment by its index
-    const getEstablishmentPrice = (est: EstablishmentBilling, index: number) => {
-        // If backend provides billingCycle=yearly, use yearly price
-        if (est.billingCycle === 'yearly') {
-            return est.yearlyPrice || 200;
-        }
-        // All locations = 20 USD/mo.
-        return index === 0 ? FIRST_LOCATION_PRICE : ADDITIONAL_LOCATION_PRICE;
-    };
 
     /**
      * Builds the *summary* document shown when a location has never been
@@ -401,8 +403,10 @@ export function OwnerBillingPage() {
      * document. Real invoices come from the server and are never recomputed.
      */
     const buildSummaryData = (est: EstablishmentBilling, index: number): SubscriptionInvoiceData => {
+        const estCurrency = est.currency || billingCurrency;
         const isYearly = est.billingCycle === 'yearly';
-        const monthlyRate = index === 0 ? FIRST_LOCATION_PRICE : ADDITIONAL_LOCATION_PRICE;
+        const isAdditional = index > 0;
+        const monthlyRate = est.monthlyPrice || getMintcomPrice(BILLING_CYCLES.MONTHLY, isAdditional, estCurrency);
         const total = getEstablishmentPrice(est, index);
         const quantity = isYearly ? 12 : 1;
         const subtotal = monthlyRate * quantity;
@@ -411,7 +415,7 @@ export function OwnerBillingPage() {
             number: null,
             status: est.subscriptionStatus?.toUpperCase() || 'ACTIVE',
             issueDate: new Date(),
-            currency: 'USD',
+            currency: estCurrency,
             subtotal,
             discount: Math.max(0, subtotal - total),
             taxAmount: 0,
@@ -549,7 +553,7 @@ export function OwnerBillingPage() {
                         </p>
                         <StatValue
                             value={totalMonthlyCost}
-                            currency="USD"
+                            currency={billingCurrency}
                             className="text-xl"
                             containerClassName="justify-end"
                         />
@@ -563,7 +567,7 @@ export function OwnerBillingPage() {
                                 </p>
                                 <StatValue
                                     value={totalYearlyCost}
-                                    currency="USD"
+                                    currency={billingCurrency}
                                     className="text-xl text-mintcom-green"
                                     containerClassName="justify-end"
                                 />
@@ -808,6 +812,7 @@ export function OwnerBillingPage() {
                                                 // Find original index in full list for correct pricing
                                                 const fullIndex = billingData?.establishments.findIndex(e => e.id === est.id) ?? 0;
                                                 const price = getEstablishmentPrice(est, fullIndex);
+                                                const itemCurrency = est.currency || billingCurrency;
                                                 const isYearly = est.billingCycle === 'yearly';
                                                 const isTrial = est.subscriptionStatus?.toUpperCase() === 'TRIAL';
                                                 const formattedPrice = Number(price).toLocaleString(t('common.locale'), {
@@ -822,8 +827,9 @@ export function OwnerBillingPage() {
                                                         <div
                                                             className="flex flex-col items-center gap-0.5 whitespace-nowrap"
                                                             title={t('owner.billing.trialEndsNotice', {
-                                                                defaultValue: `Free now · then {{price}} USD {{period}} after trial`,
+                                                                defaultValue: `Free now · then {{price}} {{currency}} {{period}} after trial`,
                                                                 price: formattedPrice,
+                                                                currency: itemCurrency,
                                                                 period: periodLabel,
                                                                 date: formatBillingDate(est.nextBillDate || est.trialEndsAt) || '',
                                                             })}
@@ -831,7 +837,7 @@ export function OwnerBillingPage() {
                                                             <span className="inline-flex items-baseline gap-1 text-sm font-bold tracking-tight text-mintcom-green">
                                                                 <span>0.00</span>
                                                                 <span className="text-[10px] font-black uppercase text-mintcom-green/70">
-                                                                    USD
+                                                                    {itemCurrency}
                                                                 </span>
                                                             </span>
                                                             <span className="text-[10px] font-bold text-mintcom-green/80">
@@ -844,7 +850,7 @@ export function OwnerBillingPage() {
                                                                 </span>
                                                                 <span>{formattedPrice}</span>
                                                                 <span className="text-[9px] font-black uppercase text-gray-400 dark:text-gray-500">
-                                                                    USD
+                                                                    {itemCurrency}
                                                                 </span>
                                                             </span>
                                                             <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500">
@@ -858,7 +864,7 @@ export function OwnerBillingPage() {
                                                         <span className="inline-flex items-baseline gap-1 text-sm font-bold tracking-tight text-gray-900 dark:text-white">
                                                             <span>{formattedPrice}</span>
                                                             <span className="text-[10px] font-black uppercase text-gray-400 dark:text-gray-500">
-                                                                USD
+                                                                {itemCurrency}
                                                             </span>
                                                         </span>
                                                         <span className="text-[11px] font-medium text-gray-400 dark:text-gray-500">
@@ -1149,6 +1155,7 @@ export function OwnerBillingPage() {
                 targetName={securityModal.targetName}
                 mode={securityModal.mode}
                 price={securityModal.price}
+                currency={securityModal.currency}
                 isResuming={securityModal.isResuming}
             />
         </div>

@@ -900,6 +900,7 @@
       "selectDateRange": "选择日期范围"
     },
     "back": "返回",
+    "month": "月",
     "cancel": "取消",
     "category": "分类",
     "clear": "清除",
@@ -2713,7 +2714,7 @@
         "advancedReporting": "高级报表",
         "aiSystem": "AI 赋能系统",
         "dashboard": "在线仪表盘与管理系统",
-        "inventory": "配方管理",
+        "inventory": "配方与库存管理",
         "pointOfSale": "销售点",
         "pos": "适用于平板和移动设备的 POS",
         "production": "生产与配方",
@@ -2774,9 +2775,10 @@
       "popular": "最受欢迎",
       "save": "立省",
       "save20": "节省 20%",
-      "saveAmount": "节省 {{amount}} 美元",
+      "savePercent": "立省 {{percent}}%",
+      "saveAmount": "节省 {{amount}} {{currency}}",
       "setupFee": "无安装费或隐藏收费。随时可取消。",
-      "standardPrice": "20 美元",
+      "standardPrice": "{{price}} {{currency}}",
       "startFreeTrial": "开始免费试用",
       "subtitle": "您的“惊喜时刻”只需几分钟",
       "title": "开始使用",
@@ -3140,7 +3142,7 @@
       },
       "subtitle": "",
       "title": "您能得到什么，只需",
-      "titleHighlight": "每月 20 美元？"
+      "titleHighlight": "每月 {{price}} {{currency}}？"
     },
     "heroPos": {
       "catAll": "全部菜单",
@@ -3722,7 +3724,7 @@
       "expiry": "有效期",
       "freeDays": "14 天免费",
       "monthly": "按月",
-      "priceMonth": "20 美元/月",
+      "priceMonth": "{{price}} {{currency}}/月",
       "startTrialButton": "开始免费试用",
       "totalDue": "今日应付总额",
       "trialDesc": "今天不会扣款。试用结束前可随时取消。",
@@ -4570,7 +4572,7 @@
       "then": "之后",
       "trial": "试用",
       "trialEnds": "试用结束",
-      "trialEndsNotice": "当前免费 · 试用后 {{price}} 美元 {{period}}",
+      "trialEndsNotice": "当前免费 · 试用后 {{price}} {{currency}} {{period}}",
       "add_card_for_location": "新卡将用于 {{name}}",
       "add_new_card": "添加新卡",
       "card_added_and_assigned": "已添加银行卡并分配给该门店",
@@ -5652,7 +5654,7 @@
         "button": "立即重新激活",
         "title": "重新激活订阅",
         "warning": "此操作将恢复“{{name}}”的订阅。",
-        "warningRestart": "这将从您的默认卡扣款 {{price}} 美元，为“{{name}}”开始新的计费周期。",
+        "warningRestart": "这将从您的默认卡扣款 {{price}} {{currency}}，为“{{name}}”开始新的计费周期。",
         "warningResume": "您正在恢复当前订阅。不会立即产生扣款。"
       },
       "reactivateAccount": {
@@ -7007,7 +7009,7 @@
           "points": [
             "面向品牌的业主后台",
             "分门店仪表盘",
-            "新增门店享折扣价"
+            "新增门店享同样透明价格"
           ]
         }
       },
@@ -7064,7 +7066,7 @@
         }
       },
       "priceTitle": "增长不该被定价惩罚",
-      "priceBody": "新增门店每月低至 {{price}} 美元起，让扩张成为机会而不是负担。",
+      "priceBody": "新增门店每月低至 {{price}} {{currency}}起，让扩张成为机会而不是负担。",
       "priceNote": "按年付费更省。完整的月付与年付选项请见定价页面。"
     },
     "pricing": {
@@ -7072,8 +7074,8 @@
       "title": "一个方案，全部包含。",
       "subtitle": "没有硬件套餐，没有复杂的附加项。Mintcom 是运行在您现有设备上的软件，按门店透明计费。",
       "perLocation": "每家门店",
-      "save": "节省 ${{amount}}",
-      "extraLocation": "新增门店 {{price}} 美元{{period}}起，享折扣价，让增长依然负担得起。",
+      "save": "节省 {{amount}} {{currency}}",
+      "extraLocation": "新增门店 {{price}} {{currency}}{{period}}起，享折扣价，让增长依然负担得起。",
       "trialNote": "先免费试用 14 天。可随时在业主后台取消。",
       "noHardware": "我们不卖硬件。用您自己的平板、手机或电脑即可，Mintcom 适配您现有的设备。",
       "includedTitle": "方案包含内容",
@@ -7097,7 +7099,7 @@
         },
         "q2": {
           "q": "每家门店分别要付多少？",
-          "a": "第一家门店按主方案价格计费。新增门店享折扣价，让多店扩张的成本可以预期。"
+          "a": "每家门店均按同样清晰透明的价格计费，让多店扩张的成本清晰可控，无任何隐藏费用。"
         },
         "q3": {
           "q": "有免费试用吗？",
@@ -7157,7 +7159,7 @@
       "reasons": {
         "r1": {
           "title": "定价透明",
-          "description": "方案方向清晰，新增门店享折扣，不推销硬件。您清楚自己付的每一笔钱买到了什么。"
+          "description": "方案方向清晰，每家门店透明定价，不推销硬件。您清楚自己付的每一笔钱买到了什么。"
         },
         "r2": {
           "title": "一体化运营",

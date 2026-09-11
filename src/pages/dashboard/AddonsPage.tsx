@@ -39,6 +39,9 @@ interface SubAttribute {
   deletedAt?: string | null;
   deactivatedAt?: string | null;
   attributeId: string;
+  // PROTOTYPE (UI preview only, backend not wired yet):
+  trackStock?: boolean;
+  availableStock?: number;
 }
 
 interface Attribute {
@@ -145,6 +148,9 @@ export function AddonsPage() {
     name: '',
     price: '',
     isAvailable: true,
+    // PROTOTYPE preview state — stripped before API call until backend supports it
+    trackStock: false,
+    availableStock: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -283,10 +289,12 @@ export function AddonsPage() {
         name: subAttr.name,
         price: formatExistingATMAmount(Number(subAttr.price)),
         isAvailable: subAttr.isAvailable,
+        trackStock: subAttr.trackStock ?? false,
+        availableStock: subAttr.availableStock != null ? String(subAttr.availableStock) : '',
       });
     } else {
       setEditingSubAttribute(null);
-      setSubAttributeForm({ name: '', price: '', isAvailable: true });
+      setSubAttributeForm({ name: '', price: '', isAvailable: true, trackStock: false, availableStock: '' });
     }
     setShowSubAttributeModal(true);
     setErrors({});
@@ -376,8 +384,15 @@ export function AddonsPage() {
 
     setIsSubmitting(true);
     try {
+      // NOTE: trackStock / availableStock are PREVIEW-ONLY for now.
+      // They are kept in local state for the demo and stripped here so the
+      // current backend (forbidNonWhitelisted) does not reject the request.
+      // Once you approve, we wire them through API + Prisma + POS.
+      const { trackStock: _trackStockPreview, availableStock: _stockPreview, ...restForm } = subAttributeForm;
+      void _trackStockPreview;
+      void _stockPreview;
       const payload = {
-        ...subAttributeForm,
+        ...restForm,
         name: subAttributeForm.name.trim(),
         price: Number.parseFloat(subAttributeForm.price) || 0,
       };
@@ -940,6 +955,24 @@ export function AddonsPage() {
                               <p className="text-xs font-medium text-mintcom-green mt-1">
                                 {Number(sub.price) > 0 ? `+${formatAmount(Number(sub.price))}` : t('attributes.list.complimentary')}
                               </p>
+                              {/* PROTOTYPE: stock badge preview */}
+                              {sub.trackStock ? (
+                                <p className={`mt-1 inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                                  (sub.availableStock ?? 0) <= 0
+                                    ? 'bg-mintcom-red/10 text-mintcom-red'
+                                    : (sub.availableStock ?? 0) <= 5
+                                      ? 'bg-amber-500/10 text-amber-600'
+                                      : 'bg-mintcom-green/10 text-mintcom-green'
+                                }`}>
+                                  {(sub.availableStock ?? 0) <= 0
+                                    ? t('stockManagement.outOfStock', { defaultValue: 'Out of stock' })
+                                    : `${t('stockManagement.onHandStock', { defaultValue: 'Stock' })}: ${sub.availableStock ?? 0}`}
+                                </p>
+                              ) : (
+                                <p className="mt-1 text-[10px] font-medium text-gray-400">
+                                  {t('stockManagement.notTracked', { defaultValue: 'Stock: not tracked (preview)' })}
+                                </p>
+                              )}
                             </div>
                             <div className="flex shrink-0 gap-1 transition-opacity">
                               <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10" title={t('common.edit')}>
@@ -1202,6 +1235,46 @@ export function AddonsPage() {
                       <input type="checkbox" checked={subAttributeForm.isAvailable} onChange={() => setSubAttributeForm({ ...subAttributeForm, isAvailable: !subAttributeForm.isAvailable })} className="sr-only peer" />
                       <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-mintcom-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
                     </label>
+                  </div>
+
+                  {/* PROTOTYPE — stock tracking preview (not saved to backend yet) */}
+                  <div className="p-5 bg-amber-50 dark:bg-amber-500/5 rounded-2xl border border-dashed border-amber-500/40 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
+                          {t('stockManagement.trackStock', { defaultValue: 'Track stock for this add-on' })}
+                          <span className="ml-2 px-1.5 py-0.5 rounded-md text-[10px] font-black bg-amber-500/15 text-amber-600 align-middle">PREVIEW</span>
+                        </p>
+                        <p className="text-xs text-gray-500 font-medium mt-0.5">
+                          {t('stockManagement.trackStockDesc', { defaultValue: 'When on, POS auto-hides this option at 0. Same as products.' })}
+                        </p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" checked={subAttributeForm.trackStock} onChange={() => setSubAttributeForm({ ...subAttributeForm, trackStock: !subAttributeForm.trackStock })} className="sr-only peer" />
+                        <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-mintcom-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
+                      </label>
+                    </div>
+                    {subAttributeForm.trackStock && (
+                      <div>
+                        <label className="block text-xs font-normal text-gray-400 tracking-normal mb-2 px-1 lowercase">
+                          {t('stockManagement.onHandStock', { defaultValue: 'On-hand stock' })}
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={subAttributeForm.availableStock}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/[^0-9]/g, '');
+                            setSubAttributeForm({ ...subAttributeForm, availableStock: val });
+                          }}
+                          className="w-full px-5 py-3.5 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold text-center focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all"
+                          placeholder="0"
+                        />
+                        <p className="mt-2 text-[10px] font-medium text-gray-500 px-1">
+                          {t('stockManagement.previewNote', { defaultValue: 'Preview only — value is not saved yet. Approve to wire backend + POS deduction.' })}
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-3">

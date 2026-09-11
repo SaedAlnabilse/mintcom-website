@@ -66,6 +66,7 @@ import {
   type BillingCycle,
   getMintcomPrice,
   getMintcomYearlySavings,
+  getMintcomDiscountPercent,
   MINTCOM_PRICING,
 } from '../config/pricing';
 
@@ -263,10 +264,6 @@ export function OnboardingPage() {
   const hasOwnerAndroidDownload = Boolean(OWNER_ANDROID_DOWNLOAD_URL);
   const hasOwnerIosDownload = Boolean(OWNER_IOS_DOWNLOAD_URL);
   const hasVideoGuide = Boolean(ONBOARDING_VIDEO_URL);
-  const formatWholeUsd = (amount: number) => formatCurrencyCode(amount, 'USD', t('common.locale'), {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
   const navigate = useNavigate();
   const params = useParams<{ step?: string; phase?: string }>();
   const stepParam = params.step;
@@ -377,38 +374,6 @@ export function OnboardingPage() {
   const [billingCycle, setBillingCycle] = useState<BillingCycle>(MINTCOM_PRICING.defaultBillingCycle);
 
   const isAdditionalLocation = establishments.length > 0;
-  const currentMonthlyPrice = getMintcomPrice(BILLING_CYCLES.MONTHLY, isAdditionalLocation);
-  const currentYearlyPrice = getMintcomPrice(BILLING_CYCLES.YEARLY, isAdditionalLocation);
-  const displayPrice = getMintcomPrice(billingCycle, isAdditionalLocation);
-  const yearlySavings = getMintcomYearlySavings(isAdditionalLocation);
-  const selectedPeriodLabel = billingCycle === BILLING_CYCLES.YEARLY
-    ? t('landing.pricing.perYear')
-    : t('landing.pricing.perMonth');
-  const selectedPlanLabel = billingCycle === BILLING_CYCLES.YEARLY
-    ? t('onboarding.step2.yearly')
-    : t('onboarding.step2.monthly');
-  const selectedPriceWithPeriod = `${formatWholeUsd(displayPrice)} ${selectedPeriodLabel}`;
-  // Stacked-pricing helpers: show the standard price struck-through above the discounted price
-  const primaryDisplayPrice = getMintcomPrice(billingCycle, false);
-  const hasLocationDiscount = isAdditionalLocation && primaryDisplayPrice > displayPrice;
-  const formatWholeNumber = (amount: number) =>
-    amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-  const selectedUnitLabel = `${MINTCOM_PRICING.currency} ${selectedPeriodLabel}`;
-
-  // The backend gives the first establishment a 14-day free trial (TRIAL_DAYS = 14),
-  // billing from now + 14 days. Compute the same date here so the disclosure shows
-  // the exact day the card will first be charged.
-  const TRIAL_DAYS = 14;
-  const trialEndDate = useMemo(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + TRIAL_DAYS);
-    return d;
-  }, []);
-  const trialEndDateLabel = trialEndDate.toLocaleDateString(t('common.locale'), {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
 
   // Password Visibility State
   const [showEstablishmentPassword, setShowEstablishmentPassword] = useState(false);
@@ -676,10 +641,10 @@ export function OnboardingPage() {
   const form1 = useForm({
     resolver: zodResolver(step1Schema),
     defaultValues: {
-      currency: 'JOD',
+      currency: 'USD',
       type: 'restaurant',
-      country: 'JO',
-      timezone: getBestTimeZoneForCountry('JO', getDeviceTimeZone()),
+      country: 'US',
+      timezone: getBestTimeZoneForCountry('US', getDeviceTimeZone()),
     }
   });
 
@@ -699,6 +664,48 @@ export function OnboardingPage() {
       cvv: '',
       cardName: '',
     },
+  });
+
+  const selectedEstablishmentCurrency = form1.watch('currency') || establishments?.[0]?.currency || 'USD';
+  const effectiveCurrency = selectedEstablishmentCurrency.toUpperCase();
+
+  const currentMonthlyPrice = getMintcomPrice(BILLING_CYCLES.MONTHLY, isAdditionalLocation, effectiveCurrency);
+  const currentYearlyPrice = getMintcomPrice(BILLING_CYCLES.YEARLY, isAdditionalLocation, effectiveCurrency);
+  const displayPrice = getMintcomPrice(billingCycle, isAdditionalLocation, effectiveCurrency);
+  const yearlySavings = getMintcomYearlySavings(isAdditionalLocation, effectiveCurrency);
+  const yearlyDiscountPercent = getMintcomDiscountPercent(isAdditionalLocation, effectiveCurrency);
+  const selectedPeriodLabel = billingCycle === BILLING_CYCLES.YEARLY
+    ? t('landing.pricing.perYear')
+    : t('landing.pricing.perMonth');
+  const selectedPlanLabel = billingCycle === BILLING_CYCLES.YEARLY
+    ? t('onboarding.step2.yearly')
+    : t('onboarding.step2.monthly');
+  const formatWholeCurrency = (amount: number) =>
+    formatCurrencyCode(amount, effectiveCurrency, t('common.locale'), {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  const selectedPriceWithPeriod = `${formatWholeCurrency(displayPrice)} ${selectedPeriodLabel}`;
+  // Stacked-pricing helpers: show the standard price struck-through above the discounted price
+  const primaryDisplayPrice = getMintcomPrice(billingCycle, false, effectiveCurrency);
+  const hasLocationDiscount = isAdditionalLocation && primaryDisplayPrice > displayPrice;
+  const formatWholeNumber = (amount: number) =>
+    amount.toLocaleString(t('common.locale'), { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  const selectedUnitLabel = `${effectiveCurrency} ${selectedPeriodLabel}`;
+
+  // The backend gives the first establishment a 14-day free trial (TRIAL_DAYS = 14),
+  // billing from now + 14 days. Compute the same date here so the disclosure shows
+  // the exact day the card will first be charged.
+  const TRIAL_DAYS = 14;
+  const trialEndDate = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + TRIAL_DAYS);
+    return d;
+  }, []);
+  const trialEndDateLabel = trialEndDate.toLocaleDateString(t('common.locale'), {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 
   useEffect(() => {
@@ -1977,13 +1984,6 @@ export function OnboardingPage() {
                           ? t('onboarding.step2.trialDesc')
                           : t('onboarding.step2.activateDesc', { amount: selectedPriceWithPeriod })}
                       </p>
-                      {isAdditionalLocation && !isTrialFlow && (
-                        <div className="mt-3 rounded-xl border border-blue-500/20 bg-blue-500/10 px-3 py-2 text-xs font-sans text-blue-500">
-                          {t('onboarding.step2.discountedAdditionalLocation', {
-                            defaultValue: 'Discounted rate for additional locations',
-                          })}
-                        </div>
-                      )}
                     </div>
 
                     {/* Billing cycle toggle */}
@@ -2016,16 +2016,21 @@ export function OnboardingPage() {
                               : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
                           }`}
                         >
-                          {t('onboarding.step2.yearly')}
-                          <span
-                            className={`rounded-[12px] px-1.5 py-0.5 text-[9px] font-sans font-bold leading-none ${
-                              billingCycle === BILLING_CYCLES.YEARLY
-                                ? 'bg-black text-mintcom-green'
-                                : 'bg-mintcom-green/15 text-mintcom-green'
-                            }`}
-                          >
-                            {t('common.save', { defaultValue: 'Save' })}
-                          </span>
+                          <span>{t('onboarding.step2.yearly')}</span>
+                          {yearlyDiscountPercent > 0 && (
+                            <span
+                              className={`rounded-[12px] px-1.5 py-0.5 text-[9px] font-sans font-bold leading-none ${
+                                billingCycle === BILLING_CYCLES.YEARLY
+                                  ? 'bg-black text-mintcom-green'
+                                  : 'bg-mintcom-green/15 text-mintcom-green'
+                              }`}
+                            >
+                              {t('landing.pricing.savePercent', {
+                                percent: yearlyDiscountPercent,
+                                defaultValue: `Save ${yearlyDiscountPercent}%`,
+                              })}
+                            </span>
+                          )}
                         </button>
                       </div>
                     </div>
@@ -2053,7 +2058,7 @@ export function OnboardingPage() {
                                 {formatWholeNumber(primaryDisplayPrice)} {selectedUnitLabel}
                               </span>
                               <span className="inline-flex items-center rounded-full bg-mintcom-green/15 px-2 py-0.5 text-[10px] font-extrabold text-emerald-800 dark:text-mintcom-green">
-                                -{formatWholeNumber(primaryDisplayPrice - displayPrice)} {MINTCOM_PRICING.currency}
+                                -{formatWholeNumber(primaryDisplayPrice - displayPrice)} {effectiveCurrency}
                               </span>
                             </div>
                           )}
@@ -2087,11 +2092,11 @@ export function OnboardingPage() {
                         <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
                           <img src={MintcomLeafIcon} alt="" style={{ width: 12, height: 12 }} className="scale-x-[-1] object-contain text-mintcom-green" />
                           <span className="text-xs font-bold uppercase tracking-wider text-mintcom-green">
-                            {t('landing.pricing.save')} {formatWholeUsd(yearlySavings)}{' '}
+                            {t('landing.pricing.save')} {formatWholeCurrency(yearlySavings)}{' '}
                             {t('landing.pricing.perYear')}
                           </span>
                           <span className="text-xs text-gray-400 line-through">
-                            {formatWholeUsd(currentMonthlyPrice * 12)} {t('landing.pricing.perYear')}
+                            {formatWholeCurrency(currentMonthlyPrice * 12)} {t('landing.pricing.perYear')}
                           </span>
                         </div>
                       )}

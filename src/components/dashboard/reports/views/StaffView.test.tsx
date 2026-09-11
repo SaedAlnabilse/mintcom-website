@@ -10,6 +10,7 @@ vi.mock('react-i18next', () => ({
       if (opts && typeof opts.defaultValue === 'string') return opts.defaultValue;
       return key;
     },
+    i18n: { language: 'en' },
   }),
 }));
 

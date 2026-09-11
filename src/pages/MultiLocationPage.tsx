@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { Building2, LayoutDashboard, Users, GitBranch, ArrowRight, type LucideIcon } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { getMintcomPrice, BILLING_CYCLES } from '../config/pricing';
+import { getMintcomPrice, BILLING_CYCLES, MINTCOM_PRICING } from '../config/pricing';
 
 const CARDS: { icon: LucideIcon; titleKey: string; descKey: string }[] = [
   { icon: Building2, titleKey: 'pages.multi.cards.brands.title', descKey: 'pages.multi.cards.brands.description' },
@@ -18,6 +18,7 @@ export const MultiLocationPage = () => {
   const { t } = useTranslation();
   const isRtl = t('common.locale') === 'ar';
   const extraMonthly = getMintcomPrice(BILLING_CYCLES.MONTHLY, true);
+  const currency = MINTCOM_PRICING.currency;
 
   return (
     <div
@@ -68,7 +69,7 @@ export const MultiLocationPage = () => {
         <div className="mx-auto w-full rounded-3xl border border-mintcom-green/25 bg-gradient-to-br from-mintcom-green/10 to-transparent p-10 text-center">
           <h2 className="mb-3 font-magilio text-2xl font-bold sm:text-3xl">{t('pages.multi.priceTitle')}</h2>
           <p className="mb-2 text-sm font-medium text-gray-600 dark:text-gray-300">
-            {t('pages.multi.priceBody', { price: extraMonthly })}
+            {t('pages.multi.priceBody', { price: extraMonthly, currency })}
           </p>
           <p className="mb-8 text-xs font-medium text-gray-500">{t('pages.multi.priceNote')}</p>
           <div className="flex flex-wrap items-center justify-center gap-3">

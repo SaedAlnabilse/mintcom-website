@@ -70,6 +70,9 @@ interface SubAttribute {
   isAvailable: boolean;
   isActive?: boolean;
   attributeId: string;
+  // PROTOTYPE preview — backend not wired yet
+  trackStock?: boolean;
+  availableStock?: number;
 }
 
 interface Attribute {
@@ -1476,6 +1479,7 @@ export function StockManagementPage() {
                               <th className="px-6 py-3 font-semibold">{t('stockManagement.addonOption', { defaultValue: 'Modifier / Option' })}</th>
                               <th className="px-6 py-3 text-center font-semibold">{t('stockManagement.extraPrice', { defaultValue: 'Extra Price' })}</th>
                               <th className="px-6 py-3 text-center font-semibold">{t('stockManagement.status', { defaultValue: 'Status' })}</th>
+                              <th className="px-6 py-3 text-center font-semibold">{t('stockManagement.onHandStock', { defaultValue: 'On-Hand Stock' })} <span className="ml-1 px-1 py-0.5 rounded text-[9px] font-black bg-amber-500/15 text-amber-600 align-middle">PREVIEW</span></th>
                               <th className="px-6 py-3 text-right font-semibold">{t('stockManagement.availabilityToggle', { defaultValue: 'Availability' })}</th>
                             </tr>
                           </thead>
@@ -1533,6 +1537,25 @@ export function StockManagementPage() {
                                         <XCircle className="w-3.5 h-3.5 text-[#D55263]" />
                                         <span>{t('stockManagement.unavailable', { defaultValue: 'Unavailable' })}</span>
                                       </span>
+                                    )}
+                                  </td>
+
+                                  {/* Toggle Switch */}
+                                  <td className="px-6 py-3.5 text-center">
+                                    {opt.trackStock ? (
+                                      <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border ${
+                                        (opt.availableStock ?? 0) <= 0
+                                          ? 'bg-[#D55263]/10 text-[#b83749] dark:text-[#D55263] border-[#D55263]/30'
+                                          : (opt.availableStock ?? 0) <= 5
+                                            ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30'
+                                            : 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'
+                                      }`}>
+                                        {(opt.availableStock ?? 0) <= 0
+                                          ? t('stockManagement.outOfStock', { defaultValue: 'Out of stock' })
+                                          : `${opt.availableStock ?? 0}`}
+                                      </span>
+                                    ) : (
+                                      <span className="text-xs font-medium text-slate-400">—</span>
                                     )}
                                   </td>
 

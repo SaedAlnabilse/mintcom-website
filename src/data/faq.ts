@@ -93,8 +93,8 @@ export const FAQ_DATA: FAQItem[] = [
     category: 'billing',
     question: 'What are the pricing plans?',
     questionAr: 'ما هي خطط الأسعار؟',
-    answer: 'Each location costs 20 USD/month or 200 USD/year. New accounts get a 14-day free trial with full access.',
-    answerAr: 'كل موقع يكلف 20 دولاراً شهرياً أو 200 دولار سنوياً. وتحصل الحسابات الجديدة على تجربة مجانية لمدة 14 يوماً مع وصول كامل.',
+    answer: 'Each location starts at 20 USD/month or 220 USD/year (or local currency equivalent based on your country). New accounts get a 14-day free trial with full access.',
+    answerAr: 'يبدأ سعر كل موقع من 20 دولاراً شهرياً أو 220 دولاراً سنوياً (أو ما يعادلها بالعملة المحلية حسب بلدك). وتحصل الحسابات الجديدة على تجربة مجانية لمدة 14 يوماً مع وصول كامل.',
   },
   {
     id: 'accept-payments',

@@ -5,6 +5,7 @@ import { useModalKeyboardGuard } from '../hooks/useModalKeyboardGuard';
 import { useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { MINTCOM_PRICING } from '../config/pricing';
 import {
   CreditCard,
   ShieldCheck,
@@ -265,6 +266,8 @@ const WorkflowFeatureModal = ({
 export const Features = () => {
   const { t } = useTranslation();
   const isRtl = t('common.locale') === 'ar';
+  const monthlyPrice = MINTCOM_PRICING.primary.monthly;
+  const currency = MINTCOM_PRICING.currency;
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const [direction, setDirection] = useState(1);
 
@@ -408,7 +411,9 @@ export const Features = () => {
 
           <h2 className="text-[clamp(1rem,4.2vw,3.75rem)] whitespace-nowrap font-bold font-magilio mb-6 leading-tight tracking-tight">
             <span className="text-gray-900 dark:text-white">{t('landing.workflow.title')} </span>
-            <span className="bg-mintcom-green text-gray-900 dark:text-gray-900 px-2 rounded-sm">{t('landing.workflow.titleHighlight')}</span>
+            <span className="bg-mintcom-green text-gray-900 dark:text-gray-900 px-2 rounded-sm">
+              {t('landing.workflow.titleHighlight', { price: monthlyPrice, currency })}
+            </span>
           </h2>
           {t('landing.workflow.subtitle') && (
             <p className="max-w-3xl mx-auto text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
