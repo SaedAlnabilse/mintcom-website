@@ -5937,6 +5937,7 @@
       "noResults": "No settings match your search",
       "noResultsDesc": "Try different search terms or browse categories below.",
       "clearSearch": "Clear search",
+      "noCategories": "No settings sections available for your account.",
       "backToSettings": "Back to Settings",
       "viewScreen": "Open",
       "categories": {

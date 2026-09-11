@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Store,
@@ -8,15 +8,8 @@ import {
   MonitorSmartphone,
   BookOpen,
   Trash2,
-  Search,
-  X,
   ArrowRight,
   ArrowLeft,
-  Sparkles,
-  CheckCircle2,
-  Coins,
-  ReceiptText,
-  FileSpreadsheet,
 } from 'lucide-react';
 
 interface SettingsOverviewHubProps {
@@ -24,7 +17,7 @@ interface SettingsOverviewHubProps {
   currentEstablishment: any;
   permittedTabIds: string[];
   onNavigateToSection: (sectionId: string) => void;
-  currencySymbol: string;
+  currencySymbol?: string;
 }
 
 interface SettingCardConfig {
@@ -39,7 +32,7 @@ interface SettingCardConfig {
   borderColor: string;
   badge?: string;
   statusType?: 'success' | 'neutral' | 'warning' | 'danger';
-  keywords: string[];
+  keywords?: string[];
 }
 
 export function SettingsOverviewHub({
@@ -51,7 +44,6 @@ export function SettingsOverviewHub({
 }: SettingsOverviewHubProps) {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  const [searchQuery, setSearchQuery] = useState('');
 
   const allCards: SettingCardConfig[] = useMemo(() => {
     return [
@@ -268,21 +260,10 @@ export function SettingsOverviewHub({
     ];
   }, [settings, currentEstablishment, t]);
 
-  // Filter cards by permission and search query
+  // Filter cards by permission
   const visibleCards = useMemo(() => {
-    return allCards.filter((card) => {
-      // Must be permitted for the current user
-      if (!permittedTabIds.includes(card.id)) return false;
-
-      // Filter by search query if present
-      if (!searchQuery.trim()) return true;
-      const q = searchQuery.trim().toLowerCase();
-      const matchesTitle = card.title.toLowerCase().includes(q);
-      const matchesDesc = card.description.toLowerCase().includes(q);
-      const matchesKeyword = card.keywords.some((k) => k.toLowerCase().includes(q));
-      return matchesTitle || matchesDesc || matchesKeyword;
-    });
-  }, [allCards, permittedTabIds, searchQuery]);
+    return allCards.filter((card) => permittedTabIds.includes(card.id));
+  }, [allCards, permittedTabIds]);
 
   const categories = useMemo(() => {
     return [
@@ -313,136 +294,25 @@ export function SettingsOverviewHub({
 
   return (
     <div className="space-y-8 animate-fadeIn font-sans" dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Header & Search */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {t('settings.overview.title', 'Settings & Configuration')}
-            </h1>
-            {currentEstablishment?.name && (
-              <span className="hidden sm:inline-flex px-3 py-1 rounded-lg bg-mintcom-green/10 text-mintcom-green font-semibold text-xs border border-mintcom-green/20">
-                {currentEstablishment.name}
-              </span>
-            )}
-          </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5 max-w-2xl">
-            {t(
-              'settings.overview.subtitle',
-              'Manage your store profile, financial setup, hardware registers, and integrations.',
-            )}
-          </p>
-        </div>
-
-        {/* Real-time Search Filter */}
-        <div className="relative w-full md:w-80">
-          <Search
-            size={16}
-            className={`absolute top-1/2 -translate-y-1/2 text-gray-400 ${
-              isRTL ? 'right-3.5' : 'left-3.5'
-            }`}
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t(
-              'settings.overview.searchPlaceholder',
-              'Search settings... (e.g. tax, receipt, logo, shifts)',
-            )}
-            className={`w-full py-2.5 rounded-xl text-sm bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/40 focus:border-mintcom-green transition-all shadow-sm ${
-              isRTL ? 'pr-10 pl-9' : 'pl-10 pr-9'
-            }`}
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className={`absolute top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-1 rounded-md transition-colors ${
-                isRTL ? 'left-2.5' : 'right-2.5'
-              }`}
-            >
-              <X size={14} />
-            </button>
+      {/* Header */}
+      <div>
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+            {t('settings.overview.title', 'Settings & Configuration')}
+          </h1>
+          {currentEstablishment?.name && (
+            <span className="hidden sm:inline-flex px-3 py-1 rounded-lg bg-mintcom-green/10 text-mintcom-green font-semibold text-xs border border-mintcom-green/20">
+              {currentEstablishment.name}
+            </span>
           )}
         </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5 max-w-2xl">
+          {t(
+            'settings.overview.subtitle',
+            'Manage your store profile, financial setup, hardware registers, and integrations.',
+          )}
+        </p>
       </div>
-
-      {/* Live Configuration Glance Ribbon */}
-      {!searchQuery && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-2xl bg-gradient-to-r from-gray-50 via-white to-gray-50 dark:from-white/[0.03] dark:via-white/[0.05] dark:to-white/[0.03] border border-gray-200/80 dark:border-white/10 shadow-sm backdrop-blur-md">
-          {/* Currency */}
-          <div className="flex items-center gap-3 p-2 rounded-xl">
-            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center shrink-0">
-              <Coins size={20} />
-            </div>
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                {t('settings.overview.quickGlance.currency', 'Currency')}
-              </p>
-              <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
-                {settings?.currency || currentEstablishment?.currency || 'USD'} ({currencySymbol})
-              </p>
-            </div>
-          </div>
-
-          {/* Default Tax */}
-          <div className="flex items-center gap-3 p-2 rounded-xl">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
-              <Sparkles size={20} />
-            </div>
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                {t('settings.overview.quickGlance.taxRate', 'Default Tax')}
-              </p>
-              <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
-                {settings?.taxRate ?? 0}%
-              </p>
-            </div>
-          </div>
-
-          {/* Receipt Branding */}
-          <div className="flex items-center gap-3 p-2 rounded-xl">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
-              <ReceiptText size={20} />
-            </div>
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                {t('settings.overview.quickGlance.receiptLogo', 'Receipt Logo')}
-              </p>
-              <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
-                {settings?.receiptLogo
-                  ? t('settings.overview.quickGlance.configured', 'Configured')
-                  : t('settings.overview.quickGlance.notConfigured', 'Not set')}
-              </p>
-            </div>
-          </div>
-
-          {/* Fiscal Compliance */}
-          <div className="flex items-center gap-3 p-2 rounded-xl">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0">
-              <FileSpreadsheet size={20} />
-            </div>
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                {t('settings.overview.quickGlance.fiscal', 'E-Invoicing')}
-              </p>
-              <p className="text-sm font-bold text-gray-900 dark:text-white truncate flex items-center gap-1.5">
-                {settings?.fiscalEnabled ? (
-                  <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-                    <CheckCircle2 size={13} />
-                    {t('settings.overview.quickGlance.active', 'Active')}
-                  </span>
-                ) : (
-                  <span className="text-gray-500 dark:text-gray-400">
-                    {t('settings.overview.quickGlance.inactive', 'Disabled')}
-                  </span>
-                )}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Categorized Settings Cards */}
       {categories.length > 0 ? (
@@ -470,14 +340,15 @@ export function SettingsOverviewHub({
                       <div className="space-y-3 w-full">
                         <div className="flex items-start justify-between gap-3">
                           <div
-                            className={`w-11 h-11 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${card.iconBg} ${card.iconColor}`}
+                            className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105 ${card.iconBg} ${card.iconColor}`}
                           >
                             <Icon size={22} />
                           </div>
 
                           {card.badge && (
                             <span
-                              className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full truncate max-w-[150px] ${
+                              title={card.badge}
+                              className={`text-[11px] font-semibold px-2.5 py-1 rounded-xl max-w-[calc(100%-3.5rem)] leading-snug break-words text-end ${
                                 card.statusType === 'danger'
                                   ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
                                   : card.statusType === 'success'
@@ -515,29 +386,17 @@ export function SettingsOverviewHub({
           ))}
         </div>
       ) : (
-        /* Empty State for Search */
+        /* Empty State */
         <div className="py-16 text-center rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-gray-200/60 dark:bg-white/10 text-gray-400 mx-auto flex items-center justify-center">
-            <Search size={22} />
-          </div>
-          <h3 className="text-base font-bold text-gray-900 dark:text-white">
-            {t('settings.overview.noResults', 'No settings match your search')}
-          </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
             {t(
-              'settings.overview.noResultsDesc',
-              'Try different search terms or browse categories below.',
+              'settings.overview.noCategories',
+              'No settings sections available for your account.',
             )}
           </p>
-          <button
-            type="button"
-            onClick={() => setSearchQuery('')}
-            className="px-4 py-2 rounded-xl bg-gray-100 dark:bg-white/10 text-sm font-semibold text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
-          >
-            {t('settings.overview.clearSearch', 'Clear search')}
-          </button>
         </div>
       )}
     </div>
   );
 }
+

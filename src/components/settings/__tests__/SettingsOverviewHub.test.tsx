@@ -38,21 +38,18 @@ describe('SettingsOverviewHub', () => {
     'danger',
   ];
 
-  it('renders overview header, location name, and glance stats', () => {
+  it('renders overview header and location name', () => {
     render(
       <SettingsOverviewHub
         settings={mockSettings}
         currentEstablishment={mockEstablishment}
         permittedTabIds={permittedTabIds}
         onNavigateToSection={vi.fn()}
-        currencySymbol="JD"
       />,
     );
 
     expect(screen.getByText('Settings & Configuration')).toBeDefined();
     expect(screen.getByText('Cedar & Spice — Abdali Flagship')).toBeDefined();
-    expect(screen.getByText('JOD (JD)')).toBeDefined();
-    expect(screen.getByText('16%')).toBeDefined();
   });
 
   it('renders permitted cards and triggers onNavigateToSection when clicked', () => {
@@ -63,7 +60,6 @@ describe('SettingsOverviewHub', () => {
         currentEstablishment={mockEstablishment}
         permittedTabIds={permittedTabIds}
         onNavigateToSection={onNavigate}
-        currencySymbol="JD"
       />,
     );
 
@@ -74,46 +70,53 @@ describe('SettingsOverviewHub', () => {
     expect(onNavigate).toHaveBeenCalledWith('profile');
   });
 
-  it('filters cards by search query', () => {
+  it('only renders permitted category cards', () => {
     render(
       <SettingsOverviewHub
         settings={mockSettings}
         currentEstablishment={mockEstablishment}
-        permittedTabIds={permittedTabIds}
+        permittedTabIds={['sales']}
         onNavigateToSection={vi.fn()}
-        currencySymbol="JD"
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(
-      'Search settings... (e.g. tax, receipt, logo, shifts)',
-    );
-    fireEvent.change(searchInput, { target: { value: 'shifts' } });
-
-    expect(screen.getByText('POS & Shifts')).toBeDefined();
+    expect(screen.getByText('Sales Setup & Taxes')).toBeDefined();
     expect(screen.queryByText('Store Profile')).toBeNull();
   });
 
-  it('shows empty search state when nothing matches', () => {
+  it('renders empty state when no categories are permitted', () => {
     render(
       <SettingsOverviewHub
         settings={mockSettings}
         currentEstablishment={mockEstablishment}
+        permittedTabIds={[]}
+        onNavigateToSection={vi.fn()}
+      />,
+    );
+    expect(
+      screen.getByText('No settings sections available for your account.'),
+    ).toBeDefined();
+  });
+
+  it('renders long establishment name badge fully without truncation', () => {
+    const longNameSettings = {
+      ...mockSettings,
+      restaurantName: 'Cedar & Spice — Rainbow Street Flagship',
+    };
+    render(
+      <SettingsOverviewHub
+        settings={longNameSettings}
+        currentEstablishment={mockEstablishment}
         permittedTabIds={permittedTabIds}
         onNavigateToSection={vi.fn()}
-        currencySymbol="JD"
       />,
     );
 
-    const searchInput = screen.getByPlaceholderText(
-      'Search settings... (e.g. tax, receipt, logo, shifts)',
+    const badge = screen.getByText('Cedar & Spice — Rainbow Street Flagship');
+    expect(badge).toBeDefined();
+    expect(badge.getAttribute('title')).toBe(
+      'Cedar & Spice — Rainbow Street Flagship',
     );
-    fireEvent.change(searchInput, { target: { value: 'nonexistentkeyword12345' } });
-
-    expect(screen.getByText('No settings match your search')).toBeDefined();
-    expect(screen.getByText('Clear search')).toBeDefined();
-
-    fireEvent.click(screen.getByText('Clear search'));
-    expect(screen.getByText('Store Profile')).toBeDefined();
   });
 });
+

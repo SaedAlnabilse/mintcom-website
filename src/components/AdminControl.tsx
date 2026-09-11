@@ -28,6 +28,7 @@ import {
   CreditCard,
   Activity,
   ShoppingBag,
+  Smartphone,
   CornerUpLeft,
   ExternalLink,
   MoreHorizontal,
@@ -1411,7 +1412,7 @@ export const AdminControl = () => {
               className="mb-8 inline-flex max-w-full items-center gap-2.5"
             >
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] border border-black/10 bg-mintcom-green shadow-[0_1px_2px_rgba(0,0,0,0.12)] dark:border-white/10 dark:shadow-none">
-                <Laptop size={14} strokeWidth={2.4} className="text-black" />
+                <Smartphone size={14} strokeWidth={2.4} className="text-black" />
               </span>
               <span aria-hidden="true" className="h-4 w-px bg-black/15 dark:bg-white/20" />
               <span className="min-w-0 text-[13px] font-semibold leading-snug tracking-widest uppercase text-gray-900 dark:text-white/85 md:text-sm">
