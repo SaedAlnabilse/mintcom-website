@@ -104,15 +104,6 @@ interface AppSettings {
   fiscalAutoSubmit?: boolean;
   fiscalBlockOnFailure?: boolean;
   fiscalTaxPresets?: string | null;
-  openingTime?: string;
-  closingTime?: string;
-  operatingSchedule?: {
-    [key: string]: {
-      isOpen: boolean;
-      open: string;
-      close: string;
-    };
-  };
 }
 
 
@@ -357,12 +348,7 @@ export function SettingsPage() {
     ],
   );
 
-  // Compare operating schedule separately with deep equality
-  const hasScheduleChanges = initialSettings
-    ? JSON.stringify(watchedValues.operatingSchedule) !== JSON.stringify(initialSettings.operatingSchedule)
-    : false;
-
-  const hasFormChanges = changedSettingKeys.size > 0 || hasScheduleChanges;
+  const hasFormChanges = changedSettingKeys.size > 0;
 
   // Combined dirty state
   const hasUnsavedChanges = hasFormChanges || !!selectedLogo || !!selectedReceiptLogo || removeLogo;
@@ -435,19 +421,6 @@ export function SettingsPage() {
       if (showLoading) setIsLoading(true);
       const response = await api.get('/app-settings');
       const data = response.data;
-
-      // Initialize schedule if missing from backend
-      if (!data.operatingSchedule || Object.keys(data.operatingSchedule).length === 0) {
-        const defaultSchedule: Record<string, { isOpen: boolean; open: string; close: string }> = {};
-        ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].forEach(day => {
-          defaultSchedule[day] = {
-            isOpen: true,
-            open: data.openingTime || '09:00',
-            close: data.closingTime || '22:00'
-          };
-        });
-        data.operatingSchedule = defaultSchedule;
-      }
 
       // Set logo previews
       if (data.logo) {
@@ -595,7 +568,6 @@ export function SettingsPage() {
         : new Set<string>();
       if (selectedLogo || removeLogo) changedKeys.add('logo');
       if (selectedReceiptLogo) changedKeys.add('receiptLogo');
-      if (hasScheduleChanges) changedKeys.add('operatingSchedule');
 
       const submissionData = buildAppSettingsUpdatePayload(data, changedKeys);
 

@@ -312,11 +312,8 @@ Static analysis date: 2026-05-02
   - `showTaxId`
   - `showFarewellMessage`
   - `holdOrderTableCount`
-  - `openingTime`
-  - `closingTime`
-  - `operatingSchedule`
-- UI-derived fallback only:
-  - if `operatingSchedule` is missing, frontend synthesizes it from `openingTime` and `closingTime`
+- NOTE: `openingTime` / `closingTime` / `operatingSchedule` were removed from the
+  frontend (no UI sends them anymore). Backend columns still exist for later reuse.
 
 ### Payment Methods
 

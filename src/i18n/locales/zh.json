@@ -5800,7 +5800,6 @@
       "address": "地址",
       "addressPlaceholder": "输入您的营业地址…",
       "changeLogo": "更换标志",
-      "chooseDays": "选择您的营业日",
       "comingSoon": "即将推出",
       "deleteLogo": "删除标志",
       "detailsDesc": "管理您的门店形象",
@@ -5811,10 +5810,7 @@
       "logoGuidelines": "建议：512x512 像素正方形 PNG、JPG 或 SVG。最大 2MB。",
       "name": "名称",
       "namePlaceholder": "例如：The Coffee House",
-      "openingHours": "营业时间",
       "passwordResetNote": "密码重置只能在业主后台进行",
-      "selectDay": "选择要编辑的日期",
-      "setServiceTimes": "设置营业时段",
       "taxId": "税号/TRN",
       "taxIdDisclaimer": "这在您所在的国家可能是法律要求。请核查当地税务规定，并在需要时填写。",
       "taxIdPlaceholder": "例如：100123456700003 或 GB123456789"
@@ -5952,7 +5948,7 @@
     "errors": {
       "emailRequired": "必填",
       "nameRequired": "必填",
-      "passwordMin": "密码至少需要 6 个字符",
+      "passwordMin": "密码至少需要 {{count}} 个字符",
       "passwordPolicy": "密码至少需要 6 个字符",
       "passwordRequired": "必填",
       "passwordsNotMatch": "两次输入的密码不一致",

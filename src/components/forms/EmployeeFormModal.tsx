@@ -127,8 +127,9 @@ const ALLOWED_BACKOFFICE_PERMISSION_IDS: Set<string> = new Set([
   ...CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id),
   ...BACKOFFICE_DEFAULT_PERMISSION_IDS,
 ]);
-/** Staff password: at least 6 characters of anything (no complexity). */
-const EMPLOYEE_PASSWORD_MIN_LENGTH = 6;
+/** Staff password: 4+ chars plain POS staff, 6+ for ADMIN/Back Office. No complexity. */
+const EMPLOYEE_PASSWORD_MIN_LENGTH = 4;
+const PRIVILEGED_EMPLOYEE_PASSWORD_MIN_LENGTH = 6;
 
 const normalizeAndFilterPermissions = (
   values: unknown,
@@ -1280,10 +1281,31 @@ export function EmployeeFormModal({
 
     if (!initialData && !password) {
       newErrors.password = t('staff.errors.passwordRequired');
-    } else if (password && password.length < EMPLOYEE_PASSWORD_MIN_LENGTH) {
-      newErrors.password = t('staff.errors.passwordMin', {
-        defaultValue: 'Password must be at least 6 characters',
-      });
+    } else if (password) {
+      // Privileged floor when ANY assignment is ADMIN/Back Office (same
+      // predicate as requiresEmail). The backend enforces this per
+      // assignment and returns a clear message on mismatch.
+      const passwordIsPrivileged =
+        role === 'ADMIN' ||
+        backofficeAccess ||
+        (!isOwnerMode &&
+          !!establishments &&
+          !sameRoleForAllLocations &&
+          selectedEstablishmentIds.some((establishmentId) =>
+            roleOptionRequiresEmail(getRoleOptionForTarget(establishmentId)),
+          )) ||
+        (!isOwnerMode &&
+          !!selectedCustomRoleId &&
+          roleOptionRequiresEmail(customRoleOptionId(selectedCustomRoleId)));
+      const passwordMinLength = passwordIsPrivileged
+        ? PRIVILEGED_EMPLOYEE_PASSWORD_MIN_LENGTH
+        : EMPLOYEE_PASSWORD_MIN_LENGTH;
+      if (password.length < passwordMinLength) {
+        newErrors.password = t('staff.errors.passwordMin', {
+          count: passwordMinLength,
+          defaultValue: `Password must be at least ${passwordMinLength} characters`,
+        });
+      }
     }
     if (password !== confirmPassword) {
       newErrors.confirmPassword = t('staff.errors.passwordsNotMatch');

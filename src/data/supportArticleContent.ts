@@ -84,7 +84,7 @@ export const SUPPORT_ARTICLE_CONTENT: Record<string, string[]> = {
     '2. Select Add Employee.',
     '3. Enter the employee name, username, email or phone details where required.',
     '4. Assign a role or custom role.',
-    '5. Set a POS password for the employee (at least 6 characters of anything).',
+    '5. Set a POS password for the employee (at least 4 characters of anything).',
     '6. Save the employee and verify they can access only the correct screens.',
     '### What to Assign',
     '- **Cashiers** normally need POS, discounts if allowed, and receipt permissions.',

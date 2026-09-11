@@ -5850,7 +5850,6 @@
       "address": "Address",
       "addressPlaceholder": "Enter your business address...",
       "changeLogo": "Change logo",
-      "chooseDays": "Choose your operating days",
       "comingSoon": "Coming soon",
       "deleteLogo": "Delete logo",
       "detailsDesc": "Manage your location identity",
@@ -5861,10 +5860,7 @@
       "logoGuidelines": "Recommended: 512x512px square PNG, JPG or SVG. Max 2MB.",
       "name": "Name",
       "namePlaceholder": "E.g. The Coffee House",
-      "openingHours": "Opening hours",
       "passwordResetNote": "Password reset can only be done from the Owner Portal",
-      "selectDay": "Select a day to edit",
-      "setServiceTimes": "Set service times",
       "taxId": "Tax ID/TRN",
       "taxIdDisclaimer": "This may be legally required in your country. Check your local tax rules and add it if needed.",
       "taxIdPlaceholder": "e.g., 100123456700003 or GB123456789"
@@ -6015,7 +6011,7 @@
     "errors": {
       "emailRequired": "Required",
       "nameRequired": "Required",
-      "passwordMin": "Password must be at least 6 characters",
+      "passwordMin": "Password must be at least {{count}} characters",
       "passwordPolicy": "Password must be at least 6 characters",
       "passwordRequired": "Required",
       "passwordsNotMatch": "Passwords do not match",
@@ -6978,7 +6974,7 @@
         },
         "s2": {
           "title": "Add your business & location",
-          "description": "Set up your location, basic details, and working hours so every sale is tied to the right store."
+          "description": "Set up your location and basic details so every sale is tied to the right store."
         },
         "s3": {
           "title": "Build your menu or catalog",

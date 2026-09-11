@@ -69,8 +69,8 @@ export const FAQ_DATA: FAQItem[] = [
     category: 'staff',
     question: 'How do I add employees to my team?',
     questionAr: 'كيف أضيف موظفين إلى فريقي؟',
-    answer: 'Go to Dashboard > Staff, add the employee details, assign a role, and set their POS password (at least 6 characters). They can then sign in with the permissions you choose.',
-    answerAr: 'اذهب إلى لوحة التحكم > الموظفون، ثم أضف بيانات الموظف وحدد له الدور وكلمة مرور نقاط البيع (6 أحرف على الأقل). بعدها يمكنه تسجيل الدخول بالصلاحيات التي تحددها.',
+    answer: 'Go to Dashboard > Staff, add the employee details, assign a role, and set their POS password (at least 4 characters). They can then sign in with the permissions you choose.',
+    answerAr: 'اذهب إلى لوحة التحكم > الموظفون، ثم أضف بيانات الموظف وحدد له الدور وكلمة مرور نقاط البيع (4 أحرف على الأقل). بعدها يمكنه تسجيل الدخول بالصلاحيات التي تحددها.',
   },
   {
     id: 'roles-permissions',

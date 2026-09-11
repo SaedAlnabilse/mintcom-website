@@ -5850,7 +5850,6 @@
       "address": "العنوان",
       "addressPlaceholder": "أدخل عنوان عملك...",
       "changeLogo": "تغيير الشعار",
-      "chooseDays": "اختر أيام العمل الخاصة بك",
       "comingSoon": "قريباً",
       "deleteLogo": "حذف الشعار",
       "detailsDesc": "إدارة هوية موقعك",
@@ -5861,10 +5860,7 @@
       "logoGuidelines": "يفضل: 512x512 بكسل مربعة PNG أو JPG أو SVG. بحد أقصى 2 ميجابايت.",
       "name": "الاسم",
       "namePlaceholder": "مثال: مقهى القهوة",
-      "openingHours": "ساعات العمل",
       "passwordResetNote": "لا يمكن إعادة تعيين كلمة المرور إلا من خلال بوابة المالك",
-      "selectDay": "اختر يوماً للتعديل",
-      "setServiceTimes": "تحديد أوقات الخدمة",
       "taxId": "الرقم الضريبي",
       "taxIdDisclaimer": "قد يكون هذا مطلوباً قانونياً في بلدك. تحقق من القواعد الضريبية المحلية وأضفه عند الحاجة.",
       "taxIdPlaceholder": "مثال: 100123456700003 أو GB123456789"
@@ -6015,7 +6011,7 @@
     "errors": {
       "emailRequired": "مطلوب",
       "nameRequired": "مطلوب",
-      "passwordMin": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+      "passwordMin": "يجب أن تكون كلمة المرور {{count}} أحرف على الأقل",
       "passwordPolicy": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
       "passwordRequired": "مطلوب",
       "passwordsNotMatch": "كلمات المرور غير متطابقة",

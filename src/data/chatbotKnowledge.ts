@@ -636,7 +636,7 @@ Points are automatically earned on each purchase!`,
 
 1. Go to **Dashboard > Staff**
 2. Click **"Add Employee"**
-3. Fill in: Name, Email, Password (at least 6 characters), Role (Admin/User)
+3. Fill in: Name, Email, Password (at least 4 characters), Role (Admin/User)
 4. Set **permissions** (for User role)
 5. Save!
 

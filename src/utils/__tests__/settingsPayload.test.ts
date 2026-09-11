@@ -41,20 +41,6 @@ describe('settings update payload', () => {
     }
   });
 
-  it('sends a sanitized weekly operatingSchedule as raw HH:mm wall-time', () => {
-    const payload = buildAppSettingsUpdatePayload({
-      operatingSchedule: {
-        monday: { isOpen: true, open: '09:00', close: '22:00' },
-        funday: { isOpen: true, open: '09:00', close: '22:00' },
-        tuesday: { isOpen: true, open: '9am', close: '22:00' },
-      },
-    });
-
-    expect(payload.operatingSchedule).toEqual({
-      monday: { isOpen: true, open: '09:00', close: '22:00' },
-    });
-  });
-
   it('builds the sales setup fields in the backend format', () => {
     const payload = buildAppSettingsUpdatePayload({
       taxRate: 8.5,

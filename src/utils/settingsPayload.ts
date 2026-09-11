@@ -65,52 +65,6 @@ export const FORBIDDEN_APP_SETTINGS_UPDATE_KEYS = [
   'receiptHeader',
 ] as const;
 
-/** One day in the weekly operating schedule. Times are raw 24h wall-time "HH:mm". */
-export type OperatingDaySchedule = {
-  isOpen: boolean;
-  open: string;
-  close: string;
-};
-
-export type OperatingSchedule = Record<string, OperatingDaySchedule>;
-
-const OPERATING_DAYS = [
-  'monday',
-  'tuesday',
-  'wednesday',
-  'thursday',
-  'friday',
-  'saturday',
-  'sunday',
-] as const;
-
-const WALL_TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
-
-/**
- * Sanitize the weekly operating schedule for the API: known day keys only,
- * times trimmed to raw "HH:mm" wall-time (never UTC-converted). Returns
- * undefined when absent, null when explicitly cleared.
- */
-export const sanitizeOperatingSchedule = (
-  value: unknown,
-): OperatingSchedule | null | undefined => {
-  if (value === undefined) return undefined;
-  if (value === null) return null;
-  if (typeof value !== 'object' || Array.isArray(value)) return undefined;
-  const out: OperatingSchedule = {};
-  for (const [day, entry] of Object.entries(value as Record<string, unknown>)) {
-    if (!(OPERATING_DAYS as readonly string[]).includes(day)) continue;
-    if (typeof entry !== 'object' || entry === null) continue;
-    const { isOpen, open, close } = entry as Record<string, unknown>;
-    if (typeof isOpen !== 'boolean') continue;
-    const openTime = typeof open === 'string' ? open.trim() : '';
-    const closeTime = typeof close === 'string' ? close.trim() : '';
-    if (!WALL_TIME_RE.test(openTime) || !WALL_TIME_RE.test(closeTime)) continue;
-    out[day] = { isOpen, open: openTime, close: closeTime };
-  }
-  return out;
-};
-
 export type ServiceChargeType = 'PERCENTAGE' | 'FIXED';
 
 export type AppSettingsUpdatePayload = {
@@ -132,9 +86,6 @@ export type AppSettingsUpdatePayload = {
   currency?: string;
   logo?: string | null;
   receiptLogo?: string | null;
-  openingTime?: string | null;
-  closingTime?: string | null;
-  operatingSchedule?: OperatingSchedule | null;
   loyaltyConfig?: unknown;
   showRestaurantName?: boolean;
   showBusinessName?: boolean;
@@ -388,19 +339,6 @@ export const buildAppSettingsUpdatePayload = (
   const receiptLogo = optionalStringOrNull(data, 'receiptLogo', URL_LIMIT);
   if (shouldInclude('receiptLogo') && receiptLogo !== undefined)
     payload.receiptLogo = receiptLogo;
-
-  const openingTime = optionalStringOrNull(data, 'openingTime', 60);
-  if (shouldInclude('openingTime') && openingTime !== undefined)
-    payload.openingTime = openingTime;
-
-  const closingTime = optionalStringOrNull(data, 'closingTime', 60);
-  if (shouldInclude('closingTime') && closingTime !== undefined)
-    payload.closingTime = closingTime;
-
-  if (shouldInclude('operatingSchedule') && hasOwn(data, 'operatingSchedule')) {
-    const schedule = sanitizeOperatingSchedule(read(data, 'operatingSchedule'));
-    if (schedule !== undefined) payload.operatingSchedule = schedule;
-  }
 
   if (shouldInclude('loyaltyConfig') && hasOwn(data, 'loyaltyConfig'))
     payload.loyaltyConfig = read(data, 'loyaltyConfig');
