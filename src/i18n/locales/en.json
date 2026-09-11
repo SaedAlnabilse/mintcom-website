@@ -5928,6 +5928,65 @@
     },
     "saveChanges": "Save Changes",
     "subtitle": "General Store Configuration",
+    "overview": {
+      "title": "Settings & Configuration",
+      "subtitle": "Manage your store profile, financial setup, hardware registers, and integrations.",
+      "searchPlaceholder": "Search settings... (e.g. tax, receipt, logo, shifts)",
+      "noResults": "No settings match your search",
+      "noResultsDesc": "Try different search terms or browse categories below.",
+      "clearSearch": "Clear search",
+      "backToSettings": "Back to Settings",
+      "viewScreen": "Open",
+      "categories": {
+        "identity": "General & Identity",
+        "financials": "Financials & Sales",
+        "operations": "Operations & Till",
+        "danger": "Danger Zone"
+      },
+      "quickGlance": {
+        "currency": "Currency",
+        "taxRate": "Default Tax",
+        "receiptLogo": "Receipt Logo",
+        "fiscal": "E-Invoicing",
+        "accounting": "Accounting",
+        "configured": "Configured",
+        "notConfigured": "Not set",
+        "connected": "Connected",
+        "disconnected": "Not connected",
+        "active": "Active",
+        "inactive": "Disabled"
+      },
+      "cards": {
+        "profile": {
+          "title": "Store Profile",
+          "description": "Business name, address, contact email, logo, and legal tax registration number."
+        },
+        "receipts": {
+          "title": "Receipts & Branding",
+          "description": "Receipt logo, custom header notes, farewell message, and printed customer fields."
+        },
+        "sales": {
+          "title": "Sales Setup & Taxes",
+          "description": "System currency, default sales tax rate, product tax overrides, and service charges."
+        },
+        "pos": {
+          "title": "POS & Shifts",
+          "description": "Held order capacity, table management limits, and multi-shift cashier settings."
+        },
+        "einvoicing": {
+          "title": "E-Invoicing & Fiscal",
+          "description": "Universal electronic invoicing, country tax regulations, and QR verification."
+        },
+        "accounting": {
+          "title": "Accounting & VAT",
+          "description": "Automatic daily Z-Report sync with Xero & QuickBooks, UK VAT split, and ledger mapping."
+        },
+        "danger": {
+          "title": "Delete Location",
+          "description": "Initiate permanent decommissioning and deletion of this store location."
+        }
+      }
+    },
     "tabs": {
       "danger": "Delete Location",
       "profile": "Profile",

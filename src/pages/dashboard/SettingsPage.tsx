@@ -1,11 +1,12 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { useBlocker, useLocation, useNavigate } from 'react-router-dom';
+import { useBlocker, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign, Copy, Key, Shield, ShieldCheck, MonitorSmartphone, BookOpen } from 'lucide-react';
+import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign, Copy, Key, Shield, ShieldCheck, MonitorSmartphone, BookOpen, ArrowLeft } from 'lucide-react';
 import api, { extractErrorMessage } from '../../config/api';
 import { FiscalComplianceCard } from '../../components/FiscalComplianceCard';
 import { AccountingSettingsTab } from '../../components/settings/AccountingSettingsTab';
+import { SettingsOverviewHub } from '../../components/settings/SettingsOverviewHub';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { ChangeCurrencyModal } from '../../components/ChangeCurrencyModal';
@@ -110,23 +111,33 @@ interface AppSettings {
 
 
 
-type SettingsTab = 'profile' | 'sales' | 'pos' | 'receipt' | 'einvoicing' | 'accounting' | 'loyalty' | 'danger';
+type SettingsTab =
+  | 'overview'
+  | 'profile'
+  | 'sales'
+  | 'pos'
+  | 'receipt'
+  | 'einvoicing'
+  | 'accounting'
+  | 'loyalty'
+  | 'danger';
 
-/** Older links used ?tab=tax — map them to the E-Invoicing tab. */
+/** Normalizes route param, query param, or deep-link tab name. */
 const normalizeSettingsTab = (tab: string | null | undefined): SettingsTab | null => {
   if (!tab) return null;
-  if (tab === 'tax') return 'einvoicing';
+  const lower = tab.toLowerCase();
+  if (lower === 'overview') return 'overview';
+  if (lower === 'tax' || lower === 'fiscal' || lower === 'einvoicing') return 'einvoicing';
+  if (lower === 'receipt' || lower === 'receipts') return 'receipt';
+  if (lower === 'danger' || lower === 'danger-zone') return 'danger';
   if (
-    tab === 'profile' ||
-    tab === 'sales' ||
-    tab === 'pos' ||
-    tab === 'receipt' ||
-    tab === 'einvoicing' ||
-    tab === 'accounting' ||
-    tab === 'loyalty' ||
-    tab === 'danger'
+    lower === 'profile' ||
+    lower === 'sales' ||
+    lower === 'pos' ||
+    lower === 'accounting' ||
+    lower === 'loyalty'
   ) {
-    return tab;
+    return lower as SettingsTab;
   }
   return null;
 };
@@ -152,6 +163,7 @@ export function SettingsPage() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const { locationSlug, section } = useParams<{ locationSlug?: string; section?: string }>();
   const {
     account,
     currentEstablishment,
@@ -197,47 +209,68 @@ export function SettingsPage() {
       : permittedTabs;
   }, [account, manualDeletionPending, t]);
 
-  const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
+  const routeTab = normalizeSettingsTab(section);
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const queryTab = normalizeSettingsTab(searchParams.get('tab') || searchParams.get('section'));
+  const isOAuthCallback = searchParams.has('code') || searchParams.has('realmId');
+  const deepLinkTab = isLocationDeletionRecoveryDeepLink(location.search)
+    ? 'danger'
+    : normalizeSettingsTab((location.state as any)?.openSettingsTab) ||
+      queryTab ||
+      (isOAuthCallback ? 'accounting' : null);
 
-  const syncTabQueryParam = (tab: SettingsTab) => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('tab') === tab) return;
+  const activeTab: SettingsTab = manualDeletionPending
+    ? 'danger'
+    : routeTab || deepLinkTab || 'overview';
 
-    params.set('tab', tab);
-    const nextSearch = params.toString();
-    const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ''}${window.location.hash}`;
-    window.history.replaceState(window.history.state, document.title, nextUrl);
+  const navigateToSection = (target: SettingsTab) => {
+    const slug =
+      locationSlug ||
+      (currentEstablishment ? getEstablishmentSlug(currentEstablishment) : '');
+    if (!slug) return;
+
+    if (target === 'overview') {
+      navigate(`/dashboard/${encodeURIComponent(slug)}/settings`);
+    } else if (target === 'receipt') {
+      navigate(`/dashboard/${encodeURIComponent(slug)}/settings/receipts`);
+    } else if (target === 'einvoicing') {
+      navigate(`/dashboard/${encodeURIComponent(slug)}/settings/fiscal`);
+    } else {
+      navigate(`/dashboard/${encodeURIComponent(slug)}/settings/${target}`);
+    }
   };
 
-  // Auto-select first available tab if current is not available
+  // If a deep-link was passed via query param or state while sitting at root /settings, redirect smoothly
   useEffect(() => {
+    if (!currentEstablishment || routeTab || manualDeletionPending) return;
+    if (deepLinkTab && deepLinkTab !== 'overview') {
+      const slug = locationSlug || getEstablishmentSlug(currentEstablishment);
+      const targetSubPath =
+        deepLinkTab === 'receipt'
+          ? 'receipts'
+          : deepLinkTab === 'einvoicing'
+          ? 'fiscal'
+          : deepLinkTab;
+      navigate(`/dashboard/${encodeURIComponent(slug)}/settings/${targetSubPath}`, {
+        replace: true,
+      });
+    }
+  }, [currentEstablishment, deepLinkTab, routeTab, manualDeletionPending, locationSlug, navigate]);
+
+  // If navigated to an unpermitted sub-section, send back to overview
+  useEffect(() => {
+    if (activeTab === 'overview' || manualDeletionPending) return;
     if (tabs.length > 0 && !tabs.find((t: any) => t.id === activeTab)) {
-      const fallbackTab = tabs[0].id as SettingsTab;
-      setActiveTab(fallbackTab);
-      syncTabQueryParam(fallbackTab);
+      navigateToSection('overview');
     }
-  }, [tabs, activeTab]);
+  }, [tabs, activeTab, manualDeletionPending]);
 
-  // Support deep-linking directly to a settings tab from widget tasks or OAuth callbacks.
+  // Clean state after reading openSettingsTab
   useEffect(() => {
-    const state = location.state as { openSettingsTab?: SettingsTab | 'tax' } | null;
-    const searchParams = new URLSearchParams(location.search);
-    const queryTab = normalizeSettingsTab(searchParams.get('tab'));
-    const isOAuthCallback = searchParams.has('code') || searchParams.has('realmId');
-    const requestedTab = isLocationDeletionRecoveryDeepLink(location.search)
-      ? 'danger'
-      : normalizeSettingsTab(state?.openSettingsTab) || queryTab || (isOAuthCallback ? 'accounting' : null);
-    if (!requestedTab) return;
-
-    if (tabs.some((tab: any) => tab.id === requestedTab)) {
-      setActiveTab(requestedTab);
-      syncTabQueryParam(requestedTab);
-    }
-
-    if (state?.openSettingsTab) {
+    if ((location.state as any)?.openSettingsTab) {
       window.history.replaceState({}, document.title);
     }
-  }, [location.state, location.search, tabs]);
+  }, [location.state]);
 
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [isLoading, setIsLoading] = useState(!manualDeletionPending);
@@ -812,82 +845,113 @@ export function SettingsPage() {
           setSelectedReceiptLogo(null);
           setRemoveLogo(false);
 
-          setConfirmConfig(prev => ({ ...prev, isOpen: false }));
-          setActiveTab(newTab);
-          syncTabQueryParam(newTab);
+          setConfirmConfig((prev) => ({ ...prev, isOpen: false }));
+          navigateToSection(newTab);
         },
         showCancel: true,
         confirmText: t('common.continue'),
         cancelText: t('common.cancel'),
-        onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+        onClose: () => setConfirmConfig((prev) => ({ ...prev, isOpen: false })),
       });
       return;
     }
 
-    setActiveTab(newTab);
-    syncTabQueryParam(newTab);
+    navigateToSection(newTab);
   };
 
   if (isLoading && !manualDeletionPending) {
     return <SectionLoader message={t('settings.messages.loading')} />;
   }
 
+  const currentTabMeta = tabs.find((tab: any) => tab.id === activeTab);
+
   return (
     <div className="space-y-6 sm:space-y-8 pb-10 font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Full-screen blocker while settings load or save, so no second action
           can be stacked on an in-flight request. */}
       <BusyOverlay visible={isLoading || isSaving} />
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.title')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('settings.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
-        </div>
 
-        {activeTab !== 'einvoicing' && activeTab !== 'danger' && activeTab !== 'accounting' && (
-          <button
-            type="button"
-            onClick={handleSubmit(onSubmit, showFormValidationError)}
-            disabled={isSaving || !hasUnsavedChanges}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm disabled:opacity-50 disabled:shadow-none"
-          >
-            {isSaving ? <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" /> : <Save size={18} />}
-            <span>{t('settings.saveChanges')}</span>
-          </button>
-        )}
-      </div>
-
-      <div className="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-black/40 rounded-xl border border-gray-200 dark:border-white/[0.1] w-full relative isolate shadow-sm backdrop-blur-xl ring-1 ring-black/20">
-        {tabs.map((tab: any) => {
-          const isSelected = activeTab === tab.id;
-          return (
+      {activeTab === 'overview' ? (
+        <SettingsOverviewHub
+          settings={settings}
+          currentEstablishment={currentEstablishment}
+          permittedTabIds={tabs.map((t: any) => t.id)}
+          onNavigateToSection={(target) => handleTabChange(target as SettingsTab)}
+          currencySymbol={currencySymbol}
+        />
+      ) : (
+        <div className="space-y-6 sm:space-y-8">
+          {/* Breadcrumb & Sub-screen Header */}
+          <div className="space-y-4">
             <button
-              key={tab.id}
               type="button"
-              onClick={() => handleTabChange(tab.id as SettingsTab)}
-              className={`relative flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black tracking-wide transition-all duration-300 ${isSelected
-                ? tab.isDanger
-                  ? 'bg-mintcom-red text-white shadow-lg shadow-mintcom-red/20'
-                  : 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
-                : tab.isDanger                  ? 'text-mintcom-red hover:bg-mintcom-red/10'
-                  : 'text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
-                }`}
+              onClick={() => handleTabChange('overview')}
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-mintcom-green transition-colors group"
             >
-              <tab.icon size={16} />
-              <span className="hidden md:inline">{tab.label}</span>
-              <span className="md:hidden">{tab.label.split(' ')[0]}</span>
+              <ArrowLeft
+                size={16}
+                className={`transition-transform ${
+                  t('common.locale') === 'ar' ? 'rotate-180 group-hover:translate-x-1' : 'group-hover:-translate-x-1'
+                }`}
+              />
+              <span>{t('settings.overview.backToSettings', 'Back to Settings')}</span>
             </button>
-          );
-        })}
-      </div>
 
-      <form onSubmit={handleSubmit(onSubmit, showFormValidationError)} className="space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-white/10">
+              <div className="flex items-center gap-3.5">
+                {currentTabMeta?.icon && (
+                  <div
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
+                      currentTabMeta.isDanger
+                        ? 'bg-rose-500/10 text-rose-500'
+                        : 'bg-mintcom-green/15 text-mintcom-green'
+                    }`}
+                  >
+                    <currentTabMeta.icon size={24} />
+                  </div>
+                )}
+                <div>
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                      {currentTabMeta?.label || t('settings.title')}
+                    </h1>
+                    {currentEstablishment?.name && (
+                      <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green font-semibold text-xs border border-mintcom-green/20">
+                        {currentEstablishment.name}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                    {activeTab === 'profile' && t('settings.profile.detailsDesc', 'Manage your location identity')}
+                    {activeTab === 'sales' && t('settings.sales.subtitle', 'Configure Taxes, Currency, and Table Structure')}
+                    {activeTab === 'pos' && t('settings.tabs.pos', 'POS Terminal & Shift Operations')}
+                    {activeTab === 'receipt' && t('settings.receipts.subtitle', 'Edit Receipt Look & Customer Notes')}
+                    {activeTab === 'einvoicing' && t('settings.fiscal.subtitle', 'Universal electronic invoicing & tax compliance')}
+                    {activeTab === 'accounting' && t('settings.accounting.subtitle', 'Z-Report sync with Xero and QuickBooks')}
+                    {activeTab === 'danger' && t('settings.danger.subtitle', 'Permanent Location Deletion')}
+                  </p>
+                </div>
+              </div>
+
+              {activeTab !== 'einvoicing' && activeTab !== 'danger' && activeTab !== 'accounting' && (
+                <button
+                  type="button"
+                  onClick={handleSubmit(onSubmit, showFormValidationError)}
+                  disabled={isSaving || !hasUnsavedChanges}
+                  className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm disabled:opacity-50 disabled:shadow-none shrink-0"
+                >
+                  {isSaving ? (
+                    <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    <Save size={18} />
+                  )}
+                  <span>{t('settings.saveChanges')}</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit, showFormValidationError)} className="space-y-8">
         {activeTab === 'profile' && (() => {
           const profileEstablishments = (account as any)?.establishments || [];
           const contextEstablishments = establishments || [];
@@ -1603,6 +1667,7 @@ export function SettingsPage() {
           <div className="space-y-6">
             <FiscalComplianceCard
               initial={fiscalInitial}
+              establishmentCountry={currentEstablishment?.country ?? null}
               onSaved={() => fetchSettings(false)}
             />
           </div>
@@ -1658,6 +1723,8 @@ export function SettingsPage() {
           </motion.div>
         )}
       </form>
+        </div>
+      )}
 
 
 

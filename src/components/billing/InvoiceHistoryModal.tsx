@@ -19,6 +19,7 @@ const PAGE_SIZE = 10;
 interface InvoiceListResponse {
   invoices: SubscriptionInvoiceData[];
   pagination: { page: number; limit: number; total: number; totalPages: number };
+  total?: number;
 }
 
 const money = (value: number, currency: string) =>
@@ -220,7 +221,7 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
       });
       const batch = response.data.invoices || [];
       all.push(...batch);
-      const totalCount = response.data.total || 0;
+      const totalCount = response.data.pagination?.total ?? response.data.total ?? 0;
       if (batch.length === 0 || batch.length < 100) break;
       if (totalCount && all.length >= totalCount) break;
     }

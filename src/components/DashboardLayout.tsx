@@ -42,7 +42,13 @@ import {
   ShoppingBag,
   Clock,
   FileText,
-  Boxes
+  Boxes,
+  Store,
+  Receipt,
+  ShieldCheck,
+  MonitorSmartphone,
+  BookOpen,
+  Trash2
 } from 'lucide-react';
 
 // Mintcom Logo imports
@@ -470,10 +476,17 @@ export function DashboardLayout() {
         label: t('dashboard.menu.settings'),
         icon: Settings,
         items: [
-          { path: 'settings', label: t('dashboard.menu.establishmentSettings', { defaultValue: 'Location Settings' }), icon: Sliders },
-          { path: 'activity-logs', label: t('dashboard.menu.activityLog'), icon: History },
+          { path: 'settings', label: t('dashboard.menu.overview', { defaultValue: 'Overview' }), icon: Sliders },
+          { path: 'settings/profile', label: t('settings.tabs.profile', { defaultValue: 'Profile' }), icon: Store },
+          { path: 'settings/sales', label: t('settings.tabs.sales', { defaultValue: 'Sales Setup' }), icon: CreditCard },
+          { path: 'settings/pos', label: t('settings.tabs.pos', { defaultValue: 'POS & Shifts' }), icon: MonitorSmartphone },
+          { path: 'settings/receipts', label: t('settings.tabs.receipts', { defaultValue: 'Receipts' }), icon: Receipt },
+          { path: 'settings/fiscal', label: t('settings.tabs.tax', { defaultValue: 'E-Invoicing' }), icon: ShieldCheck },
+          { path: 'settings/accounting', label: t('settings.tabs.accounting', { defaultValue: 'Accounting & VAT' }), icon: BookOpen },
+          { path: 'settings/danger', label: t('settings.tabs.danger', { defaultValue: 'Delete Location' }), icon: Trash2 },
         ],
       },
+      { path: 'activity-logs', label: t('dashboard.menu.activityLog'), icon: History },
     ];
 
     if (!account) return [];
@@ -947,6 +960,7 @@ export function DashboardLayout() {
                             <NavLink
                               key={subItem.path}
                               to={subItem.path}
+                              end={subItem.path === 'settings'}
                               onClick={() => setSidebarOpen(false)}
                               className={({ isActive }) =>
                                 `flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
@@ -1044,6 +1058,7 @@ export function DashboardLayout() {
                       <NavLink
                         key={subItem.path}
                         to={subItem.path}
+                        end={subItem.path === 'settings'}
                         onClick={() => {
                           setSidebarOpen(false);
                           hideCollapsedNavOverlay();
@@ -1278,6 +1293,7 @@ export function DashboardLayout() {
                           <NavLink
                             key={subItem.path}
                             to={subItem.path}
+                            end={subItem.path === 'settings'}
                             onClick={() => setMobileMenuOpen(false)}
                             className={({ isActive }) =>
                               `flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive

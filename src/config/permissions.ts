@@ -117,7 +117,23 @@ export const REQUIRED_PERMISSIONS: Record<string, string[]> = {
   'customers': ['manage_customers', 'manage_discounts'],
 
   // Settings & Admin
-  'settings': ['manage_settings', 'manage_taxes_backoffice', 'manage_kitchen_printers', 'manage_pos_devices'],
+  'settings': [
+    'manage_settings',
+    'manage_taxes_backoffice',
+    'manage_kitchen_printers',
+    'manage_pos_devices',
+    'manage_establishment_profile',
+    'manage_tax_currency',
+    'manage_receipt_settings',
+    'delete_establishment',
+  ],
+  'settings/profile': ['manage_establishment_profile', 'manage_settings'],
+  'settings/sales': ['manage_tax_currency', 'manage_taxes_backoffice', 'manage_settings'],
+  'settings/pos': ['manage_pos_devices', 'manage_settings'],
+  'settings/receipts': ['manage_receipt_settings', 'manage_settings'],
+  'settings/fiscal': ['manage_settings'],
+  'settings/accounting': ['manage_settings'],
+  'settings/danger': ['delete_establishment'],
   'activity-logs': [
     'view_activity_logs',
     'manage_settings',

@@ -62,7 +62,7 @@ const ZATCA_COUNTRIES = new Set<CountryCode>(['SA']);
 const PEPPOL_COUNTRIES = new Set<CountryCode>([
   'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU',
   'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES',
-  'SE', 'NO', 'IS', 'LI', 'GB', 'AE', 'SG', 'AU', 'NZ', 'JP',
+  'SE', 'NO', 'IS', 'LI', 'CH', 'GB', 'AE', 'SG', 'AU', 'NZ', 'JP',
 ]);
 
 function providerForCountry(code: CountryCode): string {
@@ -287,11 +287,11 @@ const OVERRIDES: Record<CountryCode, CountryFiscalConfig> = {
     currency: 'JOD',
     providerId: 'jofotara',
     platformName: 'JoFotara',
-    registrationUrl: 'https://www.istd.gov.jo',
+    registrationUrl: 'https://portal.jofotara.gov.jo/en/devices',
     credentialFields: [
-      { key: 'clientId', label: 'Client ID', hint: 'From the ISTD JoFotara portal', required: true },
-      { key: 'clientSecret', label: 'Client secret', hint: 'Keep this private', secret: true, required: true },
-      { key: 'activityNumber', label: 'Income source/activity number', keyboard: 'numeric', required: true },
+      { key: 'clientId', label: 'Client ID', hint: 'Username / Client-Id from the JoFotara portal → Integrate Device', required: true },
+      { key: 'clientSecret', label: 'Client secret', hint: 'Secret-Key from the portal — never share or commit it', secret: true, required: true },
+      { key: 'activityNumber', label: 'Income source sequence number', hint: 'تسلسل مصدر الدخل from the Devices table', keyboard: 'numeric', required: true },
     ],
     taxPresets: [
       { id: 'JO-standard', rate: 16, category: 'STANDARD', label: 'Standard 16%' },
@@ -430,7 +430,7 @@ export const GENERIC_COUNTRY_CONFIG: CountryFiscalConfig = {
 
 /** Look up a country's config (override → table → generic fallback). */
 export function getCountryConfig(countryCode?: CountryCode | null): CountryFiscalConfig {
-  const code = (countryCode ?? '').toUpperCase();
+  const code = (countryCode ?? '').trim().toUpperCase();
   if (!code) return GENERIC_COUNTRY_CONFIG;
   if (OVERRIDES[code]) return OVERRIDES[code];
   const rec = WORLD_TAX_TABLE[code];

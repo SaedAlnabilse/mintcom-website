@@ -509,6 +509,35 @@ export const AccountingSettingsTab: React.FC = () => {
                 </button>
               </div>
 
+              {/* Country-aware guidance: which platform fits + bookkeeping vs clearance */}
+              {(() => {
+                const acctCountry = (status?.country || 'GB').toUpperCase();
+                const clearance = acctCountry === 'JO' ? 'JoFotara' : acctCountry === 'SA' ? 'ZATCA' : null;
+                const tip = acctCountry === 'US'
+                  ? 'Most US businesses pick QuickBooks Online.'
+                  : ['GB', 'AU', 'NZ', 'SG', 'IE', 'ZA'].includes(acctCountry)
+                    ? 'Most businesses in your country pick Xero.'
+                    : null;
+                if (!tip && !clearance) return null;
+                return (
+                  <div className="flex items-start gap-2 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border-l-[3px] border-[#13B5EA]">
+                    <Info size={15} className="text-[#13B5EA] mt-0.5 shrink-0" />
+                    <div className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                      {tip && <p className="font-semibold">{tip}</p>}
+                      {clearance && (
+                        <p className={tip ? 'mt-1' : 'font-semibold'}>
+                          {t(
+                            'settings.accounting.clearanceNote',
+                            'Bookkeeping is separate from tax clearance: this syncs daily totals for your books. Your per-invoice {{platform}} clearance still happens in the E-Invoicing tab.',
+                            { platform: clearance },
+                          )}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* OAuth Redirect URI Helper Card */}
               <div className="mt-4 p-4 rounded-xl bg-blue-50/60 dark:bg-blue-900/10 border border-blue-200/70 dark:border-blue-800/40 text-xs text-blue-950 dark:text-blue-200 space-y-2.5">
                 <div className="flex items-center justify-between font-semibold">
