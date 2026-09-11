@@ -23,7 +23,7 @@ import { formatInputPlaceholder } from '../utils/textCase';
 import { getSignUpSchema, type SignUpFormData } from '../utils/validation';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { ThemeToggle } from '../components/ThemeToggle';
-import { launchFirstTimeOnboarding } from '../utils/onboardingLaunch';
+import { getPostLoginDestination } from '../utils/postLoginRedirect';
 
 export function SignUpPage() {
   const { t } = useTranslation();
@@ -45,6 +45,23 @@ export function SignUpPage() {
 
   const navigate = useNavigate();
   const { register: registerAccount, loginWithGoogle, loginWithApple, resendVerification } = useAuth();
+
+  const finishSignup = (result: {
+    needsOnboarding?: boolean;
+    requiresAccountRecovery?: boolean;
+    isSecondaryAdmin?: boolean;
+    establishments?: import('../types').Establishment[];
+  }) => {
+    navigate(
+      getPostLoginDestination({
+        requiresAccountRecovery: result.requiresAccountRecovery,
+        needsOnboarding: result.needsOnboarding,
+        isSecondaryAdmin: result.isSecondaryAdmin,
+        establishments: result.establishments,
+      }),
+      { replace: true },
+    );
+  };
 
   const {
     register, handleSubmit, watch, setError, setValue,
@@ -99,18 +116,14 @@ export function SignUpPage() {
       const result = await loginWithGoogle(credential, subscribeToNews, 'signup');
       if (result.success) {
         toast.success(result.message || t('auth.signup.success'));
-        if (result.needsOnboarding) {
-          launchFirstTimeOnboarding(navigate);
-        } else {
-          navigate('/');
-        }
+        finishSignup(result);
       } else {
         toast.error(result.error || t('auth.signup.failed'));
       }
     } catch {
       toast.error(t('common.error'));
     }
-  }, [agreed, subscribeToNews, loginWithGoogle, navigate, setError, t]);
+  }, [agreed, subscribeToNews, loginWithGoogle, setError, t]);
 
   const handleGoogleError = useCallback((error: string) => toast.error(error), []);
 
@@ -123,11 +136,7 @@ export function SignUpPage() {
       const result = await loginWithApple({ ...credential, subscribeToNews }, 'signup');
       if (result.success) {
         toast.success(result.message || t('auth.signup.success'));
-        if (result.needsOnboarding) {
-          launchFirstTimeOnboarding(navigate);
-        } else {
-          navigate('/');
-        }
+        finishSignup(result);
       } else {
         toast.error(result.error || t('auth.signup.failed'));
       }
@@ -252,29 +261,29 @@ export function SignUpPage() {
         <div className="absolute -bottom-[10%] -end-[10%] h-[550px] w-[550px] rounded-full bg-emerald-500/[0.06] blur-[140px] dark:bg-emerald-500/[0.03]" />
       </div>
 
-      <header className="relative z-30 flex w-full items-center justify-between gap-3 px-4 py-5 sm:px-8 md:px-10 lg:px-16">
-        <div className="flex items-center gap-2 sm:gap-4">
-          <Link
-            to="/"
-            className="group inline-flex items-center gap-2 text-sm font-semibold text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-          >
-            <ArrowLeft size={16} className={`transition-transform duration-200 ${isRtl ? 'rotate-180 group-hover:translate-x-0.5' : 'group-hover:-translate-x-0.5'}`} />
-            <span>{t('auth.signup.backButton', 'Back')}</span>
-          </Link>
-          <Link to="/" className="flex items-center" aria-label="Mintcom Home">
-            <img src={MintcomLogoGreen} alt="Mintcom" className="h-8 w-auto dark:hidden" />
-            <img src={MintcomLogoWhite} alt="Mintcom" className="hidden h-8 w-auto dark:block" />
-          </Link>
-        </div>
-
-        <div className="flex items-center gap-2 sm:gap-3">
+      {/* Minimal top bar — same as login */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-4 md:px-10">
+        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="pointer-events-auto" aria-label="Mintcom Home">
+          <img src={MintcomLogoGreen} alt="Mintcom" className="h-8 w-auto object-contain dark:hidden" />
+          <img src={MintcomLogoWhite} alt="Mintcom" className="hidden h-8 w-auto object-contain dark:block" />
+        </Link>
+        <div className="pointer-events-auto flex items-center gap-3">
           <LanguageSwitcher />
           <ThemeToggle />
         </div>
-      </header>
+      </div>
 
-      <main className="relative z-20 flex w-full flex-1 items-center justify-center px-4 pb-16 pt-2 sm:px-6 md:px-8">
-        <motion.div
+      <main className="relative z-20 flex w-full flex-1 items-center justify-center px-4 pb-16 pt-24 sm:px-6 md:px-8">
+        <div className="w-full max-w-xl">
+          {/* Back link — same place as login (above the content) */}
+          <Link
+            to="/"
+            className="group mb-8 inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+          >
+            <ArrowLeft size={15} className={`transition-transform group-hover:-translate-x-0.5 ${isRtl ? 'rotate-180' : ''}`} />
+            <span>{t('auth.signup.backButton', 'Back')}</span>
+          </Link>
+          <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -560,6 +569,7 @@ export function SignUpPage() {
             </p>
           </div>
         </motion.div>
+        </div>
       </main>
 
       <AnimatePresence>
@@ -662,11 +672,7 @@ export function SignUpPage() {
                           const result = await loginWithGoogle(credential, modalSubscribeToNews, 'signup');
                           if (result.success) {
                             toast.success(result.message || t('auth.signup.success'));
-                            if (result.needsOnboarding) {
-                              launchFirstTimeOnboarding(navigate);
-                            } else {
-                              navigate('/');
-                            }
+                            finishSignup(result);
                           } else {
                             toast.error(result.error || t('auth.signup.failed'));
                           }
@@ -692,11 +698,7 @@ export function SignUpPage() {
                           );
                           if (result.success) {
                             toast.success(result.message || t('auth.signup.success'));
-                            if (result.needsOnboarding) {
-                              launchFirstTimeOnboarding(navigate);
-                            } else {
-                              navigate('/');
-                            }
+                            finishSignup(result);
                           } else {
                             toast.error(result.error || t('auth.signup.failed'));
                           }

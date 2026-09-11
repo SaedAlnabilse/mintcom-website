@@ -21,8 +21,7 @@ import MintcomLogoGreen from '../assets/green-full-logo.svg';
 import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 import { useScrollLock } from '../hooks/useScrollLock';
-import { launchFirstTimeOnboarding } from '../utils/onboardingLaunch';
-import { ACCOUNT_RECOVERY_PATH } from '../utils/deletionRecovery';
+import { getPostLoginDestination } from '../utils/postLoginRedirect';
 
 type SocialProvider = 'google' | 'apple';
 
@@ -83,24 +82,22 @@ export function LoginPage() {
 
   const redirectTo = (location.state as { from?: string })?.from;
 
-  const finishLogin = ({
-    needsOnboarding,
-    requiresAccountRecovery,
-  }: {
+  const finishLogin = (result: {
     needsOnboarding?: boolean;
     requiresAccountRecovery?: boolean;
+    isSecondaryAdmin?: boolean;
+    establishments?: import('../types').Establishment[];
   }) => {
-    if (requiresAccountRecovery) {
-      navigate(ACCOUNT_RECOVERY_PATH, { replace: true });
-      return;
-    }
-
-    if (needsOnboarding) {
-      // First location: open setup in a new tab, keep this tab on the site.
-      launchFirstTimeOnboarding(navigate);
-      return;
-    }
-    navigate(redirectTo || '/');
+    navigate(
+      getPostLoginDestination({
+        redirectTo,
+        requiresAccountRecovery: result.requiresAccountRecovery,
+        needsOnboarding: result.needsOnboarding,
+        isSecondaryAdmin: result.isSecondaryAdmin,
+        establishments: result.establishments,
+      }),
+      { replace: true },
+    );
   };
 
   const handleGoogleSuccess = async (credential: string) => {

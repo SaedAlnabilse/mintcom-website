@@ -2255,7 +2255,7 @@
         "shiftStarted": "Shift started at {{location}}",
         "voidItem": "Item voided by {{name}}"
       },
-      "badge": "Owner App",
+      "badge": "OWNER APP",
       "controlCenter": "Control Center",
       "dailyRevenue": "Daily Revenue",
       "description": "Manage your business anytime, anywhere with the Mintcom Admin Mobile App. Get real-time data at your fingertips, allowing you to take quick action and stay completely in control while on the go.",
@@ -2529,7 +2529,7 @@
       "scanToDownload": "Scan To Download"
     },
     "features": {
-      "badge": "Why Mintcom",
+      "badge": "WHY MINTCOM",
       "cardLabel": "Pillar",
       "cards": {
         "complete": {
@@ -2803,7 +2803,7 @@
         "description": "Your own built-in AI assistant across the back-office dashboards, with the ability to generate product images, provide helpful tips, and deliver useful insights instantly.",
         "title": "AI-Empowered System"
       },
-      "badge": "Features",
+      "badge": "FEATURES",
       "cardCta": "Open {{title}} preview",
       "cloudSync": {
         "description": "Your data is always safe and synced across all your devices.",

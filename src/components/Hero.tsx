@@ -2,7 +2,7 @@ import { SplitText } from "./landing/SplitText";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Play, X, ArrowRight, Zap } from 'lucide-react';
+import { Play, X, ArrowRight, Store } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { DEMO_VIDEO_POSTER_URL, HERO_VIDEO_URL, isNativeVideoUrl } from '../config/downloads';
 import heroImage from '../assets/mintcom-pos-hero.png';
@@ -67,17 +67,13 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="group relative mb-5 inline-flex max-w-full items-center gap-2.5 rounded-[12px] border border-mintcom-green/20 bg-mintcom-green/5 px-3 py-1.5 text-xs font-bold text-mintcom-green shadow-[0_0_15px_rgba(124,195,159,0.05)] backdrop-blur-md transition-all duration-300 hover:border-mintcom-green/40 dark:bg-mintcom-green/10 xs:px-3.5 sm:mb-8"
+              className="mb-5 inline-flex max-w-full items-center gap-2.5 sm:mb-8"
             >
-              <div className="relative flex items-center justify-center w-5 h-5 rounded-full bg-mintcom-green/20 text-mintcom-green overflow-hidden">
-                <Zap size={11} fill="currentColor" className="relative z-10" />
-                <motion.div
-                  animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute inset-0 bg-mintcom-green/30"
-                />
-              </div>
-              <span className="min-w-0 leading-none text-[10px] uppercase tracking-widest md:text-[11px]">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] border border-black/10 bg-mintcom-green shadow-[0_1px_2px_rgba(0,0,0,0.12)] dark:border-white/10 dark:shadow-none">
+                <Store size={14} strokeWidth={2.4} className="text-black" />
+              </span>
+              <span aria-hidden="true" className="h-4 w-px bg-black/15 dark:bg-white/20" />
+              <span className="min-w-0 text-[13px] font-semibold leading-snug tracking-wider text-gray-900 dark:text-white/85 md:text-sm">
                 {t('landing.hero.badge')}
               </span>
             </motion.div>
@@ -88,9 +84,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <span className="block leading-[1.15] rtl:leading-[1.25]"><SplitText text={t('landing.hero.title3')} /></span>
             </h1>
 
-            <p className="mb-6 max-w-md text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 sm:mb-8 sm:text-lg md:text-xl lg:max-w-none">
-              {t('landing.hero.description')}
-            </p>
+            <p className="mb-6 max-w-md text-base leading-relaxed text-gray-600 dark:text-gray-400 sm:mb-8 sm:text-lg md:text-xl lg:max-w-none" dangerouslySetInnerHTML={{ __html: t('landing.hero.description').replace('360° POS solution', '<strong class="text-gray-900 dark:text-white">360° POS solution</strong>') }} />
 
             <div className="flex w-full flex-col items-stretch justify-start gap-2.5 sm:flex-row sm:flex-nowrap sm:gap-3">
               <motion.button

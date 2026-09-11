@@ -1404,21 +1404,17 @@ export const AdminControl = () => {
             className="w-full lg:w-1/2"
           >
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="group relative inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[12px] bg-mintcom-green/5 dark:bg-mintcom-green/10 text-mintcom-green font-bold text-xs mb-8 border border-mintcom-green/20 backdrop-blur-md shadow-[0_0_15px_rgba(124,195,159,0.05)] hover:border-mintcom-green/40 transition-all duration-300"
+              transition={{ duration: 0.5 }}
+              className="mb-8 inline-flex max-w-full items-center gap-2.5"
             >
-              <div className="relative flex items-center justify-center w-5 h-5 rounded-[6px] bg-mintcom-green/20 text-mintcom-green overflow-hidden">
-                <Laptop size={11} className="relative z-10" />
-                <motion.div
-                  animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute inset-0 bg-mintcom-green/30"
-                />
-              </div>
-              <span className="tracking-widest uppercase text-[10px] md:text-[11px] leading-none">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] border border-black/10 bg-mintcom-green shadow-[0_1px_2px_rgba(0,0,0,0.12)] dark:border-white/10 dark:shadow-none">
+                <Laptop size={14} strokeWidth={2.4} className="text-black" />
+              </span>
+              <span aria-hidden="true" className="h-4 w-px bg-black/15 dark:bg-white/20" />
+              <span className="min-w-0 text-[13px] font-semibold leading-snug tracking-widest uppercase text-gray-900 dark:text-white/85 md:text-sm">
                 {t('landing.admin.badge')}
               </span>
             </motion.div>

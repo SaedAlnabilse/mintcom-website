@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Store, Plus, LogOut, ChevronRight, Loader2, Crown, ArrowLeft, AlertTriangle } from 'lucide-react';
+import { Store, Plus, LogOut, ChevronRight, Loader2, Crown, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import type { Establishment } from '../types';
 import {
@@ -80,48 +80,42 @@ export function SelectEstablishmentPage() {
     <div className="dashboard-font-unified min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-500 relative overflow-hidden" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Remove glass glows, use solid background colors */}
 
-      {/* Header */}
+      {/* Header — logo alone on the brand side, user actions clustered right */}
       <div className="p-8 flex justify-between items-center relative z-10">
-        <div className="flex items-center gap-4">
-          {/* Owner Portal Button — owner-only. Employees / secondary admins are
+        {/* Logo */}
+        <div className="flex items-center gap-3">
+          <img
+            src={MintcomLogoGreen}
+            alt="Mintcom"
+            className="h-10 w-auto object-contain dark:hidden"
+          />
+          <img
+            src={MintcomLogoWhite}
+            alt="Mintcom"
+            className="h-10 w-auto object-contain hidden dark:block"
+          />
+        </div>
+        <div className="flex items-center gap-3">
+          {/* Owner Portal — owner-only. Employees / secondary admins are
               not the account owner, so they never see this shortcut. */}
           {!account?.isSecondaryAdmin && (
             <button
               onClick={() => navigate('/owner')}
-              className="group flex items-center gap-3 px-4 py-3 rounded-2xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20 hover:border-amber-500/40 hover:from-amber-500/20 hover:to-yellow-500/20 transition-all duration-300"
+              title={t('onboarding.step5.ownerPortal')}
+              className="group flex items-center gap-2 px-5 py-2.5 rounded-xl border border-amber-500/30 bg-amber-500/10 font-sans font-bold text-xs text-amber-700 dark:text-amber-400 hover:border-amber-500/50 hover:bg-amber-500/20 active:scale-95 transition-all duration-300"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center shadow-lg shadow-amber-500/20 transition-transform">
-                <Crown size={18} className="text-white" />
-              </div>
-              <div className="hidden sm:block text-left">
-                <p className="text-xs font-sans font-bold text-gray-400">{t('onboarding.step5.ownerPortal')}</p>
-                <p className="text-sm font-sans font-bold text-gray-900 dark:text-white truncate max-w-[120px]">{account?.firstName} {account?.lastName}</p>
-              </div>
-              <ArrowLeft size={16} className={`text-amber-500 group-hover:${t('common.locale') === 'ar' ? 'translate-x-1' : '-translate-x-1'} transition-transform hidden sm:block`} />
+              <Crown size={16} />
+              <span className="hidden sm:inline">{t('onboarding.step5.ownerPortal')}</span>
             </button>
           )}
-
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <img
-              src={MintcomLogoGreen}
-              alt="Mintcom"
-              className="h-10 w-auto object-contain dark:hidden"
-            />
-            <img
-              src={MintcomLogoWhite}
-              alt="Mintcom"
-              className="h-10 w-auto object-contain hidden dark:block"
-            />
-          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 bg-[#D55263] text-white shadow-lg shadow-red-500/20 active:scale-95 transition-all duration-300 font-sans font-bold text-xs px-6 py-2.5 rounded-xl border border-transparent hover:bg-[#C44253] hover:scale-105"
+          >
+            <LogOut size={16} />
+            {t('common.logout')}
+          </button>
         </div>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 bg-[#D55263] text-white shadow-lg shadow-red-500/20 active:scale-95 transition-all duration-300 font-sans font-bold text-xs px-6 py-2.5 rounded-xl border border-transparent hover:bg-[#C44253] hover:scale-105"
-        >
-          <LogOut size={16} />
-          {t('common.logout')}
-        </button>
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center p-6 relative z-10">

@@ -78,6 +78,10 @@ interface AuthResult {
   // True when the account has no establishments yet, so the user must be sent
   // straight into onboarding instead of the marketing/landing page.
   needsOnboarding?: boolean;
+  // Establishments at login time, so callers can compute the post-login
+  // destination (single location -> dashboard, multi -> picker) without
+  // racing the async context state update.
+  establishments?: Establishment[];
   // Pending-deletion owners must enter the dedicated recovery flow before any
   // onboarding or portal routing decisions are made.
   requiresAccountRecovery?: boolean;
@@ -295,6 +299,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       needsOnboarding:
         !hasPendingAccountDeletion(accountData) &&
         finalEstablishments.length === 0,
+      establishments: finalEstablishments,
       ...(extraMessage ? { message: extraMessage } : {}),
     };
   };

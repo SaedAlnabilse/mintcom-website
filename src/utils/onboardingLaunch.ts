@@ -18,16 +18,10 @@ export function openOnboardingInNewTab(): boolean {
 }
 
 /**
- * After a successful first-time login/signup:
- * - open onboarding in a new tab when allowed
- * - keep the current tab on the marketing site so the user can still browse
- * - if the popup is blocked, fall back to onboarding in the current tab
+ * After a successful first-time login/signup, take the user straight into
+ * the setup wizard in the same tab. Same-tab is more reliable than a popup
+ * (no blocker issues, no duplicate sessions, back-button works).
  */
 export function launchFirstTimeOnboarding(navigate: NavigateFunction): void {
-  const opened = openOnboardingInNewTab();
-  if (opened) {
-    navigate('/', { replace: true });
-    return;
-  }
   navigate(ONBOARDING_START_PATH, { replace: true });
 }

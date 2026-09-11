@@ -622,15 +622,12 @@ export const WhyChooseUs = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 text-center lg:mb-16"
         >
-          <div className="group relative mx-auto mb-8 inline-flex items-center gap-2.5 rounded-[12px] border border-mintcom-green/20 bg-mintcom-green/5 px-3.5 py-1.5 text-xs font-bold text-mintcom-green backdrop-blur-md dark:bg-mintcom-green/10">
-            <div className="relative flex h-5 w-5 items-center justify-center overflow-hidden rounded-[6px] bg-mintcom-green/20">
-              <img
-                src={MintcomLeafIcon}
-                alt=""
-                className="h-3.5 w-3.5 scale-x-[-1] object-contain"
-              />
-            </div>
-            <span className="text-[10px] uppercase leading-none tracking-widest md:text-[11px]">
+          <div className="mb-8 inline-flex max-w-full items-center gap-2.5">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] border border-black/10 bg-mintcom-green shadow-[0_1px_2px_rgba(0,0,0,0.12)] dark:border-white/10 dark:shadow-none">
+              <Store size={14} strokeWidth={2.4} className="text-black" />
+            </span>
+            <span aria-hidden="true" className="h-4 w-px bg-black/15 dark:bg-white/20" />
+            <span className="min-w-0 text-[13px] font-semibold leading-snug tracking-widest uppercase text-gray-900 dark:text-white/85 md:text-sm">
               {t('landing.features.badge')}
             </span>
           </div>
