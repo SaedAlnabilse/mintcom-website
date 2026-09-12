@@ -63,6 +63,8 @@ function LegacyCustomerTicketRedirect() {
 // IndustriesPage, SecurityPage, PricingPage, HowItWorksPage, LoyaltyPage (marketing),
 // MultiLocationPage, WhyMintcomPage — re-enable in routes when ready to publish.
 const QAPage = lazy(() => import('./pages/QAPage').then(m => ({ default: m.QAPage })));
+const QrMenuDemoPage = lazy(() => import('./pages/QrMenuDemoPage').then(m => ({ default: m.QrMenuDemoPage })));
+const CustomerMenuStandalonePage = lazy(() => import('./pages/CustomerMenuStandalonePage').then(m => ({ default: m.CustomerMenuStandalonePage })));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
 const TermsPage = lazy(() => import('./pages/TermsPage').then(m => ({ default: m.TermsPage })));
 const ChangelogPage = lazy(() => import('./pages/ChangelogPage').then(m => ({ default: m.ChangelogPage })));
@@ -133,6 +135,7 @@ const SettingsPage = lazy(() => import('./pages/dashboard/SettingsPage').then(m 
 const LoyaltyPage = lazy(() => import('./pages/dashboard/LoyaltyPage').then(m => ({ default: m.LoyaltyPage })));
 const ActivityLogsPage = lazy(() => import('./pages/dashboard/ActivityLogsPage').then(m => ({ default: m.ActivityLogsPage })));
 const AddonsPage = lazy(() => import('./pages/dashboard/AddonsPage').then(m => ({ default: m.AddonsPage })));
+const QrMenuPage = lazy(() => import('./pages/dashboard/QrMenuPage').then(m => ({ default: m.QrMenuPage })));
 const StockManagementPage = lazy(() => import('./pages/dashboard/StockManagementPage').then(m => ({ default: m.StockManagementPage })));
 const InventoryPage = lazy(() => import('./pages/dashboard/RecipesPage').then(m => ({ default: m.RecipesPage })));
 const EstablishmentsPage = lazy(() => import('./pages/dashboard/EstablishmentsPage').then(m => ({ default: m.EstablishmentsPage })));
@@ -198,6 +201,8 @@ function LayoutSuspense({ children }: { children: React.ReactNode }) {
 const routeSeo = [
   { path: '/', title: 'Mintcom POS | Cloud POS & Business Management', description: 'Run sales, inventory, staff, reports, loyalty, and multi-location operations from Mintcom.' },
   { path: '/try-pos', title: 'Try Mintcom POS | Free interactive demo', description: 'Try a full Mintcom POS experience free: clock in, sell items, customize add-ons, and take payment. No account required.' },
+  { path: '/qr-menu-demo', title: 'Digital QR Menu Demo | Mintcom POS', description: 'Interactive demonstration of Mintcom table QR digital menu. Browse dishes, photos, allergens, and call waiter with zero app download.' },
+  { path: '/menu/demo', title: 'Mint Bistro Digital Menu | Mintcom', description: 'Digital restaurant menu powered by Mintcom.' },
   { path: '/login', title: 'Login | Mintcom POS', description: 'Sign in securely to your Mintcom account.' },
   { path: '/signup', title: 'Create Account | Mintcom POS', description: 'Create a Mintcom account for your business.' },
   { path: '/support', title: 'Support | Mintcom POS', description: 'Find Mintcom help articles and support tickets.' },
@@ -361,6 +366,30 @@ const router = createBrowserRouter([
         element: (
           <PageSuspense>
             <PosDemoPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/qr-menu-demo",
+        element: (
+          <PageSuspense>
+            <QrMenuDemoPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/menu/demo",
+        element: (
+          <PageSuspense>
+            <CustomerMenuStandalonePage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/menu/:slug",
+        element: (
+          <PageSuspense>
+            <CustomerMenuStandalonePage />
           </PageSuspense>
         ),
       },
@@ -889,6 +918,14 @@ const router = createBrowserRouter([
                 ),
               },
               {
+                path: "qr-menu",
+                element: (
+                  <DashboardPageSuspense>
+                    <QrMenuPage />
+                  </DashboardPageSuspense>
+                ),
+              },
+              {
                 path: "staff",
                 element: (
                   <DashboardPageSuspense>
@@ -1036,7 +1073,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="system" storageKey="mintcom-ui-theme">
+      <ThemeProvider defaultTheme="light" storageKey="mintcom-ui-theme">
         <AuthProvider>
           <CurrencyProvider>
             <div id="global-blocking-overlay" />

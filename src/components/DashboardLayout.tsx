@@ -15,7 +15,7 @@ import { SidebarPreferencesHelpMenu } from './layout/SidebarPreferencesHelpMenu'
 import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
-
+  QrCode,
   MapPin,
   ShoppingCart,
   Package,
@@ -451,6 +451,7 @@ export function DashboardLayout() {
           { path: 'categories', label: t('dashboard.menu.categories'), icon: LayoutDashboard },
           { path: 'products', label: t('dashboard.menu.products'), icon: Package },
           { path: 'addons', label: t('dashboard.menu.addons'), icon: PlusCircle },
+          { path: 'qr-menu', label: t('dashboard.menu.qrMenu', { defaultValue: 'QR Menu & Tables' }), icon: QrCode },
           { path: 'stock', label: t('dashboard.menu.stockManagement', { defaultValue: 'Stock & Availability' }), icon: Boxes },
           { path: 'inventory', label: t('dashboard.menu.inventory'), icon: Package },
         ],

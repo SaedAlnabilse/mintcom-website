@@ -24,6 +24,11 @@ export const ChatWidgetEnhancer = () => {
     const location = useLocation();
     const hideOnTryPos =
         location.pathname === '/try-pos' || location.pathname.startsWith('/try-pos/');
+    const hideOnCustomerMenu =
+        location.pathname === '/menu' ||
+        location.pathname.startsWith('/menu/') ||
+        location.pathname === '/qr-menu-demo' ||
+        location.pathname.startsWith('/qr-menu-demo');
     const isRTL = i18n.language === 'ar';
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [isFAQOpen, setIsFAQOpen] = useState(false);
@@ -152,8 +157,8 @@ export const ChatWidgetEnhancer = () => {
         window.dispatchEvent(new Event('mintcom-open-mobile-app'));
     };
 
-    // Full-screen POS sandbox — keep layout clean (no DualLauncher / chatbot)
-    if (hideOnTryPos) {
+    // Full-screen POS sandbox & customer digital menu — keep layout clean (no DualLauncher / chatbot)
+    if (hideOnTryPos || hideOnCustomerMenu) {
         return null;
     }
 

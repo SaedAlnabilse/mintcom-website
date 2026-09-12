@@ -15,7 +15,7 @@ interface ThemeProviderState {
 }
 
 const initialState: ThemeProviderState = {
-  theme: 'system',
+  theme: 'light',
   setTheme: () => null,
   resolvedTheme: 'light',
 };
@@ -31,7 +31,7 @@ function getStoredTheme(storageKey: string, defaultTheme: Theme): Theme {
 
 function resolveTheme(theme: Theme): 'light' | 'dark' {
   if (theme === 'system') {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'light';
   }
 
   return theme;
@@ -39,8 +39,8 @@ function resolveTheme(theme: Theme): 'light' | 'dark' {
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'system',
-  storageKey = 'vite-ui-theme',
+  defaultTheme = 'light',
+  storageKey = 'mintcom-ui-theme',
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     return getStoredTheme(storageKey, defaultTheme);
