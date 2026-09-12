@@ -395,36 +395,31 @@ export const AccountingSettingsTab: React.FC = () => {
       {/* 1. Provider Connection Card */}
       <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-6 sm:p-8 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm shrink-0">
-              <BookOpen size={22} />
+          <div>
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+                {t('settings.accounting.providerCardTitle', 'Accounting Provider')}
+              </h3>
+              {status?.isConnected ? (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-950/60 dark:text-green-300">
+                  <CheckCircle2 size={13} />
+                  {status.provider === 'XERO' ? 'Xero' : 'QuickBooks Online'} Connected
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                  <XCircle size={13} />
+                  Not Connected
+                </span>
+              )}
             </div>
-            <div>
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                  {t('settings.accounting.title', 'Accounting & VAT Integration')}
-                </h3>
-                {status?.isConnected ? (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-950/60 dark:text-green-300">
-                    <CheckCircle2 size={13} />
-                    {status.provider === 'XERO' ? 'Xero' : 'QuickBooks Online'} Connected
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-gray-300">
-                    <XCircle size={13} />
-                    Not Connected
-                  </span>
-                )}
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
-                {t(
-                  'settings.accounting.subtitle',
-                  isUS
-                    ? 'Automatically sync daily aggregated Z-Reports into Xero or QuickBooks with single-rate sales tax and rounding drift protection on shift close.'
-                    : 'Automatically sync daily aggregated Z-Reports into Xero or QuickBooks with multi-tax UK VAT split and rounding drift protection on shift close.',
-                )}
-              </p>
-            </div>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+              {t(
+                'settings.accounting.subtitle',
+                isUS
+                  ? 'Automatically sync daily aggregated Z-Reports into Xero or QuickBooks with single-rate sales tax and rounding drift protection on shift close.'
+                  : 'Automatically sync daily aggregated Z-Reports into Xero or QuickBooks with multi-tax UK VAT split and rounding drift protection on shift close.',
+              )}
+            </p>
           </div>
 
           {status?.isConnected && (

@@ -244,8 +244,6 @@ export function SettingsOverviewHub({
         iconColor: 'text-rose-600 dark:text-rose-400',
         glowColor: 'group-hover:shadow-rose-500/10',
         borderColor: 'hover:border-rose-500/40 dark:hover:border-rose-500/30',
-        badge: t('settings.overview.categories.danger', 'Danger Zone'),
-        statusType: 'danger',
         keywords: [
           'delete',
           'remove',
@@ -348,7 +346,7 @@ export function SettingsOverviewHub({
                           {card.badge && (
                             <span
                               title={card.badge}
-                              className={`text-[11px] font-semibold px-2.5 py-1 rounded-xl max-w-[calc(100%-3.5rem)] leading-snug break-words text-end ${
+                              className={`inline-flex items-center justify-center min-h-[28px] text-[11px] font-semibold px-3 py-1 rounded-[12px] max-w-[calc(100%-3.5rem)] leading-snug break-words text-end ${
                                 card.statusType === 'danger'
                                   ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
                                   : card.statusType === 'success'

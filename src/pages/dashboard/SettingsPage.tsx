@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign, Copy, Key, Shield, ShieldCheck, MonitorSmartphone, BookOpen, ArrowLeft } from 'lucide-react';
+import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, Copy, Key, Shield, ShieldCheck, MonitorSmartphone, BookOpen, ArrowLeft } from 'lucide-react';
 import api, { extractErrorMessage } from '../../config/api';
 import { FiscalComplianceCard } from '../../components/FiscalComplianceCard';
 import { AccountingSettingsTab } from '../../components/settings/AccountingSettingsTab';
@@ -978,56 +978,44 @@ export function SettingsPage() {
           
           return (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 rounded-2xl shadow-sm">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 border-b border-gray-100 dark:border-white/5">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-sm">
-                  <Store size={20} />
+            {/* Location Login ID Banner */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-blue-50/70 dark:bg-blue-500/10 rounded-2xl border border-blue-100 dark:border-blue-500/20 transition-colors">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <label className="text-xs font-bold text-blue-700 dark:text-blue-300 tracking-wide flex items-center gap-1.5">
+                    <Key size={13} className="text-blue-600 dark:text-blue-400" />
+                    {t('settings.profile.locationLoginId', 'Location Login ID')}
+                  </label>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 dark:bg-blue-500/20 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:text-blue-300">
+                    <Shield size={10} />
+                    {t('owner.account.locationLoginBadge', 'Location')}
+                  </span>
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.tabs.profile')}</h3>
-                  <p className="text-sm text-gray-500 font-medium">{t('settings.profile.detailsDesc' as any) || 'Manage your establishment identity and branding'}</p>
-                </div>
+                <code className="block text-sm sm:text-base font-mono font-bold text-gray-900 dark:text-white truncate select-all">
+                  {estLoginId}
+                </code>
+                <p className="text-xs text-blue-700/80 dark:text-blue-200/80 font-medium leading-relaxed">
+                  {t('settings.profile.locationLoginHint', 'Use this ID to sign in to this location dashboard.')} •{' '}
+                  <span className="text-gray-500 dark:text-gray-400">
+                    {t('settings.profile.passwordResetNote', 'Password reset can only be done from the owner portal')}
+                  </span>
+                </p>
               </div>
-              
-              {/* Login ID Section */}
-              <div className="flex items-center gap-4 p-3 bg-blue-50/70 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20 transition-colors">
-                <div>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <label className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 tracking-wide flex items-center gap-1.5">
-                      <Key size={12} className="text-blue-600 dark:text-blue-300" />
-                      {t('settings.profile.locationLoginId') || 'Location Login ID'}
-                    </label>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 dark:bg-blue-500/15 px-2 py-1 text-[10px] font-bold text-blue-700 dark:text-blue-300">
-                      <Shield size={10} />
-                      {t('owner.account.locationLoginBadge') || 'Location'}
-                    </span>
-                  </div>
-                  <code className="block text-sm font-mono font-bold text-gray-900 dark:text-white truncate select-all">
-                    {estLoginId}
-                  </code>
-                  <p className="text-sm text-blue-700/80 dark:text-blue-200/80 mt-1.5 font-medium leading-relaxed">
-                    {t('settings.profile.locationLoginHint') || 'Use this ID to sign in to this location dashboard.'}
-                  </p>
-                  <p className="text-sm text-gray-400 dark:text-gray-500 mt-1.5 font-medium leading-relaxed">
-                    {t('settings.profile.passwordResetNote') || 'Password reset can only be done from the owner portal'}
-                  </p>
-                </div>
-                <div className="pl-4 border-l border-gray-200 dark:border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (estLoginId) {
-                        navigator.clipboard.writeText(estLoginId);
-                        toast.success(t('common.copied') || 'Copied to clipboard');
-                      }
-                    }}
-                    disabled={!estLoginId}
-                    className="text-xs font-bold text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10"
-                  >
-                    <Copy size={14} /> 
-                    {t('common.copy')}
-                  </button>
-                </div>
+              <div className="sm:pl-4 sm:border-l border-gray-200 dark:border-white/10 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (estLoginId) {
+                      navigator.clipboard.writeText(estLoginId);
+                      toast.success(t('common.copied', 'Copied to clipboard'));
+                    }
+                  }}
+                  disabled={!estLoginId}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-white/10 text-blue-600 dark:text-blue-300 border border-blue-200/80 dark:border-blue-400/20 hover:bg-blue-50 dark:hover:bg-white/15 transition-all shadow-xs"
+                >
+                  <Copy size={13} />
+                  <span>{t('common.copy', 'Copy')}</span>
+                </button>
               </div>
             </div>
 
@@ -1088,21 +1076,6 @@ export function SettingsPage() {
           const isRTL = t('common.locale') === 'ar';
           return (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-6 sm:p-8 space-y-8 rounded-2xl shadow-sm font-sans">
-              {/* Header */}
-              <div className="flex items-center gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
-                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-sm">
-                  <DollarSign size={20} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.sales.title')}</h3>
-                  <p className="text-sm text-gray-500 font-medium">{t('settings.sales.subtitle')}</p>
-                </div>
-              </div>
-
-              {/* Tax rates — single source of truth: the table below.
-                  The default tax (starred row) is the rate applied to new
-                  products; its value is changeable in the table so there is
-                  only one place to edit taxes. */}
               {/* Tax rates — single source of truth: the default row in the table below is applied to new products */}
               <div>
                 <input type="hidden" {...taxRateField} />
@@ -1381,23 +1354,6 @@ export function SettingsPage() {
 
         {activeTab === 'pos' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-6 sm:p-8 space-y-8 rounded-2xl shadow-sm font-sans">
-            {/* Header */}
-            <div className="flex items-center gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-sm">
-                <MonitorSmartphone size={20} />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                  {t('settings.pos.title', { defaultValue: 'POS & Shifts' })}
-                </h3>
-                <p className="text-sm text-gray-500 font-medium">
-                  {t('settings.pos.subtitle', {
-                    defaultValue: 'How registers and cash drawers behave at this location.',
-                  })}
-                </p>
-              </div>
-            </div>
-
             {/* Multiple Cash Drawers (Simultaneous Shifts) Toggle Card */}
             <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.02] p-5 sm:p-6 shadow-sm">
               <div className="flex items-center justify-between gap-4">
@@ -1494,167 +1450,150 @@ export function SettingsPage() {
         )}
 
         {activeTab === 'receipt' && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center">
-                <Receipt className="w-6 h-6 text-mintcom-green" />
-              </div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-6 sm:p-8 rounded-2xl shadow-sm font-sans divide-y divide-gray-100 dark:divide-white/5">
+            {/* Identity Visibility */}
+            <div className="space-y-6 pb-6">
+              {/* Restaurant Name */}
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.receipts.title')}</h3>
-                <p className="text-sm text-gray-500 font-medium">{t('settings.receipts.subtitle')}</p>
+                <div className="flex items-center justify-between mb-2">
+                  <div>
+                    <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showName')}</span>
+                    <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showNameDesc')}</span>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                    <input type="checkbox" {...register('showRestaurantName')} className="sr-only peer" />
+                    <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                  </label>
+                </div>
+                <input
+                  type="text"
+                  {...restaurantNameField}
+                  disabled={!showRestaurantName}
+                  maxLength={MAX_ESTABLISHMENT_NAME_LENGTH}
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                  placeholder={formatInputPlaceholder(t('settings.profile.namePlaceholder'), t('common.locale'))}
+                />
+              </div>
+
+              {/* Description / Tagline */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div>
+                    <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showTagline')}</span>
+                    <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showTaglineDesc')}</span>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                    <input type="checkbox" {...register('showDescription')} className="sr-only peer" />
+                    <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                  </label>
+                </div>
+                <input
+                  type="text"
+                  {...restaurantDescriptionField}
+                  disabled={!showDescription}
+                  maxLength={MAX_ESTABLISHMENT_TAGLINE_LENGTH}
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                  placeholder={formatInputPlaceholder(t('settings.profile.aboutPlaceholder'), t('common.locale'))}
+                />
               </div>
             </div>
-            <div className="space-y-8">
-              <div className="space-y-4 p-6 bg-gray-50 dark:bg-white/[0.02] rounded-2xl border border-gray-200 dark:border-white/5">
-                <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest mb-6 px-1">{t('settings.receipts.options')}</h4>
-                <div className="space-y-4">
-                  {/* Identity Visibility */}
-                  <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
-                    <div className="space-y-4">
-                      {/* Restaurant Name */}
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showName')}</span>
-                            <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.showNameDesc')}</span>
-                          </div>
-                          <label className="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" {...register('showRestaurantName')} className="sr-only peer" />
-                            <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                          </label>
-                        </div>
-                        <input
-                          type="text"
-                          {...restaurantNameField}
-                          disabled={!showRestaurantName}
-                          maxLength={MAX_ESTABLISHMENT_NAME_LENGTH}
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                          placeholder={formatInputPlaceholder(t('settings.profile.namePlaceholder'), t('common.locale'))}
-                        />
-                      </div>
-                      {/* Description / Tagline */}
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showTagline')}</span>
-                            <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.showTaglineDesc')}</span>
-                          </div>
-                          <label className="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" {...register('showDescription')} className="sr-only peer" />
-                            <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                          </label>
-                        </div>
-                        <input
-                          type="text"
-                          {...restaurantDescriptionField}
-                          disabled={!showDescription}
-                          maxLength={MAX_ESTABLISHMENT_TAGLINE_LENGTH}
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                          placeholder={formatInputPlaceholder(t('settings.profile.aboutPlaceholder'), t('common.locale'))}
-                        />
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Branding */}
-                  <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showLogo')}</span>
-                        <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.showLogoDesc')}</span>
-                        <p className="text-[10px] text-gray-400 font-bold mt-1.5">{t('settings.profile.logoGuidelines')}</p>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" {...register('showLogoOnReceipt')} className="sr-only peer" />
-                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                      </label>
-                    </div>
-                    <div className={`overflow-hidden transition-all duration-300 ${watch('showLogoOnReceipt') ? 'opacity-100' : 'opacity-50 pointer-events-none grayscale'}`}>
-                      <div className="flex items-center gap-6 p-2">
-                        <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
-                          {receiptLogoPreview ? <img src={receiptLogoPreview} alt={t('settings.receipts.logoAlt')} className="w-full h-full object-cover" loading="lazy" decoding="async" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
-                        </div>
-                        <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer label-strong font-sans transition-all hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
-                          {t('settings.receipts.uploadLogo')}
-                          <input type="file" accept="image/*" onChange={handleReceiptLogoChange} className="hidden" disabled={!watch('showLogoOnReceipt')} />
-                        </label>
-                      </div>
-                    </div>
+            {/* Branding */}
+            <div className="pt-6 pb-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showLogo')}</span>
+                  <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showLogoDesc')}</span>
+                  <p className="text-[10px] text-gray-400 font-bold mt-1.5">{t('settings.profile.logoGuidelines')}</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input type="checkbox" {...register('showLogoOnReceipt')} className="sr-only peer" />
+                  <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                </label>
+              </div>
+              <div className={`overflow-hidden transition-all duration-300 ${watch('showLogoOnReceipt') ? 'opacity-100' : 'opacity-50 pointer-events-none grayscale'}`}>
+                <div className="flex items-center gap-6 p-2">
+                  <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
+                    {receiptLogoPreview ? <img src={receiptLogoPreview} alt={t('settings.receipts.logoAlt')} className="w-full h-full object-cover" loading="lazy" decoding="async" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
                   </div>
-
-                  {/* Location Info */}
-                  <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showAddress')}</span>
-                        <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.showAddressDesc')}</span>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" {...register('showAddress')} className="sr-only peer" />
-                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                      </label>
-                    </div>
-                    <input
-                      type="text"
-                      {...restaurantAddressField}
-                      disabled={!showAddress}
-                      maxLength={MAX_ESTABLISHMENT_ADDRESS_LENGTH}
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder={formatInputPlaceholder(t('settings.profile.addressPlaceholder'), t('common.locale'))}
-                    />
-                  </div>
-
-                  {/* Tax Info */}
-                  <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showTaxId')}</span>
-                        <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.showTaxIdDesc')}</span>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" {...register('showTaxId')} className="sr-only peer" />
-                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                      </label>
-                    </div>
-                    <input
-                      type="text"
-                      {...taxIdField}
-                      disabled={!showTaxId}
-                      autoCapitalize="characters"
-                      maxLength={MAX_ESTABLISHMENT_TAX_ID_LENGTH}
-                      onInput={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        target.value = sanitizeTaxId(target.value, MAX_ESTABLISHMENT_TAX_ID_LENGTH);
-                      }}
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder={formatInputPlaceholder(t('settings.profile.taxIdPlaceholder'), t('common.locale'))}
-                    />
-                    <p className="text-xs text-gray-400 mt-2">{t('settings.profile.taxIdDisclaimer')}</p>
-                  </div>
-
-                  {/* Footer */}
-                  <div className="p-4 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="block text-xs font-medium text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.footerMessage')}</span>
-                        <span className="block text-xs text-gray-400 mt-0.5">{t('settings.receipts.footerMessageDesc')}</span>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" {...register('showFarewellMessage')} className="sr-only peer" />
-                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                      </label>
-                    </div>
-                    <textarea
-                      {...farewellMessageField}
-                      rows={2}
-                      disabled={!showFarewellMessage}
-                      maxLength={MAX_RECEIPT_FAREWELL_LENGTH}
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder={formatInputPlaceholder(t('settings.receipts.footerPlaceholder'), t('common.locale'))}
-                    />
-                  </div>
+                  <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer label-strong font-sans transition-all hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
+                    {t('settings.receipts.uploadLogo')}
+                    <input type="file" accept="image/*" onChange={handleReceiptLogoChange} className="hidden" disabled={!watch('showLogoOnReceipt')} />
+                  </label>
                 </div>
               </div>
+            </div>
+
+            {/* Location Info */}
+            <div className="pt-6 pb-6 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showAddress')}</span>
+                  <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showAddressDesc')}</span>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input type="checkbox" {...register('showAddress')} className="sr-only peer" />
+                  <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                </label>
+              </div>
+              <input
+                type="text"
+                {...restaurantAddressField}
+                disabled={!showAddress}
+                maxLength={MAX_ESTABLISHMENT_ADDRESS_LENGTH}
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                placeholder={formatInputPlaceholder(t('settings.profile.addressPlaceholder'), t('common.locale'))}
+              />
+            </div>
+
+            {/* Tax Info */}
+            <div className="pt-6 pb-6 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showTaxId')}</span>
+                  <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showTaxIdDesc')}</span>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input type="checkbox" {...register('showTaxId')} className="sr-only peer" />
+                  <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                </label>
+              </div>
+              <input
+                type="text"
+                {...taxIdField}
+                disabled={!showTaxId}
+                autoCapitalize="characters"
+                maxLength={MAX_ESTABLISHMENT_TAX_ID_LENGTH}
+                onInput={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  target.value = sanitizeTaxId(target.value, MAX_ESTABLISHMENT_TAX_ID_LENGTH);
+                }}
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                placeholder={formatInputPlaceholder(t('settings.profile.taxIdPlaceholder'), t('common.locale'))}
+              />
+              <p className="text-xs text-gray-400 mt-1">{t('settings.profile.taxIdDisclaimer')}</p>
+            </div>
+
+            {/* Footer */}
+            <div className="pt-6 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.footerMessage')}</span>
+                  <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.footerMessageDesc')}</span>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input type="checkbox" {...register('showFarewellMessage')} className="sr-only peer" />
+                  <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                </label>
+              </div>
+              <textarea
+                {...farewellMessageField}
+                rows={2}
+                disabled={!showFarewellMessage}
+                maxLength={MAX_RECEIPT_FAREWELL_LENGTH}
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                placeholder={formatInputPlaceholder(t('settings.receipts.footerPlaceholder'), t('common.locale'))}
+              />
             </div>
           </motion.div>
         )}
@@ -1680,19 +1619,7 @@ export function SettingsPage() {
         )}
 
         {activeTab === 'danger' && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-red-50/30 dark:bg-red-900/5 rounded-2xl border border-red-200/50 dark:border-red-900/20 p-8 space-y-10 shadow-sm">
-
-            <div className="flex items-center justify-between border-b border-red-100 dark:border-red-900/10 pb-8">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400 shadow-sm">
-                  <Trash2 className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white leading-none mb-1">{t('settings.danger.title')}</h3>
-                  <p className="text-xs text-red-600/80 dark:text-red-400/80 font-medium tracking-widest">{t('settings.danger.subtitle')}</p>
-                </div>
-              </div>
-            </div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-red-50/30 dark:bg-red-900/5 rounded-2xl border border-red-200/50 dark:border-red-900/20 p-6 sm:p-8 space-y-8 shadow-sm font-sans">
 
             {effectiveDeletionStatus && ['pending_deletion', 'deleting'].includes(effectiveDeletionStatus.status) ? (
               <div>

@@ -134,7 +134,7 @@ export function TaxRatesManager() {
 
   if (loading) {
     return (
-      <div className="pt-6 border-t border-gray-100 dark:border-white/5">
+      <div>
         <div className="h-10 w-40 rounded-xl bg-gray-100 dark:bg-white/5 animate-pulse mb-3" />
         <div className="h-28 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 animate-pulse" />
       </div>
@@ -142,7 +142,7 @@ export function TaxRatesManager() {
   }
 
   return (
-    <div className="pt-6 border-t border-gray-100 dark:border-white/5 space-y-4">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
