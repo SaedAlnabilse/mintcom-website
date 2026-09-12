@@ -320,13 +320,13 @@ export const TicketsPage = () => {
             <div className="flex flex-col md:flex-row gap-3">
               {/* Search */}
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <input maxLength={255}
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={formatInputPlaceholder(t('support.tickets.searchPlaceholder'), t('common.locale'))}
-                  className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-mintcom-green/50"
+                  className="w-full ps-12 pe-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-base sm:text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-mintcom-green/50"
                 />
                 {searchQuery && (
                   <button
@@ -344,7 +344,7 @@ export const TicketsPage = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 appearance-none"
+                className="px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-base sm:text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 appearance-none"
               >
                 <option value="newest">{t('common.sort.newestFirst')}</option>
                 <option value="oldest">{t('common.sort.oldestFirst')}</option>
@@ -467,7 +467,7 @@ export const TicketsPage = () => {
                 </p>
                 <button
                   onClick={() => fetchTickets()}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-white/10 rounded-xl text-base sm:text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
                 >
                   <RefreshCw size={18} />
                   {t('common.retry', { defaultValue: 'Try again' })}
@@ -507,7 +507,7 @@ export const TicketsPage = () => {
                       setStatusFilter('all');
                       setPriorityFilter('all');
                     }}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-white/10 rounded-xl text-base sm:text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
                   >
                     <RefreshCw size={18} />
                     Clear filters

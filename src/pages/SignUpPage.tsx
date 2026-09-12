@@ -359,7 +359,7 @@ export function SignUpPage() {
                       aria-required="true"
                       aria-invalid={!!errors.firstName}
                       aria-describedby={errors.firstName ? 'firstName-error' : undefined}
-                      className="w-full bg-transparent px-3 py-3.5 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-gray-500"
+                      className="w-full bg-transparent px-3 py-3.5 text-base sm:text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-gray-500"
                       placeholder={formatInputPlaceholder(t('auth.signup.firstNamePlaceholder', 'John'), t('common.locale'))}
                     />
                   </div>
@@ -383,7 +383,7 @@ export function SignUpPage() {
                       aria-required="true"
                       aria-invalid={!!errors.lastName}
                       aria-describedby={errors.lastName ? 'lastName-error' : undefined}
-                      className="w-full bg-transparent px-3 py-3.5 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-gray-500"
+                      className="w-full bg-transparent px-3 py-3.5 text-base sm:text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-gray-500"
                       placeholder={formatInputPlaceholder(t('auth.signup.lastNamePlaceholder', 'Doe'), t('common.locale'))}
                     />
                   </div>
@@ -408,7 +408,7 @@ export function SignUpPage() {
                     aria-required="true"
                     aria-invalid={!!errors.email}
                     aria-describedby={errors.email ? 'email-error' : undefined}
-                    className="w-full bg-transparent px-3 py-3.5 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-gray-500"
+                    className="w-full bg-transparent px-3 py-3.5 text-base sm:text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-gray-500"
                     placeholder={formatInputPlaceholder(t('auth.signup.emailPlaceholder', 'john@example.com'), t('common.locale'))}
                   />
                 </div>
@@ -442,7 +442,7 @@ export function SignUpPage() {
                     aria-describedby={errors.password ? 'password-error' : undefined}
                     onFocus={() => setIsPasswordFocused(true)}
                     onBlur={() => setIsPasswordFocused(false)}
-                    className="w-full bg-transparent px-3 py-3.5 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-gray-500"
+                    className="w-full bg-transparent px-3 py-3.5 text-base sm:text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-gray-500"
                     placeholder={formatInputPlaceholder(t('auth.signup.passwordPlaceholder', 'Create a strong password'), t('common.locale'))}
                   />
                   <button
@@ -598,7 +598,7 @@ export function SignUpPage() {
 
       <AnimatePresence>
         {showGoogleTermsModal && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -611,7 +611,7 @@ export function SignUpPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
+              className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-3xl border border-gray-200 bg-white p-6 sm:p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
             >
               <div className="mb-8 text-center">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-mintcom-green/10">

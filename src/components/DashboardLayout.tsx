@@ -48,7 +48,8 @@ import {
   ShieldCheck,
   MonitorSmartphone,
   BookOpen,
-  Trash2
+  Trash2,
+  ArrowLeftRight
 } from 'lucide-react';
 
 // Mintcom Logo imports
@@ -477,6 +478,7 @@ export function DashboardLayout() {
         icon: Settings,
         items: [
           { path: 'settings', label: t('dashboard.menu.overview', { defaultValue: 'Overview' }), icon: Sliders },
+          { path: 'settings/migration', label: t('dashboard.menu.migration', { defaultValue: 'Switch from POS' }), icon: ArrowLeftRight },
           { path: 'settings/profile', label: t('settings.tabs.profile', { defaultValue: 'Profile' }), icon: Store },
           { path: 'settings/sales', label: t('settings.tabs.sales', { defaultValue: 'Sales Setup' }), icon: CreditCard },
           { path: 'settings/pos', label: t('settings.tabs.pos', { defaultValue: 'POS & Shifts' }), icon: MonitorSmartphone },
@@ -1196,20 +1198,21 @@ export function DashboardLayout() {
       >
         <DeletionRestorationBanner />
         {/* Top Bar (Mobile) */}
-        <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/5">
+        <div className="lg:hidden flex items-center justify-between gap-2 px-4 py-3 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/5" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+            aria-label={t('common.aria.openMenu', { defaultValue: 'Open menu' })}
+            className="min-h-[44px] min-w-[44px] p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center justify-center shrink-0"
           >
             <Menu size={24} className="text-gray-600 dark:text-gray-400" />
           </button>
 
-          <div className="flex items-center gap-2">
-            <img src={MintcomLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
-            <span className="font-bold text-gray-900 dark:text-white">{t('dashboard.title')}</span>
+          <div className="flex items-center gap-2 min-w-0 flex-1 justify-center">
+            <img src={MintcomLeafIcon} className="w-8 h-8 object-contain shrink-0" alt={t('brand.name').charAt(0)} />
+            <span className="font-bold text-gray-900 dark:text-white truncate">{t('dashboard.title')}</span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 shrink-0">
             {hasAccess('notifications') && (
               <AlertsBell
                 scope="location"
@@ -1260,28 +1263,31 @@ export function DashboardLayout() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.aside
-            initial={{ x: -280 }}
+            initial={{ x: isRTL ? 280 : -280 }}
             animate={{ x: 0 }}
-            exit={{ x: -280 }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed left-0 top-0 h-screen w-[280px] bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-2xl z-[100] flex flex-col lg:hidden"
+            exit={{ x: isRTL ? 280 : -280 }}
+            transition={{ type: "spring", damping: 28, stiffness: 260 }}
+            role="dialog"
+            aria-modal="true"
+            className="fixed start-0 top-0 h-[100dvh] w-[85vw] max-w-[300px] min-w-[260px] bg-white dark:bg-[#1E293B] border-e border-gray-200 dark:border-white/5 shadow-2xl z-[100] flex flex-col lg:hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
           >
             {/* Close Button */}
-            <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100 dark:border-white/5">
-              <div className="flex items-center gap-3">
-                <img src={MintcomLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
-                <span className="font-bold text-gray-900 dark:text-white">{t('brand.name')}</span>
+            <div className="flex items-center justify-between h-16 shrink-0 px-4 border-b border-gray-100 dark:border-white/5">
+              <div className="flex items-center gap-3 min-w-0">
+                <img src={MintcomLeafIcon} className="w-8 h-8 object-contain shrink-0" alt={t('brand.name').charAt(0)} />
+                <span className="font-bold text-gray-900 dark:text-white truncate">{t('brand.name')}</span>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                aria-label={t('common.close', { defaultValue: 'Close menu' })}
+                className="min-h-[44px] min-w-[44px] p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center justify-center shrink-0"
               >
                 <X size={20} className="text-gray-600 dark:text-gray-400" />
               </button>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-3 space-y-1 overflow-y-auto mt-4">
+            <nav className="flex-1 px-3 space-y-1 overflow-y-auto overscroll-contain custom-scrollbar mt-4 pb-4">
               {filteredMenu.map((item, index) => {
                 if (isMenuGroup(item)) {
                   // Simplified mobile menu for groups: just list items
@@ -1336,7 +1342,7 @@ export function DashboardLayout() {
             </nav>
 
             {/* Footer */}
-            <div className="p-4 border-t border-gray-100 dark:border-white/5">
+            <div className="p-4 border-t border-gray-100 dark:border-white/5 shrink-0">
               {showOwnerPortalLink && (
                 <button
                   type="button"

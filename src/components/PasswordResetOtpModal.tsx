@@ -244,7 +244,7 @@ export function PasswordResetOtpModal({
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
+                    className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden max-h-[92dvh] sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
                 >
                     {/* Mobile Drag Handle */}
                     <div className="sm:hidden flex justify-center pt-2 pb-1">

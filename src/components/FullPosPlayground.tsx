@@ -1570,7 +1570,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
         </nav>
 
         {/* Mobile top bar */}
-        <div className={`${mobile ? 'flex' : 'hidden'} absolute inset-x-0 top-0 z-40 h-14 items-center gap-2 border-b border-white/5 px-3 shadow-lg`} style={{ backgroundColor: '#1F1D2B' }}>
+        <div className={`${mobile ? 'flex' : 'hidden'} absolute inset-x-0 top-0 z-40 h-[calc(3.5rem+env(safe-area-inset-top))] items-center gap-2 border-b border-white/5 px-3 shadow-lg`} style={{ backgroundColor: '#1F1D2B', paddingTop: 'env(safe-area-inset-top)' }}>
           <button
             type="button"
             onClick={() => setSidebarExpanded(true)}
@@ -1618,7 +1618,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                 exit={{ x: -280 }}
                 transition={{ type: 'tween', duration: 0.18 }}
                 className="absolute inset-y-0 start-0 z-[70] flex w-[min(300px,86vw)] flex-col"
-                style={{ backgroundColor: '#1F1D2B', paddingTop: 20, paddingBottom: 28 }}
+                style={{ backgroundColor: '#1F1D2B', paddingTop: 'max(20px, env(safe-area-inset-top))', paddingBottom: 'max(28px, env(safe-area-inset-bottom))' }}
                 aria-label="POS navigation"
               >
                 <div className="mb-2 flex items-center px-5">
@@ -1632,7 +1632,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                   <Menu size={24} />
                   <span className="text-[14px] font-semibold">Menu</span>
                 </button>
-                <div className="flex flex-1 flex-col justify-between px-3 pb-2 pt-1">
+                <div className="flex min-h-0 flex-1 flex-col justify-between overflow-y-auto overscroll-contain px-3 pb-2 pt-1">
                   <div className="flex flex-col gap-1">
                     {NAV_ITEMS.map((item) => {
                       const on = screen === item.id;
@@ -1685,7 +1685,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
         </AnimatePresence>
 
         {/* Main column */}
-        <div className={`flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden ${mobile ? 'pt-14' : 'pt-0'}`}>
+        <div className={`flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden ${mobile ? 'pt-[calc(3.5rem+env(safe-area-inset-top))]' : 'pt-0'}`}>
 
         {/* Content — static landscape: menu + order side-by-side */}
         <div className="flex min-h-0 min-w-0 flex-1 flex-row overflow-hidden">
@@ -1751,7 +1751,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
           {screen === 'sales' && (
             <>
               {/* Menu pane ~2.3 or full width when basket minimized (mirrors POS mainContentFull) */}
-              <section className={`flex h-full min-h-0 min-w-0 ${isBasketMinimized ? 'flex-1' : 'flex-[2.3]'} flex-col overflow-hidden bg-cream-50 dark:bg-mintcom-dark ${mobile && screen === 'sales' ? 'pb-[76px]' : ''}`}>
+              <section className={`flex h-full min-h-0 min-w-0 ${isBasketMinimized ? 'flex-1' : 'flex-[2.3]'} flex-col overflow-hidden bg-cream-50 dark:bg-mintcom-dark ${mobile && screen === 'sales' ? 'pb-[calc(4.5rem+env(safe-area-inset-bottom))]' : ''}`}>
                 {/* Sales Header — mirrors mintcom-pos SalesHeader exactly */}
                 <header className={`shrink-0 bg-white dark:bg-mintcom-surface ${mobile ? 'px-3 py-2.5' : 'px-4 py-3 sm:px-5'}`}>
                   {/* Top row: square avatar + stacked date/tenant · Train / Retail / Open Drawer */}
@@ -1927,13 +1927,13 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                             ? `Search in ${activeCat.name}…`
                             : 'Search menu…'
                         }
-                        className="min-w-0 flex-1 bg-transparent px-2.5 py-0 text-[13px] font-medium text-text-primary outline-none placeholder:text-text-secondary dark:text-white sm:text-[15px]"
+                        className="min-w-0 flex-1 bg-transparent px-2.5 py-0 text-[16px] sm:text-[15px] font-medium text-text-primary outline-none placeholder:text-text-secondary dark:text-white"
                       />
                       {hasQuery && (
                         <button
                           type="button"
                           onClick={() => setSearch('')}
-                          className="shrink-0 px-2 text-mintcom-green"
+                          className="flex h-11 w-11 shrink-0 items-center justify-center text-mintcom-green"
                           aria-label="Clear search"
                         >
                           <X size={15} />
@@ -1948,7 +1948,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                           setCategorySearch('');
                           setCatOpen(true);
                         }}
-                        className={`me-1 ${mobile ? 'min-w-0 max-w-[92px] px-2' : 'min-w-[100px] max-w-[180px] px-3 sm:min-w-[110px]'} flex items-center gap-1.5 rounded-xl py-1.5 text-[12px] sm:text-[13px] ${
+                        className={`me-1 ${mobile ? 'hidden' : 'min-w-[100px] max-w-[180px] px-3 sm:min-w-[110px] flex'} min-h-[36px] items-center gap-1.5 rounded-xl py-1.5 text-[12px] sm:text-[13px] ${
                           !isAllMenu
                             ? 'bg-mintcom-green/15 font-bold text-mintcom-green'
                             : 'font-semibold text-text-secondary dark:text-mintcom-textSecondary'
@@ -1961,25 +1961,17 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                         )}
                         <span className="truncate">{isAllMenu ? 'Category' : activeCat.name}</span>
                         {!isAllMenu ? (
-                          <span
-                            role="button"
-                            tabIndex={0}
+                          <button
+                            type="button"
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelectedCategory('all');
                             }}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setSelectedCategory('all');
-                              }
-                            }}
-                            className="shrink-0 rounded-xl p-0.5 hover:bg-mintcom-green/20"
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl hover:bg-mintcom-green/20"
                             aria-label="Clear category"
                           >
                             <X size={12} />
-                          </span>
+                          </button>
                         ) : (
                           <ChevronDown size={13} className="shrink-0 opacity-70" />
                         )}
@@ -2029,7 +2021,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                                     setSortBy(opt.id);
                                     setSortOpen(false);
                                   }}
-                                  className={`flex w-full items-center border-s-[3px] px-3 py-2.5 text-start text-[13px] transition-colors ${
+                                  className={`flex min-h-[44px] w-full items-center border-s-[3px] px-3 py-2.5 text-start text-[13px] transition-colors ${
                                     sortBy === opt.id
                                       ? 'border-mintcom-green bg-mintcom-green/10 font-bold text-mintcom-green'
                                       : 'border-transparent font-medium text-text-primary hover:bg-cream-50 dark:text-white dark:hover:bg-white/5'
@@ -2046,6 +2038,44 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                   </div>
 
                 </header>
+
+                {/* Mobile category chips — one-thumb filtering, snap scroll */}
+                {mobile && (
+                  <div className="shrink-0 border-b border-gray-100 bg-white px-2.5 py-2 dark:border-white/5 dark:bg-mintcom-surface">
+                    <div className="flex gap-1.5 overflow-x-auto scrollbar-none snap-x snap-mandatory">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedCategory('all')}
+                        aria-pressed={isAllMenu}
+                        className={`h-9 shrink-0 snap-start rounded-full px-3.5 text-[12px] font-bold transition-colors ${
+                          isAllMenu
+                            ? 'bg-mintcom-green text-white shadow-sm'
+                            : 'border border-gray-200 bg-white text-text-secondary dark:border-white/10 dark:bg-mintcom-dark dark:text-mintcom-textSecondary'
+                        }`}
+                      >
+                        All
+                      </button>
+                      {categoriesList.map((c) => {
+                        const on = selectedCategory === c.id;
+                        return (
+                          <button
+                            key={c.id}
+                            type="button"
+                            onClick={() => setSelectedCategory(c.id)}
+                            aria-pressed={on}
+                            className={`h-9 shrink-0 snap-start whitespace-nowrap rounded-full px-3.5 text-[12px] font-bold transition-colors ${
+                              on
+                                ? 'bg-mintcom-green text-white shadow-sm'
+                                : 'border border-gray-200 bg-white text-text-secondary dark:border-white/10 dark:bg-mintcom-dark dark:text-mintcom-textSecondary'
+                            }`}
+                          >
+                            {c.name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 {/* Product grid / retail list — mirrors POS ProductCard */}
                 <div id="tour-product-grid" className={`min-h-0 flex-1 overflow-y-auto overscroll-contain ${mobile ? 'p-2.5' : 'p-3'}`}>
@@ -2086,7 +2116,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                             </p>
                           </div>
                           <PriceText value={p.price} size="sm" className="shrink-0" />
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-mintcom-green text-white">
+                          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-mintcom-green text-white">
                             <Plus size={16} strokeWidth={2.5} />
                           </span>
                         </motion.button>
@@ -2117,7 +2147,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                             openItem(p);
                           }}
                           aria-disabled={soldOut}
-                          className={`group relative flex ${mobile ? 'min-h-[190px]' : 'min-h-[168px] sm:min-h-[200px]'} flex-col overflow-hidden rounded-xl border border-gray-100 bg-white text-start shadow-sm transition-shadow dark:border-white/8 dark:bg-mintcom-surface ${
+                          className={`group relative flex ${mobile ? 'min-h-[148px]' : 'min-h-[168px] sm:min-h-[200px]'} flex-col overflow-hidden rounded-xl border border-gray-100 bg-white text-start shadow-sm transition-shadow dark:border-white/8 dark:bg-mintcom-surface ${
                             soldOut ? 'cursor-not-allowed opacity-60' : 'hover:shadow-md'
                           }`}
                         >
@@ -2141,21 +2171,26 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                               {soldOut ? 'Out of stock' : `${stockLeft} Left`}
                             </span>
                           )}
-                          <div className={productImgWrapClass(p.imageDataUrl, `relative flex ${mobile ? 'h-[112px]' : 'h-[100px] sm:h-[140px]'} w-full shrink-0 items-center justify-center overflow-hidden`)}>
+                          <div className={productImgWrapClass(p.imageDataUrl, `relative flex ${mobile ? 'h-[72px]' : 'h-[100px] sm:h-[140px]'} w-full shrink-0 items-center justify-center overflow-hidden`)}>
                             <img
                               src={productImgSrc(p.imageDataUrl)}
                               alt=""
                               className={productImgClass(p.imageDataUrl)}
                             />
                           </div>
-                          <div className="flex flex-1 flex-col justify-start px-3.5 py-3.5">
-                            <p className="line-clamp-2 text-[13px] font-bold leading-snug text-text-primary dark:text-white sm:text-[15px] sm:leading-5">
+                          <div className={`flex flex-1 flex-col justify-start ${mobile ? 'p-2' : 'px-3.5 py-3.5'}`}>
+                            <p className={`text-[13px] font-bold leading-snug text-text-primary dark:text-white sm:text-[15px] sm:leading-5 ${mobile ? 'line-clamp-1' : 'line-clamp-2'}`}>
                               {p.name}
                             </p>
-                            <div className="mt-2 flex items-center justify-between gap-2">
-                              <PriceText value={p.price} className="min-w-0" />
-                              <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white shadow-sm transition-transform ${soldOut ? 'bg-gray-300 dark:bg-white/10' : 'bg-mintcom-green group-hover:scale-105'}`}>
+                            <div className={`flex items-center justify-between gap-1.5 ${mobile ? 'mt-1' : 'mt-2'}`}>
+                              <PriceText value={p.price} className="min-w-0 flex-1 text-[12px]" />
+                              <span className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm transition-transform ${soldOut ? 'bg-gray-300 dark:bg-white/10' : 'bg-mintcom-green group-hover:scale-105'}`}>
                                 <Plus size={18} strokeWidth={2.5} />
+                                {cartQty > 0 && (
+                                  <span className="absolute -end-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#1F1D2B] px-1 text-[9px] font-black text-white ring-2 ring-white dark:bg-white dark:text-mintcom-dark dark:ring-mintcom-surface">
+                                    {cartQty}
+                                  </span>
+                                )}
                               </span>
                             </div>
                           </div>
@@ -2738,7 +2773,8 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
           <button
             type="button"
             onClick={() => setMobileCartOpen(true)}
-            className="absolute inset-x-3 bottom-3 z-40 flex h-14 items-center gap-3 rounded-xl bg-[#1F1D2B] px-3 text-white shadow-[0_12px_32px_rgba(0,0,0,0.35)] active:scale-[0.99]"
+            className="absolute inset-x-3 z-40 flex h-14 items-center gap-3 rounded-xl bg-[#1F1D2B] px-3 text-white shadow-[0_12px_32px_rgba(0,0,0,0.35)] active:scale-[0.99]"
+            style={{ bottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
             aria-label={`Open order with ${itemCount} items`}
           >
             <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-mintcom-green !text-white">
@@ -2777,14 +2813,19 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                 exit={{ y: '100%' }}
                 transition={{ type: 'spring', stiffness: 320, damping: 32 }}
                 onClick={(e) => e.stopPropagation()}
-                className="absolute inset-x-0 bottom-0 flex h-[min(88%,680px)] flex-col rounded-t-xl border border-gray-200 bg-white shadow-2xl dark:border-mintcom-tertiary dark:bg-mintcom-surface"
+                className="absolute inset-x-0 bottom-0 flex h-[min(92dvh,680px)] max-h-[100dvh] flex-col rounded-t-2xl border border-gray-200 bg-white shadow-2xl dark:border-mintcom-tertiary dark:bg-mintcom-surface"
+                style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
               >
+                <div className="flex justify-center pt-2">
+                  <div className="h-1 w-10 rounded-full bg-gray-300 dark:bg-white/20" />
+                </div>
                 <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/8">
                   <p className="text-sm font-black">Order #{orderNo}</p>
                   <button
                     type="button"
                     onClick={() => setMobileCartOpen(false)}
-                    className="flex h-8 w-8 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10"
+                    aria-label="Close order"
+                    className="flex h-11 w-11 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10"
                   >
                     <X size={16} />
                   </button>
@@ -2913,7 +2954,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                     </div>
 
                     {/* Qty — fixed-width cluster like POS (Image #2) */}
-                    <div className="flex w-[132px] shrink-0 flex-col items-center">
+                    <div className="flex w-[120px] sm:w-[132px] shrink-0 flex-col items-center">
                       <div className="flex w-full items-center justify-end gap-1.5">
                         <button
                           type="button"
@@ -2923,12 +2964,12 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                             setAddonQty(q);
                             setAddonQtyText(String(q));
                           }}
-                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-[#F3F4F6] text-[#6B7280] disabled:opacity-40 dark:border-white/10 dark:bg-white/10 dark:text-white"
+                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-[#F3F4F6] text-[#6B7280] disabled:opacity-40 dark:border-white/10 dark:bg-white/10 dark:text-white"
                           aria-label="Decrease quantity"
                         >
                           <span className="text-base font-semibold leading-none">−</span>
                         </button>
-                        <div className="relative h-9 w-11 shrink-0">
+                        <div className="relative h-10 w-11 shrink-0">
                           <input
                             value={addonQtyText}
                             onChange={(e) => {
@@ -2954,7 +2995,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                               }
                             }}
                             inputMode="numeric"
-                            className="h-9 w-11 rounded-xl border border-gray-300 bg-white pb-0.5 text-center text-sm font-bold text-[#1F2937] outline-none dark:border-white/20 dark:bg-mintcom-dark dark:text-white"
+                            className="h-10 w-11 rounded-xl border border-gray-300 bg-white pb-0.5 text-center text-[16px] sm:text-sm font-bold text-[#1F2937] outline-none dark:border-white/20 dark:bg-mintcom-dark dark:text-white"
                           />
                           {/* Underline under the number — matches POS quantityInputUnderline */}
                           <span
@@ -2971,7 +3012,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                             setAddonQty(q);
                             setAddonQtyText(String(q));
                           }}
-                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#7dc6a2] text-white shadow-sm disabled:bg-[#D1D5DB] disabled:opacity-60"
+                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#7dc6a2] text-white shadow-sm disabled:bg-[#D1D5DB] disabled:opacity-60"
                           aria-label="Increase quantity"
                         >
                           <Plus size={16} strokeWidth={2.5} />
@@ -3124,7 +3165,7 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                                 </span>
                               </div>
 
-                              <div className="grid grid-cols-3 gap-x-3 gap-y-3">
+                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-3">
                                 {attr.options.map((opt) => {
                                   const selected = (addonSel[attr.id] ?? []).includes(opt.id);
                                   const optPrice = splitPosAmount(opt.price);
@@ -3250,12 +3291,12 @@ export function FullPosPlayground({ mobile = false }: { mobile?: boolean }) {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96 }}
                 onClick={(e) => e.stopPropagation()}
-                className="flex w-[min(88%,500px)] max-h-[85%] flex-col items-center overflow-y-auto rounded-xl border border-[#e9ecef] bg-white px-8 py-9 text-center shadow-[0_8px_40px_rgba(0,0,0,0.15)] dark:border-white/10 dark:bg-mintcom-surface"
+                className="flex w-[min(94%,420px)] max-h-[85%] flex-col items-center overflow-y-auto overscroll-contain rounded-xl border border-[#e9ecef] bg-white px-5 sm:px-8 py-7 sm:py-9 text-center shadow-[0_8px_40px_rgba(0,0,0,0.15)] dark:border-white/10 dark:bg-mintcom-surface"
               >
                 <div className="mb-[18px] flex h-20 w-20 items-center justify-center rounded-xl bg-mintcom-green/15 text-mintcom-green">
                   <Check size={48} strokeWidth={2.5} />
                 </div>
-                <h3 className="mb-2.5 text-[28px] font-bold leading-tight text-text-primary dark:text-white sm:text-[32px]">
+                <h3 className="mb-2.5 text-[24px] font-bold leading-tight text-text-primary dark:text-white sm:text-[32px]">
                   Payment Successful
                 </h3>
                 <p className="mb-4 text-[15px] text-text-secondary dark:text-mintcom-textSecondary">
@@ -3405,7 +3446,7 @@ function ActionBtn({
       aria-label={title}
       onClick={onClick}
       disabled={disabled}
-      className={`relative flex h-[42px] flex-1 items-center justify-center rounded-xl !text-white shadow-[0_1px_2px_rgba(0,0,0,0.12)] transition-opacity disabled:opacity-60 ${
+      className={`relative flex h-11 min-h-[44px] flex-1 items-center justify-center rounded-xl !text-white shadow-[0_1px_2px_rgba(0,0,0,0.12)] transition-opacity disabled:opacity-60 ${
         disabled
           ? 'bg-[#9CA3AF]'
           : danger
@@ -3582,7 +3623,7 @@ function OrderPanel({
     const localBtnTop = rootRect
       ? (btnRect.top - rootRect.top) / scaleY
       : btnRect.top;
-    const left = rootRect
+    const leftRaw = rootRect
       ? (btnRect.left - rootRect.left) / scaleX
       : btnRect.left;
     const width = Math.max(
@@ -3590,12 +3631,15 @@ function OrderPanel({
       160,
     );
     const hostH = root?.offsetHeight ?? window.innerHeight;
+    const hostW = root?.offsetWidth ?? window.innerWidth;
     const menuH = 220;
     const topBelow = localBtnBottom + 4;
     const top =
       topBelow + menuH > hostH - 8
         ? Math.max(8, localBtnTop - menuH - 4)
         : topBelow;
+    // Keep the menu inside the POS frame on narrow phones.
+    const left = Math.max(8, Math.min(leftRaw, hostW - width - 8));
     setLineDiscountMenu((cur) =>
       cur?.id === lineId ? null : { id: lineId, top, left, width },
     );
@@ -3942,7 +3986,7 @@ function OrderPanel({
                                 e.stopPropagation();
                                 onChangeQty(line.id, -1);
                               }}
-                              className="flex h-8 w-8 items-center justify-center rounded-xl text-sm font-bold text-text-secondary hover:bg-cream-100 dark:hover:bg-white/10"
+                              className="flex h-11 w-11 items-center justify-center rounded-xl text-sm font-bold text-text-secondary hover:bg-cream-100 dark:hover:bg-white/10"
                             >
                               −
                             </button>
@@ -3955,7 +3999,7 @@ function OrderPanel({
                                 e.stopPropagation();
                                 onChangeQty(line.id, 1);
                               }}
-                              className="flex h-8 w-8 items-center justify-center rounded-xl bg-mintcom-green text-sm font-bold text-white"
+                              className="flex h-11 w-11 items-center justify-center rounded-xl bg-mintcom-green text-sm font-bold text-white"
                             >
                               +
                             </button>
@@ -5402,7 +5446,7 @@ function DemoNoteModal({
               <p className="mb-2.5 text-[11px] font-bold uppercase tracking-wide text-text-secondary dark:text-mintcom-textSecondary">
                 Quick add to note
               </p>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {(
                   [
                     { id: 'dine-in' as const, label: 'Dine-In', Icon: Utensils },
@@ -5908,7 +5952,7 @@ function ServiceChargeEditModal({
         {/* Body */}
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {/* 3 Mode Option Cards (cardsRow) */}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 min-[380px]:grid-cols-3 gap-2">
             {/* 1. Default Option */}
             <button
               type="button"
@@ -6052,7 +6096,7 @@ function ServiceChargeEditModal({
 
               {/* Quick Presets (when Percentage) */}
               {cType === 'PERCENTAGE' && (
-                <div className="grid grid-cols-6 gap-1.5 pt-1">
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 pt-1">
                   {PERCENTAGE_PRESETS.map((preset) => {
                     const isPresetActive = Number(cValue) === preset;
                     return (
@@ -6060,7 +6104,7 @@ function ServiceChargeEditModal({
                         key={preset}
                         type="button"
                         onClick={() => handlePresetSelect(preset)}
-                        className={`rounded-lg border py-2 text-xs font-extrabold transition-colors ${
+                        className={`min-h-[44px] rounded-lg border py-2 text-xs font-extrabold transition-colors ${
                           isPresetActive
                             ? 'border-mintcom-green bg-mintcom-green text-white shadow-sm'
                             : 'border-gray-200 bg-white text-text-primary hover:bg-gray-100/60 dark:border-white/10 dark:bg-mintcom-surface dark:text-white'
@@ -6215,7 +6259,7 @@ function PaymentCheckoutPanel({
   const receiptLines = (
     <div className="flex h-full min-h-0 flex-col bg-white dark:bg-mintcom-surface">
       {/* Header — denser, matches POS receiptTitleCompact */}
-      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-gray-100 px-4 pb-2.5 pt-6 dark:border-white/10 sm:px-5 sm:pt-7">
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-gray-100 px-4 pb-2.5 dark:border-white/10 sm:px-5 sm:pt-7" style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top))' }}>
         <p className="text-[15px] font-semibold text-[#1F2937] dark:text-white">
           Payment Receipt
         </p>
@@ -6405,7 +6449,7 @@ function PaymentCheckoutPanel({
             key={b.label}
             type="button"
             onClick={b.onClick}
-            className="h-9 min-h-[36px] max-h-[36px] flex-1 rounded-xl border border-gray-200 bg-white text-[12px] font-bold text-text-primary shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors active:border-mintcom-green active:bg-mintcom-green/10 dark:border-white/10 dark:bg-mintcom-dark dark:text-white"
+            className="h-11 min-h-[44px] max-h-[44px] flex-1 rounded-xl border border-gray-200 bg-white px-1 text-[12px] font-bold text-text-primary shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors active:border-mintcom-green active:bg-mintcom-green/10 dark:border-white/10 dark:bg-mintcom-dark dark:text-white truncate"
           >
             {b.label}
           </button>
@@ -6417,7 +6461,7 @@ function PaymentCheckoutPanel({
       */}
       <div className="flex min-h-0 flex-1 flex-col gap-1.5">
         {numpadRows.map((row) => (
-          <div key={row.join('-')} className="flex min-h-0 flex-1 gap-1.5">
+          <div key={row.join('-')} className="flex min-h-[48px] flex-1 gap-1.5">
             {row.map((k) => (
               <button
                 key={k}
@@ -6450,7 +6494,7 @@ function PaymentCheckoutPanel({
           type="button"
           disabled={!canChargeCash}
           onClick={confirmCash}
-          className={`flex h-full min-w-0 flex-1 items-center justify-center rounded-xl text-[13px] font-extrabold transition-opacity ${
+          className={`flex h-full min-w-0 flex-1 items-center justify-center gap-1 rounded-xl px-2 text-[12px] font-extrabold transition-opacity truncate ${
             canChargeCash
               ? 'bg-mintcom-green text-white shadow-md shadow-mintcom-green/25 active:opacity-90'
               : 'bg-[#EEF2F0] text-[#6B7280]'
@@ -7227,7 +7271,7 @@ function SplitPaymentDemoModal({
           Green hero — matches mintcom-pos SplitPaymentModal LinearGradient hero
           (title + total bill + items/remaining on primary green).
         */}
-        <div className="relative shrink-0 overflow-hidden bg-gradient-to-br from-mintcom-green to-[#3d9a6e] px-4 pb-3.5 pt-3 text-white">
+        <div className="relative shrink-0 overflow-hidden bg-gradient-to-br from-mintcom-green to-[#3d9a6e] px-4 pb-3.5" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
           <div className="relative flex items-center justify-between gap-2">
             {mode !== 'menu' ? (
               <button
@@ -7237,13 +7281,13 @@ function SplitPaymentDemoModal({
                   setSplitAmountCents(0);
                   setSelectedForPayment({});
                 }}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white hover:bg-white/25"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white hover:bg-white/25"
                 aria-label="Back"
               >
                 <ArrowLeft size={16} className="text-white" />
               </button>
             ) : (
-              <span className="h-8 w-8 shrink-0" />
+              <span className="h-11 w-11 shrink-0" />
             )}
             <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
               <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-white">
@@ -7259,7 +7303,7 @@ function SplitPaymentDemoModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white hover:bg-white/25"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white hover:bg-white/25"
               aria-label="Close"
             >
               <X size={15} className="text-white" />
@@ -7359,7 +7403,7 @@ function SplitPaymentDemoModal({
           </div>
         )}
 
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto sm:overflow-hidden overscroll-contain">
           {/* Menu */}
           {splitMode === null && (
             <div className="flex min-h-0 flex-1 flex-col px-3.5 py-3">
@@ -7436,8 +7480,8 @@ function SplitPaymentDemoModal({
 
           {/* By Amount */}
           {splitMode === 'amount' && (
-            <div className="flex min-h-0 flex-1 flex-col">
-              <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden sm:grid-cols-2 sm:items-stretch">
+            <div className="flex sm:min-h-0 sm:flex-1 flex-col">
+              <div className="grid sm:min-h-0 sm:flex-1 grid-cols-1 gap-2 overflow-visible sm:overflow-hidden sm:grid-cols-2 sm:items-stretch">
                 <div className="flex min-h-0 flex-col border-b border-gray-100 px-3 py-2 dark:border-white/8 sm:border-b-0 sm:border-e">
                   <div className="mb-1.5 flex items-center justify-between">
                     <p className="text-[10px] font-bold uppercase tracking-wide text-text-secondary">
@@ -7474,7 +7518,7 @@ function SplitPaymentDemoModal({
                             setNumPeople(count);
                             setSplitAmountCents(0);
                           }}
-                          className={`min-w-[56px] shrink-0 rounded-xl border px-2 py-1.5 ${
+                          className={`min-w-[56px] min-h-[44px] shrink-0 rounded-xl border px-2 py-1.5 ${
                             selected
                               ? 'border-mintcom-green bg-mintcom-green/15'
                               : 'border-gray-200 bg-white dark:border-white/10 dark:bg-mintcom-dark'
@@ -7573,7 +7617,7 @@ function SplitPaymentDemoModal({
                                     list.filter((_, i) => i !== index),
                                   )
                                 }
-                                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-[#D55263]/10 text-[#D55263]"
+                                className="flex h-10 w-10 min-h-[40px] min-w-[40px] shrink-0 items-center justify-center rounded-xl bg-[#D55263]/10 text-[#D55263]"
                               >
                                 <X size={13} />
                               </button>
@@ -7630,7 +7674,7 @@ function SplitPaymentDemoModal({
                   </div>
 
                   {/* 4 equal rows × 3 keys — fills remaining height */}
-                  <div className="flex min-h-0 flex-1 flex-col gap-1.5">
+                  <div className="flex min-h-[240px] flex-1 flex-col gap-1.5">
                     {(
                       [
                         ['1', '2', '3'],
@@ -7639,7 +7683,7 @@ function SplitPaymentDemoModal({
                         ['00', '0', 'back'],
                       ] as const
                     ).map((row) => (
-                      <div key={row.join('-')} className="flex min-h-0 flex-1 gap-1.5">
+                      <div key={row.join('-')} className="flex min-h-[48px] flex-1 gap-1.5">
                         {row.map((k) => (
                           <button
                             key={k}
@@ -7698,7 +7742,7 @@ function SplitPaymentDemoModal({
                 </div>
               </div>
 
-              <div className="flex shrink-0 items-center gap-2 border-t border-gray-100 bg-white px-3 py-2 dark:border-white/8 dark:bg-mintcom-surface">
+              <div className="flex shrink-0 flex-wrap items-center gap-2 border-t border-gray-100 bg-white px-3 py-2 dark:border-white/8 dark:bg-mintcom-surface">
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[11px] font-bold text-text-secondary">
                     {splitPayments.length > 0
@@ -7726,7 +7770,7 @@ function SplitPaymentDemoModal({
                     if (!splitComplete) return;
                     enterPayMode(splitPayments);
                   }}
-                  className={`inline-flex h-11 min-w-[160px] shrink-0 items-center justify-center gap-1.5 rounded-xl px-4 text-[14px] font-extrabold ${
+                  className={`inline-flex h-11 min-w-[140px] flex-1 sm:flex-none sm:min-w-[160px] items-center justify-center gap-1.5 rounded-xl px-3 sm:px-4 text-[13px] sm:text-[14px] font-extrabold truncate ${
                     splitComplete
                       ? 'bg-mintcom-green text-white shadow-md shadow-mintcom-green/25'
                       : 'bg-cream-100 text-text-tertiary dark:bg-white/5 dark:text-white/50'
@@ -7741,12 +7785,12 @@ function SplitPaymentDemoModal({
 
           {/* By Item */}
           {splitMode === 'item' && (
-            <div className="flex min-h-0 flex-1 flex-col">
-              <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 overflow-hidden p-2 sm:grid-cols-2">
+            <div className="flex sm:min-h-0 sm:flex-1 flex-col">
+              <div className="grid sm:min-h-0 sm:flex-1 grid-cols-1 gap-2 overflow-visible sm:overflow-hidden p-2 sm:grid-cols-2">
                 <div className="relative flex min-h-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-cream-50 dark:border-white/10 dark:bg-mintcom-dark">
                   <div className="absolute inset-y-0 start-0 w-1 bg-gray-300 dark:bg-white/15" />
                   <div className="flex items-center gap-2 border-b border-gray-100 px-2.5 py-2 dark:border-white/8">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-white dark:bg-mintcom-surface">
+                    <span className="flex h-10 w-10 min-h-[40px] min-w-[40px] items-center justify-center rounded-xl bg-white dark:bg-mintcom-surface">
                       <List size={14} className="text-text-secondary" />
                     </span>
                     <div className="min-w-0">
@@ -7797,7 +7841,7 @@ function SplitPaymentDemoModal({
                                     return { ...prev, [line.id]: cur - 1 };
                                   });
                                 }}
-                                className="flex h-7 w-7 items-center justify-center rounded-xl bg-white disabled:opacity-35 dark:bg-mintcom-surface"
+                                className="flex h-10 w-10 min-h-[40px] min-w-[40px] items-center justify-center rounded-xl bg-white disabled:opacity-35 dark:bg-mintcom-surface"
                               >
                                 <Minus size={12} />
                               </button>
@@ -7814,7 +7858,7 @@ function SplitPaymentDemoModal({
                                     return { ...prev, [line.id]: cur + 1 };
                                   });
                                 }}
-                                className="flex h-7 w-7 items-center justify-center rounded-xl bg-mintcom-green text-white disabled:opacity-40"
+                                className="flex h-10 w-10 min-h-[40px] min-w-[40px] items-center justify-center rounded-xl bg-mintcom-green text-white disabled:opacity-40"
                               >
                                 <Plus size={12} />
                               </button>
@@ -7905,7 +7949,7 @@ function SplitPaymentDemoModal({
                                     return { ...prev, [id]: cur - 1 };
                                   });
                                 }}
-                                className="flex h-7 w-7 items-center justify-center rounded-xl bg-white dark:bg-mintcom-surface"
+                                className="flex h-10 w-10 min-h-[40px] min-w-[40px] items-center justify-center rounded-xl bg-white dark:bg-mintcom-surface"
                               >
                                 <Minus size={12} />
                               </button>
@@ -7922,7 +7966,7 @@ function SplitPaymentDemoModal({
                                     return { ...prev, [id]: cur + 1 };
                                   });
                                 }}
-                                className="flex h-7 w-7 items-center justify-center rounded-xl bg-mintcom-green text-white disabled:opacity-40"
+                                className="flex h-10 w-10 min-h-[40px] min-w-[40px] items-center justify-center rounded-xl bg-mintcom-green text-white disabled:opacity-40"
                               >
                                 <Plus size={12} />
                               </button>
@@ -7936,7 +7980,7 @@ function SplitPaymentDemoModal({
                                   return next;
                                 });
                               }}
-                              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-[#D55263]/10 text-[#D55263]"
+                              className="flex h-10 w-10 min-h-[40px] min-w-[40px] shrink-0 items-center justify-center rounded-xl bg-[#D55263]/10 text-[#D55263]"
                             >
                               <X size={13} />
                             </button>
@@ -7963,7 +8007,7 @@ function SplitPaymentDemoModal({
                 </div>
               </div>
 
-              <div className="flex shrink-0 items-center gap-2 border-t border-gray-100 bg-white px-3 py-2 dark:border-white/8 dark:bg-mintcom-surface">
+              <div className="flex shrink-0 flex-wrap items-center gap-2 border-t border-gray-100 bg-white px-3 py-2 dark:border-white/8 dark:bg-mintcom-surface">
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[11px] font-bold text-text-secondary">
                     {hasItemSelection
@@ -8000,7 +8044,7 @@ function SplitPaymentDemoModal({
                     }
                     enterPayMode(parts);
                   }}
-                  className={`inline-flex h-11 min-w-[160px] shrink-0 items-center justify-center gap-1.5 rounded-xl px-4 text-[14px] font-extrabold ${
+                  className={`inline-flex h-11 min-w-[140px] flex-1 sm:flex-none sm:min-w-[160px] items-center justify-center gap-1.5 rounded-xl px-3 sm:px-4 text-[13px] sm:text-[14px] font-extrabold truncate ${
                     hasItemSelection
                       ? 'bg-mintcom-green text-white shadow-md shadow-mintcom-green/25'
                       : 'bg-cream-100 text-text-tertiary dark:bg-white/5 dark:text-white/50'
@@ -8039,19 +8083,19 @@ function PosDemoStoreConnect({ onConnect }: StoreConnectProps) {
 
   return (
     <div className="relative flex h-full max-h-full overflow-hidden bg-white dark:bg-mintcom-dark">
-      {/* Left pane: Store Connection details — static tablet half */}
-      <div className="relative flex min-h-0 min-w-0 w-1/2 flex-1 flex-col overflow-hidden">
+      {/* Left pane: Store Connection details — full width on phones, half on sm+ */}
+      <div className="relative flex min-h-0 min-w-0 w-full sm:w-1/2 flex-1 flex-col overflow-hidden">
         <div className="h-6 sm:h-8" />
 
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center overflow-y-auto overscroll-contain px-5 py-6 sm:px-8">
 
-          <div className="w-full max-w-[340px]">
+          <div className="m-auto w-full max-w-[340px]">
             {/* POS TenantSelectionScreen cleanTitleContainer + headerSubtitle */}
             <div className="mb-2 flex items-center justify-center gap-2.5">
-              <p className="font-sans text-[28px] font-extrabold leading-tight text-[#333] dark:text-white sm:text-[32px]">
+              <p className="font-sans text-[24px] font-extrabold leading-tight text-[#333] dark:text-white sm:text-[32px]">
                 Connect to Store
               </p>
-              <Home size={32} strokeWidth={2} className="shrink-0 text-[#333] dark:text-white" aria-hidden />
+              <Home size={28} strokeWidth={2} className="shrink-0 text-[#333] dark:text-white sm:h-8 sm:w-8" aria-hidden />
             </div>
             <p className="mb-[34px] text-center font-sans text-[17px] font-normal leading-snug text-[#999]">
               Enter your store credentials to continue
@@ -8059,7 +8103,7 @@ function PosDemoStoreConnect({ onConnect }: StoreConnectProps) {
 
             {/* Establishment ID */}
             <div className="mb-4">
-              <label className="block text-[11px] font-black uppercase tracking-wider text-text-secondary dark:text-mintcom-textSecondary mb-2">
+              <label className="block text-[12px] font-black uppercase tracking-wider text-text-secondary dark:text-mintcom-textSecondary mb-2">
                 Establishment ID/Slug
               </label>
               <div className="flex h-14 items-center rounded-xl border border-[#d1d5db] bg-white px-4 dark:border-white/15 dark:bg-mintcom-surface">
@@ -8069,14 +8113,14 @@ function PosDemoStoreConnect({ onConnect }: StoreConnectProps) {
                   readOnly
                   placeholder="Establishment ID/Slug"
                   value="cafedelight"
-                  className="h-full min-w-0 flex-1 bg-transparent text-[15px] text-[#555] dark:text-[#ccc] outline-none cursor-not-allowed select-none"
+                  className="h-full min-w-0 flex-1 bg-transparent text-[16px] text-[#555] dark:text-[#ccc] outline-none cursor-not-allowed select-none"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div className="mb-8">
-              <label className="block text-[11px] font-black uppercase tracking-wider text-text-secondary dark:text-mintcom-textSecondary mb-2">
+              <label className="block text-[12px] font-black uppercase tracking-wider text-text-secondary dark:text-mintcom-textSecondary mb-2">
                 Password
               </label>
               <div className="flex h-14 items-center rounded-xl border border-[#d1d5db] bg-white px-4 dark:border-white/15 dark:bg-mintcom-surface">
@@ -8085,7 +8129,7 @@ function PosDemoStoreConnect({ onConnect }: StoreConnectProps) {
                   type="password"
                   readOnly
                   value="delight123"
-                  className="h-full min-w-0 flex-1 bg-transparent text-[15px] text-[#555] dark:text-[#ccc] outline-none cursor-not-allowed select-none"
+                  className="h-full min-w-0 flex-1 bg-transparent text-[16px] text-[#555] dark:text-[#ccc] outline-none cursor-not-allowed select-none"
                 />
               </div>
             </div>
@@ -8098,7 +8142,7 @@ function PosDemoStoreConnect({ onConnect }: StoreConnectProps) {
             >
               <span>{connecting ? 'Connecting...' : 'Connect'}</span>
               {!connecting && (
-                <ArrowRight size={20} className="absolute end-5" strokeWidth={2.25} />
+                <ArrowRight size={20} className="absolute end-5 rtl:rotate-180" strokeWidth={2.25} />
               )}
             </button>
 
@@ -8163,8 +8207,8 @@ function PosDemoStoreConnect({ onConnect }: StoreConnectProps) {
         </div>
       </div>
 
-      {/* Right pane: Brand panel — always on in static tablet canvas */}
-      <div className="relative flex w-1/2 flex-col items-center justify-center overflow-hidden bg-[#6baf8b]">
+      {/* Right pane: Brand panel — tablet/desktop only */}
+      <div className="relative hidden w-1/2 flex-col items-center justify-center overflow-hidden bg-[#6baf8b] sm:flex">
         <div className="pointer-events-none absolute -bottom-16 -start-10 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
         <div className="pointer-events-none absolute bottom-28 -end-8 h-40 w-40 rounded-full bg-white/10 blur-xl" />
         <div className="pointer-events-none absolute start-0 end-0 bottom-0 h-[30%] bg-gradient-to-t from-black/10 to-transparent" />

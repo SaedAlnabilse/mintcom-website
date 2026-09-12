@@ -490,7 +490,7 @@ export function OwnerBrandsPage() {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
                     <button
                         onClick={() => {
                             if (availableEstablishments.length < 2) {
@@ -499,10 +499,10 @@ export function OwnerBrandsPage() {
                                 setShowCreateModal(true);
                             }
                         }}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                        className="flex w-full sm:w-auto items-center justify-center gap-2 px-5 py-3 min-h-[48px] rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm active:scale-[0.98]"
                     >
-                        <Plus size={18} />
-                        <span>{t('owner.brands.createBrand')}</span>
+                        <Plus size={18} className="shrink-0" />
+                        <span className="truncate">{t('owner.brands.createBrand')}</span>
                     </button>
                 </div>
             </div>
@@ -538,7 +538,7 @@ export function OwnerBrandsPage() {
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                     {/* Search */}
-                    <div className="relative flex-1 min-w-[300px]">
+                    <div className="relative flex-1 min-w-0 w-full">
                         <Search
                             size={18}
                             className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
@@ -563,9 +563,9 @@ export function OwnerBrandsPage() {
                     </div>
 
                     {/* Filter Controls */}
-                    <div className="flex items-center gap-3 flex-wrap lg:ml-auto">
+                    <div className="flex items-center gap-3 flex-wrap lg:ml-auto w-full lg:w-auto">
                         {/* Sort */}
-                        <div className="w-52">
+                        <div className="w-full sm:w-52">
                             <CustomSelect
                                 value={sortBy}
                                 onChange={(val) => setSortBy(val as SortOption)}
@@ -692,7 +692,7 @@ export function OwnerBrandsPage() {
                                         </div>
 
                                         {/* Details */}
-                                        <div className="grid grid-cols-2 gap-4 mb-6 relative z-10">
+                                        <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-4 mb-6 relative z-10">
                                             <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-blue-500/10 transition-colors">
                                                 <div className="flex items-center gap-2 mb-2">
                                                     <Hash size={14} className="text-blue-500" />
@@ -788,7 +788,9 @@ export function OwnerBrandsPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 100 }}
                                 transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                                className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[2.5rem] overflow-hidden border border-gray-200 dark:border-white/5 flex flex-col max-h-[92vh] sm:h-auto transition-colors duration-300"
+                                role="dialog"
+                                aria-modal="true"
+                                className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/5 flex flex-col max-h-[92dvh] sm:h-auto transition-colors duration-300"
                             >
                                 {/* Mobile drag handle */}
                                 <div className="sm:hidden flex justify-center pt-3 pb-1">
@@ -796,18 +798,18 @@ export function OwnerBrandsPage() {
                                 </div>
 
                                 {/* Modal Content */}
-                                <div className="flex flex-col flex-1 overflow-hidden">
+                                <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
                                     {/* Header */}
-                                    <div className="px-8 pt-10 pb-6 flex items-start justify-between">
-                                        <div className="flex items-center gap-5">
-                                            <div className="w-16 h-16 rounded-[1.25rem] bg-[#F0FDF4] dark:bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
-                                                <Building2 size={32} />
+                                    <div className="px-5 sm:px-8 pt-6 sm:pt-10 pb-5 sm:pb-6 flex items-start justify-between gap-3">
+                                        <div className="flex items-center gap-4 min-w-0">
+                                            <div className="w-12 h-12 sm:w-16 sm:h-16 shrink-0 rounded-2xl bg-[#F0FDF4] dark:bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
+                                                <Building2 size={26} />
                                             </div>
-                                            <div>
-                                                <h2 className="text-2xl font-sans font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+                                            <div className="min-w-0">
+                                                <h2 className="text-xl sm:text-2xl font-sans font-bold text-gray-900 dark:text-white tracking-tight leading-tight truncate">
                                                     {t('owner.brands.createBrandTitle')}
                                                 </h2>
-                                                <p className="text-base font-sans font-medium text-gray-500 mt-1">
+                                                <p className="text-sm sm:text-base font-sans font-medium text-gray-500 mt-1 line-clamp-2">
                                                     {t('owner.brands.createBrandSubtitle')}
                                                 </p>
                                             </div>
@@ -833,7 +835,7 @@ export function OwnerBrandsPage() {
                                     </div>
 
                                     {/* Wizard Body */}
-                                    <div className="flex-1 overflow-y-auto px-8 py-2 custom-scrollbar">
+                                    <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain custom-scrollbar px-5 sm:px-8 py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
                                         {wizardStep === 1 && (
                                         <div className="space-y-6 py-2">
                                             <div className="space-y-2">

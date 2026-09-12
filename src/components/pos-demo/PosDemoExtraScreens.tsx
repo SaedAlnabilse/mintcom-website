@@ -217,7 +217,7 @@ function ShiftCashModal({
   // Close shift: side-by-side summary | amount (POS CashManagementModal horizontal)
   if (!isOpen && summary) {
     return (
-      <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 p-3 backdrop-blur-sm">
+      <div className="absolute inset-0 z-[80] flex items-center justify-center bg-black/50 p-3 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, y: 16, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -240,7 +240,7 @@ function ShiftCashModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10 sm:hidden"
+                className="flex h-11 w-11 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10 sm:hidden"
               >
                 <X size={16} />
               </button>
@@ -370,7 +370,7 @@ function ShiftCashModal({
 
   // Open Shift — compact centered modal (POS cash-in)
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 p-3 backdrop-blur-sm">
+    <div className="absolute inset-0 z-[80] flex items-center justify-center bg-black/50 p-3 backdrop-blur-sm">
       <motion.div
         initial={{ opacity: 0, y: 16, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -380,7 +380,7 @@ function ShiftCashModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10"
+            className="flex h-11 w-11 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10"
           >
             <X size={16} />
           </button>
@@ -493,7 +493,7 @@ export function PayInOutModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/45 p-3 backdrop-blur-sm sm:items-center">
+    <div className="absolute inset-0 z-[80] flex items-end justify-center bg-black/45 px-3 pt-3 backdrop-blur-sm sm:items-center sm:p-3" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
@@ -504,7 +504,7 @@ export function PayInOutModal({
           <p className="text-sm font-black uppercase tracking-wide text-text-primary dark:text-white">
             {type === 'in' ? 'PAY-IN' : 'PAY-OUT'}
           </p>
-          <button type="button" onClick={onClose} className="rounded-xl bg-cream-100 p-1.5 dark:bg-white/10">
+          <button type="button" onClick={onClose} aria-label="Close" className="flex h-11 w-11 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10">
             <X size={16} />
           </button>
         </div>
@@ -858,10 +858,10 @@ export function DemoDashboardScreen({
           </button>
         </Card>
       ) : (
-        /* Static landscape dashboard — same card layout always; outer canvas scales/scrolls */
-        <div className="flex min-h-0 min-w-0 flex-1 flex-row gap-4 overflow-hidden">
+        /* Dashboard metrics — stacked scroll on phones, landscape cards on sm+ */
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col sm:flex-row gap-3 sm:gap-4 overflow-y-auto sm:overflow-hidden overscroll-contain">
           {/* LEFT ~1/3 — Net / Cash / Card */}
-          <div className="flex w-[32%] min-w-0 shrink-0 flex-col gap-3">
+          <div className="flex w-full sm:w-[32%] min-w-0 shrink-0 flex-col gap-3">
             <div className="flex min-h-0 flex-1 flex-col rounded-xl bg-mintcom-green p-4 !text-white">
               <div className="flex items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-mintcom-green">
@@ -874,7 +874,7 @@ export function DemoDashboardScreen({
                   </p>
                 </div>
               </div>
-              <p className="flex flex-1 items-center justify-center text-center text-[28px] font-extrabold tabular-nums tracking-tight !text-white">
+              <p className="flex flex-1 items-center justify-center py-3 sm:py-0 text-center text-[22px] sm:text-[28px] font-extrabold tabular-nums tracking-tight !text-white">
                 {money(displayNetSales)}
               </p>
             </div>
@@ -893,7 +893,7 @@ export function DemoDashboardScreen({
 
           {/* RIGHT ~2/3 */}
           <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
-            <div className="grid shrink-0 grid-cols-2 gap-3">
+            <div className="grid shrink-0 grid-cols-1 min-[380px]:grid-cols-2 gap-3">
               <SmallMetric
                 icon={<Receipt size={20} className="text-white" />}
                 label="Number of Orders"
@@ -905,7 +905,7 @@ export function DemoDashboardScreen({
                 payOut={money(displayPayOut)}
               />
             </div>
-            <div className="grid shrink-0 grid-cols-2 gap-3">
+            <div className="grid shrink-0 grid-cols-1 min-[380px]:grid-cols-2 gap-3">
               <SmallMetric
                 icon={<PosOtherReceiptIcon size={22} className="text-white" />}
                 label="Other Payment Methods"
@@ -919,7 +919,7 @@ export function DemoDashboardScreen({
                 info="Combined time worked during the selected shift period."
               />
             </div>
-            <div className="relative min-h-0 min-w-0 flex-1">
+            <div className="relative min-h-[300px] sm:min-h-0 min-w-0 flex-1">
               <DemoSalesTrendChart
                 shiftOpen={shift.open}
                 startedAt={shift.startedAt}
@@ -993,7 +993,7 @@ export function DemoDashboardScreen({
       <AnimatePresence>
         {shiftStartedSuccess && (
           <div
-            className="fixed inset-0 z-[90] flex items-center justify-center bg-black/55 p-4"
+            className="absolute inset-0 z-[90] flex items-center justify-center bg-black/55 p-4"
             onClick={() => {
               setShiftStartedSuccess(false);
               onOpenShiftSuccessDismiss?.();
@@ -1033,7 +1033,7 @@ export function DemoDashboardScreen({
       {/* POS closed-shift review modal */}
       <AnimatePresence>
         {closedReview && (
-          <div className="fixed inset-0 z-[85] flex items-center justify-center bg-black/55 p-4">
+          <div className="absolute inset-0 z-[85] flex items-center justify-center bg-black/55 p-4">
             <motion.div
               initial={{ scale: 0.96, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -1156,7 +1156,7 @@ export function DemoDashboardScreen({
       {/* Shift Report Print Modal (mirrors POS PrintReportModal / ShiftReportPrintData) */}
       <AnimatePresence>
         {showShiftPrint && (
-          <div className="fixed inset-0 z-[85] flex items-center justify-center bg-black/55 p-4">
+          <div className="absolute inset-0 z-[85] flex items-center justify-center bg-black/55 p-4">
             <motion.div
               initial={{ scale: 0.96, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -1561,20 +1561,20 @@ function HeldReceiptCard({
 
       <div className="my-1 border-b border-gray-300 dark:border-white/10" />
 
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-2 pb-1">
         <button
           type="button"
           onClick={() => { setPrinted(true); setTimeout(() => setPrinted(false), 1500); }}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs font-bold text-gray-500 dark:border-white/10 dark:bg-mintcom-dark dark:text-mintcom-textSecondary"
+          className="flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs font-bold text-gray-500 dark:border-white/10 dark:bg-mintcom-dark dark:text-mintcom-textSecondary"
         >
           <Printer size={14} /> {printed ? 'Sent ✓' : 'Print'}
         </button>
         <button
           type="button"
           onClick={onResume}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-mintcom-green px-4 py-2 text-[13px] font-extrabold text-white"
+          className="flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-mintcom-green px-4 py-2 text-[13px] font-extrabold text-white"
         >
-          Resume <ArrowRight size={15} />
+          Resume <ArrowRight size={15} className="rtl:rotate-180" />
         </button>
       </div>
     </div>
@@ -1686,7 +1686,7 @@ function HistoryCard({ item, onDelete }: { item: DemoHistory; onDelete: (id: str
         <button
           type="button"
           onClick={() => onDelete(item.id)}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-mintcom-red/10 text-mintcom-red"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-mintcom-red/10 text-mintcom-red"
         >
           <Trash2 size={16} />
         </button>
@@ -1751,6 +1751,8 @@ export function DemoNotificationsScreen({
   const [alerts] = useState(INITIAL_ALERTS);
   const [history, setHistory] = useState(INITIAL_HISTORY);
   const [search, setSearch] = useState('');
+  // Phones show one column at a time (tabs); sm+ keeps the side-by-side split.
+  const [notifTab, setNotifTab] = useState<'held' | 'alerts'>(held.length > 0 ? 'held' : 'alerts');
 
   const filteredHeld = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -1868,27 +1870,62 @@ export function DemoNotificationsScreen({
         <h2 className="font-barlow text-lg font-black text-text-primary dark:text-white sm:text-2xl">
           Notifications
         </h2>
-        <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 dark:border-white/10 dark:bg-mintcom-surface">
-          <Search size={16} className="text-text-tertiary" />
+        <div className={`w-full sm:w-auto items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 dark:border-white/10 dark:bg-mintcom-surface ${notifTab === 'alerts' ? 'hidden sm:flex' : 'flex'}`}>
+          <Search size={16} className="shrink-0 text-text-tertiary" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search held orders"
-            className="w-40 bg-transparent py-2 text-[13px] outline-none dark:text-white sm:w-56"
+            className="min-h-[44px] w-full sm:w-56 bg-transparent py-2 text-[16px] sm:text-[13px] outline-none dark:text-white"
           />
           {search && (
-            <button type="button" onClick={() => setSearch('')}>
+            <button type="button" onClick={() => setSearch('')} aria-label="Clear search" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl">
               <X size={14} className="text-text-tertiary" />
             </button>
           )}
         </div>
       </div>
 
-      {/* Split layout — static side-by-side (scaled canvas) */}
-      <div className="flex min-h-0 flex-1 flex-row gap-6 overflow-hidden">
-        {heldColumn}
-        <div className="w-px shrink-0 self-stretch bg-gray-200 dark:bg-white/8" aria-hidden />
-        {alertsHistoryColumn}
+      {/* Mobile tabs — one column at a time; sm+ keeps the split */}
+      <div className="mb-3 grid shrink-0 grid-cols-2 gap-1 rounded-xl bg-cream-100 p-1 dark:bg-mintcom-dark sm:hidden" role="tablist" aria-label="Notifications views">
+        {(
+          [
+            { id: 'held' as const, label: 'Held Orders', count: filteredHeld.length },
+            { id: 'alerts' as const, label: 'Alerts', count: alerts.length + history.length },
+          ]
+        ).map((t) => {
+          const on = notifTab === t.id;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              aria-selected={on}
+              onClick={() => setNotifTab(t.id)}
+              className={`flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl px-2 text-[13px] font-bold transition-colors ${
+                on ? 'bg-white text-text-primary shadow-sm dark:bg-mintcom-surface dark:text-white' : 'text-text-secondary dark:text-mintcom-textSecondary'
+              }`}
+            >
+              <span className="truncate">{t.label}</span>
+              {t.count > 0 && (
+                <span className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-black ${on ? 'bg-mintcom-green text-white' : 'bg-gray-300/60 text-text-secondary dark:bg-white/10'}`}>
+                  {t.count > 99 ? '99+' : t.count}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Split layout — active tab on phones, side-by-side on sm+ */}
+      <div className="flex min-h-0 flex-1 flex-col sm:flex-row gap-4 sm:gap-6 overflow-hidden overscroll-contain">
+        <div className={`${notifTab === 'held' ? 'flex' : 'hidden'} sm:flex min-h-0 flex-1 flex-col sm:min-w-0`}>
+          {heldColumn}
+        </div>
+        <div className="hidden sm:block w-px shrink-0 self-stretch bg-gray-200 dark:bg-white/8" aria-hidden />
+        <div className={`${notifTab === 'alerts' ? 'flex' : 'hidden'} sm:flex min-h-0 flex-1 flex-col sm:min-w-0`}>
+          {alertsHistoryColumn}
+        </div>
       </div>
     </Fill>
   );
@@ -1975,7 +2012,7 @@ export function DemoTodaysOrdersModal({
 
   return (
     <>
-      <div className="fixed inset-0 z-[75] flex items-center justify-center bg-black/55 p-3 backdrop-blur-sm">
+      <div className="absolute inset-0 z-[75] flex items-center justify-center bg-black/55 p-3 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, scale: 0.97, y: 8 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -1999,7 +2036,7 @@ export function DemoTodaysOrdersModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10"
+                className="flex h-11 w-11 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10"
               >
                 <X size={16} />
               </button>
@@ -2094,7 +2131,7 @@ export function DemoTodaysOrdersModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex h-8 w-8 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10 sm:hidden"
+                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10 sm:hidden"
                 >
                   <X size={16} />
                 </button>

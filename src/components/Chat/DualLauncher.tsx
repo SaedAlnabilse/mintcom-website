@@ -95,7 +95,7 @@ export function DualLauncher({
   // If ANY panel is open, show the unified switcher bar
   if (isAnyOpen) {
     return (
-      <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900] max-w-[calc(100vw-48px)]`} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={`fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] lg:bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900] max-w-[calc(100vw-48px)]`} dir={isRTL ? 'rtl' : 'ltr'}>
         <motion.div
           id="mintcom-launcher-switcher"
           initial={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -172,7 +172,7 @@ export function DualLauncher({
 
   // Collapsed state - show separate buttons if on dashboard and tasks remain
   return (
-    <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900] flex flex-col items-end gap-2`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] lg:bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[900] flex flex-col items-end gap-2`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* 1. Tasks Launcher (Separate) */}
       <AnimatePresence>
         {isDashboardRoute && shouldShowTasksLauncher && tasksCount > 0 && isVisible && (

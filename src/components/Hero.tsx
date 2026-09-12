@@ -90,18 +90,18 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => window.open('/try-pos', '_blank')}
-                className="group flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl border-2 border-mintcom-green/40 bg-mintcom-green/10 px-4 py-3 text-[15px] font-bold text-gray-900 transition-colors hover:border-mintcom-green hover:bg-mintcom-green/15 dark:text-white sm:px-4 sm:py-3.5 sm:text-base md:px-5 md:text-[17px]"
+                className="group flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-xl border-2 border-mintcom-green/40 bg-mintcom-green/10 px-4 py-3 text-center text-[15px] font-bold leading-snug text-gray-900 transition-colors hover:border-mintcom-green hover:bg-mintcom-green/15 dark:text-white sm:px-4 sm:py-3.5 sm:text-base md:px-5 md:text-[17px] sm:whitespace-nowrap"
               >
                 <Play size={15} fill="currentColor" className="shrink-0 text-mintcom-green sm:h-[18px] sm:w-[18px]" />
-                <span>{t('landing.hero.tryDesktop')}</span>
+                <span className="min-w-0">{t('landing.hero.tryDesktop')}</span>
               </motion.button>
 
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCtaClick}
-                className="group flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-mintcom-green px-4 py-3 text-[15px] font-bold text-black transition-all sm:px-4 sm:py-3.5 sm:text-base md:px-5 md:text-[17px]"
+                className="group flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-xl bg-mintcom-green px-4 py-3 text-center text-[15px] font-bold leading-snug text-black transition-all sm:px-4 sm:py-3.5 sm:text-base md:px-5 md:text-[17px] sm:whitespace-nowrap"
               >
-                <span>
+                <span className="min-w-0">
                   {isAuthenticated
                     ? needsOnboarding
                       ? t('nav.continueOnboarding', { defaultValue: 'Continue Onboarding' })

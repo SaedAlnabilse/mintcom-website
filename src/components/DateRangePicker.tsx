@@ -360,7 +360,7 @@ export function DateRangePicker({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
-                        className={`absolute top-full ${getAlignClass()} mt-2 z-[9999] bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl w-[320px] p-4`}
+                        className={`absolute top-full ${getAlignClass()} mt-2 z-[9999] bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl w-[min(320px,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] p-4`}
                     >
                         {renderHeader()}
                         {renderDays()}

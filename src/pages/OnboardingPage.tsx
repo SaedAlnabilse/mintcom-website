@@ -69,6 +69,7 @@ import {
   getMintcomDiscountPercent,
   MINTCOM_PRICING,
 } from '../config/pricing';
+import { computeVat } from '../config/vat';
 
 // Mintcom Logo imports
 import MintcomLogoGreen from '../assets/green-full-logo.svg';
@@ -372,6 +373,10 @@ export function OnboardingPage() {
 
   const [useSavedCard, setUseSavedCard] = useState(true); // Default to using saved card if available
   const [billingCycle, setBillingCycle] = useState<BillingCycle>(MINTCOM_PRICING.defaultBillingCycle);
+  // Explicit, unticked-by-default authorization for recurring billing. Required
+  // by card-network / consumer-protection rules for negative-option billing.
+  const [billingConsent, setBillingConsent] = useState(false);
+  const [consentError, setConsentError] = useState(false);
 
   const isAdditionalLocation = establishments.length > 0;
 
@@ -773,6 +778,32 @@ export function OnboardingPage() {
   const selectedTimezone = form1.watch('timezone');
   const isCurrencyLocked = establishments.length > 0;
 
+  // VAT / tax preview for the subscription price, resolved from the chosen
+  // country. Until Stripe Tax is wired in this is the customer-facing estimate;
+  // the final charged amount is always for the country on the payment method.
+  const vatBreakdown = computeVat(displayPrice, selectedCountry);
+  const vatRule = vatBreakdown.rule;
+
+  // Exact amount + date the customer is authorizing. The disclosure and the
+  // consent checkbox must state currency, amount and the first-charge date
+  // explicitly (card-network / consumer-protection requirement).
+  const formatMoney = (amount: number) =>
+    formatCurrencyCode(amount, effectiveCurrency, t('common.locale'), {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  const vatInclusiveTotalLabel = `${formatMoney(vatBreakdown.total)} ${effectiveCurrency}`;
+  const recurringCycleWord = billingCycle === BILLING_CYCLES.YEARLY
+    ? t('onboarding.step2.yearly', { defaultValue: 'Yearly' }).toLowerCase()
+    : t('onboarding.step2.monthly', { defaultValue: 'Monthly' }).toLowerCase();
+  const firstChargeDateLabel = isTrialFlow
+    ? trialEndDateLabel
+    : new Date().toLocaleDateString(t('common.locale'), {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+
   // When the country changes on first registration, auto-select that country's
   // primary currency. The currency field stays fully editable so the user can
   // pick any other currency afterwards.
@@ -998,6 +1029,17 @@ export function OnboardingPage() {
   const onStep4Submit = async (data: any) => {
     if (launchLocked) {
       goToPhase('launch');
+      return;
+    }
+
+    // Block submission until the customer explicitly authorizes recurring billing.
+    if (!billingConsent) {
+      setConsentError(true);
+      toast.error(
+        t('onboarding.step2.consentRequired', {
+          defaultValue: 'Please authorize recurring billing to continue.',
+        }),
+      );
       return;
     }
 
@@ -1247,7 +1289,7 @@ export function OnboardingPage() {
               exit={{ opacity: 0, x: -20 }}
               className="max-w-2xl w-full"
             >
-              <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
+              <div className="bg-white dark:bg-white/5 rounded-3xl sm:rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
                   {/* Steps 2–4 each have a Back control; step 1 had none, so a
                       first-time owner arriving from signup was stranded here
@@ -1296,7 +1338,7 @@ export function OnboardingPage() {
                           maxLength={TEXT_INPUT_LIMITS.BUSINESS_NAME}
                           type="text"
                           {...form1.register('name')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                           placeholder={formatInputPlaceholder(t('onboarding.step1.locationNamePlaceholder'), t('common.locale'))}
                         />
                       </div>
@@ -1332,7 +1374,7 @@ export function OnboardingPage() {
                         <Globe className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
                         <select
                           {...form1.register('country')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.country ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.country ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
                         >
                           {countryOptions.map((countryOption) => (
                             <option key={countryOption.code} value={countryOption.code}>
@@ -1354,7 +1396,7 @@ export function OnboardingPage() {
                         <CalendarClock className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
                         <select
                           {...form1.register('timezone')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.timezone ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.timezone ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
                         >
                           {timezoneOptions.map((tz) => (
                             <option key={tz} value={tz}>
@@ -1386,7 +1428,7 @@ export function OnboardingPage() {
                         <select
                           {...form1.register('currency')}
                           disabled={isCurrencyLocked}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none ${isCurrencyLocked ? 'opacity-60 cursor-not-allowed bg-gray-100 dark:bg-white/5' : ''}`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none ${isCurrencyLocked ? 'opacity-60 cursor-not-allowed bg-gray-100 dark:bg-white/5' : ''}`}
                         >
                           {currencyOptions.map((currencyOption) => (
                             <option key={currencyOption.code} value={currencyOption.code}>
@@ -1429,7 +1471,7 @@ export function OnboardingPage() {
                         <input maxLength={255}
                           type="text"
                           {...form1.register('address')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                           placeholder={formatInputPlaceholder(t('onboarding.step1.addressPlaceholder'), t('common.locale'))}
                         />
                       </div>
@@ -1462,7 +1504,7 @@ export function OnboardingPage() {
                                 </option>
                               ))}
                             </select>
-                            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                            <ChevronDown className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
                           </div>
 
                           {/* Checkboxes - Only show if an establishment is selected */}
@@ -1568,7 +1610,7 @@ export function OnboardingPage() {
               exit={{ opacity: 0, x: -20 }}
               className="max-w-md w-full"
             >
-              <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
+              <div className="bg-white dark:bg-white/5 rounded-3xl sm:rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
                   <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-white/5">
                     <button
@@ -1605,14 +1647,14 @@ export function OnboardingPage() {
                       <QuickInfo text={t('onboarding.step3.locationIdTip')} />
                     </label>
                     <div className="relative group">
-                      <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                      <Smartphone className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                       <input maxLength={255}
                         type="text"
                         autoComplete="off"
                         autoCorrect="off"
                         spellCheck={false}
                         {...form2.register('establishmentLoginId')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentLoginId ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentLoginId ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step3.locationIdPlaceholder'), t('common.locale'))}
                       />
                     </div>
@@ -1624,18 +1666,18 @@ export function OnboardingPage() {
                       <QuickInfo text={t('onboarding.step3.passwordTip')} />
                     </label>
                     <div className="relative group">
-                      <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                      <KeyRound className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                       <input maxLength={255}
                         type={showEstablishmentPassword ? "text" : "password"}
                         autoComplete="new-password"
                         {...form2.register('establishmentPassword')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentPassword ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentPassword ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step3.passwordPlaceholder'), t('common.locale'))}
                       />
                       <button
                         type="button"
                         onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                        className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
                       >
                         {showEstablishmentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
@@ -1667,7 +1709,7 @@ export function OnboardingPage() {
               exit={{ opacity: 0, x: -20 }}
               className="max-w-md w-full"
             >
-              <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
+              <div className="bg-white dark:bg-white/5 rounded-3xl sm:rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
                   <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-white/5">
                     <button
@@ -1732,11 +1774,11 @@ export function OnboardingPage() {
                           {t('onboarding.step4.firstName')}
                         </label>
                         <div className="relative">
-                          <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                          <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                           <input
                             value={ownerLoginDisplay.firstName}
                             readOnly
-                            className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
+                            className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
                           />
                         </div>
                       </div>
@@ -1745,11 +1787,11 @@ export function OnboardingPage() {
                           {t('onboarding.step4.lastName')}
                         </label>
                         <div className="relative">
-                          <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                          <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                           <input
                             value={ownerLoginDisplay.lastName}
                             readOnly
-                            className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
+                            className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
                           />
                         </div>
                       </div>
@@ -1760,7 +1802,7 @@ export function OnboardingPage() {
                         {t('onboarding.step4.username')}
                       </label>
                       <div className="relative">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                         <input
                           value={
                             isOwnerLoginLoading
@@ -1768,9 +1810,9 @@ export function OnboardingPage() {
                               : ownerLoginDisplay.username
                           }
                           readOnly
-                          className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
+                          className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
                         />
-                        <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <Lock className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                       </div>
                     </div>
 
@@ -1779,13 +1821,13 @@ export function OnboardingPage() {
                         {t('onboarding.step4.ownerEmail', { defaultValue: 'Owner Email' })}
                       </label>
                       <div className="relative">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                         <input
                           value={ownerLoginDisplay.email}
                           readOnly
-                          className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
+                          className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
                         />
-                        <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <Lock className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                       </div>
                       <p className="text-xs font-sans text-gray-500 dark:text-gray-400 ml-1">
                         {t('onboarding.step4.lockedHelper', {
@@ -1817,14 +1859,14 @@ export function OnboardingPage() {
                         {t('onboarding.step4.firstName')} <span className="text-mintcom-red">*</span>
                       </label>
                       <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                         <input maxLength={255}
                           type="text"
                           autoComplete="new-password"
                           autoCorrect="off"
                           spellCheck={false}
                           {...form3.register('firstName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.firstName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.firstName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                           placeholder={formatInputPlaceholder(t('onboarding.step4.firstNamePlaceholder'), t('common.locale'))}
                         />
                       </div>
@@ -1835,14 +1877,14 @@ export function OnboardingPage() {
                         {t('onboarding.step4.lastName')} <span className="text-mintcom-red">*</span>
                       </label>
                       <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                         <input maxLength={255}
                           type="text"
                           autoComplete="new-password"
                           autoCorrect="off"
                           spellCheck={false}
                           {...form3.register('lastName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.lastName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.lastName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                           placeholder={formatInputPlaceholder(t('onboarding.step4.lastNamePlaceholder'), t('common.locale'))}
                         />
                       </div>
@@ -1856,14 +1898,14 @@ export function OnboardingPage() {
                       <QuickInfo text={t('onboarding.step4.usernameTip')} />
                     </label>
                     <div className="relative group">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                      <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                       <input maxLength={255}
                         type="text"
                         autoComplete="new-password"
                         autoCorrect="off"
                         spellCheck={false}
                         {...form3.register('username')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.username ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.username ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step4.usernamePlaceholder'), t('common.locale'))}
                       />
                     </div>
@@ -1876,18 +1918,18 @@ export function OnboardingPage() {
                       <QuickInfo text={t('onboarding.step4.passwordTip')} />
                     </label>
                     <div className="relative group">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                      <Lock className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                       <input maxLength={255}
                         type={showAdminPassword ? "text" : "password"}
                         autoComplete="new-password"
                         {...form3.register('password')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.password ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.password ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step4.passwordPlaceholder'), t('common.locale'))}
                       />
                       <button
                         type="button"
                         onClick={() => setShowAdminPassword(!showAdminPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                        className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
                       >
                         {showAdminPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
@@ -2064,7 +2106,7 @@ export function OnboardingPage() {
                           )}
                           <div className="flex items-baseline gap-2">
                             <span className="font-sans text-4xl sm:text-5xl font-black leading-none text-gray-900 dark:text-white tracking-tight">
-                              {formatWholeNumber(displayPrice)}
+                              {formatWholeNumber(vatBreakdown.total)}
                             </span>
                             <span className="text-xs sm:text-sm font-sans font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                               {selectedUnitLabel}
@@ -2072,6 +2114,64 @@ export function OnboardingPage() {
                           </div>
                         </div>
                       )}
+
+                      {/* Price breakdown — subtotal, VAT, total */}
+                      {isTrialFlow && (
+                        <p className="mb-2 mt-4 text-[11px] font-sans font-bold uppercase tracking-[0.1em] text-gray-400 dark:text-gray-500">
+                          {t('onboarding.step2.breakdownAfterTrial', {
+                            defaultValue: 'After your free trial, each period:',
+                          })}
+                        </p>
+                      )}
+                      <div
+                        className={`space-y-2 rounded-xl border border-mintcom-green/15 bg-white/70 p-3.5 dark:border-white/10 dark:bg-black/20 ${
+                          isTrialFlow ? '' : 'mt-4'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-sans text-gray-600 dark:text-gray-300">
+                            {t('onboarding.step2.subtotal', { defaultValue: 'Subtotal' })}
+                          </span>
+                          <span className="font-sans font-bold tabular-nums text-gray-900 dark:text-white">
+                            {formatWholeCurrency(vatBreakdown.subtotal)}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="flex items-center gap-1.5 font-sans text-gray-600 dark:text-gray-300">
+                            {vatRule
+                              ? `${vatRule.label} (${vatRule.rate}%)`
+                              : t('onboarding.step2.taxNotApplicable', { defaultValue: 'Tax' })}
+                            <QuickInfo
+                              text={t('onboarding.step2.taxTooltip', {
+                                defaultValue:
+                                  'Tax is estimated from your location. The final amount is calculated for the country on your payment method.',
+                              })}
+                            />
+                          </span>
+                          <span className="font-sans font-bold tabular-nums text-gray-900 dark:text-white">
+                            {vatRule ? formatWholeCurrency(vatBreakdown.vatAmount) : '—'}
+                          </span>
+                        </div>
+
+                        <div className="my-1 border-t border-dashed border-gray-200 dark:border-white/10" />
+
+                        <div className="flex items-center justify-between">
+                          <span className="font-sans text-sm font-bold text-gray-900 dark:text-white">
+                            {isTrialFlow
+                              ? t('onboarding.step2.totalAfterTrial', { defaultValue: 'Total after trial' })
+                              : t('onboarding.step2.total', { defaultValue: 'Total' })}
+                          </span>
+                          <span className="flex items-baseline gap-1.5">
+                            <span className="font-sans text-lg font-black tabular-nums text-mintcom-green">
+                              {formatWholeCurrency(vatBreakdown.total)}
+                            </span>
+                            <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                              {selectedPeriodLabel}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
 
                       <div className="mt-3 flex items-center gap-2 text-mintcom-green">
                         <RefreshCw size={14} className="shrink-0" />
@@ -2375,23 +2475,93 @@ export function OnboardingPage() {
                         onClick={
                           hasSavedCard && useSavedCard ? () => onStep4Submit({}) : undefined
                         }
-                        disabled={isLoading}
-                        className="flex w-full items-center justify-center gap-3 rounded-2xl bg-mintcom-green py-4 text-base font-sans font-bold text-black shadow-xl shadow-mintcom-green/20 transition-all hover:bg-mintcom-green/90 active:scale-[0.98] disabled:opacity-50"
+                        disabled={isLoading || !billingConsent}
+                        className="flex w-full items-center justify-center gap-3 rounded-2xl bg-mintcom-green py-4 text-base font-sans font-bold text-black shadow-xl shadow-mintcom-green/20 transition-all hover:bg-mintcom-green/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {isLoading ? <Loader2 className="animate-spin" size={24} /> : null}
-                        {t('onboarding.completeLaunch')}
+                        {isTrialFlow
+                          ? t('onboarding.step2.startTrialButton')
+                          : t('onboarding.completeLaunch')}
                         {!isLoading && (
                           isRTL
                             ? <ArrowLeft size={18} className="shrink-0" />
                             : <ArrowRight size={18} className="shrink-0" />
                         )}
                       </button>
-                      {isTrialFlow && (
-                        <p className="text-center text-xs font-sans text-gray-500 dark:text-gray-400">
-                          {t('onboarding.step2.trialPayNote', {
+
+                      {/* Mandatory recurring-billing disclosure, directly above consent */}
+                      <p className="text-center text-[11px] font-sans leading-relaxed text-gray-500 dark:text-gray-400">
+                        {isTrialFlow
+                          ? t('onboarding.step2.trialDisclosureCheckout', {
+                              defaultValue:
+                                '14-day free trial: You will not be charged today. On {{date}}, your card will be charged {{amount}} (incl. applicable VAT), and then {{amount}} {{cycle}} until you cancel.',
+                              date: firstChargeDateLabel,
+                              amount: vatInclusiveTotalLabel,
+                              cycle: recurringCycleWord,
+                            })
+                          : t('onboarding.step2.paidDisclosureCheckout', {
+                              defaultValue:
+                                'Your card will be charged {{amount}} (incl. applicable VAT) today, and then {{amount}} {{cycle}} until you cancel.',
+                              amount: vatInclusiveTotalLabel,
+                              cycle: recurringCycleWord,
+                            })}
+                        {' '}
+                        {t('onboarding.step2.cancelPath', {
+                          defaultValue:
+                            'You can cancel anytime before then in Settings → Billing to avoid any charges. View our',
+                        })}{' '}
+                        <a
+                          href="/legal/terms"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-semibold text-gray-600 underline-offset-2 hover:text-mintcom-green hover:underline dark:text-gray-300"
+                        >
+                          {t('onboarding.step5.terms', { defaultValue: 'Terms of Service' })}
+                        </a>
+                        {', '}
+                        {t('onboarding.step2.consentAnd', { defaultValue: 'and' })}{' '}
+                        <a
+                          href="/legal/privacy"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-semibold text-gray-600 underline-offset-2 hover:text-mintcom-green hover:underline dark:text-gray-300"
+                        >
+                          {t('onboarding.step5.privacy', { defaultValue: 'Privacy Policy' })}
+                        </a>
+                        .
+                      </p>
+
+                      {/* Mandatory unticked authorization checkbox */}
+                      <label
+                        className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-3.5 transition-colors ${
+                          consentError && !billingConsent
+                            ? 'border-mintcom-red/60 bg-mintcom-red/5'
+                            : 'border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-white/5'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={billingConsent}
+                          onChange={(e) => {
+                            setBillingConsent(e.target.checked);
+                            if (e.target.checked) setConsentError(false);
+                          }}
+                          className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-mintcom-green"
+                        />
+                        <span className="text-[11px] font-sans leading-relaxed text-gray-600 dark:text-gray-300">
+                          {t('onboarding.step2.consentCheckbox', {
                             defaultValue:
-                              "You're covered by your 14-day trial, so nothing is charged until it ends.",
-                            days: TRIAL_DAYS,
+                              'I authorize recurring {{cycle}} charges of {{amount}} (incl. applicable VAT) starting on {{date}}, and I agree to the Terms of Service and Privacy Policy.',
+                            amount: vatInclusiveTotalLabel,
+                            cycle: recurringCycleWord,
+                            date: firstChargeDateLabel,
+                          })}
+                        </span>
+                      </label>
+                      {consentError && !billingConsent && (
+                        <p className="text-center text-[11px] font-sans font-semibold text-mintcom-red">
+                          {t('onboarding.step2.consentRequired', {
+                            defaultValue: 'Please authorize recurring billing to continue.',
                           })}
                         </p>
                       )}

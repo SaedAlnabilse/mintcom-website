@@ -205,7 +205,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
         <button
           type="button"
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10"
+          className="flex h-11 w-11 items-center justify-center rounded-xl bg-cream-100 dark:bg-white/10"
         >
           <X size={16} />
         </button>
@@ -220,7 +220,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
                 setMode('item');
                 setError('');
               }}
-              className={`inline-flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-[12px] font-bold ${
+              className={`inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-[12px] font-bold ${
                 mode === 'item'
                   ? 'bg-mintcom-red/15 text-mintcom-red shadow-sm'
                   : 'text-text-secondary'
@@ -234,7 +234,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
                 setMode('order');
                 setError('');
               }}
-              className={`inline-flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-[12px] font-bold ${
+              className={`inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-[12px] font-bold ${
                 mode === 'order'
                   ? 'bg-mintcom-green/15 text-mintcom-green shadow-sm'
                   : 'text-text-secondary'
@@ -265,7 +265,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
                   <button
                     type="button"
                     onClick={() => toggleLine(line.id, line.remaining)}
-                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 ${
                       isOn ? 'border-mintcom-red bg-mintcom-red text-white' : 'border-gray-300'
                     }`}
                   >
@@ -287,7 +287,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
                       <button
                         type="button"
                         onClick={() => setQty(line.id, q - 1, line.remaining)}
-                        className="flex h-7 w-7 items-center justify-center rounded-xl bg-white text-sm font-bold shadow-sm dark:bg-mintcom-surface"
+                        className="flex h-10 w-10 min-h-[40px] min-w-[40px] items-center justify-center rounded-xl bg-white text-sm font-bold shadow-sm dark:bg-mintcom-surface"
                       >
                         −
                       </button>
@@ -295,7 +295,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
                       <button
                         type="button"
                         onClick={() => setQty(line.id, q + 1, line.remaining)}
-                        className="flex h-7 w-7 items-center justify-center rounded-xl bg-mintcom-red text-sm font-bold text-white"
+                        className="flex h-10 w-10 min-h-[40px] min-w-[40px] items-center justify-center rounded-xl bg-mintcom-red text-sm font-bold text-white"
                       >
                         +
                       </button>
@@ -337,7 +337,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
                 key={m}
                 type="button"
                 onClick={() => setRefundMethod(m)}
-                className={`rounded-lg py-1.5 text-[11px] font-bold transition-colors ${
+                className={`rounded-lg min-h-[44px] px-2 py-1.5 text-[11px] font-bold transition-colors ${
                   refundMethod === m
                     ? 'bg-mintcom-green text-white shadow-sm'
                     : 'text-text-secondary hover:text-text-primary dark:text-mintcom-textSecondary'
@@ -369,7 +369,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
                   setReason(r);
                   setError('');
                 }}
-                className={`rounded-lg border px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                className={`rounded-lg border px-2.5 py-2 min-h-[36px] text-[12px] font-semibold transition-colors ${
                   reason === r
                     ? 'border-mintcom-red bg-mintcom-red/10 text-mintcom-red'
                     : 'border-gray-200 bg-white text-text-secondary hover:bg-cream-100 dark:border-white/10 dark:bg-mintcom-surface dark:text-mintcom-textSecondary'
@@ -393,7 +393,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
             }}
             rows={3}
             placeholder="e.g. Wrong item, customer request, spilled drink…"
-            className={`w-full rounded-xl border bg-cream-50 px-3 py-2 text-sm outline-none focus:border-mintcom-green dark:bg-mintcom-dark dark:text-white ${
+            className={`w-full rounded-xl border bg-cream-50 px-3 py-2 text-[16px] sm:text-sm outline-none focus:border-mintcom-green dark:bg-mintcom-dark dark:text-white ${
               error && !reason.trim() ? 'border-mintcom-red' : 'border-gray-200 dark:border-mintcom-tertiary'
             }`}
           />
@@ -407,7 +407,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
           <button
             type="button"
             onClick={() => setRestock((v) => !v)}
-            className={`relative h-7 w-12 rounded-full ${restock ? 'bg-mintcom-green' : 'bg-gray-300 dark:bg-mintcom-tertiary'}`}
+            className={`relative h-8 w-[52px] min-h-[32px] rounded-full ${restock ? 'bg-mintcom-green' : 'bg-gray-300 dark:bg-mintcom-tertiary'}`}
           >
             <span
               className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition-all ${
@@ -420,7 +420,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
         {error && <p className="mb-2 text-[11px] font-bold text-mintcom-red">{error}</p>}
       </div>
 
-      <div className="shrink-0 border-t border-gray-100 px-4 py-3 dark:border-white/8">
+      <div className="shrink-0 border-t border-gray-100 px-4 pt-3 dark:border-white/8" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
         <div className="mb-2 flex justify-between text-xs font-bold">
           <span className="text-text-tertiary">Refund amount</span>
           <span className="text-mintcom-red">{money(mode === 'order' ? orderTotal : selectedAmount)}</span>
@@ -428,7 +428,7 @@ export function DemoRefundModal({ open, orderNo, orderTotal, lines, onClose, onC
         <button
           type="button"
           onClick={handleConfirm}
-          className="w-full rounded-xl bg-mintcom-red py-2.5 text-sm font-black text-white"
+          className="w-full min-h-[48px] rounded-xl bg-mintcom-red py-2.5 text-sm font-black text-white"
         >
           Confirm refund
         </button>

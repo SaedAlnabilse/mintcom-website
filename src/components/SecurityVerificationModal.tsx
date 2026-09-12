@@ -298,7 +298,7 @@ export function SecurityVerificationModal({
             {isOpen && (
                 <div
                     dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                    className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 font-sans selection:bg-mintcom-green selection:text-black"
+                    className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-mintcom-green selection:text-black"
                 >
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -313,15 +313,15 @@ export function SecurityVerificationModal({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: 'spring', duration: 0.4, bounce: 0.2 }}
-                        className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden flex flex-col max-h-[92vh] transition-colors duration-300 shadow-2xl shadow-black/20"
+                        className="relative w-full sm:max-w-lg bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden flex flex-col max-h-[92dvh] transition-colors duration-300 shadow-2xl shadow-black/20"
                     >
                         {/* Header */}
-                        <div className="px-8 py-6 border-b border-gray-100 dark:border-white/5 flex items-start justify-between bg-gray-50/50 dark:bg-black/20">
-                            <div className="flex items-center gap-5">
+                        <div className="px-5 sm:px-8 py-5 sm:py-6 border-b border-gray-100 dark:border-white/5 flex items-start justify-between gap-3 bg-gray-50/50 dark:bg-black/20">
+                            <div className="flex items-center gap-4 min-w-0">
                                 <div
-                                    className={`w-14 h-14 rounded-xl ${config.bg} flex items-center justify-center ${config.color} shadow-sm`}
+                                    className={`w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-xl ${config.bg} flex items-center justify-center ${config.color} shadow-sm`}
                                 >
-                                    {React.createElement(config.icon, { size: 28 })}
+                                    {React.createElement(config.icon, { size: 26 })}
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">

@@ -205,7 +205,7 @@ export function SingleSelect({
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder={formatInputPlaceholder(t('common.searchPlaceholder'), t('common.locale'))}
-                                    className="w-full pl-9 pr-9 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-sm font-normal text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none transition-all"
+                                    className="w-full pl-9 pr-9 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-base sm:text-sm font-normal text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none transition-all"
                                 />
                                 {searchQuery && (
                                     <button

@@ -500,7 +500,7 @@ function AddLink({ label, onClick }: { label: string; onClick: () => void }) {
 }
 
 const inputCls =
-  'w-full rounded-xl border border-gray-200 bg-cream-50 px-3 py-2.5 text-sm font-medium text-text-primary outline-none focus:border-mintcom-green dark:border-mintcom-tertiary dark:bg-mintcom-dark dark:text-white';
+  'w-full min-h-[44px] rounded-xl border border-gray-200 bg-cream-50 px-3 py-2.5 text-[16px] sm:text-sm font-medium text-text-primary outline-none focus:border-mintcom-green dark:border-mintcom-tertiary dark:bg-mintcom-dark dark:text-white';
 
 function ConfirmModal({
   open,
@@ -1569,10 +1569,10 @@ export function DemoSettingsScreen({
         Settings
       </p>
 
-      {/* Two cards — static tablet: nav rail + content (scaled canvas) */}
-      <div className="flex min-h-0 flex-1 flex-row gap-5 overflow-hidden">
-        <aside className="w-60 shrink-0 overflow-y-auto rounded-xl bg-gray-100 p-2 dark:bg-mintcom-dark no-scrollbar">
-          <div className="flex flex-col gap-2.5 py-1">
+      {/* Two cards — stacked on phones, nav rail + content on sm+ */}
+      <div className="flex min-h-0 flex-1 flex-col sm:flex-row gap-3 sm:gap-5 overflow-hidden">
+        <aside className="w-full sm:w-60 shrink-0 overflow-x-auto sm:overflow-y-auto rounded-xl bg-gray-100 p-2 dark:bg-mintcom-dark no-scrollbar">
+          <div className="flex flex-row sm:flex-col gap-2 sm:gap-2.5 py-1">
             {NAV.map((item) => {
               const on = active === item.id;
               const Icon = item.icon;
@@ -1581,14 +1581,14 @@ export function DemoSettingsScreen({
                   key={item.id}
                   type="button"
                   onClick={() => requestTab(item.id)}
-                  className={`flex w-full shrink-0 items-center gap-3.5 rounded-xl px-3.5 py-3 text-start transition-all ${
+                  className={`flex min-h-[44px] shrink-0 snap-start items-center gap-2 sm:gap-3.5 rounded-xl px-3 sm:px-3.5 py-2.5 sm:py-3 text-start transition-all ${
                     on
                       ? 'bg-mintcom-green text-white shadow-md shadow-mintcom-green/25'
                       : 'text-text-primary hover:bg-white dark:text-white dark:hover:bg-white/5'
                   }`}
                 >
                   <Icon size={20} className="shrink-0" />
-                  <span className="text-[13px] font-semibold">
+                  <span className="whitespace-nowrap text-[13px] font-semibold sm:whitespace-normal">
                     {item.label}
                   </span>
                 </button>
@@ -1599,7 +1599,7 @@ export function DemoSettingsScreen({
 
         {/* Right card — content (POS SettingsHeader + body) */}
         <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl bg-[#F3F4F6] dark:bg-mintcom-dark">
-          <div className="shrink-0 border-b border-[#E5E7EB] px-5 pb-4 pt-5 dark:border-white/8 sm:px-6">
+          <div className="shrink-0 border-b border-[#E5E7EB] px-4 pb-4 pt-4 dark:border-white/8 sm:px-6 sm:pt-5">
             <p className="text-[20px] font-bold tracking-[-0.2px] text-[#111827] dark:text-white">
               {activeMeta.label}
             </p>
@@ -1676,14 +1676,14 @@ export function DemoSettingsScreen({
                   <span className="hidden min-w-0 flex-1 text-[13px] font-bold text-text-primary sm:block dark:text-white">
                     Username
                   </span>
-                  <span className="w-[88px] shrink-0 text-[13px] font-bold text-text-primary dark:text-white">
+                  <span className="w-[64px] sm:w-[88px] shrink-0 truncate text-[13px] font-bold text-text-primary dark:text-white">
                     Role
                   </span>
                   <div className="w-[88px] shrink-0 text-end">
                     <button
                       type="button"
                       onClick={() => openEmployee()}
-                      className="inline-flex items-center gap-1 rounded-xl bg-mintcom-green px-3 py-1.5 text-[12px] font-bold text-white shadow-sm"
+                      className="inline-flex min-h-[40px] items-center gap-1 rounded-xl bg-mintcom-green px-3 py-1.5 text-[12px] font-bold text-white shadow-sm"
                     >
                       <span className="text-sm leading-none">+</span> Add
                     </button>
@@ -1706,24 +1706,25 @@ export function DemoSettingsScreen({
                         {e.username}
                       </span>
                       <span
-                        className={`w-[88px] shrink-0 text-[13px] font-semibold ${
+                        className={`w-[64px] sm:w-[88px] shrink-0 truncate text-[12px] sm:text-[13px] font-semibold ${
                           e.owner ? 'text-[#B45309]' : 'text-mintcom-green'
                         }`}
                       >
                         {e.owner ? 'Owner' : e.role}
                       </span>
-                      <div className="flex w-[88px] shrink-0 items-center justify-end gap-0.5">
+                      <div className="flex w-[96px] shrink-0 items-center justify-end gap-1">
                         <button
                           type="button"
                           onClick={() => openEmployee(e)}
-                          className="flex h-9 w-9 items-center justify-center rounded-xl text-mintcom-green hover:bg-mintcom-green/10"
+                          aria-label="Edit employee"
+                          className="flex h-11 w-11 items-center justify-center rounded-xl text-mintcom-green hover:bg-mintcom-green/10"
                           title="Edit"
                         >
                           <Pencil size={18} />
                         </button>
                         {e.owner ? (
                           <span
-                            className="flex h-9 w-9 items-center justify-center rounded-xl text-[#B45309]"
+                            className="flex h-11 w-11 items-center justify-center rounded-xl text-[#B45309]"
                             title="Owner protected"
                           >
                             <Shield size={18} />
@@ -1732,7 +1733,8 @@ export function DemoSettingsScreen({
                           <button
                             type="button"
                             onClick={() => openDeleteEmployee(e)}
-                            className="flex h-9 w-9 items-center justify-center rounded-xl text-[#D55263] hover:bg-mintcom-red/10"
+                            aria-label="Delete employee"
+                            className="flex h-11 w-11 items-center justify-center rounded-xl text-[#D55263] hover:bg-mintcom-red/10"
                             title="Delete"
                           >
                             <Trash2 size={18} />
@@ -2735,14 +2737,14 @@ export function DemoSettingsScreen({
                     value={productSearch}
                     onChange={(e) => setProductSearch(e.target.value)}
                     placeholder="Search"
-                    className="w-full rounded-xl border border-gray-200 bg-white py-2.5 ps-9 pe-3 text-[13px] outline-none focus:border-mintcom-green dark:border-white/10 dark:bg-mintcom-surface dark:text-white"
+                    className="min-h-[44px] w-full rounded-xl border border-gray-200 bg-white py-2.5 ps-9 pe-3 text-[16px] sm:text-[13px] outline-none focus:border-mintcom-green dark:border-white/10 dark:bg-mintcom-surface dark:text-white"
                   />
                 </div>
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setCatMenuOpen((v) => !v)}
-                    className={`flex items-center gap-1.5 rounded-xl border px-3 py-2.5 text-[13px] font-semibold ${
+                    className={`flex min-h-[44px] items-center gap-1.5 rounded-xl border px-3 py-2.5 text-[13px] font-semibold ${
                       selectedSettingsCategory !== 'all'
                         ? 'border-mintcom-green bg-mintcom-green/10 text-mintcom-green'
                         : 'border-gray-200 text-text-secondary dark:border-white/10 dark:text-mintcom-textSecondary'
@@ -2876,7 +2878,7 @@ export function DemoSettingsScreen({
               </div>
 
               {/* Stock Status Filter Tabs (mirrors POS statusFilter tabs) */}
-              <div className="mb-3.5 flex items-center gap-1.5 overflow-x-auto pb-0.5 text-xs font-semibold">
+              <div className="mb-3.5 flex items-center gap-1.5 overflow-x-auto snap-x pb-0.5 text-xs font-semibold">
                 {[
                   { key: 'all', label: 'All Items' },
                   { key: 'in_stock', label: 'In Stock' },
@@ -2888,7 +2890,7 @@ export function DemoSettingsScreen({
                     key={tab.key}
                     type="button"
                     onClick={() => setProductStatusFilter(tab.key as any)}
-                    className={`rounded-xl px-3 py-1.5 font-bold transition-colors shrink-0 ${
+                    className={`rounded-xl px-4 py-2.5 min-h-[44px] font-bold transition-colors shrink-0 snap-start ${
                       productStatusFilter === tab.key
                         ? 'bg-mintcom-green text-white shadow-sm'
                         : 'bg-white text-text-secondary hover:bg-cream-100 dark:bg-mintcom-surface dark:text-mintcom-textSecondary border border-gray-200 dark:border-white/10'
@@ -2997,7 +2999,7 @@ export function DemoSettingsScreen({
                           <button
                             type="button"
                             onClick={() => openProduct(p)}
-                            className="flex h-8 flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-mintcom-green px-1 text-[11px] font-semibold text-white"
+                            className="flex min-h-[44px] flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-mintcom-green px-1 text-[11px] font-semibold text-white"
                           >
                             <Pencil size={13} /> Edit
                           </button>
@@ -3009,7 +3011,7 @@ export function DemoSettingsScreen({
                                 markDirty();
                                 ping('Product reactivated');
                               }}
-                              className="flex h-8 flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-amber-500 px-1 text-[11px] font-semibold text-white"
+                              className="flex min-h-[44px] flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-amber-500 px-1 text-[11px] font-semibold text-white"
                             >
                               <RotateCcw size={13} /> Reactivate
                             </button>
@@ -3030,7 +3032,7 @@ export function DemoSettingsScreen({
                                   },
                                 })
                               }
-                              className="flex h-8 flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-mintcom-red px-1 text-[11px] font-semibold text-white"
+                              className="flex min-h-[44px] flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-mintcom-red px-1 text-[11px] font-semibold text-white"
                             >
                               <Trash2 size={13} /> Delete
                             </button>
@@ -3051,7 +3053,7 @@ export function DemoSettingsScreen({
                                   },
                                 })
                               }
-                              className="flex h-8 flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-mintcom-red px-1 text-[11px] font-semibold text-white"
+                              className="flex min-h-[44px] flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-mintcom-red px-1 text-[11px] font-semibold text-white"
                             >
                               <Archive size={13} /> Archive
                             </button>
@@ -3947,7 +3949,7 @@ export function DemoSettingsScreen({
           </div>
 
           {/* Sticky footer — Discard / Save Changes (mirrors POS) */}
-          <div className="flex shrink-0 items-center gap-3 border-t border-gray-200 px-3 py-3 dark:border-white/8 sm:px-4">
+          <div className="flex shrink-0 items-center gap-3 border-t border-gray-200 px-3 pt-3 sm:px-4" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
             <button
               type="button"
               onClick={discardAll}
@@ -4638,18 +4640,18 @@ export function DemoSettingsScreen({
                 </div>
 
                 {/* Sticky footer — always visible inside the frame */}
-                <div className="flex shrink-0 gap-2 border-t border-gray-200 bg-white px-3.5 py-2.5 dark:border-white/10 dark:bg-mintcom-surface sm:px-4 sm:py-3">
+                <div className="flex shrink-0 gap-2 border-t border-gray-200 bg-white px-3.5 pt-2.5 dark:border-white/10 dark:bg-mintcom-surface sm:px-4 sm:pt-3" style={{ paddingBottom: 'max(0.625rem, env(safe-area-inset-bottom))' }}>
                   <button
                     type="button"
                     onClick={() => setModal(null)}
-                    className="flex-1 rounded-xl border border-gray-200 py-2.5 text-[13px] font-semibold text-text-secondary dark:border-white/10"
+                    className="min-h-[44px] flex-1 rounded-xl border border-gray-200 py-2.5 text-[13px] font-semibold text-text-secondary dark:border-white/10"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={saveModal}
-                    className="flex-1 rounded-xl bg-mintcom-green py-2.5 text-[13px] font-bold text-white shadow-sm"
+                    className="min-h-[44px] flex-1 rounded-xl bg-mintcom-green py-2.5 text-[13px] font-bold text-white shadow-sm"
                   >
                     {isAdd ? 'Confirm' : 'Save'}
                   </button>

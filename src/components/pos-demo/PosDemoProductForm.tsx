@@ -66,7 +66,7 @@ function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
     <button
       type="button"
       onClick={onToggle}
-      className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
+      className={`relative h-8 w-[52px] shrink-0 rounded-full transition-colors ${
         on ? 'bg-mintcom-green' : 'bg-gray-300 dark:bg-mintcom-tertiary'
       }`}
     >
@@ -265,7 +265,7 @@ export function DemoProductFormModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-xl text-text-tertiary hover:bg-cream-100 dark:hover:bg-white/10"
+            className="flex h-11 w-11 items-center justify-center rounded-xl text-text-tertiary hover:bg-cream-100 dark:hover:bg-white/10"
           >
             <X size={20} />
           </button>
@@ -299,7 +299,7 @@ export function DemoProductFormModal({
                 </button>
               )}
             </div>
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border-2 border-dashed border-gray-300 px-4 py-2.5 text-xs font-bold text-text-secondary hover:border-mintcom-green hover:text-mintcom-green dark:border-white/15">
+            <label className="inline-flex cursor-pointer min-h-[44px] items-center gap-2 rounded-xl border-2 border-dashed border-gray-300 px-4 py-2.5 text-xs font-bold text-text-secondary hover:border-mintcom-green hover:text-mintcom-green dark:border-white/15">
               <ImagePlus size={16} />
               Upload photo
               <input
@@ -324,7 +324,7 @@ export function DemoProductFormModal({
                   if (errors.name) setError('name', '');
                 }}
                 placeholder="e.g. Latte"
-                className={`w-full rounded-xl border bg-white px-3 py-2.5 text-sm outline-none focus:border-mintcom-green dark:bg-mintcom-dark dark:text-white ${
+                className={`w-full rounded-xl border bg-white px-3 py-2.5 text-[16px] sm:text-sm outline-none focus:border-mintcom-green dark:bg-mintcom-dark dark:text-white ${
                   errors.name ? 'border-mintcom-red' : 'border-gray-200 dark:border-mintcom-tertiary'
                 }`}
               />
@@ -346,7 +346,7 @@ export function DemoProductFormModal({
                     setCategoryId(e.target.value);
                     if (errors.category) setError('category', '');
                   }}
-                  className="w-full bg-transparent py-2.5 text-sm outline-none dark:text-white"
+                  className="w-full bg-transparent py-2.5 text-[16px] sm:text-sm outline-none dark:text-white"
                 >
                   <option value="">Select category</option>
                   {categories.map((c) => (
@@ -496,7 +496,7 @@ export function DemoProductFormModal({
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 min-[380px]:grid-cols-3 gap-2">
               <div className="min-h-[64px] rounded-xl border border-gray-200 bg-white p-3 dark:border-white/10 dark:bg-mintcom-dark">
                 <p className="text-[10px] tracking-wide text-gray-500">
                   {selectedTax ? selectedTax.name : 'Tax rate'}
@@ -533,7 +533,7 @@ export function DemoProductFormModal({
               onChange={(e) => setDescription(e.target.value.slice(0, 200))}
               rows={3}
               placeholder="Short note shown on menus / kitchen tickets…"
-              className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-mintcom-green dark:border-mintcom-tertiary dark:bg-mintcom-dark dark:text-white"
+              className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-[16px] sm:text-sm outline-none focus:border-mintcom-green dark:border-mintcom-tertiary dark:bg-mintcom-dark dark:text-white"
             />
           </div>
 
@@ -629,7 +629,7 @@ export function DemoProductFormModal({
                   value={availableStock}
                   onChange={(e) => setAvailableStock(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   inputMode="numeric"
-                  className={`w-full rounded-xl border bg-white py-2.5 text-center text-sm outline-none dark:bg-mintcom-surface dark:text-white ${
+                  className={`w-full rounded-xl border bg-white py-2.5 text-center text-[16px] sm:text-sm outline-none dark:bg-mintcom-surface dark:text-white ${
                     errors.stock ? 'border-mintcom-red' : 'border-gray-200 dark:border-mintcom-tertiary'
                   }`}
                 />
@@ -647,7 +647,7 @@ export function DemoProductFormModal({
                     value={yellowThreshold}
                     onChange={(e) => setYellowThreshold(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     inputMode="numeric"
-                    className="w-full rounded-xl border border-gray-200 bg-white py-2.5 text-center text-sm outline-none dark:border-mintcom-tertiary dark:bg-mintcom-surface dark:text-white"
+                    className="w-full rounded-xl border border-gray-200 bg-white py-2.5 text-center text-[16px] sm:text-sm outline-none dark:border-mintcom-tertiary dark:bg-mintcom-surface dark:text-white"
                   />
                 </div>
                 <div>
@@ -659,7 +659,7 @@ export function DemoProductFormModal({
                     value={redThreshold}
                     onChange={(e) => setRedThreshold(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     inputMode="numeric"
-                    className="w-full rounded-xl border border-gray-200 bg-white py-2.5 text-center text-sm outline-none dark:border-mintcom-tertiary dark:bg-mintcom-surface dark:text-white"
+                    className="w-full rounded-xl border border-gray-200 bg-white py-2.5 text-center text-[16px] sm:text-sm outline-none dark:border-mintcom-tertiary dark:bg-mintcom-surface dark:text-white"
                   />
                 </div>
               </div>
@@ -676,12 +676,12 @@ export function DemoProductFormModal({
         </div>
 
         {/* Footer */}
-        <div className="flex shrink-0 flex-wrap items-center gap-2 border-t border-gray-100 px-4 py-3.5 dark:border-white/8">
+        <div className="flex shrink-0 flex-col min-[380px]:flex-row min-[380px]:items-center gap-2 border-t border-gray-100 px-4 pt-3.5 dark:border-white/8" style={{ paddingBottom: 'max(0.875rem, env(safe-area-inset-bottom))' }}>
           {mode === 'edit' && onRemove && (
             <button
               type="button"
               onClick={() => setShowDeleteConfirm(true)}
-              className="rounded-xl bg-mintcom-red px-4 py-2.5 text-xs font-semibold text-white"
+              className="rounded-xl bg-mintcom-red px-4 py-2.5 min-h-[44px] w-full min-[380px]:w-auto text-xs font-semibold text-white"
             >
               {willHardDelete ? 'Delete' : 'Archive'}
             </button>
@@ -690,7 +690,7 @@ export function DemoProductFormModal({
             type="button"
             onClick={onClose}
             disabled={saving}
-            className="flex-1 rounded-xl border border-gray-200 bg-white py-2.5 text-xs font-semibold text-text-secondary dark:border-white/10 dark:bg-mintcom-dark dark:text-mintcom-textSecondary"
+            className="min-h-[44px] flex-1 rounded-xl border border-gray-200 bg-white py-2.5 text-xs font-semibold text-text-secondary dark:border-white/10 dark:bg-mintcom-dark dark:text-mintcom-textSecondary"
           >
             Cancel
           </button>
@@ -698,7 +698,7 @@ export function DemoProductFormModal({
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="flex-[1.2] rounded-xl bg-mintcom-green py-2.5 text-xs font-semibold text-white disabled:opacity-60"
+            className="min-h-[44px] flex-[1.2] rounded-xl bg-mintcom-green py-2.5 text-xs font-semibold text-white disabled:opacity-60"
           >
             {saving ? 'Saving…' : mode === 'edit' ? 'Save' : 'Add item'}
           </button>
@@ -721,7 +721,7 @@ export function DemoProductFormModal({
               <button
                 type="button"
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 rounded-xl border border-gray-200 py-2.5 text-xs font-bold dark:border-white/10"
+                className="min-h-[44px] flex-1 rounded-xl border border-gray-200 py-2.5 text-xs font-bold dark:border-white/10"
               >
                 Cancel
               </button>
@@ -731,7 +731,7 @@ export function DemoProductFormModal({
                   setShowDeleteConfirm(false);
                   onRemove?.();
                 }}
-                className="flex-1 rounded-xl bg-mintcom-red py-2.5 text-xs font-black text-white"
+                className="min-h-[44px] flex-1 rounded-xl bg-mintcom-red py-2.5 text-xs font-black text-white"
               >
                 {willHardDelete ? 'Delete' : 'Archive'}
               </button>

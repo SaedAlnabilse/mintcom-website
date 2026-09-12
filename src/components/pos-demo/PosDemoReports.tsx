@@ -642,10 +642,10 @@ function ModalShell({
 }) {
   // Compact still wide enough for long breakdown labels (no forced ellipsis)
   const widthClass =
-    size === 'compact' ? 'w-[min(94vw,520px)]' : 'w-[min(94vw,560px)]';
+    size === 'compact' ? 'w-[calc(100vw-24px)] sm:w-[min(94vw,520px)]' : 'w-[calc(100vw-24px)] sm:w-[min(94vw,560px)]';
 
   return (
-    <div className="fixed inset-0 z-[85] flex items-center justify-center px-5 py-6">
+    <div className="absolute inset-0 z-[85] flex items-end sm:items-center justify-center px-3 py-3 sm:px-5 sm:py-6" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
       <button
         type="button"
         aria-label="Close"
@@ -847,7 +847,7 @@ function PaymentReceiptModal({
   const isRefunded = status === 'REFUNDED' || status === 'PARTIALLY_REFUNDED';
 
   return (
-    <div className="fixed inset-0 z-[85] flex items-center justify-center px-5 py-6">
+    <div className="absolute inset-0 z-[85] flex items-end sm:items-center justify-center px-3 py-3 sm:px-5 sm:py-6" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
       <button
         type="button"
         aria-label="Close"
@@ -860,7 +860,7 @@ function PaymentReceiptModal({
         exit={{ opacity: 0, scale: 0.97 }}
         role="dialog"
         aria-labelledby="payment-receipt-title"
-        className="relative flex max-h-[min(80dvh,640px)] w-[min(90vw,400px)] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.18)] dark:border-white/10 dark:bg-mintcom-surface"
+        className="relative flex max-h-[min(80dvh,640px)] w-[calc(100vw-48px)] sm:w-[min(90vw,400px)] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.18)] dark:border-white/10 dark:bg-mintcom-surface"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header — POS: title + circular green print (no X / no icon tile) */}
@@ -1005,7 +1005,7 @@ function Toast({ msg }: { msg: string | null }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
-          className="pointer-events-none fixed bottom-20 start-1/2 z-[95] -translate-x-1/2 rounded-full bg-mintcom-dark px-4 py-2 text-xs font-bold text-white shadow-xl dark:bg-white dark:text-mintcom-dark sm:bottom-6"
+          className="pointer-events-none absolute bottom-[max(1rem,env(safe-area-inset-bottom))] start-1/2 z-[95] max-w-[calc(100vw-32px)] -translate-x-1/2 whitespace-normal text-center rounded-full bg-mintcom-dark px-4 py-2 text-xs font-bold text-white shadow-xl dark:bg-white dark:text-mintcom-dark sm:bottom-6"
         >
           {msg}
         </motion.div>
@@ -1097,7 +1097,7 @@ function StatCard({
 
       <div className={`min-w-0 flex-1 ${info ? 'pe-5' : ''} ${onClick ? 'pe-0.5' : ''}`}>
         <p
-          className={`text-[11px] font-medium leading-snug tracking-normal ${
+          className={`line-clamp-1 text-[11px] font-medium leading-snug tracking-normal ${
             primary ? '!text-white' : 'text-text-secondary dark:text-mintcom-textSecondary'
           }`}
         >
@@ -1105,7 +1105,7 @@ function StatCard({
         </p>
         {hint && (
           <p
-            className={`text-[9px] font-medium leading-snug ${
+            className={`hidden sm:block text-[9px] font-medium leading-snug ${
               primary ? '!text-white' : 'text-text-tertiary'
             }`}
           >
@@ -1177,7 +1177,7 @@ function FilterControlButton({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex h-10 w-full items-center justify-between gap-2 rounded-xl border bg-white px-3 text-start text-[13px] font-semibold text-text-primary outline-none transition-colors dark:bg-mintcom-surface dark:text-white ${
+      className={`inline-flex h-11 min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border bg-white px-3 text-start text-[13px] font-semibold text-text-primary outline-none transition-colors dark:bg-mintcom-surface dark:text-white ${
         active
           ? 'border-mintcom-green ring-1 ring-mintcom-green/30'
           : 'border-gray-200 dark:border-white/10'
@@ -1262,14 +1262,14 @@ function OrderTableRow({
       <button
         type="button"
         onClick={onView}
-        className="w-[48px] shrink-0 text-start text-[13px] font-semibold text-text-primary dark:text-white sm:w-[54px] sm:text-[14px]"
+        className="w-[40px] shrink-0 text-start text-[12px] font-semibold text-text-primary dark:text-white sm:w-[54px] sm:text-[14px]"
       >
         #{order.orderNo}
       </button>
       <button
         type="button"
         onClick={onView}
-        className="w-[76px] shrink-0 text-start sm:w-[90px]"
+        className="w-[64px] shrink-0 text-start sm:w-[90px]"
       >
         <p className={`text-[12px] font-medium leading-tight ${statusColor}`}>
           {statusLabel === 'Partially Refunded' ? 'Partial' : statusLabel}
@@ -1287,13 +1287,13 @@ function OrderTableRow({
       <button
         type="button"
         onClick={onView}
-        className={`w-[72px] shrink-0 text-end text-[13px] font-semibold tabular-nums sm:w-[88px] sm:text-[14px] ${
+        className={`w-[64px] shrink-0 text-end text-[12px] font-semibold tabular-nums sm:w-[88px] sm:text-[14px] ${
           isRef || isPartial ? 'text-mintcom-red' : 'text-text-primary dark:text-white'
         }`}
       >
         {money(displayTotal)}
       </button>
-      <div className="min-w-0 flex-1 flex items-center justify-end px-2">
+      <div className="min-w-0 hidden min-[380px]:flex flex-1 items-center justify-end px-2">
         {order.tenders && order.tenders.length > 1 ? (
           <span className="rounded-md bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400">
             SPLIT ({order.tenders.length})
@@ -1309,7 +1309,7 @@ function OrderTableRow({
           <button
             type="button"
             onClick={onRefund}
-            className="inline-flex h-7 items-center rounded-xl bg-[#D55263] px-2.5 text-[11px] font-bold !text-white shadow-sm sm:h-8 sm:px-3"
+            className="inline-flex h-9 min-h-[36px] items-center rounded-xl bg-[#D55263] px-2.5 text-[11px] font-bold !text-white shadow-sm sm:h-8 sm:px-3"
           >
             Refund
           </button>
@@ -1317,7 +1317,7 @@ function OrderTableRow({
         <button
           type="button"
           onClick={onPrint}
-          className="flex h-7 w-7 items-center justify-center rounded-xl bg-mintcom-green text-white shadow-sm sm:h-8 sm:w-8 sm:rounded-xl"
+          className="hidden h-7 w-7 items-center justify-center rounded-xl bg-mintcom-green text-white shadow-sm sm:flex sm:h-8 sm:w-8 sm:rounded-xl"
           title="Print"
         >
           <Printer size={14} />
@@ -1325,7 +1325,7 @@ function OrderTableRow({
         <button
           type="button"
           onClick={onView}
-          className="flex h-7 w-7 items-center justify-center rounded-xl bg-mintcom-green text-white shadow-sm sm:h-8 sm:w-8 sm:rounded-xl"
+          className="hidden h-7 w-7 items-center justify-center rounded-xl bg-mintcom-green text-white shadow-sm sm:flex sm:h-8 sm:w-8 sm:rounded-xl"
           title="View details"
         >
           <Eye size={14} />
@@ -1416,6 +1416,10 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
   const [timeStart, setTimeStart] = useState(() => startOfDay());
   const [timeEnd, setTimeEnd] = useState(() => endOfDay());
   const [showPeriodMenu, setShowPeriodMenu] = useState(false);
+  /** Phones collapse the filter row behind a summary bar; sm+ always shows it. */
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
+  /** Phones show one content pane at a time (tabs); lg+ keeps the split. */
+  const [mobilePane, setMobilePane] = useState<'left' | 'right'>('left');
   const [employee, setEmployee] = useState<string>('all');
   /** Shift filter — only used when an employee is selected (like POS) */
   const [selectedShiftId, setSelectedShiftId] = useState<string>('all');
@@ -2161,9 +2165,37 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
         </button>
       </div>
 
+      {/* ── Mobile filter summary bar — expands the filter row (always visible on sm+) ── */}
+      <button
+        type="button"
+        onClick={() => setFiltersExpanded((v) => !v)}
+        aria-expanded={filtersExpanded}
+        className="mb-2 flex min-h-[48px] w-full shrink-0 items-center gap-2.5 rounded-xl border border-gray-200 bg-white px-3.5 text-start shadow-sm dark:border-white/10 dark:bg-mintcom-surface sm:hidden"
+      >
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 text-mintcom-green">
+          <SlidersHorizontal size={16} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[13px] font-bold text-text-primary dark:text-white">
+            {periodLabel} · {formatDateShort(dateRange.start)} - {formatDateShort(dateRange.end)}
+          </span>
+          <span className="block truncate text-[11px] font-medium text-text-secondary dark:text-mintcom-textSecondary">
+            {employee === 'all' ? 'All employees' : employee}
+            {employee !== 'all' && selectedShiftId !== 'all'
+              ? ` · ${(employeeShifts.find((s) => s.id === selectedShiftId)?.label ?? 'Shift')}`
+              : ''}
+            {' · '}{formatTime12(timeStart)} - {formatTime12(timeEnd)}
+          </span>
+        </span>
+        <ChevronDown
+          size={18}
+          className={`shrink-0 text-text-tertiary transition-transform ${filtersExpanded ? 'rotate-180' : ''}`}
+        />
+      </button>
+
       {/* ── Filter row: PERIOD | DATE RANGE | TIME RANGE | EMPLOYEE | SHIFT (POS desktop) ── */}
-      <div className="relative z-20 mb-2 flex shrink-0 flex-wrap items-end gap-2">
-        <FilterField label="Period" className="w-[140px] shrink-0">
+      <div className={`relative z-20 mb-2 shrink-0 flex-wrap items-end gap-2 ${filtersExpanded ? 'flex' : 'hidden'} sm:flex`}>
+        <FilterField label="Period" className="w-full min-[380px]:w-[140px] shrink-0">
           <div className="relative" onClick={(e) => e.stopPropagation()}>
             <FilterControlButton
               active={showPeriodMenu}
@@ -2185,7 +2217,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
                     key={opt.id}
                     type="button"
                     onClick={() => applyPeriod(opt.id)}
-                    className={`flex w-full px-3 py-2 text-start text-[12px] font-semibold transition-colors ${
+                    className={`flex min-h-[44px] w-full px-3 py-2 text-start text-[12px] font-semibold transition-colors ${
                       period === opt.id
                         ? 'bg-mintcom-green/10 text-mintcom-green'
                         : 'text-text-primary dark:text-white'
@@ -2230,7 +2262,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
                 setEmployee(e.target.value);
                 setSelectedShiftId('all');
               }}
-              className="h-10 w-full appearance-none rounded-xl border border-gray-200 bg-white py-2 ps-9 pe-8 text-[13px] font-semibold text-text-primary outline-none dark:border-white/10 dark:bg-mintcom-surface dark:text-white"
+              className="h-11 min-h-[44px] w-full appearance-none rounded-xl border border-gray-200 bg-white py-2 ps-9 pe-8 text-[16px] sm:text-[13px] font-semibold text-text-primary outline-none dark:border-white/10 dark:bg-mintcom-surface dark:text-white"
             >
               <option value="all">All Employees</option>
               {employees.map((n) => (
@@ -2258,7 +2290,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
                 value={selectedShiftId}
                 onChange={(e) => setSelectedShiftId(e.target.value)}
                 disabled={employeeShifts.length === 0}
-                className="h-10 w-full appearance-none truncate rounded-xl border border-gray-200 bg-white py-2 ps-9 pe-8 text-[13px] font-semibold text-text-primary outline-none disabled:opacity-50 dark:border-white/10 dark:bg-mintcom-surface dark:text-white"
+                className="h-11 min-h-[44px] w-full appearance-none truncate rounded-xl border border-gray-200 bg-white py-2 ps-9 pe-8 text-[16px] sm:text-[13px] font-semibold text-text-primary outline-none disabled:opacity-50 dark:border-white/10 dark:bg-mintcom-surface dark:text-white"
                 title="Select shift"
               >
                 {employeeShifts.length === 0 ? (
@@ -2299,7 +2331,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
             key={t.id}
             type="button"
             onClick={() => setReportTab(t.id)}
-            className={`relative flex-1 py-2 text-center text-[12px] font-semibold transition-colors sm:text-[13px] ${
+            className={`relative flex-1 py-3 min-h-[44px] text-center text-[12px] font-semibold transition-colors sm:text-[13px] ${
               reportTab === t.id
                 ? 'text-mintcom-green'
                 : 'text-text-secondary dark:text-mintcom-textSecondary'
@@ -2320,9 +2352,9 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden pe-0.5">
         {/* ═══════ GENERAL REPORT ═══════ */}
         {reportTab === 'general' && (
-          <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-hidden">
+          <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto lg:overflow-hidden overscroll-contain">
             {/* SalesSummaryCards — compact so 3 order rows fit below without page scroll */}
-            <div className="grid shrink-0 grid-cols-4 gap-2.5">
+            <div className="flex sm:grid shrink-0 sm:grid-cols-4 gap-2.5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none -mx-0.5 px-0.5 pb-0.5 [&>*]:w-[158px] [&>*]:flex-none [&>*]:snap-start sm:[&>*]:w-auto">
               <StatCard
                 primary
                 label="Net Sales"
@@ -2389,8 +2421,12 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
               Orders list viewport sized for ~3 compact rows (header ~44 + 3×50 = ~194).
               Only this list scrolls — page chrome stays fixed.
             */}
-            <div className="grid min-h-0 flex-1 grid-cols-[1.35fr_1fr] gap-3 overflow-hidden">
-              <Shell className="flex min-h-0 min-w-0 flex-col overflow-hidden">
+            <div className="mb-2 grid shrink-0 grid-cols-2 gap-1 rounded-xl bg-cream-100 p-1 dark:bg-mintcom-dark lg:hidden" role="tablist" aria-label="Report sections">
+              <button type="button" role="tab" aria-selected={mobilePane === 'left'} onClick={() => setMobilePane('left')} className={`min-h-[40px] rounded-xl px-2 text-[12px] font-bold transition-colors ${mobilePane === 'left' ? 'bg-white text-text-primary shadow-sm dark:bg-mintcom-surface dark:text-white' : 'text-text-secondary dark:text-mintcom-textSecondary'}`}>Orders & Receipts</button>
+              <button type="button" role="tab" aria-selected={mobilePane === 'right'} onClick={() => setMobilePane('right')} className={`min-h-[40px] rounded-xl px-2 text-[12px] font-bold transition-colors ${mobilePane === 'right' ? 'bg-white text-text-primary shadow-sm dark:bg-mintcom-surface dark:text-white' : 'text-text-secondary dark:text-mintcom-textSecondary'}`}>Top 3 Items</button>
+            </div>
+            <div className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[1fr] gap-3 overflow-hidden overscroll-contain lg:grid-cols-[1.35fr_1fr] lg:grid-rows-1">
+              <Shell className={`${mobilePane === 'left' ? 'flex' : 'hidden'} lg:flex min-h-[240px] lg:min-h-0 min-w-0 flex-col overflow-hidden`}>
                 <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-gray-200 px-3 dark:border-white/10 sm:px-4">
                   <p className="text-[15px] font-semibold text-text-primary dark:text-white">
                     Orders & Receipts
@@ -2463,7 +2499,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
                 </div>
               </Shell>
 
-              <Shell className="flex min-h-0 min-w-0 flex-col overflow-hidden">
+              <Shell className={`${mobilePane === 'right' ? 'flex' : 'hidden'} lg:flex min-h-[240px] lg:min-h-0 min-w-0 flex-col overflow-hidden`}>
                 <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-gray-200 px-3 dark:border-white/10 sm:px-4">
                   <p className="min-w-0 truncate text-[15px] font-semibold text-text-primary dark:text-white">
                     Top 3 Selling Items
@@ -2598,10 +2634,10 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
 
         {/* ═══════ ITEM REPORT — exact POS layout ═══════ */}
         {reportTab === 'items' && (
-          <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-hidden">
+          <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto lg:overflow-hidden overscroll-contain">
             {/* Products | Attributes + filters (POS: Categories/Items OR Attributes/Add-ons) */}
-            <div className="flex shrink-0 flex-wrap items-center gap-2 sm:flex-nowrap sm:gap-3">
-              <div className="flex shrink-0 rounded-xl bg-transparent">
+            <div className="grid shrink-0 grid-cols-2 gap-2 sm:flex sm:flex-nowrap sm:items-center sm:gap-3">
+              <div className="col-span-2 grid shrink-0 grid-cols-2 gap-2 rounded-xl bg-transparent sm:flex sm:gap-0">
                 <button
                   type="button"
                   onClick={() => {
@@ -2610,7 +2646,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
                     setAttributeGroupFilter('all');
                     setAddonFilter('all');
                   }}
-                  className={`rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-colors ${
+                  className={`rounded-xl px-5 py-2.5 min-h-[44px] text-[13px] font-semibold transition-colors ${
                     itemMainTab === 'products'
                       ? 'bg-mintcom-green text-white shadow-sm'
                       : 'border border-gray-200 bg-white text-text-secondary dark:border-white/10 dark:bg-mintcom-surface'
@@ -2626,7 +2662,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
                     setCategoryFilter('all');
                     setItemNameFilter('all');
                   }}
-                  className={`ms-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-colors ${
+                  className={`rounded-xl px-5 py-2.5 min-h-[44px] text-[13px] font-semibold transition-colors sm:ms-2 ${
                     itemMainTab === 'attributes'
                       ? 'bg-mintcom-green text-white shadow-sm'
                       : 'border border-gray-200 bg-white text-text-secondary dark:border-white/10 dark:bg-mintcom-surface'
@@ -2637,7 +2673,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
               </div>
 
               {itemMainTab === 'products' && (
-                <div className="flex min-w-0 w-full flex-1 gap-2 sm:w-auto sm:gap-3">
+                <div className="col-span-2 grid min-w-0 grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-1 sm:gap-3">
                   <div className="relative min-w-0 flex-1">
                     <span className="pointer-events-none absolute start-3 top-1.5 text-[10px] font-medium text-text-tertiary">
                       Categories
@@ -2693,7 +2729,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
               )}
 
               {itemMainTab === 'attributes' && (
-                <div className="flex min-w-0 w-full flex-1 gap-2 sm:w-auto sm:gap-3">
+                <div className="col-span-2 grid min-w-0 grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-1 sm:gap-3">
                   <div className="relative min-w-0 flex-1">
                     <span className="pointer-events-none absolute start-3 top-1.5 text-[10px] font-medium text-text-tertiary">
                       Attributes
@@ -2744,7 +2780,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
             </div>
 
             {/* 6 compact KPI cards — POS Item Report (icon wells 42×42 r12) */}
-            <div className="grid shrink-0 grid-cols-4 gap-2.5">
+            <div className="flex sm:grid shrink-0 sm:grid-cols-4 gap-2.5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none -mx-0.5 px-0.5 pb-0.5 [&>*]:w-[158px] [&>*]:flex-none [&>*]:snap-start sm:[&>*]:w-auto">
               <StatCard
                 primary
                 label="Total Sales"
@@ -2771,8 +2807,12 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
             </div>
 
             {/* Related Orders (left) | Item Breakdown (right) — only lists scroll */}
-            <div className="grid min-h-0 flex-1 grid-cols-[1.35fr_1fr] gap-3 overflow-hidden">
-              <Shell className="flex min-h-0 min-w-0 flex-col overflow-hidden">
+            <div className="mb-2 grid shrink-0 grid-cols-2 gap-1 rounded-xl bg-cream-100 p-1 dark:bg-mintcom-dark lg:hidden" role="tablist" aria-label="Report sections">
+              <button type="button" role="tab" aria-selected={mobilePane === 'left'} onClick={() => setMobilePane('left')} className={`min-h-[40px] rounded-xl px-2 text-[12px] font-bold transition-colors ${mobilePane === 'left' ? 'bg-white text-text-primary shadow-sm dark:bg-mintcom-surface dark:text-white' : 'text-text-secondary dark:text-mintcom-textSecondary'}`}>Related Orders</button>
+              <button type="button" role="tab" aria-selected={mobilePane === 'right'} onClick={() => setMobilePane('right')} className={`min-h-[40px] rounded-xl px-2 text-[12px] font-bold transition-colors ${mobilePane === 'right' ? 'bg-white text-text-primary shadow-sm dark:bg-mintcom-surface dark:text-white' : 'text-text-secondary dark:text-mintcom-textSecondary'}`}>Item Breakdown</button>
+            </div>
+            <div className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[1fr] gap-3 overflow-hidden overscroll-contain lg:grid-cols-[1.35fr_1fr] lg:grid-rows-1">
+              <Shell className={`${mobilePane === 'left' ? 'flex' : 'hidden'} lg:flex min-h-[240px] lg:min-h-0 min-w-0 flex-col overflow-hidden`}>
                 <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-gray-200 px-3 dark:border-white/10 sm:px-4">
                   <div className="flex items-center gap-2">
                     <span className="h-4 w-1 rounded-full bg-mintcom-green" />
@@ -2835,7 +2875,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
                 </div>
               </Shell>
 
-              <Shell className="flex min-h-0 min-w-0 flex-col overflow-hidden">
+              <Shell className={`${mobilePane === 'right' ? 'flex' : 'hidden'} lg:flex min-h-[240px] lg:min-h-0 min-w-0 flex-col overflow-hidden`}>
                 <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-gray-200 px-3 dark:border-white/10 sm:px-4">
                   <div className="flex items-center gap-2">
                     <span className="h-4 w-1 rounded-full bg-mintcom-green" />

@@ -139,6 +139,7 @@ const EstablishmentsPage = lazy(() => import('./pages/dashboard/EstablishmentsPa
 const AdminUsersPage = lazy(() => import('./pages/dashboard/AdminUsersPage').then(m => ({ default: m.AdminUsersPage })));
 const CustomRolesPage = lazy(() => import('./pages/dashboard/CustomRolesPage').then(m => ({ default: m.CustomRolesPage })));
 const NotificationsPage = lazy(() => import('./pages/dashboard/NotificationsPage').then(m => ({ default: m.NotificationsPage })));
+const MigrationPage = lazy(() => import('./pages/dashboard/MigrationPage').then(m => ({ default: m.MigrationPage })));
 const AccountingCallbackPage = lazy(() => import('./pages/dashboard/AccountingCallbackPage').then(m => ({ default: m.AccountingCallbackPage })));
 
 // ============================================================================
@@ -852,6 +853,14 @@ const router = createBrowserRouter([
                 element: (
                   <DashboardPageSuspense>
                     <NotificationsPage />
+                  </DashboardPageSuspense>
+                ),
+              },
+              {
+                path: "settings/migration",
+                element: (
+                  <DashboardPageSuspense>
+                    <MigrationPage />
                   </DashboardPageSuspense>
                 ),
               },

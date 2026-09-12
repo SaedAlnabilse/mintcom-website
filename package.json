@@ -24,6 +24,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@stripe/react-stripe-js": "^6.10.0",
+    "@stripe/stripe-js": "^9.16.0",
     "axios": "^1.13.2",
     "bootstrap-icons": "^1.13.1",
     "date-fns": "^4.1.0",

@@ -1082,7 +1082,7 @@ export function ReportsPage() {
             </div>
 
             {/* Date Range Picker */}
-            <div className="flex-none min-w-[180px] sm:min-w-[220px] relative z-[60]">
+            <div className="w-full xs:w-auto xs:flex-none xs:min-w-[180px] sm:min-w-[220px] relative z-[60]">
               <DateRangePicker
                 startDate={startDate}
                 endDate={endDate}
@@ -1102,7 +1102,7 @@ export function ReportsPage() {
             {(() => {
               const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
               return (
-                <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
+                <div className={`w-full xs:w-auto xs:flex-none xs:min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
                   <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
                     ? 'bg-mintcom-green/5 border-mintcom-green'
                     : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-mintcom-green/50'

@@ -80,7 +80,7 @@ export function ResetPasswordPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full text-center shadow-lg shadow-gray-200/50 dark:shadow-none"
+          className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 max-w-md w-full text-center shadow-lg shadow-gray-200/50 dark:shadow-none"
         >
           <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-8">
             <XCircle className="w-10 h-10 text-accent" />
@@ -106,7 +106,7 @@ export function ResetPasswordPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full text-center shadow-lg shadow-gray-200/50 dark:shadow-none"
+          className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 max-w-md w-full text-center shadow-lg shadow-gray-200/50 dark:shadow-none"
         >
           <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
             <CheckCircle className="w-10 h-10 text-mintcom-green" />
@@ -131,9 +131,9 @@ export function ResetPasswordPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full shadow-lg shadow-gray-200/50 dark:shadow-none"
+        className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 max-w-md w-full shadow-lg shadow-gray-200/50 dark:shadow-none"
       >
-        <div className="text-center mb-10">
+        <div className="text-center mb-8 sm:mb-10">
           <h1 className="font-barlow text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
             {t('auth.resetPassword.resetTitle')} <span className="text-mintcom-green">{t('auth.resetPassword.passwordHighlight')}</span>
           </h1>
@@ -144,17 +144,18 @@ export function ResetPasswordPage() {
           <div className="space-y-2">
             <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight ml-1">{formatInputLabel(t('auth.resetPassword.passwordLabel'), t('common.locale'))}</label>
             <div className="relative group">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+              <Lock className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
               <input maxLength={255}
                 type={showPassword ? 'text' : 'password'}
                 {...register('password')}
-                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-4 pl-12 pr-12 text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
+                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-4 ps-12 pe-12 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
                 placeholder={formatInputPlaceholder("••••••••", t('common.locale'))}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+                aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
+                className="absolute end-3 top-1/2 -translate-y-1/2 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -165,17 +166,18 @@ export function ResetPasswordPage() {
           <div className="space-y-2">
             <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight ml-1">{formatInputLabel(t('auth.resetPassword.confirmPasswordLabel'), t('common.locale'))}</label>
             <div className="relative group">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+              <Lock className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
               <input maxLength={255}
                 type={showConfirmPassword ? 'text' : 'password'}
                 {...register('confirmPassword')}
-                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-4 pl-12 pr-12 text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
+                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-4 ps-12 pe-12 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
                 placeholder={formatInputPlaceholder("••••••••", t('common.locale'))}
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+                aria-label={showConfirmPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
+                className="absolute end-3 top-1/2 -translate-y-1/2 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
               >
                 {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>

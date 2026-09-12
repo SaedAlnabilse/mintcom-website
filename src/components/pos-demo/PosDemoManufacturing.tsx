@@ -215,7 +215,7 @@ function Shell({ children, className = '' }: { children: ReactNode; className?: 
 
 /** Matches POS AppTextInput / manufacturing modal inputs */
 const inputCls =
-  'w-full rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] px-4 py-3 text-[15px] font-medium text-text-primary outline-none focus:border-mintcom-green dark:border-white/10 dark:bg-mintcom-dark dark:text-white';
+  'w-full min-h-[44px] rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] px-4 py-3 text-[16px] sm:text-[15px] font-medium text-text-primary outline-none focus:border-mintcom-green dark:border-white/10 dark:bg-mintcom-dark dark:text-white';
 
 const inputNumericCls =
   `${inputCls} text-end text-[20px] font-bold tabular-nums`;
@@ -330,7 +330,7 @@ function ActionChip({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-opacity hover:opacity-80 ${
+      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-opacity hover:opacity-80 ${
         tone === 'mint'
           ? 'bg-[#7dc6a2]/20 text-[#5fa888]'
           : 'bg-[#F59E0B]/20 text-[#D97706]'
@@ -385,7 +385,7 @@ function ModalShell({
         exit={{ opacity: 0, scale: 0.97 }}
         role="dialog"
         aria-modal="true"
-        className="relative flex max-h-[min(85%,560px)] w-[min(90%,500px)] flex-col overflow-hidden rounded-xl bg-white shadow-[0_8px_40px_rgba(0,0,0,0.18)] dark:bg-mintcom-surface"
+        className="relative flex max-h-[min(92dvh,560px)] w-[calc(100%-24px)] sm:w-[min(90%,500px)] flex-col overflow-hidden rounded-xl bg-white shadow-[0_8px_40px_rgba(0,0,0,0.18)] dark:bg-mintcom-surface"
         onClick={(e) => e.stopPropagation()}
       >
         {/* POS modalHeader: title + X */}
@@ -403,17 +403,17 @@ function ModalShell({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 shrink-0 items-center justify-center text-text-primary dark:text-white"
+            className="flex h-11 w-11 shrink-0 items-center justify-center text-text-primary dark:text-white"
             aria-label="Close"
           >
             <X size={22} />
           </button>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-5">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-5 sm:py-5">
           {children}
         </div>
         {footer && (
-          <div className="shrink-0 border-t border-[#E5E7EB] bg-white px-4 py-4 dark:border-white/10 dark:bg-mintcom-surface">
+          <div className="shrink-0 border-t border-[#E5E7EB] bg-white px-4 pt-4 dark:border-white/10 dark:bg-mintcom-surface" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
             {footer}
           </div>
         )}
@@ -447,7 +447,7 @@ function Segmented<T extends string>({
             key={o.id}
             type="button"
             onClick={() => onChange(o.id)}
-            className={`relative z-10 flex flex-1 items-center justify-center gap-1.5 rounded-xl px-2 py-1.5 text-[12px] font-semibold transition-colors sm:text-[13px] ${
+            className={`relative z-10 flex min-h-[44px] flex-1 items-center justify-center gap-1 rounded-xl px-1.5 sm:px-2 py-1.5 text-[12px] font-semibold transition-colors sm:text-[13px] ${
               on
                 ? 'bg-mintcom-green text-white shadow-sm'
                 : 'text-[#6B7280] dark:text-mintcom-textSecondary'
@@ -483,7 +483,7 @@ function Toast({ msg }: { msg: string | null }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
-          className="pointer-events-none fixed bottom-20 start-1/2 z-[95] -translate-x-1/2 rounded-full bg-mintcom-dark px-4 py-2 text-xs font-bold text-white shadow-xl dark:bg-white dark:text-mintcom-dark sm:bottom-6"
+          className="pointer-events-none absolute bottom-[max(1rem,env(safe-area-inset-bottom))] start-1/2 z-[95] max-w-[calc(100vw-32px)] -translate-x-1/2 whitespace-normal text-center rounded-full bg-mintcom-dark px-4 py-2 text-xs font-bold text-white shadow-xl dark:bg-white dark:text-mintcom-dark sm:bottom-6"
         >
           {msg}
         </motion.div>
@@ -967,7 +967,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
           <div className="relative min-w-0 flex-1">
             <Search
               size={15}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400"
             />
             <input
               type="text"
@@ -980,7 +980,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
                     ? 'Search prep items...'
                     : 'Search product recipes...'
               }
-              className="w-full rounded-xl border border-[#E5E7EB] bg-white py-1.5 pl-9 pr-3 text-[13px] text-gray-900 placeholder:text-gray-400 focus:border-mintcom-green focus:outline-none dark:border-white/10 dark:bg-mintcom-surface dark:text-white"
+              className="min-h-[44px] w-full rounded-xl border border-[#E5E7EB] bg-white py-2.5 ps-9 pe-3 text-[16px] sm:text-[13px] text-gray-900 placeholder:text-gray-400 focus:border-mintcom-green focus:outline-none dark:border-white/10 dark:bg-mintcom-surface dark:text-white"
             />
           </div>
 
@@ -988,9 +988,9 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
             <button
               type="button"
               onClick={() => openMaterial()}
-              className="flex shrink-0 items-center gap-1.5 rounded-xl bg-mintcom-green px-3 py-1.5 text-[13px] font-semibold text-white hover:opacity-95 shadow-sm"
+              className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-xl bg-mintcom-green px-3 py-1.5 text-[13px] font-semibold text-white hover:opacity-95 shadow-sm"
             >
-              <Plus size={15} strokeWidth={2.5} /> Add Material
+              <Plus size={15} strokeWidth={2.5} /><span className="hidden min-[380px]:inline">Add Material</span><span className="min-[380px]:hidden">Add</span>
             </button>
           )}
 
@@ -998,9 +998,9 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
             <button
               type="button"
               onClick={() => openSubRecipe()}
-              className="flex shrink-0 items-center gap-1.5 rounded-xl bg-mintcom-green px-3 py-1.5 text-[13px] font-semibold text-white hover:opacity-95 shadow-sm"
+              className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-xl bg-mintcom-green px-3 py-1.5 text-[13px] font-semibold text-white hover:opacity-95 shadow-sm"
             >
-              <Plus size={15} strokeWidth={2.5} /> Add Prep Recipe
+              <Plus size={15} strokeWidth={2.5} /><span className="hidden min-[380px]:inline">Add Prep Recipe</span><span className="min-[380px]:hidden">Add</span>
             </button>
           )}
 
@@ -1008,9 +1008,9 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
             <button
               type="button"
               onClick={() => openFinalRecipe()}
-              className="flex shrink-0 items-center gap-1.5 rounded-xl bg-mintcom-green px-3 py-1.5 text-[13px] font-semibold text-white hover:opacity-95 shadow-sm"
+              className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-xl bg-mintcom-green px-3 py-1.5 text-[13px] font-semibold text-white hover:opacity-95 shadow-sm"
             >
-              <Plus size={15} strokeWidth={2.5} /> Add Product Recipe
+              <Plus size={15} strokeWidth={2.5} /><span className="hidden min-[380px]:inline">Add Product Recipe</span><span className="min-[380px]:hidden">Add</span>
             </button>
           )}
         </div>
@@ -1022,7 +1022,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
               <button
                 type="button"
                 onClick={() => setRawFilter('all')}
-                className={`rounded-[12px] px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+                className={`rounded-[12px] px-3 py-2 min-h-[36px] text-[12px] font-semibold transition-colors ${
                   rawFilter === 'all'
                     ? 'bg-mintcom-green text-white shadow-sm'
                     : 'bg-[#E5E7EB] text-gray-700 hover:bg-gray-200 dark:bg-white/10 dark:text-gray-300'
@@ -1033,7 +1033,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
               <button
                 type="button"
                 onClick={() => setRawFilter('low')}
-                className={`rounded-[12px] px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+                className={`rounded-[12px] px-3 py-2 min-h-[36px] text-[12px] font-semibold transition-colors ${
                   rawFilter === 'low'
                     ? 'bg-[#F59E0B] text-white shadow-sm'
                     : 'bg-[#F59E0B]/15 text-[#D97706] hover:bg-[#F59E0B]/25'
@@ -1044,7 +1044,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
               <button
                 type="button"
                 onClick={() => setRawFilter('out')}
-                className={`rounded-[12px] px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+                className={`rounded-[12px] px-3 py-2 min-h-[36px] text-[12px] font-semibold transition-colors ${
                   rawFilter === 'out'
                     ? 'bg-[#D55263] text-white shadow-sm'
                     : 'bg-[#D55263]/15 text-[#D55263] hover:bg-[#D55263]/25'
@@ -1060,7 +1060,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
               <button
                 type="button"
                 onClick={() => setPrepFilter('all')}
-                className={`rounded-[12px] px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+                className={`rounded-[12px] px-3 py-2 min-h-[36px] text-[12px] font-semibold transition-colors ${
                   prepFilter === 'all'
                     ? 'bg-mintcom-green text-white shadow-sm'
                     : 'bg-[#E5E7EB] text-gray-700 hover:bg-gray-200 dark:bg-white/10 dark:text-gray-300'
@@ -1071,7 +1071,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
               <button
                 type="button"
                 onClick={() => setPrepFilter('ready')}
-                className={`rounded-[12px] px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+                className={`rounded-[12px] px-3 py-2 min-h-[36px] text-[12px] font-semibold transition-colors ${
                   prepFilter === 'ready'
                     ? 'bg-mintcom-green text-white shadow-sm'
                     : 'bg-mintcom-green/15 text-mintcom-green hover:bg-mintcom-green/25'
@@ -1082,7 +1082,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
               <button
                 type="button"
                 onClick={() => setPrepFilter('shortage')}
-                className={`rounded-[12px] px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+                className={`rounded-[12px] px-3 py-2 min-h-[36px] text-[12px] font-semibold transition-colors ${
                   prepFilter === 'shortage'
                     ? 'bg-[#F59E0B] text-white shadow-sm'
                     : 'bg-[#F59E0B]/15 text-[#D97706] hover:bg-[#F59E0B]/25'
@@ -1098,7 +1098,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
               <button
                 type="button"
                 onClick={() => setFinalFilter('all')}
-                className={`rounded-[12px] px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+                className={`rounded-[12px] px-3 py-2 min-h-[36px] text-[12px] font-semibold transition-colors ${
                   finalFilter === 'all'
                     ? 'bg-mintcom-green text-white shadow-sm'
                     : 'bg-[#E5E7EB] text-gray-700 hover:bg-gray-200 dark:bg-white/10 dark:text-gray-300'
@@ -1109,7 +1109,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
               <button
                 type="button"
                 onClick={() => setFinalFilter('products')}
-                className={`rounded-[12px] px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+                className={`rounded-[12px] px-3 py-2 min-h-[36px] text-[12px] font-semibold transition-colors ${
                   finalFilter === 'products'
                     ? 'bg-mintcom-green text-white shadow-sm'
                     : 'bg-mintcom-green/15 text-mintcom-green hover:bg-mintcom-green/25'
@@ -1120,7 +1120,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
               <button
                 type="button"
                 onClick={() => setFinalFilter('addons')}
-                className={`rounded-[12px] px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+                className={`rounded-[12px] px-3 py-2 min-h-[36px] text-[12px] font-semibold transition-colors ${
                   finalFilter === 'addons'
                     ? 'bg-blue-600 text-white shadow-sm'
                     : 'bg-blue-500/15 text-blue-600 hover:bg-blue-500/25 dark:text-blue-400'
@@ -1133,7 +1133,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
         </div>
 
         {/* 3) KPI Metric Strip */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-2">
           {mainTab === 'raw' && (
             <>
               <div className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white p-2 dark:border-white/10 dark:bg-mintcom-surface">
@@ -1369,7 +1369,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
                           type="button"
                           onClick={() => openRestock(m)}
                           disabled={!m.active}
-                          className={`mx-3 mb-3 mt-2 flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-semibold ${
+                          className={`mx-3 mb-3 mt-2 flex items-center justify-center gap-1.5 rounded-xl py-2.5 min-h-[44px] text-sm font-semibold ${
                             m.active
                               ? 'bg-mintcom-green text-white hover:opacity-95 shadow-sm'
                               : 'cursor-not-allowed bg-[#E5E7EB] text-[#9CA3AF]'
@@ -1511,7 +1511,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
                             type="button"
                             disabled={!r.active}
                             onClick={() => openManufacture(r)}
-                            className={`mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-semibold text-white shadow-sm ${
+                            className={`mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 min-h-[44px] text-sm font-semibold text-white shadow-sm ${
                               canManufacture
                                 ? 'bg-mintcom-green hover:opacity-95'
                                 : r.active
@@ -1679,7 +1679,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
                 placeholder="e.g., Flour, Tomatoes"
               />
             </Field>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-3">
               <Field label="Unit" required>
                 <button
                   type="button"
@@ -1705,7 +1705,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
                 />
               </Field>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-3">
               <Field label="Cost per Unit ($)">
                 <input
                   className={inputNumericCls}
@@ -1929,7 +1929,7 @@ export function DemoManufacturingPanel({ onActivity }: { onActivity?: (action: s
                 placeholder="e.g., Pizza Dough"
               />
             </Field>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-3">
               <Field label="Yield" required>
                 <input
                   className={inputNumericCls}
@@ -2089,7 +2089,7 @@ function Empty({ icon, title, body }: { icon: ReactNode; title: string; body: st
 /** Shared control height for ingredient add row — keeps Item / Qty / Add aligned */
 const ingCtrlH = 'h-11';
 const ingCtrlBase =
-  `${ingCtrlH} rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] text-[14px] outline-none focus:border-mintcom-green dark:border-white/10 dark:bg-mintcom-dark dark:text-white`;
+  `${ingCtrlH} rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] text-[16px] sm:text-[14px] outline-none focus:border-mintcom-green dark:border-white/10 dark:bg-mintcom-dark dark:text-white`;
 
 function IngredientEditor({
   ings,
@@ -2136,7 +2136,7 @@ function IngredientEditor({
             <button
               type="button"
               onClick={() => setIngs(ings.filter((i) => i.ingredientId !== ing.ingredientId))}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#D55263] hover:bg-[#D55263]/10"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-[#D55263] hover:bg-[#D55263]/10"
               aria-label="Remove ingredient"
             >
               <X size={18} />
@@ -2145,9 +2145,9 @@ function IngredientEditor({
         ))}
       </div>
 
-      {/* Add row: equal-height Item | Qty | Add — single aligned strip */}
+      {/* Add row: stacked on phones, aligned strip on sm+ */}
       <div className="rounded-xl border border-dashed border-[#E5E7EB] p-3 dark:border-white/10">
-        <div className="grid grid-cols-[1fr_4.5rem_auto] items-end gap-2">
+        <div className="grid grid-cols-1 min-[380px]:grid-cols-[1fr_4.5rem_auto] items-end gap-2">
           <div className="min-w-0">
             <span className="mb-1.5 block text-[12px] leading-none text-text-secondary">Item</span>
             <div className="relative">

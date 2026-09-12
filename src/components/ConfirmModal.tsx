@@ -73,7 +73,9 @@ export function ConfirmModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", duration: 0.35, bounce: 0.15 }}
-            className="relative w-full sm:max-w-md overflow-hidden rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 shadow-2xl transition-colors duration-300 z-10"
+            role="dialog"
+            aria-modal="true"
+            className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 shadow-2xl transition-colors duration-300 z-10"
           >
             {/* Mobile drag handle */}
             <div className="sm:hidden flex justify-center pt-3">
@@ -91,7 +93,7 @@ export function ConfirmModal({
               </button>
             )}
 
-            <div className="relative p-6 sm:p-8 pb-safe">
+            <div className="relative p-6 sm:p-8" style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
               <div className="flex flex-col items-center text-center pt-2">
                 {/* Content */}
                 <div className="space-y-2 sm:space-y-3">

@@ -362,7 +362,7 @@ export function DemoSalesTrendChart({
     /* POS SalesTrendChartCard: theme.backgroundSecondary #F4F5F7, border #E2E8F0 */
     <div className="relative flex h-full min-h-0 flex-col rounded-xl border border-[#E2E8F0] bg-[#F4F5F7] p-3 dark:border-white/10 dark:bg-mintcom-dark sm:p-4">
       {/* Header with Title & Modern Segmented Capsule Filter (matching SalesTrendChartCard.tsx) */}
-      <div className="relative mb-2 flex shrink-0 items-center justify-between gap-2">
+      <div className="relative mb-2 flex shrink-0 flex-wrap items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
           <TrendingUp size={16} className="text-mintcom-green shrink-0" />
           <p className="font-sans text-[14px] font-bold text-text-primary dark:text-white">
@@ -371,7 +371,7 @@ export function DemoSalesTrendChart({
         </div>
 
         {/* Modern Segmented Capsule Filter */}
-        <div className="flex items-center gap-0.5 rounded-xl border border-gray-200 bg-black/[0.04] p-1 dark:border-white/8 dark:bg-white/[0.06]">
+        <div className="flex max-w-full items-center gap-0.5 overflow-x-auto rounded-xl border border-gray-200 bg-black/[0.04] p-1 dark:border-white/8 dark:bg-white/[0.06]">
           {modes.map((m) => {
             const on = viewMode === m.id;
             return (
@@ -382,7 +382,7 @@ export function DemoSalesTrendChart({
                   setViewMode(m.id);
                   setSelectedIdx(null);
                 }}
-                className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-bold transition-all ${
+                className={`flex min-h-[36px] shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-bold transition-all ${
                   on
                     ? 'border border-black/5 bg-white text-mintcom-green shadow-xs dark:border-white/10 dark:bg-mintcom-surface'
                     : 'text-text-secondary hover:text-text-primary dark:text-mintcom-textSecondary dark:hover:text-white'
@@ -398,8 +398,8 @@ export function DemoSalesTrendChart({
         </div>
       </div>
 
-      {/* Chart body */}
-      <div className="relative flex min-h-0 flex-1 gap-1">
+      {/* Chart body — min height protects Y-tick spacing on short phone plots */}
+      <div className="relative flex min-h-[150px] flex-1 gap-1">
         {data.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center text-center">
             <TrendingUp size={36} className="mb-2 text-gray-300 dark:text-mintcom-gray" />
@@ -431,11 +431,12 @@ export function DemoSalesTrendChart({
               </span>
             </div>
 
-            {/* Plot + x labels under dots — horizontally scrollable like POS when many points */}
+            {/* Plot + x labels under dots — horizontally scrollable like POS when many points.
+                ≤8 points use tighter spacing so a week fits phones without scrolling. */}
             <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-x-auto overflow-y-hidden overscroll-contain">
               <div
                 className="flex h-full min-h-0 flex-1 flex-col"
-                style={{ width: `max(100%, ${Math.max(260, (data.length - 1) * 56 + 40)}px)` }}
+                style={{ width: `max(100%, ${Math.max(260, (data.length - 1) * (data.length > 8 ? 56 : 40) + 40)}px)` }}
               >
                 <div className="relative min-h-0 flex-1">
                   <svg
@@ -615,19 +616,19 @@ export function DemoSalesTrendChart({
         Time
       </p>
 
-      {/* Interactive Legend (matching SalesTrendChartCard.tsx) */}
-      <div className="mt-2 flex shrink-0 flex-wrap items-center justify-center gap-x-4 gap-y-1">
+      {/* Interactive Legend (matching SalesTrendChartCard.tsx) — single scrollable row so the plot keeps its height */}
+      <div className="mt-2 flex shrink-0 flex-nowrap items-center justify-start gap-x-2 overflow-x-auto overscroll-contain pb-0.5 sm:justify-center">
         {legend.map((l) => (
           <button
             key={l.key}
             type="button"
             onClick={() => toggle(l.key)}
-            className={`inline-flex items-center gap-1.5 text-[11px] font-semibold transition-all ${
+            className={`inline-flex min-h-[36px] shrink-0 items-center gap-1.5 rounded-lg px-2 py-1 text-[11px] font-semibold transition-all ${
               visible[l.key] ? 'text-text-secondary dark:text-mintcom-textSecondary' : 'opacity-35 line-through'
             }`}
           >
             <span
-              className="h-2.5 w-2.5 rounded-full"
+              className="h-3 w-3 shrink-0 rounded-full"
               style={{ background: visible[l.key] ? l.color : '#d1d5db' }}
             />
             {l.label}
@@ -648,14 +649,14 @@ export function DemoSalesTrendChart({
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-x-3 bottom-14 z-10 rounded-xl border border-gray-200 bg-white p-3 shadow-xl dark:border-white/10 dark:bg-mintcom-surface sm:inset-x-auto sm:end-3 sm:start-auto sm:w-52"
+            className="absolute inset-x-3 bottom-14 z-10 max-h-[45%] overflow-y-auto overscroll-contain rounded-xl border border-gray-200 bg-white p-3 shadow-xl dark:border-white/10 dark:bg-mintcom-surface sm:inset-x-auto sm:end-3 sm:start-auto sm:w-52"
           >
             <div className="mb-2 flex items-center justify-between gap-2">
               <span className="inline-flex items-center gap-1 text-[11px] font-bold dark:text-white">
                 <Clock size={12} className="text-text-tertiary" />
                 {selected.time}
               </span>
-              <button type="button" onClick={() => setSelectedIdx(null)} className="text-text-tertiary">
+              <button type="button" onClick={() => setSelectedIdx(null)} aria-label="Close details" className="flex h-11 w-11 items-center justify-center rounded-xl text-text-tertiary">
                 <X size={14} />
               </button>
             </div>

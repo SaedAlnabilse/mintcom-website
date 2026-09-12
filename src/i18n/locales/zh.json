@@ -1800,6 +1800,7 @@
       "logout": "退出登录",
       "loyalty": "会员",
       "mainMenu": "主菜单（门店仪表盘）",
+      "migration": "从其他 POS 切换",
       "openSidebar": "打开侧边栏",
       "orders": "订单",
       "overview": "概览",
@@ -3727,6 +3728,18 @@
       "priceMonth": "{{price}} {{currency}}/月",
       "startTrialButton": "开始免费试用",
       "totalDue": "今日应付总额",
+      "subtotal": "小计",
+      "total": "总计",
+      "totalAfterTrial": "试用后总计",
+      "breakdownAfterTrial": "免费试用结束后，每个计费周期：",
+      "taxNotApplicable": "税费",
+      "taxTooltip": "税费根据您的位置估算。最终金额按付款方式所属国家/地区计算。",
+      "trialDisclosureCheckout": "14天免费试用：今天不会扣款。在 {{date}}，将从您的卡中扣除 {{amount}}（含适用增值税），之后每{{cycle}}扣除 {{amount}}，直到您取消。",
+      "paidDisclosureCheckout": "今天将从您的卡中扣除 {{amount}}（含适用增值税），之后每{{cycle}}扣除 {{amount}}，直到您取消。",
+      "cancelPath": "您可在此日期前随时在 设置 → 账单 中取消以避免任何费用。查看我们的",
+      "consentAnd": "和",
+      "consentCheckbox": "我授权自 {{date}} 起按 {{cycle}} 定期扣款 {{amount}}（含适用增值税），并同意服务条款和隐私政策。",
+      "consentRequired": "请授权定期扣款以继续。",
       "trialDesc": "今天不会扣款。试用结束前可随时取消。",
       "trialTitle": "开始免费试用",
       "useSaved": "使用已保存的卡",
@@ -3734,8 +3747,7 @@
       "addedLocation": "已添加门店",
       "billedCycle": "按{{cycle}}计费",
       "existingAccountBenefit": "现有账户权益",
-      "paymentDetails": "付款信息",
-      "trialPayNote": "您正在 14 天试用期内，试用结束前不会产生任何费用。"
+      "paymentDetails": "付款信息"
     },
     "step3": {
       "errors": {

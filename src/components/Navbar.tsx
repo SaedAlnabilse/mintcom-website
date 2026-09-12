@@ -340,7 +340,7 @@ export const Navbar = () => {
             aria-label={t('common.aria.mobileNav')}
             className="fixed inset-0 z-40 bg-white dark:bg-[#050505] lg:hidden"
           >
-            <div className="flex min-h-full flex-col items-center justify-center overflow-y-auto px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-24 sm:px-8">
+            <div className="flex min-h-full flex-col items-center justify-center overflow-y-auto overscroll-contain px-5 pb-6 pt-28 sm:px-8" style={{ paddingTop: 'max(7rem, env(safe-area-inset-top))', paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
               {/* Nav links */}
               <div className="flex w-full max-w-sm flex-col items-stretch gap-2.5 sm:gap-4">
                 {!isAuthenticated && navLinks.map((link, index) => (

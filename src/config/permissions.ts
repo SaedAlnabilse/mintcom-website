@@ -106,6 +106,9 @@ export const REQUIRED_PERMISSIONS: Record<string, string[]> = {
   // Sales
   'payment-methods': ['manage_payment_methods'],
 
+  // Migration (switch from another POS — file upload + review, mocked for now)
+  'settings/migration': ['manage_inventory', 'manage_settings'],
+
   // People
   'staff': ['manage_employees'],
   'roles': ['manage_employees'],

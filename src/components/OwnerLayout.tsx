@@ -124,19 +124,7 @@ export function OwnerLayout() {
             dir={isRtl ? 'rtl' : 'ltr'}
             className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden selection:bg-mintcom-green selection:text-black transition-colors duration-500"
         >
-            {/* Mobile Menu Overlay */}
-            <AnimatePresence>
-                {mobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] lg:hidden"
-                    />
-                )}
-            </AnimatePresence>
-
+            {/* Mobile backdrop is rendered by MobileNavigationDrawer itself */}
             {/* Sidebar Container */}
             <motion.aside
                 ref={sidebarRef}
@@ -296,18 +284,19 @@ export function OwnerLayout() {
                 onClick={() => sidebarOpen && setSidebarOpen(false)}
             >
                 {/* Mobile Header */}
-                <div className="lg:hidden sticky top-0 z-30 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/5 px-4 py-3 flex items-center justify-between">
+                <div className="lg:hidden sticky top-0 z-30 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/5 px-4 flex items-center justify-between gap-2" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))', paddingBottom: '0.75rem' }}>
                     <button
                         onClick={() => setMobileMenuOpen(true)}
-                        className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
+                        aria-label={t('common.aria.openMenu', { defaultValue: 'Open menu' })}
+                        className="min-h-[44px] min-w-[44px] p-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 transition-all flex items-center justify-center shrink-0"
                     >
                         <Menu size={22} />
                     </button>
-                    <div className="flex items-center gap-2 min-w-0">
+                    <div className="flex items-center gap-2 min-w-0 flex-1 justify-center">
                         <img src={MintcomLeafIcon} className="w-8 h-8 object-contain shrink-0" alt={t('brand.name')} />
-                        <span className="font-bold text-gray-900 dark:text-white truncate">{t('brand.name')}</span>
+                        <span className="font-bold text-gray-900 dark:text-white truncate text-[15px]">{t('brand.name')}</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 shrink-0">
                         <AlertsBell scope="owner" locations={ownerLocations} />
                         <LanguageSwitcher
                             compact

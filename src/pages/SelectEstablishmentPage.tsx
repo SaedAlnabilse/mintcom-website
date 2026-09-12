@@ -81,7 +81,7 @@ export function SelectEstablishmentPage() {
       {/* Remove glass glows, use solid background colors */}
 
       {/* Header — logo alone on the brand side, user actions clustered right */}
-      <div className="p-8 flex justify-between items-center relative z-10">
+      <div className="p-4 sm:p-8 flex justify-between items-center gap-3 relative z-10">
         {/* Logo */}
         <div className="flex items-center gap-3">
           <img

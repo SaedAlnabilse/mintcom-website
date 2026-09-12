@@ -337,13 +337,13 @@ export function BrandDashboardPage() {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3 relative z-50">
+                <div className="flex items-center gap-3 relative z-50 w-full lg:w-auto">
                     {/* Unified Filter Control Deck */}
-                    <div className="bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5 ">
+                    <div className="bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5 w-full lg:w-auto">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">
 
                             {/* Sector 1: Quick Period Dropdown */}
-                            <div className={`flex-none w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-mintcom-green/5 border-mintcom-green ring-1 ring-mintcom-green shadow-lg shadow-mintcom-green/10' : 'border-transparent'}`}>
+                            <div className={`flex-none w-full xl:w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-mintcom-green/5 border-mintcom-green ring-1 ring-mintcom-green shadow-lg shadow-mintcom-green/10' : 'border-transparent'}`}>
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
                                     onChange={(val) => setQuickDate(val as DateRangePreset || 'today')}
@@ -364,9 +364,9 @@ export function BrandDashboardPage() {
                                 const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
 
                                 return (
-                                    <div className="flex-1 flex flex-col md:flex-row gap-4 items-center">
+                                    <div className="flex-1 flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center w-full">
                                         {/* Date Input Group */}
-                                        <div className="flex-none min-w-[200px] sm:min-w-[240px] relative z-[60]">
+                                        <div className="flex-none w-full sm:min-w-[200px] lg:min-w-[240px] relative z-[60]">
                                             <DateRangePicker
                                                 startDate={startDate}
                                                 endDate={endDate}
@@ -385,7 +385,7 @@ export function BrandDashboardPage() {
                                         <div className="hidden md:block w-px h-6 bg-gray-100 dark:bg-white/10" />
 
                                         {/* Time Input Group */}
-                                        <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
+                                        <div className={`flex-none w-full sm:w-auto sm:min-w-[180px] relative z-[55]`}>
                                             <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
                                                 ? 'bg-mintcom-green/5 border-mintcom-green'
                                                 : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-mintcom-green/50'
@@ -529,11 +529,11 @@ export function BrandDashboardPage() {
                         {locations.slice(0, 5).map((loc, i) => (
                             <div
                                 key={loc.id}
-                                className="flex items-center gap-6 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                                className="flex items-center gap-3 sm:gap-6 px-4 sm:px-6 py-4 sm:py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
                                 onClick={() => window.open(`/dashboard/${loc.id}`, '_blank')}
                             >
                                 {/* Rank */}
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black ${i === 0 ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400' :
+                                <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-sm font-black ${i === 0 ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400' :
                                     i === 1 ? 'bg-gray-200 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400' :
                                         i === 2 ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' :
                                             'bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-400'
@@ -561,7 +561,7 @@ export function BrandDashboardPage() {
                                 </div>
 
                                 {/* Revenue */}
-                                <div className="text-right">
+                                <div className="text-right shrink-0 min-w-0">
                                     <StatValue 
                                         value={loc.revenue} 
                                         currency={baseCurrency}
@@ -605,12 +605,12 @@ export function BrandDashboardPage() {
                     transition={{ delay: 0.3 }}
                     className={`xl:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
                 >
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                        <div className="min-w-0">
                             <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{t('brand.dashboard.consolidatedPerformance')}</p>
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-4 flex-wrap shrink-0">
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-mintcom-green" />
                                 <span className="text-xs font-medium tracking-wider text-gray-500">{t('brand.dashboard.revenue')}</span>

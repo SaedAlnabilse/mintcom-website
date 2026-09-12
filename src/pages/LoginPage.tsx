@@ -219,7 +219,7 @@ export function LoginPage() {
   };
 
   const inputBase = (hasError: boolean) =>
-    `w-full rounded-2xl border bg-gray-50/70 px-5 py-4 text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:bg-white/10 ${
+    `w-full rounded-2xl border bg-gray-50/70 px-5 py-4 text-base sm:text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 dark:focus:bg-white/10 ${
       hasError
         ? 'border-red-400 dark:border-red-500'
         : 'border-gray-200 dark:border-white/10 focus:border-mintcom-green/40'
@@ -293,7 +293,7 @@ export function LoginPage() {
         </div>
 
         {/* Glass card */}
-        <div className="relative overflow-hidden rounded-3xl border border-gray-200/70 bg-white/90 p-8 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none 2xl:p-10">
+        <div className="relative overflow-hidden rounded-3xl border border-gray-200/70 bg-white/90 p-6 sm:p-8 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none 2xl:p-10">
           <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-mintcom-green/10 blur-3xl" />
 
           <div className="relative">
@@ -425,7 +425,7 @@ export function LoginPage() {
       {/* Verification modal */}
       <AnimatePresence>
         {showVerifyModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -441,7 +441,7 @@ export function LoginPage() {
               role="dialog"
               aria-modal="true"
               aria-labelledby="verify-email-title"
-              className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
+              className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-3xl border border-gray-200 bg-white p-6 sm:p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
             >
               <button
                 type="button"
@@ -500,7 +500,7 @@ export function LoginPage() {
       {/* Wrong email / password modal */}
       <AnimatePresence>
         {showWrongCredentialsModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -516,7 +516,7 @@ export function LoginPage() {
               role="dialog"
               aria-modal="true"
               aria-labelledby="wrong-credentials-title"
-              className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
+              className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-3xl border border-gray-200 bg-white p-6 sm:p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
             >
               <div
                 aria-hidden
@@ -580,7 +580,7 @@ export function LoginPage() {
       {/* Google / Apple — no linked Mintcom account */}
       <AnimatePresence>
         {showNoAccountModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -596,7 +596,7 @@ export function LoginPage() {
               role="dialog"
               aria-modal="true"
               aria-labelledby="no-social-account-title"
-              className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
+              className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-3xl border border-gray-200 bg-white p-6 sm:p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
             >
               <div
                 aria-hidden
@@ -666,7 +666,7 @@ export function LoginPage() {
       {/* Rate limit / Too many requests modal */}
       <AnimatePresence>
         {showRateLimitModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -682,7 +682,7 @@ export function LoginPage() {
               role="dialog"
               aria-modal="true"
               aria-labelledby="rate-limit-title"
-              className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
+              className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-3xl border border-gray-200 bg-white p-6 sm:p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
             >
               <div
                 aria-hidden

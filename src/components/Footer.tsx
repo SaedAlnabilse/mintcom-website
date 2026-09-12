@@ -62,7 +62,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
               }
             }
           }}
-          className="group inline-flex items-center gap-1.5 text-[13px] text-gray-500 transition-colors duration-200 hover:text-mintcom-green dark:text-gray-400 dark:hover:text-mintcom-green"
+          className="group inline-flex items-center gap-1.5 py-1 text-[13px] text-gray-500 transition-colors duration-200 hover:text-mintcom-green dark:text-gray-400 dark:hover:text-mintcom-green"
         >
           {link.name}
           <ArrowUpRight
@@ -128,9 +128,9 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={social.label}
-                      className="flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200 text-gray-400 transition-all duration-200 hover:border-mintcom-green hover:bg-mintcom-green hover:text-white dark:border-white/10 dark:text-gray-500 dark:hover:border-mintcom-green dark:hover:bg-mintcom-green dark:hover:text-white"
+                      className="flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 text-gray-400 transition-all duration-200 hover:border-mintcom-green hover:bg-mintcom-green hover:text-white dark:border-white/10 dark:text-gray-500 dark:hover:border-mintcom-green dark:hover:bg-mintcom-green dark:hover:text-white"
                     >
-                      <social.Icon size={15} />
+                      <social.Icon size={16} />
                     </a>
                   ))}
                 </div>
@@ -220,7 +220,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
                 </Link>
 
                 {/* Action buttons */}
-                <div className="mt-3 grid grid-cols-2 gap-2.5">
+                <div className="mt-3 grid grid-cols-1 min-[380px]:grid-cols-2 gap-2.5">
                   <Link
                     to="/support/articles"
                     className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-xs font-medium text-gray-600 transition-all duration-200 hover:border-mintcom-green/40 hover:text-mintcom-green dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-300 dark:hover:border-mintcom-green/30 dark:hover:text-mintcom-green"

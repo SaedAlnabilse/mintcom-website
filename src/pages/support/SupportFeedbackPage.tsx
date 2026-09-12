@@ -200,7 +200,7 @@ export const SupportFeedbackPage = () => {
           <div className="mb-4 rounded-2xl border border-gray-100 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
             <div className="flex flex-col gap-3 md:flex-row">
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <input
                   maxLength={255}
                   value={searchQuery}
@@ -209,7 +209,7 @@ export const SupportFeedbackPage = () => {
                     if (e.key === 'Enter') fetchFeedback();
                   }}
                   placeholder={formatInputPlaceholder('Search comments, area, route, name, or email...', 'en')}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-11 text-sm font-bold text-gray-700 outline-none transition-colors focus:border-mintcom-green/50 focus:ring-2 focus:ring-mintcom-green/20 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 ps-12 pe-11 text-base sm:text-sm font-bold text-gray-700 outline-none transition-colors focus:border-mintcom-green/50 focus:ring-2 focus:ring-mintcom-green/20 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
                 />
                 {searchQuery && (
                   <button

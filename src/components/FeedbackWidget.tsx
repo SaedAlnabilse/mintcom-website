@@ -177,7 +177,7 @@ export const FeedbackWidget = () => {
                             exit={{ x: isRTL ? '-100%' : '100%', opacity: 0 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                             dir={isRTL ? 'rtl' : 'ltr'}
-                            className={`fixed ${isRTL ? 'left-0 border-r shadow-[10px_0_30px_rgba(0,0,0,0.1)]' : 'right-0 border-l shadow-[-10px_0_30px_rgba(0,0,0,0.1)]'} top-0 h-full w-[350px] bg-white dark:bg-[#0F172A] border-gray-200 dark:border-white/10 z-[10000] flex flex-col`}
+                            className={`fixed ${isRTL ? 'left-0 border-r shadow-[10px_0_30px_rgba(0,0,0,0.1)]' : 'right-0 border-l shadow-[-10px_0_30px_rgba(0,0,0,0.1)]'} top-0 h-[100dvh] w-[min(350px,100vw)] bg-white dark:bg-[#0F172A] border-gray-200 dark:border-white/10 z-[10000] flex flex-col`}
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Drawer Header */}

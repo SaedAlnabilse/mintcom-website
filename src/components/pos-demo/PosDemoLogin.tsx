@@ -64,7 +64,9 @@ export function PosDemoLogin({
   const usernameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Focus username on mount like a real login screen
+    // Focus username on mount like a real login screen — but never steal
+    // focus on touch phones (keyboard would cover half the screen).
+    if (window.matchMedia?.('(pointer: coarse)').matches) return;
     const t = window.setTimeout(() => usernameRef.current?.focus(), 120);
     return () => window.clearTimeout(t);
   }, []);
@@ -139,24 +141,24 @@ export function PosDemoLogin({
   };
 
   return (
-    <div className="flex h-full max-h-full overflow-hidden bg-white dark:bg-mintcom-dark">
-      {/* ── Left: form — static tablet half ── */}
-      <div className="relative flex min-h-0 min-w-0 w-1/2 flex-1 flex-col overflow-hidden">
+    <div className="relative flex h-full max-h-full overflow-hidden bg-white dark:bg-mintcom-dark">
+      {/* ── Left: form — full width on phones, tablet half on sm+ ── */}
+      <div className="relative flex min-h-0 min-w-0 w-full sm:w-1/2 flex-1 flex-col overflow-hidden">
         <div className="flex shrink-0 items-start justify-between gap-2 px-4 pb-1 pt-4 sm:px-6 sm:pt-5">
           <button
             type="button"
             onClick={() => setShowDisconnectModal(true)}
-            className="flex max-w-[min(100%,320px)] items-center rounded-xl border border-gray-200 bg-white py-1.5 pe-4 ps-1.5 shadow-sm transition-shadow hover:shadow-md dark:border-white/10 dark:bg-mintcom-surface"
+            className="flex max-w-full sm:max-w-[min(100%,320px)] items-center rounded-xl border border-gray-200 bg-white py-1.5 pe-3 ps-1.5 shadow-sm transition-shadow hover:shadow-md dark:border-white/10 dark:bg-mintcom-surface"
           >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-mintcom-green text-white shadow-md shadow-mintcom-green/30">
-              <ArrowLeft size={20} strokeWidth={2.5} />
+              <ArrowLeft size={20} strokeWidth={2.5} className="rtl:rotate-180" />
             </span>
-            <span className="mx-2.5 h-8 w-px shrink-0 bg-gray-100 dark:bg-white/10" />
-            <span className="me-2.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 text-mintcom-green">
+            <span className="mx-2 h-8 w-px shrink-0 bg-gray-100 dark:bg-white/10" />
+            <span className="hidden min-[380px]:flex me-2 h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 text-mintcom-green">
               <MapPin size={18} strokeWidth={2.25} />
             </span>
             <span className="min-w-0 text-start">
-              <span className="block text-[10px] font-extrabold uppercase tracking-wide text-mintcom-green">
+              <span className="block text-[12px] font-extrabold uppercase tracking-wide text-mintcom-green">
                 Current location
               </span>
               <span className="block truncate text-sm font-semibold text-text-primary dark:text-white">
@@ -171,9 +173,9 @@ export function PosDemoLogin({
           <motion.div
             animate={shake ? { x: [-7, 7, -5, 5, 0] } : { x: 0 }}
             transition={{ duration: 0.4 }}
-            className="w-full max-w-[340px]"
+            className="m-auto w-full max-w-[340px]"
           >
-            <h1 className="text-center font-barlow text-[28px] font-extrabold leading-tight text-[#333] dark:text-white sm:text-[32px]">
+            <h1 className="text-center font-barlow text-[24px] font-extrabold leading-tight text-[#333] dark:text-white sm:text-[32px]">
               Welcome Back!
             </h1>
             <p className="mb-7 mt-2 text-center text-sm text-[#999]">
@@ -182,7 +184,7 @@ export function PosDemoLogin({
 
             {/* Username */}
             <div className="mb-4">
-              <label className="block text-[11px] font-black uppercase tracking-wider text-text-secondary dark:text-mintcom-textSecondary mb-2">
+              <label className="block text-[12px] font-black uppercase tracking-wider text-text-secondary dark:text-mintcom-textSecondary mb-2">
                 Username
               </label>
               <div className="flex h-14 items-center rounded-xl border border-[#d1d5db] bg-white px-4 dark:border-white/15 dark:bg-mintcom-surface">
@@ -194,7 +196,7 @@ export function PosDemoLogin({
                   placeholder="Username"
                   value={username}
                   onKeyDown={onKeyDown}
-                  className="h-full min-w-0 flex-1 bg-transparent text-[15px] text-[#555] dark:text-[#ccc] outline-none cursor-not-allowed select-none"
+                  className="h-full min-w-0 flex-1 bg-transparent text-[16px] text-[#555] dark:text-[#ccc] outline-none cursor-not-allowed select-none"
                 />
               </div>
               {usernameError && (
@@ -204,7 +206,7 @@ export function PosDemoLogin({
 
             {/* Password */}
             <div className="mb-1">
-              <label className="block text-[11px] font-black uppercase tracking-wider text-text-secondary dark:text-mintcom-textSecondary mb-2">
+              <label className="block text-[12px] font-black uppercase tracking-wider text-text-secondary dark:text-mintcom-textSecondary mb-2">
                 Password
               </label>
               <div className="flex h-14 items-center rounded-xl border border-[#d1d5db] bg-white px-4 dark:border-white/15 dark:bg-mintcom-surface">
@@ -216,7 +218,7 @@ export function PosDemoLogin({
                   placeholder="Password"
                   value={password}
                   onKeyDown={onKeyDown}
-                  className="h-full min-w-0 flex-1 bg-transparent text-[15px] text-[#555] dark:text-[#ccc] outline-none cursor-not-allowed select-none"
+                  className="h-full min-w-0 flex-1 bg-transparent text-[16px] text-[#555] dark:text-[#ccc] outline-none cursor-not-allowed select-none"
                 />
               </div>
               {passwordError && (
@@ -246,7 +248,7 @@ export function PosDemoLogin({
             >
               <span>{submitting ? 'Logging in…' : 'Log in'}</span>
               {!submitting && (
-                <ArrowRight size={20} className="absolute end-5" strokeWidth={2.25} />
+                <ArrowRight size={20} className="absolute end-5 rtl:rotate-180" strokeWidth={2.25} />
               )}
             </button>
 
@@ -299,8 +301,8 @@ export function PosDemoLogin({
         </div>
       </div>
 
-      {/* ── Right: brand panel — always on static tablet canvas ── */}
-      <div className="relative flex w-1/2 flex-col items-center justify-center overflow-hidden bg-[#6baf8b]">
+      {/* ── Right: brand panel — tablet/desktop only ── */}
+      <div className="relative hidden w-1/2 flex-col items-center justify-center overflow-hidden bg-[#6baf8b] sm:flex">
         <div className="pointer-events-none absolute -bottom-16 -start-10 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
         <div className="pointer-events-none absolute bottom-28 -end-8 h-40 w-40 rounded-full bg-white/10 blur-xl" />
         <div className="pointer-events-none absolute start-0 end-0 bottom-0 h-[30%] bg-gradient-to-t from-black/10 to-transparent" />
@@ -317,7 +319,7 @@ export function PosDemoLogin({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-white/90 dark:bg-mintcom-dark/90"
+            className="absolute inset-0 z-50 flex items-center justify-center bg-white/90 dark:bg-mintcom-dark/90"
           >
             <div className="flex flex-col items-center gap-3">
               <span className="h-10 w-10 animate-spin rounded-full border-[3px] border-mintcom-green/25 border-t-mintcom-green" />
@@ -337,7 +339,7 @@ export function PosDemoLogin({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 24 }}
             transition={{ type: 'spring', stiffness: 380, damping: 34 }}
-            className="fixed inset-0 z-[70] flex flex-col bg-white dark:bg-mintcom-dark"
+            className="absolute inset-0 z-[70] flex flex-col bg-white dark:bg-mintcom-dark"
           >
             <DemoSupportScreen
               variant="login"
@@ -350,17 +352,18 @@ export function PosDemoLogin({
       {/* Forgot password — demo modal */}
       <AnimatePresence>
         {showForgot && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm">
+          <div className="absolute inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/45 p-0 sm:p-4 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.96, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96 }}
-              className="relative w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-mintcom-surface"
+              className="relative w-full max-w-md rounded-t-3xl sm:rounded-xl border border-gray-200 bg-white p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl dark:border-white/10 dark:bg-mintcom-surface"
             >
               <button
                 type="button"
                 onClick={() => setShowForgot(false)}
-                className="absolute end-3 top-3 rounded-xl p-1.5 text-text-tertiary hover:bg-cream-100 dark:hover:bg-white/10"
+                aria-label="Close"
+                className="absolute end-3 top-3 flex h-11 w-11 items-center justify-center rounded-xl text-text-tertiary hover:bg-cream-100 dark:hover:bg-white/10"
               >
                 <X size={18} />
               </button>
@@ -380,7 +383,7 @@ export function PosDemoLogin({
                     placeholder="Your username"
                     value={forgotUser}
                     onChange={(e) => setForgotUser(e.target.value)}
-                    className="h-full min-w-0 flex-1 bg-transparent text-sm outline-none dark:text-white"
+                    className="h-full min-w-0 flex-1 bg-transparent text-[16px] outline-none dark:text-white"
                   />
                 </div>
               )}
@@ -388,7 +391,7 @@ export function PosDemoLogin({
                 <button
                   type="button"
                   onClick={() => setShowForgot(false)}
-                  className="flex-1 rounded-xl border border-gray-200 py-3 text-sm font-bold text-text-primary dark:text-white dark:border-white/15"
+                  className="min-h-[44px] flex-1 rounded-xl border border-gray-200 py-3 text-sm font-bold text-text-primary dark:text-white dark:border-white/15"
                 >
                   {forgotSent ? 'Close' : 'Cancel'}
                 </button>
@@ -396,7 +399,7 @@ export function PosDemoLogin({
                   <button
                     type="button"
                     onClick={() => setForgotSent(true)}
-                    className="flex-1 rounded-xl bg-mintcom-green py-3 text-sm font-bold text-white"
+                    className="min-h-[44px] flex-1 rounded-xl bg-mintcom-green py-3 text-sm font-bold text-white"
                   >
                     Send request
                   </button>
@@ -410,17 +413,18 @@ export function PosDemoLogin({
       {/* Secure Disconnect Modal */}
       <AnimatePresence>
         {showDisconnectModal && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm">
+          <div className="absolute inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/45 p-0 sm:p-4 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.96, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96 }}
-              className="relative w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-mintcom-surface"
+              className="relative w-full max-w-md rounded-t-3xl sm:rounded-xl border border-gray-200 bg-white p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl dark:border-white/10 dark:bg-mintcom-surface"
             >
               <button
                 type="button"
                 onClick={() => setShowDisconnectModal(false)}
-                className="absolute end-3 top-3 rounded-xl p-1.5 text-text-tertiary hover:bg-cream-100 dark:hover:bg-white/10"
+                aria-label="Close"
+                className="absolute end-3 top-3 flex h-11 w-11 items-center justify-center rounded-xl text-text-tertiary hover:bg-cream-100 dark:hover:bg-white/10"
               >
                 <X size={18} />
               </button>
@@ -437,7 +441,7 @@ export function PosDemoLogin({
                   type="password"
                   readOnly
                   value="delight123"
-                  className="h-full min-w-0 flex-1 bg-transparent text-sm outline-none dark:text-white cursor-not-allowed select-none"
+                  className="h-full min-w-0 flex-1 bg-transparent text-[16px] outline-none dark:text-white cursor-not-allowed select-none"
                 />
               </div>
 
@@ -446,7 +450,7 @@ export function PosDemoLogin({
                   type="button"
                   disabled={disconnecting}
                   onClick={() => setShowDisconnectModal(false)}
-                  className="flex-1 rounded-xl border border-gray-200 py-3 text-sm font-bold text-text-primary dark:text-white dark:border-white/15"
+                  className="min-h-[44px] flex-1 rounded-xl border border-gray-200 py-3 text-sm font-bold text-text-primary dark:text-white dark:border-white/15"
                 >
                   Cancel
                 </button>
@@ -460,7 +464,7 @@ export function PosDemoLogin({
                     setShowDisconnectModal(false);
                     onBack(); // Go back to store connection screen
                   }}
-                  className="flex-1 rounded-xl bg-mintcom-red py-3 text-sm font-bold text-white shadow-md shadow-mintcom-red/25"
+                  className="min-h-[44px] flex-1 rounded-xl bg-mintcom-red py-3 text-sm font-bold text-white shadow-md shadow-mintcom-red/25"
                 >
                   {disconnecting ? 'Disconnecting...' : 'Disconnect'}
                 </button>

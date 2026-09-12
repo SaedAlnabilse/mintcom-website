@@ -600,25 +600,28 @@ export function DemoSupportScreen({ onBack, variant = 'inApp' }: DemoSupportScre
         Use these answers during a shift when something is unclear.
       </p>
 
-      <div className="relative mb-3">
-        <span className="pointer-events-none absolute start-2.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-xl bg-mintcom-green/12 text-mintcom-green">
-          <Search size={13} />
-        </span>
-        <input
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder='Try "refund", "printer", "drawer"…'
-          className="w-full rounded-xl border border-gray-200 bg-white py-2.5 ps-11 pe-9 text-[13px] outline-none focus:border-mintcom-green/50 focus:ring-2 focus:ring-mintcom-green/15 dark:border-white/10 dark:bg-mintcom-surface dark:text-white"
-        />
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={() => setSearchQuery('')}
-            className="absolute end-2.5 top-1/2 -translate-y-1/2 rounded-xl p-1 text-text-tertiary hover:bg-mintcom-green/10 hover:text-mintcom-green"
-          >
-            <X size={12} />
-          </button>
-        )}
+      <div className="sticky top-0 z-10 -mx-1 bg-white/95 px-1 py-2 backdrop-blur dark:bg-mintcom-dark/95">
+        <div className="relative">
+          <span className="pointer-events-none absolute start-2.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-xl bg-mintcom-green/12 text-mintcom-green">
+            <Search size={13} />
+          </span>
+          <input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder='Try "refund", "printer", "drawer"…'
+            className="min-h-[44px] w-full rounded-xl border border-gray-200 bg-white py-2.5 ps-11 pe-12 text-[16px] sm:text-[13px] outline-none focus:border-mintcom-green/50 focus:ring-2 focus:ring-mintcom-green/15 dark:border-white/10 dark:bg-mintcom-surface dark:text-white"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
+              className="absolute end-1.5 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-xl text-text-tertiary hover:bg-mintcom-green/10 hover:text-mintcom-green"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
       </div>
 
       {filteredFaqs.length === 0 ? (
@@ -655,8 +658,8 @@ export function DemoSupportScreen({ onBack, variant = 'inApp' }: DemoSupportScre
                   >
                     {faq.id}
                   </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[10px] font-semibold uppercase tracking-wide text-mintcom-green">
+                  <span className="min-w-0 flex-1 break-words">
+                    <span className="block text-[11px] font-semibold uppercase tracking-wide text-mintcom-green">
                       {faq.category}
                     </span>
                     <span className="mt-0.5 block text-[13px] font-semibold leading-snug text-text-primary dark:text-white">
@@ -681,7 +684,7 @@ export function DemoSupportScreen({ onBack, variant = 'inApp' }: DemoSupportScre
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="border-t border-mintcom-green/15 bg-mintcom-green/[0.03] px-3.5 py-3 ps-12 dark:border-mintcom-green/20">
+                      <div className="border-t border-mintcom-green/15 bg-mintcom-green/[0.03] px-3.5 py-3 ps-3.5 sm:ps-12 dark:border-mintcom-green/20">
                         <p className="text-[12px] leading-relaxed text-text-secondary dark:text-mintcom-textSecondary">
                           {faq.answer}
                         </p>
@@ -700,33 +703,33 @@ export function DemoSupportScreen({ onBack, variant = 'inApp' }: DemoSupportScre
   return (
     <div className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden bg-white dark:bg-mintcom-dark">
       {/* Header — matches mintcom-pos ContactSupportScreen: back + "POS Help for Live Service" */}
-      <div className="shrink-0 bg-white px-4 pb-3 pt-4 dark:bg-mintcom-dark sm:px-6">
-        <div className="flex items-center gap-3">
+      <div className="shrink-0 bg-white px-4 pb-3 pt-[max(1rem,env(safe-area-inset-top))] dark:bg-mintcom-dark sm:px-6">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           {isLoginPresentation && onBack ? (
             <button
               type="button"
               onClick={onBack}
               aria-label="Back"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-text-primary transition-colors hover:bg-gray-200 dark:bg-white/10 dark:text-white dark:hover:bg-white/15"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gray-100 text-text-primary transition-colors hover:bg-gray-200 dark:bg-white/10 dark:text-white dark:hover:bg-white/15"
             >
-              <ArrowLeft size={22} strokeWidth={2} />
+              <ArrowLeft size={22} strokeWidth={2} className="rtl:rotate-180" />
             </button>
           ) : null}
-          <h2 className="font-sans text-[22px] font-bold tracking-tight text-text-primary dark:text-white sm:text-[28px] sm:tracking-[-0.5px]">
+          <h2 className="min-w-0 flex-1 font-sans text-[19px] font-bold leading-tight tracking-tight text-text-primary dark:text-white sm:text-[28px] sm:tracking-[-0.5px]">
             POS Help for Live Service
           </h2>
           {!isLoginPresentation && (
             <Link
               to="/support"
-              className="ms-auto inline-flex shrink-0 items-center gap-1 rounded-xl border border-mintcom-green/30 bg-mintcom-green/10 px-3 py-1.5 text-[11px] font-semibold text-mintcom-green transition-colors hover:bg-mintcom-green/15"
+              className="ms-auto inline-flex min-h-[44px] shrink-0 items-center gap-1 rounded-xl border border-mintcom-green/30 bg-mintcom-green/10 px-3 py-1.5 text-[11px] font-semibold text-mintcom-green transition-colors hover:bg-mintcom-green/15"
             >
-              Full help center <ChevronRight size={14} />
+              Full help center <ChevronRight size={14} className="rtl:rotate-180" />
             </Link>
           )}
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4 sm:pt-2">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4 sm:pt-2" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
         <div className="mx-auto flex max-w-5xl flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
           <div className="flex flex-col gap-6 lg:max-w-md lg:flex-1">
             {contactSection}

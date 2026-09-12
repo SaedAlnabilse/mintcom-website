@@ -52,7 +52,9 @@ export function MobileAppModal({
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-sm rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
+            role="dialog"
+            aria-modal="true"
+            className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-sm rounded-t-3xl sm:rounded-2xl overflow-hidden max-h-[92dvh] sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
           >
             {/* Mobile Drag Handle */}
             <div className="sm:hidden flex justify-center pt-2 pb-1">
@@ -73,7 +75,7 @@ export function MobileAppModal({
             </div>
 
             {/* Content */}
-            <div className="p-6 pt-2 pb-6">
+            <div className="p-6 pt-2 overflow-y-auto overscroll-contain custom-scrollbar" style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
               <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-6 mb-4 border border-gray-100 dark:border-white/5">
                 <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.04] px-5 py-6 text-center shadow-sm">
                   {/* Non-clickable QR container for phone camera scanning */}
@@ -103,7 +105,7 @@ export function MobileAppModal({
 
               {/* Badges */}
               <div className="text-center">
-                <div className="flex flex-row items-center justify-center gap-3">
+                <div className="flex flex-col min-[380px]:flex-row items-center justify-center gap-3">
                   {hasIosDownload ? (
                     <a
                       href={iosUrl}

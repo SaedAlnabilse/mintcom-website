@@ -51,13 +51,14 @@ export function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         {/* Back to Login */}
         {!isSuccess && (
-          <button
-            onClick={() => navigate('/login')}
-            className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors mb-8 group"
-          >
-            <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="label-strong font-sans">{t('auth.forgotPassword.backToLogin').toUpperCase()}</span>
-          </button>
+            <button
+              onClick={() => navigate('/login')}
+              aria-label={t('auth.forgotPassword.backToLogin')}
+              className="flex min-h-[44px] items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors mb-8 group"
+            >
+              <ArrowLeft size={20} className={`group-hover:-translate-x-1 transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:translate-x-1' : ''}`} />
+              <span className="label-strong font-sans">{t('auth.forgotPassword.backToLogin').toUpperCase()}</span>
+            </button>
         )}
 
         <AnimatePresence mode="wait">
@@ -67,9 +68,9 @@ export function ForgotPasswordPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-8 lg:p-12 border border-gray-200 dark:border-white/10"
+              className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-6 sm:p-8 lg:p-12 border border-gray-200 dark:border-white/10"
             >
-              <div className="text-center mb-10">
+              <div className="text-center mb-8 sm:mb-10">
                 <div className="w-16 h-16 bg-mintcom-green/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Mail className="text-mintcom-green" size={32} />
                 </div>
@@ -81,11 +82,11 @@ export function ForgotPasswordPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight ml-1">{formatInputLabel(t('auth.forgotPassword.emailLabel'), t('common.locale'))}</label>
                   <div className="relative group">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                    <Mail className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                     <input maxLength={255}
                       type="email"
                       {...register('email')}
-                      className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                      className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 ps-12 pe-4 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                       placeholder={formatInputPlaceholder(t('auth.login.emailPlaceholder'), t('common.locale'))}
                     />
                   </div>
@@ -97,7 +98,7 @@ export function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-5 bg-mintcom-green text-black label-strong font-sans rounded-xl hover:bg-mintcom-green/90 transition-all shadow-md shadow-mintcom-green/20 disabled:opacity-50 disabled:cursor-mintcom-wait flex items-center justify-center gap-3"
+                  className="w-full min-h-[52px] py-4 bg-mintcom-green text-black label-strong font-sans rounded-xl hover:bg-mintcom-green/90 transition-all shadow-md shadow-mintcom-green/20 disabled:opacity-50 disabled:cursor-mintcom-wait flex items-center justify-center gap-3 active:scale-[0.98]"
                 >
                   {isSubmitting ? <Loader2 className="animate-spin" size={24} /> : null}
                   {t('auth.forgotPassword.sendLink')}
@@ -109,7 +110,7 @@ export function ForgotPasswordPage() {
               key="success"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-8 lg:p-12 border border-gray-200 dark:border-white/10 text-center"
+              className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-6 sm:p-8 lg:p-12 border border-gray-200 dark:border-white/10 text-center"
             >
               <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
                 <CheckCircle2 className="text-mintcom-green" size={40} />

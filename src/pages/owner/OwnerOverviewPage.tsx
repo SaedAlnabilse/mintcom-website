@@ -383,12 +383,12 @@ export function OwnerOverviewPage() {
                     transition={{ delay: 0.2 }}
                     className="lg:col-span-2 p-5 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm flex flex-col h-full"
                 >
-                    <div className="flex items-center justify-between mb-4 shrink-0">
-                        <div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 shrink-0">
+                        <div className="min-w-0">
                             <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.overview.netSalesTrend')}</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('owner.overview.consolidatedPerf')}</p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 shrink-0">
                             <div className="w-3 h-3 rounded-full bg-mintcom-green" />
                             <span className="text-xs font-medium text-gray-500">
                                 {t('owner.overview.netSales')} ({currencyCode})

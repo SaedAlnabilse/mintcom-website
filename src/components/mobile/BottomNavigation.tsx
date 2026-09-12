@@ -30,9 +30,10 @@ export function BottomNavigation({ onMenuClick, onMobileAppClick, items }: Botto
   return (
     <div
       dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-      className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white dark:bg-mintcom-surface border-t border-gray-200 dark:border-white/10 pb-safe"
+      className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white dark:bg-mintcom-surface border-t border-gray-200 dark:border-white/10"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
-      <nav className="flex items-center justify-around h-16">
+      <nav className="flex items-stretch justify-around min-h-16" style={{ minHeight: 'calc(4rem + env(safe-area-inset-bottom))' }}>
         {displayItems.map((item) => {
           const Icon = item.icon;
 
@@ -41,7 +42,7 @@ export function BottomNavigation({ onMenuClick, onMobileAppClick, items }: Botto
               key={item.path}
               to={item.path}
               end={item.exact}
-              className="relative flex flex-col items-center justify-center flex-1 h-full touch-target"
+              className="relative flex flex-col items-center justify-center flex-1 min-w-0 h-full py-2 touch-target px-1"
             >
               {({ isActive }) => (
                 <>
@@ -60,7 +61,7 @@ export function BottomNavigation({ onMenuClick, onMobileAppClick, items }: Botto
                     />
                   </div>
                   <span
-                    className={`mt-1 label-strong font-sans transition-colors ${isActive ? 'text-mintcom-green' : 'text-gray-400'
+                    className={`mt-1 label-strong font-sans text-[10px] leading-tight text-center truncate w-full px-0.5 transition-colors ${isActive ? 'text-mintcom-green' : 'text-gray-400'
                       }`}
                   >
                     {item.label}
@@ -76,10 +77,10 @@ export function BottomNavigation({ onMenuClick, onMobileAppClick, items }: Botto
           type="button"
           onClick={onMobileAppClick}
           aria-label={t('dashboard.menu.getMobileApp')}
-          className="flex flex-col items-center justify-center flex-1 h-full touch-target text-gray-400 hover:text-mintcom-green transition-colors"
+          className="flex flex-col items-center justify-center flex-1 min-w-0 h-full py-2 px-1 touch-target text-gray-400 hover:text-mintcom-green transition-colors"
         >
-          <Smartphone size={22} />
-          <span className="mt-1 label-strong font-sans">{t('common.app')}</span>
+          <Smartphone size={22} className="shrink-0" />
+          <span className="mt-1 label-strong font-sans text-[10px] leading-tight text-center truncate w-full">{t('common.app')}</span>
         </button>
 
 
@@ -87,10 +88,10 @@ export function BottomNavigation({ onMenuClick, onMobileAppClick, items }: Botto
         <button
           onClick={onMenuClick}
           aria-label={t('common.more')}
-          className="flex flex-col items-center justify-center flex-1 h-full touch-target"
+          className="flex flex-col items-center justify-center flex-1 min-w-0 h-full py-2 px-1 touch-target"
         >
-          <Menu size={22} className="text-gray-400" />
-          <span className="mt-1 label-strong font-sans">{t('common.more')}</span>
+          <Menu size={22} className="text-gray-400 shrink-0" />
+          <span className="mt-1 label-strong font-sans text-[10px] leading-tight text-center truncate w-full">{t('common.more')}</span>
         </button>
       </nav>
     </div>
