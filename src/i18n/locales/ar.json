@@ -3798,8 +3798,7 @@
       "addedLocation": "الموقع المضاف",
       "billedCycle": "الفوترة {{cycle}}",
       "existingAccountBenefit": "ميزة الحساب الحالي",
-      "paymentDetails": "تفاصيل الدفع",
-      "trialPayNote": "أنت مشمول بالفترة التجريبية لمدة 14 يوماً، ولن يتم خصم أي مبلغ حتى انتهائها."
+      "paymentDetails": "تفاصيل الدفع"
     },
     "step3": {
       "errors": {
