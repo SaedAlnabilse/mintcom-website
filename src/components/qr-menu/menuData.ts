@@ -94,6 +94,7 @@ export const RESTAURANT_INFO: RestaurantInfo = {
   banner: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
   rating: 4.9,
   reviewsCount: 384,
+  // Mock sample diner address for QR demo ("Mint Bistro") — not Mintcom corporate registered office.
   address: {
     en: '45 Abdoun Circle, Amman, Jordan',
     ar: '٤٥ دوار عبدون، عمّان، الأردن',

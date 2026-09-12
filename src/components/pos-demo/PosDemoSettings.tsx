@@ -3822,7 +3822,7 @@ export function DemoSettingsScreen({
               <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/8 dark:bg-mintcom-surface sm:p-6">
                 {/* Intro paragraphs */}
                 <p className="mb-4 text-[14px] leading-relaxed text-text-secondary dark:text-mintcom-textSecondary">
-                  Mintcom LLC is a technology solutions company specializing in Point of Sale (POS) systems and
+                  Mintcom Ltd is a technology solutions company specializing in Point of Sale (POS) systems and
                   digital business management platforms. Our products are designed to simplify daily operations,
                   from fast, reliable sales processing on digital devices to automated management tools that give
                   businesses full operational visibility.
@@ -3941,7 +3941,7 @@ export function DemoSettingsScreen({
                 </a>
 
                 <p className="mt-4 text-[14px] text-text-secondary dark:text-mintcom-textSecondary">
-                  All rights reserved, Mintcom LLC 2026
+                  All rights reserved, Mintcom Ltd 2026
                 </p>
               </div>
             </div>

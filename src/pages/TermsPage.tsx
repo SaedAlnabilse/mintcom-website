@@ -30,7 +30,7 @@ export const TermsPage = () => {
                         </div>
                         <h1 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('legal.terms.title')}</h1>
                         <p className="label-strong font-sans">
-                            {t('legal.terms.lastUpdated')}: {new Date('2026-09-13').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
+                            {t('legal.terms.lastUpdated')}: {new Date('2026-09-15').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
                         </p>
                     </motion.div>
                 </div>

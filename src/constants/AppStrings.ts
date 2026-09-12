@@ -3,7 +3,7 @@ export const AppStrings = {
     NAME: "Mintcom",
     TAGLINE: "Enterprise",
     VERSION: "v2.0",
-    COPYRIGHT: "Copyright 2026 Mintcom LLC. All rights reserved.",
+    COPYRIGHT: "Copyright 2026 Mintcom Ltd. All rights reserved.",
   },
   COMMON: {
     LOADING: "Loading...",

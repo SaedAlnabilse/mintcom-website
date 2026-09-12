@@ -42,7 +42,7 @@ export function CookiePolicyPage() {
             <div className="flex items-center gap-4 text-xs font-bold text-gray-500 pt-4">
               <span className="flex items-center gap-2">
                 <Clock size={16} />
-                {t('legal.cookies.lastUpdated')}: {new Date('2026-09-13').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                {t('legal.cookies.lastUpdated')}: {new Date('2026-09-15').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </span>
             </div>
           </motion.div>

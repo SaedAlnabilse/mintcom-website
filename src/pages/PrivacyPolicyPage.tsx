@@ -53,7 +53,7 @@ export const PrivacyPolicyPage = () => {
             rightsOutro: 'لممارسة أي من هذه الحقوق، تواصل معنا عبر',
             rightsLegal: '. وسنرد وفقاً للقانون المعمول به.',
             governingLawTitle: 'القانون الواجب التطبيق',
-            governingLawBody: 'تخضع سياسة الخصوصية هذه واستخدامك لخدمات Mintcom لقوانين المملكة الأردنية الهاشمية، ما لم يفرض القانون المحلي الإلزامي خلاف ذلك.'
+            governingLawBody: 'تخضع سياسة الخصوصية هذه واستخدامك لخدمات Mintcom لقوانين إنجلترا وويلز، ما لم يفرض القانون المحلي الإلزامي خلاف ذلك.'
         }
         : {
             socialTitle: 'Sign in with Google or Apple',
@@ -98,7 +98,7 @@ export const PrivacyPolicyPage = () => {
             rightsOutro: 'To exercise any of these rights, contact us at',
             rightsLegal: '. We will respond in accordance with applicable law.',
             governingLawTitle: 'Governing Law',
-            governingLawBody: 'This Privacy Policy and your use of the Mintcom services are governed by the laws of the Hashemite Kingdom of Jordan, unless mandatory local law requires otherwise.'
+            governingLawBody: 'This Privacy Policy and your use of the Mintcom services are governed by the laws of England and Wales, unless mandatory local law requires otherwise.'
         };
 
     return (
@@ -123,7 +123,7 @@ export const PrivacyPolicyPage = () => {
                         </div>
                         <h1 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('legal.privacy.title')}</h1>
                         <p className="label-strong font-sans">
-                            {t('legal.privacy.lastUpdated')}: {new Date('2026-09-13').toLocaleDateString(isArabic ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
+                            {t('legal.privacy.lastUpdated')}: {new Date('2026-09-15').toLocaleDateString(isArabic ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
                         </p>
                     </motion.div>
                 </div>
@@ -381,8 +381,15 @@ export const PrivacyPolicyPage = () => {
                                 {t('legal.privacy.contact.desc')}
                             </p>
                             <div className="space-y-2">
-                                <div className="flex items-center gap-3 text-sm font-bold text-gray-600 dark:text-gray-300">
-                                    <span className="text-gray-900 dark:text-white">Mintcom LLC</span>
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-3 text-sm font-bold text-gray-600 dark:text-gray-300">
+                                        <span className="text-gray-900 dark:text-white">Mintcom Ltd</span>
+                                    </div>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        {isArabic
+                                            ? 'مسجلة في إنجلترا وويلز (رقم الشركة [CRN]) • المكتب المسجل: [Office Address] • رقم تسجيل ICO: [ICO Registration Number]'
+                                            : 'Registered in England and Wales (Company No. [CRN]) • Registered Office: [Office Address] • ICO Registration: [ICO Registration Number]'}
+                                    </p>
                                 </div>
                                 <div className="flex items-center gap-3 text-sm font-medium text-gray-600 dark:text-gray-300">
                                     <span className={isArabic ? 'ml-2' : 'w-20'}>{t('common.email')}:</span>
