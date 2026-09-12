@@ -3706,8 +3706,7 @@
       "activateDesc": "您的卡将为这家新门店扣款 {{amount}}。",
       "activateTitle": "激活订阅",
       "addNew": "添加新卡",
-      "afterTrial": "14 天后",
-      "trialThenPrice": "之后为 {{price}}，在 14 天试用结束后计费",
+      "trialThenPrice": "之后为 {{price}},在 {{days}} 天试用结束后计费",
       "trialDisclosureTitle": "免费至 {{date}}",
       "trialDisclosureBody": "您的 {{days}} 天免费试用于 {{date}} 结束后，将开始为该门店支付 {{price}}。在此之前随时取消均不会产生费用。",
       "trialChooseCycleHint": "选择免费试用结束后的计费方式",
@@ -3723,7 +3722,7 @@
         "expiryRequired": "请填写月/年（MM/YY）"
       },
       "expiry": "有效期",
-      "freeDays": "14 天免费",
+      "freeDays": "{{days}} 天免费",
       "monthly": "按月",
       "priceMonth": "{{price}} {{currency}}/月",
       "startTrialButton": "开始免费试用",
@@ -3734,11 +3733,10 @@
       "breakdownAfterTrial": "免费试用结束后，每个计费周期：",
       "taxNotApplicable": "税费",
       "taxTooltip": "税费根据您的位置估算。最终金额按付款方式所属国家/地区计算。",
-      "trialDisclosureCheckout": "14天免费试用：今天不会扣款。在 {{date}}，将从您的卡中扣除 {{amount}}（含适用增值税），之后每{{cycle}}扣除 {{amount}}，直到您取消。",
-      "paidDisclosureCheckout": "今天将从您的卡中扣除 {{amount}}（含适用增值税），之后每{{cycle}}扣除 {{amount}}，直到您取消。",
-      "cancelPath": "您可在此日期前随时在 设置 → 账单 中取消以避免任何费用。查看我们的",
+      "trialDisclosureCheckout": "{{days}} 天免费试用:今天不会扣款。您的订阅将于 {{date}} 自动续期,之后每{{cycle}}扣除 {{amount}}(含适用增值税),直到您取消。",
+      "paidDisclosureCheckout": "今天将从您的卡中扣除 {{amount}}(含适用增值税)。您的订阅将自动续期,之后每{{cycle}}扣除 {{amount}},直到您取消。",
+      "cancelPath": "您可随时在 业主门户 → 账单 中取消。查看我们的",
       "consentAnd": "和",
-      "consentCheckbox": "我授权自 {{date}} 起按 {{cycle}} 定期扣款 {{amount}}（含适用增值税），并同意服务条款和隐私政策。",
       "consentRequired": "请授权定期扣款以继续。",
       "trialDesc": "今天不会扣款。试用结束前可随时取消。",
       "trialTitle": "开始免费试用",
@@ -3747,7 +3745,11 @@
       "addedLocation": "已添加门店",
       "billedCycle": "按{{cycle}}计费",
       "existingAccountBenefit": "现有账户权益",
-      "paymentDetails": "付款信息"
+      "paymentDetails": "付款信息",
+      "consentCheckboxTrial": "您同意 Mintcom 自 {{date}} 起按上述金额从您的卡中扣款,并按{{cycleNoun}}定期重复扣款,直到您按照我们的条款取消。您可随时在账户设置中取消。",
+      "consentCheckboxPaid": "您同意 Mintcom 现在按上述金额从您的卡中扣款,并按{{cycleNoun}}定期重复扣款,直到您按照我们的条款取消。您可随时在账户设置中取消。",
+      "cycleMonth": "月",
+      "cycleYear": "年"
     },
     "step3": {
       "errors": {

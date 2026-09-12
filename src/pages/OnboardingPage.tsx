@@ -793,9 +793,9 @@ export function OnboardingPage() {
       maximumFractionDigits: 2,
     });
   const vatInclusiveTotalLabel = `${formatMoney(vatBreakdown.total)} ${effectiveCurrency}`;
-  const recurringCycleWord = billingCycle === BILLING_CYCLES.YEARLY
-    ? t('onboarding.step2.yearly', { defaultValue: 'Yearly' }).toLowerCase()
-    : t('onboarding.step2.monthly', { defaultValue: 'Monthly' }).toLowerCase();
+  const recurringCycleNoun = billingCycle === BILLING_CYCLES.YEARLY
+    ? t('onboarding.step2.cycleYear', { defaultValue: 'year' })
+    : t('onboarding.step2.cycleMonth', { defaultValue: 'month' });
   const firstChargeDateLabel = isTrialFlow
     ? trialEndDateLabel
     : new Date().toLocaleDateString(t('common.locale'), {
@@ -2012,7 +2012,10 @@ export function OnboardingPage() {
                           </h2>
                           {isTrialFlow ? (
                             <span className="mt-1 inline-flex items-center rounded-full bg-yellow-400 px-2.5 py-0.5 text-[11px] font-sans font-bold text-black">
-                              {t('onboarding.step2.freeDays')}
+                              {t('onboarding.step2.freeDays', {
+                                defaultValue: '{{days}} DAYS FREE',
+                                days: TRIAL_DAYS,
+                              })}
                             </span>
                           ) : (
                             <span className="mt-1 inline-flex items-center rounded-full bg-mintcom-green px-2.5 py-0.5 text-[11px] font-sans font-bold text-black">
@@ -2178,8 +2181,9 @@ export function OnboardingPage() {
                         <span className="text-sm font-sans font-bold">
                           {isTrialFlow
                             ? t('onboarding.step2.trialThenPrice', {
-                                defaultValue: `Then ${selectedPriceWithPeriod}, billed after your 14-day trial`,
+                                defaultValue: `Then ${selectedPriceWithPeriod}, billed after your ${TRIAL_DAYS}-day trial`,
                                 price: selectedPriceWithPeriod,
+                                days: TRIAL_DAYS,
                               })
                             : t('onboarding.step2.billedCycle', {
                                 defaultValue: `Billed ${selectedPlanLabel.toLowerCase()}`,
@@ -2494,21 +2498,22 @@ export function OnboardingPage() {
                         {isTrialFlow
                           ? t('onboarding.step2.trialDisclosureCheckout', {
                               defaultValue:
-                                '14-day free trial: You will not be charged today. On {{date}}, your card will be charged {{amount}} (incl. applicable VAT), and then {{amount}} {{cycle}} until you cancel.',
+                                '{{days}}-day free trial: You will not be charged today. Your subscription will auto-renew on {{date}} and you will be charged {{amount}} (incl. applicable VAT) every {{cycle}} until you cancel.',
+                              days: TRIAL_DAYS,
                               date: firstChargeDateLabel,
                               amount: vatInclusiveTotalLabel,
-                              cycle: recurringCycleWord,
+                              cycle: recurringCycleNoun,
                             })
                           : t('onboarding.step2.paidDisclosureCheckout', {
                               defaultValue:
-                                'Your card will be charged {{amount}} (incl. applicable VAT) today, and then {{amount}} {{cycle}} until you cancel.',
+                                'You will be charged {{amount}} (incl. applicable VAT) today. Your subscription will auto-renew and you will be charged {{amount}} every {{cycle}} until you cancel.',
                               amount: vatInclusiveTotalLabel,
-                              cycle: recurringCycleWord,
+                              cycle: recurringCycleNoun,
                             })}
                         {' '}
                         {t('onboarding.step2.cancelPath', {
                           defaultValue:
-                            'You can cancel anytime before then in Settings → Billing to avoid any charges. View our',
+                            'You can cancel at any time in Owner Portal → Billing. View our',
                         })}{' '}
                         <a
                           href="/legal/terms"
@@ -2549,13 +2554,18 @@ export function OnboardingPage() {
                           className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-mintcom-green"
                         />
                         <span className="text-[11px] font-sans leading-relaxed text-gray-600 dark:text-gray-300">
-                          {t('onboarding.step2.consentCheckbox', {
-                            defaultValue:
-                              'I authorize recurring {{cycle}} charges of {{amount}} (incl. applicable VAT) starting on {{date}}, and I agree to the Terms of Service and Privacy Policy.',
-                            amount: vatInclusiveTotalLabel,
-                            cycle: recurringCycleWord,
-                            date: firstChargeDateLabel,
-                          })}
+                          {isTrialFlow
+                            ? t('onboarding.step2.consentCheckboxTrial', {
+                                defaultValue:
+                                  'You agree that Mintcom will charge your card in the amount above starting on {{date}} and on a recurring {{cycleNoun}} basis until you cancel in accordance with our Terms. You can cancel at any time in your account settings.',
+                                date: firstChargeDateLabel,
+                                cycleNoun: recurringCycleNoun,
+                              })
+                            : t('onboarding.step2.consentCheckboxPaid', {
+                                defaultValue:
+                                  'You agree that Mintcom will charge your card in the amount above now and on a recurring {{cycleNoun}} basis until you cancel in accordance with our Terms. You can cancel at any time in your account settings.',
+                                cycleNoun: recurringCycleNoun,
+                              })}
                         </span>
                       </label>
                       {consentError && !billingConsent && (
