@@ -37,7 +37,8 @@ export const PrivacyPolicyPage = () => {
                 'خادمك الخلفي المرتبط بحسابك أو نشاطك التجاري لمعالجة المبيعات والمخزون والحسابات والتقارير.',
                 'معالجو الدفع إذا قمت بتفعيل وسائل الدفع الإلكتروني.',
                 'Google Firebase Crashlytics لمعالجة سجلات الأعطال وبيانات التشخيص ومعرّف جهاز بهدف مراقبة الاستقرار وتحسين أداء التطبيق، وليس لتتبعك عبر التطبيقات أو الخدمات.',
-                'Groq، مزود المساعد الذكي لدينا، الذي يعالج الأسئلة التي ترسلها إلى المساعد داخل التطبيق مع بيانات النشاط التجاري اللازمة للإجابة عليها (مثل المبيعات والمنتجات والتقارير). تُستخدم هذه البيانات فقط لإنشاء إجابتك ولا تُستخدم لتدريب نماذج أطراف ثالثة أو لتتبعك.'
+                'معالج الاستدلال السحابي للذكاء الاصطناعي، الذي يعالج الأسئلة التي ترسلها إلى المساعد مع بيانات النشاط التجاري اللازمة للإجابة عليها (مثل المبيعات والمنتجات والتقارير). نحن نوجه المعالج لاستخدام هذه البيانات فقط لإنشاء إجابتك لطلبك الحالي. تحتفظ Mintcom بسجلات المحادثات في المنصة لمدة 90 يوماً قبل حذفها تلقائياً وفقاً لسياسة الاحتفاظ لدينا.',
+                'خدمات التوليد السحابي الآلي للصور، والتي تتلقى أسماء المنتجات والأوصاف النصية لتوليد صور توضيحية للمنتجات. يُحظر تماماً على المستخدمين تضمين أي بيانات شخصية (مثل أسماء الأفراد أو بيانات الاتصال أو الوجوه) في نصوص توليد الصور.'
             ],
             deletionNote: 'لطلب حذف الحساب والبيانات، أرسل رسالة من البريد الإلكتروني المسجل في حسابك أو أرفق اسم النشاط التجاري مع البريد الإلكتروني أو رقم الهاتف المرتبط بالحساب حتى نتمكن من التحقق من الهوية. بعد التحقق، نحذف أو نخفي هوية البيانات المؤهلة خلال 30 يوماً، مع الاحتفاظ فقط بما يلزم قانونياً أو ضريبياً أو محاسبياً أو أمنياً أو لتسوية النزاعات.',
             rightsTitle: '6. حقوقك',
@@ -81,7 +82,8 @@ export const PrivacyPolicyPage = () => {
                 'Your backend server instance associated with your business account so sales, inventory, account, and reporting features can function.',
                 'Payment processors if you choose to enable electronic payment integrations.',
                 'Google Firebase Crashlytics, which processes crash logs, diagnostic data, and a device identifier on our behalf to help us monitor stability and improve app performance, not to track you across apps or services.',
-                'Groq, our AI assistant provider, which processes the questions you send to the in-app assistant together with the related business data needed to answer them (such as sales, products, and reports). This data is used only to generate your answer and is not used to train third-party models or to track you.'
+                'Our cloud AI inference processor, which processes the questions you send to the in-app assistant together with the related business data needed to answer them (such as sales, products, and reports). We instruct the processor to use this data solely to generate your answer for that request. Mintcom independently retains in-app conversation threads for 90 days before automated deletion in accordance with our retention schedule.',
+                'Automated cloud image synthesis providers, which receive product titles and category descriptions solely to generate illustrative product photos. You must not submit personal data (such as individual names, phone numbers, or identifiable faces) in image generation prompts.'
             ],
             deletionNote: 'For account and data deletion requests, email us from the address registered to your Mintcom account or include your business name together with the email address or phone number associated with the account so we can verify identity. Once verified, we delete or anonymize eligible personal data within 30 days, except where longer retention is required for legal, tax, accounting, billing, security, fraud-prevention, or dispute-resolution purposes.',
             rightsTitle: '6. Your Rights',
@@ -121,7 +123,7 @@ export const PrivacyPolicyPage = () => {
                         </div>
                         <h1 className="font-magilio text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('legal.privacy.title')}</h1>
                         <p className="label-strong font-sans">
-                            {t('legal.privacy.lastUpdated')}: {new Date('2026-07-11').toLocaleDateString(isArabic ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
+                            {t('legal.privacy.lastUpdated')}: {new Date('2026-09-13').toLocaleDateString(isArabic ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
                         </p>
                     </motion.div>
                 </div>

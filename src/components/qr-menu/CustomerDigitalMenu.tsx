@@ -130,6 +130,9 @@ export const CustomerDigitalMenu: React.FC<CustomerDigitalMenuProps> = ({
     veganBadge: isRtl ? 'نباتي صرف' : 'Vegan',
     vegBadge: isRtl ? 'نباتي' : 'Vegetarian',
     gfBadge: isRtl ? 'خالي غلوتين' : 'Gluten Free',
+    allergenDisclaimer: isRtl
+      ? 'يتم توفير عناصر القائمة والأسعار والصور ومعلومات مسببات الحساسية مباشرة من قبل المطعم. إذا كان لديك أي حساسية أو متطلبات غذائية خاصة، يرجى التأكيد مباشرة مع موظفي المطعم قبل الطلب أو الاستهلاك.'
+      : 'Menu items, pricing, photos, and allergen disclosures are provided directly by the restaurant. If you have an allergy or dietary intolerance, please confirm directly with restaurant staff before ordering or consuming.',
     poweredBy: isRtl ? 'قائمة رقمية مدعومة بنظام Mintcom' : 'Digital Menu Powered by Mintcom',
     // V2 translations
     addToOrder: isRtl ? 'إضافة للطلب' : 'Add to Order',
@@ -814,8 +817,13 @@ export const CustomerDigitalMenu: React.FC<CustomerDigitalMenuProps> = ({
           </div>
         )}
 
-        {/* Footer Brand watermark */}
-        <div className="text-center pt-8 pb-3">
+        {/* Footer Brand watermark & Diner allergen disclaimer */}
+        <div className="text-center pt-8 pb-4 px-4 space-y-3">
+          <p className={`text-[11px] leading-relaxed max-w-sm mx-auto font-medium ${
+            isDark ? 'text-slate-400' : 'text-slate-500'
+          }`}>
+            {t.allergenDisclaimer}
+          </p>
           <div
             className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-[11px] shadow-xs ${
               isDark ? 'bg-slate-900/80 border-white/10 text-slate-400' : 'bg-white border-slate-200 text-slate-500'

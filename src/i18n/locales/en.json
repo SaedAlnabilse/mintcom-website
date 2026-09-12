@@ -1816,6 +1816,7 @@
       "paymentMethods": "Payment Methods",
       "paymentsReports": "Payments Reports",
       "products": "Products",
+      "qrMenu": "QR Menu & Tables",
       "recipes": "Recipes",
       "roles": "Roles",
       "salesAndReporting": "Sales and Reporting",
@@ -3461,7 +3462,9 @@
       "use": {
         "u1": "Mintcom grants you a limited, non-exclusive, non-transferable license to use our services for your business operations.",
         "u2": "You may not sublicense, sell, or redistribute access to our services without our written consent.",
-        "u3": "Product image generation is limited to 200 generations per account each calendar month across the website and backoffice applications. The allowance resets at the start of the next month, and unused generations do not roll over."
+        "u3": "Product image generation is limited to 200 generations per account each calendar month across the website and backoffice applications. The allowance resets at the start of the next month, and unused generations do not roll over.",
+        "u4": "AI-generated product images are synthetic visual illustrations provided solely for design and preview purposes. Under the Food Information Regulations 2014 (FIR) and the Consumer Protection from Unfair Trading Regulations 2008 (or equivalent consumer protection laws in your jurisdiction), merchants are solely responsible for ensuring that all product listings, food photos, and descriptions accurately depict items offered and do not mislead consumers. AI-generated images must never be relied upon as representations of actual ingredients, portion sizes, preparation methods, or allergen safety. Merchants must independently and accurately disclose all required allergen and dietary information.",
+        "u5": "You retain ownership of your text prompts. Mintcom grants you a non-exclusive, royalty-free, worldwide commercial license to use, adapt, and display images generated via the service for your business operations. You must not submit prompts containing third-party trademarks, copyrighted characters, personal data, or unlawful, defamatory, or deceptive content. Because generative AI outputs are non-exclusive and probabilistic, Mintcom does not warrant that generated images will be unique, eligible for exclusive copyright protection, or free from claims of third-party visual similarity."
       }
     }
   },
