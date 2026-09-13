@@ -117,12 +117,12 @@ export const SupportCategoryPage = () => {
   if (!category || !acc) {
     return (
       <div className="min-h-screen bg-white font-sans dark:bg-[#050505]">
-        <Navbar />
+        <Navbar hideCommercialLinks />
         <main className="pt-32 pb-24 text-center">
           <h1 className="font-magilio mb-4 text-3xl font-bold">{t('support.categories.notFound')}</h1>
           <Link to="/support" className="font-bold text-mintcom-green hover:underline">← {t('support.articles.backToHelp')}</Link>
         </main>
-        <Footer />
+        <Footer hideCommercialLinks />
       </div>
     );
   }
@@ -131,7 +131,7 @@ export const SupportCategoryPage = () => {
 
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-      <Navbar />
+      <Navbar hideCommercialLinks />
 
       {/* ── Hero header ── */}
       <section className="relative overflow-hidden pt-24 pb-0">
@@ -325,7 +325,7 @@ export const SupportCategoryPage = () => {
 
         </div>
       </main>
-      <Footer />
+      <Footer hideCommercialLinks />
       <LoginRequiredModal open={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </div>
   );

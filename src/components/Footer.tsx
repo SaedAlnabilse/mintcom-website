@@ -20,7 +20,7 @@ import { Logo } from './Logo';
    - Separated contact strip above bottom bar
 ----------------------------------------------------------- */
 
-export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
+export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minimal?: boolean; hideCommercialLinks?: boolean }) => {
   const { t } = useTranslation();
   const isRtl = t('common.locale') === 'ar';
 
@@ -33,7 +33,7 @@ export const Footer = ({ minimal = false }: { minimal?: boolean }) => {
 
   const productLinks: FooterLink[] = [
     { name: t('nav.features'), href: '/#features' },
-    { name: t('nav.pricing'), href: '/#pricing' },
+    ...(hideCommercialLinks ? [] : [{ name: t('nav.pricing'), href: '/#pricing' }]),
     { name: t('nav.support'), href: '/support' },
   ];
 

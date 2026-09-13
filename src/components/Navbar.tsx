@@ -21,7 +21,7 @@ import { ONBOARDING_START_PATH } from '../utils/onboardingLaunch';
    - Dark mode: inverted luminance with neon accents
 ----------------------------------------------------------- */
 
-export const Navbar = () => {
+export const Navbar = ({ hideCommercialLinks = false }: { hideCommercialLinks?: boolean }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated, logout, needsOnboarding } = useAuth();
@@ -42,8 +42,8 @@ export const Navbar = () => {
     ? []
     : [
         { name: t('nav.features'), href: '/#features', id: 'features' },
-        { name: t('nav.pricing'), href: '/#pricing', id: 'pricing' },
-        { name: t('nav.tryDesktop'), href: '/try-pos', id: 'try-pos', target: '_blank', rel: 'noopener noreferrer' },
+        ...(hideCommercialLinks ? [] : [{ name: t('nav.pricing'), href: '/#pricing', id: 'pricing' }]),
+        ...(hideCommercialLinks ? [] : [{ name: t('nav.tryDesktop'), href: '/try-pos', id: 'try-pos', target: '_blank', rel: 'noopener noreferrer' }]),
         { name: t('nav.support'), href: '/support', id: 'support' },
       ];
 
@@ -213,7 +213,7 @@ export const Navbar = () => {
                     {t('nav.logout')}
                   </button>
                 </>
-              ) : (
+              ) : !hideCommercialLinks ? (
                 <>
                   <Link
                     to="/login"
@@ -259,7 +259,7 @@ export const Navbar = () => {
                     </Link>
                   </motion.div>
                 </>
-              )}
+              ) : null}
 
               {/* Divider */}
               <div className="mx-2 h-6 w-px bg-gray-200 dark:bg-white/10" />
@@ -450,7 +450,7 @@ export const Navbar = () => {
                       {t('nav.logout')}
                     </button>
                   </>
-                ) : (
+                ) : !hideCommercialLinks ? (
                   <>
                     <Link
                       to="/login"
@@ -467,7 +467,7 @@ export const Navbar = () => {
                       {t('nav.getStarted')}
                     </Link>
                   </>
-                )}
+                ) : null}
               </motion.div>
             </div>
           </motion.div>

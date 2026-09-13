@@ -240,13 +240,13 @@ export const TicketsPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-        <Navbar />
+        <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
           <div className="w-full px-6 md:px-10 lg:px-16">
             <SurfaceLoader message={t('common.loading')} className="max-w-4xl mx-auto" />
           </div>
         </main>
-        <Footer />
+        <Footer hideCommercialLinks />
       </div>
     );
   }
@@ -258,7 +258,7 @@ export const TicketsPage = () => {
   // ─── Render ──────────────────────────────────────────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-      <Navbar />
+      <Navbar hideCommercialLinks />
 
       <main className="pt-28 pb-20">
         <div className="w-full px-6 md:px-10 lg:px-16">
@@ -617,7 +617,7 @@ export const TicketsPage = () => {
         </div>
       </main>
 
-      <Footer />
+      <Footer hideCommercialLinks />
     </div>
   );
 };

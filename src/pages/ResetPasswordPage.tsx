@@ -9,7 +9,7 @@ import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
-import { getPasswordSchema } from '../utils/validation';
+import { getPasswordSchema, STRONG_PASSWORD } from '../utils/validation';
 
 export function ResetPasswordPage() {
   const { t } = useTranslation();
@@ -43,11 +43,11 @@ export function ResetPasswordPage() {
   const password = watch('password');
 
   const criteria = [
-    { label: t('validation.passwordMin'), met: password.length >= 8 },
-    { label: t('validation.passwordUppercase'), met: /[A-Z]/.test(password) },
-    { label: t('validation.passwordLowercase'), met: /[a-z]/.test(password) },
-    { label: t('validation.passwordNumber'), met: /[0-9]/.test(password) },
-    { label: t('validation.passwordSymbol'), met: /[^A-Za-z0-9]/.test(password) },
+    { label: t('validation.passwordMin'), met: password.length >= STRONG_PASSWORD.min },
+    ...STRONG_PASSWORD.checks.map(check => ({
+      label: t(`validation.${check.key}`),
+      met: check.regex.test(password),
+    })),
   ];
 
   const onSubmit = async (data: ResetPasswordFormData) => {

@@ -150,7 +150,7 @@ export const SupportFeedbackPage = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar hideCommercialLinks />
       <main className="min-h-screen bg-gray-50 pt-28 pb-16 dark:bg-[#0a0a0a]">
         <div className="w-full px-4 sm:px-6 lg:px-10">
           <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -311,7 +311,7 @@ export const SupportFeedbackPage = () => {
           )}
         </div>
       </main>
-      <Footer />
+      <Footer hideCommercialLinks />
     </>
   );
 };

@@ -232,19 +232,19 @@ export const ArticlePage = () => {
   if (!article || !acc) {
     return (
       <div className="min-h-screen bg-white font-sans dark:bg-[#050505]">
-        <Navbar />
+        <Navbar hideCommercialLinks />
         <main className="pt-32 pb-24 text-center">
           <h1 className="font-magilio mb-4 text-3xl font-bold">{t('support.articles.notFound')}</h1>
           <Link to="/support" className="font-bold text-mintcom-green hover:underline">← {t('support.articles.backToHelp')}</Link>
         </main>
-        <Footer />
+        <Footer hideCommercialLinks />
       </div>
     );
   }
 
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-      <Navbar />
+      <Navbar hideCommercialLinks />
 
       {/* ── Article header — clean neutral ── */}
       <div className="border-b border-gray-100 bg-white pt-20 dark:border-white/8 dark:bg-[#0d0d0d]">
@@ -408,7 +408,7 @@ export const ArticlePage = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer hideCommercialLinks />
       <LoginRequiredModal open={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </div>
   );

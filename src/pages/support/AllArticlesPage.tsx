@@ -94,7 +94,7 @@ export const AllArticlesPage = () => {
 
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-      <Navbar />
+      <Navbar hideCommercialLinks />
       <main className="pt-32 pb-24">
         <div className="w-full px-6 md:px-10 lg:px-16">
 
@@ -221,7 +221,7 @@ export const AllArticlesPage = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer hideCommercialLinks />
     </div>
   );
 };

@@ -163,7 +163,7 @@ export const SupportPage = () => {
 
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-      <Navbar />
+      <Navbar hideCommercialLinks />
 
       {/* ══════════════════════════════════════════════════════════════
           HERO — full-width split: left copy + right floating card stack
@@ -576,7 +576,7 @@ export const SupportPage = () => {
         </div>
       </section>
 
-      <Footer />
+      <Footer hideCommercialLinks />
       <LoginRequiredModal open={showLoginModal} onClose={() => setShowLoginModal(false)} redirectTo={loginRedirectTo} />
     </div>
   );

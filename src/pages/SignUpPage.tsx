@@ -20,7 +20,7 @@ import { Spinner } from '../components/ui/Spinner';
 import MintcomLogoGreen from '../assets/green-full-logo.svg';
 import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
 import { formatInputPlaceholder } from '../utils/textCase';
-import { getSignUpSchema, type SignUpFormData } from '../utils/validation';
+import { getSignUpSchema, STRONG_PASSWORD, type SignUpFormData } from '../utils/validation';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { getPostLoginDestination } from '../utils/postLoginRedirect';
@@ -79,11 +79,14 @@ export function SignUpPage() {
   const agreed = !!watch('agreeToTerms');
 
   const criteria = useMemo(() => [
-    { label: t('auth.validation.passwordMin', '8+ characters'), met: password.length >= 8 },
-    { label: t('auth.validation.passwordUppercase', 'Uppercase letter'), met: /[A-Z]/.test(password) },
-    { label: t('auth.validation.passwordLowercase', 'Lowercase letter'), met: /[a-z]/.test(password) },
-    { label: t('auth.validation.passwordNumber', 'Number'), met: /[0-9]/.test(password) },
-    { label: t('auth.validation.passwordSymbol', 'Symbol (@$!%*?&)'), met: /[^A-Za-z0-9]/.test(password) },
+    { label: t('auth.validation.passwordMin', '8+ characters'), met: password.length >= STRONG_PASSWORD.min },
+    ...STRONG_PASSWORD.checks.map(check => ({
+      label: t(
+        `auth.validation.${check.key}`,
+        check.key === 'passwordSymbol' ? 'Symbol (@$!%*?&)' : check.key,
+      ),
+      met: check.regex.test(password),
+    })),
   ], [password, t]);
 
   const passedCriteriaCount = useMemo(() => criteria.filter(c => c.met).length, [criteria]);

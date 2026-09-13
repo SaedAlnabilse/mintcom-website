@@ -548,7 +548,8 @@
       "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
       "passwordUppercase": "يجب أن تحتوي على حرف كبير واحد على الأقل",
       "termsRequired": "يجب الموافقة على سياسة الخصوصية وشروط الخدمة",
-      "passwordSymbol": "يجب أن تحتوي على رمز واحد على الأقل"
+      "passwordSymbol": "يجب أن تحتوي على رمز واحد على الأقل",
+      "passwordEmployeeRule": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل، وحرف صغير واحد على الأقل، ورقم واحد على الأقل"
     },
     "verifyEmail": {
       "backToHome": "العودة للرئيسية",
@@ -2045,7 +2046,8 @@
       "noResults": "لم يتم العثور على نتائج",
       "noResultsDesc": "لا توجد خصومات تطابق \"{{query}}\"",
       "reactivated": "تمت إعادة تفعيل الخصم",
-      "updated": "تم تحديث الخصم بنجاح"
+      "updated": "تم تحديث الخصم بنجاح",
+      "deactivated": "Discount deactivated — historical orders keep it"
     },
     "newDiscount": "إنشاء خصم",
     "searchPlaceholder": "البحث في الخصومات",
@@ -5861,7 +5863,9 @@
       "createFirst": "إنشاء معدل ضريبة",
       "searchPlaceholder": "البحث في معدلات الضرائب…",
       "noMatches": "لا توجد معدلات تطابق “{{q}}”",
-      "footnote": "يتم تطبيق معدل الضريبة الافتراضي تلقائياً على المنتجات الجديدة. يمكن تخصيص نسب أخرى للمنتجات الفردية."
+      "footnote": "يتم تطبيق معدل الضريبة الافتراضي تلقائياً على المنتجات الجديدة. يمكن تخصيص نسب أخرى للمنتجات الفردية.",
+      "deactivated": "Tax rate deactivated — assigned products now use your default Sales Tax",
+      "deactivateTitle": "Deactivate tax rate?"
     },
     "profile": {
       "about": "نبذة",

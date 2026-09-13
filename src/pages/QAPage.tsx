@@ -71,7 +71,7 @@ export const QAPage = () => {
                 <meta property="og:title" content={t('metadata.qa.title')} />
                 <meta property="og:description" content={t('metadata.qa.description')} />
             </Helmet>
-            <Navbar />
+            <Navbar hideCommercialLinks />
 
             {/* Header Section */}
             <div className="bg-white dark:bg-[#1E293B] pt-32 pb-16 px-6 border-b border-gray-200 dark:border-white/5">
@@ -236,7 +236,7 @@ export const QAPage = () => {
                 </div>
             </div>
 
-            <Footer />
+            <Footer hideCommercialLinks />
         </div>
     );
 };

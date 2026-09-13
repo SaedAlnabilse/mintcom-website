@@ -548,7 +548,8 @@
       "passwordsDoNotMatch": "Passwords do not match",
       "passwordUppercase": "Must contain at least one uppercase letter",
       "termsRequired": "You must agree to the Privacy Policy and Terms of Service",
-      "passwordSymbol": "Must contain at least one symbol"
+      "passwordSymbol": "Must contain at least one symbol",
+      "passwordEmployeeRule": "Password must contain at least one uppercase letter, one lowercase letter, and one number"
     },
     "verifyEmail": {
       "backToHome": "Back to Home",
@@ -2045,7 +2046,8 @@
       "noResults": "No Results Found",
       "noResultsDesc": "No discounts matching \"{{query}}\"",
       "reactivated": "Discount reactivated",
-      "updated": "Discount Updated Successfully"
+      "updated": "Discount Updated Successfully",
+      "deactivated": "Discount deactivated — historical orders keep it"
     },
     "newDiscount": "Create Discount",
     "searchPlaceholder": "Search discounts",
@@ -5861,7 +5863,9 @@
       "createFirst": "Create tax rate",
       "searchPlaceholder": "Search tax rates…",
       "noMatches": "No rates match “{{q}}”",
-      "footnote": "The default tax rate applies automatically to new products. Custom tax rates can be selected on individual products."
+      "footnote": "The default tax rate applies automatically to new products. Custom tax rates can be selected on individual products.",
+      "deactivated": "Tax rate deactivated — assigned products now use your default Sales Tax",
+      "deactivateTitle": "Deactivate tax rate?"
     },
     "profile": {
       "about": "About",

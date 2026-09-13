@@ -8,28 +8,62 @@ import type { TFunction } from 'i18next';
  */
 
 /**
- * Account password policy — the single source of truth for every password
- * field on the website (signup, onboarding, reset). Mirrors the API's
- * `ACCOUNT_PASSWORD_RULES` in `mintcom-api/src/common/security/password.policy.ts`.
+ * Password policy — single source of truth for every password field on the
+ * website. Mirrors the API's constants in
+ * `mintcom-api/src/common/security/password.policy.ts`.
  *
- * Rule: min 8 chars, one uppercase, one lowercase, one digit, one symbol.
+ * Two tiers (TC-044 two-tier decision):
+ * - STRONG_PASSWORD (owners, locations, brands, admin users):
+ *   min 8 chars, upper + lower + digit + symbol.
+ * - EMPLOYEE_PASSWORD (POS login-path employees):
+ *   upper + lower + digit, no symbol; length floor matches the API employee
+ *   policy (4). Used by surfaces that create/edit POS staff.
+ *
  * TC-044 drifted because this chain was copy-pasted into four places — do not
- * hand-roll it again, import `getPasswordSchema` instead.
- *
- * `keyPrefix` exists because the pages use two different i18n namespaces:
- * 'auth.validation' (signup / onboarding) and 'validation' (reset password).
+ * hand-roll it again, import the tier you need.
  */
+export const STRONG_PASSWORD = {
+  min: 8,
+  checks: [
+    { key: 'passwordUppercase', regex: /[A-Z]/ },
+    { key: 'passwordLowercase', regex: /[a-z]/ },
+    { key: 'passwordNumber', regex: /[0-9]/ },
+    { key: 'passwordSymbol', regex: /[^A-Za-z0-9]/ },
+  ],
+} as const;
+
+export const EMPLOYEE_PASSWORD = {
+  min: 4,
+  checks: [
+    { key: 'passwordUppercase', regex: /[A-Z]/ },
+    { key: 'passwordLowercase', regex: /[a-z]/ },
+    { key: 'passwordNumber', regex: /[0-9]/ },
+  ],
+} as const;
+
+export const DEFAULT_PASSWORD_POLICY = STRONG_PASSWORD;
+
+const buildPasswordSchema = (
+  t: TFunction,
+  keyPrefix: 'auth.validation' | 'validation',
+  policy: typeof STRONG_PASSWORD | typeof EMPLOYEE_PASSWORD,
+) => {
+  let schema = z.string().min(policy.min, t(`${keyPrefix}.passwordMin`));
+  policy.checks.forEach(check => {
+    schema = schema.regex(check.regex, t(`${keyPrefix}.${check.key}`));
+  });
+  return schema;
+};
+
 export const getPasswordSchema = (
   t: TFunction,
   keyPrefix: 'auth.validation' | 'validation' = 'auth.validation',
-) =>
-  z
-    .string()
-    .min(8, t(`${keyPrefix}.passwordMin`))
-    .regex(/[A-Z]/, t(`${keyPrefix}.passwordUppercase`))
-    .regex(/[a-z]/, t(`${keyPrefix}.passwordLowercase`))
-    .regex(/[0-9]/, t(`${keyPrefix}.passwordNumber`))
-    .regex(/[^A-Za-z0-9]/, t(`${keyPrefix}.passwordSymbol`));
+) => buildPasswordSchema(t, keyPrefix, STRONG_PASSWORD);
+
+export const getEmployeePasswordSchema = (
+  t: TFunction,
+  keyPrefix: 'auth.validation' | 'validation' = 'auth.validation',
+) => buildPasswordSchema(t, keyPrefix, EMPLOYEE_PASSWORD);
 
 export const getSignUpSchema = (t: TFunction) => {
   return z.object({

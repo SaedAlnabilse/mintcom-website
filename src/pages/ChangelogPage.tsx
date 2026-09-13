@@ -44,7 +44,7 @@ export const ChangelogPage = () => {
         <title>{t('metadata.changelog.title')}</title>
         <meta name="description" content={t('metadata.changelog.description')} />
       </Helmet>
-      <Navbar />
+      <Navbar hideCommercialLinks />
 
       {/* Header */}
       <div className="pt-32 pb-16 px-6 bg-gray-50 dark:bg-black/20">
@@ -123,7 +123,7 @@ export const ChangelogPage = () => {
         )}
       </div>
 
-      <Footer />
+      <Footer hideCommercialLinks />
     </div>
   );
 };

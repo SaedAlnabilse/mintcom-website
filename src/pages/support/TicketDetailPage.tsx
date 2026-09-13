@@ -337,13 +337,13 @@ export const TicketDetailPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-        <Navbar />
+        <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
           <div className="w-full px-6 md:px-10 lg:px-16">
             <SurfaceLoader message={t('common.loading')} className="max-w-4xl mx-auto" />
           </div>
         </main>
-        <Footer />
+        <Footer hideCommercialLinks />
       </div>
     );
   }
@@ -356,7 +356,7 @@ export const TicketDetailPage = () => {
   if (loadingDetail) {
     return (
       <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-        <Navbar />
+        <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
           <div className="w-full px-6 md:px-10 lg:px-16">
             <SurfaceLoader
@@ -365,7 +365,7 @@ export const TicketDetailPage = () => {
             />
           </div>
         </main>
-        <Footer />
+        <Footer hideCommercialLinks />
       </div>
     );
   }
@@ -374,7 +374,7 @@ export const TicketDetailPage = () => {
   if (loadError && !ticket) {
     return (
       <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-        <Navbar />
+        <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
           <div className="w-full px-6 md:px-10 lg:px-16">
             <div className="max-w-4xl mx-auto rounded-3xl border border-red-100 bg-white dark:border-red-500/20 dark:bg-white/[0.03] p-16 text-center">
@@ -400,7 +400,7 @@ export const TicketDetailPage = () => {
             </div>
           </div>
         </main>
-        <Footer />
+        <Footer hideCommercialLinks />
       </div>
     );
   }
@@ -409,7 +409,7 @@ export const TicketDetailPage = () => {
   if (notFound || !ticket) {
     return (
       <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-        <Navbar />
+        <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
           <div className="w-full px-6 md:px-10 lg:px-16">
             <div className="max-w-4xl mx-auto rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-16 text-center">
@@ -430,7 +430,7 @@ export const TicketDetailPage = () => {
             </div>
           </div>
         </main>
-        <Footer />
+        <Footer hideCommercialLinks />
       </div>
     );
   }
@@ -443,7 +443,7 @@ export const TicketDetailPage = () => {
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-      <Navbar />
+      <Navbar hideCommercialLinks />
 
       <main className="pt-28 pb-20">
         <div className="w-full px-6 md:px-10 lg:px-16">
@@ -720,7 +720,7 @@ export const TicketDetailPage = () => {
         </div>
       </main>
 
-      <Footer />
+      <Footer hideCommercialLinks />
     </div>
   );
 };

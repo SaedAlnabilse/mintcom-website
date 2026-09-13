@@ -172,7 +172,7 @@ export const NewTicketPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-        <Navbar />
+        <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
           <div className="w-full px-6 md:px-10 lg:px-16">
             <div className="max-w-3xl mx-auto">
@@ -183,7 +183,7 @@ export const NewTicketPage = () => {
             </div>
           </div>
         </main>
-        <Footer />
+        <Footer hideCommercialLinks />
       </div>
     );
   }
@@ -194,7 +194,7 @@ export const NewTicketPage = () => {
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
-      <Navbar />
+      <Navbar hideCommercialLinks />
 
       <main className="pt-28 pb-20">
         <div className="w-full px-6 md:px-10 lg:px-16">
@@ -419,7 +419,7 @@ export const NewTicketPage = () => {
         </div>
       </main>
 
-      <Footer />
+      <Footer hideCommercialLinks />
     </div>
   );
 };

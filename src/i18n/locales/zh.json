@@ -531,7 +531,10 @@
       "subtitle": "加入 Mintcom，开启业务增长之旅",
       "success": "账户创建成功！请查收邮件完成验证。",
       "title": "创建您的账户",
-      "verificationSent": "验证链接已发送"
+      "verificationSent": "验证链接已发送",
+      "trustCancel": "No Credit Card Needed",
+      "trustFast": "2-Minute Setup",
+      "trustSecure": "256-bit Bank-Grade SSL"
     },
     "validation": {
       "emailInvalid": "请输入有效的邮箱地址",
@@ -545,7 +548,8 @@
       "passwordsDoNotMatch": "两次输入的密码不一致",
       "passwordUppercase": "必须包含至少一个大写字母",
       "termsRequired": "您必须同意《隐私政策》和《服务条款》",
-      "passwordSymbol": "必须包含至少一个符号"
+      "passwordSymbol": "必须包含至少一个符号",
+      "passwordEmployeeRule": "密码必须包含至少一个大写字母、一个小写字母和一个数字"
     },
     "verifyEmail": {
       "backToHome": "返回首页",
@@ -719,11 +723,6 @@
     },
     "assistantTitle": "让我们来协助您...",
     "botName": "Mintcom AI",
-    "fallback": [
-      "抱歉，我没有听明白。您能换个说法再问一次吗？",
-      "我还在学习中，暂时不知道如何回答这个问题。要不要看看我们的常见问题？",
-      "我没有找到相关答案。您可以试试选择下面的建议。"
-    ],
     "faq": {
       "categories": {
         "account": "账户",
@@ -742,11 +741,6 @@
       "title": "常见问题",
       "tryDifferent": "尝试其他关键词或浏览分类"
     },
-    "greetings": [
-      "您好！今天有什么可以帮您？",
-      "您好！我是 Mintcom AI，您的智能助手。有什么想了解的吗？",
-      "欢迎来到 Mintcom！关于业务管理的任何问题都可以问我。"
-    ],
     "inputPlaceholder": "有问题尽管问…",
     "launcher": {
       "ask": "提问",
@@ -855,7 +849,17 @@
         "title": "设置税率"
       },
       "title": "任务"
-    }
+    },
+    "fallback": [
+      "I'm sorry, I didn't quite catch that. Could you try rephrasing your question?",
+      "I'm still learning and I'm not sure how to answer that yet. Would you like to check our FAQs?",
+      "I couldn't find an answer for that. You can try selecting one of the suggestions below."
+    ],
+    "greetings": [
+      "Hello! How can I help you today?",
+      "Hi there! I'm Mintcom AI, your assistant. What's on your mind?",
+      "Welcome to Mintcom! Feel free to ask me anything about managing your business."
+    ]
   },
   "common": {
     "unnamedLocation": "门店",
@@ -1143,7 +1147,13 @@
     "yes": "是",
     "iosDownloadComingSoon": "iOS 应用下载即将推出",
     "ownerAndroidDownloadComingSoon": "店主版 Android 应用下载即将推出",
-    "ownerIosDownloadComingSoon": "店主版 iOS 应用下载即将推出"
+    "ownerIosDownloadComingSoon": "店主版 iOS 应用下载即将推出",
+    "deleted": "已删除",
+    "refreshed": "已刷新",
+    "items": "商品",
+    "ready": "就绪",
+    "recipes": "配方",
+    "units": "单位"
   },
   "community": {
     "auth_required": "请登录后再{{action}}。",
@@ -2036,7 +2046,8 @@
       "noResults": "未找到结果",
       "noResultsDesc": "没有与“{{query}}”匹配的折扣",
       "reactivated": "折扣已重新启用",
-      "updated": "折扣更新成功"
+      "updated": "折扣更新成功",
+      "deactivated": "Discount deactivated — historical orders keep it"
     },
     "newDiscount": "创建折扣",
     "searchPlaceholder": "搜索折扣",
@@ -2742,36 +2753,36 @@
       "plans": {
         "enterprise": {
           "description": "为大规模运营量身定制的解决方案。",
-          "features": [
-            "门店数量不限",
-            "专属客户经理",
-            "自定义集成",
-            "全天候优先支持"
-          ],
           "name": "企业版",
-          "price": "定制"
+          "price": "定制",
+          "features": [
+            "Unlimited Locations",
+            "Dedicated Account Manager",
+            "Custom Integrations",
+            "24/7 Priority Support"
+          ]
         },
         "pro": {
           "description": "为成长型商家设计。",
-          "features": [
-            "最多 3 家门店",
-            "高级报表",
-            "配方管理",
-            "优先支持"
-          ],
           "name": "专业版",
-          "price": "45"
+          "price": "45",
+          "features": [
+            "Up to 3 Locations",
+            "Advanced Reporting",
+            "Recipe Operations",
+            "Priority Support"
+          ]
         },
         "starter": {
           "description": "适合单门店企业。",
-          "features": [
-            "1 家门店",
-            "基础分析",
-            "商品数量不限",
-            "邮件支持"
-          ],
           "name": "入门版",
-          "price": "20"
+          "price": "20",
+          "features": [
+            "1 Location",
+            "Basic Analytics",
+            "Unlimited Products",
+            "Email Support"
+          ]
         }
       },
       "popular": "最受欢迎",
@@ -3490,7 +3501,10 @@
       "targetItem": "目标菜单商品",
       "title": "配方",
       "unit": "单位",
-      "yield": "产量"
+      "yield": "产量",
+      "addIngredient": "Add Ingredient",
+      "quantityGreaterThanZero": "Quantity must be greater than 0",
+      "selectMaterial": "Please select a material"
     },
     "ingredients": "原料",
     "items": "商品",
@@ -3528,7 +3542,46 @@
       "yield": "此配方制作的预制品数量（例如：5 升酱料）。"
     },
     "title": "配方管理",
-    "totalOutput": "总产出"
+    "totalOutput": "总产出",
+    "addonRecipes": "Add-on Recipes",
+    "allMaterials": "All Materials",
+    "allPrepared": "All Prepared",
+    "allRecipes": "All Recipes",
+    "ingredientShortage": "Ingredient Shortage",
+    "inventorySync": "POS Stock Sync",
+    "inventoryValue": "Inventory Value",
+    "lowStock": "Low Stock",
+    "menuMapped": "Mapped Targets",
+    "numberOfBatches": "Number of Batches",
+    "optimalLevels": "Optimal",
+    "outOfStock": "Out of Stock",
+    "preparedRecipes": "Prep Recipes",
+    "produceNow": "Produce Now",
+    "produceSubtitle": "Produce batches of {{name}}",
+    "productRecipes": "Product Recipes",
+    "readyToProduce": "Ready to Prep",
+    "recipe": {
+      "addIngredient": "Add Ingredient",
+      "edit": "Edit Product Recipe",
+      "new": "New Product Recipe",
+      "product": "Product",
+      "selectComponent": "Select Component...",
+      "selectProduct": "Select Product..."
+    },
+    "searchMaterials": "Search ingredients...",
+    "searchPrep": "Search prep items...",
+    "searchRecipes": "Search product recipes...",
+    "stockStatus": "Stock Health",
+    "totalMaterials": "Total Materials",
+    "totalProductRecipes": "Product Recipes",
+    "totalStockOnHand": "In-Stock Total",
+    "totalYield": "Total Yield",
+    "validation": {
+      "atLeastOneIngredient": "Please add at least one ingredient",
+      "quantityGreaterThanZero": "Quantity must be greater than 0",
+      "selectItem": "Please select an item",
+      "selectMaterial": "Please select a material"
+    }
   },
   "metadata": {
     "about": {
@@ -4273,7 +4326,9 @@
         "totalTax": "总税费",
         "totalTaxDesc": "税费总额",
         "txns": "笔数",
-        "type": "类型"
+        "type": "类型",
+        "deletedTaxRate": "Deleted tax rate",
+        "deletedTaxDescription": "This tax rate was deleted but historical records are preserved"
       },
       "export": {
         "metric": "指标",
@@ -5781,28 +5836,20 @@
     },
     "taxes": {
       "add": "添加税率",
-      "colCategory": "分类",
       "colName": "名称",
       "colRate": "税率",
-      "colStatus": "状态",
       "createTitle": "新建税率",
-      "defaultSet": "已将 {{name}} 设为默认税率",
       "deleteMessage": "确定要删除“{{name}}”吗？",
       "deleteTitle": "删除税率？",
       "deleted": "税率已删除",
       "editTitle": "编辑税率",
       "empty": "尚未配置税率。",
-      "fieldCategory": "分类",
       "fieldName": "税率名称",
       "fieldRate": "税率 %",
-      "inUseWarning": "已有 {{count}} 个商品使用此税率。停用后将移除这些商品的税费。",
-      "isDefaultWarning": "这是默认税率。修改后将影响新创建的商品。",
-      "makeDefault": "设为默认税率",
       "namePlaceholder": "例如：标准增值税",
       "nameRequired": "税率名称为必填项",
       "rateInvalid": "请输入 0 到 100 之间的税率",
       "saved": "税率保存成功",
-      "setDefault": "设为默认",
       "subtitle": "配置结账时应用的销售税率规则",
       "title": "税率",
       "emptyTitle": "No tax rates yet",
@@ -5811,7 +5858,14 @@
       "searchPlaceholder": "Search tax rates…",
       "noMatches": "No rates match “{{q}}”",
       "footnote": "Taxes already assigned to products keep their rate even if you change the rate here. To reassign products, open the Products page and edit each product’s tax.",
-      "editorHint": "Rates are stored as percentages and saved as fractions (16% → 0.1600)."
+      "editDefaultTitle": "Edit Default Sales Tax",
+      "deletePrompt": "Are you sure you want to delete \"{{name}}\" ({{rate}}%)? Any assigned products will automatically use the default Sales Tax rate. Past sales, receipts, and reports remain 100% preserved.",
+      "deletePromptAssigned": "Are you sure you want to delete \"{{name}}\" ({{rate}}%)? {{count}} product(s) using this rate will automatically switch to your default Sales Tax. Past sales and tax reports remain 100% preserved.",
+      "cannotDeleteDefault": "The default tax rate cannot be deleted. You can edit it instead.",
+      "defaultHint": "This is the standard default tax rate used for all products unless a custom rate is assigned.",
+      "customHint": "Enter a custom tax rate for specific products.",
+      "deactivated": "Tax rate deactivated — assigned products now use your default Sales Tax",
+      "deactivateTitle": "Deactivate tax rate?"
     },
     "profile": {
       "about": "关于",
@@ -5903,7 +5957,8 @@
       "receipts": "收据",
       "sales": "销售设置",
       "tax": "电子发票",
-      "pos": "POS 与班次"
+      "pos": "POS 与班次",
+      "accounting": "Accounting & VAT"
     },
     "fiscal": {
       "title": "电子发票与税务合规",
@@ -5940,7 +5995,32 @@
         "title": "发票模板预览",
         "subtitle": "这是您的电子发票的显示效果",
         "print": "打印 / 保存 PDF"
-      }
+      },
+      "aligned": "Aligned to your establishment country",
+      "needsAttention": "Needs attention",
+      "off": "Off",
+      "setupNeeded": "Setup needed",
+      "lastChecked": "Last checked",
+      "lockedToLocation": "Set from your establishment country — no need to choose.",
+      "misaligned": "Previously set for a different country. Align to connect to the right tax authority.",
+      "alignNow": "Align now",
+      "jordanStep1Title": "Get your 3 keys from the JoFotara portal (2 minutes)",
+      "step1Title": "Get your keys from the tax portal",
+      "jordanS1": "Open the Devices page and log in with your company TIN account.",
+      "jordanS2": "Open Integrate Device → Link A New Device.",
+      "jordanS3": "Enter the username + income-source sequence number (تسلسل مصدر الدخل), then copy the Client-Id and Secret-Key.",
+      "genericS1": "Register at your tax portal, then copy the keys it issues into step 2.",
+      "secretNote": "Your secret is encrypted on our server and never shown again. Never share it in chat or email.",
+      "openDevices": "Open JoFotara Devices page",
+      "openPortal": "Open tax portal",
+      "haveKeys": "I have my keys →",
+      "exampleActivity": "Example: 12345 (تسلسل مصدر الدخل)",
+      "exampleClientId": "Example: the Username shown on the Devices page",
+      "connecting": "Connecting…",
+      "connectedReconnect": "Connected — test again",
+      "connectNow": "Connect now",
+      "doneHint": "Done. Every new sale is reported automatically and the receipt carries the official QR. Rehearse once with a small invoice and a reversing credit note.",
+      "bookkeepingNote": "Need books too? Xero / QuickBooks in the Accounting tab syncs daily totals for bookkeeping — it does not replace this tax clearance."
     },
     "title": "设置",
     "pos": {
@@ -5955,6 +6035,80 @@
       "holdOrderTableCountLabel": "可用桌台",
       "holdOrderTableCountPlaceholder": "50",
       "holdOrderTableCountTitle": "可用桌台数量"
+    },
+    "overview": {
+      "title": "Settings & Configuration",
+      "subtitle": "Manage your store profile, financial setup, hardware registers, and integrations.",
+      "searchPlaceholder": "Search settings... (e.g. tax, receipt, logo, shifts)",
+      "noResults": "No settings match your search",
+      "noResultsDesc": "Try different search terms or browse categories below.",
+      "clearSearch": "Clear search",
+      "noCategories": "No settings sections available for your account.",
+      "backToSettings": "Back to Settings",
+      "viewScreen": "Open",
+      "categories": {
+        "identity": "General & Identity",
+        "financials": "Financials & Sales",
+        "operations": "Operations & Till",
+        "danger": "Danger Zone"
+      },
+      "quickGlance": {
+        "currency": "Currency",
+        "taxRate": "Default Tax",
+        "receiptLogo": "Receipt Logo",
+        "fiscal": "E-Invoicing",
+        "accounting": "Accounting",
+        "configured": "Configured",
+        "notConfigured": "Not set",
+        "connected": "Connected",
+        "disconnected": "Not connected",
+        "active": "Active",
+        "inactive": "Disabled"
+      },
+      "cards": {
+        "profile": {
+          "title": "Store Profile",
+          "description": "Business name, address, contact email, logo, and legal tax registration number."
+        },
+        "receipts": {
+          "title": "Receipts & Branding",
+          "description": "Receipt logo, custom header notes, farewell message, and printed customer fields."
+        },
+        "sales": {
+          "title": "Sales Setup & Taxes",
+          "description": "System currency, default sales tax rate, product tax overrides, and service charges."
+        },
+        "pos": {
+          "title": "POS & Shifts",
+          "description": "Held order capacity, table management limits, and multi-shift cashier settings."
+        },
+        "einvoicing": {
+          "title": "E-Invoicing & Fiscal",
+          "description": "Universal electronic invoicing, country tax regulations, and QR verification."
+        },
+        "accounting": {
+          "title": "Accounting & VAT",
+          "description": "Automatic daily Z-Report sync with Xero & QuickBooks, UK VAT split, and ledger mapping."
+        },
+        "danger": {
+          "title": "Delete Location",
+          "description": "Initiate permanent decommissioning and deletion of this store location."
+        }
+      }
+    },
+    "accounting": {
+      "title": "Accounting & VAT Integration",
+      "providerCardTitle": "Accounting Provider",
+      "subtitle": "Automatically sync daily aggregated Z-Reports into Xero or QuickBooks with multi-tax UK VAT split and rounding drift protection on shift close.",
+      "connecting": "Connecting to accounting provider...",
+      "connectedSuccess": "Successfully connected to {{provider}}!",
+      "confirmDisconnect": "Are you sure you want to disconnect your accounting software? Automatic Z-report sync will be suspended.",
+      "disconnectedSuccess": "Accounting software disconnected.",
+      "requiredFieldMissing": "Please fill in all required account mappings.",
+      "mappingSaved": "Chart of Accounts mapping saved successfully!",
+      "syncRetrySuccess": "Shift synced successfully!",
+      "disconnect": "Disconnect",
+      "clearanceNote": "Bookkeeping is separate from tax clearance: this syncs daily totals for your books. Your per-invoice {{platform}} clearance still happens in the E-Invoicing tab."
     }
   },
   "staff": {
@@ -6741,7 +6895,8 @@
       "replyError": "您的回复发送失败。请重试。",
       "statusError": "无法更新工单。请重试。",
       "reopened": "工单已重新打开",
-      "sendShortcutHint": "按 Ctrl+Enter 发送"
+      "sendShortcutHint": "按 Ctrl+Enter 发送",
+      "attach": "Attach File"
     }
   },
   "theme": {
@@ -6761,7 +6916,11 @@
     "passwordRequired": "请输入密码",
     "passwordsDoNotMatch": "两次输入的密码不一致",
     "passwordUppercase": "密码必须包含至少一个大写字母",
-    "passwordSymbol": "密码必须包含至少一个符号"
+    "passwordSymbol": "密码必须包含至少一个符号",
+    "fair": "一般",
+    "good": "良好",
+    "strong": "强",
+    "weak": "弱"
   },
   "notifications": {
     "menu": {
@@ -6979,54 +7138,54 @@
           "title": "餐厅",
           "description": "处理堂食与外带订单、加料选项和班次现金，不拖慢前厅节奏。",
           "points": [
-            "借助加料选项快速下单",
-            "为收银员和经理设置员工角色",
-            "销售与高峰时段报表"
+            "Fast order building with add-ons",
+            "Staff roles for cashiers and managers",
+            "Sales and peak-hour reporting"
           ]
         },
         "cafe": {
           "title": "咖啡馆与咖啡店",
           "description": "凭简洁的菜单、会员奖励和清晰的日结总额，从早高峰中快速通行。",
           "points": [
-            "常购商品快速结账",
-            "会员积分与赠品奖励",
-            "当前班次实时概览"
+            "Quick checkout for repeat items",
+            "Loyalty points and free-item rewards",
+            "Live overview of the active shift"
           ]
         },
         "retail": {
           "title": "零售与专营店",
           "description": "编制商品目录、跟踪畅销品，并在一处管理好各种支付方式。",
           "points": [
-            "分类与商品目录",
-            "折扣与支付方式",
-            "单品级销售洞察"
+            "Categories and product catalog",
+            "Discounts and payment methods",
+            "Item-level sales insights"
           ]
         },
         "bakery": {
           "title": "烘焙与生产",
           "description": "把配方与成品关联起来，让您在生产推进时掌握成本与库存。",
           "points": [
-            "原材料与配方",
-            "库存不足可视化",
-            "支持成品成本核算"
+            "Raw materials and recipes",
+            "Low-stock visibility",
+            "Prepared-item costing support"
           ]
         },
         "qsr": {
           "title": "快餐服务",
           "description": "界面为真实收银员而设计，无需厚厚的培训手册，让队伍不再排长龙。",
           "points": [
-            "直观的 POS 布局",
-            "结账支持多种付款方式",
-            "班次结算与现金跟踪"
+            "Intuitive POS layout",
+            "Multiple tenders at checkout",
+            "Shift close and cash tracking"
           ]
         },
         "multi": {
           "title": "多门店品牌",
           "description": "业主集中管理品牌与门店，同时各门店保留自己的日常运营。",
           "points": [
-            "面向品牌的业主后台",
-            "分门店仪表盘",
-            "新增门店享同样透明价格"
+            "Owner portal for brands",
+            "Per-location dashboards",
+            "Transparent pricing per branch"
           ]
         }
       },
@@ -7279,6 +7438,10 @@
     "confirmDisableTitle": "停售加料选项？",
     "confirmDisableAllMessage": "确定要将所有 {{count}} 个加料选项标记为停售吗？这些选项将在所有 POS 终端被禁止点单。",
     "confirmDisableGroupMessage": "确定要将分组“{{groupName}}”中的所有 {{count}} 个选项标记为停售吗？这些选项将在所有 POS 终端被禁止点单。",
-    "openProduct": "点击打开商品"
+    "openProduct": "点击打开商品",
+    "notTracked": "未追踪库存",
+    "trackStock": "追踪库存",
+    "trackStockDesc": "启用后系统将追踪该商品的入库和出库数量",
+    "previewNote": "库存预览仅参考，实际数量以实时盘点为准"
   }
 }

@@ -390,7 +390,7 @@ export const SupportAdminDetailPage = () => {
     if (loading) {
         return (
             <>
-                <Navbar />
+                <Navbar hideCommercialLinks />
                 <SectionLoader
                     message={t('support.admin.loading', { defaultValue: 'Loading ticket...' })}
                     className="bg-gray-50 dark:bg-[#0a0a0a] pt-24"
@@ -403,7 +403,7 @@ export const SupportAdminDetailPage = () => {
     if (notFound || !ticket) {
         return (
             <>
-                <Navbar />
+                <Navbar hideCommercialLinks />
                 <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0a0a0a] pt-24">
                     <div className="text-center">
                         <h1 className="font-magilio text-2xl font-bold text-gray-900 dark:text-white mb-2">Ticket Not Found</h1>
@@ -412,7 +412,7 @@ export const SupportAdminDetailPage = () => {
                         </Link>
                     </div>
                 </div>
-                <Footer />
+                <Footer hideCommercialLinks />
             </>
         );
     }
@@ -426,7 +426,7 @@ export const SupportAdminDetailPage = () => {
 
     return (
         <>
-            <Navbar />
+            <Navbar hideCommercialLinks />
             <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] pt-28 pb-16">
                 <div className="w-full px-4 sm:px-6 lg:px-10">
 
@@ -790,7 +790,7 @@ export const SupportAdminDetailPage = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
+            <Footer hideCommercialLinks />
         </>
     );
 };
