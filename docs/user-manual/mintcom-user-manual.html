@@ -52,8 +52,8 @@
   <h1>User Manual</h1>
   <p class="tagline">The complete guide to running your business on Mintcom</p>
   <div class="meta">
-    <b>Version:</b> 9.0<br>
-    <b>Last updated:</b> July 11, 2026<br>
+    <b>Version:</b> 10.0<br>
+    <b>Last updated:</b> September 13, 2026<br>
     <b>Applies to:</b> Mintcom Web Dashboard, Mintcom POS app, Mintcom Back&nbsp;Office app<br>
     <b>Audience:</b> Account owners, brand admins, managers, supervisors, cashiers
   </div>
@@ -76,19 +76,19 @@
   <li>Recipe Operations: Ingredients, Recipes &amp; Stock
     <div class="sub">Raw materials &middot; Preparation recipes &amp; batches &middot; Product recipes &middot; Stock Management on the POS</div></li>
   <li>The POS App: Daily Sales
-    <div class="sub">Connecting &amp; signing in &middot; Building an order &middot; Add-ons, notes &amp; quantities &middot; Discounts &amp; tax at the POS &middot; Hold orders &amp; tables</div></li>
+    <div class="sub">Connecting &amp; signing in &middot; Building an order &middot; Haptics &amp; draft carts &middot; Today's orders &middot; Discounts &amp; tax &middot; Hold orders &amp; tables</div></li>
   <li>Shifts &amp; Cash Control
-    <div class="sub">Opening &amp; closing a shift &middot; Cash discrepancy &middot; PAY-IN / PAY-OUT &middot; Auto cash-out rules &middot; The lock screen</div></li>
+    <div class="sub">Multi-cashier vs. single drawer &middot; Opening &amp; closing a shift &middot; Isolated discrepancy &middot; PAY-IN / PAY-OUT &middot; Lock screen &amp; sessions</div></li>
   <li>Payments, Receipts &amp; Refunds
-    <div class="sub">Cash, card types &amp; other methods &middot; Split payments &middot; Printing &amp; emailing receipts &middot; Full &amp; partial refunds</div></li>
+    <div class="sub">Dynamic quick-cash &middot; Stored INV invoice numbers &middot; Split payments &middot; Mandatory shift refunds &middot; Original-tender mirroring</div></li>
   <li>Customers, Loyalty &amp; Discounts
     <div class="sub">Customer database &middot; Earning rules &amp; rewards &middot; The digital loyalty card, QR &amp; Google/Apple Wallet &middot; Discounts</div></li>
   <li>Staff, Roles &amp; Permissions
     <div class="sub">Adding employees &middot; Custom roles &middot; The full permission reference &middot; Default role templates</div></li>
   <li>Reports, Orders &amp; Activity Logs
     <div class="sub">All ten report areas explained &middot; The Orders page &middot; Exports &middot; The activity log</div></li>
-  <li>Location Settings &amp; E-Invoicing
-    <div class="sub">Profile &middot; Tax, currency &amp; service charge &middot; Receipt design &middot; E-Invoicing &amp; tax compliance &middot; Deleting a location</div></li>
+  <li>Location Settings, POS &amp; Shifts, E-Invoicing &amp; Accounting
+    <div class="sub">Profile &middot; Multi-tax &amp; currency &middot; POS &amp; Shifts &middot; Receipt series &middot; E-Invoicing &middot; Cloud Accounting (Xero &amp; QuickBooks) &middot; Deleting a location</div></li>
   <li>The Owner Portal, Brands &amp; the Back Office App
     <div class="sub">Enterprise overview &middot; Locations &middot; Brands &amp; the brand portal &middot; Employees &amp; global roles &middot; The mobile Back Office app</div></li>
   <li>Offline Mode, Sync &amp; Sessions
@@ -152,6 +152,8 @@
 </table>
 
 <div class="tip"><b>How a POS device gets ready:</b> first the device is <i>connected to the store</i> with the Location Login ID and password. After that, each staff member signs in and out with their own username — the device stays connected. A "Previous User" shortcut lets the last cashier sign back in quickly.</div>
+
+<div class="note"><b>POS-only staff:</b> Cashiers and floor staff who only operate the POS register do not need a personal email address. Managers configure their username and PIN/password directly. Only staff with Web Dashboard or Back Office access require an email address.</div>
 
 <div class="warn"><b>Security rule:</b> never share the owner email/password or the Location ID password with day-to-day staff. Cashiers only ever need their personal username and password/PIN.</div>
 
@@ -276,7 +278,8 @@
   <tr><td>Price</td><td>The retail price customers pay (must be greater than 0).</td></tr>
   <tr><td>Cost</td><td>What the item costs you. Powers the Profit figures in reports; visible only to staff with the <b>View Cost</b> permission.</td></tr>
   <tr><td>Category</td><td>Required — every product belongs to one category.</td></tr>
-  <tr><td>Image</td><td>Upload your own, or use <b>Generate Image</b>: Mintcom creates a product photo from the name automatically (a designed fallback image is used if no photo is found). Image generation has a monthly quota shown in the form; it resets each month.</td></tr>
+  <tr><td>Image</td><td>Upload your own, or use <b>Generate Image</b>: Mintcom creates a product photo from the name automatically (with variation support on re-generate; a designed fallback image is used if no photo is found). Image generation has a monthly quota shown in the form; it resets each month.</td></tr>
+  <tr><td>Tax Rate</td><td>Assign the product to a specific named tax rate (defaults to the location's primary tax rate).</td></tr>
   <tr><td>Add-ons</td><td>Attach any add-on groups that should appear when this item is sold.</td></tr>
   <tr><td>Track Inventory</td><td>Toggle stock control for physical goods (below).</td></tr>
 </table>
@@ -365,13 +368,14 @@
   <li>Install <b>Mintcom POS</b> from the App Store or Play Store (links are in onboarding step 5 and in the Owner Portal).</li>
   <li>On first launch, enter the <b>Establishment ID</b> (Location Login ID) and the location password, then <b>Connect</b>. The device is now bound to that store.</li>
   <li>Each staff member signs in with their <b>username</b> and <b>password or PIN</b>. If an employee has access to several locations, they pick the location after login. The <b>Previous User</b> shortcut re-opens the last cashier's login.</li>
-  <li><b>Forgot password?</b> — the POS sends a password reset request to the admin, who approves it (an OTP goes to the admin email).</li>
+  <li><b>Forgot password?</b> — staff tap <b>Request Password Help</b> on the POS login screen. This notifies the account owner and store admins, who can reset the employee password directly from Staff management.</li>
 </ol>
 
 <h2>7.2 The POS layout</h2>
 <ul>
-  <li><b>Dashboard</b> — welcome screen with the shift controls (Open/Close Shift), live sales for the current shift (Net Sales, Cash / Card / Other payments, Number of Orders, Total Hours Worked), a comparison with the last shift, and 7-day / 30-day charts. Viewing analytics requires the <b>Dashboard</b> permission; the sales screen requires <b>Access POS</b>.</li>
-  <li><b>Sales</b> — the selling screen: category tiles (plus <i>All Menu</i>), search, sorting (Alphabetical / Most Recent / Best Seller), and the order cart.</li>
+  <li><b>Dashboard</b> — welcome screen with shift controls (Open/Close Shift), Today's Orders shortcut, live sales for the current shift (Net Sales, Cash / Card / Other payments, Number of Orders, Total Hours Worked), a comparison with the last shift, and 7-day / 30-day charts. Viewing analytics requires the <b>Dashboard</b> permission; the sales screen requires <b>Access POS</b>.</li>
+  <li><b>Today's Orders modal</b> — tap Today's Orders on the Dashboard to slide open a list of completed and refunded tickets from the current shift for fast receipt reprinting, customer lookups, or order review without navigating away to full reports.</li>
+  <li><b>Sales</b> — the selling screen: category tiles (plus <i>All Menu</i>), search, sorting (Alphabetical / Most Recent / Best Seller), and the order cart. On tablet devices, the screen is locked to landscape orientation for counter stability.</li>
   <li><b>My Orders</b> — the signed-in cashier's completed orders, with reprint, email receipt, and refund actions.</li>
   <li><b>Reports</b> — on-device reporting (Chapter 12 covers the content; the POS adds Export PDF/Excel, Print Report, and Email Report).</li>
   <li><b>Notifications</b> — stock alerts (low / critical / out of stock), held orders, refund notices, and system updates.</li>
@@ -380,13 +384,14 @@
 
 <h2>7.3 Building an order</h2>
 <ol class="steps">
-  <li>Tap a category (or search) and tap items to add them. Items with add-ons open the customization sheet:
+  <li>Tap a category (or search) and tap items to add them. Adding an item triggers a subtle tactile haptic confirmation, while attempting to add an out-of-stock item triggers a distinct double-buzz warning. Items with add-ons open the customization sheet:
     <ul>
       <li><b>Required single-select groups</b> must be answered (e.g. Size).</li>
       <li><b>Multi-select groups</b> allow any combination; paid options add to the item price.</li>
       <li>An <b>item note</b> can be typed for the kitchen (e.g. "no ice").</li>
     </ul></li>
   <li>Adjust <b>quantity</b> per line, or tap a line to edit its add-ons, note, or item-level discount.</li>
+  <li><b>Draft cart preservation:</b> navigating away from the sales screen mid-order to check notifications or settings preserves your cart draft so you can resume immediately upon returning.</li>
   <li>Add an <b>order note</b> (e.g. "Customer will pick up at 7:00 PM").</li>
   <li>Attach a <b>loyalty customer</b> if they are a member (Chapter 10).</li>
   <li>Removing items or clearing the whole cart requires the <b>Void Items</b> permission.</li>
@@ -410,7 +415,7 @@
 
 <h2>7.6 Hold orders (open tickets &amp; tables)</h2>
 <ul>
-  <li><b>Hold Order</b> parks the cart so you can serve the next customer. Give it a <b>table number</b> (chosen from the table shortcuts list — Table 1, Table 2, … configurable up to 300 tables) <i>or</i> a custom <b>nickname</b> ("John", "counter pickup"). A table already in use cannot be picked twice.</li>
+  <li><b>Hold Order</b> parks the cart so you can serve the next customer. Give it a <b>table number</b> (chosen from the table shortcuts list — Table 1, Table 2, … configurable from 0 to 200 tables, default 50) <i>or</i> a custom <b>nickname</b> ("John", "counter pickup"). Setting table count to 0 disables table buttons and switches to manual nicknames only. Configure table shortcuts under <b>Settings &rsaquo; POS &amp; Shifts</b>. A table already in use cannot be picked twice.</li>
   <li>Resume a held order from the <b>Hold Orders</b> list or from Notifications &rsaquo; Held Orders (searchable). Resuming while another order is in the cart asks before replacing it.</li>
   <li>Held orders can print an <b>unpaid preview receipt</b> — clearly marked "UNPAID/ESTIMATE".</li>
   <li>Cashiers can always manage their own held orders; seeing and managing <i>other users'</i> held orders requires the <b>Manage Previous Held Orders</b> permission. Held orders are visible to managers on the web dashboard's Orders page too (status "On Hold"), where they can also be deleted.</li>
@@ -421,47 +426,54 @@
 
 <!-- ======================= CH 8 ======================= -->
 <h1 class="chapter">8. Shifts &amp; Cash Control</h1>
-<p>A shift is the container for everything a cashier does: sales, refunds, and cash movements. Sales cannot be processed without an active shift.</p>
+<p>A shift is the container for everything a cashier does: sales, refunds, and cash movements. Sales and refunds cannot be processed without an active shift.</p>
 
-<h2>8.1 Opening a shift</h2>
+<h2>8.1 Multi-Cashier vs. Single-Drawer Mode</h2>
+<p>Mintcom supports two operational modes, controlled by the <b>Multiple Cash Drawers</b> toggle in <span class="path">Settings &rsaquo; POS &amp; Shifts</span> (gated by the <i>Manage POS Devices</i> permission):</p>
+<ul>
+  <li><b>Multiple Cash Drawers (Default: ON):</b> In multi-terminal stores, cafes, and restaurants, multiple cashiers run independent cash drawers simultaneously at the same location. Each cashier counts their own opening float, rings up their own sales, logs their own pay-ins/pay-outs, and closes their own drawer. One cashier cashing out does not affect any other cashier.</li>
+  <li><b>Single Cash Drawer (Toggle OFF):</b> Traditional single-till workflow. Only one cash drawer is open store-wide. If another cashier signs in and opens a shift, the previous cashier's shift is automatically cashed out at the system balance. Turning this setting OFF while multiple drawers are open automatically closes older drawers and converges the store to the most recent shift.</li>
+</ul>
+
+<h2>8.2 Opening a shift</h2>
 <ol class="steps">
   <li>On the POS Dashboard tap <b>Open Shift</b>.</li>
   <li>Count the drawer and enter the <b>Opening Cash Amount</b>. Entering 0.00 asks for confirmation; the amount cannot be changed after confirming.</li>
-  <li>If another user already has an open shift on this register, a <b>Shift Conflict</b> warning names them — wait for them to close, or use the user-switch flow (below).</li>
+  <li>In Multi-Drawer mode, each cashier opens their own shift without conflict. In Single-Drawer mode, opening a shift while another user has an open drawer warns that the previous shift will be closed.</li>
   <li>If <i>you</i> already have an active shift (e.g. after an app restart), the POS offers <b>Resume Shift</b> and you continue exactly where you left off.</li>
 </ol>
 
-<h2>8.2 PAY-IN / PAY-OUT (non-sales cash)</h2>
+<h2>8.3 PAY-IN / PAY-OUT (non-sales cash)</h2>
 <ul>
   <li>Use <b>PAY-IN</b> when cash enters the drawer outside a sale (e.g. change float) and <b>PAY-OUT</b> when cash leaves (e.g. paying a supplier). Enter the amount and an optional reason.</li>
-  <li>Requires the <b>Pay-In/Pay-Out</b> permission. Every entry is logged in the <b>Non-Sales Transactions Log</b> with user, time, amount, and note — visible on the POS and in the web Sales report's Cash Management Log.</li>
+  <li>Requires the <b>Pay-In/Pay-Out</b> permission. Every entry is logged in the <b>Non-Sales Transactions Log</b> with user, time, amount, and note — visible on the POS and in the web Sales report's Cash Management Log. In Multi-Drawer mode, pay-ins and pay-outs are attributed exclusively to the cashier's active drawer.</li>
   <li><b>Open Drawer</b> without a sale is a separate permission (<b>Open Drawer Without Making Sale</b>) and each use is recorded.</li>
 </ul>
 <div class="warn"><b>Never</b> use refunds to hide a cash difference. Close the shift with the real counted cash and investigate discrepancies through the reports.</div>
 
-<h2>8.3 Closing a shift</h2>
+<h2>8.4 Closing a shift &amp; Discrepancy Tracking</h2>
 <ol class="steps">
   <li>Tap <b>Close Shift</b>. The shift summary shows sales by payment method, refunds, PAY-IN/PAY-OUT totals, and the <b>Expected Cash</b>.</li>
   <li>Count the drawer and enter the <b>Actual Cash in Drawer</b>.</li>
-  <li>Mintcom computes the <b>Cash Discrepancy</b> (overage or shortage) instantly.</li>
+  <li>Mintcom computes the <b>Cash Discrepancy</b> (overage or shortage) instantly. In Multi-Drawer mode, the opening float is compared strictly against <b>that same employee's last closed drawer</b>, preventing false discrepancy warnings caused by a colleague's drawer. In Single-Drawer mode, the comparison is store-wide.</li>
   <li>Confirm <b>Close Shift &amp; Cash Out</b>. Review the final report, then choose <b>Confirm &amp; Log Out</b> or <b>Stay Logged In</b>.</li>
 </ol>
 
-<h2>8.4 Automatic cash-out protection</h2>
+<h2>8.5 Automatic cash-out protection &amp; Sessions</h2>
 <p>Shifts are never left dangling. The system closes them automatically with the system-calculated balance when:</p>
 <table>
   <tr><th>Event</th><th>What happens</th></tr>
   <tr><td>A user logs out without cashing out</td><td>Their shift is auto-closed and saved; the next user sees "Previous Shift Closed".</td></tr>
-  <tr><td>Switching users on the lock screen</td><td>The previous user's shift is cashed out first — the POS warns "…will be automatically cashed out. This cannot be undone."</td></tr>
+  <tr><td>Switching users on the lock screen</td><td>In Single-Drawer mode, the previous user's shift is cashed out first with a warning dialog. In Multi-Drawer mode, other cashiers remain active.</td></tr>
   <tr><td>The app stays outside the foreground for more than <b>3 hours</b></td><td>The shift is auto cashed-out by the server.</td></tr>
 </table>
 <p>Auto-closed shifts are labeled <b>AUTO</b> in the Shifts report, with the exact reason recorded: <i>auto-closed by system, on sign-out, due to inactivity, session expired, another user signed in</i> — versus <i>Manual cash-out</i>. Hours worked are recorded from the exact shift start and end times.</p>
 
-<h2>8.5 The lock screen</h2>
+<h2>8.6 The lock screen &amp; session lifecycle</h2>
 <ul>
+  <li><b>Two-Layer Tokens:</b> The POS device pairs permanently to the store using a persistent store token in secure storage (Keychain / Keystore). Employee logins represent a user session layered on top.</li>
   <li>After <b>20 minutes without a touch</b> while the app is open, the screen locks. <b>The shift stays open</b> — the same user unlocks with their password/PIN and continues exactly where they were.</li>
-  <li><b>Switch user</b> from the lock screen: the current user's shift is auto cashed-out (with warning), then the login screen opens for the next user.</li>
-  <li>Leaving the app (home screen, screen off): within <b>20 minutes</b> you resume silently; after that a password is required; after <b>3 hours</b> the shift is cashed out automatically.</li>
+  <li>Leaving the app (home screen, screen off): within <b>20 minutes</b> you resume silently; after 20 minutes a password is required; after <b>3 hours</b> of inactivity the shift is cashed out automatically.</li>
 </ul>
 
 <!-- ======================= CH 9 ======================= -->
@@ -484,7 +496,7 @@
 <h2>9.2 Taking a payment</h2>
 <ol class="steps">
   <li>Tap <b>Checkout</b>. Choose Cash, Card, or Other.</li>
-  <li><b>Cash</b> — enter the <b>Amount Tendered</b> (or tap <b>Exact</b>); the <b>Change</b> is calculated and shown on the receipt.</li>
+  <li><b>Cash</b> — enter the <b>Amount Tendered</b>, tap <b>Exact</b>, or tap one of the <b>Dynamic Quick-Cash Chips</b> (smart denominations calculated from the bill total); the <b>Change</b> is calculated and shown on the receipt.</li>
   <li><b>Card</b> — pick the card type (Visa, Mastercard, …) so the sale is attributed correctly.</li>
   <li><b>Other</b> — pick the wallet/app method.</li>
   <li>Confirm. The success screen offers <b>Print Full Receipt</b> and <b>New Order</b>.</li>
@@ -493,14 +505,15 @@
 <h2>9.3 Split payments</h2>
 <ul>
   <li><b>Split by Amount</b> — each person pays a custom amount; use <b>Split Equally</b> to divide the bill into equal parts, or type custom amounts. Every part can use a different method (cash / any card type / any other method).</li>
-  <li><b>Split by Item</b> — select which items each payment covers (tap to add, long-press to remove) and pay part by part; the screen tracks Paid / Remaining until the bill closes.</li>
+  <li><b>Split by Item</b> — select which items each payment covers (tap to assign or deselect items) and pay part by part; the screen tracks Paid / Remaining until the bill closes.</li>
   <li>A fixed-amount service charge can only be used with split-by-amount.</li>
 </ul>
 
 <h2>9.4 Receipts</h2>
 <ul>
-  <li>Receipts include: your logo, business name and tagline, address, order number, date/time, served-by name, every item with add-ons and notes, discounts, subtotal, tax with rate, service charge, total, payment method (with card type), tendered/change, loyalty points earned and redeemed, Tax ID/TRN, receipt number, and your footer message. Exactly which header/footer blocks print is your choice — see Receipt settings (Chapter 13.3).</li>
-  <li><b>QR codes on the receipt:</b> when E-Invoicing is on, the government <b>verification QR</b> prints on every receipt (Chapter 13.4); a <b>"Scan to Rate Us!"</b> QR can also appear so customers can leave feedback.</li>
+  <li><b>Legal Invoice Series (INV-YYYY-NNNNN):</b> Every order is assigned a permanent, gapless legal invoice number (e.g. <code>INV-2026-00142</code>), where <code>YYYY</code> is the store's timezone year and <code>NNNNN</code> is zero-padded. Receipts print the full legal invoice number. POS screens and kitchen tickets display the short order number for fast counter operations. Credit notes share the same sequential series. Offline sales assign the true legal invoice number upon server synchronization.</li>
+  <li>Receipts include: your logo, business name and tagline, address, order number, date/time, served-by name, every item with add-ons and notes, discounts, subtotal, tax with rate, service charge, total, payment method (with card type), tendered/change, loyalty points earned and redeemed, Tax ID/TRN, receipt number, and your footer message. Exactly which header/footer blocks print is your choice — see Receipt settings (Chapter 13.4).</li>
+  <li><b>QR codes on the receipt:</b> when E-Invoicing is on, the government <b>verification QR</b> prints on every receipt (Chapter 13.5); a <b>"Scan to Rate Us!"</b> QR can also appear so customers can leave feedback.</li>
   <li><b>Auto-print on payment</b>, <b>number of copies</b>, and <b>kitchen tickets</b> (send orders to a kitchen printer) are printer options — Chapter 16.</li>
   <li><b>Reprint</b> — from My Orders or Reports &rsaquo; Orders; reprints are marked "** REPRINTED RECEIPT **". Requires the <b>Reprint Receipt or Send</b> permission.</li>
   <li><b>Email a receipt</b> — from My Orders, send the receipt to a customer email address.</li>
@@ -509,7 +522,15 @@
 
 <h2>9.5 Refunds</h2>
 <ul>
-  <li>Refund from the POS (<b>My Orders</b> or <b>Reports &rsaquo; Orders &amp; Receipts</b>) or from the web dashboard's Orders page. Requires the <b>Refunds</b> permission (back-office refunds/cancellations use <b>Make Refunds</b>).</li>
+  <li><b>Mandatory Active Shift (v5.0 Invariant):</b> NO refund can be processed without an active, open shift — regardless of whether the refund tender is Cash, Card, or Digital.</li>
+  <li><b>Authoritative Original-Tender Mirroring:</b> The server automatically prorates and refunds to the original order's payment methods. Single-tender orders refund to that tender; split orders refund proportionally across the original tenders. Cashiers cannot manually redirect a card refund to cash or vice versa.</li>
+  <li><b>Manager Refunds in Back-Office / Admin Portal (The 0 / 1 / >1 Rule):</b>
+    <ul>
+      <li><b>0 active shifts:</b> The refund is blocked. A disclaimer informs the manager that an active open register drawer is required in the store to issue returns.</li>
+      <li><b>1 active shift:</b> Automatically assigned to that open drawer and cashier's shift.</li>
+      <li><b>&gt;1 active shifts:</b> A modal prompts the manager to select which active register drawer will be debited.</li>
+    </ul></li>
+  <li>Refund from the POS (<b>My Orders</b> or <b>Reports &rsaquo; Orders &amp; Receipts</b>) or from the web dashboard's Orders page. Requires the <b>Refunds</b> permission (back-office refunds/cancellations use <b>Make Refunds</b>). Cash refunds trigger an auto-open cash drawer disclaimer on the POS.</li>
   <li><b>Refund Entire Order</b> or <b>Refund Item/s</b> — partial refunds pick specific items and quantities; the order then shows status <b>Partially Refunded</b> with the remaining balance visible.</li>
   <li>A <b>refund reason is required</b> on every refund and is stored on the order and receipt.</li>
   <li><b>Restock Items</b> option — return the refunded items to available inventory in the same action.</li>
@@ -599,11 +620,12 @@
 
 <h2>11.2 Adding an employee</h2>
 <ol class="steps">
-  <li>Enter a <b>username</b> (unique within your account) and optionally name, phone, and email. <b>Email becomes required</b> when the role includes back-office/website access, because it is the sign-in.</li>
+  <li>Enter a <b>username</b> (unique within your account) and optionally name, phone, and email. <b>Email is required only</b> when the role includes back-office/website access. POS-only roles (Cashiers, Baristas) do not require email.</li>
+  <li>When editing an employee with back-office access, their <b>Email Verification Status</b> (Verified / Pending) is displayed next to the email field, along with a <b>Resend verification</b> link.</li>
   <li>Set a <b>password</b> — at least 8 characters with uppercase, lowercase, and a number.</li>
   <li>Choose <b>location access</b> — one location, several, or all (multi-location assignment is done from the Owner Portal). You can use the same role for all locations or a different role per location.</li>
   <li>Pick a <b>role</b> — Admin (full access) or a custom/global role.</li>
-  <li>Managers can reset staff passwords later from the Staff page.</li>
+  <li>Managers can reset staff passwords directly from the Staff page.</li>
 </ol>
 <div class="note"><b>Owner protection:</b> the account owner cannot be deactivated from staff management and can only be edited from Account Management. Deactivated employees lose access immediately, while their past orders, shifts, and reports stay intact.</div>
 
@@ -651,8 +673,8 @@
   <tr><td>Configure Loyalty Rewards</td><td>Earning rules and the rewards catalog.</td></tr>
   <tr><td>Taxes</td><td>Tax rate and tax configuration.</td></tr>
   <tr><td>Kitchen Printers</td><td>Kitchen printing behavior and routes.</td></tr>
-  <tr><td>POS Devices</td><td>Registers and connected POS devices.</td></tr>
-  <tr><td>Change Establishment Settings</td><td>General store configuration (plus fine-grained: Location Profile, Tax &amp; Currency, Service Charge, Receipts).</td></tr>
+  <tr><td>POS Devices</td><td>Registers, connected POS devices, and <b>POS &amp; Shifts</b> settings (Multiple Cash Drawers toggle and Table Count).</td></tr>
+  <tr><td>Change Establishment Settings</td><td>General store configuration, plus the <b>Accounting &amp; VAT</b> integration (and fine-grained: Location Profile, Tax &amp; Currency, Service Charge, Receipts).</td></tr>
   <tr><td>Activity Log</td><td>View the audit trail.</td></tr>
   <tr><td>Billing</td><td>Subscriptions and payments (Owner Portal Billing).</td></tr>
   <tr><td>Export Data</td><td>CSV/PDF exports of business data.</td></tr>
@@ -721,73 +743,102 @@
 <h2>12.10 Taxes Report</h2>
 <ul>
   <li><b>Taxable Sales, Tax-Free Sales, Total Tax, Average Rate</b>, refund-adjusted.</li>
-  <li><b>Tax Breakdown by Rate</b> — rows for the current location rate, previous rates (if you changed the setting), and <b>Changed-tax orders</b> where a cashier edited the rate at the POS, each with net tax, transactions, and share.</li>
+  <li><b>Tax Breakdown by Rate</b> — separate rows for each custom named tax rate configured in your location (e.g. Standard VAT 20%, Reduced 5%, Zero-Rated 0%), previous rates (if modified in settings), and <b>Changed-tax orders</b> where a cashier edited the rate at the POS, each with net tax, transactions, and share.</li>
   <li>The <b>Tax Audit Summary</b> flags tax-free sales and POS tax edits for quick compliance checks.</li>
 </ul>
 
 <h2>12.11 The Orders page</h2>
 <p><span class="path">Dashboard &rsaquo; Orders</span> (permission: <b>View Orders</b>) — the searchable transaction ledger:</p>
 <ul>
-  <li>Filter by period, status (<b>Completed, On Hold, Refunded, Partially Refunded, Paid (Tax Change)</b>), payment method (cash / cards / others / specific), service-charge state (applied / changed / not applied), and search by order number or customer.</li>
-  <li>Open any order for full detail: items with add-on and note snapshots, discount, tax with rate, service charge, staff, customer and contact, timestamps, refund history (who refunded, why).</li>
-  <li><b>Refund</b> directly from here — entire order or selected items — with reason, as at the POS. Held orders can be deleted.</li>
-  <li><b>Export</b> the filtered list (order #, date, customer, status, payment method, service charge, total).</li>
+  <li>Filter by period, status (<b>Completed, On Hold, Refunded, Partially Refunded, Paid (Tax Change)</b>), payment method (cash / cards / others / specific), service-charge state (applied / changed / not applied), and search by order number, legal invoice number (<b>INV-YYYY-NNNNN</b>), or customer name.</li>
+  <li>Open any order for full detail: items with add-on and note snapshots, discount, tax breakdown with individual rates, service charge, staff, customer and contact, timestamps, tender breakdown (exact split across Cash, Card types, and Digital Wallets), and refund history (who refunded, why, and refunded tender amounts).</li>
+  <li><b>Refund</b> directly from here — entire order or selected items — with reason, as at the POS. Held orders can be deleted. Refunds automatically mirror original tenders and assign to active open store shifts (or prompt the manager to choose an open drawer if multiple exist).</li>
+  <li><b>Export</b> the filtered list (order #, invoice #, date, customer, status, payment method, payment breakdown across tenders, service charge, total) to CSV or PDF for accounting reconciliation.</li>
 </ul>
 
 <h2>12.12 Activity Logs</h2>
 <p><span class="path">Dashboard &rsaquo; Activity Logs</span> (permission: <b>Activity Log</b>) — the audit trail of sensitive actions: every product/category/add-on/discount create-update-delete (with old and new values), employee and role changes, orders created and refunded, shifts opened/closed, settings and logo changes, receipt/tax updates — each with the user, timestamp, and IP address. Filter by user, action type, and date; export for external audit. Check it after refunds, discount changes, role changes, or price updates.</p>
 
 <!-- ======================= CH 13 ======================= -->
-<h1 class="chapter">13. Location Settings &amp; E-Invoicing</h1>
-<p><span class="path">Dashboard &rsaquo; Settings</span> has five tabs, each behind its own permission so you can delegate safely: Profile, Sales Setup, Receipts, E-Invoicing, and Delete Location.</p>
+<h1 class="chapter">13. Location Settings, POS &amp; Shifts, E-Invoicing &amp; Accounting</h1>
+<p><span class="path">Dashboard &rsaquo; Settings</span> is organized into distinct configuration tabs, protected by permissions so you can delegate safely: Profile, Sales Setup, POS &amp; Shifts, Receipts, E-Invoicing, Accounting &amp; VAT, and Delete Location.</p>
 
 <h2>13.1 Profile</h2>
 <ul>
   <li>Business <b>name</b>, <b>logo</b> (recommended 512&times;512 px square PNG/JPG/SVG, max 2 MB), <b>about</b> text, <b>address</b>, <b>email</b>.</li>
-  <li><b>Tax ID / TRN</b> — your tax registration number, printed on receipts if enabled. Check your local rules.</li>
-  <li><b>Opening hours</b> — service times per weekday.</li>
-  <li>Your <b>Location Login ID</b> is displayed here for reference; its password is reset from the Owner Portal only.</li>
-  <li>The business name and logo can be changed only here or in the Back Office app — not on the POS — so branding stays consistent.</li>
+  <li><b>Tax ID / TRN</b> — your tax registration number, printed on receipts and legal invoices.</li>
+  <li>Your <b>Location Login ID</b> is displayed prominently with a quick-copy button for POS registration; its password is reset from the Owner Portal only.</li>
+  <li>The business name and logo can be changed only here or in the Back Office app — not on the POS — keeping your brand presentation secure.</li>
 </ul>
 
-<h2>13.2 Sales Setup (tax, currency, service charge, tables)</h2>
+<h2>13.2 Sales Setup (multi-tax, currency, service charge)</h2>
 <ul>
-  <li><b>Tax Rate (%)</b> — the default rate for all sales, 0–100. Changing it is treated as a critical action with a double confirmation, and reports keep previous-rate rows separate so history stays accurate.</li>
-  <li><b>System Currency</b> — shown here; changing currency is done from the Owner Portal / Account Management and applies account-wide.</li>
-  <li><b>Service Charge</b> — enable and set: charge <b>name</b>, <b>type</b> (percentage or fixed amount), <b>value</b>, <b>Taxable</b> (apply sales tax to the charge), <b>Auto apply to orders</b>, and <b>Allow cashier override</b> (cashiers may remove/modify it per order).</li>
-  <li><b>Table Shortcuts</b> — how many numbered tables (Table 1, Table 2, …) appear in the POS Hold Order menu.</li>
+  <li><b>Multi-Tax Rates Manager:</b> Manage location-wide sales tax rates with custom labels (e.g. Standard 20%, Hospitality 12.5%, Zero 0%).
+    <ul>
+      <li><b>Default Tax Rate:</b> One tax rate is designated as the store default (automatically applied to new products). The default tax cannot be deleted, only edited.</li>
+      <li><b>Safe Deletion &amp; Reassignment:</b> Deleting a custom tax rate prompts a confirmation dialog and automatically reassigns all affected products back to the default tax rate so no item is left without a valid tax mapping.</li>
+    </ul>
+  </li>
+  <li><b>System Currency:</b> Displayed for reference; changing currency is done from the Owner Portal / Account Management and applies account-wide.</li>
+  <li><b>Service Charge:</b> Enable and configure charge <b>name</b>, <b>type</b> (percentage or fixed amount), <b>value</b>, <b>Taxable</b> (apply sales tax to the charge), <b>Auto apply to orders</b>, and <b>Allow cashier override</b> (cashiers may remove/modify it per order).</li>
 </ul>
 
-<h2>13.3 Receipts</h2>
+<h2>13.3 POS &amp; Shifts</h2>
 <ul>
-  <li>Toggle each block: <b>Logo</b>, <b>Business Name</b>, <b>Tagline</b>, <b>Address</b>, <b>Tax ID</b>, and the <b>Footer Message</b> (e.g. "Thank you for visiting!"). The POS adds a farewell-message field and a live receipt preview.</li>
-  <li><b>Receipt Number Start</b> — optionally choose the number your receipt/invoice numbering begins from.</li>
+  <li><b>Multiple Cash Drawers (Simultaneous Shifts):</b> Toggle <code>allowMultipleShifts</code>.
+    <ul>
+      <li><b>Enabled:</b> Multiple cashiers can open independent cash drawers and run separate shifts simultaneously at the same location. Each cashier is responsible solely for their own discrepancy.</li>
+      <li><b>Disabled (Single Drawer):</b> Only one cashier can operate an open cash drawer at any time. Opening a new shift requires the previous cashier to close theirs, or forces an automatic cash-out during user switching.</li>
+    </ul>
+  </li>
+  <li><b>Hold Order Table Shortcuts:</b> Configure the number of table shortcuts (0 to 200, default 50) available in the POS Hold Order menu for quick dine-in ticket assignments. Set to 0 to use custom names only.</li>
 </ul>
 
-<h2>13.4 E-Invoicing &amp; Tax Compliance</h2>
+<h2>13.4 Receipts</h2>
+<ul>
+  <li>Toggle receipt blocks: <b>Logo</b>, <b>Business Name</b>, <b>Tagline/About</b>, <b>Address</b>, <b>Tax ID</b>, and the <b>Farewell / Footer Message</b> (e.g. "Thank you for visiting!"). The POS settings include a live receipt preview.</li>
+  <li><b>Receipt Number Start:</b> Optionally configure the starting sequence for order numbers.</li>
+</ul>
+
+<h2>13.5 E-Invoicing &amp; Tax Compliance</h2>
 <p>Connect the POS to your country's tax authority so every sale is reported automatically and receipts carry a government <b>verification QR code</b>.</p>
 <ol class="steps">
-  <li><b>Select your country.</b> Direct integrations include <b>Jordan (JoFotara)</b> and <b>Saudi Arabia (ZATCA)</b>; a wide set of countries (the EU, UK, Norway, Singapore, Australia, New Zealand, Japan, and more) connect through the <b>Peppol</b> e-invoicing network. If your country isn't supported yet, the tab says Tax Sync is unavailable.</li>
-  <li><b>Register with the authority</b> — the panel links you to the official registration site for your country.</li>
-  <li><b>Enter your credentials</b> (fields depend on the country — e.g. VAT number, access point ID, API key for Peppol). Saved secrets are masked; re-enter to change them.</li>
-  <li><b>Test connection</b> — verify the credentials before going live (Connected / Connection failed).</li>
-  <li>Choose the behavior:
+  <li><b>Select your country:</b> Direct integrations include <b>Jordan (JoFotara)</b> and <b>Saudi Arabia (ZATCA)</b>; a wide set of international jurisdictions (EU, UK, Norway, Singapore, Australia, New Zealand, Japan, and more) connect through the <b>Peppol</b> e-invoicing network. If your country is not supported yet, the tab indicates that Tax Sync is unavailable.</li>
+  <li><b>Register with the authority:</b> The panel links directly to the official registration portal for your jurisdiction.</li>
+  <li><b>Enter your credentials:</b> Fields depend on the country (e.g. VAT number, access point ID, API keys). Saved secrets are masked; re-enter to change them.</li>
+  <li><b>Test connection:</b> Verify credentials before going live (Connected / Connection failed).</li>
+  <li>Choose reporting behavior:
     <ul>
-      <li><b>Auto-submit invoices</b> — report each sale as it completes.</li>
-      <li><b>Block sale on reporting failure</b> — prevent completing a sale that cannot be reported; leave it off to queue and retry instead (recommended for unstable connections).</li>
+      <li><b>Auto-submit invoices:</b> Report each sale to the tax authority as soon as it completes.</li>
+      <li><b>Block sale on reporting failure:</b> Prevent completing a sale that cannot be reported; leave off to queue and retry automatically (recommended for retail environments with intermittent internet).</li>
     </ul></li>
 </ol>
-<p>Turning e-invoicing off stops reporting new sales and removes the QR from future receipts; already-reported invoices are unaffected.</p>
+<p>Turning e-invoicing off stops reporting new sales and removes the verification QR from future receipts; already-reported invoices are preserved.</p>
 
-<h2>13.5 Delete Location (danger zone)</h2>
+<h2>13.6 Cloud Accounting &amp; VAT Sync (Xero &amp; QuickBooks)</h2>
+<p><span class="path">Dashboard &rsaquo; Settings &rsaquo; Accounting &amp; VAT</span> (permission: <b>Manage Settings</b>): Connect your store to leading cloud accounting platforms to eliminate manual end-of-day bookkeeping.</p>
+<ul>
+  <li><b>Supported Providers:</b> Connect either <b>Xero</b> or <b>QuickBooks Online</b> using secure OAuth 2.0. Disconnecting removes stored tokens immediately.</li>
+  <li><b>Account Mapping:</b>
+    <ul>
+      <li><b>Xero One-Click Auto-Setup:</b> Tap "Auto-Setup Mappings" to automatically create standard Mintcom accounts (Sales Revenue, Tax Payable, Cash Clearing, Card Clearing, Service Charge, and Variance) directly in your Xero Chart of Accounts and link them instantly.</li>
+      <li><b>QuickBooks Manual Dropdown Mapping:</b> Map your revenue, tax liability, payment clearing accounts, and discrepancy ledger manually using dropdown pickers synced directly from your live QuickBooks Chart of Accounts.</li>
+    </ul>
+  </li>
+  <li><b>Automated Daily Shift Z-Report Sync:</b> When a cashier or manager closes a shift (or when an automatic cash-out triggers), Mintcom automatically compiles the shift's Z-report totals and posts a balanced journal entry / invoice into your accounting software. Cash, card, and digital payments flow into their respective clearing accounts, and cash over/short discrepancies post to the variance expense account.</li>
+  <li><b>Sync History &amp; Error Logs:</b> Review every synced shift, transmission status (Synced, Pending, Failed), external reference IDs, and error messages. Failed syncs feature a <b>Retry Sync</b> action.</li>
+  <li><b>POS Read-Only Visibility:</b> On the POS register, navigate to <span class="path">Settings &rsaquo; Payment Processes</span> to inspect live accounting status, active provider, and last sync timestamp without leaving the register.</li>
+</ul>
+
+<h2>13.7 Delete Location (danger zone)</h2>
 <ol class="steps">
-  <li><b>Warning</b> — a summary of what will be permanently deleted (orders, products, customers, staff, shifts).</li>
-  <li><b>Export</b> — download or have emailed to you: Sales &amp; revenue, Products, Customers, Staff, and Shifts/cash logs.</li>
-  <li><b>Confirm</b> — verify with your owner account password <i>and</i> the location credentials.</li>
+  <li><b>Warning:</b> Review a complete summary of all data that will be permanently deleted (orders, products, customers, staff, shifts).</li>
+  <li><b>Export:</b> Download or email comprehensive archives: Sales &amp; Revenue, Products, Customers, Staff, and Shifts/Cash Logs.</li>
+  <li><b>Confirm:</b> Verify with your owner account password <i>and</i> the location credentials.</li>
 </ol>
 <ul>
-  <li>A <b>30-day grace period</b> starts; a banner shows the scheduled date and a <b>Cancel deletion</b> button.</li>
-  <li>A deleted-but-in-grace location can be <b>restored</b>: verify the owner credentials and set a new Location Login ID and password. After 30 days, deletion is permanent.</li>
+  <li>A <b>30-day grace period</b> starts; a banner shows the scheduled deletion date and a <b>Cancel deletion</b> button.</li>
+  <li>A deleted-but-in-grace location can be restored at any time: verify owner credentials and assign a new Location Login ID and password. After 30 days, deletion is permanent.</li>
 </ul>
 
 <!-- ======================= CH 14 ======================= -->
@@ -832,7 +883,7 @@
 
 <h2>14.6 The Back Office app</h2>
 <ul>
-  <li>The mobile app (iOS/Android) mirrors the web: the full Location Dashboard (products, categories, add-ons, recipe operations, customers, discounts, loyalty, staff, roles, orders with detail view, reports, activity logs, petty-cash log, settings), the Owner Portal (overview, locations, onboarding a new location, brands, employees, roles, billing, account settings), and the Brand Portal.</li>
+  <li>The mobile app (iOS/Android) mirrors the web: the full Location Dashboard (products, categories, add-ons, recipe operations, customers, discounts, loyalty, staff, roles, orders with detail view, reports, activity logs, petty-cash log, settings including POS &amp; Shifts and accounting status), the Owner Portal (overview, locations, onboarding a new location, brands, employees, roles, billing, account settings), and the Brand Portal.</li>
   <li>It adds <b>push notifications</b> so you hear about sales activity and stock alerts wherever you are, per-section notification screens, and app settings.</li>
   <li>Get it from the App Store / Play Store — the Owner Portal sidebar has a <b>Get Mobile App</b> QR code.</li>
 </ul>
@@ -931,8 +982,8 @@
 
 <table>
   <tr><th>Symptom</th><th>What to do</th></tr>
-  <tr><td>"No Active Shift" when trying to sell or refund</td><td>Open a shift from the POS Dashboard first — sales, refunds, and PAY-IN/PAY-OUT all require one.</td></tr>
-  <tr><td>"Shift Conflict — another user has an open shift"</td><td>That register has an unclosed shift. Have that user close it, or use the lock-screen switch flow (their shift is auto cashed-out).</td></tr>
+  <tr><td>"No Active Shift" when trying to sell or refund</td><td>Open a shift from the POS Dashboard first — sales, refunds, and PAY-IN/PAY-OUT all require an active open shift (under Refund Engine v5.0, refunds are strictly blocked without an active register drawer).</td></tr>
+  <tr><td>"Shift Conflict — another user has an open shift"</td><td>Occurs when Multiple Cash Drawers is OFF. Have that user close their shift, or enable Multiple Cash Drawers in Settings &rsaquo; POS &amp; Shifts to allow simultaneous independent drawers.</td></tr>
   <tr><td>A button is missing or "Permission Denied"</td><td>The role lacks that permission. An owner/manager reviews it under Staff / Custom Roles. Check you're in the right location, and whether the action is owner-level vs. location-level.</td></tr>
   <tr><td>"Subscription required" at POS login</td><td>The trial or subscription ended. Owner Portal &rsaquo; Billing → check status, card, invoices; Subscribe or Reactivate.</td></tr>
   <tr><td>Cashier's menu is empty</td><td>Products/categories may be inactive, or the device hasn't synced — pull to refresh, check the Products page, and confirm the category is Active.</td></tr>
@@ -1008,12 +1059,13 @@
   <li>The exact error message, steps already tried, and a screenshot or short recording.</li>
   <li>Device model, app or browser version, and whether the issue affects one user, one device, or everyone.</li>
 </ul>
-<h3>Other resources</h3>
+<h3>Diagnostic tools &amp; resources</h3>
 <ul>
+  <li><b>Manager Diagnostics Sharing:</b> Managers can generate and share anonymized, sanitized diagnostic logs directly from POS <span class="path">Settings &rsaquo; About / Support</span> to <b>support@mintcompos.com</b> without leaking customer PII, PINs, or financial secrets.</li>
   <li><b>Setup Manual</b> — hardware installation, step by step.</li>
   <li><b>Video Tutorials</b> and the <b>Q&amp;A Center</b> — linked in Owner Portal &rsaquo; Account Management &rsaquo; Useful Resources.</li>
 </ul>
 
-<p class="footer-note">© 2026 Mintcom Ltd. All rights reserved. &middot; Mintcom User Manual v9.0 &middot; mintcompos.com</p>
+<p class="footer-note">© 2026 Mintcom Ltd. All rights reserved. &middot; Mintcom User Manual v10.0 &middot; mintcompos.com</p>
 </body>
 </html>
