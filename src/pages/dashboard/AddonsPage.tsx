@@ -473,12 +473,11 @@ export function AddonsPage() {
         try {
           const response = await api.delete(`/api/attributes/${attribute.id}`);
           const archivedAt = new Date().toISOString();
-          const archivedAttribute = response.data as Partial<Attribute> | undefined;
+          const archivedAttribute = response.data as Partial<Attribute> & { hardDeleted?: boolean } | undefined;
           const shouldKeepArchived =
-            !archivedAttribute ||
-            !!archivedAttribute.deletedAt ||
-            !!archivedAttribute.deactivatedAt ||
-            archivedAttribute.isActive === false;
+            archivedAttribute?.hardDeleted === false ||
+            (!!archivedAttribute && archivedAttribute.hardDeleted !== true && (!!archivedAttribute.deletedAt || !!archivedAttribute.deactivatedAt || archivedAttribute.isActive === false)) ||
+            (!archivedAttribute && !willHardDelete);
 
           if (shouldKeepArchived) {
             setRecentlyArchivedAttributeIds((prev) => new Set(prev).add(attribute.id));
@@ -496,7 +495,6 @@ export function AddonsPage() {
                         deletedAt: subAttribute.deletedAt ?? archivedAt,
                         deactivatedAt: subAttribute.deactivatedAt ?? archivedAt,
                         isActive: false,
-                        isAvailable: false,
                       })),
                     }
                   : currentAttribute,
@@ -543,13 +541,11 @@ export function AddonsPage() {
         try {
           const response = await api.delete(`/api/attributes/sub-attributes/${sub.id}`);
           const archivedAt = new Date().toISOString();
-          const archivedSubAttribute = response.data as Partial<SubAttribute> | undefined;
+          const archivedSubAttribute = response.data as Partial<SubAttribute> & { hardDeleted?: boolean } | undefined;
           const shouldKeepArchived =
-            !archivedSubAttribute ||
-            !!archivedSubAttribute.deletedAt ||
-            !!archivedSubAttribute.deactivatedAt ||
-            archivedSubAttribute.isActive === false ||
-            archivedSubAttribute.isAvailable === false;
+            archivedSubAttribute?.hardDeleted === false ||
+            (!!archivedSubAttribute && archivedSubAttribute.hardDeleted !== true && (!!archivedSubAttribute.deletedAt || !!archivedSubAttribute.deactivatedAt || archivedSubAttribute.isActive === false)) ||
+            (!archivedSubAttribute && !willHardDelete);
 
           setAttributes((currentAttributes) =>
             currentAttributes.map((attribute) => ({
@@ -563,7 +559,6 @@ export function AddonsPage() {
                           deletedAt: archivedSubAttribute?.deletedAt ?? archivedAt,
                           deactivatedAt: archivedSubAttribute?.deactivatedAt ?? archivedAt,
                           isActive: false,
-                          isAvailable: false,
                         }
                       : currentSubAttribute,
                   )

@@ -39,7 +39,7 @@ export function TaxRatesManager() {
 
   const load = useCallback(async () => {
     try {
-      const res = await api.get('/api/taxes');
+      const res = await api.get('/api/taxes', { params: { includeInactive: true } });
       const data = Array.isArray(res.data) ? res.data : [];
       setTaxes(data);
     } catch {

@@ -287,8 +287,18 @@ export function DiscountsPage() {
       confirmText: willHardDelete ? t('common.delete') : t('common.deactivate'),
       onConfirm: async () => {
         try {
-          await api.delete(`/app-settings/discounts/${discountId}`);
-          toast.success(t('common.success'));
+          const response = await api.delete(`/app-settings/discounts/${discountId}`);
+          // Response flag is the source of truth; the pre-check's
+          // willHardDelete is stale the moment history lands between calls.
+          const deleted = response.data as { hardDeleted?: boolean } | undefined;
+          const wasHardDeleted =
+            deleted?.hardDeleted === true ||
+            (deleted?.hardDeleted !== false && willHardDelete);
+          toast.success(
+            wasHardDeleted
+              ? t('discounts.messages.deleted', { defaultValue: 'Discount deleted' })
+              : t('discounts.messages.deactivated', { defaultValue: 'Discount deactivated — historical orders keep it' }),
+          );
           fetchDiscounts();
         } catch {
           toast.error(t('common.error'));

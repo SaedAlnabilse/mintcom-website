@@ -115,6 +115,7 @@ interface MenuItem {
   groupName?: string;
   isActive?: boolean;
   isAvailable?: boolean;
+  deletedAt?: string | null;
   deactivatedAt?: string | null;
 }
 
@@ -122,6 +123,7 @@ interface AttributeGroup {
   id: string;
   name: string;
   isActive?: boolean;
+  deletedAt?: string | null;
   deactivatedAt?: string | null;
   subAttributes?: Array<{
     id: string;
@@ -129,6 +131,7 @@ interface AttributeGroup {
     price?: number;
     isActive?: boolean;
     isAvailable?: boolean;
+    deletedAt?: string | null;
     deactivatedAt?: string | null;
   }>;
 }
@@ -138,8 +141,8 @@ export type RawFilterType = 'ALL' | 'LOW' | 'OUT' | 'INACTIVE';
 export type SubFilterType = 'ALL' | 'READY' | 'SHORTAGE' | 'INACTIVE';
 export type FinalFilterType = 'ALL' | 'PRODUCTS' | 'ADDONS' | 'INACTIVE';
 
-const isEntityActive = (entity: { isActive?: boolean; deactivatedAt?: string | null }) =>
-  entity.isActive !== false && !entity.deactivatedAt;
+const isEntityActive = (entity: { isActive?: boolean; deactivatedAt?: string | null; deletedAt?: string | null }) =>
+  entity.isActive !== false && !entity.deactivatedAt && !entity.deletedAt;
 
 const getFinalRecipeTargetId = (recipe: FinalRecipe) =>
   recipe.itemId || recipe.subAttributeId || '';
@@ -240,8 +243,9 @@ export function RecipesPage() {
         name: item.name,
         type: 'product' as const,
         groupName: item.category?.name,
-        isActive: item.isAvailable ?? item.isActive,
-        isAvailable: item.isAvailable ?? item.isActive,
+        isActive: item.deletedAt == null && item.deactivatedAt == null,
+        isAvailable: item.isAvailable,
+        deletedAt: item.deletedAt,
         deactivatedAt: item.deactivatedAt,
       }));
       const addonTargets = attributesData.flatMap((attribute) =>
@@ -251,10 +255,14 @@ export function RecipesPage() {
           type: 'addon' as const,
           groupName: attribute.name,
           isActive:
+            option.deletedAt == null &&
+            option.deactivatedAt == null &&
             option.isActive !== false &&
-            option.isAvailable !== false &&
+            attribute.deletedAt == null &&
+            attribute.deactivatedAt == null &&
             attribute.isActive !== false,
           isAvailable: option.isAvailable,
+          deletedAt: option.deletedAt,
           deactivatedAt: option.deactivatedAt || attribute.deactivatedAt,
         })),
       );
@@ -539,7 +547,17 @@ export function RecipesPage() {
       type: 'danger',
       confirmText: shouldDelete ? t('common.delete', { defaultValue: 'Delete' }) : t('common.archive', { defaultValue: 'Archive' }),
       onConfirm: async () => {
-        try { await api.delete(`/api/manufacturing/raw-materials/${id}`); toast.success(shouldDelete ? 'Deleted successfully' : t('inventory.messages.removed', {defaultValue: 'Archived successfully'})); fetchData(); } catch { toast.error(t('inventory.messages.deleteFailed', {defaultValue: 'Failed to remove'})); }
+        try {
+          const response = await api.delete(`/api/manufacturing/raw-materials/${id}`);
+          // Response flag is the source of truth; the pre-check's
+          // shouldDelete is stale the moment usage lands between calls.
+          const deleted = response.data as { hardDeleted?: boolean } | undefined;
+          const wasHardDeleted =
+            deleted?.hardDeleted === true ||
+            (deleted?.hardDeleted !== false && shouldDelete);
+          toast.success(wasHardDeleted ? 'Deleted successfully' : t('inventory.messages.removed', {defaultValue: 'Archived successfully'}));
+          fetchData();
+        } catch { toast.error(t('inventory.messages.deleteFailed', {defaultValue: 'Failed to remove'})); }
       }
     });
   };
@@ -737,8 +755,12 @@ export function RecipesPage() {
       confirmText: shouldDelete ? t('common.delete', { defaultValue: 'Delete' }) : t('common.archive', { defaultValue: 'Archive' }),
       onConfirm: async () => {
         try {
-          await api.delete(`/api/manufacturing/${segment}/${id}`);
-          toast.success(t('manufacturing.messages.removed'));
+          const response = await api.delete(`/api/manufacturing/${segment}/${id}`);
+          const deleted = response.data as { hardDeleted?: boolean } | undefined;
+          const wasHardDeleted =
+            deleted?.hardDeleted === true ||
+            (deleted?.hardDeleted !== false && shouldDelete);
+          toast.success(wasHardDeleted ? t('common.delete', { defaultValue: 'Deleted successfully' }) : t('manufacturing.messages.removed'));
           fetchData();
         } catch (error) {
           toast.error(extractErrorMessage(error) || t('common.error'));

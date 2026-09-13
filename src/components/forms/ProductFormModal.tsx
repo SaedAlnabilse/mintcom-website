@@ -62,6 +62,8 @@ interface TaxOption {
   rate: number; // fraction (0.16 = 16%)
   isDefault: boolean;
   isActive?: boolean;
+  deletedAt?: string | null;
+  deactivatedAt?: string | null;
 }
 
 interface Category {
@@ -276,7 +278,7 @@ export function ProductFormModal({
     return Number.isFinite(numericValue) ? numericValue : fallback;
   };
 
-  const activeTaxes = useMemo(() => taxes.filter((t) => t.isActive), [taxes]);
+  const activeTaxes = useMemo(() => taxes.filter((t) => t.isActive !== false && !t.deletedAt && !t.deactivatedAt), [taxes]);
 
   const effectiveActiveTaxes = useMemo(() => {
     if (activeTaxes.length > 0) return activeTaxes;
@@ -679,7 +681,7 @@ export function ProductFormModal({
         const [attrRes, settingsRes, taxesRes] = await Promise.all([
           api.get('/api/attributes'),
           api.get('/app-settings'),
-          api.get('/api/taxes').catch(() => ({ data: [] })),
+          api.get('/api/taxes', { params: { includeInactive: true } }).catch(() => ({ data: [] })),
         ]);
         setAttributes(attrRes.data || []);
         setTaxRate(toFiniteNumber(settingsRes.data?.taxRate, 0));
@@ -817,7 +819,7 @@ export function ProductFormModal({
   useEffect(() => {
     if (!isOpen) return;
     const handleTaxesUpdated = () => {
-      api.get('/api/taxes')
+      api.get('/api/taxes', { params: { includeInactive: true } })
         .then((res) => {
           if (Array.isArray(res.data)) {
             setTaxes(res.data);

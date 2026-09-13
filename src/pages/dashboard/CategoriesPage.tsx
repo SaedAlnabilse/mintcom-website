@@ -148,7 +148,7 @@ export function CategoriesPage() {
       if (!silent) setIsLoading(true);
       const [catsRes, products] = await Promise.all([
         api.get('/api/categories', { params: { includeInactive: true } }),
-        fetchAllPages<Product>(api, '/api/items'),
+        fetchAllPages<Product>(api, '/api/items', { includeInactive: true }),
       ]);
       const sortedCategories = sortArchivedLastByNewest(Array.isArray(catsRes.data) ? catsRes.data : []);
       if (preserveCurrentOrder && recentlyArchivedCategoryIds.size > 0) {
@@ -504,7 +504,16 @@ export function CategoriesPage() {
         onConfirm: async () => {
           try {
             const response = await api.delete(`/api/categories/${categoryId}`);
-            if (shouldDelete) {
+            // hardDeleted from the DELETE response is the source of truth.
+            // The pre-check's shouldDelete is stale the moment history lands
+            // between the impact call and this call — branching on it removes
+            // rows the server actually archived. Fall back to the pre-check
+            // only when the flag is absent (older API).
+            const deletedCategory = response.data as Partial<Category> & { hardDeleted?: boolean } | undefined;
+            const wasHardDeleted =
+              deletedCategory?.hardDeleted === true ||
+              (deletedCategory?.hardDeleted !== false && shouldDelete && !deletedCategory?.deletedAt && !deletedCategory?.deactivatedAt);
+            if (wasHardDeleted) {
               setRecentlyArchivedCategoryIds((prev) => {
                 const next = new Set(prev);
                 next.delete(categoryId);

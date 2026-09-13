@@ -409,12 +409,14 @@ export function ProductsPage() {
                 try {
                     const response = await api.delete(`/api/items/${id}`);
                     const archivedAt = new Date().toISOString();
-                    const archivedProduct = response.data as Partial<Product> | undefined;
+                    const archivedProduct = response.data as Partial<Product> & { hardDeleted?: boolean } | undefined;
+                    // hardDeleted is the source of truth (Addons/Discounts already
+                    // do this). isAvailable is an availability toggle, not a
+                    // lifecycle flag — never use it to infer archived state.
                     const shouldKeepArchived =
-                        !archivedProduct ||
-                        !!archivedProduct.deletedAt ||
-                        !!archivedProduct.deactivatedAt ||
-                        archivedProduct.isAvailable === false;
+                        archivedProduct?.hardDeleted === false ||
+                        (!!archivedProduct && archivedProduct.hardDeleted !== true && (!!archivedProduct.deletedAt || !!archivedProduct.deactivatedAt)) ||
+                        (!archivedProduct && !willHardDelete);
 
                     if (shouldKeepArchived) {
                         setRecentlyArchivedProductIds((prev) => new Set(prev).add(id));
@@ -426,7 +428,6 @@ export function ProductsPage() {
                                         ...archivedProduct,
                                         deletedAt: archivedProduct?.deletedAt ?? archivedAt,
                                         deactivatedAt: archivedProduct?.deactivatedAt ?? archivedAt,
-                                        isAvailable: false,
                                     }
                                     : product,
                             ),
