@@ -115,9 +115,17 @@ export function TaxRatesManager() {
   const confirmDelete = async () => {
     if (!deleteTarget || deleting) return;
     setDeleting(true);
+    // Taxes are archive-only server-side (never hard-deleted): a referenced
+    // rate is deactivated, an unused one removed. Mirror that in the toast so
+    // the wording matches the products/attributes/discounts contract.
+    const wasReferenced = deleteReferencedCount > 0;
     try {
       await api.delete(`/api/taxes/${deleteTarget.id}`);
-      toast.success(t('settings.taxes.deleted', 'Tax rate deleted successfully'));
+      toast.success(
+        wasReferenced
+          ? t('settings.taxes.deactivated', { defaultValue: 'Tax rate deactivated — assigned products now use your default Sales Tax' })
+          : t('settings.taxes.deleted', 'Tax rate deleted successfully'),
+      );
       setDeleteTarget(null);
       await load();
       window.dispatchEvent(new Event('mintcom:taxes-updated'));
@@ -381,7 +389,11 @@ export function TaxRatesManager() {
         isOpen={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={confirmDelete}
-        title={t('settings.taxes.deleteTitle', { defaultValue: 'Delete tax rate?' })}
+        title={
+          deleteReferencedCount > 0
+            ? t('settings.taxes.deactivateTitle', { defaultValue: 'Deactivate tax rate?' })
+            : t('settings.taxes.deleteTitle', { defaultValue: 'Delete tax rate?' })
+        }
         message={
           deleteTarget
             ? deleteReferencedCount > 0
@@ -398,7 +410,11 @@ export function TaxRatesManager() {
                 })
             : ''
         }
-        confirmText={t('common.delete', { defaultValue: 'Delete' })}
+        confirmText={
+          deleteReferencedCount > 0
+            ? t('common.deactivate', { defaultValue: 'Deactivate' })
+            : t('common.delete', { defaultValue: 'Delete' })
+        }
         cancelText={t('common.cancel', { defaultValue: 'Cancel' })}
         type="danger"
       />
