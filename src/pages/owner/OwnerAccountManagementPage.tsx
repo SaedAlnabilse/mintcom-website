@@ -118,10 +118,6 @@ export function OwnerAccountManagementPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [copiedId, setCopiedId] = useState<string | null>(null);
 
-    // Active establishments blocking deletion modal
-    const [showActiveEstBlockModal, setShowActiveEstBlockModal] = useState(false);
-    const [activeBlockingEsts, setActiveBlockingEsts] = useState<any[]>([]);
-
     // Password reset modal state
     const [passwordModal, setPasswordModal] = useState<{
         isOpen: boolean;
@@ -407,18 +403,7 @@ export function OwnerAccountManagementPage() {
     }, [fetchAccountData]);
 
     const handleDeleteClick = () => {
-        // Check for active establishments in either accountDetails or establishments from context
-        const establishmentsToCheck = accountDetails?.establishments || establishments || [];
-        const activeEsts = establishmentsToCheck.filter(
-            (est: any) => est.subscriptionStatus === 'ACTIVE' || est.isActive === true
-        );
-
-        if (activeEsts.length > 0) {
-            setActiveBlockingEsts(activeEsts);
-            setShowActiveEstBlockModal(true);
-            return;
-        }
-
+        // Any active establishments and subscriptions will be locked and scheduled for gateway cancellation upon deletion.
         setShowDeleteConfirm(true);
     };
 
@@ -1746,71 +1731,6 @@ export function OwnerAccountManagementPage() {
                 </div>,
                 document.body
             )}
-            {/* Active Establishments Block Modal */}
-            <AnimatePresence>
-                {showActiveEstBlockModal && createPortal(
-                    <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="bg-white dark:bg-[#1E293B] rounded-3xl border border-gray-200 dark:border-white/[0.05] p-8 max-w-md w-full shadow-2xl"
-                        >
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0">
-                                    <AlertCircle className="w-6 h-6 text-amber-500" />
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
-                                        {t('owner.account.activeEstBlockModal.title')}
-                                    </h3>
-                                </div>
-                            </div>
-
-                            <div className="space-y-6">
-
-                                <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/[0.05] overflow-hidden">
-                                    <div className="px-4 py-3 border-b border-gray-100 dark:border-white/[0.05] bg-gray-100/50 dark:bg-white/[0.02]">
-                                        <p className="label-strong">{t('owner.account.activeEstBlockModal.activeLocations')}</p>
-                                    </div>
-                                    <div className="max-h-40 overflow-y-auto p-2 space-y-1">
-                                        {activeBlockingEsts.map((est) => {
-                                            const Icon = getBusinessTypeIcon(est.type);
-                                            return (
-                                                <div key={est.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-white dark:hover:bg-white/[0.05] transition-colors">
-                                                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
-                                                        <Icon className="w-4 h-4 text-blue-500" />
-                                                    </div>
-                                                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">
-                                                        {est.name}
-                                                    </span>
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col gap-3">
-                                    <button
-                                        onClick={() => navigate('/owner/billing')}
-                                        className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-mintcom-green hover:bg-[#5fa888] text-black rounded-2xl text-sm font-black transition-all shadow-lg shadow-mintcom-green/20"
-                                    >
-                                        <CreditCard size={18} />
-                                        {t('owner.account.activeEstBlockModal.goToBilling')}
-                                    </button>
-                                    <button
-                                        onClick={() => setShowActiveEstBlockModal(false)}
-                                        className="w-full px-6 py-4 bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.1] text-gray-600 dark:text-gray-300 rounded-2xl text-sm font-bold transition-all"
-                                    >
-                                        {t('common.close')}
-                                    </button>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </div>,
-                    document.body
-                )}
-            </AnimatePresence>
 
             {/* Warning before changing the system currency for all locations. */}
             <ChangeCurrencyModal
