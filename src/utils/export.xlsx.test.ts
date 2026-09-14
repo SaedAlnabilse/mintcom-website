@@ -1,37 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import writeXlsxFile from 'write-excel-file/node';
 import { unzipSync, strFromU8 } from 'fflate';
-
-/**
- * XLSX export round-trip.
- *
- * The abandoned `xlsx` (SheetJS 0.18.5, no patched release on npm) was swapped
- * for `write-excel-file`. That change rewrote how cells, sheet names and column
- * widths are produced, so this asserts the *actual bytes* — unzipped and
- * inspected — rather than trusting that it compiles.
- *
- * The builders are duplicated here rather than imported because export.ts pulls
- * in `write-excel-file/browser` (Blob) and jsPDF at module scope; this test runs
- * the identical shapes through the Node build to get a Buffer it can unzip.
- */
-
-type XlsxCell = {
-  value: string | number | null;
-  type: StringConstructor | NumberConstructor;
-};
-
-const xlsxCell = (value: string | number): XlsxCell =>
-  typeof value === 'number'
-    ? { value, type: Number }
-    : { value: value === '' ? null : value, type: String };
-
-const safeSheetName = (name: string, fallback: string): string => {
-  const cleaned = (name || fallback)
-    .replace(/[:\\/?*[\]]/g, ' ')
-    .trim()
-    .slice(0, 31);
-  return cleaned || fallback;
-};
+import { xlsxCell, safeSheetName, buildColumnWidths, slug } from './export';
 
 const buildWorkbook = async () => {
   const sheets = [
@@ -109,5 +79,77 @@ describe('xlsx export via write-excel-file', () => {
     expect(safeSheetName('a/b:c*d?e[f]g', 'X')).toBe('a b c d e f g');
     expect(safeSheetName('x'.repeat(40), 'X')).toHaveLength(31);
     expect(safeSheetName('', 'Fallback')).toBe('Fallback');
+  });
+
+  it('31-char sheet collision terminates and produces distinct names', () => {
+    const longName = 'A'.repeat(31);
+    const used = new Set<string>();
+    const names: string[] = [];
+
+    for (let i = 0; i < 3; i++) {
+      const base = safeSheetName(longName, `Sheet${i + 1}`);
+      let name = base;
+      let suffix = 1;
+      while (used.has(name.toLowerCase())) {
+        const tag = ` ${++suffix}`;
+        name = base.slice(0, 31 - tag.length) + tag;
+      }
+      used.add(name.toLowerCase());
+      names.push(name);
+    }
+
+    expect(names).toHaveLength(3);
+    expect(new Set(names.map(n => n.toLowerCase())).size).toBe(3);
+    names.forEach(n => {
+      expect(n.length).toBeLessThanOrEqual(31);
+    });
+    expect(names[0]).toBe('A'.repeat(31));
+    expect(names[1]).toBe('A'.repeat(29) + ' 2');
+    expect(names[2]).toBe('A'.repeat(29) + ' 3');
+  });
+
+  it('xlsxCell(NaN) yields a null/string cell, never <v>NaN</v>', async () => {
+    const cell = xlsxCell(NaN);
+    expect(cell.type).toBe(String);
+    expect(cell.value).toBeNull();
+
+    const sheets = [
+      {
+        data: [[xlsxCell(NaN)]],
+        sheet: 'NaNTest',
+        columns: [{ width: 10 }],
+      },
+    ];
+    const buffer = await writeXlsxFile(sheets as never).toBuffer();
+    const files = unzipSync(new Uint8Array(buffer));
+    const s = strFromU8(files['xl/worksheets/sheet1.xml']);
+    expect(s).not.toContain('<v>NaN</v>');
+  });
+
+  it('column widths with 100k rows do not throw stack overflow', () => {
+    const largeRows = new Array(100_000).fill(null).map((_, i) => ({
+      id: i,
+      name: `Customer ${i}`,
+    }));
+    const section = {
+      name: 'Large',
+      columns: [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' },
+      ],
+      rows: largeRows,
+    };
+
+    expect(() => {
+      const widths = buildColumnWidths(section);
+      expect(widths).toHaveLength(2);
+      expect(widths[0].width).toBeGreaterThanOrEqual(10);
+    }).not.toThrow();
+  });
+
+  it('slug("ملخص المبيعات") is non-empty and ASCII-safe', () => {
+    const arabicSlug = slug('ملخص المبيعات');
+    expect(arabicSlug).not.toBe('export');
+    expect(arabicSlug).toBe('ملخص_المبيعات');
   });
 });

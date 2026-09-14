@@ -107,8 +107,8 @@ export function ExportMenu({
 
   const handleSelect = (format: ExportFormat) => {
     setOpen(false);
-    Promise.resolve(onExport(format)).catch(() => {
-      toast.error(t('common.error', { defaultValue: 'Something went wrong' }));
+    Promise.resolve(onExport(format)).catch((err: any) => {
+      toast.error(err?.message || t('common.error', { defaultValue: 'Something went wrong' }));
     });
   };
 

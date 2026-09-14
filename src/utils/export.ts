@@ -1,10 +1,8 @@
-// xlsx and jspdf are heavy (~700 KB combined). They are dynamically imported
-// inside the build functions below so they only download when the user actually
-// triggers an export, instead of weighing down every page that renders an
-// Export button.
+import { api } from '../config/api';
+import i18n from '../i18n';
 
 /**
- * Utility to export an array of objects to a Csv file and trigger a download.
+ * Utility to export an array of objects to a CSV file and trigger a download.
  * @param data Array of objects representing the rows.
  * @param filename Desired filename (without extension).
  * @param headers Optional custom headers mapping (e.g., { id: 'Id', name: 'Name' }).
@@ -14,47 +12,19 @@ export const exportToCSV = (data: any[], filename: string, headers?: Record<stri
     return;
   }
 
-  // Determine keys from the first object if headers aren't provided
   const keys = Object.keys(data[0]);
+  const headerRow = (headers ? Object.values(headers) : keys).map(escapeCsv).join(',');
 
-  // Create header row
-  const headerRow = headers
-    ? Object.values(headers).join(',')
-    : keys.join(',');
-
-  // Create data rows
   const rows = data.map(obj => {
-    const values = (headers ? Object.keys(headers) : keys).map(key => {
-      let value = obj[key];
-
-      // Handle nested objects (simple flatten)
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-        // Just use the name or username if it exists
-        value = value.name || value.username || JSON.stringify(value);
-      }
-
-      // Escape quotes and wrap in quotes if contains comma
-      const stringValue = String(value ?? '').replace(/"/g, '""');
-      return `"${stringValue}"`;
-    });
-    return values.join(',');
+    return (headers ? Object.keys(headers) : keys)
+      .map(key => escapeCsv(cellValue(obj, key)))
+      .join(',');
   });
 
-  // Combine and create blob
-  const csvContent = [headerRow, ...rows].join('\n');
+  const csvContent = '\uFEFF' + [headerRow, ...rows].join('\n');
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 
-  // Trigger download
-  const link = document.createElement('a');
-  if (link.download !== undefined) {
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
+  triggerDownload(blob, `${slug(filename)}_${todayStamp()}.csv`);
 };
 
 // ─── Format-aware export (Excel / PDF / CSV) ───────────────────────────────
@@ -78,7 +48,7 @@ export interface ExportSection {
 }
 
 interface ExportTableInput {
-  filename: string;
+  filename?: string;
   title: string;
   columns: ExportColumn[];
   rows: any[];
@@ -86,7 +56,7 @@ interface ExportTableInput {
 }
 
 interface ExportSectionsInput {
-  filename: string;
+  filename?: string;
   title: string;
   sections: ExportSection[];
   meta?: ExportMeta;
@@ -95,7 +65,7 @@ interface ExportSectionsInput {
 const todayStamp = () => new Date().toISOString().split('T')[0];
 
 /** Normalize a single cell value to a primitive suitable for a spreadsheet/table. */
-const cellValue = (row: any, key: string): string | number => {
+export const cellValue = (row: any, key: string): string | number => {
   const value = row?.[key];
   if (value === null || value === undefined) return '';
   if (typeof value === 'number') return value;
@@ -105,7 +75,7 @@ const cellValue = (row: any, key: string): string | number => {
   return String(value);
 };
 
-const escapeCsv = (value: string | number): string => {
+export const escapeCsv = (value: string | number): string => {
   const str = String(value ?? '');
   return `"${str.replace(/"/g, '""')}"`;
 };
@@ -129,12 +99,12 @@ const triggerDownload = (blob: Blob, filename: string) => {
  * a null value so Excel shows a genuinely empty cell rather than an empty
  * string, and numbers keep their numeric type so they stay sortable/summable.
  */
-type XlsxCell = { value: string | number | null; type: StringConstructor | NumberConstructor };
+export type XlsxCell = { value: string | number | null; type: StringConstructor | NumberConstructor };
 
-const xlsxCell = (value: string | number): XlsxCell =>
-  typeof value === 'number'
+export const xlsxCell = (value: string | number): XlsxCell =>
+  typeof value === 'number' && Number.isFinite(value)
     ? { value, type: Number }
-    : { value: value === '' ? null : value, type: String };
+    : { value: value === '' || (typeof value === 'number' && !Number.isFinite(value)) ? null : value, type: String };
 
 /** Build the rows for one section. `preamble` rows (title/meta) are placed above the table. */
 const buildSheetRows = (section: ExportSection, preamble: string[][] = []): XlsxCell[][] => {
@@ -150,24 +120,25 @@ const buildSheetRows = (section: ExportSection, preamble: string[][] = []): Xlsx
 };
 
 /** Auto-size columns to the widest cell (capped so a long string can't blow out the layout). */
-const buildColumnWidths = (section: ExportSection) => {
+export const buildColumnWidths = (section: ExportSection) => {
   const body = (section.rows || []).map(row => section.columns.map(c => cellValue(row, c.key)));
   return section.columns.map((c, i) => {
-    const widest = Math.max(
-      String(c.label).length,
-      ...body.map(r => String(r[i] ?? '').length),
-    );
+    let widest = String(c.label).length;
+    for (let r = 0; r < body.length; r++) {
+      const len = String(body[r][i] ?? '').length;
+      if (len > widest) widest = len;
+    }
     return { width: Math.min(Math.max(widest + 2, 10), 60) };
   });
 };
 
-/** Sanitize a worksheet name for Excel (max 31 chars, no : \\ / ? * [ ]). */
-const safeSheetName = (name: string, fallback: string): string => {
+/** Sanitize a worksheet name for Excel (max 31 chars, no : \ / ? * [ ]). */
+export const safeSheetName = (name: string, fallback: string): string => {
   const cleaned = (name || fallback).replace(/[:\\/?*[\]]/g, ' ').trim().slice(0, 31);
   return cleaned || fallback;
 };
 
-const buildXLSX = async (title: string, sections: ExportSection[], meta?: ExportMeta) => {
+const buildXLSX = async (filename: string | undefined, title: string, sections: ExportSection[], meta?: ExportMeta) => {
   // Browser build: pure JS + fflate, returns a Blob. Loaded lazily so the
   // spreadsheet writer is only fetched when someone actually exports.
   const { default: writeXlsxFile } = await import('write-excel-file/browser');
@@ -182,10 +153,12 @@ const buildXLSX = async (title: string, sections: ExportSection[], meta?: Export
       preamble.push([]); // spacer row
     }
 
-    let name = safeSheetName(section.name, `Sheet${idx + 1}`);
+    const base = safeSheetName(section.name, `Sheet${idx + 1}`);
+    let name = base;
     let suffix = 1;
     while (used.has(name.toLowerCase())) {
-      name = safeSheetName(`${section.name} ${++suffix}`, `Sheet${idx + 1}`);
+      const tag = ` ${++suffix}`;
+      name = base.slice(0, 31 - tag.length) + tag;
     }
     used.add(name.toLowerCase());
 
@@ -197,81 +170,81 @@ const buildXLSX = async (title: string, sections: ExportSection[], meta?: Export
   });
 
   const blob = await writeXlsxFile(sheets as never).toBlob();
-  triggerDownload(blob, `${title ? slug(title) : 'export'}_${todayStamp()}.xlsx`);
+  triggerDownload(blob, `${slug(filename || title)}_${todayStamp()}.xlsx`);
 };
 
-const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 60) || 'export';
+export const slug = (s: string) =>
+  s.toLowerCase().normalize('NFKD').replace(/[^\p{L}\p{N}]+/gu, '_').replace(/^_+|_+$/g, '').slice(0, 60) || 'export';
 
-// ─── PDF ─────────────────────────────────────────────────────────────────
+// ─── PDF (Server-side via mintcom-api) ────────────────────────────────────────
 
-const buildPDF = async (title: string, sections: ExportSection[], meta?: ExportMeta) => {
-  const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
-    import('jspdf'),
-    import('jspdf-autotable'),
-  ]);
-  const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
-  // No setCharSpace here: extra inter-character spacing was what made exported
-  // reports look loose and uneven (MINT-RPT-010). Readability comes from the
-  // font size and cell padding in the autoTable styles below instead.
-  const marginX = 40;
-  let cursorY = 48;
+const buildPDF = async (filename: string | undefined, title: string, sections: ExportSection[], meta?: ExportMeta) => {
+  const isRtl =
+    (typeof document !== 'undefined' && document.documentElement.dir === 'rtl') ||
+    (typeof i18n !== 'undefined' && String(i18n.language).startsWith('ar'));
+  const locale = typeof i18n !== 'undefined' ? i18n.language : 'en';
 
-  if (title) {
-    doc.setFontSize(16);
-    doc.setTextColor(20, 20, 20);
-    doc.text(title, marginX, cursorY);
-    cursorY += 18;
-  }
-
-  doc.setFontSize(9);
-  doc.setTextColor(110, 110, 110);
-  (meta || []).forEach(m => {
-    doc.text(`${m.label}: ${m.value}`, marginX, cursorY);
-    cursorY += 12;
-  });
-  doc.text(`Generated: ${new Date().toLocaleString()}`, marginX, cursorY);
-  cursorY += 8;
-
-  sections.forEach((section, idx) => {
-    const head = [section.columns.map(c => c.label)];
-    const body = (section.rows || []).map(row =>
-      section.columns.map(c => {
-        const v = cellValue(row, c.key);
-        return typeof v === 'number' ? v.toLocaleString() : v;
-      }),
+  try {
+    const response = await api.post<Blob>(
+      '/api/reports/export-pdf',
+      {
+        title,
+        filename,
+        locale,
+        isRtl,
+        meta,
+        sections,
+        orientation: 'landscape',
+      },
+      {
+        responseType: 'blob',
+      },
     );
 
-    if (sections.length > 1) {
-      cursorY += 16;
-      doc.setFontSize(11);
-      doc.setTextColor(20, 20, 20);
-      doc.text(section.name, marginX, cursorY);
-      cursorY += 4;
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const downloadName = `${slug(filename || title)}_${todayStamp()}.pdf`;
+    triggerDownload(blob, downloadName);
+  } catch (error: any) {
+    let message = 'Failed to generate PDF';
+    if (error?.response?.data instanceof Blob) {
+      try {
+        let text = '';
+        if (typeof error.response.data.text === 'function') {
+          text = await error.response.data.text();
+        } else if (typeof FileReader !== 'undefined') {
+          text = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result));
+            reader.onerror = () => reject(reader.error);
+            reader.readAsText(error.response.data);
+          });
+        } else if (typeof Response !== 'undefined') {
+          text = await new Response(error.response.data).text();
+        }
+        const parsed = JSON.parse(text);
+        const extracted = parsed.message || parsed.error;
+        if (Array.isArray(extracted)) {
+          message = extracted.join(', ');
+        } else if (typeof extracted === 'string') {
+          message = extracted;
+        }
+      } catch {
+        // Fallback to default message
+      }
+    } else if (error?.response?.data?.message) {
+      const extracted = error.response.data.message;
+      message = Array.isArray(extracted) ? extracted.join(', ') : String(extracted);
+    } else if (error instanceof Error) {
+      message = error.message;
     }
-
-    autoTable(doc, {
-      head,
-      body,
-      startY: cursorY,
-      margin: { left: marginX, right: marginX },
-      styles: { fontSize: 9, cellPadding: 3, overflow: 'linebreak' },
-      headStyles: { fillColor: [125, 198, 162], textColor: [7, 17, 11], fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: [247, 250, 248] },
-    });
-
-    // Advance cursor below the table just rendered.
-    cursorY = (doc as any).lastAutoTable?.finalY ?? cursorY;
-    if (idx < sections.length - 1) {
-      cursorY += 8;
-    }
-  });
-
-  doc.save(`${title ? slug(title) : 'export'}_${todayStamp()}.pdf`);
+    console.error('[export] PDF generation failed:', message);
+    throw new Error(message);
+  }
 };
 
 // ─── CSV (multi-section aware) ──────────────────────────────────────────────
 
-const buildCSV = (filename: string, title: string, sections: ExportSection[], meta?: ExportMeta) => {
+const buildCSV = (filename: string | undefined, title: string, sections: ExportSection[], meta?: ExportMeta) => {
   const lines: string[] = [];
   if (title) lines.push(escapeCsv(title));
   (meta || []).forEach(m => lines.push(`${escapeCsv(m.label)},${escapeCsv(m.value)}`));
@@ -288,7 +261,7 @@ const buildCSV = (filename: string, title: string, sections: ExportSection[], me
 
   // BOM so Excel reads UTF-8 (incl. Arabic) correctly.
   triggerDownload(
-    new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' }),
+    new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' }),
     `${slug(filename || title)}_${todayStamp()}.csv`,
   );
 };
@@ -313,10 +286,10 @@ export const exportSections = async (format: ExportFormat, input: ExportSections
   try {
     switch (format) {
       case 'xlsx':
-        await buildXLSX(input.title, sections, input.meta);
+        await buildXLSX(input.filename, input.title, sections, input.meta);
         break;
       case 'pdf':
-        await buildPDF(input.title, sections, input.meta);
+        await buildPDF(input.filename, input.title, sections, input.meta);
         break;
       case 'csv':
         buildCSV(input.filename, input.title, sections, input.meta);
