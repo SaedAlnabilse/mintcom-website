@@ -4,10 +4,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { X, Shield, Lock, User, RefreshCw, AlertTriangle, ArrowRight } from 'lucide-react';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
+import { GoogleAuthButton } from './GoogleAuthButton';
+import { AppleAuthButton, type AppleAuthCredential } from './AppleAuthButton';
+
+export type RestoreLocationAuthProvider = 'password' | 'google' | 'apple';
 
 export interface RestoreLocationFormData {
     accountEmail: string;
     password: string;
+    authProvider: RestoreLocationAuthProvider;
+    credential?: string;
+    identityToken?: string;
+    nonce?: string;
     newLocationLoginId: string;
     newLocationPassword: string;
 }
@@ -18,11 +26,17 @@ interface RestoreLocationModalProps {
     onRestore: (data: RestoreLocationFormData) => Promise<void>;
     isRestoring: boolean;
     errorMessage?: string | null;
+    /**
+     * Owner's sign-in provider. Google/Apple owners never chose a password,
+     * so the modal collects a federated identity token instead of one.
+     */
+    authProvider?: RestoreLocationAuthProvider;
 }
 
 const EMPTY_FORM: RestoreLocationFormData = {
     accountEmail: '',
     password: '',
+    authProvider: 'password',
     newLocationLoginId: '',
     newLocationPassword: '',
 };
@@ -33,17 +47,40 @@ export function RestoreLocationModal({
     onRestore,
     isRestoring,
     errorMessage,
+    authProvider = 'password',
 }: RestoreLocationModalProps) {
     const { t } = useTranslation();
     const [step, setStep] = useState(1);
-    const [formData, setFormData] = useState<RestoreLocationFormData>(EMPTY_FORM);
+    const [formData, setFormData] = useState<RestoreLocationFormData>({ ...EMPTY_FORM, authProvider });
+    const [providerError, setProviderError] = useState<string | null>(null);
 
     React.useEffect(() => {
         if (!isOpen) {
             setStep(1);
-            setFormData(EMPTY_FORM);
+            setFormData({ ...EMPTY_FORM, authProvider });
+            setProviderError(null);
         }
-    }, [isOpen]);
+    }, [isOpen, authProvider]);
+
+    const handleGoogleSuccess = (credential: string) => {
+        setProviderError(null);
+        setFormData((current) => ({ ...current, credential }));
+        setStep(2);
+    };
+
+    const handleAppleSuccess = (credential: AppleAuthCredential) => {
+        setProviderError(null);
+        setFormData((current) => ({
+            ...current,
+            identityToken: credential.identityToken,
+            nonce: credential.nonce,
+        }));
+        setStep(2);
+    };
+
+    const handleProviderError = (message: string) => {
+        setProviderError(message);
+    };
 
     const handleNext = (e: React.FormEvent) => {
         e.preventDefault();
@@ -103,6 +140,7 @@ export function RestoreLocationModal({
                         </div>
 
                         {step === 1 ? (
+                            authProvider === 'password' ? (
                             <form onSubmit={handleNext} className="space-y-6">
                                 {errorMessage && (
                                     <div role="alert" className="p-4 bg-mintcom-red rounded-2xl border border-mintcom-red text-sm font-bold text-white">
@@ -168,6 +206,62 @@ export function RestoreLocationModal({
                                     <ArrowRight size={16} />
                                 </button>
                             </form>
+                            ) : (
+                            <div className="space-y-6">
+                                {(errorMessage || providerError) && (
+                                    <div role="alert" className="p-4 bg-mintcom-red rounded-2xl border border-mintcom-red text-sm font-bold text-white">
+                                        {providerError || errorMessage}
+                                    </div>
+                                )}
+                                <div className="p-4 bg-blue-50 dark:bg-blue-500/5 rounded-2xl border border-blue-100 dark:border-blue-500/10 mb-6">
+                                    <div className="flex gap-3">
+                                        <Shield className="text-blue-500 shrink-0" size={18} />
+                                        <p className="text-xs font-bold text-blue-700 dark:text-blue-400 leading-relaxed">
+                                            {t('security.restore.step1SocialDesc', {
+                                                provider: authProvider === 'google' ? 'Google' : 'Apple',
+                                                defaultValue: 'Continue with the same {{provider}} account to verify ownership.',
+                                            })}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-normal text-gray-500 dark:text-gray-400  tracking-normal mb-2 ml-1">
+                                        {formatInputLabel(t('security.restore.ownerEmail'), t('common.locale'))}
+                                    </label>
+                                    <div className="relative group">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors">
+                                            <User size={18} />
+                                        </div>
+                                        <input
+                                            maxLength={255}
+                                            required
+                                            type="email"
+                                            value={formData.accountEmail}
+                                            onChange={(e) => setFormData({ ...formData, accountEmail: e.target.value })}
+                                            placeholder={formatInputPlaceholder("owner@example.com", t('common.locale'))}
+                                            className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+                                        />
+                                    </div>
+                                </div>
+
+                                {authProvider === 'google' ? (
+                                    <GoogleAuthButton
+                                        text="continue_with"
+                                        disabled={isRestoring || !formData.accountEmail}
+                                        onSuccess={handleGoogleSuccess}
+                                        onError={handleProviderError}
+                                    />
+                                ) : (
+                                    <AppleAuthButton
+                                        text="continue_with"
+                                        disabled={isRestoring || !formData.accountEmail}
+                                        onSuccess={handleAppleSuccess}
+                                        onError={handleProviderError}
+                                    />
+                                )}
+                            </div>
+                            )
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 {errorMessage && (

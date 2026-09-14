@@ -60,6 +60,7 @@ describe('RestoreLocationModal', () => {
       expect(onRestore).toHaveBeenCalledWith({
         accountEmail: 'owner@example.com',
         password: 'OwnerPassword1!',
+        authProvider: 'password',
         newLocationLoginId: 'cafe-restored',
         newLocationPassword: 'NewLocationPassword1!',
       });

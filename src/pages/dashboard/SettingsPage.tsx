@@ -1689,6 +1689,7 @@ export function SettingsPage() {
         onRestore={handleRestore}
         isRestoring={isCancellingDeletion}
         errorMessage={restoreError}
+        authProvider={account?.authProvider || 'password'}
       />
     </div>
   );
