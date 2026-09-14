@@ -36,6 +36,10 @@ export interface OrderItem {
     item?: { id?: string; trackStock?: boolean };
     chosenAttributes?: any[];
     selectedAttributes?: any[];
+    taxId?: string;
+    taxNameSnapshot?: string;
+    taxRateSnapshot?: number;
+    taxAmountSnapshot?: number;
 }
 
 export interface Order {
@@ -70,9 +74,17 @@ export interface Order {
     serviceChargeTypeSnapshot?: 'PERCENTAGE' | 'FIXED';
     serviceChargeValueSnapshot?: number;
     serviceChargeOverrideMode?: 'DEFAULT' | 'NONE' | 'CUSTOM';
+    serviceChargeTaxable?: boolean;
+    serviceChargeTaxableSnapshot?: boolean;
     isServiceChargeChanged?: boolean;
     serviceChargeReason?: string;
     tax?: number;
+    taxBreakdown?: Array<{
+        id: string;
+        name: string;
+        rate: number;
+        amount: number;
+    }>;
     total?: number;
     note?: string;
     refundOrders?: Array<{ items?: OrderItem[] }>;
@@ -117,38 +129,16 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
     const isNegativeTotal = (order.total || 0) < 0;
 
     // Tax & Service Charge summary labels — mirror the POS receipt / order
-    // details: show the rate, plus "(Customized)" for tax and "(Changed)" for
-    // service charge when overridden, with the change reason.
+    // details: split tax into items tax and service charge tax, and show explicit
+    // tax-exclusive subtotal and tax-inclusive total labels.
     const summaryLabels = useMemo(() => {
-        // ── Tax rate (%) ──────────────────────────────────────────────────
-        const explicitRate = Number(order.taxRate);
-        let taxRatePercent: number;
-        if (Number.isFinite(explicitRate) && explicitRate >= 0) {
-            taxRatePercent = Number(
-                (explicitRate <= 1 ? explicitRate * 100 : explicitRate).toFixed(2),
-            );
-        } else {
-            const taxableBase = Math.max(
-                0,
-                Number(order.subtotal || 0) - Number(order.discount || 0),
-            );
-            taxRatePercent =
-                taxableBase > 0
-                    ? Number(((Number(order.tax || 0) / taxableBase) * 100).toFixed(2))
-                    : 0;
-        }
-        const taxChanged =
-            Boolean(order.isTaxChanged) ||
-            order.orderType === 'PAID_TAX_CHANGED' ||
-            Boolean(order.isTaxCustomized);
-        const taxLabel =
-            t('orders.details.taxWithRate', {
-                rate: taxRatePercent,
-                defaultValue: 'Tax ({{rate}}%)',
-            }) +
-            (taxChanged
-                ? ` (${t('orders.details.customized', { defaultValue: 'Customized' })})`
-                : '');
+        // Subtotal & Total labels: explicit tax-exclusive / tax-inclusive indicators
+        const subtotalLabel = t('orders.details.subtotalExclTaxLabel', {
+            defaultValue: 'Subtotal (excl. Tax)',
+        });
+        const totalLabel = t('orders.details.totalInclTaxLabel', {
+            defaultValue: 'TOTAL (incl. Tax)',
+        });
 
         // ── Service charge ────────────────────────────────────────────────
         let serviceChargeLabel =
@@ -174,7 +164,142 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
         }
         const serviceChargeReason = (order.serviceChargeReason || '').trim();
 
-        return { taxLabel, serviceChargeLabel, serviceChargeReason };
+        // ── Tax Breakdown (Items vs Service Charge) ────────────────────────
+        const taxChanged =
+            Boolean(order.isTaxChanged) ||
+            order.orderType === 'PAID_TAX_CHANGED' ||
+            Boolean(order.isTaxCustomized);
+
+        const explicitRate = Number(order.taxRate);
+        let fallbackRatePercent = 16;
+        if (Number.isFinite(explicitRate) && explicitRate >= 0) {
+            fallbackRatePercent = explicitRate <= 1 ? explicitRate * 100 : explicitRate;
+        } else {
+            const taxableBase = Math.max(
+                0,
+                Number(order.subtotal || 0) - Number(order.discount || 0),
+            );
+            if (taxableBase > 0 && Number(order.tax || 0) > 0) {
+                fallbackRatePercent = (Number(order.tax || 0) / taxableBase) * 100;
+            }
+        }
+        fallbackRatePercent = Number(fallbackRatePercent.toFixed(2));
+
+        let itemsTax = 0;
+        let scTax = 0;
+        let showScTax = false;
+        let singleItemRate: number | null = null;
+        let scRate: number | null = null;
+
+        const scAmount = Number(order.serviceChargeAmount || 0);
+
+        if (Array.isArray(order.taxBreakdown) && order.taxBreakdown.length > 0) {
+            const scEntry = order.taxBreakdown.find((b: any) => b.id === '__service_charge__');
+            const itemsEntries = order.taxBreakdown.filter((b: any) => b.id !== '__service_charge__');
+
+            itemsTax = Math.round(itemsEntries.reduce((sum: number, b: any) => sum + (Number(b.amount) || 0), 0) * 100) / 100;
+
+            const positiveTaxBuckets = itemsEntries.filter((b: any) => Number(b.rate) > 0 && Math.abs(Number(b.amount) || 0) > 0.0001);
+            const distinctPositiveRates = Array.from(new Set(positiveTaxBuckets.map((b: any) => Number(b.rate))));
+            singleItemRate = (distinctPositiveRates.length === 1 && !taxChanged) ? distinctPositiveRates[0] : null;
+
+            scTax = scEntry ? Math.round((Number(scEntry.amount) || 0) * 100) / 100 : 0;
+            scRate = scEntry && Number.isFinite(Number(scEntry.rate)) && Number(scEntry.rate) > 0 ? Number(scEntry.rate) : null;
+
+            const isScTaxable = order.serviceChargeTaxableSnapshot !== undefined
+                ? Boolean(order.serviceChargeTaxableSnapshot)
+                : order.serviceChargeTaxable !== undefined
+                    ? Boolean(order.serviceChargeTaxable)
+                    : true;
+
+            showScTax = scEntry !== undefined && Math.abs(scTax) > 0.0001 && scAmount !== 0 && isScTaxable;
+        } else {
+            const isScTaxable = Boolean(order.serviceChargeTaxableSnapshot ?? order.serviceChargeTaxable);
+            const totalTax = Number(order.tax || 0);
+
+            if (isScTaxable && scAmount > 0) {
+                scRate = fallbackRatePercent;
+                scTax = Math.round(scAmount * (fallbackRatePercent / 100) * 100) / 100;
+                showScTax = scTax > 0;
+            } else {
+                scTax = 0;
+                showScTax = false;
+            }
+
+            itemsTax = Math.max(0, Math.round((totalTax - (showScTax ? scTax : 0)) * 100) / 100);
+
+            if (Array.isArray(order.items) && order.items.length > 0) {
+                const positiveRates = order.items
+                    .map((it: any) => {
+                        const r = Number(it.taxRateSnapshot);
+                        if (!Number.isFinite(r) || r <= 0) return null;
+                        return r <= 1 ? Number((r * 100).toFixed(2)) : Number(r.toFixed(2));
+                    })
+                    .filter((r): r is number => r !== null);
+                const distinctRates = Array.from(new Set(positiveRates));
+                if (distinctRates.length === 1 && !taxChanged) {
+                    singleItemRate = distinctRates[0];
+                } else if (distinctRates.length > 1) {
+                    singleItemRate = null;
+                } else {
+                    singleItemRate = (!taxChanged && fallbackRatePercent > 0) ? fallbackRatePercent : null;
+                }
+            } else {
+                singleItemRate = (!taxChanged && fallbackRatePercent > 0) ? fallbackRatePercent : null;
+            }
+        }
+
+        const taxSummaryLines: Array<{ id: string; label: string; amount: number }> = [];
+
+        if (itemsTax > 0 || (Number(order.tax || 0) > 0 && !showScTax)) {
+            let itemsTaxLabel: string;
+            if (singleItemRate !== null) {
+                itemsTaxLabel = t('orders.details.taxOnItemsWithRate', {
+                    rate: singleItemRate,
+                    defaultValue: `Tax ${singleItemRate}% on items`,
+                });
+            } else {
+                itemsTaxLabel = t('orders.details.taxOnItems', {
+                    defaultValue: 'Tax on items',
+                });
+            }
+            if (taxChanged) {
+                itemsTaxLabel += ` (${t('orders.details.customized', { defaultValue: 'Customized' })})`;
+            }
+            taxSummaryLines.push({
+                id: 'items_tax',
+                label: itemsTaxLabel,
+                amount: itemsTax || Number(order.tax || 0),
+            });
+        }
+
+        if (showScTax && scTax > 0) {
+            const effectiveScRate = scRate !== null && scRate > 0 ? scRate : fallbackRatePercent;
+            let scTaxLabel: string;
+            if (effectiveScRate > 0) {
+                scTaxLabel = t('orders.details.taxOnServiceWithRate', {
+                    rate: effectiveScRate,
+                    defaultValue: `Tax ${effectiveScRate}% on service`,
+                });
+            } else {
+                scTaxLabel = t('orders.details.taxOnService', {
+                    defaultValue: 'Tax on service',
+                });
+            }
+            taxSummaryLines.push({
+                id: 'sc_tax',
+                label: scTaxLabel,
+                amount: scTax,
+            });
+        }
+
+        return {
+            subtotalLabel,
+            totalLabel,
+            taxSummaryLines,
+            serviceChargeLabel,
+            serviceChargeReason,
+        };
     }, [order, t]);
 
     const formatDate = (dateString: string) => {
@@ -422,7 +547,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                         {/* Totals — clean receipt style */}
                         <div className="rounded-xl border border-gray-200 dark:border-white/10 p-4 space-y-2.5">
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-500">{t('orders.details.subtotal')}</span>
+                                <span className="text-gray-500">{summaryLabels.subtotalLabel}</span>
                                 <StatValue
                                     value={order.subtotal || 0}
                                     currency={currencySymbol}
@@ -460,20 +585,20 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                     )}
                                 </div>
                             )}
-                            {(order.tax || 0) > 0 && (
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">{summaryLabels.taxLabel}</span>
+                            {summaryLabels.taxSummaryLines.map((line) => (
+                                <div key={line.id} className="flex justify-between text-sm">
+                                    <span className="text-gray-500">{line.label}</span>
                                     <StatValue
-                                        value={order.tax || 0}
+                                        value={line.amount}
                                         currency={currencySymbol}
                                         className="text-sm font-medium text-gray-700 dark:text-gray-300"
                                         containerClassName="justify-end"
                                     />
                                 </div>
-                            )}
+                            ))}
                             <div className="flex justify-between items-center pt-3 mt-1 border-t border-gray-100 dark:border-white/10">
                                 <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                                    {t('orders.details.total')}
+                                    {summaryLabels.totalLabel}
                                 </span>
                                 <StatValue
                                     value={order.total || 0}
