@@ -47,6 +47,7 @@ export function ActivityTimeline({
 }: ActivityTimelineProps) {
   const { t } = useTranslation();
   const ownerLabel = t('activity.owner');
+  const systemLabel = t('activity.system');
 
   const groups = useMemo(() => groupLogsByDay(logs), [logs]);
 
@@ -133,13 +134,13 @@ export function ActivityTimeline({
                 >
                   <div className="flex gap-4">
                     <div className="w-9 h-9 shrink-0 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center text-sm font-black">
-                      {getActorInitial(log, ownerLabel)}
+                      {getActorInitial(log, ownerLabel, systemLabel)}
                     </div>
 
                     <div className="flex-1 min-w-0 space-y-2">
                       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
                         <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
-                          {getActorName(log, ownerLabel)}
+                          {getActorName(log, ownerLabel, systemLabel)}
                         </span>
                         <span
                           className={`inline-flex items-center px-2 py-0.5 rounded-lg label-strong font-sans whitespace-nowrap border ${

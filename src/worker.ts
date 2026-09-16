@@ -341,14 +341,22 @@ export default {
                     return withSecurityHeaders(response, noIndexPath);
                 }
 
-                // Serve index.html
+                // Serve spa-fallback.html for client-only SPA routes if available, else index.html
                 // Construct a clean request to avoid body/immutability issues
-                const indexRequest = new Request(new URL('/index.html', request.url), {
+                const fallbackRequest = new Request(new URL('/spa-fallback.html', request.url), {
                     headers: request.headers,
                     method: request.method
                 });
+                let fallbackResp = await env.ASSETS.fetch(fallbackRequest);
+                if (fallbackResp.status === 404) {
+                    const indexRequest = new Request(new URL('/index.html', request.url), {
+                        headers: request.headers,
+                        method: request.method
+                    });
+                    fallbackResp = await env.ASSETS.fetch(indexRequest);
+                }
 
-                return withSecurityHeaders(await env.ASSETS.fetch(indexRequest), noIndexPath);
+                return withSecurityHeaders(fallbackResp, noIndexPath);
             }
 
             return withSecurityHeaders(response, noIndexPath);

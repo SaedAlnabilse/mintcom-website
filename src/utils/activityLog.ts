@@ -10,6 +10,15 @@
 export interface ActivityLogEntry {
   id: string;
   userId?: string;
+  /**
+   * Snapshot of the real author, set for every kind of actor. The
+   * `performedBy` relation below only ever resolves for staff, so owner and
+   * secondary-admin actions are carried here.
+   */
+  actorId?: string | null;
+  actorType?: 'owner' | 'admin' | 'employee' | 'system' | null;
+  actorName?: string | null;
+  actorEmail?: string | null;
   performedBy?: {
     username?: string;
     name?: string;
@@ -334,10 +343,24 @@ export function groupLogsByDay<T extends { timestamp: string }>(
 }
 
 /** Display name for whoever performed the action. */
-export function getActorName(log: ActivityLogEntry, ownerLabel: string): string {
+export function getActorName(
+  log: ActivityLogEntry,
+  ownerLabel: string,
+  systemLabel?: string,
+): string {
   const fullName =
     `${log.performedBy?.firstName || ''} ${log.performedBy?.lastName || ''}`.trim();
+
+  // Entries with no human author (scheduled jobs, automatic drawer closes) must
+  // not be attributed to the owner.
+  if (log.actorType === 'system' && !log.actorName) {
+    return systemLabel || ownerLabel;
+  }
+
   return (
+    // The actor snapshot names owners and secondary admins, who have no
+    // employee relation and would otherwise all read as the owner.
+    log.actorName?.trim() ||
     log.performedBy?.name?.trim() ||
     fullName ||
     log.performedBy?.username?.trim() ||
@@ -345,8 +368,12 @@ export function getActorName(log: ActivityLogEntry, ownerLabel: string): string 
   );
 }
 
-export function getActorInitial(log: ActivityLogEntry, ownerLabel: string): string {
-  return getActorName(log, ownerLabel).charAt(0).toUpperCase() || 'A';
+export function getActorInitial(
+  log: ActivityLogEntry,
+  ownerLabel: string,
+  systemLabel?: string,
+): string {
+  return getActorName(log, ownerLabel, systemLabel).charAt(0).toUpperCase() || 'A';
 }
 
 /** `today` / `yesterday` / null when the day needs a full date label. */

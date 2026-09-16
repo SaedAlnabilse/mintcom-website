@@ -154,6 +154,7 @@
     "noData": "No extra data was recorded for this action.",
     "noLogs": "No logs found.",
     "owner": "Owner",
+    "system": "System",
     "searchPlaceholder": "Search logs...",
     "subtitle": "Track All System Changes and User Actions",
     "syncError": "Failed to sync logs",
@@ -4443,6 +4444,11 @@
         "typeDeletePlaceholder": "Type {{keyword}} here",
         "warning": "This will permanently delete your account and all associated data. This action cannot be undone.",
         "whyLeaving": "Why are you leaving?",
+        "affectedLocationsTitle": "This will lock {{count}} location(s)",
+        "noActiveLocations": "No active locations on this account.",
+        "activeSubscription": "active subscription",
+        "andMoreLocations": "+{{count}} more",
+        "stopRenewalsNote": "Staff access stops and subscription renewals are cancelled. You can restore everything during the grace period.",
         "reasons": {
           "its_too_expensive": "It's too expensive",
           "i_found_a_better_alternative": "I found a better alternative",
@@ -5776,6 +5782,7 @@
       "ownerPassword": "Owner Password",
       "step": "Step {{current}} of {{total}}",
       "step1Desc": "Please provide your owner account credentials to verify your identity.",
+      "step1SocialDesc": "Continue with the same {{provider}} account to verify ownership.",
       "step2Desc": "Set a new Login ID and password for this establishment to restore it.",
       "success": "Establishment has been restored successfully",
       "title": "Restore Establishment"

@@ -450,7 +450,7 @@ export function ActivityLogsPage() {
 
       const exportData = allLogs.map(l => ({
         time: formatDate(l.timestamp),
-        user: getActorName(l, t('activity.owner')),
+        user: getActorName(l, t('activity.owner'), t('activity.system')),
         action: getActionLabel(l.action),
         desc: l.description,
         data: formatMetadataForExport(l.metadata, metadataOptions),
@@ -765,7 +765,7 @@ export function ActivityLogsPage() {
                   </div>
                   <div>
                     <p className="label-strong font-sans mb-2">{t('activity.user')}</p>
-                    <p className="font-bold text-gray-900 dark:text-white">{getActorName(selectedLog, t('activity.owner'))}</p>
+                    <p className="font-bold text-gray-900 dark:text-white">{getActorName(selectedLog, t('activity.owner'), t('activity.system'))}</p>
                   </div>
                 </div>
 

@@ -141,7 +141,9 @@ export function OwnerAccountManagementPage() {
     const [isDeletingAccount, setIsDeletingAccount] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteStep, setDeleteStep] = useState(1);
-    const [deleteReason, setDeleteReason] = useState('');
+    // Stable reason key (locale-independent for analysis) — display text is
+    // resolved via i18n reasons.<key>. Sent as reasonKey + reason + locale.
+    const [deleteReasonKey, setDeleteReasonKey] = useState('');
     const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
 
     // Global Currency state
@@ -337,7 +339,7 @@ export function OwnerAccountManagementPage() {
     useEffect(() => {
         if (!showDeleteConfirm) {
             setDeleteStep(1);
-            setDeleteReason('');
+            setDeleteReasonKey('');
             setDeleteConfirmationText('');
             }
     }, [showDeleteConfirm]);
@@ -415,10 +417,16 @@ export function OwnerAccountManagementPage() {
     const handleDeleteAccount = async (reauthToken: string) => {
         try {
             setIsDeletingAccount(true);
-            // Call the correct endpoint for account deletion
+            // Send the stable reason key (for analysis) plus the English label
+            // and locale. Backend persists both; analytics aggregates on the key.
+            const selectedReason = DELETE_REASON_OPTIONS.find((r) => r.key === deleteReasonKey);
             await api.delete('/api/accounts/me', {
                 headers: reauthHeaders(reauthToken),
-                data: { reason: deleteReason }
+                data: {
+                    reason: selectedReason?.value,
+                    reasonKey: deleteReasonKey || undefined,
+                    locale: i18n.language,
+                }
             });
 
             toast.success(t('owner.account.deletionInitiated'));
@@ -1642,19 +1650,19 @@ export function OwnerAccountManagementPage() {
                                     {DELETE_REASON_OPTIONS.map((reason) => (
                                         <button
                                             key={reason.key}
-                                            onClick={() => setDeleteReason(reason.value)}
-                                            className={`w-full text-start px-4 py-3 rounded-xl border transition-all text-sm font-medium ${deleteReason === reason.value
+                                            onClick={() => setDeleteReasonKey(reason.key)}
+                                            className={`w-full text-start px-4 py-3 rounded-xl border transition-all text-sm font-medium ${deleteReasonKey === reason.key
                                                 ? 'bg-mintcom-green/10 border-mintcom-green text-mintcom-green'
                                                 : 'bg-gray-50 dark:bg-white/[0.02] border-gray-100 dark:border-white/[0.05] text-gray-600 dark:text-gray-400 hover:border-gray-300'
                                                 }`}
                                         >
-                                            {t(`owner.account.deleteAccountModal.reasons.${reason.key}`)}
+                                            {t(`owner.account.deleteAccountModal.reasons.${reason.key}`, reason.value)}
                                         </button>
                                     ))}
                                 </div>
                                 <button
                                     onClick={() => setDeleteStep(2)}
-                                    disabled={!deleteReason}
+                                    disabled={!deleteReasonKey}
                                     className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black rounded-2xl text-sm font-black disabled:opacity-50 transition-all"
                                 >
                                     {t('common.continue')}
@@ -1667,6 +1675,38 @@ export function OwnerAccountManagementPage() {
                                 <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4">
                                     <p className="text-sm text-red-600 dark:text-red-400 font-medium">
                                         {t('owner.account.deleteAccountModal.warning')}
+                                    </p>
+                                </div>
+                                {/* Option A: explicit preview of what gets locked so one
+                                    click doesn't nuke a live business by surprise. */}
+                                <div className="bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] rounded-2xl p-4">
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">
+                                        {t('owner.account.deleteAccountModal.affectedLocationsTitle', 'This will lock {{count}} location(s)', { count: locationLoginEstablishments.length })}
+                                    </p>
+                                    {locationLoginEstablishments.length === 0 ? (
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                                            {t('owner.account.deleteAccountModal.noActiveLocations', 'No active locations on this account.')}
+                                        </p>
+                                    ) : (
+                                        <ul className="space-y-1 max-h-32 overflow-y-auto">
+                                            {locationLoginEstablishments.slice(0, 5).map((est: any) => (
+                                                <li key={est.id || est.establishmentLoginId || est.name} className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                                                    <Store size={14} className="shrink-0 text-gray-400" />
+                                                    <span className="truncate">{est.name || est.establishmentLoginId || est.id}</span>
+                                                    {est.subscriptionStatus === 'ACTIVE' && (
+                                                        <span className="text-xs text-gray-400">· {t('owner.account.deleteAccountModal.activeSubscription', 'active subscription')}</span>
+                                                    )}
+                                                </li>
+                                            ))}
+                                            {locationLoginEstablishments.length > 5 && (
+                                                <li className="text-sm text-gray-400">
+                                                    {t('owner.account.deleteAccountModal.andMoreLocations', '+{{count}} more', { count: locationLoginEstablishments.length - 5 })}
+                                                </li>
+                                            )}
+                                        </ul>
+                                    )}
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                        {t('owner.account.deleteAccountModal.stopRenewalsNote', 'Staff access stops and subscription renewals are cancelled. You can restore everything during the grace period.')}
                                     </p>
                                 </div>
                                 <div className="space-y-3">

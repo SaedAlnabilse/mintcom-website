@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run validate:locales:strict && tsc -b && vite build",
+    "build": "npm run validate:locales:strict && tsc -b && vite build && npm run build:prerender",
+    "build:prerender": "node scripts/prerender.cjs",
     "lint": "eslint .",
     "lint:check": "eslint . --max-warnings=0",
     "check:pagination": "node ../scripts/check-list-limits.js",
