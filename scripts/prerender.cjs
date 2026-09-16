@@ -409,6 +409,29 @@ async function runPrerender() {
             document.head.appendChild(newEl);
           }
 
+          // 5b. Deduplicate and normalize og:image, twitter:image, og:site_name
+          const ogImages = Array.from(document.querySelectorAll('meta[property="og:image"]'));
+          if (ogImages.length > 1) {
+            ogImages.slice(1).forEach((el) => el.remove());
+          }
+          if (ogImages.length === 0) {
+            const newImg = document.createElement('meta');
+            newImg.setAttribute('property', 'og:image');
+            newImg.setAttribute('content', 'https://mintcompos.com/og-image.png');
+            document.head.appendChild(newImg);
+          }
+
+          const twImages = Array.from(document.querySelectorAll('meta[name="twitter:image"]'));
+          if (twImages.length > 1) {
+            twImages.slice(1).forEach((el) => el.remove());
+          }
+          if (twImages.length === 0) {
+            const newTwImg = document.createElement('meta');
+            newTwImg.setAttribute('name', 'twitter:image');
+            newTwImg.setAttribute('content', 'https://mintcompos.com/og-image.png');
+            document.head.appendChild(newTwImg);
+          }
+
           // 6. JSON-LD Structured Data:
           // If page components added route-specific JSON-LD, remove the index.html fallback script
           const ldScripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'));

@@ -206,11 +206,14 @@ const routeSeo = [
   { path: '/login', title: 'Login | Mintcom POS', description: 'Sign in securely to your Mintcom account.' },
   { path: '/signup', title: 'Create Account | Mintcom POS', description: 'Create a Mintcom account for your business.' },
   { path: '/support', title: 'Support | Mintcom POS', description: 'Find Mintcom help articles and support tickets.' },
+  { path: '/support/articles', title: 'Support Articles | Mintcom POS', description: 'Browse setup guides, hardware integration, inventory tips, and POS tutorials.' },
   { path: '/privacy', title: 'Privacy Policy | Mintcom POS', description: 'Read how Mintcom POS protects your data and how to request account or data deletion.' },
   { path: '/legal/privacy', title: 'Privacy Policy | Mintcom POS', description: 'Read how Mintcom POS protects your data and how to request account or data deletion.' },
   { path: '/pricing', title: 'Pricing | Mintcom POS', description: 'Simple Mintcom POS pricing per establishment. No hardware sales, no confusing add-ons. Start your free trial.' },
   { path: '/legal/terms', title: 'Terms of Service | Mintcom', description: 'Review our terms of service for using the Mintcom platform and services.' },
   { path: '/legal/cookie-policy', title: 'Cookie Policy | Mintcom', description: 'Learn about how we use cookies to improve your experience on our website.' },
+  { path: '/legal/changelog', title: 'Policy Changelog | Mintcom', description: 'View the history of updates to Mintcom POS Terms of Service and Privacy Policy.' },
+  { path: '/download-app', title: 'Download Mintcom POS App | iPad & Android', description: 'Download Mintcom POS for iOS and Android tablets, terminals, and mobile devices.' },
   { path: '/about', title: 'About Mintcom', description: 'Learn about Mintcom POS and business management.' },
   { path: '/dashboard', title: 'Dashboard | Mintcom POS', description: 'Manage your Mintcom business dashboard.' },
   { path: '/owner', title: 'Owner Portal | Mintcom POS', description: 'Manage Mintcom account ownership, billing, brands, and establishments.' },
@@ -227,6 +230,7 @@ function RouteSeo() {
     .find((entry) => entry.path !== '/' && pathname.startsWith(entry.path));
   const seo = exact || prefix || routeSeo[0];
   const canonicalPath = pathname === '/' ? '' : pathname;
+  const canonicalUrl = `${siteUrl}${canonicalPath}`;
   const shouldNoIndex = [
     '/login',
     '/signup',
@@ -244,12 +248,21 @@ function RouteSeo() {
       <title>{seo.title}</title>
       <meta name="description" content={seo.description} />
       <meta name="robots" content={shouldNoIndex ? 'noindex, nofollow, noarchive' : 'index, follow'} />
-      <link rel="canonical" href={`${siteUrl}${canonicalPath}`} />
+      <link rel="canonical" href={canonicalUrl} />
+      <meta property="og:site_name" content="Mintcom" />
+      <meta property="og:type" content="website" />
       <meta property="og:title" content={seo.title} />
       <meta property="og:description" content={seo.description} />
-      <meta property="og:url" content={`${siteUrl}${canonicalPath}`} />
+      <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:image" content={`${siteUrl}/og-image.png`} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={seo.title} />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={seo.title} />
       <meta name="twitter:description" content={seo.description} />
+      <meta name="twitter:image" content={`${siteUrl}/og-image.png`} />
+      <meta name="twitter:url" content={canonicalUrl} />
     </Helmet>
   );
 }
