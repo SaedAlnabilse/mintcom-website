@@ -1,5 +1,6 @@
 import { api } from '../config/api';
 import i18n from '../i18n';
+import { recordDataExport, exportIncludesPii } from '../services/auditExportService';
 
 /**
  * Utility to export an array of objects to a CSV file and trigger a download.
@@ -282,6 +283,18 @@ export const exportTable = (format: ExportFormat, input: ExportTableInput): Prom
 export const exportSections = async (format: ExportFormat, input: ExportSectionsInput): Promise<void> => {
   const sections = (input.sections || []).filter(s => s && s.columns?.length);
   if (sections.length === 0) return;
+
+  // Declared before the file is built: an export that starts is an export that
+  // happened, whether or not the download then succeeds. Every client-side
+  // export in the dashboard funnels through here, so this is the one place that
+  // cannot be forgotten when a new report is added.
+  const reportType = input.filename || input.title || 'export';
+  void recordDataExport({
+    reportType,
+    format,
+    rowCount: sections.reduce((total, section) => total + (section.rows?.length || 0), 0),
+    includesPii: exportIncludesPii(reportType),
+  });
 
   try {
     switch (format) {

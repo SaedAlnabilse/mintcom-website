@@ -2,6 +2,10 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import {
+  fetchActivityPage,
+  type ActivityLogQuery,
+} from '../../services/activityLogService';
+import {
   Search,
   X,
   Shield,
@@ -19,7 +23,6 @@ import { BusyOverlay } from '../../components/BusyOverlay';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
-import { Pagination } from '../../components/ui';
 import { usePermissionGuard, checkPermission } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -153,9 +156,12 @@ export function ActivityLogsPage() {
   });
   const [activePreset, setActivePreset] = useState('last_30_days');
 
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalLogs, setTotalLogs] = useState(0);
+  // Keyset pagination: an append-only trail has no page count to show, and
+  // asking for one means a COUNT over a partitioned table on every load. Rows
+  // accumulate as the operator asks for more.
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [selectedLog, setSelectedLog] = useState<ActivityLog | null>(null);
 
@@ -293,7 +299,7 @@ export function ActivityLogsPage() {
       start: formatDateForInput(start),
       end: formatDateForInput(end)
     });
-    setPage(1);
+   
   };
 
   const clearAllFilters = () => {
@@ -302,77 +308,70 @@ export function ActivityLogsPage() {
     setResourceFilter('all');
     setUserFilter('all');
     handlePresetChange('last_30_days');
-    setPage(1);
+   
   };
 
-  const fetchLogs = useCallback(async () => {
+  const buildQuery = useCallback((): ActivityLogQuery => {
+    const query: ActivityLogQuery = { search: searchQuery, limit: 10 };
+
+    if (actionFilter !== 'all') query.action = actionFilter;
+    if (resourceFilter !== 'all') query.resource = resourceFilter;
+    if (resolvedPerformedById) query.performedById = resolvedPerformedById;
+
+    if (dateRange.start) {
+      const start = new Date(dateRange.start);
+      start.setHours(0, 0, 0, 0);
+      query.startDate = start.toISOString();
+    }
+    if (dateRange.end) {
+      const end = new Date(dateRange.end);
+      end.setHours(23, 59, 59, 999);
+      query.endDate = end.toISOString();
+    }
+
+    return query;
+  }, [searchQuery, actionFilter, resourceFilter, resolvedPerformedById, dateRange]);
+
+  const fetchLogs = useCallback(async (cursor?: string | null) => {
+    const isFirstPage = !cursor;
     try {
-      setIsLoading(true);
+      if (isFirstPage) setIsLoading(true);
+      else setIsLoadingMore(true);
 
       // Secondary admin with no staff profile cannot resolve "me".
       if (userFilter === USER_FILTER_ME && !myPerformedById) {
         setLogs([]);
-        setTotalPages(1);
-        setTotalLogs(0);
+        setHasMore(false);
+        setNextCursor(null);
         return;
       }
 
-      const params: Record<string, any> = {
-        page,
-        limit: 10,
-        search: searchQuery,
-      };
+      const page = await fetchActivityPage(buildQuery(), cursor);
 
-      if (actionFilter !== 'all') params.action = actionFilter;
-      if (resourceFilter !== 'all') params.resource = resourceFilter;
-
-      if (resolvedPerformedById) {
-        params.performedById = resolvedPerformedById;
-      }
-
-      if (dateRange.start) {
-        const start = new Date(dateRange.start);
-        start.setHours(0, 0, 0, 0);
-        params.startDate = start.toISOString();
-      }
-
-      if (dateRange.end) {
-        const end = new Date(dateRange.end);
-        end.setHours(23, 59, 59, 999);
-        params.endDate = end.toISOString();
-      }
-
-      const response = await api.get('/activity-log', { params });
-
-      const logsData = response.data.logs || response.data;
-      const validLogs = Array.isArray(logsData) ? logsData : [];
-
-      setLogs(validLogs);
-      setTotalPages(response.data.totalPages || 1);
-      setTotalLogs(response.data.total || validLogs.length);
+      setLogs(prev => (isFirstPage ? page.logs : [...prev, ...page.logs]));
+      setNextCursor(page.nextCursor);
+      setHasMore(page.hasNextPage);
     } catch {
       toast.error(t('activity.syncError'));
     } finally {
       setIsLoading(false);
+      setIsLoadingMore(false);
     }
-  }, [
-    page,
-    actionFilter,
-    resourceFilter,
-    dateRange,
-    searchQuery,
-    userFilter,
-    myPerformedById,
-    resolvedPerformedById,
-    t,
-  ]);
+  }, [buildQuery, userFilter, myPerformedById, t]);
 
   useEffect(() => {
+    // Any filter change starts a new list: a cursor points into the previous
+    // filter's result set and would page into unrelated rows.
     const timer = setTimeout(() => {
-      fetchLogs();
+      fetchLogs(null);
     }, 500);
     return () => clearTimeout(timer);
   }, [fetchLogs]);
+
+  const loadMore = useCallback(() => {
+    if (!hasMore || !nextCursor || isLoadingMore) return;
+    fetchLogs(nextCursor);
+  }, [fetchLogs, hasMore, isLoadingMore, nextCursor]);
 
   const dateLocale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
 
@@ -418,34 +417,18 @@ export function ActivityLogsPage() {
     try {
       // Rebuild the exact list filters so the file contains ALL matching
       // logs across every page — not just the 10 visible rows.
-      const baseParams: Record<string, any> = { search: searchQuery };
-      if (actionFilter !== 'all') baseParams.action = actionFilter;
-      if (resourceFilter !== 'all') baseParams.resource = resourceFilter;
-      if (resolvedPerformedById) baseParams.performedById = resolvedPerformedById;
-      if (dateRange.start) {
-        const start = new Date(dateRange.start);
-        start.setHours(0, 0, 0, 0);
-        baseParams.startDate = start.toISOString();
-      }
-      if (dateRange.end) {
-        const end = new Date(dateRange.end);
-        end.setHours(23, 59, 59, 999);
-        baseParams.endDate = end.toISOString();
-      }
+      const exportQuery: ActivityLogQuery = { ...buildQuery(), limit: 100 };
 
       const allLogs: ActivityLog[] = [];
-      const EXPORT_PAGE_SIZE = 100;
-      for (let exportPage = 1; exportPage <= 100; exportPage++) {
-        const response = await api.get('/activity-log', {
-          params: { ...baseParams, page: exportPage, limit: EXPORT_PAGE_SIZE },
-        });
-        const batch = response.data.logs || response.data;
-        const rows: ActivityLog[] = Array.isArray(batch) ? batch : [];
-        allLogs.push(...rows);
-        const total = response.data.total || 0;
-        if (rows.length === 0) break;
-        if (rows.length < EXPORT_PAGE_SIZE) break;
-        if (total && allLogs.length >= total) break;
+      // Walk the cursor rather than page numbers: on an append-only table,
+      // offset paging re-reads rows and can skip one if something is written
+      // mid-export. The batch ceiling is a runaway guard.
+      let exportCursor: string | null = null;
+      for (let batchNumber = 0; batchNumber < 100; batchNumber++) {
+        const page = await fetchActivityPage(exportQuery, exportCursor);
+        allLogs.push(...(page.logs as ActivityLog[]));
+        if (!page.hasNextPage || !page.nextCursor) break;
+        exportCursor = page.nextCursor;
       }
 
       const exportData = allLogs.map(l => ({
@@ -522,14 +505,14 @@ export function ActivityLogsPage() {
               maxLength={255}
               type="text"
               value={searchQuery}
-              onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+              onChange={(e) => { setSearchQuery(e.target.value); }}
               placeholder={formatInputPlaceholder(t('activity.searchPlaceholder'), t('common.locale'))}
               className="w-full h-12 ps-11 pe-11 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
             />
             {searchQuery && (
               <button
                 type="button"
-                onClick={() => { setSearchQuery(''); setPage(1); }}
+                onClick={() => { setSearchQuery(''); }}
                 aria-label={t('common.clearSearch', 'Clear search')}
                 className="absolute end-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
               >
@@ -565,7 +548,7 @@ export function ActivityLogsPage() {
                 onRangeChange={(start, end) => {
                   setDateRange({ start, end });
                   setActivePreset('custom');
-                  setPage(1);
+                 
                 }}
                 onClear={() => handlePresetChange('today')}
                 isActive={activePreset === 'custom'}
@@ -591,7 +574,7 @@ export function ActivityLogsPage() {
                   );
                 }
                 setUserFilter(next);
-                setPage(1);
+               
               }}
               options={userFilterOptions}
               allOptionLabel={t('activity.allUsers', { defaultValue: 'All users' })}
@@ -608,7 +591,7 @@ export function ActivityLogsPage() {
           <div className="min-w-0 relative z-[30]">
             <SingleSelect
               value={actionFilter === 'all' ? null : actionFilter}
-              onChange={(val) => { setActionFilter(val || 'all'); setPage(1); }}
+              onChange={(val) => { setActionFilter(val || 'all'); }}
               options={actionFilterOptions}
               allOptionLabel={t('activity.allActions')}
               placeholder={formatInputPlaceholder(t('activity.allActions'), t('common.locale'))}
@@ -622,7 +605,7 @@ export function ActivityLogsPage() {
           <div className="min-w-0 sm:col-span-2 lg:col-span-1 relative z-[20]">
             <SingleSelect
               value={resourceFilter === 'all' ? null : resourceFilter}
-              onChange={(val) => { setResourceFilter(val || 'all'); setPage(1); }}
+              onChange={(val) => { setResourceFilter(val || 'all'); }}
               options={resourceFilterOptions}
               allOptionLabel={t('activity.allResources', { defaultValue: 'All types' })}
               placeholder={formatInputPlaceholder(t('activity.filterByType', { defaultValue: 'Resource type' }), t('common.locale'))}
@@ -643,7 +626,7 @@ export function ActivityLogsPage() {
             {userFilter !== 'all' && (
               <button
                 type="button"
-                onClick={() => { setUserFilter('all'); setPage(1); }}
+                onClick={() => { setUserFilter('all'); }}
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-mintcom-green/10 text-mintcom-green text-[11px] font-bold border border-mintcom-green/20 hover:bg-mintcom-green/15 transition-colors"
               >
                 {userFilter === USER_FILTER_ME
@@ -657,7 +640,7 @@ export function ActivityLogsPage() {
             {actionFilter !== 'all' && (
               <button
                 type="button"
-                onClick={() => { setActionFilter('all'); setPage(1); }}
+                onClick={() => { setActionFilter('all'); }}
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[11px] font-bold border border-blue-500/20 hover:bg-blue-500/15 transition-colors"
               >
                 {getActionLabel(actionFilter)}
@@ -667,7 +650,7 @@ export function ActivityLogsPage() {
             {resourceFilter !== 'all' && (
               <button
                 type="button"
-                onClick={() => { setResourceFilter('all'); setPage(1); }}
+                onClick={() => { setResourceFilter('all'); }}
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[11px] font-bold border border-blue-500/20 hover:bg-blue-500/15 transition-colors"
               >
                 <Layers size={11} />
@@ -678,7 +661,7 @@ export function ActivityLogsPage() {
             {searchQuery.trim() && (
               <button
                 type="button"
-                onClick={() => { setSearchQuery(''); setPage(1); }}
+                onClick={() => { setSearchQuery(''); }}
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-[11px] font-bold border border-gray-200 dark:border-white/10 hover:bg-gray-200/80 dark:hover:bg-white/15 transition-colors max-w-[200px]"
               >
                 <span className="truncate">“{searchQuery.trim()}”</span>
@@ -722,14 +705,25 @@ export function ActivityLogsPage() {
           onSelect={setSelectedLog}
         />
 
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={setPage}
-          totalItems={totalLogs}
-          itemsPerPage={10}
-          variant="footer"
-        />
+        {/*
+          "Load more" rather than page numbers: a keyset-paginated, append-only
+          list has no page count, and inventing one would mean a COUNT over the
+          whole partitioned table on every load.
+        */}
+        {hasMore && (
+          <div className="flex justify-center py-4 border-t border-gray-100 dark:border-white/5">
+            <button
+              type="button"
+              onClick={loadMore}
+              disabled={isLoadingMore}
+              className="px-5 py-2 rounded-xl text-sm font-bold border border-mintcom-green/30 text-mintcom-green hover:bg-mintcom-green/10 disabled:opacity-50 transition-colors"
+            >
+              {isLoadingMore
+                ? t('activity.loading', { defaultValue: 'Loading…' })
+                : t('activity.loadMore', { defaultValue: 'Load more' })}
+            </button>
+          </div>
+        )}
       </div>
 
             {/* Detail Modal */}
