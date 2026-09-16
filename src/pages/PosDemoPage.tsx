@@ -200,6 +200,23 @@ export function PosDemoPage() {
     </div>
   );
 
+  const demoAppSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Mintcom POS',
+    operatingSystem: 'All',
+    applicationCategory: 'BusinessApplication',
+    description: 'Cloud point-of-sale software for retail, hospitality, and shift management.',
+    url: 'https://mintcompos.com/try-pos',
+    image: 'https://mintcompos.com/og-image.png',
+    offers: {
+      '@type': 'Offer',
+      price: '0.00',
+      priceCurrency: 'USD',
+      description: 'Free interactive point-of-sale demo',
+    },
+  };
+
   return (
     <div className="flex h-[100dvh] w-screen flex-col overflow-hidden bg-[#070A10] font-sans text-white select-none">
       <Helmet>
@@ -216,6 +233,7 @@ export function PosDemoPage() {
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="robots" content="index,follow" />
+        <script type="application/ld+json">{JSON.stringify(demoAppSchema)}</script>
       </Helmet>
 
       <header className="relative z-20 flex h-12 shrink-0 items-center justify-between border-b border-white/[0.06] bg-[#0A0E17]/90 px-3 backdrop-blur-md sm:h-14 sm:px-5">

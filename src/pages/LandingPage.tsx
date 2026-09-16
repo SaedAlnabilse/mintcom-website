@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
+import heroImageWebp from '../assets/mintcom-pos-hero.webp';
 import { Navbar } from '../components/Navbar';
 import { Hero } from '../components/Hero';
 import { WhyChooseUs } from '../components/WhyChooseUs';
@@ -26,6 +27,7 @@ export const LandingPage = () => {
         <meta property="og:description" content={t('metadata.home.description')} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
+        <link rel="preload" as="image" href={heroImageWebp} type="image/webp" fetchPriority="high" />
       </Helmet>
       <Navbar />
 

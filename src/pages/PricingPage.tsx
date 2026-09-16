@@ -35,6 +35,65 @@ export const PricingPage = () => {
   const effectiveMonthlyPrice = getMintcomEffectiveMonthlyPrice();
   const currency = MINTCOM_PRICING.currency;
 
+  const pricingAppSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Mintcom POS',
+    operatingSystem: 'All',
+    applicationCategory: 'BusinessApplication',
+    description: 'Cloud point-of-sale software for retail, hospitality, and shift management.',
+    url: 'https://mintcompos.com/pricing',
+    image: 'https://mintcompos.com/og-image.png',
+    offers: [
+      {
+        '@type': 'Offer',
+        name: 'Monthly Plan',
+        price: String(monthlyPrice),
+        priceCurrency: currency,
+        description: 'Monthly flexible subscription per establishment',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: String(monthlyPrice),
+          priceCurrency: currency,
+          unitText: 'MONTH',
+        },
+      },
+      {
+        '@type': 'Offer',
+        name: 'Yearly Plan',
+        price: String(yearlyPrice),
+        priceCurrency: currency,
+        description: `Annual subscription billed yearly at $${effectiveMonthlyPrice}/month per establishment`,
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: String(effectiveMonthlyPrice),
+          priceCurrency: currency,
+          unitText: 'MONTH',
+        },
+      },
+      {
+        '@type': 'Offer',
+        name: '14-Day Free Trial',
+        price: '0.00',
+        priceCurrency: currency,
+        description: '14-day full-featured free trial, no credit card required upfront',
+      },
+    ],
+  };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ_KEYS.map((id) => ({
+      '@type': 'Question',
+      name: t(`pages.pricing.faq.${id}.q`),
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: t(`pages.pricing.faq.${id}.a`),
+      },
+    })),
+  };
+
   return (
     <div
       className="min-h-screen overflow-x-hidden bg-white font-sans text-gray-900 dark:bg-[#0F172A] dark:text-white"
@@ -43,6 +102,8 @@ export const PricingPage = () => {
       <Helmet>
         <title>{t('metadata.pricingPage.title')}</title>
         <meta name="description" content={t('metadata.pricingPage.description')} />
+        <script type="application/ld+json">{JSON.stringify(pricingAppSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
       <Navbar />
 

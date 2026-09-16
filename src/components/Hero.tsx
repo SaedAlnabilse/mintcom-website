@@ -6,6 +6,7 @@ import { Play, X, ArrowRight, Store } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { DEMO_VIDEO_POSTER_URL, HERO_VIDEO_URL, isNativeVideoUrl } from '../config/downloads';
 import heroImage from '../assets/mintcom-pos-hero.png';
+import heroImageWebp from '../assets/mintcom-pos-hero.webp';
 import { ONBOARDING_START_PATH } from '../utils/onboardingLaunch';
 
 
@@ -140,16 +141,19 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
             >
-              <img
-                src={heroImage}
-                alt={t('landing.hero.alt', 'Mintcom All-in-One POS System')}
-                className="relative z-10 h-auto w-full object-contain drop-shadow-2xl"
-                width={1350}
-                height={1250}
-                decoding="async"
-                fetchPriority="high"
-                draggable={false}
-              />
+              <picture className="relative z-10 block h-auto w-full">
+                <source srcSet={heroImageWebp} type="image/webp" />
+                <img
+                  src={heroImage}
+                  alt={t('landing.hero.alt', 'Mintcom All-in-One POS System')}
+                  className="h-auto w-full object-contain drop-shadow-2xl"
+                  width={1350}
+                  height={1250}
+                  decoding="async"
+                  fetchPriority="high"
+                  draggable={false}
+                />
+              </picture>
             </motion.div>
           </motion.div>
         </div>

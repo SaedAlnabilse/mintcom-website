@@ -25,6 +25,27 @@ export const AboutUsPage = () => {
         }
     ];
 
+    const aboutSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'AboutPage',
+        name: 'About Mintcom',
+        description: 'Learn about Mintcom POS and cloud business management.',
+        url: 'https://mintcompos.com/about',
+        mainEntity: {
+            '@type': 'Organization',
+            name: 'Mintcom',
+            url: 'https://mintcompos.com',
+            logo: 'https://mintcompos.com/mintcom-leaf.svg',
+            email: 'info@mintcompos.com',
+            contactPoint: {
+                '@type': 'ContactPoint',
+                contactType: 'customer support',
+                email: 'info@mintcompos.com',
+                availableLanguage: ['English', 'Arabic'],
+            },
+        },
+    };
+
     return (
         <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white overflow-x-hidden font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             <Helmet>
@@ -32,6 +53,7 @@ export const AboutUsPage = () => {
                 <meta name="description" content={t('metadata.about.description')} />
                 <meta property="og:title" content={t('metadata.about.title')} />
                 <meta property="og:description" content={t('metadata.about.description')} />
+                <script type="application/ld+json">{JSON.stringify(aboutSchema)}</script>
             </Helmet>
             <Navbar />
 

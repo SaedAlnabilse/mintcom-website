@@ -236,6 +236,21 @@ async function runPrerender() {
             newEl.setAttribute('content', lastDesc);
             document.head.appendChild(newEl);
           }
+
+          // 6. JSON-LD Structured Data:
+          // If page components added route-specific JSON-LD, remove the index.html fallback script
+          const ldScripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'));
+          const baseScript = document.getElementById('schema-base');
+          if (baseScript && ldScripts.length > 1) {
+            baseScript.remove();
+          }
+
+          // Ensure all remaining JSON-LD scripts reside in <head> for optimal crawler indexing
+          Array.from(document.querySelectorAll('script[type="application/ld+json"]')).forEach((s) => {
+            if (s.parentElement !== document.head) {
+              document.head.appendChild(s);
+            }
+          });
         }, route.path);
 
         const pageTitle = await page.title();

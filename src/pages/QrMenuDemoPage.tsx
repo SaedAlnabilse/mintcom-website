@@ -151,6 +151,23 @@ export const QrMenuDemoPage: React.FC = () => {
     setTimeout(() => setNewTicketFlash(false), 3000);
   };
 
+  const qrAppSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Mintcom POS',
+    operatingSystem: 'All',
+    applicationCategory: 'BusinessApplication',
+    description: 'Cloud point-of-sale software for retail, hospitality, and shift management.',
+    url: 'https://mintcompos.com/qr-menu-demo',
+    image: 'https://mintcompos.com/og-image.png',
+    offers: {
+      '@type': 'Offer',
+      price: '0.00',
+      priceCurrency: 'USD',
+      description: 'Free interactive digital QR menu demo with waiter calling and table ordering',
+    },
+  };
+
   return (
     <>
       <Helmet>
@@ -163,6 +180,7 @@ export const QrMenuDemoPage: React.FC = () => {
           name="description"
           content="Interactive demonstration of Mintcom Digital QR Menu. Switch between Version 1 (View-Only) and Version 2 (Interactive Table Ordering)."
         />
+        <script type="application/ld+json">{JSON.stringify(qrAppSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300 selection:bg-emerald-500 selection:text-white">
