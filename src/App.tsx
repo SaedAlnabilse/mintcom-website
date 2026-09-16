@@ -62,6 +62,7 @@ function LegacyCustomerTicketRedirect() {
 // Draft marketing pages (kept on disk; hidden from public routes until review is done)
 // IndustriesPage, SecurityPage, PricingPage, HowItWorksPage, LoyaltyPage (marketing),
 // MultiLocationPage, WhyMintcomPage — re-enable in routes when ready to publish.
+const PricingPage = lazy(() => import('./pages/PricingPage').then(m => ({ default: m.PricingPage })));
 const QAPage = lazy(() => import('./pages/QAPage').then(m => ({ default: m.QAPage })));
 const QrMenuDemoPage = lazy(() => import('./pages/QrMenuDemoPage').then(m => ({ default: m.QrMenuDemoPage })));
 const CustomerMenuStandalonePage = lazy(() => import('./pages/CustomerMenuStandalonePage').then(m => ({ default: m.CustomerMenuStandalonePage })));
@@ -207,7 +208,9 @@ const routeSeo = [
   { path: '/support', title: 'Support | Mintcom POS', description: 'Find Mintcom help articles and support tickets.' },
   { path: '/privacy', title: 'Privacy Policy | Mintcom POS', description: 'Read how Mintcom POS protects your data and how to request account or data deletion.' },
   { path: '/legal/privacy', title: 'Privacy Policy | Mintcom POS', description: 'Read how Mintcom POS protects your data and how to request account or data deletion.' },
-  { path: '/legal/changelog', title: 'Policy Changelog | Mintcom POS', description: 'View the history of updates to Mintcom POS Terms of Service and Privacy Policy.' },
+  { path: '/pricing', title: 'Pricing | Mintcom POS', description: 'Simple Mintcom POS pricing per establishment. No hardware sales, no confusing add-ons. Start your free trial.' },
+  { path: '/legal/terms', title: 'Terms of Service | Mintcom', description: 'Review our terms of service for using the Mintcom platform and services.' },
+  { path: '/legal/cookie-policy', title: 'Cookie Policy | Mintcom', description: 'Learn about how we use cookies to improve your experience on our website.' },
   { path: '/about', title: 'About Mintcom', description: 'Learn about Mintcom POS and business management.' },
   { path: '/dashboard', title: 'Dashboard | Mintcom POS', description: 'Manage your Mintcom business dashboard.' },
   { path: '/owner', title: 'Owner Portal | Mintcom POS', description: 'Manage Mintcom account ownership, billing, brands, and establishments.' },
@@ -468,7 +471,14 @@ const router = createBrowserRouter([
       // Draft marketing pages hidden until review — page components remain in src/pages/
       { path: "/industries", element: <Navigate to="/" replace /> },
       { path: "/security", element: <Navigate to="/" replace /> },
-      { path: "/pricing", element: <Navigate to="/#pricing" replace /> },
+      {
+        path: "/pricing",
+        element: (
+          <PageSuspense>
+            <PricingPage />
+          </PageSuspense>
+        ),
+      },
       { path: "/how-it-works", element: <Navigate to="/" replace /> },
       { path: "/loyalty", element: <Navigate to="/" replace /> },
       { path: "/multi-location", element: <Navigate to="/" replace /> },

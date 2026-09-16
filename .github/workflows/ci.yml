@@ -36,6 +36,9 @@ jobs:
       - name: ESLint Check (zero-warning ceiling)
         run: npm run lint:check
 
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium --with-deps
+
       - name: TypeCheck & Build
         run: npm run build
 
@@ -44,9 +47,6 @@ jobs:
 
       - name: Code Duplication Gate (jscpd)
         run: npm run check:duplication
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
 
       - name: Run E2E Tests (Playwright)
         run: npx playwright test

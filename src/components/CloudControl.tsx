@@ -1034,9 +1034,9 @@ const DeviceMockup = ({ t }: { t: any }) => {
               {/* Page header + period filter */}
               <div className="flex items-start justify-between gap-2 shrink-0">
                 <div className="min-w-0">
-                  <h2 className={`text-[11px] sm:text-[12px] font-bold tracking-tight leading-tight truncate ${MAC_TEXT}`}>
+                  <p className={`text-[11px] sm:text-[12px] font-bold tracking-tight leading-tight truncate ${MAC_TEXT}`}>
                     {t('owner.overview.title', 'Business Overview')}
-                  </h2>
+                  </p>
                   <p className={`text-[7px] mt-0.5 truncate ${isDarkMode ? 'text-gray-500' : 'text-slate-400'}`}>
                     {t('owner.overview.subtitle', {
                       count: 6,

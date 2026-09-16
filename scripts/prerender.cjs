@@ -17,6 +17,7 @@ const PORT = 4188;
 
 const ROUTES_TO_PRERENDER = [
   { path: '/', title: 'Home' },
+  { path: '/pricing', title: 'Pricing' },
   { path: '/about', title: 'About' },
   { path: '/try-pos', title: 'Interactive POS Demo' },
   { path: '/qr-menu-demo', title: 'QR Menu Demo' },
@@ -101,10 +102,28 @@ async function runPrerender() {
   await new Promise((resolve) => server.listen(PORT, resolve));
   console.log(`📦 Local pre-render server listening at http://localhost:${PORT}`);
 
-  const browser = await chromium.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  let browser;
+  try {
+    browser = await chromium.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+  } catch (err) {
+    if (
+      err.message.includes("Executable doesn't exist") ||
+      err.message.includes('playwright install') ||
+      err.message.includes('browserType.launch')
+    ) {
+      console.log('⚡ Chromium binary not found, auto-installing via npx playwright install chromium...');
+      require('child_process').execSync('npx playwright install chromium --with-deps', { stdio: 'inherit' });
+      browser = await chromium.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      });
+    } else {
+      throw err;
+    }
+  }
 
   const results = [];
 

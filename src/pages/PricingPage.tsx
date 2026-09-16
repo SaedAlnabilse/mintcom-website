@@ -156,7 +156,7 @@ export const PricingPage = () => {
                     onClick={() => setOpenFaq(open ? null : id)}
                     className="flex w-full items-center justify-between gap-4 px-5 py-4 text-start"
                   >
-                    <span className="font-barlow text-sm font-bold text-gray-900 dark:text-white">{t(`pages.pricing.faq.${id}.q`)}</span>
+                    <h3 className="font-barlow text-sm font-bold text-gray-900 dark:text-white">{t(`pages.pricing.faq.${id}.q`)}</h3>
                     <ChevronDown size={18} className={`shrink-0 text-mintcom-green transition ${open ? 'rotate-180' : ''}`} />
                   </button>
                   {open && (

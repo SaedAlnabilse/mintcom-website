@@ -704,9 +704,9 @@ export const WhyChooseUs = () => {
               <div className="absolute inset-x-0 bottom-0 z-10 p-5 sm:p-8 md:p-10 lg:p-12">
                 <div className="flex max-w-3xl flex-col items-start gap-4 sm:gap-5">
                   <div>
-                    <h4 className="mb-2 font-sans text-3xl font-bold tracking-tight text-white xs:text-4xl md:text-5xl lg:text-6xl">
+                    <h3 className="mb-2 font-sans text-3xl font-bold tracking-tight text-white xs:text-4xl md:text-5xl lg:text-6xl">
                       {t('landing.features.seeInAction')}
-                    </h4>
+                    </h3>
                     <p className="max-w-2xl text-base font-medium text-white/70 sm:text-lg md:text-xl lg:text-2xl">
                       {t('landing.features.seamlessSync')}
                     </p>
