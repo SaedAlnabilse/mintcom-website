@@ -2140,7 +2140,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
     return Array.from(map.entries());
   }, [employeeFiltered, summary.other, localRefunds, statusOf]);
 
-  const top3 = topItems.slice(0, 3);
+  const topSelling = topItems;
 
   return (
     <div
@@ -2423,7 +2423,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
             */}
             <div className="mb-2 grid shrink-0 grid-cols-2 gap-1 rounded-xl bg-cream-100 p-1 dark:bg-mintcom-dark lg:hidden" role="tablist" aria-label="Report sections">
               <button type="button" role="tab" aria-selected={mobilePane === 'left'} onClick={() => setMobilePane('left')} className={`min-h-[40px] rounded-xl px-2 text-[12px] font-bold transition-colors ${mobilePane === 'left' ? 'bg-white text-text-primary shadow-sm dark:bg-mintcom-surface dark:text-white' : 'text-text-secondary dark:text-mintcom-textSecondary'}`}>Orders & Receipts</button>
-              <button type="button" role="tab" aria-selected={mobilePane === 'right'} onClick={() => setMobilePane('right')} className={`min-h-[40px] rounded-xl px-2 text-[12px] font-bold transition-colors ${mobilePane === 'right' ? 'bg-white text-text-primary shadow-sm dark:bg-mintcom-surface dark:text-white' : 'text-text-secondary dark:text-mintcom-textSecondary'}`}>Top 3 Items</button>
+              <button type="button" role="tab" aria-selected={mobilePane === 'right'} onClick={() => setMobilePane('right')} className={`min-h-[40px] rounded-xl px-2 text-[12px] font-bold transition-colors ${mobilePane === 'right' ? 'bg-white text-text-primary shadow-sm dark:bg-mintcom-surface dark:text-white' : 'text-text-secondary dark:text-mintcom-textSecondary'}`}>Top Selling Items</button>
             </div>
             <div className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[1fr] gap-3 overflow-hidden overscroll-contain lg:grid-cols-[1.35fr_1fr] lg:grid-rows-1">
               <Shell className={`${mobilePane === 'left' ? 'flex' : 'hidden'} lg:flex min-h-[240px] lg:min-h-0 min-w-0 flex-col overflow-hidden`}>
@@ -2501,9 +2501,17 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
 
               <Shell className={`${mobilePane === 'right' ? 'flex' : 'hidden'} lg:flex min-h-[240px] lg:min-h-0 min-w-0 flex-col overflow-hidden`}>
                 <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-gray-200 px-3 dark:border-white/10 sm:px-4">
-                  <p className="min-w-0 truncate text-[15px] font-semibold text-text-primary dark:text-white">
-                    Top 3 Selling Items
-                  </p>
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="h-4 w-1 rounded-full bg-mintcom-green" />
+                    <p className="min-w-0 truncate text-[15px] font-semibold text-text-primary dark:text-white">
+                      Top Selling Items
+                    </p>
+                    {topSelling.length > 0 && (
+                      <span className="rounded-full bg-mintcom-green/10 px-2 py-0.5 text-[11px] font-bold text-mintcom-green">
+                        {topSelling.length}
+                      </span>
+                    )}
+                  </div>
                   <div className="relative shrink-0" onClick={(e) => e.stopPropagation()}>
                     <button
                       type="button"
@@ -2558,8 +2566,8 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
                     )}
                   </div>
                 </div>
-                <div className="min-h-0 flex-1 overflow-hidden p-2.5 sm:p-3">
-                  {top3.length === 0 ? (
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2.5 sm:p-3">
+                  {topSelling.length === 0 ? (
                     <div className="flex h-full flex-col items-center justify-center text-center">
                       <BarChart3 size={36} className="mb-2 text-gray-300" strokeWidth={1.25} />
                       <p className="text-[12px] font-medium text-text-tertiary">
@@ -2567,8 +2575,8 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
                       </p>
                     </div>
                   ) : (
-                    <div className="flex h-full flex-col justify-between gap-0">
-                      {top3.map((item, i) => (
+                    <div className="flex flex-col divide-y divide-gray-100 dark:divide-white/8">
+                      {topSelling.map((item, i) => (
                         <button
                           type="button"
                           key={item.name}
@@ -2577,7 +2585,7 @@ export function DemoReportsScreen({ shift }: { shift: DemoShift }) {
                             setItemMainTab('products');
                             setItemNameFilter(item.name);
                           }}
-                          className="flex min-h-0 flex-1 items-center gap-2.5 border-b border-gray-100 px-1 text-start transition-colors last:border-0 hover:bg-gray-50 dark:border-white/8 dark:hover:bg-white/5"
+                          className="flex items-center gap-2.5 px-1 py-2.5 text-start transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
                         >
                           <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-50 text-lg dark:bg-white/5">
                             {item.image ? (

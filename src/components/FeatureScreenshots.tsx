@@ -894,7 +894,7 @@ function ReportingShot() {
           <div className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-mintcom-surface shadow-sm">
             <div className="flex h-10 shrink-0 items-center justify-between gap-2 border-b border-gray-200 dark:border-white/10 px-3">
               <p className="min-w-0 truncate text-[14px] font-semibold text-gray-900 dark:text-white">
-                Top 3 Selling Items
+                Top Selling Items
               </p>
               <span className="inline-flex h-7 shrink-0 items-center gap-1 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-mintcom-surface py-0.5 ps-1.5 pe-1 text-[10px] font-semibold text-gray-900 dark:text-white">
                 <Calendar size={12} className="text-mintcom-green" />
