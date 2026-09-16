@@ -3,7 +3,7 @@
  * sidebar, search, expandable groups, add/edit/delete modals, printer modal,
  * unsaved-changes confirmation. Local demo state only (nothing persists).
  */
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Apple,
@@ -86,6 +86,12 @@ import {
   MAX_HOLD_ORDER_TABLE_COUNT,
   MAX_HOLD_ORDER_TABLE_DIGITS,
 } from '../../utils/settingsPayload';
+import {
+  MAX_FIXED_AMOUNT_CENTS,
+  MAX_PERCENT_CENTS,
+  blurAtmAmountEdit,
+  changeAtmAmountEdit,
+} from '../../utils/atmPercent';
 import { DemoProductFormModal, type DemoProductFormValue } from './PosDemoProductForm';
 import type {
   DemoCatalog,
@@ -824,6 +830,9 @@ export function DemoSettingsScreen({
   const [serviceName, setServiceName] = useState(seed.serviceChargeName);
   const [serviceType, setServiceType] = useState<'PERCENTAGE' | 'FIXED'>(seed.serviceChargeType);
   const [serviceRate, setServiceRate] = useState(seed.serviceChargeValue.toFixed(2));
+  // Decimal-mode flag for the hybrid ATM service-charge entry: digits shift
+  // right-to-left, a typed dot enters exact values like 0.5.
+  const serviceRateDecimalMode = useRef(false);
   const [serviceTaxable, setServiceTaxable] = useState(seed.serviceChargeTaxable);
   const [serviceAutoApply, setServiceAutoApply] = useState(seed.serviceChargeAutoApply);
   const [serviceOverride, setServiceOverride] = useState(seed.serviceChargeAllowCashierOverride);
@@ -1913,7 +1922,7 @@ export function DemoSettingsScreen({
 
                     {/* Location Metadata */}
                     <div className="rounded-xl border border-gray-200 p-4 dark:border-white/10">
-                      <p className="text-[15px] font-bold text-text-primary dark:text-white">Location Metadata</p>
+                      <p className="text-[15px] font-bold text-text-primary dark:text-white">Establishment Metadata</p>
                       <p className="mb-4 mt-1 text-[12px] text-text-secondary dark:text-mintcom-textSecondary">
                         Address lines printed under the business name.
                       </p>
@@ -2269,7 +2278,7 @@ export function DemoSettingsScreen({
                           </div>
 
                           <span className="w-24 text-center text-[13px] font-extrabold tabular-nums text-text-primary dark:text-white">
-                            {(item.rate * 100).toFixed(0)}%
+                            {parseFloat((item.rate * 100).toFixed(2))}%
                           </span>
 
                           <div className="flex w-24 items-center justify-end gap-1.5">
@@ -2422,6 +2431,13 @@ export function DemoSettingsScreen({
                             type="button"
                             onClick={() => {
                               setServiceType(opt);
+                              // Re-cap the value to the new type's max.
+                              const maxCents =
+                                opt === 'PERCENTAGE' ? MAX_PERCENT_CENTS : MAX_FIXED_AMOUNT_CENTS;
+                              const cents = Math.round((parseFloat(serviceRate) || 0) * 100);
+                              const clamped = Math.min(cents, maxCents);
+                              serviceRateDecimalMode.current = false;
+                              setServiceRate((clamped / 100).toFixed(2));
                               markDirty();
                               emitSalesSettings({ serviceChargeType: opt });
                             }}
@@ -2447,16 +2463,39 @@ export function DemoSettingsScreen({
                       <input
                         value={serviceRate}
                         onChange={(e) => {
-                          const digits = e.target.value.replace(/\D/g, '').slice(0, 7);
-                          const cents = digits === '' ? 0 : parseInt(digits, 10);
-                          const formatted = (cents / 100).toFixed(2);
-                          setServiceRate(formatted);
+                          // Hybrid ATM + decimal entry: digits shift
+                          // right-to-left, a typed dot enters exact values
+                          // like 0.5. Display always stays formatted.
+                          const maxCents =
+                            serviceType === 'PERCENTAGE' ? MAX_PERCENT_CENTS : MAX_FIXED_AMOUNT_CENTS;
+                          const prevCents = Math.round((parseFloat(serviceRate) || 0) * 100);
+                          const next = changeAtmAmountEdit(
+                            {
+                              text: serviceRate,
+                              cents: prevCents,
+                              decimalMode: serviceRateDecimalMode.current,
+                            },
+                            e.target.value,
+                            maxCents,
+                          );
+                          serviceRateDecimalMode.current = next.decimalMode;
+                          setServiceRate(next.text === '' ? '0.00' : next.text);
                           markDirty();
                           emitSalesSettings({
-                            serviceChargeValue: cents / 100,
+                            serviceChargeValue: next.cents / 100,
                           });
                         }}
-                        inputMode="numeric"
+                        onBlur={() => {
+                          const prevCents = Math.round((parseFloat(serviceRate) || 0) * 100);
+                          const next = blurAtmAmountEdit({
+                            text: serviceRate,
+                            cents: prevCents,
+                            decimalMode: serviceRateDecimalMode.current,
+                          });
+                          serviceRateDecimalMode.current = false;
+                          setServiceRate(next.text === '' ? '0.00' : next.text);
+                        }}
+                        inputMode="decimal"
                         className="h-11 flex-1 bg-transparent px-3 text-sm font-bold outline-none dark:text-white tabular-nums"
                       />
                     </div>
@@ -5994,7 +6033,7 @@ export function DemoSettingsScreen({
               <p className="mt-2 text-center text-[13px] leading-relaxed text-text-secondary dark:text-mintcom-textSecondary">
                 Are you sure you want to delete{' '}
                 <strong className="text-text-primary dark:text-white">
-                  {taxToDelete.name} ({(taxToDelete.rate * 100).toFixed(0)}%)
+                  {taxToDelete.name} ({parseFloat((taxToDelete.rate * 100).toFixed(2))}%)
                 </strong>
                 ? Products using this rate will automatically fall back to the default sales tax.
               </p>

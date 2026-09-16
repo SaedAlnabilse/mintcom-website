@@ -185,7 +185,9 @@ export const normalizeServiceChargeValue = (
   return Math.min(MAX_SERVICE_CHARGE_VALUE, Math.round(numeric * 100) / 100);
 };
 
-/** ATM-style entry for percentage (0.00–100.00). */
+/** ATM-style entry for percentage (0.00–100.00).
+ * Hybrid entry lives in `atmPercent.ts` (digits shift ATM-style, a typed dot
+ * enters exact decimals like 0.5). Kept for backward-compat only. */
 export const formatServiceChargePercentATM = (raw: string): number | null => {
   const digits = raw.replace(/\D/g, '').slice(0, MAX_SERVICE_CHARGE_PERCENT_DIGITS);
   const cents = Number.parseInt(digits || '0', 10);
@@ -193,12 +195,43 @@ export const formatServiceChargePercentATM = (raw: string): number | null => {
   return cents / 100;
 };
 
-/** ATM-style entry for fixed currency amount. */
+/** ATM-style entry for fixed currency amount.
+ * @deprecated See `formatServiceChargePercentATM`. */
 export const formatServiceChargeFixedATM = (raw: string): number | null => {
   const digits = raw.replace(/\D/g, '').slice(0, MAX_SERVICE_CHARGE_FIXED_DIGITS);
   const cents = Number.parseInt(digits || '0', 10);
   if (cents > MAX_SERVICE_CHARGE_VALUE * 100) return null;
   return cents / 100;
+};
+
+/**
+ * Natural decimal entry for percent / amount fields.
+ *
+ * Keeps digits plus a single decimal dot so fractional values like 0.5
+ * (0.5%) or 2.75 can be typed directly. Returns the raw text to display
+ * (`null` when the value exceeds `max`), leaving clamping/rounding to
+ * `normalizeServiceChargeValue` on save.
+ */
+export const parseServiceChargeDecimalInput = (
+  raw: string,
+  max: number,
+): string | null => {
+  let cleaned = raw.replace(/[^0-9.]/g, '');
+  const firstDot = cleaned.indexOf('.');
+  if (firstDot !== -1) {
+    cleaned =
+      cleaned.slice(0, firstDot + 1) +
+      cleaned.slice(firstDot + 1).replace(/\./g, '');
+  }
+  if (cleaned === '' || cleaned === '.') return '';
+  // Limit to 2 decimal places (0.5, 2.75) — extra digits are dropped.
+  const [intPart, decPart] = cleaned.split('.');
+  const trimmed =
+    decPart !== undefined ? `${intPart}.${decPart.slice(0, 2)}` : intPart;
+  const numeric = Number(trimmed);
+  if (!Number.isFinite(numeric)) return null;
+  if (numeric < 0 || numeric > max) return null;
+  return trimmed;
 };
 
 const normalizeComparableSettingValue = (value: unknown) => {

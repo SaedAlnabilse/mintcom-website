@@ -86,7 +86,7 @@ const TITLE_CASE_PRESERVED_PHRASES = new Map<string, string>([
   ['date-based', 'Date-Based'],
   ['owner-level', 'Owner-Level'],
   ['brand-level', 'Brand-Level'],
-  ['location-level', 'Location-Level'],
+  ['establishment-level', 'Establishment-Level'],
   ['back-office', 'Back-Office'],
   ['high-impact', 'High-Impact'],
   ['non-card', 'Non-Card'],

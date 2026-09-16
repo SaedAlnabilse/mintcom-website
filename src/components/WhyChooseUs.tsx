@@ -136,14 +136,14 @@ function WhyCompletePreview({ isRtl }: { isRtl?: boolean }) {
 function WhyCreateBranchPreview({ isRtl }: { isRtl?: boolean }) {
   const locations = isRtl
     ? [
-        { name: 'وسط البلد', type: 'موقع · مقهى', selected: true, Icon: Coffee },
-        { name: 'فرع المول', type: 'موقع · مقهى', selected: true, Icon: Coffee },
+        { name: 'وسط البلد', type: 'منشأة · مقهى', selected: true, Icon: Coffee },
+        { name: 'فرع المول', type: 'منشأة · مقهى', selected: true, Icon: Coffee },
         { name: 'كشك المطار', type: 'نقطة بيع · تجزئة', selected: false, Icon: ShoppingBag },
         { name: 'حي الجامعة', type: 'نقطة بيع · مطعم', selected: false, Icon: Store },
       ]
     : [
-        { name: 'Downtown', type: 'Location · Cafe', selected: true, Icon: Coffee },
-        { name: 'Mall Branch', type: 'Location · Cafe', selected: true, Icon: Coffee },
+        { name: 'Downtown', type: 'Establishment · Cafe', selected: true, Icon: Coffee },
+        { name: 'Mall Branch', type: 'Establishment · Cafe', selected: true, Icon: Coffee },
         { name: 'Airport Kiosk', type: 'POS · Retail', selected: false, Icon: ShoppingBag },
         { name: 'University District', type: 'POS · Restaurant', selected: false, Icon: Store },
       ];
@@ -153,12 +153,12 @@ function WhyCreateBranchPreview({ isRtl }: { isRtl?: boolean }) {
   const wizardSteps = isRtl
     ? [
         { label: 'التفاصيل', icon: 'home' as const, state: 'done' as const },
-        { label: 'المواقع', icon: 'map' as const, state: 'active' as const },
+        { label: 'المنشآت', icon: 'map' as const, state: 'active' as const },
         { label: 'الفريق', icon: 'team' as const, state: 'todo' as const },
       ]
     : [
         { label: 'Details', icon: 'home' as const, state: 'done' as const },
-        { label: 'Locations', icon: 'map' as const, state: 'active' as const },
+        { label: 'Establishments', icon: 'map' as const, state: 'active' as const },
         { label: 'Team', icon: 'team' as const, state: 'todo' as const },
       ];
 

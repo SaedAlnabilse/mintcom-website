@@ -17,6 +17,10 @@ interface DashboardStats {
   taxCollected: number;
   netServiceChargeCollected?: number;
   serviceChargeCollected?: number;
+  netOtherChargesCollected?: number;
+  otherChargesCollected?: number;
+  netSales?: number;
+  baseSales?: number;
   netSalesBeforeTaxAndServiceCharge?: number;
   totalRefunds: number;
   grossProfit: number;
@@ -44,9 +48,13 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
   const { currencySymbol } = useCurrency();
   const grossSales = stats?.totalRevenue ?? 0;
   const taxCollected = stats?.taxCollected ?? 0;
-  const serviceChargeCollected = stats?.netServiceChargeCollected ?? stats?.serviceChargeCollected ?? 0;
+  const serviceChargeCollected = (stats as any)?.netOtherChargesCollected ?? stats?.netServiceChargeCollected ?? (stats as any)?.otherChargesCollected ?? stats?.serviceChargeCollected ?? 0;
   const netSales = Math.max(
-    stats?.netSalesBeforeTaxAndServiceCharge ?? (grossSales - taxCollected - serviceChargeCollected),
+    (stats as any)?.netSales ?? (grossSales - taxCollected),
+    0
+  );
+  const baseSales = Math.max(
+    (stats as any)?.baseSales ?? stats?.netSalesBeforeTaxAndServiceCharge ?? (netSales - serviceChargeCollected),
     0
   );
 
@@ -63,8 +71,26 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     {
       label: t('dashboard.stats.netSales'),
       value: netSales,
-      sub: t('dashboard.stats.excludingTaxServiceCharge'),
+      sub: t('dashboard.stats.excludingTax'),
       icon: biIcon('bi-cash-coin'),
+      color: 'text-mintcom-green',
+      bg: 'bg-mintcom-green/10',
+      isCurrency: true
+    },
+    {
+      label: t('dashboard.stats.baseSales', { defaultValue: 'Base Sales' }),
+      value: baseSales,
+      sub: t('dashboard.stats.excludingTaxServiceCharge'),
+      icon: biIcon('bi-basket'),
+      color: 'text-mintcom-green',
+      bg: 'bg-mintcom-green/10',
+      isCurrency: true
+    },
+    {
+      label: t('dashboard.stats.otherCharges', { defaultValue: 'Other Charges' }),
+      value: serviceChargeCollected,
+      sub: t('dashboard.stats.partOfTotalSales', { defaultValue: 'Extra fees added to orders' }),
+      icon: biIcon('bi-plus-circle'),
       color: 'text-mintcom-green',
       bg: 'bg-mintcom-green/10',
       isCurrency: true

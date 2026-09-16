@@ -898,7 +898,7 @@ const LocationsScreenMock = ({ statusPad = 0, compact = false }: { statusPad?: n
           >
             <Search size={12} style={{ color: p.SUB }} />
             <span className="text-[10px] font-semibold" style={{ color: p.SUB }}>
-              {t('landing.admin.mockup.searchLocationsCount', 'Search 3 locations...')}
+              {t('landing.admin.mockup.searchLocationsCount', 'Search 3 establishments...')}
             </span>
           </div>
           <div
@@ -1270,7 +1270,7 @@ type ScreenId = 'overview' | 'locations' | 'brands' | 'notifications';
 
 const SCREENS: { id: ScreenId; labelKey: string; labelFallback: string }[] = [
   { id: 'overview', labelKey: 'landing.admin.mockup.screenOverview', labelFallback: 'Overview' },
-  { id: 'locations', labelKey: 'landing.admin.mockup.screenLocations', labelFallback: 'Locations' },
+  { id: 'locations', labelKey: 'landing.admin.mockup.screenLocations', labelFallback: 'Establishments' },
   { id: 'brands', labelKey: 'landing.admin.mockup.screenBrands', labelFallback: 'Brands' },
   { id: 'notifications', labelKey: 'landing.admin.mockup.screenAlerts', labelFallback: 'Alerts' },
 ];

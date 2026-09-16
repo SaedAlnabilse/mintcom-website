@@ -121,7 +121,7 @@ const INVOICE_DOM_ID = 'mintcom-subscription-invoice';
 /** File-name-safe stem for downloads. */
 const documentSlug = (data: SubscriptionInvoiceData) =>
   data.number ||
-  `Summary-${(data.snapshot.billTo.name || 'Location').replace(/[^a-zA-Z0-9]+/g, '-')}`;
+  `Summary-${(data.snapshot.billTo.name || 'Establishment').replace(/[^a-zA-Z0-9]+/g, '-')}`;
 
 /**
  * An invoice states whether the money moved, not what the subscription state

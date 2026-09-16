@@ -1329,7 +1329,7 @@ function AiShot() {
               Try asking
             </p>
             <div className="flex flex-col gap-1.5">
-              {['Morning briefing', 'Revenue last 3 months', 'Compare my locations'].map((q) => (
+              {['Morning briefing', 'Revenue last 3 months', 'Compare my establishments'].map((q) => (
                 <span
                   key={q}
                   className="inline-flex items-center gap-2 rounded-xl border border-mintcom-green/25 bg-mintcom-green/[0.07] px-3 py-2 text-[12px] font-semibold text-mintcom-green dark:border-mintcom-green/30 dark:bg-mintcom-green/10"
@@ -1509,14 +1509,14 @@ function BranchShot() {
                 bg: 'bg-blue-500/10',
               },
               {
-                label: 'Linked locations',
+                label: 'Linked establishments',
                 value: String(linkedCount),
                 Icon: Link2,
                 color: 'text-blue-500',
                 bg: 'bg-blue-500/10',
               },
               {
-                label: 'Available locations',
+                label: 'Available establishments',
                 value: String(availableLocations),
                 Icon: Store,
                 color: 'text-orange-500',

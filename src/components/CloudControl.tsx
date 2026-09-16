@@ -352,9 +352,9 @@ function RealStatTile({
 const OwnerScopePreview = ({ t, size = 'sm' }: { t: any; size?: PreviewSize }) => {
   const lg = size === 'lg';
   const kpis = [
-    { label: t('owner.overview.activeLocations', 'Active locations'), val: '13', sub: t('landing.cloudControl.scope.preview.acrossPortfolio', 'Across portfolio'), Icon: Store },
+    { label: t('owner.overview.activeLocations', 'Active establishments'), val: '13', sub: t('landing.cloudControl.scope.preview.acrossPortfolio', 'Across portfolio'), Icon: Store },
     { label: t('owner.overview.totalBrands', 'Total brands'), val: '3', sub: t('landing.cloudControl.scope.preview.activeBrands', 'Active brands'), Icon: Building2 },
-    { label: t('owner.overview.totalStaff', 'Total staff'), val: '48', sub: t('landing.cloudControl.scope.preview.allLocations', 'All locations'), Icon: Users },
+    { label: t('owner.overview.totalStaff', 'Total staff'), val: '48', sub: t('landing.cloudControl.scope.preview.allLocations', 'All establishments'), Icon: Users },
     { label: t('owner.overview.netSales', 'Net sales'), val: lg ? '128,420' : '128K', sub: t('owner.overview.netSalesSub', 'Excl. tax & charges'), Icon: DollarSign },
     { label: t('owner.overview.totalSales', 'Total sales'), val: lg ? '148,250' : '148K', sub: t('owner.overview.totalSalesSub', 'Incl. tax & charges'), Icon: Wallet },
     { label: t('owner.overview.totalProfit', 'Total profit'), val: lg ? '41,680' : '42K', sub: t('landing.cloudControl.scope.preview.thisWeek', 'This week'), Icon: TrendingUp },
@@ -435,7 +435,7 @@ const BrandScopePreview = ({ t, size = 'sm' }: { t: any; size?: PreviewSize }) =
             </p>
             {lg && (
               <p className="text-[11px] font-medium text-gray-500">
-                {t('brand.dashboard.rankedByRevenue', 'Ranked by revenue')} · 4 {t('common.locations', 'locations')}
+                {t('brand.dashboard.rankedByRevenue', 'Ranked by revenue')} · 4 {t('common.locations', 'establishments')}
               </p>
             )}
           </div>
@@ -466,7 +466,7 @@ const BrandScopePreview = ({ t, size = 'sm' }: { t: any; size?: PreviewSize }) =
             <div className={`flex shrink-0 items-center justify-between border-b border-gray-100 dark:border-white/5 ${lg ? 'px-3 py-2.5' : 'px-1.5 py-1'}`}>
               <div>
                 <p className={`font-bold text-gray-900 dark:text-white ${lg ? 'text-[13px]' : 'text-[8px]'}`}>
-                  {t('brand.dashboard.locationPerformance', 'Location performance')}
+                  {t('brand.dashboard.locationPerformance', 'Establishment performance')}
                 </p>
                 {lg && (
                   <p className="text-[10px] font-medium text-gray-500">
@@ -582,7 +582,7 @@ const LocationScopePreview = ({ t, size = 'sm' }: { t: any; size?: PreviewSize }
   return (
     <div
       role="img"
-      aria-label={t('landing.cloudControl.scope.preview.location', 'Location dashboard')}
+      aria-label={t('landing.cloudControl.scope.preview.location', 'Establishment dashboard')}
       className="flex h-full w-full cursor-text select-text overflow-hidden bg-gray-50 font-sans dark:bg-mintcom-dark"
     >
       <LocationRail active="dashboard" lg={lg} />
@@ -867,7 +867,7 @@ const DeviceMockup = ({ t }: { t: any }) => {
 
   const sidebarItems = [
     { icon: LayoutDashboard, label: t('owner.menu.overview', 'Overview'), active: true },
-    { icon: Store, label: t('owner.menu.locations', 'Locations'), active: false },
+    { icon: Store, label: t('owner.menu.locations', 'Establishments'), active: false },
     { icon: Building2, label: t('owner.menu.brands', 'Brands'), active: false },
     { icon: Users, label: t('owner.menu.employees', 'Employees'), active: false },
     { icon: Shield, label: t('owner.menu.globalRoles', 'Global Roles'), active: false },
@@ -901,7 +901,7 @@ const DeviceMockup = ({ t }: { t: any }) => {
       iconBg: 'bg-blue-500/10',
     },
     {
-      label: t('owner.overview.activeLocations', 'Active Locations'),
+      label: t('owner.overview.activeLocations', 'Active Establishments'),
       value: '6',
       sub: null as string | null,
       icon: Store,
@@ -1091,7 +1091,7 @@ const DeviceMockup = ({ t }: { t: any }) => {
                       {t('owner.overview.netSalesTrend', 'Net Sales Trend')}
                     </p>
                     <p className={`text-[6px] truncate ${isDarkMode ? 'text-gray-500' : 'text-slate-400'}`}>
-                      {t('owner.overview.consolidatedPerf', 'Consolidated Performance Across Locations')}
+                      {t('owner.overview.consolidatedPerf', 'Consolidated Performance Across Establishments')}
                     </p>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
@@ -1500,7 +1500,7 @@ export const CloudControl = () => {
       title: t('landing.cloudControl.location.title'),
       description: t('landing.cloudControl.location.description'),
       scope: 'location',
-      scopeLabel: t('landing.cloudControl.scope.location', 'Location scope'),
+      scopeLabel: t('landing.cloudControl.scope.location', 'Establishment scope'),
       highlights: isRtl
         ? [
             'طلبات حية وإيرادات ومتوسط طلب لليوم',

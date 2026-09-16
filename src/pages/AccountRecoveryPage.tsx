@@ -198,7 +198,7 @@ export function AccountRecoveryPage() {
 
             <p className="text-sm font-medium leading-6 text-gray-600 dark:text-gray-300">
               {t('account.recovery.explanation', {
-                defaultValue: 'Verify your identity to cancel deletion. Your account and the locations locked by this account deletion will be restored.',
+                defaultValue: 'Verify your identity to cancel deletion. Your account and the establishments locked by this account deletion will be restored.',
               })}
             </p>
 

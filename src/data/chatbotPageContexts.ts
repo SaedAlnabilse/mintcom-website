@@ -219,8 +219,8 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
     title: text('Settings', 'الإعدادات'),
     launcherPrompt: text('Need help with settings?', 'هل تحتاج مساعدة في الإعدادات؟'),
     welcomeMessage: text(
-      "You're on Settings. I can help you update location details, tax settings, receipts, and business profile data.",
-      'أنت الآن في صفحة الإعدادات. أستطيع مساعدتك في تحديث بيانات الموقع والضرائب والإيصالات وملف النشاط.',
+      "You're on Settings. I can help you update establishment details, tax settings, receipts, and business profile data.",
+      'أنت الآن في صفحة الإعدادات. أستطيع مساعدتك في تحديث بيانات المنشأة والضرائب والإيصالات وملف النشاط.',
     ),
     defaultSuggestions: [
       text('How do I customize receipts?', 'كيف أخصص الإيصالات؟'),
@@ -358,10 +358,10 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
     id: 'dashboard-home',
     match: ['/dashboard/:locationSlug'],
     title: text('Dashboard', 'لوحة التحكم'),
-    launcherPrompt: text('Need help with this location dashboard?', 'هل تحتاج مساعدة في لوحة هذا الموقع؟'),
+    launcherPrompt: text('Need help with this establishment dashboard?', 'هل تحتاج مساعدة في لوحة هذه المنشأة؟'),
     welcomeMessage: text(
-      "You're on the location dashboard. I can guide you through setup, products, orders, staff, reports, and daily operations.",
-      'أنت الآن في لوحة تحكم الموقع. أستطيع إرشادك في الإعداد والمنتجات والطلبات والموظفين والتقارير والتشغيل اليومي.',
+      "You're on the establishment dashboard. I can guide you through setup, products, orders, staff, reports, and daily operations.",
+      'أنت الآن في لوحة تحكم المنشأة. أستطيع إرشادك في الإعداد والمنتجات والطلبات والموظفين والتقارير والتشغيل اليومي.',
     ),
     defaultSuggestions: [
       text('How do I add a new product?', 'كيف أضيف منتجاً جديداً؟'),
@@ -405,13 +405,13 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
     title: text('Owner Billing', 'فوترة المالك'),
     launcherPrompt: text('Need help with plans or invoices?', 'هل تحتاج مساعدة في الخطط أو الفواتير؟'),
     welcomeMessage: text(
-      "You're on Owner Billing. I can explain plans, invoices, payment methods, and how additional locations are billed.",
-      'أنت الآن في صفحة فوترة المالك. أستطيع شرح الخطط والفواتير وطرق الدفع وكيفية احتساب المواقع الإضافية.',
+      "You're on Owner Billing. I can explain plans, invoices, payment methods, and how additional establishments are billed.",
+      'أنت الآن في صفحة فوترة المالك. أستطيع شرح الخطط والفواتير وطرق الدفع وكيفية احتساب المنشآت الإضافية.',
     ),
     defaultSuggestions: [
       text('How does billing work?', 'كيف تعمل الفوترة؟'),
       text('How do I update my payment method?', 'كيف أحدث طريقة الدفع؟'),
-      text('How do extra locations affect pricing?', 'كيف تؤثر المواقع الإضافية على التسعير؟'),
+      text('How do extra establishments affect pricing?', 'كيف تؤثر المنشآت الإضافية على التسعير؟'),
     ],
     quickActions: [
       {
@@ -423,7 +423,7 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
       },
       {
         id: 'owner-establishments',
-        label: text('Locations', 'المواقع'),
+        label: text('Establishments', 'المنشآت'),
         icon: 'mapPinned',
         type: 'navigate',
         path: '/owner/establishments',
@@ -434,15 +434,15 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
     id: 'owner-brands',
     match: ['/owner/brands'],
     title: text('Owner Brands', 'علامات المالك التجارية'),
-    launcherPrompt: text('Need help with brands or linked locations?', 'هل تحتاج مساعدة في العلامات التجارية أو ربط المواقع؟'),
+    launcherPrompt: text('Need help with brands or linked establishments?', 'هل تحتاج مساعدة في العلامات التجارية أو ربط المنشآت؟'),
     welcomeMessage: text(
-      "You're on Owner Brands. I can help you create brands, link locations, and understand how the owner and brand portals work together.",
-      'أنت الآن في صفحة العلامات التجارية للمالك. أستطيع مساعدتك في إنشاء العلامات وربط المواقع وشرح العلاقة بين بوابة المالك وبوابة العلامة.',
+      "You're on Owner Brands. I can help you create brands, link establishments, and understand how the owner and brand portals work together.",
+      'أنت الآن في صفحة العلامات التجارية للمالك. أستطيع مساعدتك في إنشاء العلامات وربط المنشآت وشرح العلاقة بين بوابة المالك وبوابة العلامة.',
     ),
     defaultSuggestions: [
       text('How do I create a brand?', 'كيف أنشئ علامة تجارية؟'),
-      text('How do I add or link a location to my brand?', 'كيف أضيف أو أربط موقعاً بعلامتي التجارية؟'),
-      text('How do I manage multiple locations?', 'كيف أدير مواقع متعددة؟'),
+      text('How do I add or link an establishment to my brand?', 'كيف أضيف أو أربط منشأةً بعلامتي التجارية؟'),
+      text('How do I manage multiple establishments?', 'كيف أدير منشآت متعددة؟'),
     ],
     quickActions: [
       {
@@ -454,38 +454,38 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
       },
       {
         id: 'owner-brands-locations',
-        label: text('Locations', 'المواقع'),
+        label: text('Establishments', 'المنشآت'),
         icon: 'mapPinned',
         type: 'navigate',
         path: '/owner/establishments',
       },
       {
         id: 'owner-brands-link',
-        label: text('Link location', 'ربط موقع'),
+        label: text('Link establishment', 'ربط منشأة'),
         icon: 'tag',
         type: 'ask',
-        query: text('How do I add or link a location to my brand?', 'كيف أضيف أو أربط موقعاً بعلامتي التجارية؟'),
+        query: text('How do I add or link an establishment to my brand?', 'كيف أضيف أو أربط منشأةً بعلامتي التجارية؟'),
       },
     ],
   },
   {
     id: 'owner-establishments',
     match: ['/owner/establishments'],
-    title: text('Owner Locations', 'مواقع المالك'),
-    launcherPrompt: text('Need help with locations?', 'هل تحتاج مساعدة في المواقع؟'),
+    title: text('Owner Establishments', 'منشآت المالك'),
+    launcherPrompt: text('Need help with establishments?', 'هل تحتاج مساعدة في المنشآت؟'),
     welcomeMessage: text(
-      "You're on Owner Locations. I can help you create a new location, review existing ones, and plan brand links.",
-      'أنت الآن في صفحة مواقع المالك. أستطيع مساعدتك في إنشاء موقع جديد ومراجعة المواقع الحالية والتخطيط لربطها بالعلامات.',
+      "You're on Owner Establishments. I can help you create a new establishment, review existing ones, and plan brand links.",
+      'أنت الآن في صفحة منشآت المالك. أستطيع مساعدتك في إنشاء منشأة جديدة ومراجعة المنشآت الحالية والتخطيط لربطها بالعلامات.',
     ),
     defaultSuggestions: [
-      text('How do I create a new location?', 'كيف أنشئ موقعاً جديداً؟'),
-      text('How do I manage multiple locations?', 'كيف أدير مواقع متعددة؟'),
-      text('How do I add or link a location to my brand?', 'كيف أضيف أو أربط موقعاً بعلامتي التجارية؟'),
+      text('How do I create a new establishment?', 'كيف أنشئ منشأةً جديداً؟'),
+      text('How do I manage multiple establishments?', 'كيف أدير منشآت متعددة؟'),
+      text('How do I add or link an establishment to my brand?', 'كيف أضيف أو أربط منشأةً بعلامتي التجارية؟'),
     ],
     quickActions: [
       {
         id: 'owner-establishments-create',
-        label: text('Add location', 'إضافة موقع'),
+        label: text('Add establishment', 'إضافة منشأة'),
         icon: 'mapPinned',
         type: 'navigate',
         path: '/onboarding',
@@ -506,18 +506,18 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
     title: text('Owner Overview', 'نظرة المالك العامة'),
     launcherPrompt: text('Need help in the owner portal?', 'هل تحتاج مساعدة في بوابة المالك؟'),
     welcomeMessage: text(
-      "You're in the owner portal. I can help you with locations, brands, billing, account-wide staff, and setup planning.",
-      'أنت الآن في بوابة المالك. أستطيع مساعدتك في المواقع والعلامات التجارية والفوترة وموظفي الحساب وخطة الإعداد.',
+      "You're in the owner portal. I can help you with establishments, brands, billing, account-wide staff, and setup planning.",
+      'أنت الآن في بوابة المالك. أستطيع مساعدتك في المنشآت والعلامات التجارية والفوترة وموظفي الحساب وخطة الإعداد.',
     ),
     defaultSuggestions: [
-      text('How do I create a new location?', 'كيف أنشئ موقعاً جديداً؟'),
+      text('How do I create a new establishment?', 'كيف أنشئ منشأةً جديداً؟'),
       text('How do I create a brand?', 'كيف أنشئ علامة تجارية؟'),
       text('How does billing work?', 'كيف تعمل الفوترة؟'),
     ],
     quickActions: [
       {
         id: 'owner-overview-locations',
-        label: text('Locations', 'المواقع'),
+        label: text('Establishments', 'المنشآت'),
         icon: 'mapPinned',
         type: 'navigate',
         path: '/owner/establishments',
@@ -541,24 +541,24 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
   {
     id: 'brand-locations',
     match: ['/brand/:brandId/locations'],
-    title: text('Brand Locations', 'مواقع العلامة التجارية'),
-    launcherPrompt: text('Need help linking locations to this brand?', 'هل تحتاج مساعدة في ربط المواقع بهذه العلامة؟'),
+    title: text('Brand Establishments', 'منشآت العلامة التجارية'),
+    launcherPrompt: text('Need help linking establishments to this brand?', 'هل تحتاج مساعدة في ربط المنشآت بهذه العلامة؟'),
     welcomeMessage: text(
-      "You're on Brand Locations. I can help you link unassigned locations, review brand structure, and explain the brand workflow.",
-      'أنت الآن في صفحة مواقع العلامة التجارية. أستطيع مساعدتك في ربط المواقع غير المرتبطة ومراجعة هيكل العلامة وشرح سير العمل.',
+      "You're on Brand Establishments. I can help you link unassigned establishments, review brand structure, and explain the brand workflow.",
+      'أنت الآن في صفحة منشآت العلامة التجارية. أستطيع مساعدتك في ربط المنشآت غير المرتبطة ومراجعة هيكل العلامة وشرح سير العمل.',
     ),
     defaultSuggestions: [
-      text('How do I add or link a location to my brand?', 'كيف أضيف أو أربط موقعاً بعلامتي التجارية؟'),
-      text('How do I create a new location?', 'كيف أنشئ موقعاً جديداً؟'),
-      text('How do I manage multiple locations?', 'كيف أدير مواقع متعددة؟'),
+      text('How do I add or link an establishment to my brand?', 'كيف أضيف أو أربط منشأةً بعلامتي التجارية؟'),
+      text('How do I create a new establishment?', 'كيف أنشئ منشأةً جديداً؟'),
+      text('How do I manage multiple establishments?', 'كيف أدير منشآت متعددة؟'),
     ],
     quickActions: [
       {
         id: 'brand-locations-link',
-        label: text('Link location', 'ربط موقع'),
+        label: text('Link establishment', 'ربط منشأة'),
         icon: 'mapPinned',
         type: 'ask',
-        query: text('How do I add or link a location to my brand?', 'كيف أضيف أو أربط موقعاً بعلامتي التجارية؟'),
+        query: text('How do I add or link an establishment to my brand?', 'كيف أضيف أو أربط منشأةً بعلامتي التجارية؟'),
       },
       {
         id: 'brand-locations-owner',
@@ -575,8 +575,8 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
     title: text('Brand Team', 'فريق العلامة التجارية'),
     launcherPrompt: text('Need help with the brand team?', 'هل تحتاج مساعدة في فريق العلامة التجارية؟'),
     welcomeMessage: text(
-      "You're on Brand Team. I can help you understand how brand-level people and location-level staff should be organized.",
-      'أنت الآن في صفحة فريق العلامة التجارية. أستطيع مساعدتك في فهم تنظيم فريق العلامة مقابل موظفي المواقع.',
+      "You're on Brand Team. I can help you understand how brand-level people and establishment-level staff should be organized.",
+      'أنت الآن في صفحة فريق العلامة التجارية. أستطيع مساعدتك في فهم تنظيم فريق العلامة مقابل موظفي المنشآت.',
     ),
     defaultSuggestions: [
       text('How do I add staff members?', 'كيف أضيف موظفين؟'),
@@ -592,7 +592,7 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
       },
       {
         id: 'brand-team-locations',
-        label: text('Locations', 'المواقع'),
+        label: text('Establishments', 'المنشآت'),
         icon: 'mapPinned',
         type: 'navigate',
         path: '/brand/:brandId/locations',
@@ -605,18 +605,18 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
     title: text('Brand Dashboard', 'لوحة العلامة التجارية'),
     launcherPrompt: text('Need help in this brand dashboard?', 'هل تحتاج مساعدة في لوحة هذه العلامة التجارية؟'),
     welcomeMessage: text(
-      "You're on the brand dashboard. I can help you review locations, compare performance, and manage brand-wide structure.",
-      'أنت الآن في لوحة العلامة التجارية. أستطيع مساعدتك في مراجعة المواقع ومقارنة الأداء وإدارة الهيكل العام للعلامة.',
+      "You're on the brand dashboard. I can help you review establishments, compare performance, and manage brand-wide structure.",
+      'أنت الآن في لوحة العلامة التجارية. أستطيع مساعدتك في مراجعة المنشآت ومقارنة الأداء وإدارة الهيكل العام للعلامة.',
     ),
     defaultSuggestions: [
-      text('How do I add or link a location to my brand?', 'كيف أضيف أو أربط موقعاً بعلامتي التجارية؟'),
-      text('How do I manage multiple locations?', 'كيف أدير مواقع متعددة؟'),
+      text('How do I add or link an establishment to my brand?', 'كيف أضيف أو أربط منشأةً بعلامتي التجارية؟'),
+      text('How do I manage multiple establishments?', 'كيف أدير منشآت متعددة؟'),
       text('Show me my sales reports', 'أظهر لي تقارير المبيعات'),
     ],
     quickActions: [
       {
         id: 'brand-overview-locations',
-        label: text('Locations', 'المواقع'),
+        label: text('Establishments', 'المنشآت'),
         icon: 'mapPinned',
         type: 'navigate',
         path: '/brand/:brandId/locations',
@@ -674,13 +674,13 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
     title: text('Onboarding', 'الإعداد'),
     launcherPrompt: text('Need help finishing setup?', 'هل تحتاج مساعدة في إكمال الإعداد؟'),
     welcomeMessage: text(
-      "You're in onboarding. I can help you finish setup, understand each step, and prepare the first location correctly.",
-      'أنت الآن في الإعداد. أستطيع مساعدتك في إكمال الخطوات وفهم كل مرحلة وتجهيز أول موقع بشكل صحيح.',
+      "You're in onboarding. I can help you finish setup, understand each step, and prepare the first establishment correctly.",
+      'أنت الآن في الإعداد. أستطيع مساعدتك في إكمال الخطوات وفهم كل مرحلة وتجهيز أول منشأة بشكل صحيح.',
     ),
     defaultSuggestions: [
       text('How does the onboarding process work?', 'كيف تعمل عملية الإعداد؟'),
       text('How do I get started with Mintcom?', 'كيف أبدأ مع مينتكوم؟'),
-      text('How do I create a new location?', 'كيف أنشئ موقعاً جديداً؟'),
+      text('How do I create a new establishment?', 'كيف أنشئ منشأةً جديداً؟'),
     ],
     quickActions: [
       {
@@ -768,7 +768,7 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
     launcherPrompt: text('Need help exploring Mintcom?', 'هل تحتاج مساعدة في استكشاف مينتكوم؟'),
     welcomeMessage: text(
       "You're on the main site. I can help you understand Mintcom, create an account, and find the right place to start.",
-      'أنت الآن في الموقع الرئيسي. أستطيع مساعدتك في فهم مينتكوم وإنشاء حساب والعثور على أفضل نقطة للبداية.',
+      'أنت الآن في المنشأة الرئيسي. أستطيع مساعدتك في فهم مينتكوم وإنشاء حساب والعثور على أفضل نقطة للبداية.',
     ),
     defaultSuggestions: [
       text('What is Mintcom?', 'ما هو مينتكوم؟'),
@@ -855,8 +855,8 @@ function getSignedInPublicHomeContext(
         'أنت مسجل الدخول بالفعل. أستطيع مساعدتك في العودة إلى لوحة التحكم ومراجعة المنتجات والاطلاع على التقارير ومعرفة الخطوة الإدارية التالية.',
       )
     : text(
-        "You're already signed in. I can help you choose a location, continue setup, review billing, or get support.",
-        'أنت مسجل الدخول بالفعل. أستطيع مساعدتك في اختيار موقع ومتابعة الإعداد ومراجعة الفوترة أو الوصول إلى الدعم.',
+        "You're already signed in. I can help you choose an establishment, continue setup, review billing, or get support.",
+        'أنت مسجل الدخول بالفعل. أستطيع مساعدتك في اختيار منشأة ومتابعة الإعداد ومراجعة الفوترة أو الوصول إلى الدعم.',
       );
   const defaultSuggestions = hasDashboard
     ? [
@@ -865,7 +865,7 @@ function getSignedInPublicHomeContext(
         text('Show me where sales reports are', 'أرني أين توجد تقارير المبيعات'),
       ]
     : [
-        text('How do I choose a location?', 'كيف أختار موقعًا؟'),
+        text('How do I choose an establishment?', 'كيف أختار منشأةًا؟'),
         text('How do I continue setup?', 'كيف أتابع الإعداد؟'),
         text('How does billing work?', 'كيف تعمل الفوترة؟'),
       ];
@@ -911,7 +911,7 @@ function getSignedInPublicHomeContext(
     : [
         {
           id: 'signedin-locations',
-          label: text('Choose location', 'اختيار موقع'),
+          label: text('Choose establishment', 'اختيار منشأة'),
           icon: 'mapPinned',
           type: 'navigate',
           path: '/select-establishment',

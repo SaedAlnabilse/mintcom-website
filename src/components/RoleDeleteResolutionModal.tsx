@@ -103,7 +103,7 @@ export function RoleDeleteResolutionModal({
                     <p className="mt-2 text-xs font-bold text-gray-400 dark:text-gray-500">
                       {t('roles.deleteResolution.summary', {
                         defaultValue:
-                          '{{employeeCount}} employees, {{assignmentCount}} assignments, {{locationCount}} locations affected',
+                          '{{employeeCount}} employees, {{assignmentCount}} assignments, {{locationCount}} establishments affected',
                         employeeCount: employeeCount || 0,
                         assignmentCount: assignmentCount || 0,
                         locationCount: locationCount || 0,

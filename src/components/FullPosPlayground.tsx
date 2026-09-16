@@ -88,6 +88,13 @@ import {
   salesCategoriesFromCatalog,
   salesProductsFromCatalog,
 } from './pos-demo/demoCatalog';
+import {
+  MAX_FIXED_AMOUNT_CENTS,
+  MAX_PERCENT_CENTS,
+  blurAtmAmountEdit,
+  changeAtmAmountEdit,
+  initAtmAmountEdit,
+} from '../utils/atmPercent';
 
 /**
  * Full POS sandbox — styled like real Mintcom POS (mintcom-pos SalesScreen)
@@ -5553,7 +5560,6 @@ function TaxRateModal({
   onClose: () => void;
   onSelect: (rate: number, taxName?: string, taxId?: string) => void;
 }) {
-  const MAX_RATE_CENTS = 10000; // 100.00%
   const QUICK_PERCENTAGES = [0, 5, 10, 16];
 
   const configuredTaxes = useMemo(() => {
@@ -5577,22 +5583,20 @@ function TaxRateModal({
     ];
   }, [taxes, defaultRate]);
 
-  const [taxCents, setTaxCents] = useState(() =>
-    Math.min(Math.round(currentRate * 100), MAX_RATE_CENTS),
-  );
+  const [taxEdit, setTaxEdit] = useState(() => initAtmAmountEdit(currentRate));
   const [selectedTaxId, setSelectedTaxId] = useState<string | null>(null);
   const [selectedTaxName, setSelectedTaxName] = useState<string | null>(null);
 
-  const currentNumericPercent = taxCents / 100;
-  const taxInput = currentNumericPercent.toFixed(2);
-  const isTaxEmpty = taxCents === 0;
+  const currentNumericPercent = taxEdit.cents / 100;
+  const taxInput = taxEdit.text === '' ? '0.00' : taxEdit.text;
+  const isTaxEmpty = taxEdit.cents === 0;
   const isAtDefault = Math.abs(currentNumericPercent - defaultRate) < 0.0001;
 
   useEffect(() => {
     if (open) {
-      const initialCents = Math.min(Math.max(Math.round(currentRate * 100), 0), MAX_RATE_CENTS);
-      setTaxCents(initialCents);
-      const currPct = initialCents / 100;
+      const initial = initAtmAmountEdit(currentRate);
+      setTaxEdit(initial);
+      const currPct = initial.cents / 100;
       const match = configuredTaxes.find((ct) => Math.abs(ct.ratePercent - currPct) < 0.001);
       if (match) {
         setSelectedTaxId(match.id);
@@ -5604,7 +5608,7 @@ function TaxRateModal({
     }
   }, [open, currentRate, configuredTaxes]);
 
-  // Synchronize matching preset selection whenever configured taxes or taxCents change
+  // Synchronize matching preset selection whenever configured taxes or the rate change
   useEffect(() => {
     if (configuredTaxes.length > 0) {
       const match = configuredTaxes.find(
@@ -5623,38 +5627,34 @@ function TaxRateModal({
   if (!open) return null;
 
   const handleSelectPreset = (tax: { id: string; name: string; ratePercent: number }) => {
-    const cents = Math.min(Math.max(Math.round(tax.ratePercent * 100), 0), MAX_RATE_CENTS);
-    setTaxCents(cents);
+    setTaxEdit(initAtmAmountEdit(tax.ratePercent));
     setSelectedTaxId(tax.id);
     setSelectedTaxName(tax.name);
   };
 
   const handleTaxTextChange = (text: string) => {
-    const digitsOnly = text.replace(/\D/g, '');
-    if (digitsOnly === '') {
-      setTaxCents(0);
+    // Hybrid ATM + decimal entry: digits shift right-to-left, a typed dot
+    // enters exact decimals ("0.5" -> 0.50%). A custom entry clears any
+    // preset match (the effect above re-matches when equal).
+    const prevCents = taxEdit.cents;
+    const next = changeAtmAmountEdit(taxEdit, text);
+    setTaxEdit(next);
+    if (next.cents !== prevCents) {
       setSelectedTaxId(null);
       setSelectedTaxName(null);
-      return;
     }
-    const significantDigits = digitsOnly.replace(/^0+(?=\d)/, '');
-    const newCents = parseInt(significantDigits || '0', 10);
-    if (newCents > MAX_RATE_CENTS) return;
-    setTaxCents(newCents);
   };
 
   const handleQuickPercent = (pct: number) => {
-    const cents = Math.min(Math.max(Math.round(pct * 100), 0), MAX_RATE_CENTS);
-    setTaxCents(cents);
+    setTaxEdit(initAtmAmountEdit(pct));
   };
 
   const handleResetToDefault = () => {
-    const cents = Math.min(Math.max(Math.round(defaultRate * 100), 0), MAX_RATE_CENTS);
-    setTaxCents(cents);
+    setTaxEdit(initAtmAmountEdit(defaultRate));
   };
 
   const handleApply = () => {
-    const rate = Number((taxCents / 100).toFixed(2));
+    const rate = Number((taxEdit.cents / 100).toFixed(2));
     onSelect(rate, selectedTaxName || undefined, selectedTaxId || undefined);
     onClose();
   };
@@ -5758,13 +5758,13 @@ function TaxRateModal({
               )}
             </div>
 
-            {/* ATM-style Input */}
+            {/* ATM-style input: digits shift right-to-left, dot for exact decimals */}
             <div className="flex overflow-hidden rounded-xl border border-gray-200 bg-gray-50/80 dark:border-white/10 dark:bg-mintcom-dark">
               <div className="flex items-center justify-center border-e border-gray-200 bg-mintcom-green/15 px-3.5 dark:border-white/10">
                 <span className="text-base font-black text-mintcom-green">%</span>
               </div>
               <input
-                inputMode="numeric"
+                inputMode="decimal"
                 value={taxInput}
                 onChange={(e) => handleTaxTextChange(e.target.value)}
                 className={`w-full bg-transparent px-3 py-3 text-2xl font-black tabular-nums outline-none dark:text-white ${
@@ -5858,17 +5858,24 @@ function ServiceChargeEditModal({
   onCustom: (type: 'PERCENTAGE' | 'FIXED', value: number) => void;
 }) {
   const PERCENTAGE_PRESETS = [0, 5, 10, 12, 15, 20];
+  const maxCentsForType = (type: 'PERCENTAGE' | 'FIXED') =>
+    type === 'PERCENTAGE' ? MAX_PERCENT_CENTS : MAX_FIXED_AMOUNT_CENTS;
   const [cType, setCType] = useState<'PERCENTAGE' | 'FIXED'>(customType);
-  const [cValue, setCValue] = useState(String(customValue));
+  // Hybrid ATM + decimal entry: digits shift right-to-left, a typed dot
+  // enters exact values like 0.5. Display always stays formatted.
+  const [cEdit, setCEdit] = useState(() =>
+    initAtmAmountEdit(customValue, maxCentsForType(customType)),
+  );
+  const cValue = cEdit.text === '' ? '0.00' : cEdit.text;
 
   useEffect(() => {
     if (!open) return;
     if (mode === 'CUSTOM') {
       setCType(customType);
-      setCValue(String(customValue));
+      setCEdit(initAtmAmountEdit(customValue, maxCentsForType(customType)));
     } else {
       setCType(defaultType);
-      setCValue(String(defaultValue));
+      setCEdit(initAtmAmountEdit(defaultValue, maxCentsForType(defaultType)));
     }
   }, [open, mode, customType, customValue, defaultType, defaultValue]);
 
@@ -5879,27 +5886,23 @@ function ServiceChargeEditModal({
 
   const handleTypeChange = (nextType: 'PERCENTAGE' | 'FIXED') => {
     setCType(nextType);
-    const num = parseFloat(cValue) || 0;
+    const num = cEdit.cents / 100;
     const norm = nextType === 'PERCENTAGE' ? Math.min(num, 100) : num;
     onCustom(nextType, norm);
   };
 
   const handleValueChange = (valText: string) => {
-    const sanitized = valText.replace(/[^0-9.]/g, '');
-    const firstDot = sanitized.indexOf('.');
-    const nextValue =
-      firstDot === -1
-        ? sanitized
-        : `${sanitized.slice(0, firstDot + 1)}${sanitized.slice(firstDot + 1).replace(/\./g, '')}`;
-    setCValue(nextValue);
-    const num = parseFloat(nextValue) || 0;
+    const next = changeAtmAmountEdit(cEdit, valText, maxCentsForType(cType));
+    setCEdit(next);
+    const num = next.cents / 100;
     const norm = cType === 'PERCENTAGE' ? Math.min(num, 100) : num;
     onCustom(cType, norm);
   };
 
   const handlePresetSelect = (preset: number) => {
-    setCValue(String(preset));
-    onCustom(cType, preset);
+    const next = initAtmAmountEdit(preset, MAX_PERCENT_CENTS);
+    setCEdit(next);
+    onCustom(cType, next.cents / 100);
   };
 
   return (
@@ -5993,8 +5996,8 @@ function ServiceChargeEditModal({
             <button
               type="button"
               onClick={() => {
-                const num = parseFloat(cValue) || 0;
-                onCustom(cType, num);
+                const num = cEdit.cents / 100;
+                onCustom(cType, cType === 'PERCENTAGE' ? Math.min(num, 100) : num);
               }}
               className={`flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all ${
                 mode === 'CUSTOM'
@@ -6080,7 +6083,8 @@ function ServiceChargeEditModal({
                   inputMode="decimal"
                   value={cValue}
                   onChange={(e) => handleValueChange(e.target.value)}
-                  placeholder="0"
+                  onBlur={() => setCEdit((prev) => blurAtmAmountEdit(prev))}
+                  placeholder="0.00"
                   className="w-full bg-transparent px-3 py-2 text-lg font-bold tabular-nums outline-none dark:text-white"
                 />
                 {cValue.length > 0 && (

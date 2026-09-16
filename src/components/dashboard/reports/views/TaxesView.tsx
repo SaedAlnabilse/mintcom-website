@@ -1,4 +1,4 @@
-import { Scale, Percent, FileEdit, History, Trash2, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { Scale, Percent, FileEdit, History, Trash2, CheckCircle2, AlertCircle, Info, Receipt, Ban } from 'lucide-react';
 import { BiIcon } from '../../../ui/BiIcon';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { SalesSummary } from '../../../../types';
@@ -91,14 +91,29 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
       const isDeleted = Boolean(tax.isDeleted || String(tax.taxType).toLowerCase() === 'deleted');
       const taxType = getTaxType(tax, isChanged, rawRate);
       const baseName = getTaxTypeLabel(taxType);
-      const name = tax.name || tax.taxName || baseName;
-      const description = tax.description || getTaxTypeDescription(taxType);
+      // Service/other-charge tax rides its own bucket (SERVICE_CHARGE) — never
+      // bundled into the item rows, even at the same rate.
+      const isServiceCharge = String(tax.category ?? '').toUpperCase() === 'SERVICE_CHARGE';
+      const isExemptRow = Boolean(tax.isExempt) || (isServiceCharge && rawRate === 0);
+      const scLabel = t('orders.reports.taxes.serviceCharge', { defaultValue: 'Service Charge' });
+      const name = isServiceCharge
+        ? isExemptRow
+          ? `${scLabel} (${t('orders.reports.taxes.exempt', { defaultValue: 'Exempt' })})`
+          : rateLabel ? `${scLabel} ${rateLabel}` : scLabel
+        : tax.name || tax.taxName || baseName;
+      const description = isServiceCharge
+        ? isExemptRow
+          ? t('orders.reports.taxes.serviceChargeExemptDesc', { defaultValue: 'Service/other charges exempt from tax.' })
+          : t('orders.reports.taxes.serviceChargeDesc', { defaultValue: 'Tax on order service/other charges.' })
+        : tax.description || getTaxTypeDescription(taxType);
 
       return {
         ...tax,
         name,
         description,
         taxType,
+        isServiceCharge,
+        isExemptRow,
         isDeleted,
         sortRank: taxTypeSortRank[taxType],
         ratePercent: rawRate,
@@ -115,8 +130,18 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
   const totalTax = toNumber(salesData.taxCollected);
   const taxableFromRows = taxBreakdown.reduce((sum, tax) => sum + tax.taxableAmount, 0);
   const grossSales = toNumber(salesData.totalRevenue);
+  // Items-only taxable base (excl. tax AND service charge), matching the receipt
+  // model. grossSales carries both, so subtract the service charge when the
+  // backend did not supply an explicit base figure.
+  const serviceChargeTotal = toNumber(
+    salesData.netServiceChargeCollected ??
+      (salesData as any).netOtherChargesCollected ??
+      salesData.serviceChargeCollected ??
+      (salesData as any).otherChargesCollected ??
+      0,
+  );
   const taxableSales = Math.max(
-    taxableFromRows || toNumber(salesData.netSalesBeforeTaxAndServiceCharge) || grossSales - totalTax,
+    taxableFromRows || toNumber(salesData.netSalesBeforeTaxAndServiceCharge) || grossSales - totalTax - serviceChargeTotal,
     0,
   );
   const averageTaxRate = taxableSales > 0 ? totalTax / taxableSales : 0;
@@ -236,18 +261,24 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                     const contributionWidth = Math.max(0, Math.min(100, contribution));
                     const markerClass = tax.isDeleted || tax.taxType === 'deleted'
                       ? 'bg-rose-500/10 text-rose-500 dark:bg-rose-500/20 dark:text-rose-400'
-                      : tax.taxType === 'changed'
-                        ? 'bg-indigo-500/10 text-indigo-500 dark:bg-indigo-500/20 dark:text-indigo-400'
-                        : tax.taxType === 'previous'
+                      : tax.isServiceCharge
+                        ? tax.isExemptRow
                           ? 'bg-gray-500/10 text-gray-500 dark:bg-gray-500/20 dark:text-gray-400'
-                          : 'bg-orange-500/10 text-orange-500 dark:bg-orange-500/20 dark:text-orange-400';
+                          : 'bg-teal-500/10 text-teal-600 dark:bg-teal-500/20 dark:text-teal-400'
+                        : tax.taxType === 'changed'
+                          ? 'bg-indigo-500/10 text-indigo-500 dark:bg-indigo-500/20 dark:text-indigo-400'
+                          : tax.taxType === 'previous'
+                            ? 'bg-gray-500/10 text-gray-500 dark:bg-gray-500/20 dark:text-gray-400'
+                            : 'bg-orange-500/10 text-orange-500 dark:bg-orange-500/20 dark:text-orange-400';
                     const markerIcon = tax.isDeleted || tax.taxType === 'deleted'
                       ? <Trash2 size={16} />
-                      : tax.taxType === 'changed'
-                        ? <FileEdit size={16} />
-                        : tax.taxType === 'previous'
-                          ? <History size={16} />
-                          : <Percent size={16} />;
+                      : tax.isServiceCharge
+                        ? tax.isExemptRow ? <Ban size={16} /> : <Receipt size={16} />
+                        : tax.taxType === 'changed'
+                          ? <FileEdit size={16} />
+                          : tax.taxType === 'previous'
+                            ? <History size={16} />
+                            : <Percent size={16} />;
                     return (
                       <motion.tr 
                         key={tax.name || i}

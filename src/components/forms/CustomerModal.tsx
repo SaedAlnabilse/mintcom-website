@@ -33,7 +33,7 @@ export const MAX_POINTS_ADJUSTMENT = 1000000;
 
 export interface Customer {
   id: string;
-  name: string;
+  name?: string | null;
   phone: string;
   email?: string;
   points: number;
@@ -46,15 +46,15 @@ export interface Customer {
 }
 
 export type CustomerFormData = {
-  name: string;
-  phone?: string;
+  name?: string;
+  phone: string;
   email?: string;
 };
 
 const createCustomerSchema = (requiredMessage: string, invalidEmailMessage: string) =>
   z.object({
-    name: z.string().trim().min(1, requiredMessage).max(CUSTOMER_FIELD_LIMITS.name),
-    phone: z.string().max(CUSTOMER_FIELD_LIMITS.phone).optional().or(z.literal('')),
+    name: z.string().trim().max(CUSTOMER_FIELD_LIMITS.name).optional().or(z.literal('')),
+    phone: z.string().trim().min(1, requiredMessage).max(CUSTOMER_FIELD_LIMITS.phone),
     email: z.string().email(invalidEmailMessage).max(CUSTOMER_FIELD_LIMITS.email).optional().or(z.literal('')),
   });
 
@@ -100,7 +100,7 @@ export function CustomerModal({
   const customerSchema = useMemo(
     () =>
       createCustomerSchema(
-        t('customers.errors.nameRequired', { defaultValue: 'Name is required' }),
+        t('customers.errors.phoneRequired', { defaultValue: 'Phone number is required' }),
         t('customers.errors.invalidEmail', { defaultValue: 'Invalid email address' })
       ),
     [t]
@@ -263,12 +263,12 @@ export function CustomerModal({
               </div>
               <div className="min-w-0">
                 <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white truncate leading-tight">
-                  {isEditing ? customer?.name : t('customers.addCustomer')}
+                  {isEditing ? (customer?.name || customer?.phone) : t('customers.addCustomer')}
                 </h2>
                 <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
                   {isEditing
                     ? t('customers.messages.customerProfile', { defaultValue: 'Customer Profile' })
-                    : t('customers.form.namePhoneHelper', { defaultValue: 'Name is required, phone is optional.' })}
+                    : t('customers.form.namePhoneHelper', { defaultValue: 'Phone is required. Name is optional.' })}
                 </p>
               </div>
             </div>
@@ -382,35 +382,11 @@ export function CustomerModal({
             {(!isEditing || activeTab === 'profile') && (
               <form id="customer-profile-form" onSubmit={handleSubmit(onSubmitProfile)} className="space-y-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Name Field */}
-                  <div className="space-y-1">
-                    <label className="flex items-center gap-1 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
-                      <span>{formatInputLabel(t('common.name', { defaultValue: 'Name' }), t('common.locale'))}</span>
-                      <span className="text-mintcom-red">*</span>
-                    </label>
-                    <div className="relative">
-                      <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                      <input
-                        maxLength={CUSTOMER_FIELD_LIMITS.name}
-                        {...register('name')}
-                        placeholder={t('customers.form.namePlaceholder', { defaultValue: 'Full Name' })}
-                        className={`w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-white/5 border ${
-                          errors.name
-                            ? 'border-mintcom-red ring-1 ring-mintcom-red'
-                            : 'border-gray-200 dark:border-white/10 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20'
-                        } rounded-xl text-xs sm:text-sm font-medium outline-none transition-all text-gray-900 dark:text-white`}
-                      />
-                    </div>
-                    {errors.name && <p className="text-[10px] font-bold text-mintcom-red px-1">{errors.name.message}</p>}
-                  </div>
-
                   {/* Phone Field */}
                   <div className="space-y-1">
                     <label className="flex items-center gap-1 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
                       <span>{formatInputLabel(t('customers.form.phone'), t('common.locale'))}</span>
-                      <span className="text-[10px] font-normal text-gray-400 dark:text-gray-500 lowercase">
-                        ({t('common.optional', { defaultValue: 'optional' })})
-                      </span>
+                      <span className="text-mintcom-red">*</span>
                     </label>
                     <div className="relative">
                       <Phone size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -418,10 +394,33 @@ export function CustomerModal({
                         maxLength={CUSTOMER_FIELD_LIMITS.phone}
                         {...register('phone')}
                         placeholder={t('customers.form.phonePlaceholder', { defaultValue: '+1 234 567 8900' })}
-                        className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs sm:text-sm font-medium text-gray-900 dark:text-white focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all"
+                        className={`w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-white/5 border ${
+                          errors.phone
+                            ? 'border-mintcom-red ring-1 ring-mintcom-red'
+                            : 'border-gray-200 dark:border-white/10 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20'
+                        } rounded-xl text-xs sm:text-sm font-medium outline-none transition-all text-gray-900 dark:text-white`}
                       />
                     </div>
                     {errors.phone && <p className="text-[10px] font-bold text-mintcom-red px-1">{errors.phone.message}</p>}
+                  </div>
+
+                  {/* Name Field */}
+                  <div className="space-y-1">
+                    <label className="flex items-center gap-1 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
+                      <span>{formatInputLabel(t('common.name', { defaultValue: 'Name' }), t('common.locale'))}</span>
+                      <span className="text-[10px] font-normal text-gray-400 dark:text-gray-500 lowercase">
+                        ({t('common.optional', { defaultValue: 'optional' })})
+                      </span>
+                    </label>
+                    <div className="relative">
+                      <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <input
+                        maxLength={CUSTOMER_FIELD_LIMITS.name}
+                        {...register('name')}
+                        placeholder={t('customers.form.namePlaceholder', { defaultValue: 'Full Name' })}
+                        className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs sm:text-sm font-medium text-gray-900 dark:text-white focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all"
+                      />
+                    </div>
                   </div>
                 </div>
 

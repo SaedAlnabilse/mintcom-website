@@ -1105,7 +1105,7 @@ export function OwnerEmployeesPage() {
                                 <div className="flex items-center gap-3">
                                     <MapPin size={16} className="text-mintcom-green" />
                                     <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                        {t('owner.staff.accessLocations', 'Accessible Locations')}
+                                        {t('owner.staff.accessLocations', 'Accessible Establishments')}
                                     </span>
                                 </div>
                                 <span className="text-sm font-black text-mintcom-green">

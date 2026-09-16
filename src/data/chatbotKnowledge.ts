@@ -56,7 +56,7 @@ The whole process takes just a few minutes. What would you like help with first?
     answer: `Mintcom is a cloud Point of Sale (POS) and business management platform for restaurants, cafes, and retail businesses.
 
 **Key Features:**
-- Multi-location support from one owner dashboard
+- Multi-establishment support from one owner dashboard
 - Fast sales, receipts, and refund handling
 - Shift tracking with cash reconciliation
 - Recipe operations with low-stock alerts
@@ -69,7 +69,7 @@ It is built to keep daily operations organized and fast.`,
     answerAr: `مينتكوم هو منصة سحابية لنقاط البيع وإدارة الأعمال للمطاعم والمقاهي ومحلات التجزئة.
 
 **الميزات الرئيسية:**
-- دعم مواقع متعددة من لوحة مالك واحدة
+- دعم منشآت متعددة من لوحة مالك واحدة
 - مبيعات سريعة وإيصالات وإدارة الاسترداد
 - تتبع الورديات مع مطابقة النقد
 - المنتجات والتصنيفات والإضافات وعمليات الوصفات
@@ -104,7 +104,7 @@ Once verified, you'll go through our onboarding wizard to set up your first esta
 4. اضغط **"تسجيل"** لإنشاء حسابك
 5. افتح بريدك واضغط على **رابط التأكيد**
 
-بعد التأكيد، ستمر بمعالج الإعداد لتجهيز أول موقع لك. يحصل المستخدمون الجدد على **تجربة مجانية لمدة 14 يوماً** مع وصول كامل إلى كل الميزات.`,
+بعد التأكيد، ستمر بمعالج الإعداد لتجهيز أول منشأة لك. يحصل المستخدمون الجدد على **تجربة مجانية لمدة 14 يوماً** مع وصول كامل إلى كل الميزات.`,
     category: 'getting-started',
     navigationPath: '/signup'
   },
@@ -172,7 +172,7 @@ The reset link expires in **24 hours** for security.`,
     keywords: ['onboarding', 'setup', 'first time', 'first location', 'new establishment', 'create first store', 'initial setup', 'إعداد', 'تهيئة', 'أول مرة', 'أول موقع', 'موقع جديد', 'إنشاء أول متجر'],
     question: 'How does the onboarding process work?',
     questionAr: 'كيف تعمل عملية الإعداد؟',
-    answer: `Our onboarding wizard is used when you are creating a brand-new location and setting up its first POS connection. It's a 4-step process:
+    answer: `Our onboarding wizard is used when you are creating a brand-new establishment and setting up its first POS connection. It's a 4-step process:
 
 **Step 1: Establishment Details**
 - Business name and category (Restaurant, Cafe, Retail)
@@ -190,8 +190,8 @@ The reset link expires in **24 hours** for security.`,
 **Step 4: First Admin Profile**
 - Create the primary administrator account
 
-If you already have a brand and only want to connect an existing location to it, use **Brand > Locations > Add Location** instead of onboarding.`,
-    answerAr: `يُستخدم معالج الإعداد عندما تريد إنشاء موقع جديد بالكامل وتجهيز أول اتصال له مع نظام نقاط البيع. العملية من 4 خطوات:
+If you already have a brand and only want to connect an existing establishment to it, use **Brand > Establishments > Add Establishment** instead of onboarding.`,
+    answerAr: `يُستخدم معالج الإعداد عندما تريد إنشاء منشأة جديدة بالكامل وتجهيز أول اتصال له مع نظام نقاط البيع. العملية من 4 خطوات:
 
 **الخطوة 1: تفاصيل المنشأة**
 - اسم النشاط والفئة (مطعم، كافيه، متجر)
@@ -209,7 +209,7 @@ If you already have a brand and only want to connect an existing location to it,
 **الخطوة 4: ملف المسؤول الأول**
 - إنشاء حساب المسؤول الرئيسي
 
-إذا كانت لديك علامة تجارية موجودة وتريد فقط ربط موقع قائم بها، استخدم **العلامة التجارية > المواقع > إضافة موقع** بدلاً من معالج الإعداد.`,
+إذا كانت لديك علامة تجارية موجودة وتريد فقط ربط منشأة قائمة بها، استخدم **العلامة التجارية > المنشآت > إضافة منشأة** بدلاً من معالج الإعداد.`,
     category: 'getting-started',
     navigationPath: '/onboarding',
     priority: 6
@@ -734,13 +734,13 @@ Go to **Dashboard > Reports** to explore!`,
     questionAr: 'أين أجد الإعدادات؟',
     answer: `Settings are organized in a few places:
 
-**Location Settings:** Business name, logo, receipt, tax, hours, theme, dark mode.
+**Establishment Settings:** Business name, logo, receipt, tax, hours, theme, dark mode.
 **Owner Account:** Profile, password, notifications.
 **Owner Billing:** Subscription, payment method, invoices.
 **POS App:** Printer, language, display.`,
     answerAr: `الإعدادات موجودة في عدة أماكن:
 
-**إعدادات الموقع:** اسم العمل، الشعار، الإيصال، الضريبة، ساعات العمل، السمة، الوضع الداكن.
+**إعدادات المنشأة:** اسم العمل، الشعار، الإيصال، الضريبة، ساعات العمل، السمة، الوضع الداكن.
 **حساب المالك:** الملف الشخصي، كلمة المرور، الإشعارات.
 **فوترة المالك:** الاشتراك، طريقة الدفع، الفواتير.
 **تطبيق نقاط البيع:** الطابعة، اللغة، العرض.`,
@@ -770,24 +770,24 @@ Go to **Dashboard > Reports** to explore!`,
   {
     id: 'establishments',
     keywords: ['establishment', 'location', 'store', 'branch', 'multiple locations', 'manage locations', 'owner locations', 'موقع', 'فرع', 'متجر', 'مواقع متعددة', 'إدارة المواقع', 'مواقع المالك', 'منشأة'],
-    question: 'How do I manage multiple locations?',
-    questionAr: 'كيف أدير مواقع متعددة؟',
-    answer: `Use **Owner > Locations** to manage all locations across your account.
+    question: 'How do I manage multiple establishments?',
+    questionAr: 'كيف أدير منشآت متعددة؟',
+    answer: `Use **Owner > Establishments** to manage all establishments across your account.
 
-- **View all locations:** Open the Locations list in the Owner Portal.
-- **Create a brand-new location:** Click **Add Location**. This takes you to onboarding to create the location.
-- **Add a location to an existing brand:** Open the brand dashboard, go to **Brand > Locations**, then click **Add Location** to link an unlinked location.
+- **View all establishments:** Open the Establishments list in the Owner Portal.
+- **Create a brand-new establishment:** Click **Add Establishment**. This takes you to onboarding to create the establishment.
+- **Add an establishment to an existing brand:** Open the brand dashboard, go to **Brand > Establishments**, then click **Add Establishment** to link an unlinked establishment.
 - **Create a new brand:** Go to **Owner > Brands** and click **Create Brand**.
 
-Important: if a location is already linked to another brand, it will not appear in the brand linking list.`,
-    answerAr: `استخدم **المالك > المواقع** لإدارة جميع المواقع في حسابك.
+Important: if an establishment is already linked to another brand, it will not appear in the brand linking list.`,
+    answerAr: `استخدم **المالك > المنشآت** لإدارة جميع المنشآت في حسابك.
 
-- **عرض كل المواقع:** افتح قائمة المواقع داخل بوابة المالك.
-- **إنشاء موقع جديد بالكامل:** اضغط **إضافة موقع**. سيتم نقلك إلى معالج الإعداد لإنشاء الموقع.
-- **إضافة موقع إلى علامة تجارية موجودة:** افتح لوحة العلامة التجارية ثم اذهب إلى **العلامة التجارية > المواقع** واضغط **إضافة موقع** لربط موقع غير مرتبط.
+- **عرض كل المنشآت:** افتح قائمة المنشآت داخل بوابة المالك.
+- **إنشاء منشأة جديدة بالكامل:** اضغط **إضافة منشأة**. سيتم نقلك إلى معالج الإعداد لإنشاء المنشأة.
+- **إضافة منشأة إلى علامة تجارية موجودة:** افتح لوحة العلامة التجارية ثم اذهب إلى **العلامة التجارية > المنشآت** واضغط **إضافة منشأة** لربط منشأة غير مرتبط.
 - **إنشاء علامة تجارية جديدة:** اذهب إلى **المالك > العلامات التجارية** واضغط **إنشاء علامة تجارية**.
 
-مهم: إذا كان الموقع مرتبطاً مسبقاً بعلامة تجارية أخرى فلن يظهر في قائمة ربط المواقع.`,
+مهم: إذا كانت المنشأة مرتبطة مسبقاً بعلامة تجارية أخرى فلن تظهر في قائمة ربط المنشآت.`,
     category: 'feature',
     navigationPath: '/owner/establishments',
     priority: 14,
@@ -797,24 +797,24 @@ Important: if a location is already linked to another brand, it will not appear 
   {
     id: 'add-owner-location',
     keywords: ['add location', 'create location', 'new location', 'add new location', 'create new location', 'add store', 'create store', 'new branch', 'إضافة موقع', 'إنشاء موقع', 'موقع جديد', 'إضافة فرع', 'إنشاء فرع'],
-    question: 'How do I create a new location?',
-    questionAr: 'كيف أنشئ موقعاً جديداً؟',
-    answer: `If the location does not exist yet, create it first from the owner side:
+    question: 'How do I create a new establishment?',
+    questionAr: 'كيف أنشئ منشأةً جديدةً؟',
+    answer: `If the establishment does not exist yet, create it first from the owner side:
 
-1. Go to **Owner Overview** or **Owner > Locations**.
-2. Click **Add Location**.
-3. Complete the onboarding flow with the new location details.
-4. When the location is created, return to your brand and use **Brand > Locations > Add Location** if you want to link it to a brand.
+1. Go to **Owner Overview** or **Owner > Establishments**.
+2. Click **Add Establishment**.
+3. Complete the onboarding flow with the new establishment details.
+4. When the establishment is created, return to your brand and use **Brand > Establishments > Add Establishment** if you want to link it to a brand.
 
-This flow is for creating a brand-new location. Linking an existing unlinked location to a brand is a separate step.`,
-    answerAr: `إذا كان الموقع غير موجود بعد، أنشئه أولاً من جهة المالك:
+This flow is for creating a brand-new establishment. Linking an existing unlinked establishment to a brand is a separate step.`,
+    answerAr: `إذا كانت المنشأة غير موجودة بعد، أنشئها أولاً من جهة المالك:
 
-1. اذهب إلى **نظرة عامة المالك** أو **المالك > المواقع**.
-2. اضغط **إضافة موقع**.
-3. أكمل معالج الإعداد ببيانات الموقع الجديد.
-4. بعد إنشاء الموقع، ارجع إلى العلامة التجارية واستخدم **العلامة التجارية > المواقع > إضافة موقع** إذا أردت ربطه بعلامة تجارية.
+1. اذهب إلى **نظرة عامة المالك** أو **المالك > المنشآت**.
+2. اضغط **إضافة منشأة**.
+3. أكمل معالج الإعداد ببيانات المنشأة الجديدة.
+4. بعد إنشاء المنشأة، ارجع إلى العلامة التجارية واستخدم **العلامة التجارية > المنشآت > إضافة منشأة** إذا أردت ربطه بعلامة تجارية.
 
-هذا المسار مخصص لإنشاء موقع جديد بالكامل. أما ربط موقع موجود وغير مرتبط بعلامة تجارية فهو خطوة مختلفة.`,
+هذا المسار مخصص لإنشاء منشأة جديدة بالكامل. أما ربط منشأة موجود وغير مرتبط بعلامة تجارية فهو خطوة مختلفة.`,
     category: 'feature',
     navigationPath: '/onboarding',
     navigationFallbackPath: '/owner/establishments',
@@ -832,21 +832,21 @@ This flow is for creating a brand-new location. Linking an existing unlinked loc
 1. Go to **Owner > Brands**.
 2. Click **Create Brand**.
 3. Enter the brand details such as **brand name**, **login ID**, and **admin password**.
-4. In the next step, select the **unlinked locations** you want to include in the new brand.
+4. In the next step, select the **unlinked establishments** you want to include in the new brand.
 5. If prompted, review employee merge options.
 6. Click **Create Brand** to finish.
 
-Later, if you want to add more locations to the same brand, open the brand dashboard and use **Brand > Locations > Add Location**.`,
+Later, if you want to add more establishments to the same brand, open the brand dashboard and use **Brand > Establishments > Add Establishment**.`,
     answerAr: `لإنشاء علامة تجارية جديدة:
 
 1. اذهب إلى **المالك > العلامات التجارية**.
 2. اضغط **إنشاء علامة تجارية**.
 3. أدخل بيانات العلامة مثل **اسم العلامة** و**معرف تسجيل الدخول** و**كلمة مرور المسؤول**.
-4. في الخطوة التالية اختر **المواقع غير المرتبطة** التي تريد إضافتها إلى العلامة الجديدة.
+4. في الخطوة التالية اختر **المنشآت غير المرتبطة** التي تريد إضافتها إلى العلامة الجديدة.
 5. إذا ظهر لك خيار دمج الموظفين فراجع الاختيارات المناسبة.
 6. اضغط **إنشاء علامة تجارية** لإكمال العملية.
 
-لاحقاً، إذا أردت إضافة مواقع أخرى إلى نفس العلامة، افتح لوحة العلامة ثم استخدم **العلامة التجارية > المواقع > إضافة موقع**.`,
+لاحقاً، إذا أردت إضافة منشآت أخرى إلى نفس العلامة، افتح لوحة العلامة ثم استخدم **العلامة التجارية > المنشآت > إضافة منشأة**.`,
     category: 'feature',
     navigationPath: '/owner/brands',
     priority: 18,
@@ -856,36 +856,36 @@ Later, if you want to add more locations to the same brand, open the brand dashb
   {
     id: 'link-location-brand',
     keywords: ['add a location to my brand', 'add location to my brand', 'link location to brand', 'link a location to my brand', 'attach location to brand', 'assign location to brand', 'brand locations', 'إضافة موقع للعلامة التجارية', 'إضافة موقع إلى علامتي التجارية', 'ربط موقع بالعلامة التجارية', 'ربط فرع بالعلامة التجارية', 'مواقع العلامة التجارية'],
-    question: 'How do I add or link a location to my brand?',
-    questionAr: 'كيف أضيف أو أربط موقعاً بعلامتي التجارية؟',
-    answer: `If the brand already exists and you want to connect an existing unlinked location to it:
+    question: 'How do I add or link an establishment to my brand?',
+    questionAr: 'كيف أضيف أو أربط منشأةً بعلامتي التجارية؟',
+    answer: `If the brand already exists and you want to connect an existing unlinked establishment to it:
 
 1. Go to **Owner > Brands**.
 2. Open the brand dashboard.
-3. Go to **Brand > Locations**.
-4. Click **Add Location**.
-5. Select the unlinked locations you want to connect.
+3. Go to **Brand > Establishments**.
+4. Click **Add Establishment**.
+5. Select the unlinked establishments you want to connect.
 6. Click **Continue**.
 7. Review employee merge options if the modal asks you to do that.
 8. Click **Link** to finish.
 
 Important:
-- Only locations that are not linked to any brand appear in this list.
-- If the location does not exist yet, create it first from **Owner Overview > Add Location** or **Owner > Locations > Add Location**, then come back and link it to the brand.`,
-    answerAr: `إذا كانت العلامة التجارية موجودة بالفعل وتريد ربط موقع قائم وغير مرتبط بها:
+- Only establishments that are not linked to any brand appear in this list.
+- If the establishment does not exist yet, create it first from **Owner Overview > Add Establishment** or **Owner > Establishments > Add Establishment**, then come back and link it to the brand.`,
+    answerAr: `إذا كانت العلامة التجارية موجودة بالفعل وتريد ربط منشأة قائمة وغير مرتبط بها:
 
 1. اذهب إلى **المالك > العلامات التجارية**.
 2. افتح لوحة العلامة التجارية.
-3. اذهب إلى **العلامة التجارية > المواقع**.
-4. اضغط **إضافة موقع**.
-5. اختر المواقع غير المرتبطة التي تريد توصيلها.
+3. اذهب إلى **العلامة التجارية > المنشآت**.
+4. اضغط **إضافة منشأة**.
+5. اختر المنشآت غير المرتبطة التي تريد توصيلها.
 6. اضغط **متابعة**.
 7. إذا طلبت النافذة ذلك، راجع خيارات دمج الموظفين.
 8. اضغط **ربط** لإتمام العملية.
 
 مهم:
-- تظهر هنا فقط المواقع التي لا ترتبط بأي علامة تجارية.
-- إذا كان الموقع غير موجود بعد، أنشئه أولاً من **نظرة عامة المالك > إضافة موقع** أو **المالك > المواقع > إضافة موقع** ثم ارجع لربطه بالعلامة التجارية.`,
+- تظهر هنا فقط المنشآت التي لا ترتبط بأي علامة تجارية.
+- إذا كان المنشأة غير موجود بعد، أنشئه أولاً من **نظرة عامة المالك > إضافة منشأة** أو **المالك > المنشآت > إضافة منشأة** ثم ارجع لربطه بالعلامة التجارية.`,
     category: 'feature',
     navigationPath: '/brand/:brand/locations',
     navigationFallbackPath: '/owner/brands',
@@ -978,14 +978,14 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
     questionAr: 'كيف تعمل الفوترة؟',
     answer: `**Trial:** 14-day free trial with full access.
 
-**Monthly Plan:** 20 USD/month per location (or local currency equivalent based on country) with full access to all features.
+**Monthly Plan:** 20 USD/month per establishment (or local currency equivalent based on country) with full access to all features.
 
 **Yearly Plan:** 220 USD/year (or local equivalent — save 20 USD/year)! You can switch between monthly and yearly anytime.
 
 **Manage:** Go to **Owner > Billing** to view plans, switch billing cycles, update payment methods, and download invoices.`,
     answerAr: `**التجربة:** تجربة مجانية لمدة 14 يوماً مع وصول كامل.
 
-**الخطة الشهرية:** 20 دولاراً شهرياً لكل موقع (أو ما يعادلها بالعملة المحلية حسب بلدك) مع وصول كامل إلى جميع الميزات.
+**الخطة الشهرية:** 20 دولاراً شهرياً لكل منشأة (أو ما يعادلها بالعملة المحلية حسب بلدك) مع وصول كامل إلى جميع الميزات.
 
 **الخطة السنوية:** 220 دولاراً سنوياً (أو ما يعادلها محلياً — توفير 20 دولاراً سنوياً). ويمكنك التبديل بين الشهري والسنوي في أي وقت.
 

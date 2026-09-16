@@ -230,7 +230,7 @@ export function ActivityLogsPage() {
     { label: t('activity.resources.attribute', { defaultValue: 'Attributes' }), value: 'attribute' },
     { label: t('activity.resources.role', { defaultValue: 'Roles' }), value: 'role' },
     { label: t('activity.resources.access', { defaultValue: 'Sign-ins' }), value: 'access' },
-    { label: t('activity.resources.location', { defaultValue: 'Locations' }), value: 'location' },
+    { label: t('activity.resources.location', { defaultValue: 'Establishments' }), value: 'location' },
     { label: t('activity.resources.brand', { defaultValue: 'Brands' }), value: 'brand' },
     { label: t('activity.resources.account', { defaultValue: 'Account' }), value: 'account' },
   ], [t]);

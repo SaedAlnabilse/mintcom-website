@@ -19,7 +19,6 @@ export interface ActivityLogEntry {
   action: string;
   description: string;
   metadata?: Record<string, unknown> | null;
-  ipAddress?: string;
   timestamp: string;
 }
 
@@ -45,7 +44,7 @@ export interface MetadataFormatOptions {
 const INLINE_VALUE_LENGTH = 48;
 
 /** Fields the operator never needs inline (opaque cuids, plumbing ids). */
-const IDENTIFIER_KEYS = new Set(['id', 'establishmentid', 'ipaddress', 'module']);
+const IDENTIFIER_KEYS = new Set(['id', 'establishmentid', 'module']);
 
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
 const ENUM_PATTERN = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/;

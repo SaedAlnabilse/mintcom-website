@@ -128,7 +128,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
   const { locationSlug } = useParams();
   const grossSales = salesData.totalRevenue ?? 0;
   const taxCollected = salesData.taxCollected ?? 0;
-  const serviceChargeCollected = salesData.netServiceChargeCollected ?? salesData.serviceChargeCollected ?? 0;
+  const serviceChargeCollected = salesData.netOtherChargesCollected ?? salesData.netServiceChargeCollected ?? salesData.otherChargesCollected ?? salesData.serviceChargeCollected ?? 0;
 
   const getMethodName = (name: any) => {
     if (!name) return '—';
@@ -140,12 +140,15 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
   };
 
   const netSales = Math.max(
-    salesData.netSalesBeforeTaxAndServiceCharge ?? (grossSales - taxCollected - serviceChargeCollected),
+    salesData.netSales ?? (grossSales - taxCollected),
     0,
   );
-  // Gross with tax removed but service charge kept — the figure that matches
-  // the "Total Sales (Excl. Tax)" column in the exports.
-  const salesExclTax = salesData.totalSalesExcludingTax ?? (grossSales - taxCollected);
+  const baseSales = Math.max(
+    salesData.baseSales ?? salesData.netSalesBeforeTaxAndServiceCharge ?? (netSales - serviceChargeCollected),
+    0,
+  );
+  // Net Sales under locked terminology = Total excluding tax.
+  const salesExclTax = salesData.totalSalesExcludingTax ?? salesData.netSales ?? (grossSales - taxCollected);
   const totalOrders = salesData.totalOrders ?? 0;
   const averageOrderValue = salesData.averageOrderValue ?? (totalOrders > 0 ? grossSales / totalOrders : 0);
   const [salesPaymentTab, setSalesPaymentTab] = useState<'all' | 'cards' | 'others'>('all');
@@ -263,16 +266,23 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             sub: t('orders.reports.sales.taxAmount')
           },
           {
-            label: t('orders.reports.sales.serviceCharge', { defaultValue: 'Service Charge' }),
+            label: t('dashboard.stats.baseSales', { defaultValue: 'Base Sales' }),
+            amount: baseSales,
+            isCurrency: true,
+            icon: biIcon('bi-basket'),
+            color: 'text-mintcom-green',
+            bg: 'bg-mintcom-green/10',
+            sub: t('dashboard.stats.excludingTaxServiceCharge', { defaultValue: 'Total Sales excluding tax + other charges' })
+          },
+          {
+            label: t('dashboard.stats.otherCharges', { defaultValue: 'Other Charges' }),
             amount: serviceChargeCollected,
             isCurrency: true,
             icon: biIcon('bi-credit-card'),
             color: 'text-mintcom-green',
             bg: 'bg-mintcom-green/10',
-            sub: t('orders.reports.sales.serviceChargeSub', {
-              defaultValue: '{{count}} orders | avg {{avg}}',
-              count: salesData.serviceChargeOrderCount ?? 0,
-              avg: `${Number(salesData.averageServiceChargePerOrder ?? 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencySymbol}`,
+            sub: t('dashboard.stats.partOfTotalSales', {
+              defaultValue: 'Extra fees added to orders',
             })
           },
           {

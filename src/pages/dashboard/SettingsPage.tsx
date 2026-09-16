@@ -48,8 +48,6 @@ import {
   MAX_SERVICE_CHARGE_NAME_LENGTH,
   MAX_SERVICE_CHARGE_VALUE,
   MAX_SERVICE_CHARGE_PERCENT,
-  formatServiceChargePercentATM,
-  formatServiceChargeFixedATM,
   normalizeServiceChargeValue,
   buildAppSettingsUpdatePayload,
   clampTaxRatePercent,
@@ -59,6 +57,14 @@ import {
   sanitizeTaxId,
   sanitizeLimitedText,
 } from '../../utils/settingsPayload';
+import {
+  MAX_FIXED_AMOUNT_CENTS,
+  MAX_PERCENT_CENTS,
+  blurAtmAmountEdit,
+  changeAtmAmountEdit,
+  formatAtmCents,
+  initAtmAmountEdit,
+} from '../../utils/atmPercent';
 
 interface ApiError {
   response?: {
@@ -307,6 +313,26 @@ export function SettingsPage() {
   const serviceChargeEnabled = !!watch('serviceChargeEnabled');
   const serviceChargeType = (watch('serviceChargeType') || 'PERCENTAGE') as 'PERCENTAGE' | 'FIXED';
   const serviceChargeValue = Number(watch('serviceChargeValue') || 0);
+  // Hybrid ATM + decimal entry: digits shift right-to-left ("50" -> 0.50),
+  // a typed dot enters exact values like 0.5. Display always stays formatted
+  // (ATM look) except the untouched empty state; while focused the raw edit
+  // text is shown so intermediate states (e.g. "0.") type naturally.
+  const [chargeEdit, setChargeEdit] = useState(() => initAtmAmountEdit(0));
+  const [chargeFocused, setChargeFocused] = useState(false);
+  const [chargeDirty, setChargeDirty] = useState(false);
+  const chargeMaxCents =
+    serviceChargeType === 'PERCENTAGE' ? MAX_PERCENT_CENTS : MAX_FIXED_AMOUNT_CENTS;
+  useEffect(() => {
+    setChargeEdit(initAtmAmountEdit(normalizeServiceChargeValue(serviceChargeValue, serviceChargeType), chargeMaxCents));
+    setChargeDirty(false);
+    // Intentionally only on type flip: re-initialising on every value change
+    // would snap the display mid-typing and kill decimal entry.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serviceChargeType]);
+  const chargeDisplay =
+    chargeFocused || chargeDirty
+      ? chargeEdit.text
+      : formatAtmCents(Math.round(serviceChargeValue * 100));
 
   const restaurantNameField = register('restaurantName', {
     maxLength: { value: MAX_ESTABLISHMENT_NAME_LENGTH, message: t('common.maxLength', { count: MAX_ESTABLISHMENT_NAME_LENGTH }) },
@@ -494,6 +520,8 @@ export function SettingsPage() {
       // Populate form with fetched data
       reset(formData);
       setInitialSettings(formData);
+      setChargeDirty(false);
+      setChargeFocused(false);
       setSettings(data);
     } catch (err) {
       toast.error((err as ApiError).response?.data?.message || t('settings.messages.loadFailed'));
@@ -922,13 +950,13 @@ export function SettingsPage() {
                     )}
                   </div>
                   <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    {activeTab === 'profile' && t('settings.profile.detailsDesc', 'Manage your location identity')}
+                    {activeTab === 'profile' && t('settings.profile.detailsDesc', 'Manage your establishment identity')}
                     {activeTab === 'sales' && t('settings.sales.subtitle', 'Configure Taxes, Currency, and Table Structure')}
                     {activeTab === 'pos' && t('settings.tabs.pos', 'POS Terminal & Shift Operations')}
                     {activeTab === 'receipt' && t('settings.receipts.subtitle', 'Edit Receipt Look & Customer Notes')}
                     {activeTab === 'einvoicing' && t('settings.fiscal.subtitle', 'Universal electronic invoicing & tax compliance')}
                     {activeTab === 'accounting' && t('settings.accounting.subtitle', 'Z-Report sync with Xero and QuickBooks')}
-                    {activeTab === 'danger' && t('settings.danger.subtitle', 'Permanent Location Deletion')}
+                    {activeTab === 'danger' && t('settings.danger.subtitle', 'Permanent Establishment Deletion')}
                   </p>
                 </div>
               </div>
@@ -984,18 +1012,18 @@ export function SettingsPage() {
                 <div className="flex items-center gap-2">
                   <label className="text-xs font-bold text-blue-700 dark:text-blue-300 tracking-wide flex items-center gap-1.5">
                     <Key size={13} className="text-blue-600 dark:text-blue-400" />
-                    {t('settings.profile.locationLoginId', 'Location Login ID')}
+                    {t('settings.profile.locationLoginId', 'Establishment Login ID')}
                   </label>
                   <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 dark:bg-blue-500/20 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:text-blue-300">
                     <Shield size={10} />
-                    {t('owner.account.locationLoginBadge', 'Location')}
+                    {t('owner.account.locationLoginBadge', 'Establishment')}
                   </span>
                 </div>
                 <code className="block text-sm sm:text-base font-mono font-bold text-gray-900 dark:text-white truncate select-all">
                   {estLoginId}
                 </code>
                 <p className="text-xs text-blue-700/80 dark:text-blue-200/80 font-medium leading-relaxed">
-                  {t('settings.profile.locationLoginHint', 'Use this ID to sign in to this location dashboard.')} •{' '}
+                  {t('settings.profile.locationLoginHint', 'Use this ID to sign in to this establishment dashboard.')} •{' '}
                   <span className="text-gray-500 dark:text-gray-400">
                     {t('settings.profile.passwordResetNote', 'Password reset can only be done from the owner portal')}
                   </span>
@@ -1230,24 +1258,49 @@ export function SettingsPage() {
                           type="text"
                           inputMode="decimal"
                           disabled={!serviceChargeEnabled}
-                          value={
-                            !serviceChargeValue
-                              ? ''
-                              : serviceChargeValue.toFixed(2)
-                          }
+                          value={chargeDisplay}
+                          onFocus={() => {
+                            if (!serviceChargeEnabled) return;
+                            setChargeFocused(true);
+                            setChargeEdit(
+                              initAtmAmountEdit(
+                                normalizeServiceChargeValue(serviceChargeValue, serviceChargeType),
+                                chargeMaxCents,
+                              ),
+                            );
+                          }}
                           onChange={(e) => {
                             if (!serviceChargeEnabled) return;
-                            const next =
-                              serviceChargeType === 'PERCENTAGE'
-                                ? formatServiceChargePercentATM(e.target.value)
-                                : formatServiceChargeFixedATM(e.target.value);
-                            if (next === null) return;
+                            const base =
+                              chargeFocused || chargeDirty
+                                ? chargeEdit
+                                : initAtmAmountEdit(
+                                    normalizeServiceChargeValue(serviceChargeValue, serviceChargeType),
+                                    chargeMaxCents,
+                                  );
+                            const next = changeAtmAmountEdit(base, e.target.value, chargeMaxCents);
+                            setChargeEdit(next);
+                            setChargeDirty(true);
                             setValue(
                               'serviceChargeValue',
-                              normalizeServiceChargeValue(next, serviceChargeType),
+                              normalizeServiceChargeValue(
+                                next.cents / 100,
+                                serviceChargeType,
+                              ),
                               { shouldDirty: true, shouldValidate: true },
                             );
                             if (errors.serviceChargeValue) clearErrors('serviceChargeValue');
+                          }}
+                          onBlur={() => {
+                            const next = blurAtmAmountEdit(chargeEdit);
+                            setChargeEdit(next.text === '' ? initAtmAmountEdit(0, chargeMaxCents) : next);
+                            setChargeFocused(false);
+                            setChargeDirty(false);
+                            setValue(
+                              'serviceChargeValue',
+                              normalizeServiceChargeValue(next.cents / 100, serviceChargeType),
+                              { shouldDirty: true, shouldValidate: true },
+                            );
                           }}
                           placeholder={formatInputPlaceholder(
                             serviceChargeType === 'PERCENTAGE'
@@ -1284,7 +1337,7 @@ export function SettingsPage() {
                         <p className="text-[10px] font-bold text-mintcom-green tracking-widest">
                           {serviceChargeType === 'PERCENTAGE'
                             ? t('settings.sales.serviceChargePercentHint', {
-                                defaultValue: `Max ${MAX_SERVICE_CHARGE_PERCENT}% · ATM style entry`,
+                                defaultValue: `Max ${MAX_SERVICE_CHARGE_PERCENT}% · ATM style (type 50 for 0.50%, or 0.5 directly)`,
                                 max: MAX_SERVICE_CHARGE_PERCENT,
                               })
                             : t('attributes.form.atmStyle', {

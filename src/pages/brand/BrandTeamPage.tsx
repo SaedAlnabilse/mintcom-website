@@ -857,7 +857,7 @@ export default function BrandTeamPage() {
                                 </span>.
                                 <br /><br />
                                 <span className="text-xs opacity-70 font-medium italic">
-                                    {t('brand.team.removeAccessWarning', 'This only removes shared brand access. Direct location assignments stay active.')}
+                                    {t('brand.team.removeAccessWarning', 'This only removes shared brand access. Direct establishment assignments stay active.')}
                                 </span>
                             </p>
                          </div>

@@ -124,8 +124,14 @@ export interface SalesSummary {
   serviceChargeCollected?: number;
   serviceChargeRefunded?: number;
   netServiceChargeCollected?: number;
+  otherChargesCollected?: number;
+  netOtherChargesCollected?: number;
   serviceChargeOrderCount?: number;
   averageServiceChargePerOrder?: number;
+  /** Net Sales = Total Sales excluding tax (includes other charges). */
+  netSales?: number;
+  /** Base Sales = Total Sales excluding tax + other charges (items only). */
+  baseSales?: number;
   netSalesBeforeTaxAndServiceCharge?: number;
   grossSalesIncludingTaxAndCharges?: number;
   grossProfit: number;
@@ -312,8 +318,14 @@ export interface DashboardStats {
   serviceChargeCollected?: number;
   serviceChargeRefunded?: number;
   netServiceChargeCollected?: number;
+  otherChargesCollected?: number;
+  netOtherChargesCollected?: number;
   serviceChargeOrderCount?: number;
   averageServiceChargePerOrder?: number;
+  /** Net Sales = Total Sales excluding tax (includes other charges). */
+  netSales?: number;
+  /** Base Sales = Total Sales excluding tax + other charges (items only). */
+  baseSales?: number;
   netSalesBeforeTaxAndServiceCharge?: number;
   grossSalesIncludingTaxAndCharges?: number;
   totalRefunds: number;

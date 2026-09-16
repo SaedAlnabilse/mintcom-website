@@ -821,7 +821,7 @@ export function OwnerAccountManagementPage() {
                                             </h2>
                                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                                                 {t('owner.account.accessCredentialsSubtitle', {
-                                                    defaultValue: 'Login IDs for location and brand dashboards. Search, copy, open, or reset.',
+                                                    defaultValue: 'Login IDs for establishment and brand dashboards. Search, copy, open, or reset.',
                                                 })}
                                             </p>
                                         </div>
@@ -863,7 +863,7 @@ export function OwnerAccountManagementPage() {
                                                 show: locationLoginEstablishments.length > 0,
                                                 count: locationLoginEstablishments.length,
                                                 icon: Store,
-                                                label: t('owner.account.locations', { defaultValue: 'Locations' }),
+                                                label: t('owner.account.locations', { defaultValue: 'Establishments' }),
                                             },
                                             {
                                                 id: 'brands' as const,
@@ -921,7 +921,7 @@ export function OwnerAccountManagementPage() {
                                             )}
                                             <span>
                                                 {locationLoginEstablishments.length > 0
-                                                    ? t('owner.account.locations', { defaultValue: 'Locations' })
+                                                    ? t('owner.account.locations', { defaultValue: 'Establishments' })
                                                     : t('owner.account.brands', { defaultValue: 'Brands' })}
                                             </span>
                                             <span
@@ -958,7 +958,7 @@ export function OwnerAccountManagementPage() {
                             <div className="shrink-0 hidden sm:grid grid-cols-[minmax(0,1fr)_13.5rem_5.25rem] gap-0 table-header-row bg-gray-50 dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/10">
                                 <div className={`${isRtl ? 'text-right' : 'text-left'} font-semibold px-5 lg:px-6 py-3.5`}>
                                     {credTab === 'locations'
-                                        ? t('owner.account.locations', { defaultValue: 'Locations' })
+                                        ? t('owner.account.locations', { defaultValue: 'Establishments' })
                                         : t('owner.account.brands', { defaultValue: 'Brands' })}
                                 </div>
                                 <div className="text-center font-semibold px-2 py-3.5">
@@ -1206,7 +1206,7 @@ export function OwnerAccountManagementPage() {
                                     <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
                                         {credTab === 'locations'
                                             ? t('owner.account.locationLoginHint', {
-                                                defaultValue: 'Use this ID to sign in to this location dashboard.',
+                                                defaultValue: 'Use this ID to sign in to this establishment dashboard.',
                                             })
                                             : t('owner.account.brandLoginHint', {
                                                 defaultValue: 'Use this ID to sign in to the brand dashboard.',
@@ -1523,7 +1523,7 @@ export function OwnerAccountManagementPage() {
                                     <ul className="mb-4 space-y-2 text-xs font-medium text-gray-600 dark:text-gray-300 ps-[3.25rem]">
                                         {[
                                             t('owner.account.dangerZoneBullet1', {
-                                                defaultValue: 'All locations and brands will be scheduled for removal',
+                                                defaultValue: 'All establishments and brands will be scheduled for removal',
                                             }),
                                             t('owner.account.dangerZoneBullet2', {
                                                 defaultValue: 'Staff access and Login IDs stop working',

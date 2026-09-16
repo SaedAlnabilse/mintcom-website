@@ -234,7 +234,7 @@ export function SettingsOverviewHub({
       {
         id: 'danger',
         categoryId: 'danger',
-        title: t('settings.overview.cards.danger.title', 'Delete Location'),
+        title: t('settings.overview.cards.danger.title', 'Delete Establishment'),
         description: t(
           'settings.overview.cards.danger.description',
           'Initiate permanent decommissioning and deletion of this store location.',

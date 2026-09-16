@@ -961,7 +961,9 @@
       "last_7_days": "过去 7 天",
       "last_90_days": "过去 90 天",
       "last_calendar_year": "上一自然年",
+      "last_month": "上个月",
       "last_week": "上周",
+      "this_month": "本月",
       "this_week": "本周",
       "this_year": "本年至今",
       "today": "今天",
@@ -1701,7 +1703,8 @@
     "errors": {
       "invalidEmail": "邮箱地址无效",
       "nameOrPhoneRequired": "请至少输入姓名或电话号码",
-      "nameRequired": "请填写姓名"
+      "nameRequired": "请填写姓名",
+      "phoneRequired": "请填写电话号码"
     },
     "exportComplete": "导出完成",
     "exportFailed": "导出失败",
@@ -1712,13 +1715,13 @@
       "emailHelper": "用于发送电子收据和会员卡。",
       "emailPlaceholder": "client@example.com",
       "name": "姓名",
-      "namePhoneHelper": "顾客姓名为必填项。电话为选填。",
+      "namePhoneHelper": "电话号码为必填。姓名为选填。",
       "namePlaceholder": "例如：王小明",
       "oneOfTwoRequired": "两项中至少填写一项",
       "optional": "可选",
       "phone": "电话号码",
       "phonePlaceholder": "+000 000 000",
-      "requirementsHint": "Mintcom API 要求至少提供一个顾客标识。姓名和电话是必备的标识字段，邮箱和地址为选填。",
+      "requirementsHint": "电话号码是顾客的必填标识。姓名、邮箱和地址为选填。",
       "requirementsTitle": "必填与选填字段",
       "saveCustomer": "保存顾客",
       "updateCustomer": "更新顾客"
@@ -1817,7 +1820,6 @@
       "paymentMethods": "支付方式",
       "paymentsReports": "支付报表",
       "products": "商品",
-      "qrMenu": "扫码点餐与桌台",
       "recipes": "配方",
       "roles": "角色",
       "salesAndReporting": "销售与报表",
@@ -1932,8 +1934,8 @@
       "bestSellers": "您的畅销商品",
       "completedOrders": "已完成订单",
       "discounts": "折扣",
-      "excludingTax": "不含税",
-      "excludingTaxServiceCharge": "不含税费及其他费用",
+      "excludingTax": "总销售额不含税",
+      "excludingTaxServiceCharge": "总销售额不含税费及其他费用",
       "expected": "预期",
       "grossSales": "销售总额",
       "includingTax": "含税",
@@ -1941,7 +1943,7 @@
       "last24h": "近 24 小时",
       "live": "实时",
       "netSales": "净销售额",
-      "netSalesCosts": "净销售额 - 成本",
+      "netSalesCosts": "净销售额不含商品成本",
       "noCategories": "暂无分类数据",
       "nonSales": "非销售",
       "noProducts": "暂无商品数据",
@@ -1971,7 +1973,10 @@
       "totalOrders": "总订单数",
       "totalSales": "总销售额",
       "totalTax": "总税费",
-      "variance": "差额"
+      "variance": "差额",
+      "baseSales": "基础销售额",
+      "otherCharges": "其他费用",
+      "partOfTotalSales": "订单附加费用"
     },
     "setupGuide": {
       "help": "帮助",
@@ -4328,7 +4333,11 @@
         "txns": "笔数",
         "type": "类型",
         "deletedTaxRate": "Deleted tax rate",
-        "deletedTaxDescription": "This tax rate was deleted but historical records are preserved"
+        "deletedTaxDescription": "This tax rate was deleted but historical records are preserved",
+        "serviceCharge": "服务费",
+        "serviceChargeDesc": "订单服务费/其他费用的税费。",
+        "serviceChargeExemptDesc": "免税的服务费/其他费用。",
+        "exempt": "免税"
       },
       "export": {
         "metric": "指标",
@@ -4896,8 +4905,8 @@
       "totalSales": "总销售额",
       "totalStaff": "员工总数",
       "netSales": "净销售额",
-      "netSalesInfo": "不含税费及其他服务费的销售额。",
-      "netSalesSub": "不含税费及其他费用",
+      "netSalesInfo": "总销售额不含税。含其他费用。",
+      "netSalesSub": "总销售额不含税",
       "netSalesTrend": "净销售额趋势",
       "totalSalesInfo": "含税费及其他服务费的总销售额。",
       "totalSalesSub": "含税费及其他费用"

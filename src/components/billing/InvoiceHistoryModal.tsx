@@ -88,7 +88,7 @@ const buildHistoryHtml = (
       <table>
         <thead>
           <tr>
-            <th>Invoice</th><th>Date</th><th>Location</th>
+            <th>Invoice</th><th>Date</th><th>Establishment</th>
             <th>Period</th><th>Status</th><th class="right">Amount</th>
           </tr>
         </thead>
@@ -121,7 +121,7 @@ const buildHistoryHtml = (
 
 const buildHistoryCsv = (invoices: SubscriptionInvoiceData[]) => {
   const header = [
-    'Invoice number', 'Issue date', 'Location', 'Period start', 'Period end',
+    'Invoice number', 'Issue date', 'Establishment', 'Period start', 'Period end',
     'Status', 'Currency', 'Subtotal', 'Discount', 'Tax', 'Total', 'Payment reference',
   ];
   const rows = invoices.map((invoice) => [

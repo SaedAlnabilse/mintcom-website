@@ -70,18 +70,20 @@ export const emptySalesSummary = (): SalesSummary => ({
 export const normalizeSalesSummary = (payload: any): SalesSummary => {
   const base = emptySalesSummary();
   const source = payload && typeof payload === 'object' ? payload : {};
+  const totalRevenue = toNumber(firstPresent(source.totalRevenue, source.totalNetSales, source.totalSales, source.grossSales));
+  const taxCollected = toNumber(firstPresent(source.taxCollected, source.totalTaxCollected, source.totalTax));
 
   return {
     ...base,
     ...source,
-    totalRevenue: toNumber(firstPresent(source.totalRevenue, source.totalNetSales, source.netSales, source.totalSales, source.grossSales)),
-    taxCollected: toNumber(firstPresent(source.taxCollected, source.totalTaxCollected, source.totalTax)),
+    totalRevenue,
+    taxCollected,
     serviceChargeCollected: toNumber(source.serviceChargeCollected),
     serviceChargeRefunded: toNumber(source.serviceChargeRefunded),
-    netServiceChargeCollected: toNumber(firstPresent(source.netServiceChargeCollected, source.serviceChargeCollected)),
+    netServiceChargeCollected: toNumber(firstPresent(source.netServiceChargeCollected, source.netOtherChargesCollected, source.serviceChargeCollected)),
     serviceChargeOrderCount: toNumber(source.serviceChargeOrderCount),
     averageServiceChargePerOrder: toNumber(source.averageServiceChargePerOrder),
-    netSalesBeforeTaxAndServiceCharge: toNumber(source.netSalesBeforeTaxAndServiceCharge),
+    netSalesBeforeTaxAndServiceCharge: toNumber(firstPresent(source.baseSales, source.netSalesBeforeTaxAndServiceCharge)),
     grossSalesIncludingTaxAndCharges: toNumber(firstPresent(source.grossSalesIncludingTaxAndCharges, source.totalRevenue)),
     grossProfit: toNumber(source.grossProfit),
     totalOrders: toNumber(source.totalOrders),
@@ -154,11 +156,12 @@ export const emptyDashboardStats = (): DashboardStats => ({
 
 export const normalizeDashboardStats = (payload: any, overrides: Partial<DashboardStats> = {}): DashboardStats => {
   const source = payload && typeof payload === 'object' ? payload : {};
-  const netSalesBeforeTaxAndServiceCharge = firstPresent(source.netSalesBeforeTaxAndServiceCharge);
+  const baseSalesValue = firstPresent((source as any).baseSales, source.netSalesBeforeTaxAndServiceCharge);
+  const netSalesValue = firstPresent((source as any).netSales);
 
   return {
     ...emptyDashboardStats(),
-    totalRevenue: toNumber(firstPresent(source.totalRevenue, source.totalNetSales, source.netSales, source.totalSales, source.grossSales)),
+    totalRevenue: toNumber(firstPresent(source.totalRevenue, source.totalNetSales, source.totalSales, source.grossSales)),
     totalOrders: toNumber(source.totalOrders),
     averageOrderValue: toNumber(source.averageOrderValue),
     pendingOrders: toNumber(source.pendingOrders),
@@ -171,7 +174,11 @@ export const normalizeDashboardStats = (payload: any, overrides: Partial<Dashboa
     serviceChargeOrderCount: toNumber(source.serviceChargeOrderCount),
     averageServiceChargePerOrder: toNumber(source.averageServiceChargePerOrder),
     netSalesBeforeTaxAndServiceCharge:
-      netSalesBeforeTaxAndServiceCharge === undefined ? undefined : toNumber(netSalesBeforeTaxAndServiceCharge),
+      baseSalesValue === undefined ? undefined : toNumber(baseSalesValue),
+    ...( {
+      netSales: netSalesValue === undefined ? undefined : toNumber(netSalesValue),
+      baseSales: baseSalesValue === undefined ? undefined : toNumber(baseSalesValue),
+    } as Partial<DashboardStats>),
     grossSalesIncludingTaxAndCharges: toNumber(firstPresent(source.grossSalesIncludingTaxAndCharges, source.totalRevenue)),
     totalRefunds: toNumber(source.totalRefunds),
     grossProfit: toNumber(source.grossProfit),

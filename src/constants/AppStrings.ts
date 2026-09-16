@@ -83,7 +83,7 @@ export const AppStrings = {
     DISCOUNTS: "Discounts",
     LOYALTY: "Loyalty",
     GIFT_CARDS: "Gift Cards",
-    LOCATIONS: "Locations",
+    LOCATIONS: "Establishments",
     ROLES: "Roles & Permissions",
   },
   DASHBOARD: {

@@ -54,7 +54,7 @@ export function AuthShowcasePanel({ className = '' }: AuthShowcasePanelProps) {
             {t('auth.signup.showcaseTitle', 'Simple Is Superior')}
           </h2>
           <p className="mt-1.5 text-xs sm:text-sm 2xl:text-base font-medium leading-relaxed text-gray-600 dark:text-gray-300">
-            {t('auth.signup.showcaseSubtitle', 'Offline-first terminal, kitchen display, multi-location control, and live sync.')}
+            {t('auth.signup.showcaseSubtitle', 'Offline-first terminal, kitchen display, multi-establishment control, and live sync.')}
           </p>
         </div>
 

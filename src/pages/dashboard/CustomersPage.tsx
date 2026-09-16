@@ -228,9 +228,10 @@ export function CustomersPage() {
 
   const handleSaveCustomer = async (data: CustomerFormData, customerId?: string) => {
     try {
+      const phone = data.phone?.trim() || '';
       const payload = {
-        name: data.name?.trim(),
-        phone: data.phone?.trim() || undefined,
+        name: data.name?.trim() || undefined,
+        phone,
         email: data.email?.trim() || undefined,
       };
 
@@ -322,7 +323,9 @@ export function CustomersPage() {
     setConfirmConfig({
       isOpen: true,
       title: t('customers.messages.anonymizeCustomer'),
-      message: t('customers.messages.anonymizeConfirm', { name: target?.name || '' }),
+      message: t('customers.messages.anonymizeConfirm', {
+        name: target?.name || target?.phone || '',
+      }),
       type: 'warning',
       confirmText: t('common.anonymize'),
       onConfirm: handleAnonymizeCustomer,
@@ -346,7 +349,7 @@ export function CustomersPage() {
       }
 
       const exportData = allCustomers.map((c: Customer) => ({
-        name: c.name,
+        name: c.name || '',
         phone: c.phone,
         email: c.email || 'N/a',
         points: c.points,
@@ -503,10 +506,10 @@ export function CustomersPage() {
                           aria-label={t('customers.messages.viewProfile')}
                         >
                           <div className="w-10 h-10 rounded-full bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-bold text-sm shrink-0">
-                            {customer.name.charAt(0).toUpperCase()}
+                            {(customer.name || customer.phone || '#').charAt(0).toUpperCase()}
                           </div>
                           <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors underline-offset-2 group-hover:underline decoration-mintcom-green/40">
-                            {customer.name}
+                            {customer.name || customer.phone}
                           </span>
                         </button>
                       </td>
@@ -593,7 +596,7 @@ export function CustomersPage() {
         onError={handleSecurityError}
         mode="delete-customer"
         targetId={selectedCustomer?.id || ''}
-        targetName={selectedCustomer?.name || ''}
+        targetName={selectedCustomer?.name || selectedCustomer?.phone || ''}
       />
     </div>
   );

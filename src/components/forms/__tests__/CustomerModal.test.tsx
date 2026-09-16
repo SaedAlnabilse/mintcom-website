@@ -198,6 +198,37 @@ describe('CustomerModal', () => {
     });
   });
 
+  it('calls onSaveCustomer when only phone is submitted (name is optional and left empty)', async () => {
+    const mockSave = vi.fn().mockResolvedValue(true);
+
+    render(
+      <CustomerModal
+        isOpen={true}
+        onClose={vi.fn()}
+        customer={null}
+        onSaveCustomer={mockSave}
+      />
+    );
+
+    const phoneInput = screen.getByPlaceholderText(/\+000 000 000|\+1 234 567 8900/i);
+    fireEvent.change(phoneInput, {
+      target: { value: '555-9876' },
+    });
+
+    const submitBtn = screen.getByRole('button', { name: /Save Customer/i });
+    fireEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(mockSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: '',
+          phone: '555-9876',
+        }),
+        undefined
+      );
+    });
+  });
+
   it('renders remove customer buttons in both header and footer and triggers onDeleteCustomer', () => {
     const mockDelete = vi.fn();
 

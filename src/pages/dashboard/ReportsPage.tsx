@@ -614,9 +614,10 @@ export function ReportsPage() {
   const salesSummaryRows = (): SummaryRow[] => {
     const gross = salesData.totalRevenue ?? 0;
     const tax = salesData.taxCollected ?? 0;
-    const serviceCharge = salesData.netServiceChargeCollected ?? salesData.serviceChargeCollected ?? 0;
-    const exclTax = salesData.totalSalesExcludingTax ?? (gross - tax);
-    const net = salesData.netSalesBeforeTaxAndServiceCharge ?? (gross - tax - serviceCharge);
+    const serviceCharge = salesData.netServiceChargeCollected ?? salesData.netOtherChargesCollected ?? salesData.serviceChargeCollected ?? salesData.otherChargesCollected ?? 0;
+    const net = salesData.netSales ?? (gross - tax);
+    const exclTax = salesData.totalSalesExcludingTax ?? net;
+    const base = salesData.baseSales ?? salesData.netSalesBeforeTaxAndServiceCharge ?? (net - serviceCharge);
     const orders = salesData.totalOrders ?? 0;
     const profit = salesData.grossProfit ?? 0;
     const avgOrder = salesData.averageOrderValue ?? (orders > 0 ? gross / orders : 0);
@@ -625,8 +626,9 @@ export function ReportsPage() {
       moneyMetric(t('orders.reports.export.salesInclTax'), gross),
       moneyMetric(t('orders.reports.export.salesExclTax'), exclTax),
       moneyMetric(t('orders.reports.sales.totalTax'), tax),
-      moneyMetric(t('orders.reports.sales.serviceCharge', { defaultValue: 'Service Charge' }), serviceCharge),
+      moneyMetric(t('dashboard.stats.otherCharges', { defaultValue: 'Other Charges' }), serviceCharge),
       moneyMetric(t('orders.reports.sales.netSales'), net),
+      moneyMetric(t('dashboard.stats.baseSales', { defaultValue: 'Base Sales' }), base),
       moneyMetric(t('orders.reports.sales.profit'), profit),
       metric(ordersLabel, num(orders)),
       moneyMetric(t('orders.reports.export.averageOrderValue'), avgOrder),

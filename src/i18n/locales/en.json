@@ -5,7 +5,7 @@
       "p1": "Mintcom is a technology company specializing in Point of Sale (POS) systems and digital business management platforms. Our products are designed to simplify daily operations, from fast, reliable sales processing on digital devices to automated management tools that give businesses full operational visibility. Operated by Mintcom Ltd, a company registered in England and Wales (Company No. [CRN]) with registered office at [Office Address].",
       "p2": "At the core of Mintcom is one clear goal: to give business owners accurate, real-time access to their data while enabling faster, smoother checkout experiences for their customers.",
       "p3": "The Mintcom app is available on both iOS and Android and can be downloaded for free. Businesses can create a Mintcom account and complete setup directly through the POS app or via the online management dashboard.",
-      "p4": "Mintcom also supports multi-branch operations. Owners and account managers can add, merge, or separate locations as needed, all from a single universal dashboard. This allows centralized control over sales, staff, products, and performance across multiple locations, with transparent pricing for additional branches."
+      "p4": "Mintcom also supports multi-branch operations. Owners and account managers can add, merge, or separate establishments as needed, all from a single universal dashboard. This allows centralized control over sales, staff, products, and performance across multiple establishments, with transparent pricing for additional branches."
     },
     "story": {
       "description": "Mintcom was founded with a mission to simplify business operations for merchants everywhere.",
@@ -38,7 +38,7 @@
     "deletionScheduled": "Your account is scheduled for deletion in {{count}} days.",
     "recovery": {
       "deadline": "Permanent deletion is scheduled for {{date}}.",
-      "explanation": "Verify your identity to cancel deletion. Your account and the locations locked by this account deletion will be restored.",
+      "explanation": "Verify your identity to cancel deletion. Your account and the establishments locked by this account deletion will be restored.",
       "locked": "Your account is locked while permanent deletion is pending.",
       "noCookieOnly": "For your security, being signed in is not enough. Identity verification is required.",
       "refreshFailed": "Your account was restored, but some account data could not be refreshed. It will reload on the next page.",
@@ -60,7 +60,7 @@
       "added_discount": "Discount: add",
       "added_payment_method": "Payment: add",
       "addEmployee": "Staff: add",
-      "addLocation": "Location: add",
+      "addLocation": "Establishment: add",
       "addPayment": "Payment: add",
       "addProduct": "Product: add",
       "addRole": "Role: add",
@@ -70,7 +70,7 @@
       "archiveCategory": "Category: archive",
       "archiveProduct": "Product: archive",
       "archiveSubAttribute": "Add-on option: archive",
-      "assignEmployee": "Staff: assign to location",
+      "assignEmployee": "Staff: assign to establishment",
       "autoClosedShifts": "Shifts: auto-close",
       "changeAccountPassword": "Account: password changed",
       "deactivateCardType": "Card type: deactivate",
@@ -87,7 +87,7 @@
       "deleted_payment_method": "Payment: deactivate",
       "deleteDiscount": "Discount: delete",
       "deleteEmployee": "Staff: delete",
-      "deleteLocation": "Location: delete",
+      "deleteLocation": "Establishment: delete",
       "deletePayment": "Payment: delete",
       "deleteProduct": "Product: delete",
       "deleteRole": "Role: delete",
@@ -98,7 +98,7 @@
       "reactivateAttributeGroup": "Add-on group: restore",
       "reactivateProduct": "Product: restore",
       "reactivateSubAttribute": "Add-on option: restore",
-      "removeEmployeeFromLocation": "Staff: remove from location",
+      "removeEmployeeFromLocation": "Staff: remove from establishment",
       "removeProductImage": "Product: remove image",
       "requestEmailChange": "Account: email change requested",
       "setupGuideCompleted": "Setup guide: completed",
@@ -122,7 +122,7 @@
       "updateDiscount": "Discount: update",
       "updateEmployee": "Staff: update",
       "updateHours": "Update: hours",
-      "updateLocation": "Location: update",
+      "updateLocation": "Establishment: update",
       "updateLogo": "Update: logo",
       "updateLoyalty": "Update: loyalty",
       "updateMessage": "Update: message",
@@ -149,7 +149,7 @@
     "loading": "Loading logs...",
     "logDetails": "Log Details",
     "meOnly": "Me only",
-    "meOnlyUnavailable": "Your login is not linked to a staff profile at this location.",
+    "meOnlyUnavailable": "Your login is not linked to a staff profile at this establishment.",
     "moreFields": "+{{count}} more",
     "noData": "No extra data was recorded for this action.",
     "noLogs": "No logs found.",
@@ -176,7 +176,7 @@
       "attribute": "Attributes",
       "role": "Roles",
       "access": "Sign-ins",
-      "location": "Locations",
+      "location": "Establishments",
       "brand": "Brands",
       "account": "Account"
     }
@@ -184,7 +184,7 @@
   "adminUsers": {
     "aboutDesc": "Admins have full access to the dashboard and app.",
     "aboutTitle": "About Admins",
-    "accessLocations": "Access locations",
+    "accessLocations": "Access establishments",
     "addAdmin": "Add Admin",
     "confirm": {
       "removeMessage": "Are you sure you want to remove {{name}}? They will lose all access.",
@@ -196,7 +196,7 @@
       "emailPlaceholder": "email@enterprise.com",
       "firstName": "First name",
       "lastName": "Last name",
-      "locationAccess": "Location access",
+      "locationAccess": "Establishment access",
       "password": "Password",
       "passwordHint": "Min 8 chars"
     },
@@ -212,18 +212,18 @@
     "newAdmin": "New Admin",
     "noAdmins": "No Admins",
     "noAdminsDesc": "Add an admin to help manage your business.",
-    "noLocations": "No locations assigned",
+    "noLocations": "No establishments assigned",
     "searchPlaceholder": "Search admins...",
     "subtitle": "Manage Admin Access",
     "title": "Admins"
   },
   "attributes": {
     "confirm": {
-      "deleteGroupMessage": "Are you sure you want to archive add-on group \"{{name}}\"? This will archive its options as well, remove it from POS add-on selection, and it can only be reactivated from Location Portal website (back-office).",
+      "deleteGroupMessage": "Are you sure you want to archive add-on group \"{{name}}\"? This will archive its options as well, remove it from POS add-on selection, and it can only be reactivated from Establishment Portal website (back-office).",
       "deleteGroupMessageHard": "Delete add-on group \"{{name}}\"? It hasn't been used in any sales, so it and its options will be permanently removed.",
       "deleteGroupTitle": "Archive Add-On Group",
       "deleteGroupTitleHard": "Delete Add-On Group",
-      "deleteOptionMessage": "Are you sure you want to archive add-on option \"{{name}}\"? It will be removed from POS add-on selection and can only be reactivated from Location Portal website (back-office).",
+      "deleteOptionMessage": "Are you sure you want to archive add-on option \"{{name}}\"? It will be removed from POS add-on selection and can only be reactivated from Establishment Portal website (back-office).",
       "deleteOptionMessageHard": "Delete add-on option \"{{name}}\"? It hasn't been used in any sales, so it will be permanently removed.",
       "deleteOptionTitle": "Archive Option",
       "deleteOptionTitleHard": "Delete Option",
@@ -485,7 +485,7 @@
       "emailLabel": "Email Address",
       "emailPlaceholder": "john@example.com",
       "failed": "Registration failed. Please try again.",
-      "feature1Desc": "Manage all your locations and brands from a single interface.",
+      "feature1Desc": "Manage all your establishments and brands from a single interface.",
       "feature1Title": "Unified Dashboard",
       "feature2Desc": "Monitor sales, inventory, and staff performance as it happens.",
       "feature2Title": "Real-Time Analytics",
@@ -523,7 +523,7 @@
       "showcaseStatAvgTicket": "Avg Ticket",
       "showcaseStatNetSales": "Net Sales",
       "showcaseStatOrders": "Orders",
-      "showcaseSubtitle": "Offline-first terminal, kitchen display, multi-location control, and live sync.",
+      "showcaseSubtitle": "Offline-first terminal, kitchen display, multi-establishment control, and live sync.",
       "showcaseSyncBadge": "Instant Cloud Sync & Auto-Backup",
       "showcaseTitle": "Simple Is Superior",
       "signUpButton": "Sign Up",
@@ -573,27 +573,27 @@
   "brand": {
     "copyright": "Copyright 2026 Mintcom Ltd. All rights reserved.",
     "dashboard": {
-      "addLocationsDesc": "Start by adding your first location to see performance data.",
+      "addLocationsDesc": "Start by adding your first establishment to see performance data.",
       "adjustFilters": "Change Filter",
       "avgOrderValue": "Avg. Order Value",
       "consolidatedPerformance": "Consolidated Performance",
       "convertedNote": "Converted from multiple currencies",
-      "dissolveLocation": "Dissolve location from brand",
+      "dissolveLocation": "Dissolve establishment from brand",
       "failedToLoad": "Failed to load dashboard data",
       "goTo": "Go to {{name}}",
       "links": {
         "manageStaff": "Manage staff",
-        "viewAllLocations": "View all locations"
+        "viewAllLocations": "View all establishments"
       },
       "liveData": "Live Data",
       "loading": "Loading dashboard...",
       "localRevenue": "Local",
-      "locationPerformance": "Location Performance",
-      "locations": "Locations",
-      "manageLocationsDesc": "Manage your store locations and their settings",
+      "locationPerformance": "Establishment Performance",
+      "locations": "Establishments",
+      "manageLocationsDesc": "Manage your establishments and their settings",
       "manageTeam": "Manage Team",
       "manageTeamDesc": "View and manage your brand-level team members.",
-      "noLocations": "No Locations Found",
+      "noLocations": "No Establishments Found",
       "noRevenueData": "No Revenue Data Available for this Period",
       "ofTotal": "of total",
       "openDashboard": "Open Dashboard",
@@ -612,23 +612,23 @@
       "totalRevenue": "Total Revenue",
       "updatedNow": "Updated just now",
       "viewAll": "View All",
-      "viewAllLocations": "View All Locations",
+      "viewAllLocations": "View All Establishments",
       "viewDashboard": "View Dashboard",
       "noCategoryData": "No category sales yet"
     },
     "description": "The ultimate 360° point-of-sale solution designed for modern growing businesses.",
     "locations": {
-      "no_brand_selected_message": "Choose a brand to review and manage its linked locations.",
+      "no_brand_selected_message": "Choose a brand to review and manage its linked establishments.",
       "no_brand_selected_title": "No Brand Selected",
-      "no_locations_message": "Assign locations to this brand to see them here.",
-      "no_locations_title": "No Locations"
+      "no_locations_message": "Assign establishments to this brand to see them here.",
+      "no_locations_title": "No Establishments"
     },
     "menu": {
       "activeBrand": "Active Brand",
       "backToBrands": "Back to Brands",
       "brandAdmin": "Brand Administrator",
-      "locations": "Locations",
-      "locationsDesc": "Manage Locations",
+      "locations": "Establishments",
+      "locationsDesc": "Manage Establishments",
       "mainMenu": "Main Menu (Brand Dashboard)",
       "overview": "Overview",
       "overviewDesc": "Dashboard & Analytics",
@@ -649,7 +649,7 @@
       "removeAccessPrefix": "Remove brand-wide access for",
       "removeAccessSuccess": "Brand access removed",
       "removeAccessTitle": "Remove Brand Access",
-      "removeAccessWarning": "This only removes shared brand access. Direct location assignments stay active."
+      "removeAccessWarning": "This only removes shared brand access. Direct establishment assignments stay active."
     },
     "version": "v2.0"
   },
@@ -680,7 +680,7 @@
       "deleteBlocked": "This category cannot be archived because it contains active products. Move or archive those products first.",
       "deleted": "Category archived",
       "deleteFailed": "Failed to archive category",
-      "exists": "A category with this name already exists in this location.",
+      "exists": "A category with this name already exists in this establishment.",
       "exportDownloaded": "Categories export downloaded",
       "loadFailed": "Failed to load data",
       "loading": "Loading data...",
@@ -790,7 +790,7 @@
         "description": "Set up the sizes, toppings, and extras cashiers attach to an item at checkout. Keeping them separate from products means one product covers every variation instead of a dozen near duplicates.",
         "title": "Add Modifiers & Extras"
       },
-      "allDoneSubtitle": "Your Location Is Fully Set Up and Ready to Go",
+      "allDoneSubtitle": "Your Establishment Is Fully Set Up and Ready to Go",
       "allDoneTitle": "All Done!",
       "categories": {
         "action": "New Category",
@@ -800,7 +800,7 @@
       "completed": "Completed",
       "congratsContinue": "Continue to Dashboard",
       "congratsGetApp": "Install POS App",
-      "congratsMessage": "Every setup step is done and your location is ready for real sales. Install the POS app on your devices to start ringing up orders, and reopen this guide any time from the Tasks button.",
+      "congratsMessage": "Every setup step is done and your establishment is ready for real sales. Install the POS app on your devices to start ringing up orders, and reopen this guide any time from the Tasks button.",
       "congratsProgress": "All {{total}} setup steps completed",
       "congratsTitle": "Congratulations! 🎉",
       "discounts": {
@@ -832,7 +832,7 @@
       "profile": {
         "action": "Open Profile",
         "description": "Add your store name, address, and contact details. They appear on receipts, on reports, and anywhere customers see your business, so it is worth getting them right before your first sale.",
-        "title": "Complete Location Profile"
+        "title": "Complete Establishment Profile"
       },
       "progressText": "{{done}} of {{total}} completed",
       "receipt": {
@@ -862,7 +862,7 @@
     }
   },
   "common": {
-    "unnamedLocation": "Location",
+    "unnamedLocation": "Establishment",
     "unnamedBrand": "Brand",
     "export": "Export",
     "exportTo": {
@@ -1015,8 +1015,8 @@
     "loading": "Loading...",
     "loadingVideo": "Loading video...",
     "locale": "en",
-    "location": "Location",
-    "locations": "Locations",
+    "location": "Establishment",
+    "locations": "Establishments",
     "logout": "Sign out",
     "ready": "ready",
     "recipes": "recipes",
@@ -1097,7 +1097,7 @@
     "sort_directory": "Sort Directory",
     "sort_za": "Z-A",
     "sortByDate": "Sort by Date",
-    "sortByLocations": "Sort by Locations",
+    "sortByLocations": "Sort by Establishments",
     "sortByName": "Sort by Name",
     "sortByOrders": "Sort by Orders",
     "sortByRevenue": "Sort by Revenue",
@@ -1196,7 +1196,7 @@
     },
     "cta": {
       "joinHero": "Join This Conversation",
-      "joinHeroDesc": "Share your thoughts and help build a better multi-location business.",
+      "joinHeroDesc": "Share your thoughts and help build a better multi-establishment business.",
       "subtitle": "Help others, earn badges, and get early access to new features. Join the Mintcom community today!",
       "title": "Become a Community Champion"
     },
@@ -1219,7 +1219,7 @@
         "title": "Title Is Required"
       },
       "featured_1": {
-        "title": "Best Practices for Managing Multiple Locations"
+        "title": "Best Practices for Managing Multiple Establishments"
       },
       "featured_2": {
         "title": "How We Reduced Checkout Time by 40%"
@@ -1228,8 +1228,8 @@
         "title": "Integrating Mintcom with Our Recipe Operations System"
       },
       "item_1": {
-        "excerpt": "I recently expanded to 3 locations and looking for tips on how to manage inventory and staff across all of them efficiently...",
-        "title": "Best Practices for Managing Multiple Locations"
+        "excerpt": "I recently expanded to 3 establishments and looking for tips on how to manage inventory and staff across all of them efficiently...",
+        "title": "Best Practices for Managing Multiple Establishments"
       },
       "item_2": {
         "excerpt": "After optimizing our menu layout and training staff on quick keys, we managed to significantly speed up our service...",
@@ -1786,12 +1786,12 @@
       "kickAndEnter": "Kick out and enter",
       "ownerConflictTitle": "Someone is inside",
       "ownerDeviceConflictTitle": "Another device is inside",
-      "securingMessage": "Checking this location before opening it.",
+      "securingMessage": "Checking this establishment before opening it.",
       "securingTitle": "Securing Dashboard",
-      "controlGranted": "You now have control of this location dashboard."
+      "controlGranted": "You now have control of this establishment dashboard."
     },
     "menu": {
-      "activeLocation": "Active Location",
+      "activeLocation": "Active Establishment",
       "activityLog": "Activity Log",
       "addons": "Add-ons",
       "backToOwnerPortal": "Back to Owner Portal",
@@ -1804,7 +1804,7 @@
       "discounts": "Discounts",
       "discountsAndLoyalty": "Discounts and Loyalty",
       "downloadAdminPortal": "Download Mintcom Admin Portal",
-      "establishmentSettings": "Location Settings",
+      "establishmentSettings": "Establishment Settings",
       "getMobileApp": "Get Mobile App",
       "ingredients": "Ingredients",
       "inventory": "Recipe Operations",
@@ -1812,7 +1812,7 @@
       "itemsMenu": "Item's Menu (Inventory)",
       "logout": "Sign Out",
       "loyalty": "Loyalty",
-      "mainMenu": "Main Menu (Location Dashboard)",
+      "mainMenu": "Main Menu (Establishment Dashboard)",
       "migration": "Switch from POS",
       "openSidebar": "Open Sidebar",
       "orders": "Orders",
@@ -1820,7 +1820,6 @@
       "paymentMethods": "Payment Methods",
       "paymentsReports": "Payments Reports",
       "products": "Products",
-      "qrMenu": "QR Menu & Tables",
       "recipes": "Recipes",
       "roles": "Roles",
       "salesAndReporting": "Sales and Reporting",
@@ -1832,7 +1831,7 @@
       "settings": "Settings",
       "shiftsReports": "Shifts Reports",
       "stockManagement": "Stock & Availability",
-      "switchLocation": "Switch Location",
+      "switchLocation": "Switch Establishment",
       "system": "Settings",
       "team": "Team",
       "teamManagement": "Team Management",
@@ -1890,7 +1889,7 @@
       "deleteMessage": "Are you sure you want to delete this role? This action cannot be undone.",
       "deleteRole": "Delete Role",
       "deleteTitle": "Delete Role",
-      "duplicateToBranch": "Duplicate to this location",
+      "duplicateToBranch": "Duplicate to this establishment",
       "editRole": "Edit Role",
       "globalBadge": "Global",
       "gridView": "Grid View",
@@ -1901,9 +1900,9 @@
         "deleteFailed": "Failed To Delete Role",
         "deleted": "Role Deleted Successfully",
         "duplicateFailed": "Failed To Copy Role",
-        "duplicated": "Role Copied To This Location",
+        "duplicated": "Role Copied To This Establishment",
         "loadFailed": "Failed To Load Roles",
-        "noLocation": "No Location Selected",
+        "noLocation": "No Establishment Selected",
         "saveFailed": "Failed To Save Role",
         "updated": "Role Updated Successfully"
       },
@@ -1986,7 +1985,7 @@
       "menuItem": "Setup guide",
       "message": "Your dashboard for {{location}} is live. The setup guide walks you through 12 short steps, from your store details to your first test sale, and takes about 20 minutes in total. You can stop and come back any time.",
       "start": "Start setup",
-      "thisLocation": "this location",
+      "thisLocation": "this establishment",
       "title": "Congratulations"
     },
     "title": "Dashboard",
@@ -1996,7 +1995,7 @@
         "title": "Start Here"
       },
       "tasks": {
-        "desc": "Every step your location needs before its first real sale lives here, in the order we recommend doing them. The counter shows what is left, and you can reopen this list any time from the Tasks button.",
+        "desc": "Every step your establishment needs before its first real sale lives here, in the order we recommend doing them. The counter shows what is left, and you can reopen this list any time from the Tasks button.",
         "title": "Your Setup Guide"
       }
     },
@@ -2085,23 +2084,23 @@
   },
   "establishments": {
     "activeToast": "Active: {{name}}",
-    "addLocation": "Add Location",
-    "chooseLocationWorkflow": "Choose a location to continue your workflow",
-    "currentLocation": "Current Location",
+    "addLocation": "Add Establishment",
+    "chooseLocationWorkflow": "Choose an establishment to continue your workflow",
+    "currentLocation": "Current Establishment",
     "details": {
-      "create": "Create a new location",
+      "create": "Create a new establishment",
       "currency": "Currency",
       "type": "Type"
     },
-    "loading": "Loading Locations...",
+    "loading": "Loading Establishments...",
     "network": "Network",
-    "noLocations": "No Locations Found",
-    "noLocationsDesc": "Start by adding your first business location.",
+    "noLocations": "No Establishments Found",
+    "noLocationsDesc": "Start by adding your first business establishment.",
     "opening": "Opening...",
-    "searchPlaceholder": "Search locations...",
-    "subtitle": "Manage Your Store Locations",
+    "searchPlaceholder": "Search establishments...",
+    "subtitle": "Manage Your Store Establishments",
     "switch": "Switch",
-    "title": "Locations",
+    "title": "Establishments",
     "types": {
       "cafe": "Cafe",
       "other": "Other",
@@ -2167,7 +2166,7 @@
     "howItWorks": "How it works",
     "loyalty": "Loyalty",
     "whyMintcom": "Why Mintcom",
-    "multiLocation": "Multi-location",
+    "multiLocation": "Multi-establishment",
     "pricingPage": "Pricing",
     "legal": "Legal"
   },
@@ -2280,7 +2279,7 @@
         "adminDashboard": "Admin Dashboard",
         "ahmadClockedIn": "Ahmad clocked in",
         "alertsLabel": "alerts",
-        "allLocations": "All Locations",
+        "allLocations": "All Establishments",
         "businessOwner": "Business Owner",
         "cashierSara": "Cashier Sara",
         "clockedOut": "clocked out 4:00 PM",
@@ -2291,7 +2290,7 @@
         "downtownCafe": "Downtown Café",
         "espressoBeans": "Espresso Beans",
         "espressoRemaining": "-3 kg remaining",
-        "filterByLocation": "Filter by location",
+        "filterByLocation": "Filter by establishment",
         "goodMorning": "Good morning,",
         "jod2450": "JOD 2,450",
         "lowStock": "Low stock",
@@ -2303,7 +2302,7 @@
         "navAccount": "Account",
         "navBrands": "Brands",
         "navHome": "Home",
-        "navLocations": "Locations",
+        "navLocations": "Establishments",
         "nineAM": "9:00 AM",
         "notificationsTitle": "Notifications",
         "orderAmt": "JOD 24.00",
@@ -2359,15 +2358,15 @@
         "typeRestaurant": "Restaurant",
         "statusActive": "Active",
         "statusTrial": "Trial",
-        "searchLocations": "Search locations",
+        "searchLocations": "Search establishments",
         "searchBrands": "Search brands",
         "brandMintCafe": "Mint Café Group",
         "brandAirportEats": "Airport Eats",
         "brandPortfolio": "Brand portfolio",
-        "acrossLocations": "Across 3 locations",
+        "acrossLocations": "Across 3 establishments",
         "brandTeam": "Brand team",
         "screenOverview": "Overview",
-        "screenLocations": "Locations",
+        "screenLocations": "Establishments",
         "screenBrands": "Brands",
         "screenAlerts": "Alerts",
         "totalProfit": "Total Profit",
@@ -2384,13 +2383,13 @@
         "totalSales": "Total Sales",
         "includesTax": "Includes tax and other charges",
         "staffManagement": "Staff Management",
-        "searchLocationsCount": "Search 3 locations...",
+        "searchLocationsCount": "Search 3 establishments...",
         "filterStatus": "Status",
         "filterType": "Type",
         "sortBy": "Sort",
-        "locationsCount": "{{count}} locations"
+        "locationsCount": "{{count}} establishments"
       },
-      "multiLocationManagement": "Multi-Location Management",
+      "multiLocationManagement": "Multi-Establishment Management",
       "realTime": "Real-time Sync",
       "shiftAlerts": "Shift Alerts",
       "stockAlerts": "Stock Alerts",
@@ -2404,24 +2403,24 @@
     "cloudControl": {
       "badge": "MINTCOM DASHBOARDS",
       "brand": {
-        "description": "Designed for businesses operating multiple connected locations under one brand. Manage brand-level settings, organize staff roles across locations, and access consolidated reporting and performance insights across the brand.",
+        "description": "Designed for businesses operating multiple connected establishments under one brand. Manage brand-level settings, organize staff roles across establishments, and access consolidated reporting and performance insights across the brand.",
         "title": "Brand Dashboard"
       },
       "cta": "Download The App",
       "ctaSubtitle": "Available on iOS and Android.",
       "imageAlt": "Mintcom dashboards on laptop and tablet",
       "location": {
-        "description": "A complete operational dashboard for each individual location. Manage daily activities including staff, products, payment methods, customers, discounts, and more, all from one streamlined interface.",
-        "title": "Location Dashboard"
+        "description": "A complete operational dashboard for each individual establishment. Manage daily activities including staff, products, payment methods, customers, discounts, and more, all from one streamlined interface.",
+        "title": "Establishment Dashboard"
       },
       "owner": {
-        "description": "Your central control hub for the entire business. From here, you can manage all accounts, locations, and brands, oversee billing activity, and access complete performance reports that give you a full overview of your operations.",
+        "description": "Your central control hub for the entire business. From here, you can manage all accounts, establishments, and brands, oversee billing activity, and access complete performance reports that give you a full overview of your operations.",
         "title": "Owner Dashboard"
       },
       "scope": {
         "brand": "Brand scope",
         "global": "Global scope",
-        "location": "Location scope",
+        "location": "Establishment scope",
         "preview": {
           "aov": "AOV",
           "billingActive": "Billing · Active",
@@ -2435,7 +2434,7 @@
           "live": "Live",
           "liveOrders": "Live orders",
           "locAirport": "Airport",
-          "location": "Location",
+          "location": "Establishment",
           "locationsAmount": "6",
           "locDowntown": "Downtown",
           "locMall": "Mall",
@@ -2457,7 +2456,7 @@
           "roleBarista": "Barista",
           "roleCashier": "Cashier",
           "roleManager": "Manager",
-          "rolesAcrossLocations": "Roles across locations",
+          "rolesAcrossLocations": "Roles across establishments",
           "roleStaff": "Staff",
           "salesTrend": "Sales Trend",
           "settings": "Settings",
@@ -2466,7 +2465,7 @@
           "totalRevenue": "Total revenue",
           "acrossPortfolio": "Across portfolio",
           "activeBrands": "Active brands",
-          "allLocations": "All locations",
+          "allLocations": "All establishments",
           "portfolio": "Portfolio performance",
           "thisWeek": "This week"
         }
@@ -2549,7 +2548,7 @@
           "title": "A Complete Solution with No Hidden Costs"
         },
         "multiBranch": {
-          "description": "Run one or multiple stores and POS points effortlessly through our centralized brand management service. Connect all your locations and POS points within a single portal, giving you complete visibility and control. As your business grows, easily add new locations or POS points and benefit from special discounts on additional connections.",
+          "description": "Run one or multiple stores and POS points effortlessly through our centralized brand management service. Connect all your establishments and POS points within a single portal, giving you complete visibility and control. As your business grows, easily add new establishments or POS points and benefit from special discounts on additional connections.",
           "title": "Multi-Branch Management"
         },
         "realUsers": {
@@ -2714,19 +2713,19 @@
       "tryDesktop": "Try on Desktop Now!"
     },
     "pricing": {
-      "additionalDiscount": "Additional locations receive a <1>DISCOUNT</1> for ",
+      "additionalDiscount": "Additional establishments receive a <1>DISCOUNT</1> for ",
       "additionalFeatures": {
         "centralized": "Centralized management from a single dashboard",
         "combinedReports": "Combined or filtered reports by branch",
         "fullAccess": "Same full access level as your primary site",
         "separate": "Separate staff and inventory for each branch"
       },
-      "additionalLocations": "Additional Locations",
-      "additionalLocationsDesc": "Each additional location after your first",
-      "addLocation": "Add Location",
+      "additionalLocations": "Additional Establishments",
+      "additionalLocationsDesc": "Each additional establishment after your first",
+      "addLocation": "Add Establishment",
       "alreadySignedIn": "You Are Already Signed In",
       "alreadySignedInDesc": "You can continue to your Dashboard to manage your business.",
-      "alreadySignedInOnboardingDesc": "Finish setting up your first location, then your dashboard will be ready.",
+      "alreadySignedInOnboardingDesc": "Finish setting up your first establishment, then your dashboard will be ready.",
       "billedAnnually": "Billed annually.",
       "features": {
         "adminApp": "Access to the Admin Mobile App",
@@ -2760,7 +2759,7 @@
         "enterprise": {
           "description": "Tailored solutions for large-scale operations.",
           "features": [
-            "Unlimited Locations",
+            "Unlimited Establishments",
             "Dedicated Account Manager",
             "Custom Integrations",
             "24/7 Priority Support"
@@ -2769,9 +2768,9 @@
           "price": "Custom"
         },
         "pro": {
-          "description": "Designed for growing locations.",
+          "description": "Designed for growing establishments.",
           "features": [
-            "Up to 3 Locations",
+            "Up to 3 Establishments",
             "Advanced Reporting",
             "Recipe Operations",
             "Priority Support"
@@ -2780,9 +2779,9 @@
           "price": "45"
         },
         "starter": {
-          "description": "Perfect for single location businesses.",
+          "description": "Perfect for single establishment businesses.",
           "features": [
-            "1 Location",
+            "1 Establishment",
             "Basic Analytics",
             "Unlimited Products",
             "Email Support"
@@ -2842,12 +2841,12 @@
         "title": "Mobile App & Real-Time Notifications"
       },
       "multiBranch": {
-        "description": "Manage multiple branches from one centralized dashboard with unified reporting, and operational control across all locations.",
+        "description": "Manage multiple branches from one centralized dashboard with unified reporting, and operational control across all establishments.",
         "title": "Multi-Branch Management"
       },
       "multiLocation": {
         "description": "Manage all your branches from a single unified dashboard.",
-        "title": "Multi-Location"
+        "title": "Multi-Establishment"
       },
       "pointOfSale": {
         "description": "Create products and categories, process sales quickly, and manage transactions with a fast and reliable checkout experience designed for busy businesses.",
@@ -2874,7 +2873,7 @@
           "branch": {
             "airport": "Airport",
             "downtown": "Downtown",
-            "hint": "Switch brand, link locations, and brand totals update live",
+            "hint": "Switch brand, link establishments, and brand totals update live",
             "link": "Link",
             "linkAll": "Link all",
             "linked": "Linked",
@@ -2882,7 +2881,7 @@
             "mall": "Mall",
             "staff": "Staff",
             "today": "Today",
-            "underBrand": "Locations under brand",
+            "underBrand": "Establishments under brand",
             "unified": "Unified brand total"
           },
           "loyalty": {
@@ -2932,7 +2931,7 @@
             "criticalDesc2": "Croissant dough has 0 units remaining",
             "criticalStock": "Critical stock",
             "empty": "No Alerts in This Tab",
-            "eyebrow": "All locations",
+            "eyebrow": "All establishments",
             "hint": "Filter tabs · tap to mark read · push live alerts",
             "justNow": "Just now",
             "lowStock": "Low stock",
@@ -3088,7 +3087,7 @@
           "from": "From",
           "gate": "Gate",
           "issued": "Issued by Mintcom HR",
-          "locations": "live locations",
+          "locations": "live establishments",
           "loyalty": "Member since 2024",
           "map": "Branch atlas",
           "online": "Online",
@@ -3286,9 +3285,9 @@
     "privacy": {
       "agreement": "By using Mintcom, you agree to the collection and use of information in accordance with this Privacy Policy.",
       "branch": {
-        "b1": "Owner and brand portals can manage multiple business locations from one account",
-        "b2": "Location dashboards use the selected location to isolate sales, staff, product, customer, and reporting data",
-        "b3": "Admins and employees receive role-based permissions for the locations they are allowed to access"
+        "b1": "Owner and brand portals can manage multiple business establishments from one account",
+        "b2": "Establishment dashboards use the selected establishment to isolate sales, staff, product, customer, and reporting data",
+        "b3": "Admins and employees receive role-based permissions for the establishments they are allowed to access"
       },
       "changes": {
         "desc": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date."
@@ -3310,7 +3309,7 @@
         "emailLabel": "Send Deletion Requests To:",
         "retention": "We will delete or anonymize eligible personal data after verifying the request. Some records may be retained where required for billing, tax, fraud prevention, dispute resolution, security, or legal compliance.",
         "step1": "Email support@mintcompos.com from the email address connected to your Mintcom account, or include enough information for us to verify account ownership.",
-        "step2": "Use the subject line \"Account and data deletion request\" and include the business, brand, or location name connected to the account.",
+        "step2": "Use the subject line \"Account and data deletion request\" and include the business, brand, or establishment name connected to the account.",
         "step3": "We will review the request, confirm any required verification steps, and complete eligible deletion or anonymization within a reasonable period.",
         "title": "Account and Data Deletion Requests"
       },
@@ -3375,7 +3374,7 @@
         "s4": "4. Data Sharing & Third Parties",
         "s4_desc": "We do not sell your personal information. We may share data with service providers who help us operate the platform, subject to appropriate confidentiality and security obligations.",
         "s5": "5. Multi-Branch & Account Access",
-        "s5_desc": "Mintcom supports multiple locations, brands, owners, admins, and employees. Access to operational data depends on account role, selected location, and assigned permissions.",
+        "s5_desc": "Mintcom supports multiple establishments, brands, owners, admins, and employees. Access to operational data depends on account role, selected establishment, and assigned permissions.",
         "s6": "6. Data Retention & Account Deletion",
         "s6_desc": "We retain information for as long as needed to provide the services, maintain business records, resolve disputes, enforce agreements, and meet legal or tax obligations.",
         "s7": "7. Your Rights",
@@ -3390,7 +3389,7 @@
         "noAbsoluteSecurity": "While we strive to protect your personal information, no method of transmission over the Internet or electronic storage is 100% secure.",
         "sec1": "Encrypted HTTPS transport for website and API traffic",
         "sec2": "HttpOnly authentication cookies for server-managed sessions",
-        "sec3": "Role-based access controls for owner, admin, employee, brand, and location data",
+        "sec3": "Role-based access controls for owner, admin, employee, brand, and establishment data",
         "sec4": "Operational safeguards such as audit/activity logs, restricted access, and secure cloud infrastructure"
       },
       "sharing": {
@@ -3415,7 +3414,7 @@
     "terms": {
       "availability": {
         "desc": "We strive to maintain high availability but do not guarantee uninterrupted service. We may perform scheduled maintenance with advance notice.",
-        "aiFairUse": "The AI business assistant is subject to fair-use limits, currently 100 questions per day and 1,000 questions per month for each location. We will tell you in the app as you approach a limit, and it resets automatically. We may adjust these limits to keep the service sustainable, and will give notice before reducing them."
+        "aiFairUse": "The AI business assistant is subject to fair-use limits, currently 100 questions per day and 1,000 questions per month for each establishment. We will tell you in the app as you approach a limit, and it resets automatically. We may adjust these limits to keep the service sustainable, and will give notice before reducing them."
       },
       "contact": {
         "desc": "For questions about these Terms of Service, please contact us at support@mintcompos.com"
@@ -3463,7 +3462,7 @@
         "title": "Terms of Service"
       },
       "termination": {
-        "deletion": "Locations scheduled for deletion enter a 30-day grace period during which they can be reactivated. After 30 days, all data associated with the location will be permanently and irreversibly deleted.",
+        "deletion": "Establishments scheduled for deletion enter a 30-day grace period during which they can be reactivated. After 30 days, all data associated with the establishment will be permanently and irreversibly deleted.",
         "desc": "We may suspend or terminate your access to our services at any time for violation of these terms. You may cancel your account at any time through your account settings."
       },
       "title": "Terms of Service",
@@ -3636,7 +3635,7 @@
     },
     "pricingPage": {
       "title": "Pricing | Mintcom POS",
-      "description": "Simple Mintcom POS pricing per location. No hardware sales, no confusing add-ons. Start your free trial."
+      "description": "Simple Mintcom POS pricing per establishment. No hardware sales, no confusing add-ons. Start your free trial."
     },
     "howItWorks": {
       "title": "How it works | Mintcom POS",
@@ -3647,7 +3646,7 @@
       "description": "Built-in loyalty and rewards for Mintcom POS: points, discounts, and free items at the register."
     },
     "multiLocation": {
-      "title": "Multi-location | Mintcom POS",
+      "title": "Multi-establishment | Mintcom POS",
       "description": "Run multiple branches and brands from one Mintcom owner account with clear dashboards and fair pricing."
     },
     "whyMintcom": {
@@ -3667,7 +3666,7 @@
     "login": "Log In",
     "logout": "Sign Out",
     "onboardingBannerSubtitle": "Browse freely anytime, and pick up setup when you’re ready.",
-    "onboardingBannerTitle": "Your first location is one step away",
+    "onboardingBannerTitle": "Your first establishment is one step away",
     "owner": "Owner Portal",
     "pricing": "Pricing",
     "support": "Support",
@@ -3676,7 +3675,7 @@
     "howItWorks": "How it works",
     "loyalty": "Loyalty",
     "whyMintcom": "Why Mintcom",
-    "multiLocation": "Multi-location",
+    "multiLocation": "Multi-establishment",
     "tryDesktop": "Try on Desktop"
   },
   "onboarding": {
@@ -3688,7 +3687,7 @@
       "failedToComplete": "Failed to complete setup. Please try again.",
       "failedToSaveCard": "Failed to save card. Please try again."
     },
-    "location": "Location",
+    "location": "Establishment",
     "messages": {
       "complete": "Setup completed successfully!"
     },
@@ -3696,17 +3695,17 @@
     "of": "of",
     "screen": {
       "continue_portal": "Continue to Portal",
-      "description": "Complete the onboarding workflow to configure account details, locations, and operational defaults.",
+      "description": "Complete the onboarding workflow to configure account details, establishments, and operational defaults.",
       "subtitle": "Account Setup Steps",
       "title": "Onboarding"
     },
     "select": "Select",
-    "selectLocation": "Select Location",
+    "selectLocation": "Select Establishment",
     "step": "Step",
     "step1": {
       "address": "Address",
       "addressPlaceholder": "City, Area, Building",
-      "addressTip": "Location address.",
+      "addressTip": "Establishment address.",
       "businessType": "Business Type",
       "businessTypes": {
         "bakery": "Bakery",
@@ -3717,7 +3716,7 @@
       },
       "businessTypeTip": "Select your business type.",
       "copySettings": "Copy Settings",
-      "copySettingsTip": "Copy data from another location to speed up setup.",
+      "copySettingsTip": "Copy data from another establishment to speed up setup.",
       "country": "Country",
       "currencies": {
         "AED": "AED - UAE Dirham",
@@ -3734,7 +3733,7 @@
         "USD": "USD - US Dollar"
       },
       "currency": "Currency",
-      "currencyLockedNote": "All locations in an account share one currency, so your reports stay in a single currency. You can change it from Account Management, where it applies to every location. To use a different currency, create a separate account.",
+      "currencyLockedNote": "All establishments in an account share one currency, so your reports stay in a single currency. You can change it from Account Management, where it applies to every establishment. To use a different currency, create a separate account.",
       "currencyTip": "Primary currency for sales.",
       "discounts": "Copy discounts options",
       "discountsDesc": "Copy all promo codes and discount rules",
@@ -3742,12 +3741,12 @@
         "addressRequired": "Address is required",
         "countryRequired": "Country is required",
         "currencyRequired": "Currency is required",
-        "nameRequired": "Location name is required",
+        "nameRequired": "Establishment name is required",
         "typeRequired": "Business type is required",
-        "nameMax": "Location name must be at most {{count}} characters",
+        "nameMax": "Establishment name must be at most {{count}} characters",
         "timezoneRequired": "Timezone is required"
       },
-      "locationName": "Location Name",
+      "locationName": "Establishment Name",
       "locationNamePlaceholder": "e.g. The Coffee House",
       "locationNameTip": "The name of your business.",
       "menu": "Products, categories and add-ons",
@@ -3757,27 +3756,27 @@
       "quickSetup": "Quick Setup",
       "selectData": "Select data to duplicate:",
       "startFresh": "Do not import (Start fresh)",
-      "subtitle": "Tell Us About Your Business Location",
-      "title": "Location Details",
+      "subtitle": "Tell Us About Your Business Establishment",
+      "title": "Establishment Details",
       "currencyLinkedToCountry": "Currency is set from the selected country. You can change it if needed.",
       "timezone": "Store timezone",
       "timezoneHint": "All sales, shifts and reports use this timezone. Current time there: {{time}}."
     },
     "step2": {
       "activateButton": "Activate & Pay",
-      "activateDesc": "Your card will be charged {{amount}} for this new location.",
+      "activateDesc": "Your card will be charged {{amount}} for this new establishment.",
       "activateTitle": "Activate Subscription",
       "addNew": "Add New Card",
       "trialThenPrice": "Then {{price}}, billed after your {{days}}-day trial",
       "trialDisclosureTitle": "Free until {{date}}",
-      "trialDisclosureBody": "After your {{days}}-day free trial ends on {{date}}, you'll start paying {{price}} for this location. Cancel anytime before then and you won't be charged.",
+      "trialDisclosureBody": "After your {{days}}-day free trial ends on {{date}}, you'll start paying {{price}} for this establishment. Cancel anytime before then and you won't be charged.",
       "trialChooseCycleHint": "Pick what you'll be billed after your free trial",
       "brand": "Brand",
       "cardLast4": "Card last 4",
       "cardName": "Cardholder Name",
       "cardNumber": "Card Number",
       "differentMethod": "Use a different payment method",
-      "discountedAdditionalLocation": "Discounted rate for additional locations",
+      "discountedAdditionalLocation": "Discounted rate for additional establishments",
       "errors": {
         "cardLast4Exact": "Enter exactly the last 4 digits",
         "cardNameRequired": "Name on card is required",
@@ -3809,27 +3808,27 @@
       "trialTitle": "Start Free Trial",
       "useSaved": "Use Saved Card",
       "yearly": "Yearly",
-      "addedLocation": "Added Location",
+      "addedLocation": "Added Establishment",
       "billedCycle": "Billed {{cycle}}",
       "existingAccountBenefit": "Existing Account Benefit"
     },
     "step3": {
       "errors": {
-        "idMin": "Location ID must be at least 4 characters",
-        "idRegex": "Location ID can only contain letters, numbers, underscores, and hyphens",
-        "passwordMin": "Location Password must be at least 8 characters"
+        "idMin": "Establishment ID must be at least 4 characters",
+        "idRegex": "Establishment ID can only contain letters, numbers, underscores, and hyphens",
+        "passwordMin": "Establishment Password must be at least 8 characters"
       },
-      "locationId": "Location ID",
+      "locationId": "Establishment ID",
       "locationIdDesc": "",
       "locationIdPlaceholder": "my-restaurant",
       "locationIdTip": "Unique ID for POS login.",
-      "password": "Location Password",
+      "password": "Establishment Password",
       "passwordPlaceholder": "••••••••",
       "passwordTip": "At least 8 characters with uppercase, lowercase, and a number.",
       "subtitle": "This Is the ID Used to Access the POS Application",
-      "title": "Create Location Login",
+      "title": "Create Establishment Login",
       "uniqueAccess": "Unique access:",
-      "uniqueAccessDesc": "Each location needs its own ID and password."
+      "uniqueAccessDesc": "Each establishment needs its own ID and password."
     },
     "step4": {
       "adminUsernamePlaceholder": "e.g. admin",
@@ -3845,18 +3844,18 @@
       "lastName": "Last Name",
       "lastNamePlaceholder": "Doe",
       "loadingOwnerLogin": "Loading owner login...",
-      "lockedHelper": "Edit the universal owner login from Employees or Account Settings, not from location setup.",
-      "lockedNote": "Your previous universal owner account already has access to all locations. These details are locked here to prevent duplicate owner accounts.",
+      "lockedHelper": "Edit the universal owner login from Employees or Account Settings, not from establishment setup.",
+      "lockedNote": "Your previous universal owner account already has access to all establishments. These details are locked here to prevent duplicate owner accounts.",
       "lockedSubtitle": "Your universal owner account is already linked to this account.",
       "lockedTitle": "Owner Login Ready",
       "ownerEmail": "Owner Email",
       "password": "Personal Password",
       "passwordPlaceholder": "••••••••",
       "passwordTip": "At least 8 characters with uppercase, lowercase, and a number.",
-      "step2Note": "This owner login works across all of your locations.",
-      "subtitle": "Create the universal owner login for every location.",
+      "step2Note": "This owner login works across all of your establishments.",
+      "subtitle": "Create the universal owner login for every establishment.",
       "title": "Create Owner Login",
-      "universalOwnerNotice": "This owner login is universal. It will manage POS and Back Office access for this new location automatically after launch.",
+      "universalOwnerNotice": "This owner login is universal. It will manage POS and Back Office access for this new establishment automatically after launch.",
       "username": "Owner Username",
       "usernamePlaceholder": "admin",
       "usernameTip": "Your username."
@@ -3873,15 +3872,15 @@
       "faqs": "FAQs",
       "hardwareSetup": "Hardware Setup",
       "isReadyToGo": "is all set! Let us get you started and start selling.",
-      "locationId": "Location ID",
-      "locationReady": "Location Ready",
+      "locationId": "Establishment ID",
+      "locationReady": "Establishment Ready",
       "needHelp": "Need help? Contact our support team at",
       "openOwnerPortal": "Open Owner Portal",
       "ourStory": "Our Story",
       "ownerApp": "Owner App",
       "ownerAppDesc": "Track live sales and analytics on the go.",
       "ownerPortal": "Owner Portal",
-      "password": "Location Password",
+      "password": "Establishment Password",
       "playStore": "Play Store",
       "posApp": "POS App",
       "posAppDesc": "Download the Point of Sale app for your staff.",
@@ -3899,9 +3898,9 @@
     "tour": {
       "chatBotDesc": "Mintcom AI is always here to answer your questions and guide you through the system.",
       "chatBotTitle": "Meet Your AI Assistant",
-      "locationStatsDesc": "Your unique Location ID and settings.",
-      "locationStatsTitle": "Location Details",
-      "openPortalDesc": "This is your main dashboard for managing all locations.",
+      "locationStatsDesc": "Your unique Establishment ID and settings.",
+      "locationStatsTitle": "Establishment Details",
+      "openPortalDesc": "This is your main dashboard for managing all establishments.",
       "openPortalTitle": "Open Owner Portal",
       "ownerAppDesc": "Keep track of your business from your phone.",
       "ownerAppTitle": "Owner App",
@@ -3911,11 +3910,11 @@
       "resourcesTitle": "Help Center"
     },
     "validation": {
-      "locationPasswordMin": "Location password must be at least 8 characters"
+      "locationPasswordMin": "Establishment password must be at least 8 characters"
     },
     "security": {
       "cannotGoBack": "Setup is finished. You cannot return to payment.",
-      "reenterLocationPassword": "Please re-enter your location password to finish setup.",
+      "reenterLocationPassword": "Please re-enter your establishment password to finish setup.",
       "reenterOwnerPassword": "Please re-enter your owner password to finish setup."
     }
   },
@@ -4306,7 +4305,7 @@
         "changedTaxRate": "Changed order tax rate",
         "changedTaxRefundsDesc": "{{count}} Refunds Also Affected Changed-Tax Rows",
         "current": "Current",
-        "currentTaxDescription": "Used the current location tax setting",
+        "currentTaxDescription": "Used the current establishment tax setting",
         "currentTaxRate": "Current tax rate",
         "deletedTaxRate": "Deleted tax rate",
         "deletedTaxDescription": "This tax rate was deleted but historical records are preserved",
@@ -4322,14 +4321,14 @@
         "noDataDesc": "Tax breakdown will appear here once taxable sales are recorded.",
         "nonProfit": "Non-Profit",
         "previous": "Previous",
-        "previousTaxDescription": "Used a location tax setting before it changed",
+        "previousTaxDescription": "Used an establishment tax setting before it changed",
         "previousTaxRate": "Previous tax rate",
         "rate": "Rate",
         "refunds": "Refunds",
         "resaleCertificates": "Resale Certificates",
         "share": "Share",
         "standardTax": "Sales Tax (Standard)",
-        "standardTaxDescription": "Used the location tax setting",
+        "standardTaxDescription": "Used the establishment tax setting",
         "standardTaxRate": "Standard tax rate",
         "tax": "Tax",
         "taxable": "Taxable",
@@ -4340,7 +4339,11 @@
         "totalTax": "Total Tax",
         "totalTaxDesc": "Total Tax Amount",
         "txns": "Txns",
-        "type": "Type"
+        "type": "Type",
+        "serviceCharge": "Service Charge",
+        "serviceChargeDesc": "Tax on order service/other charges.",
+        "serviceChargeExemptDesc": "Service/other charges exempt from tax.",
+        "exempt": "Exempt"
       },
       "export": {
         "metric": "Metric",
@@ -4398,12 +4401,12 @@
       "accountRestored": "Your account has been restored successfully",
       "activeBlock": "Active block",
       "activeEstBlockModal": {
-        "activeLocations": "Active Locations",
-        "desc": "You have active locations linked to your account. Please deactivate or transfer them before proceeding.",
+        "activeLocations": "Active Establishments",
+        "desc": "You have active establishments linked to your account. Please deactivate or transfer them before proceeding.",
         "goToBilling": "View Plans",
-        "goToLocations": "Go to locations",
-        "subtitle": "You Have Active Locations That Need to Be Resolved Before Proceeding",
-        "title": "Active Locations Found"
+        "goToLocations": "Go to establishments",
+        "subtitle": "You Have Active Establishments That Need to Be Resolved Before Proceeding",
+        "title": "Active Establishments Found"
       },
       "admins": "Admins",
       "badge": "Account",
@@ -4411,7 +4414,7 @@
       "brandLoginHint": "Use this ID to sign in to the brand dashboard.",
       "brandLoginId": "Brand Login ID",
       "accessCredentials": "Access Credentials",
-      "accessCredentialsSubtitle": "Login IDs for location and brand dashboards. Search, copy, open, or reset.",
+      "accessCredentialsSubtitle": "Login IDs for establishment and brand dashboards. Search, copy, open, or reset.",
       "brandLogins": "Brand Logins",
       "brandLoginsSubtitle": "Login Credentials for Your Brand Dashboards",
       "brands": "Brands",
@@ -4424,7 +4427,7 @@
       "createFirst": "Create your first resource",
       "dangerZone": "Danger Zone",
       "dangerZoneHint": "Once you delete your account, there is no going back. Please be certain.",
-      "dangerZoneBullet1": "All locations and brands will be scheduled for removal",
+      "dangerZoneBullet1": "All establishments and brands will be scheduled for removal",
       "dangerZoneBullet2": "Staff access and Login IDs stop working",
       "dangerZoneBullet3": "You can cancel during the grace period if offered",
       "delete": "Delete",
@@ -4467,18 +4470,18 @@
       "joined": "Join Date",
       "lastName": "Last Name",
       "loading": "Loading account...",
-      "locationLoginBadge": "Location",
-      "locationLoginHint": "Use this ID to sign in to this location dashboard.",
-      "locationLoginId": "Location Login ID",
-      "locationLogins": "Location Logins",
-      "locationLoginsSubtitle": "Login IDs for Your POS Locations",
-      "locations": "Locations",
-      "locationsCount": "{{count}} locations",
+      "locationLoginBadge": "Establishment",
+      "locationLoginHint": "Use this ID to sign in to this establishment dashboard.",
+      "locationLoginId": "Establishment Login ID",
+      "locationLogins": "Establishment Logins",
+      "locationLoginsSubtitle": "Login IDs for Your POS Establishments",
+      "locations": "Establishments",
+      "locationsCount": "{{count}} establishments",
       "loginId": "Login ID",
       "searchCredentials": "Search name or Login ID…",
       "totalStaff": "Staff",
-      "noLocationsOrBrands": "No Locations or Brands Found",
-      "noLocationsOrBrandsHint": "Get started by creating your first location or brand.",
+      "noLocationsOrBrands": "No Establishments or Brands Found",
+      "noLocationsOrBrandsHint": "Get started by creating your first establishment or brand.",
       "privacy": "Privacy",
       "profileUpdated": "Profile updated successfully",
       "profileUpdatedVerifyEmail": "Profile updated. Please verify your new email address.",
@@ -4538,12 +4541,12 @@
         "updatePeriodically": "Update your password periodically for better security"
       },
       "singleBrandBadge": "1 brand",
-      "singleLocationBadge": "1 location",
+      "singleLocationBadge": "1 establishment",
       "setupManual": "Setup Manual",
       "stats": {
         "admins": "Admins",
         "brands": "Brands",
-        "locations": "Locations"
+        "locations": "Establishments"
       },
       "subtitle": "Manage Your Profile and Security",
       "terms": "Terms",
@@ -4564,9 +4567,9 @@
       "profileCompletion": "Profile Completion",
       "completeProfileHint": "Complete your profile to unlock all features",
       "systemCurrency": "System Currency",
-      "systemCurrencySubtitle": "Updates currency for all your locations.",
-      "systemCurrencyDesc": "Updates currency for all your locations.",
-      "applyingCurrencyChanges": "Applying changes to all locations...",
+      "systemCurrencySubtitle": "Updates currency for all your establishments.",
+      "systemCurrencyDesc": "Updates currency for all your establishments.",
+      "applyingCurrencyChanges": "Applying changes to all establishments...",
       "currencyUpdated": "Global currency updated to {{currency}}",
       "currencyUpdateFailed": "Failed to update global currency",
       "videoGuideComingSoon": "Video guide coming soon"
@@ -4594,7 +4597,7 @@
       "cards": "Cards",
       "cardUpdated": "Card updated successfully",
       "cardUpdateFailed": "Failed to update card",
-      "cannotChangeCardCanceled": "You cannot change the card for a canceled location.",
+      "cannotChangeCardCanceled": "You cannot change the card for a canceled establishment.",
       "contactSupport": "Contact support",
       "cost": "Cost",
       "then": "Then",
@@ -4617,7 +4620,7 @@
       },
       "linkedNote": "Linked to active subscriptions",
       "loadFailed": "Failed to load billing information",
-      "location": "Location",
+      "location": "Establishment",
       "main": "Main",
       "managePayments": "Manage payments for {{name}}",
       "monthly": "Monthly",
@@ -4659,7 +4662,7 @@
       "yearlyPlan": "Yearly Plan",
       "add_card_for_location": "New card will be used for {{name}}",
       "add_new_card": "Add New Card",
-      "card_added_and_assigned": "Card added and assigned to this location",
+      "card_added_and_assigned": "Card added and assigned to this establishment",
       "cardholder": "Cardholder",
       "change_card": "Change Card",
       "saved_card": "Saved",
@@ -4677,7 +4680,7 @@
         "popupBlocked": "Allow pop-ups for this site to print.",
         "loadFailed": "Could not load invoices",
         "emptyTitle": "No Invoices Yet",
-        "emptyBody": "A numbered invoice is issued automatically the first time a payment for this location settles.",
+        "emptyBody": "A numbered invoice is issued automatically the first time a payment for this establishment settles.",
         "viewSummary": "View Subscription Summary",
         "view": "View",
         "colNumber": "Invoice",
@@ -4692,46 +4695,46 @@
       "activeBrands": "Active brands",
       "activeFilters": "Active filters",
       "adminLoginId": "Brand Login ID",
-      "adminLoginIdHint": "This ID will be used to access the brand dashboard. It must be unique across all locations and brands.",
+      "adminLoginIdHint": "This ID will be used to access the brand dashboard. It must be unique across all establishments and brands.",
       "adminLoginIdPlaceholder": "E.g. brand_admin",
       "adminPassword": "Brand Password",
-      "availableLocations": "Unlinked Locations",
+      "availableLocations": "Unlinked Establishments",
       "badge": "Brands",
       "brand": "Brand",
       "brandName": "Brand Name",
       "brandNamePlaceholder": "E.g. My Restaurant Chain",
       "countSummary": "{{count}} Brands",
       "createBrand": "Create New Brand",
-      "createBrandHint": "Group multiple locations under one brand for unified management.",
-      "createBrandSubtitle": "Set Up a New Brand to Manage Multiple Locations",
+      "createBrandHint": "Group multiple establishments under one brand for unified management.",
+      "createBrandSubtitle": "Set Up a New Brand to Manage Multiple Establishments",
       "createBrandTitle": "Create New Brand",
       "created": "Created",
       "createFirst": "Create your first brand",
       "createFirstBrand": "Create New Brand",
       "deleteBrand": "Delete Brand",
       "disclaimerAction": "I Understand",
-      "disclaimerDesc": "To create a brand, you must have at least 2 locations that are not already part of another brand. Currently, all your locations are already grouped.",
-      "disclaimerNoLocations": "You currently don't have enough locations to form a brand. A brand requires at least 2 locations.",
-      "disclaimerNotEnoughLocations": "Not Enough Locations to Create a Brand",
-      "disclaimerSubtitle": "All Your Locations Are Already Linked to Brands",
+      "disclaimerDesc": "To create a brand, you must have at least 2 establishments that are not already part of another brand. Currently, all your establishments are already grouped.",
+      "disclaimerNoLocations": "You currently don't have enough establishments to form a brand. A brand requires at least 2 establishments.",
+      "disclaimerNotEnoughLocations": "Not Enough Establishments to Create a Brand",
+      "disclaimerSubtitle": "All Your Establishments Are Already Linked to Brands",
       "disclaimerTitle": "Unable to Create Brand",
       "failedToLoad": "Failed to load brands",
-      "linkedLocations": "Linked Locations",
-      "linkLocations": "Link Locations",
+      "linkedLocations": "Linked Establishments",
+      "linkLocations": "Link Establishments",
       "loading": "Loading...",
-      "location": "Location",
-      "locations": "Locations",
-      "locationsCount": "{{count}} Locations",
+      "location": "Establishment",
+      "locations": "Establishments",
+      "locationsCount": "{{count}} Establishments",
       "loginId": "Login ID",
       "noBrands": "No Brands Found",
-      "noBrandsDesc": "Create A Brand To Group Locations",
+      "noBrandsDesc": "Create A Brand To Group Establishments",
       "noBrandsFound": "No Brands Found",
       "openDashboard": "Open Dashboard",
       "searchFilter": "Search & Filter",
       "searchPlaceholder": "Search brands by name or Login ID...",
       "selectedCount": "{{count}} Selected",
-      "selectLocationsToLink": "Select Locations to Link to This Brand",
-      "subtitle": "Manage Multiple Locations Under One Brand",
+      "selectLocationsToLink": "Select Establishments to Link to This Brand",
+      "subtitle": "Manage Multiple Establishments Under One Brand",
       "title": "Brands",
       "tryAdjustingSearch": "Try Adjusting Your Search Or Filters",
       "validation": {
@@ -4740,7 +4743,7 @@
         "loginIdChecking": "Checking availability...",
         "loginIdMin": "Login ID must be at least 4 characters",
         "loginIdRegex": "Login ID can only contain letters, numbers, underscores, and hyphens",
-        "loginIdTakenHint": "It must be unique across all locations and brands.",
+        "loginIdTakenHint": "It must be unique across all establishments and brands.",
         "nameMin": "Brand name must be at least 2 characters",
         "passwordMin": "Password must be at least 8 characters",
         "loginIdAuthFailed": "Your session could not be verified. Please refresh the page and log in again as the account owner."
@@ -4755,10 +4758,10 @@
         "createFailed": "Failed to create brand",
         "createSuccess": "Brand created!",
         "creating": "Creating...",
-        "desc": "Group multiple locations into one brand",
+        "desc": "Group multiple establishments into one brand",
         "deselectAll": "Deselect all",
-        "finalStep": "Final step: select which employees should have global access to all linked locations via the brand dashboard.",
-        "finalStepDesc": "Select which employees should have global access to all linked locations.",
+        "finalStep": "Final step: select which employees should have global access to all linked establishments via the brand dashboard.",
+        "finalStepDesc": "Select which employees should have global access to all linked establishments.",
         "locationsSelected": "{{count}} selected",
         "loginIdNote": "This ID will be used to log into the brand dashboard",
         "messages": {
@@ -4767,10 +4770,10 @@
         },
         "scanningEmployees": "Scanning local employees...",
         "selectAll": "Select all",
-        "selectLocations": "Select locations to link",
-        "selectMinLocations": "Select at least 2 locations to create a brand",
+        "selectLocations": "Select establishments to link",
+        "selectMinLocations": "Select at least 2 establishments to create a brand",
         "step1": "Brand details",
-        "step2": "Link locations",
+        "step2": "Link establishments",
         "step3": "Global Access",
         "title": "Create Brand"
       }
@@ -4783,7 +4786,7 @@
     "locations": {
       "actions": "Actions",
       "active": "Active",
-      "addFirstLocation": "Start by adding your first business location.",
+      "addFirstLocation": "Start by adding your first business establishment.",
       "allStatuses": "All status",
       "allTypes": "All types",
       "badge": "Fleet",
@@ -4792,16 +4795,16 @@
       "enter": "Enter",
       "expired": "Expired",
       "new": "NEW",
-      "noLocations": "No locations found",
+      "noLocations": "No establishments found",
       "online": "Online",
       "open": "Open dashboard",
       "searchPlaceholder": "Search by name or type...",
       "settings": "Settings",
       "standard": "Standard",
       "status": "Status",
-      "subtitle": "Manage All Your Business Locations",
-      "title": "Locations",
-      "total": "Total Locations",
+      "subtitle": "Manage All Your Business Establishments",
+      "title": "Establishments",
+      "total": "Total Establishments",
       "trial": "Trial",
       "type": "Type",
       "view": "View details"
@@ -4814,7 +4817,7 @@
       "enterpriseOwner": "Enterprise Owner",
       "getMobileApp": "Get Mobile App",
       "globalRoles": "Global Roles",
-      "locations": "Locations",
+      "locations": "Establishments",
       "mainMenu": "Main Menu (Owners Portal)",
       "openSidebar": "Open Sidebar",
       "overview": "Overview",
@@ -4823,7 +4826,7 @@
     },
     "merge": {
       "available": "Available",
-      "availableLocations": "Unlinked Locations",
+      "availableLocations": "Unlinked Establishments",
       "back": "Back",
       "brand": "Brand",
       "brandCreated": "Brand created successfully!",
@@ -4854,37 +4857,37 @@
       "securityTitle": "Security",
       "selectAll": "Select all",
       "selected": "Selected",
-      "selectedLocations": "Selected Locations",
-      "selectMinLocations": "Select at least 2 locations to create a brand",
-      "selectMinToast": "Select at least 2 locations to merge",
+      "selectedLocations": "Selected Establishments",
+      "selectMinLocations": "Select at least 2 establishments to create a brand",
+      "selectMinToast": "Select at least 2 establishments to merge",
       "selectMore": "Select more",
       "status": "Status",
       "steps": {
         "details": "Brand details",
-        "select": "Select locations"
+        "select": "Select establishments"
       },
-      "subtitle": "Combine Multiple Locations into a Single Brand",
+      "subtitle": "Combine Multiple Establishments into a Single Brand",
       "success": "Success",
-      "title": "Merge Locations",
+      "title": "Merge Establishments",
       "whyMerge": "Why Merge?",
-      "whyMergeDesc": "Merging locations into a brand lets you manage them together, share staff, and view unified reports."
+      "whyMergeDesc": "Merging establishments into a brand lets you manage them together, share staff, and view unified reports."
     },
     "overview": {
       "openDashboard": "Open POS Dashboard",
       "activeHours": "Active hours",
-      "activeLocations": "Active Locations",
-      "activeLocationsInfo": "Locations with a current shift opened.",
-      "addLocation": "Add Location",
+      "activeLocations": "Active Establishments",
+      "activeLocationsInfo": "Establishments with a current shift opened.",
+      "addLocation": "Add Establishment",
       "badge": "Enterprise overview",
       "brands": "Brands",
-      "consolidatedPerf": "Consolidated Performance Across Locations",
+      "consolidatedPerf": "Consolidated Performance Across Establishments",
       "growBusiness": "Grow Your Business",
-      "growBusinessDesc": "Expand your reach by adding more locations or managing multiple brands.",
+      "growBusinessDesc": "Expand your reach by adding more establishments or managing multiple brands.",
       "live_network_data": "LIVE MINTCOM NETWORK DATA",
       "liveSystem": "Live System",
       "manageBrands": "Manage Brands",
       "managed": "managed",
-      "manageLocations": "Manage Locations",
+      "manageLocations": "Manage Establishments",
       "mintcom_network_data": "MINTCOM NETWORK DATA",
       "netSales": "Net Sales",
       "netSalesInfo": "Total Sales excluding tax. Includes other charges.",
@@ -4902,7 +4905,7 @@
       "salesTrends": "Sales Trends",
       "selectPeriod": "Select Period",
       "staffManagement": "Staff Management",
-      "subtitle": "You Are Managing {{count}} Locations Across {{brands}} Brands",
+      "subtitle": "You Are Managing {{count}} Establishments Across {{brands}} Brands",
       "title": "Owner Portal",
       "total": "Total",
       "totalBrands": "Total Brands",
@@ -4924,14 +4927,14 @@
         "reports": "Reports",
         "reportsDesc": "Access to sales and performance reports",
         "settings": "Settings",
-        "settingsDesc": "Modify store and location settings",
+        "settingsDesc": "Modify store and establishment settings",
         "staff": "Staff",
         "staffDesc": "Manage team members and roles"
       },
       "backofficeAccess": "Advanced Back-office Permissions",
       "createNew": "Create Role",
       "createdOn": "Created {{date}}",
-      "deleteConfirm": "Are you sure you want to delete the \"{{name}}\" role? It will be removed from all locations.",
+      "deleteConfirm": "Are you sure you want to delete the \"{{name}}\" role? It will be removed from all establishments.",
       "deleteRole": "Delete role",
       "editRole": "Edit Role",
       "failedToDelete": "Failed to delete role",
@@ -4942,7 +4945,7 @@
       "name": "Role",
       "newRole": "New Role",
       "noRoles": "No Roles Found",
-      "noRolesDesc": "Create a role here to share it across all your locations.",
+      "noRolesDesc": "Create a role here to share it across all your establishments.",
       "permissions": "Permissions",
       "pos": {
         "acceptPayments": "Accept payments",
@@ -4968,22 +4971,22 @@
       "roleUpdated": "Role updated",
       "scope": "Scope",
       "searchPlaceholder": "Search roles...",
-      "subtitle": "Define and Assign Roles That Apply Across All Locations",
+      "subtitle": "Define and Assign Roles That Apply Across All Establishments",
       "title": "Global Roles",
       "type": "Type",
       "usage": "Usage",
-      "usageSummary": "{{employees}} employees · {{locations}} locations"
+      "usageSummary": "{{employees}} employees · {{locations}} establishments"
     },
     "staff": {
       "access": "Access",
-      "accessLocations": "Access locations",
+      "accessLocations": "Access establishments",
       "accessRights": "Access rights",
       "activeInfo": "Users clocked in or active.",
       "activeNow": "Active now",
       "addStaffDesc": "Add a new team member to your organization",
       "admins": "Admins",
       "adminsInfo": "Users with full access to settings.",
-      "allLocations": "All locations",
+      "allLocations": "All establishments",
       "allRoles": "All roles",
       "allStatus": "All status",
       "badge": "Team access",
@@ -4994,10 +4997,10 @@
       "incorrectPassword": "Incorrect password or failed to delete",
       "incorrectPasswordRemaining": "Incorrect password. Please try again. {{count}} tries remaining before you are signed out.",
       "loading": "Loading staff...",
-      "locationsCount": "{{count}} locations",
+      "locationsCount": "{{count}} establishments",
       "moreLocations": "+{{count}} more",
       "noEmail": "No email",
-      "noLocationsAssigned": "No locations assigned",
+      "noLocationsAssigned": "No establishments assigned",
       "noPhone": "No phone",
       "noStaff": "No Staff Found",
       "noStaffDesc": "Start by adding your first team member.",
@@ -5011,21 +5014,21 @@
       "removeConfirmSuffix": "? This action is irreversible.",
       "removeStaff": "Remove Staff Member",
       "removeStaffConfirm": "Are you sure you want to remove",
-      "removeStaffConfirmBrand": "You are about to remove {{name}} from {{brand}}. This employee will lose access to all locations under this brand. This action cannot be undone.",
+      "removeStaffConfirmBrand": "You are about to remove {{name}} from {{brand}}. This employee will lose access to all establishments under this brand. This action cannot be undone.",
       "removeStaffConfirmFrom": "from",
       "removeStaffConfirmPrefix": "You are about to remove",
       "removeStaffTitle": "Remove Staff",
-      "searchPlaceholder": "Filter by name, email or location...",
+      "searchPlaceholder": "Filter by name, email or establishment...",
       "staffRemoved": "Staff member removed successfully",
       "standardInfo": "Standard users with restricted access.",
       "standardUsers": "Standard user",
-      "subtitle": "Manage Staff Across All Locations",
+      "subtitle": "Manage Staff Across All Establishments",
       "syncError": "Failed to sync staff data",
       "title": "All Staff",
       "tooManyPasswordAttempts": "Too many incorrect password attempts. Please log in again.",
       "totalUsers": "Total users",
       "undoneWarning": "This action cannot be undone.",
-      "usersInfo": "Total number of registered users across all locations.",
+      "usersInfo": "Total number of registered users across all establishments.",
       "verifyPassword": "Verify your password to continue"
     }
   },
@@ -5070,7 +5073,7 @@
       "account": "Account Password Reset",
       "brand": "Brand Password Reset",
       "default": "Reset Password",
-      "establishment": "Location Password Reset"
+      "establishment": "Establishment Password Reset"
     }
   },
   "paymentMethods": {
@@ -5217,7 +5220,7 @@
       "title": "Mobile App"
     },
     "overview": {
-      "establishments": "Locations",
+      "establishments": "Establishments",
       "memberSince": "Member since",
       "plan": "Plan",
       "teamMembers": "Team members",
@@ -5555,7 +5558,7 @@
       "reports": "View reports",
       "reportsDesc": "Access sales and performance reports",
       "settings": "Manage settings",
-      "settingsDesc": "Modify store and location settings",
+      "settingsDesc": "Modify store and establishment settings",
       "staff": "Manage staff",
       "staffDesc": "Manage team members and roles",
       "title": "Advanced Back-Office Permissions"
@@ -5570,7 +5573,7 @@
       "reassignAction": "Move employees and delete role",
       "reassignDesc": "Employees will receive the selected role permissions immediately.",
       "reassignTitle": "Move Employees to Another Role",
-      "summary": "{{employeeCount}} employees, {{assignmentCount}} assignments, {{locationCount}} locations affected",
+      "summary": "{{employeeCount}} employees, {{assignmentCount}} assignments, {{locationCount}} establishments affected",
       "title": "Role Is Assigned to Employees"
     },
     "editRole": "Edit Role",
@@ -5642,7 +5645,7 @@
         "daysLeft": "Days left",
         "deleting": "Deletion in progress",
         "deletingMessage": "The grace period has ended and permanent deletion is now being processed.",
-        "desc": "This location will be permanently deleted on {{date}}",
+        "desc": "This establishment will be permanently deleted on {{date}}",
         "reactivateSubscription": "Reactivate subscription",
         "restoreAccount": "Restore account",
         "title": "Deletion Scheduled"
@@ -5654,9 +5657,9 @@
         "fail": "Failed to request deletion",
         "gracePeriod": "Grace Period",
         "gracePeriodDesc": "You can stop this anytime in the next 30 days.",
-        "locationId": "Location ID",
-        "locationIdTip": "The unique ID for this location",
-        "locationPassword": "Location Password",
+        "locationId": "Establishment ID",
+        "locationIdTip": "The unique ID for this establishment",
+        "locationPassword": "Establishment Password",
         "passwordEntered": "Password entered",
         "processing": "Processing...",
         "success": "Deletion scheduled. Check your email for data exports.",
@@ -5680,14 +5683,14 @@
         "subtitle": "We Will Email You These Files",
         "title": "Export Data"
       },
-      "loadFailed": "Failed to load location data",
-      "loading": "Loading Location Data...",
+      "loadFailed": "Failed to load establishment data",
+      "loading": "Loading Establishment Data...",
       "steps": {
         "confirm": "Confirm",
         "export": "Export",
         "warning": "Warning"
       },
-      "title": "Delete Location",
+      "title": "Delete Establishment",
       "warning": {
         "subtitle": "All Data Will Be Gone Forever After 30 Days",
         "summary": "Deletion Summary",
@@ -5732,11 +5735,11 @@
       "dissolveBrand": {
         "button": "Delete Brand",
         "title": "Delete Brand",
-        "warning": "You are about to delete \"{{name}}\". All locations will return to independent mode."
+        "warning": "You are about to delete \"{{name}}\". All establishments will return to independent mode."
       },
       "dissolveEstablishment": {
-        "button": "Permanently Delete Location",
-        "title": "Permanently Delete Location",
+        "button": "Permanently Delete Establishment",
+        "title": "Permanently Delete Establishment",
         "warning": "This immediately and permanently deletes \"{{name}}\" and all of its data, with no 30-day grace period. Confirm with your owner email and password. Final CSV exports will be emailed to you."
       },
       "reactivate": {
@@ -5754,7 +5757,7 @@
       "revokeBrandAccess": {
         "button": "Remove access",
         "title": "Remove Brand Access",
-        "warning": "{{name}} will lose access to every location in this brand."
+        "warning": "{{name}} will lose access to every establishment in this brand."
       },
       "stopTrial": {
         "button": "Stop Trial Now",
@@ -5766,16 +5769,16 @@
     "noMasterKeyTitle": "Master Access Key Required",
     "passwordLabel": "Master Access Key (Password)",
     "restore": {
-      "confirm": "Restore Location",
-      "newLoginId": "New Location Login ID",
-      "newPassword": "New Location Password",
+      "confirm": "Restore Establishment",
+      "newLoginId": "New Establishment Login ID",
+      "newPassword": "New Establishment Password",
       "ownerEmail": "Owner Email",
       "ownerPassword": "Owner Password",
       "step": "Step {{current}} of {{total}}",
       "step1Desc": "Please provide your owner account credentials to verify your identity.",
-      "step2Desc": "Set a new Login ID and password for this location to restore it.",
-      "success": "Location has been restored successfully",
-      "title": "Restore Location"
+      "step2Desc": "Set a new Login ID and password for this establishment to restore it.",
+      "success": "Establishment has been restored successfully",
+      "title": "Restore Establishment"
     },
     "stepUp": {
       "appleHint": "Sign in with Apple again to confirm it is really you.",
@@ -5804,12 +5807,12 @@
     },
     "badge": "Config",
     "confirm": {
-      "actionCancelledMessage": "The location has been retained successfully",
+      "actionCancelledMessage": "The establishment has been retained successfully",
       "actionCancelledTitle": "Action Cancelled",
       "changeCurrencyLead": "You are about to change the account currency from \"{{from}}\" to \"{{to}}\".",
-      "changeCurrencyMessage": "You are about to change the account currency from \"{{from}}\" to \"{{to}}\".\nThis change will apply to all locations associated with this account and may affect both past and future transactions.\n\nTip: If you operate a location that uses a different currency, we recommend creating a separate account for that location.",
-      "changeCurrencyScope": "This change will apply to all locations associated with this account and may affect both past and future transactions.",
-      "changeCurrencyTip": "Tip: If you operate a location that uses a different currency, we recommend creating a separate account for that location.",
+      "changeCurrencyMessage": "You are about to change the account currency from \"{{from}}\" to \"{{to}}\".\nThis change will apply to all establishments associated with this account and may affect both past and future transactions.\n\nTip: If you operate an establishment that uses a different currency, we recommend creating a separate account for that establishment.",
+      "changeCurrencyScope": "This change will apply to all establishments associated with this account and may affect both past and future transactions.",
+      "changeCurrencyTip": "Tip: If you operate an establishment that uses a different currency, we recommend creating a separate account for that establishment.",
       "changeCurrencyTitle": "Change System Currency",
       "criticalChange": "This is a critical change that will affect your system",
       "entryErrorMessage": "Please enter a valid numeric tax rate to proceed with the update.",
@@ -5827,11 +5830,11 @@
       "cancelFailed": "Failed To Cancel Deletion",
       "description": "This will permanently delete \"{{name}}\". All data including orders, products, and customer info will be deleted.",
       "pendingDeletion": "PENDING DELETION",
-      "refreshFailed": "The location was restored, but its updated login could not be loaded. Please refresh the page.",
+      "refreshFailed": "The establishment was restored, but its updated login could not be loaded. Please refresh the page.",
       "startDeletion": "Start Deletion",
       "subtitle": "Danger Zone",
-      "thisLocation": "This location",
-      "title": "Delete Location",
+      "thisLocation": "This establishment",
+      "title": "Delete Establishment",
       "undoWarning": "You cannot undo this after 30 days.",
       "warning": "Warning"
     },
@@ -5887,10 +5890,10 @@
       "changeLogo": "Change logo",
       "comingSoon": "Coming soon",
       "deleteLogo": "Delete logo",
-      "detailsDesc": "Manage your location identity",
+      "detailsDesc": "Manage your establishment identity",
       "email": "Email",
-      "locationLoginHint": "Use this ID to sign in to this location dashboard.",
-      "locationLoginId": "Location Login ID",
+      "locationLoginHint": "Use this ID to sign in to this establishment dashboard.",
+      "locationLoginId": "Establishment Login ID",
       "logo": "Logo",
       "logoGuidelines": "Recommended: 512x512px square PNG, JPG or SVG. Max 2MB.",
       "name": "Name",
@@ -5927,7 +5930,7 @@
       "currencyOwnerOnly": "Currency can only be changed from the Owner Portal.",
       "enterValidTax": "Please enter a valid numeric tax rate to proceed with the update.",
       "fixedAmount": "Fixed amount",
-      "serviceChargePercentHint": "Max {{max}}% · ATM style entry",
+      "serviceChargePercentHint": "Max {{max}}% · ATM style (type 50 for 0.50%, or 0.5 directly)",
       "invalidInput": "Invalid Input",
       "invalidTaxMessage": "Tax rate must be between 0 and 100%",
       "invalidTaxTitle": "Invalid Tax Rate",
@@ -6018,13 +6021,13 @@
           "description": "Automatic daily Z-Report sync with Xero & QuickBooks, UK VAT split, and ledger mapping."
         },
         "danger": {
-          "title": "Delete Location",
-          "description": "Initiate permanent decommissioning and deletion of this store location."
+          "title": "Delete Establishment",
+          "description": "Initiate permanent decommissioning and deletion of this store establishment."
         }
       }
     },
     "tabs": {
-      "danger": "Delete Location",
+      "danger": "Delete Establishment",
       "profile": "Profile",
       "receipts": "Receipts",
       "sales": "Sales Setup",
@@ -6102,7 +6105,7 @@
       "doneHint": "Done. Every new sale is reported automatically and the receipt carries the official QR. Rehearse once with a small invoice and a reversing credit note.",
       "bookkeepingNote": "Need books too? Xero / QuickBooks in the Accounting tab syncs daily totals for bookkeeping — it does not replace this tax clearance.",
       "preview": {
-        "yourEstablishment": "Your Location",
+        "yourEstablishment": "Your Establishment",
         "title": "Invoice Template Preview",
         "subtitle": "This is how your e-invoices will appear",
         "print": "Print / Save PDF"
@@ -6111,9 +6114,9 @@
     "title": "Settings",
     "pos": {
       "title": "POS & Shifts",
-      "subtitle": "How registers and cash drawers behave at this location.",
+      "subtitle": "How registers and cash drawers behave at this establishment.",
       "allowMultipleShiftsTitle": "Multiple Cash Drawers",
-      "allowMultipleShiftsDesc": "Allow multiple employees to open and operate independent cash shifts simultaneously at this location.",
+      "allowMultipleShiftsDesc": "Allow multiple employees to open and operate independent cash shifts simultaneously at this establishment.",
       "allowMultipleShiftsOffHint": "Turning this off closes any extra open drawers and keeps the most recently opened one.",
       "holdOrderTableCountDesc": "How many tables (Table 1, Table 2...) to show in the hold order menu.",
       "holdOrderTableCountErrorRange": "Table count must be between 0 and {{max}}.",
@@ -6140,7 +6143,7 @@
       "roleNotAllowed": "You cannot assign this role.",
       "roleRequired": "Please select a role",
       "roleRequiredForLocations": "Choose a role for: {{locations}}",
-      "selectLocation": "Select at least one location",
+      "selectLocation": "Select at least one establishment",
       "usernameRequired": "Required",
       "usernameTaken": "This username is already used in this account."
     },
@@ -6148,8 +6151,8 @@
       "accessLabel": "Access",
       "adminDesc": "All permissions enabled",
       "adminRole": "Admin (Full Access)",
-      "allLocations": "All locations",
-      "appliesToLocations": "Applies to all {{count}} locations",
+      "allLocations": "All establishments",
+      "appliesToLocations": "Applies to all {{count}} establishments",
       "backofficePermissions": "Back office permissions",
       "branchBadge": "Branch",
       "checkingUsername": "Checking username...",
@@ -6158,7 +6161,7 @@
       "confirmPasswordPlaceholder": "Enter Password",
       "createRole": "Create a new role…",
       "createRoleForLocation": "For {{location}}",
-      "createRoleGlobal": "Shared across all locations",
+      "createRoleGlobal": "Shared across all establishments",
       "createRolesInSettings": "Create roles in settings",
       "defaultFirstName": "Staff",
       "emailLabel": "Email",
@@ -6175,17 +6178,17 @@
       "globalRoles": "Global Roles",
       "leaveBlank": "Leave blank to keep current",
       "legacyNoRole": "No role (legacy custom permissions)",
-      "location": "Location",
-      "locationDisclaimer": "If you have other locations you can add them from the <0>owner dashboard</0> to this employee.",
-      "locationLabel": "Location Access",
-      "locationsCount": "{{count}} Location",
-      "locationsCount_few": "{{count}} Locations",
-      "locationsCount_many": "{{count}} Locations",
-      "locationsCount_one": "1 Location",
-      "locationsCount_other": "{{count}} Locations",
-      "locationsCount_plural": "{{count}} Locations",
-      "locationsCount_two": "2 Locations",
-      "locationsCount_zero": "{{count}} Locations",
+      "location": "Establishment",
+      "locationDisclaimer": "If you have other establishments you can add them from the <0>owner dashboard</0> to this employee.",
+      "locationLabel": "Establishment Access",
+      "locationsCount": "{{count}} Establishment",
+      "locationsCount_few": "{{count}} Establishments",
+      "locationsCount_many": "{{count}} Establishments",
+      "locationsCount_one": "1 Establishment",
+      "locationsCount_other": "{{count}} Establishments",
+      "locationsCount_plural": "{{count}} Establishments",
+      "locationsCount_two": "2 Establishments",
+      "locationsCount_zero": "{{count}} Establishments",
       "modified": "(Modified)",
       "nameLabel": "Name",
       "nameOptional": "(Optional)",
@@ -6210,12 +6213,12 @@
       "phonePlaceholder": "E.g. +1 234 567 8900",
       "posPermissions": "Basic Sales Permissions",
       "resendVerification": "Resend verification",
-      "roleForAllLocations": "Role for all locations",
+      "roleForAllLocations": "Role for all establishments",
       "roleLabel": "Role",
-      "roleModePerLocation": "Role per location",
+      "roleModePerLocation": "Role per establishment",
       "roleModeShared": "One role everywhere",
-      "sameRoleForAll": "Same role for all locations",
-      "selectLocation": "Select location...",
+      "sameRoleForAll": "Same role for all establishments",
+      "selectLocation": "Select establishment...",
       "selectRole": "Select role...",
       "standardUsers": "Standard user",
       "usernameLabel": "Username",
@@ -6251,7 +6254,7 @@
         "manage_payment_methods": "Payment Methods",
         "manage_pos_devices": "POS Devices",
         "manage_service_charge": "Service Charge",
-        "manage_settings": "Change Location Settings",
+        "manage_settings": "Change Establishment Settings",
         "manage_taxes_backoffice": "Taxes",
         "refunds": "Refunds",
         "view_activity_logs": "Activity Log",
@@ -6367,7 +6370,7 @@
       "backTo": "Back to",
       "backToHelp": "Back to Help Center",
       "bl1": "Understanding Billing Status",
-      "bl1_excerpt": "Learn how trial, active, past-due, suspended, canceled, and multi-location billing statuses work.",
+      "bl1_excerpt": "Learn how trial, active, past-due, suspended, canceled, and multi-establishment billing statuses work.",
       "bl10": "Canceling or Resuming a Subscription",
       "bl10_excerpt": "Learn what to check before canceling, pausing, or resuming Mintcom subscription access.",
       "bl11": "Billing Access and Owner Permissions",
@@ -6390,7 +6393,7 @@
         "li17": "Access continues until end of current billing period",
         "li18": "Data retained for 30 days after cancellation",
         "li19": "Export your data before the retention period ends",
-        "li2": "14-day free trial for new locations",
+        "li2": "14-day free trial for new establishments",
         "li20": "Refunds processed within 5-7 business days",
         "li21": "Contact support for billing disputes",
         "li3": "No setup fees or hidden charges",
@@ -6409,16 +6412,16 @@
       "bl2_excerpt": "Add, update, and manage the saved card used for Mintcom subscription billing.",
       "bl3": "Managing Billing Cards",
       "bl3_excerpt": "How to set a default card, replace expired cards, and resolve subscription payment issues.",
-      "bl4": "Subscription Plans and Location Pricing",
-      "bl4_excerpt": "Understand first-location pricing, additional-location pricing, monthly billing, and yearly billing.",
+      "bl4": "Subscription Plans and Establishment Pricing",
+      "bl4_excerpt": "Understand first-establishment pricing, additional-establishment pricing, monthly billing, and yearly billing.",
       "bl5": "Invoices and Billing History",
       "bl5_excerpt": "Review invoice status, billing periods, saved cards, and payment history.",
       "bl6": "Tax Configuration and Receipt Impact",
       "bl6_excerpt": "Configure tax settings before live sales and understand how tax changes affect receipts and reports.",
       "bl7": "Refunds and Receipt Cancellation",
       "bl7_excerpt": "Use the Orders screen to refund or cancel receipts with the right permissions and audit trail.",
-      "bl8": "Multi-Location Billing",
-      "bl8_excerpt": "Manage billing across multiple locations with unified or separate plans.",
+      "bl8": "Multi-Establishment Billing",
+      "bl8_excerpt": "Manage billing across multiple establishments with unified or separate plans.",
       "bl9": "What Happens When Payment Fails",
       "bl9_excerpt": "Understand failed subscription payments, retry steps, and how to prevent future billing interruptions.",
       "clearFilters": "Clear Filters",
@@ -6451,7 +6454,7 @@
         "li3_label": "Discounts & Promotions",
         "li4_desc": "View and reprint past receipts from the transaction history.",
         "li4_label": "Receipt Management",
-        "li5": "Track stock levels in real-time across all locations",
+        "li5": "Track stock levels in real-time across all establishments",
         "li6": "Set low-stock alerts to never run out of popular items",
         "li7": "Manage ingredients and recipes for prepared items",
         "li8": "Import and export product catalogs easily",
@@ -6464,7 +6467,7 @@
         "p6": "Build lasting customer relationships with our built-in CRM and loyalty system.",
         "type1_desc": "Your main sales interface: process orders, apply discounts, and complete transactions.",
         "type1_label": "POS Terminal",
-        "type2_desc": "Track raw materials, ingredients, and finished products across all locations.",
+        "type2_desc": "Track raw materials, ingredients, and finished products across all establishments.",
         "type2_label": "Recipe Operations System",
         "type3_desc": "Assign roles, manage schedules, and track employee performance.",
         "type3_label": "Staff Management",
@@ -6495,7 +6498,7 @@
       "ft6": "Receipt Customization",
       "ft6_excerpt": "Customize your receipt layout with logo, address, and custom messages.",
       "ft7": "Owner and Brand Portal Guide",
-      "ft7_excerpt": "Manage locations, brands, employees, roles, billing, and brand teams.",
+      "ft7_excerpt": "Manage establishments, brands, employees, roles, billing, and brand teams.",
       "ft8": "Payment Methods Setup",
       "ft8_excerpt": "Configure accepted payment methods including cards and digital wallets.",
       "ft9": "Add-ons & Modifiers Guide",
@@ -6503,7 +6506,7 @@
       "gs1": {
         "h1": "Getting Started with Mintcom",
         "h2": "Creating Your Account",
-        "h3": "Setting Up Your First Location",
+        "h3": "Setting Up Your First Establishment",
         "h4": "Adding Products",
         "h5": "Configuring Payment Methods",
         "h6": "Inviting Staff",
@@ -6518,13 +6521,13 @@
         "li4_label": "POS Credentials",
         "p1": "Welcome to Mintcom! This guide will walk you through everything you need to get your business up and running.",
         "p2": "Start by creating your account and verifying your email address.",
-        "p3": "Next, set up your first business location with all the essential details.",
+        "p3": "Next, set up your first business establishment with all the essential details.",
         "p4": "Add your products, set prices, and organize them into categories.",
         "p5": "Set up the payment methods you want to accept: cash, cards, and digital wallets.",
         "p6": "Invite your team members and assign them appropriate roles and permissions.",
         "p7": "Once everything is set up, download the POS app and start processing orders!"
       },
-      "gs1_excerpt": "Manage profile, password, language, and location access settings.",
+      "gs1_excerpt": "Manage profile, password, language, and establishment access settings.",
       "gs10": "Choosing the Right Business Structure",
       "gs10_excerpt": "Decide how to organize businesses, branches, registers, staff, and test data before launch.",
       "gs11": "Launch Checklist Before First Sale",
@@ -6568,7 +6571,7 @@
         "p5": "Build and manage your team with flexible roles and permissions.",
         "p6": "Configure every aspect of your business from the settings panel."
       },
-      "gs2_excerpt": "Set up your first business location with correct details, currency, POS credentials, and launch checks.",
+      "gs2_excerpt": "Set up your first business establishment with correct details, currency, POS credentials, and launch checks.",
       "gs3": "Adding Your First Product",
       "gs3_excerpt": "Learn how to create products, set prices, and organize your menu.",
       "gs4": "Setting Up Payment Methods",
@@ -6578,7 +6581,7 @@
       "gs6": "Understanding Roles & Permissions",
       "gs6_excerpt": "Learn how to create custom roles with specific POS and back-office access.",
       "gs7": "Downloading the POS App",
-      "gs7_excerpt": "Get the Mintcom POS app on your tablet and connect to your location.",
+      "gs7_excerpt": "Get the Mintcom POS app on your tablet and connect to your establishment.",
       "gs8": "Starting Your First Shift",
       "gs8_excerpt": "Learn how to open a shift, process orders, and close out at the end of the day.",
       "gs9": "Verifying Email and Resetting Password",
@@ -6672,7 +6675,7 @@
     "categories": {
       "all": "All Categories",
       "billing": "Owner, Billing & Brands",
-      "billingDesc": "Subscriptions, invoices, billing cards, locations, brands, and owner-level control",
+      "billingDesc": "Subscriptions, invoices, billing cards, establishments, brands, and owner-level control",
       "billingDescShort": "Owner & billing tools",
       "bug": "Bug Report",
       "bugDescShort": "Report a problem",
@@ -6681,7 +6684,7 @@
       "features": "POS, Inventory & Reports",
       "featuresDesc": "Daily sales, products, categories, add-ons, recipes, reports, discounts, loyalty, and customers",
       "gettingStarted": "Setup & Account Access",
-      "gettingStartedDesc": "Account setup, first location, POS app connection, staff access, and launch checks",
+      "gettingStartedDesc": "Account setup, first establishment, POS app connection, staff access, and launch checks",
       "gettingStartedDescShort": "Setup & access",
       "notFound": "Category Not Found",
       "notFoundDesc": "The category you're looking for doesn't exist.",
@@ -6697,7 +6700,7 @@
     },
     "cta": {
       "stillNeedHelp": "Still Need Help?",
-      "stillNeedHelpDesc": "Open a support ticket or email support with the location, error, device, and steps already tried.",
+      "stillNeedHelpDesc": "Open a support ticket or email support with the establishment, error, device, and steps already tried.",
       "subtitle": "Can't Find What You're Looking for? We're Here to Help",
       "title": "Contact Support"
     },
@@ -6773,7 +6776,7 @@
     },
     "popularArticles": {
       "account": "How to manage your account settings",
-      "establishment": "Setting up your first location",
+      "establishment": "Setting up your first establishment",
       "payment": "Managing subscription payment methods",
       "printer": "Connecting your receipt printer",
       "reports": "Reading sales and operations reports"
@@ -6797,15 +6800,15 @@
       "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
       "noResults": "No results found",
       "q1": {
-        "answer": "Mintcom is a cloud POS and business management platform for restaurants, cafes, and retail businesses. It helps you manage sales, products, staff, reports, and multiple locations from one place.",
+        "answer": "Mintcom is a cloud POS and business management platform for restaurants, cafes, and retail businesses. It helps you manage sales, products, staff, reports, and multiple establishments from one place.",
         "question": "What is Mintcom?"
       },
       "q2": {
-        "answer": "Mintcom can be used wherever your business can be onboarded and your payment setup is supported. If you are unsure, contact support before creating a new location.",
+        "answer": "Mintcom can be used wherever your business can be onboarded and your payment setup is supported. If you are unsure, contact support before creating a new establishment.",
         "question": "Is Mintcom available in my country?"
       },
       "q3": {
-        "answer": "In the POS you can accept cash, cards, and any custom payment methods you configure for the location. For card processing, use the terminal or provider connected to your business.",
+        "answer": "In the POS you can accept cash, cards, and any custom payment methods you configure for the establishment. For card processing, use the terminal or provider connected to your business.",
         "question": "What payment methods can I accept?"
       },
       "q4": {
@@ -6825,7 +6828,7 @@
         "question": "Can I add multiple users to my account?"
       },
       "q8": {
-        "answer": "No hidden setup fees. Subscription pricing is shown on the pricing page, with monthly and yearly options per location.",
+        "answer": "No hidden setup fees. Subscription pricing is shown on the pricing page, with monthly and yearly options per establishment.",
         "question": "Are there any hidden fees?"
       },
       "search_placeholder": "Search for questions...",
@@ -6940,7 +6943,7 @@
       "title": "Built for restaurants, cafés, and growing retail",
       "subtitle": "You do not need a custom system for every business type. Mintcom adapts to how you sell: tables, takeaway, counters, and multi-branch brands.",
       "ctaTitle": "Not sure if Mintcom fits?",
-      "ctaDesc": "Try the free POS demo or contact us. We will help you map Mintcom to your menu, staff, and locations.",
+      "ctaDesc": "Try the free POS demo or contact us. We will help you map Mintcom to your menu, staff, and establishments.",
       "contactUs": "Contact us",
       "items": {
         "restaurant": {
@@ -6990,10 +6993,10 @@
         },
         "multi": {
           "title": "Multi-branch brands",
-          "description": "Owners manage brands and locations centrally while each store keeps its own daily operations.",
+          "description": "Owners manage brands and establishments centrally while each store keeps its own daily operations.",
           "points": [
             "Owner portal for brands",
-            "Per-location dashboards",
+            "Per-establishment dashboards",
             "Transparent pricing per branch"
           ]
         }
@@ -7016,7 +7019,7 @@
         },
         "cloud": {
           "title": "Cloud reliability",
-          "description": "Your catalog, reports, and settings live in the cloud so devices stay in sync across locations."
+          "description": "Your catalog, reports, and settings live in the cloud so devices stay in sync across establishments."
         },
         "audit": {
           "title": "Activity visibility",
@@ -7035,9 +7038,9 @@
     "pricing": {
       "badge": "Simple pricing",
       "title": "One plan. Everything included.",
-      "subtitle": "No hardware packages, no confusing add-ons. Mintcom is software that runs on the devices you already own, with transparent pricing per location.",
-      "perLocation": "per location",
-      "extraLocation": "Additional locations from {{price}} {{currency}} {{period}}, discounted so growth stays affordable.",
+      "subtitle": "No hardware packages, no confusing add-ons. Mintcom is software that runs on the devices you already own, with transparent pricing per establishment.",
+      "perLocation": "per establishment",
+      "extraLocation": "Additional establishments from {{price}} {{currency}} {{period}}, discounted so growth stays affordable.",
       "trialNote": "Start with a 14-day free trial. Cancel anytime from your owner portal.",
       "includedTitle": "What’s included",
       "noHardware": "We don’t sell hardware. Use your own tablets, phones, or computers. Mintcom works with what you already have.",
@@ -7049,7 +7052,7 @@
         "staff": "Unlimited staff with roles & permissions",
         "reports": "Sales, payments, peak hours & shift reports",
         "loyalty": "Built-in loyalty & rewards",
-        "multi": "Multi-location & brand tools",
+        "multi": "Multi-establishment & brand tools",
         "mobile": "Owner mobile alerts & monitoring",
         "ai": "AI business assistant (fair-use limits apply)",
         "support": "Help center & support tickets",
@@ -7061,8 +7064,8 @@
           "a": "No. Mintcom is software only. You can use phones, tablets, or computers you already own. We never force you to buy equipment from us."
         },
         "q2": {
-          "q": "What do I pay for each location?",
-          "a": "Each location is billed under the same simple, transparent rate. Multi-store growth stays predictable without hidden add-ons."
+          "q": "What do I pay for each establishment?",
+          "a": "Each establishment is billed under the same simple, transparent rate. Multi-store growth stays predictable without hidden add-ons."
         },
         "q3": {
           "q": "Is there a free trial?",
@@ -7070,7 +7073,7 @@
         },
         "q4": {
           "q": "Are there hidden fees?",
-          "a": "No surprise feature unlocks. Core POS, staff, reports, loyalty, and multi-location tools are part of the plan, not sold as separate paid modules."
+          "a": "No surprise feature unlocks. Core POS, staff, reports, loyalty, and multi-establishment tools are part of the plan, not sold as separate paid modules."
         },
         "q5": {
           "q": "Can I switch monthly and yearly?",
@@ -7078,7 +7081,7 @@
         },
         "q6": {
           "q": "What if I only need one store?",
-          "a": "Perfect. Mintcom works great for a single location, and it is ready when you open the next one."
+          "a": "Perfect. Mintcom works great for a single establishment, and it is ready when you open the next one."
         }
       }
     },
@@ -7095,8 +7098,8 @@
           "description": "Sign up online, verify your email, and enter the owner portal. No sales call required to start exploring."
         },
         "s2": {
-          "title": "Add your business & location",
-          "description": "Set up your location and basic details so every sale is tied to the right store."
+          "title": "Add your business & establishment",
+          "description": "Set up your establishment and basic details so every sale is tied to the right store."
         },
         "s3": {
           "title": "Build your menu or catalog",
@@ -7139,19 +7142,19 @@
       }
     },
     "multi": {
-      "badge": "Multi-location",
-      "title": "One owner account. Many locations.",
+      "badge": "Multi-establishment",
+      "title": "One owner account. Many establishments.",
       "subtitle": "Whether you run two cafés or a growing brand, Mintcom keeps branches organized without losing local control on the floor.",
       "priceTitle": "Grow without punishing pricing",
-      "priceBody": "Additional locations start from {{price}} {{currency}}/month, designed so expansion is an opportunity rather than a shock.",
+      "priceBody": "Additional establishments start from {{price}} {{currency}}/month, designed so expansion is an opportunity rather than a shock.",
       "priceNote": "Yearly billing saves more. See the full pricing page for monthly and yearly options.",
       "cards": {
         "brands": {
           "title": "Brands & branches",
-          "description": "Group locations under brands from the owner portal and keep structure clear as you scale."
+          "description": "Group establishments under brands from the owner portal and keep structure clear as you scale."
         },
         "dashboards": {
-          "title": "Per-location dashboards",
+          "title": "Per-establishment dashboards",
           "description": "Open each store’s products, staff, and reports without mixing data between branches."
         },
         "teams": {
@@ -7159,7 +7162,7 @@
           "description": "Owners, brand managers, and store staff get the access they need, and nothing more."
         },
         "grow": {
-          "title": "Add locations when ready",
+          "title": "Add establishments when ready",
           "description": "Start with one store. When the next door opens, link it and keep selling the same day."
         }
       }
@@ -7174,11 +7177,11 @@
       "reasons": {
         "r1": {
           "title": "Transparent pricing",
-          "description": "One clear plan direction, transparent pricing per location, and no hardware upsell. You know what you’re paying for."
+          "description": "One clear plan direction, transparent pricing per establishment, and no hardware upsell. You know what you’re paying for."
         },
         "r2": {
           "title": "All-in-one operations",
-          "description": "Sales, staff, reports, loyalty, recipes/cost tools, and multi-location control live in one system."
+          "description": "Sales, staff, reports, loyalty, recipes/cost tools, and multi-establishment control live in one system."
         },
         "r3": {
           "title": "Fast to learn",
@@ -7201,9 +7204,9 @@
     },
     "title": "Notifications",
     "subtitle": {
-      "owner": "Alerts across all your locations.",
-      "location": "Alerts for this location.",
-      "brand": "Alerts for locations in {{name}}."
+      "owner": "Alerts across all your establishments.",
+      "location": "Alerts for this establishment.",
+      "brand": "Alerts for establishments in {{name}}."
     },
     "tabs": {
       "all": "All",
@@ -7239,14 +7242,14 @@
       "retry": "Retry",
       "loadMore": "Load More",
       "viewAll": "View All",
-      "allLocations": "All Locations",
+      "allLocations": "All Establishments",
       "refresh": "Refresh"
     },
     "filters": {
       "searchLabel": "Search Alerts",
-      "searchPlaceholder": "Search by alert, location, employee, or item",
-      "locationLabel": "Filter by Location",
-      "unknownLocation": "Unknown Location"
+      "searchPlaceholder": "Search by alert, establishment, employee, or item",
+      "locationLabel": "Filter by Establishment",
+      "unknownLocation": "Unknown Establishment"
     },
     "empty": {
       "all": "No Alerts",
