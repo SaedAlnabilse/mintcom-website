@@ -206,19 +206,20 @@ export const FeedbackWidget = () => {
                                 ) : (
                                     <form onSubmit={handleSubmit} className="space-y-6">
                                         <div>
-                                            <label className="block text-xs font-sans font-normal text-gray-500 mb-3">{formatInputLabel(t('feedback.rateExperience'), t('common.locale'))}</label>
-                                            <div className="flex justify-start gap-2.5">
+                                            <div className="block text-xs font-sans font-normal text-gray-500 mb-2">{t('feedback.rateExperience')}</div>
+                                            <div role="group" aria-label={t('feedback.rateExperience')} className="flex justify-start gap-1">
                                                 {[1, 2, 3, 4, 5].map((s) => (
                                                     <button
                                                         key={s}
                                                         type="button"
+                                                        aria-label={`${s} / 5`}
                                                         onClick={() => setRating(s)}
-                                                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${rating >= s
-                                                                ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20'
-                                                                : 'bg-gray-50 dark:bg-[#1E293B] text-gray-300 hover:bg-gray-100 dark:hover:bg-[#334155]'
+                                                        className={`p-1 transition-colors duration-150 ${rating >= s
+                                                                ? 'text-amber-400'
+                                                                : 'text-gray-300 dark:text-gray-600 hover:text-amber-300'
                                                             }`}
                                                     >
-                                                        <Star size={16} fill={rating >= s ? "currentColor" : "none"} strokeWidth={2.5} />
+                                                        <Star size={26} fill="currentColor" strokeWidth={0} />
                                                     </button>
                                                 ))}
                                             </div>
