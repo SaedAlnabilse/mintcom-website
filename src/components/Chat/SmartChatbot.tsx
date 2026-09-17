@@ -24,6 +24,7 @@ import {
   Wallet,
   X,
 } from 'lucide-react';
+import { ModalCloseButton } from '../ui';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import MintcomLeafIcon from '../../assets/small-logo.svg';
@@ -393,13 +394,10 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
               </div>
             </div>
 
-            <button
-              onClick={onClose}
-              className="relative z-10 p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/15 transition-all active:scale-95 flex-shrink-0"
-              aria-label={t('common.close', 'Close')}
-            >
-              <X size={18} />
-            </button>
+            <ModalCloseButton
+              onClose={onClose}
+              className="!bg-white/10 !border-white/20 !text-white hover:!text-white hover:!bg-white/20"
+            />
           </div>
 
           <div className="custom-scrollbar flex-1 space-y-4 overflow-y-auto p-4">

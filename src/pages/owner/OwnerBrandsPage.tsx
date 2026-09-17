@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { createPortal } from 'react-dom';
 import {
     Building2,
     Search,
@@ -35,7 +33,7 @@ import { BusyOverlay } from '../../components/BusyOverlay';
 import { useAuth } from '../../context/AuthContext';
 import { CustomSelect } from '../../components/CustomSelect';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
-import { Pagination } from '../../components/ui';
+import { EmptyState, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ModalCloseButton, PageHeader, Card } from '../../components/ui';
 import { SectionLoader } from '../../components/LoadingState';
 import { StatValue } from '../../components/ui/StatValue';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
@@ -482,15 +480,11 @@ export function OwnerBrandsPage() {
                 be stacked on an in-flight request. */}
             <BusyOverlay visible={isLoading} />
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.brands.title')}</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
-                        {t('owner.brands.subtitle')}
-                    </p>
-                </div>
-
-                <div className="flex items-center gap-3 w-full sm:w-auto">
+            <PageHeader
+                title={t('owner.brands.title')}
+                subtitle={t('owner.brands.subtitle')}
+                actions={
+                    <>
                     <button
                         onClick={() => {
                             if (availableEstablishments.length < 2) {
@@ -504,8 +498,9 @@ export function OwnerBrandsPage() {
                         <Plus size={18} className="shrink-0" />
                         <span className="truncate">{t('owner.brands.createBrand')}</span>
                     </button>
-                </div>
-            </div>
+                    </>
+                }
+            />
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -535,7 +530,7 @@ export function OwnerBrandsPage() {
             </div>
 
             {/* Filters Bar */}
-            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
+            <Card padding="sm">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                     {/* Search */}
                     <div className="relative flex-1 min-w-0 w-full">
@@ -578,34 +573,32 @@ export function OwnerBrandsPage() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </Card>
 
             {/* Brands Display */}
             {filteredBrands.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                    <Building2 size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white">
-                        {hasActiveFilters ? t('common.noResults') : t('owner.brands.noBrands')}
-                    </p>
-                    <p className="text-sm text-gray-500 mt-1">
-                        {hasActiveFilters ? t('common.noMatchingResults', { entity: 'brands', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('owner.brands.createBrandHint')}
-                    </p>
-                    {!hasActiveFilters && (
-                        <button
-                            onClick={() => {
-                                if (availableEstablishments.length < 2) {
-                                    setShowDisclaimerModal(true);
-                                } else {
-                                    setShowCreateModal(true);
-                                }
-                            }}
-                            className="mt-6 px-6 py-3 bg-mintcom-green text-black font-bold rounded-xl hover:bg-[#5fa888] transition-all shadow-sm flex items-center gap-2 mx-auto"
-                        >
-                            <Link2 size={18} />
-                            {t('owner.brands.createFirstBrand')}
-                        </button>
-                    )}
-                </div>
+                <EmptyState
+                    icon={Building2}
+                    title={hasActiveFilters ? t('common.noResults') : t('owner.brands.noBrands')}
+                    description={hasActiveFilters ? t('common.noMatchingResults', { entity: 'brands', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('owner.brands.createBrandHint')}
+                    action={
+                        !hasActiveFilters ? (
+                            <button
+                                onClick={() => {
+                                    if (availableEstablishments.length < 2) {
+                                        setShowDisclaimerModal(true);
+                                    } else {
+                                        setShowCreateModal(true);
+                                    }
+                                }}
+                                className="mt-6 px-6 py-3 bg-mintcom-green text-black font-bold rounded-xl hover:bg-[#5fa888] transition-all shadow-sm flex items-center gap-2 mx-auto"
+                            >
+                                <Link2 size={18} />
+                                {t('owner.brands.createFirstBrand')}
+                            </button>
+                        ) : undefined
+                    }
+                />
             ) : (
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                     <div className="p-6">
@@ -769,73 +762,34 @@ export function OwnerBrandsPage() {
             )}
 
             {/* Create Brand Modal */}
-            {createPortal(
-                <AnimatePresence>
-                    {showCreateModal && (
-                        <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-mintcom-green selection:text-black">
-                            {/* Backdrop */}
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                onClick={handleCloseModal}
-                                className="absolute inset-0 bg-black/30 dark:bg-black/80 backdrop-blur-sm"
-                            />
-                            
-                            {/* Modal Container */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 100 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: 100 }}
-                                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                                role="dialog"
-                                aria-modal="true"
-                                className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/5 flex flex-col max-h-[92dvh] sm:h-auto transition-colors duration-300"
+            <Modal isOpen={showCreateModal} onClose={handleCloseModal} size="lg">
+                <ModalHeader
+                    title={t('owner.brands.createBrandTitle')}
+                    subtitle={t('owner.brands.createBrandSubtitle')}
+                    icon={<Building2 size={24} />}
+                    onClose={handleCloseModal}
+                />
+
+                <ModalBody>
+                    {/* Wizard progress + back */}
+                    <div className="flex items-center justify-end gap-4 mb-4">
+                        <div className="flex items-center gap-1.5">
+                            {[1, 2, 3].map((step) => (
+                                <div
+                                    key={step}
+                                    className={`h-1.5 rounded-full transition-all duration-500 ${wizardStep === step ? 'w-8 bg-mintcom-green' : 'w-2 bg-gray-200 dark:bg-white/10'}`}
+                                />
+                            ))}
+                        </div>
+                        {wizardStep > 1 && (
+                            <button
+                                onClick={handlePrevStep}
+                                className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-400 transition-all"
                             >
-                                {/* Mobile drag handle */}
-                                <div className="sm:hidden flex justify-center pt-3 pb-1">
-                                    <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                                </div>
-
-                                {/* Modal Content */}
-                                <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
-                                    {/* Header */}
-                                    <div className="px-5 sm:px-8 pt-6 sm:pt-10 pb-5 sm:pb-6 flex items-start justify-between gap-3">
-                                        <div className="flex items-center gap-4 min-w-0">
-                                            <div className="w-12 h-12 sm:w-16 sm:h-16 shrink-0 rounded-2xl bg-[#F0FDF4] dark:bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
-                                                <Building2 size={26} />
-                                            </div>
-                                            <div className="min-w-0">
-                                                <h2 className="text-xl sm:text-2xl font-sans font-bold text-gray-900 dark:text-white tracking-tight leading-tight truncate">
-                                                    {t('owner.brands.createBrandTitle')}
-                                                </h2>
-                                                <p className="text-sm sm:text-base font-sans font-medium text-gray-500 mt-1 line-clamp-2">
-                                                    {t('owner.brands.createBrandSubtitle')}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-4 pt-2">
-                                            <div className="flex items-center gap-1.5">
-                                                {[1, 2, 3].map((step) => (
-                                                    <div
-                                                        key={step}
-                                                        className={`h-1.5 rounded-full transition-all duration-500 ${wizardStep === step ? 'w-8 bg-mintcom-green' : 'w-2 bg-gray-200 dark:bg-white/10'}`}
-                                                    />
-                                                ))}
-                                            </div>
-                                            {wizardStep > 1 && (
-                                                <button
-                                                    onClick={handlePrevStep}
-                                                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-400 transition-all"
-                                                >
-                                                    <ChevronLeft size={20} />
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Wizard Body */}
-                                    <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain custom-scrollbar px-5 sm:px-8 py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
+                                <ChevronLeft size={20} />
+                            </button>
+                        )}
+                    </div>
                                         {wizardStep === 1 && (
                                         <div className="space-y-6 py-2">
                                             <div className="space-y-2">
@@ -1023,52 +977,37 @@ export function OwnerBrandsPage() {
                                             )}
                                         </div>
                                     )}
-                                </div>
 
-                                {/* Footer */}
-                                <div className="px-8 pt-6 pb-10">
-                                    <div className="w-full">
-                                        {error && (
-                                            <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 text-[13px] font-sans font-bold text-center">
-                                                {error}
-                                            </div>
-                                        )}
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                type="button"
-                                                onClick={wizardStep === 1 ? handleCloseModal : handlePrevStep}
-                                                className="flex-1 py-4 rounded-xl bg-gray-100 dark:bg-white/5 text-[15px] font-sans font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-all active:scale-95"
-                                            >
-                                                {wizardStep === 1 ? t('common.cancel') : t('common.back')}
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={wizardStep === 3 ? handleSubmit(onCreateBrand) : handleNextStep}
-                                                disabled={isCreating}
-                                                className="flex-1 py-4 rounded-xl bg-mintcom-green text-black font-sans font-bold text-[15px] hover:bg-mintcom-green/90 transition-all shadow-lg shadow-mintcom-green/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-[0.98]"
-                                            >
-                                                {isCreating ? (
-                                                    <>
-                                                        <Loader2 size={18} className="animate-spin" />
-                                                        {t('common.creating')}
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <span>{wizardStep === 3 ? t('owner.brands.createBrand') : t('common.continue')}</span>
-                                                        <ChevronRight size={18} strokeWidth={3} />
-                                                    </>
-                                                )}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </div>
+                    {error && (
+                        <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 text-[13px] font-sans font-bold text-center">
+                            {error}
+                        </div>
                     )}
-                </AnimatePresence>,
-                document.body
-            )}
+                </ModalBody>
+
+                <ModalFooter>
+                    <ModalCancelButton onClick={wizardStep === 1 ? handleCloseModal : handlePrevStep}>
+                        {wizardStep === 1 ? t('common.cancel') : t('common.back')}
+                    </ModalCancelButton>
+                    <ModalSubmitButton
+                        type="button"
+                        onClick={wizardStep === 3 ? handleSubmit(onCreateBrand) : handleNextStep}
+                        disabled={isCreating}
+                    >
+                        {isCreating ? (
+                            <>
+                                <Loader2 size={18} className="animate-spin" />
+                                {t('common.creating')}
+                            </>
+                        ) : (
+                            <>
+                                <span>{wizardStep === 3 ? t('owner.brands.createBrand') : t('common.continue')}</span>
+                                <ChevronRight size={18} strokeWidth={3} />
+                            </>
+                        )}
+                    </ModalSubmitButton>
+                </ModalFooter>
+            </Modal>
             
             {/* Security Verification Modal */}
             <SecurityVerificationModal
@@ -1084,70 +1023,43 @@ export function OwnerBrandsPage() {
             />
 
             {/* Disclaimer Modal */}
-            {createPortal(
-                <AnimatePresence>
-                    {showDisclaimerModal && (
-                        <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-mintcom-green selection:text-black">
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                onClick={() => setShowDisclaimerModal(false)}
-                                className="absolute inset-0 bg-black/30 dark:bg-black/80 backdrop-blur-sm"
-                            />
-                            
-                            <motion.div
-                                initial={{ opacity: 0, y: 100 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: 100 }}
-                                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                                className="relative w-full max-w-md bg-white dark:bg-[#1E293B] rounded-[2.5rem] overflow-hidden border border-gray-200 dark:border-white/5 flex flex-col transition-colors duration-300"
-                            >
-                                <div className="sm:hidden flex justify-center pt-3 pb-1">
-                                    <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                                </div>
-
-                                <div className="p-8">
-                                    <div className="flex flex-col items-center text-center space-y-6">
-                                        <div className="w-20 h-20 rounded-[1.5rem] bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-sm">
-                                            <AlertTriangle size={40} />
-                                        </div>
-                                        
-                                        <div className="space-y-2">
-                                            <h2 className="text-2xl font-sans font-bold text-gray-900 dark:text-white tracking-tight">
-                                                {t('owner.brands.disclaimerTitle')}
-                                            </h2>
-                                            <p className="text-[15px] font-sans font-medium text-gray-500">
-                                                {establishments.length < 2
-                                                    ? t('owner.brands.disclaimerNotEnoughLocations')
-                                                    : t('owner.brands.disclaimerSubtitle')
-                                                }
-                                            </p>
-                                        </div>
-
-                                        <div className="bg-gray-50 dark:bg-black/20 rounded-3xl p-6 border border-gray-100 dark:border-white/5">
-                                            <p className="text-[14px] font-sans font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
-                                                {establishments.length < 2
-                                                    ? t('owner.brands.disclaimerNoLocations')
-                                                    : t('owner.brands.disclaimerDesc')
-                                                }
-                                            </p>
-                                        </div>
-
-                                        <button
-                                            onClick={() => setShowDisclaimerModal(false)}
-                                            className="w-full py-4 rounded-xl bg-mintcom-green text-black font-sans font-bold text-sm tracking-tight hover:bg-mintcom-green/90 transition-all shadow-lg shadow-mintcom-green/20 active:scale-[0.98] mt-4"
-                                        >
-                                            {t('owner.brands.disclaimerAction')}
-                                        </button>
-                                    </div>
-                                </div>
-                            </motion.div>
+            <Modal isOpen={showDisclaimerModal} onClose={() => setShowDisclaimerModal(false)} size="sm">
+                <ModalCloseButton onClose={() => setShowDisclaimerModal(false)} autoPositionAbsolute />
+                <ModalBody>
+                    <div className="flex flex-col items-center text-center space-y-6">
+                        <div className="w-20 h-20 rounded-[1.5rem] bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-sm">
+                            <AlertTriangle size={40} />
                         </div>
-                    )}
-                </AnimatePresence>,
-                document.body
-            )}
+
+                        <div className="space-y-2">
+                            <h2 className="text-2xl font-sans font-bold text-gray-900 dark:text-white tracking-tight">
+                                {t('owner.brands.disclaimerTitle')}
+                            </h2>
+                            <p className="text-[15px] font-sans font-medium text-gray-500">
+                                {establishments.length < 2
+                                    ? t('owner.brands.disclaimerNotEnoughLocations')
+                                    : t('owner.brands.disclaimerSubtitle')
+                                }
+                            </p>
+                        </div>
+
+                        <div className="bg-gray-50 dark:bg-black/20 rounded-3xl p-6 border border-gray-100 dark:border-white/5">
+                            <p className="text-[14px] font-sans font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
+                                {establishments.length < 2
+                                    ? t('owner.brands.disclaimerNoLocations')
+                                    : t('owner.brands.disclaimerDesc')
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </ModalBody>
+
+                <ModalFooter>
+                    <ModalSubmitButton type="button" onClick={() => setShowDisclaimerModal(false)}>
+                        {t('owner.brands.disclaimerAction')}
+                    </ModalSubmitButton>
+                </ModalFooter>
+            </Modal>
         </div>
     );
 }

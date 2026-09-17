@@ -13,7 +13,6 @@ import {
     User,
     ShoppingCart,
     Clock,
-    X,
     FileSpreadsheet,
     ChevronRight,
     Shield,
@@ -25,6 +24,7 @@ import {
 import api from '../config/api';
 import toast from 'react-hot-toast';
 import { QuickInfo } from './QuickInfo';
+import { Modal, ModalCloseButton } from './ui';
 import { StepUpVerifier } from './StepUpVerifier';
 import { reauthHeaders } from '../services/stepUp';
 import { StatValue } from './ui/StatValue';
@@ -213,385 +213,359 @@ export function EstablishmentDeletionWizard({
         );
     }
 
-    return createPortal(
-        <div
-            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-            className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-        >
-            <motion.div
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 100 }}
-                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-2xl rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative"
-            >
-                {/* Mobile drag handle */}
-                <div className="sm:hidden flex justify-center pt-2 pb-1">
-                    <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                </div>
-
-                {/* Header */}
-                <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10 flex-shrink-0">
-                    <div className="absolute top-0 right-0 w-48 h-48 bg-mintcom-red/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-mintcom-red/10 flex items-center justify-center text-mintcom-red">
-                            <Trash2 size={20} />
-                        </div>
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
-                                {t('security.deletion.title')}
-                            </h2>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{establishmentName}</p>
-                        </div>
+    return (
+        <Modal isOpen={true} onClose={onClose} size="xl">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10 flex-shrink-0">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-mintcom-red/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-mintcom-red/10 flex items-center justify-center text-mintcom-red">
+                        <Trash2 size={20} />
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
-                    >
-                        <X size={20} />
-                    </button>
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+                            {t('security.deletion.title')}
+                        </h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{establishmentName}</p>
+                    </div>
                 </div>
+                <ModalCloseButton onClose={onClose} />
+            </div>
 
-                {/* Step Indicator */}
-                <div className="px-6 sm:px-8 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] flex-shrink-0">
-                    <div className="flex items-center gap-2">
-                        {['warning', 'export', 'confirm'].map((s, i) => (
-                            <div key={s} className="flex items-center">
-                                <div
-                                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-colors ${step === s
-                                        ? 'bg-mintcom-red text-white shadow-sm'
-                                        : ['warning', 'export', 'confirm'].indexOf(step) > i
-                                            ? 'bg-mintcom-red/20 text-mintcom-red'
-                                            : 'bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-gray-500'
-                                        }`}
-                                >
-                                    {i + 1}
-                                </div>
-                                {i < 2 && (
-                                    <div
-                                        className={`w-12 h-0.5 mx-2 ${['warning', 'export', 'confirm'].indexOf(step) > i
-                                            ? 'bg-mintcom-red/30'
-                                            : 'bg-gray-200 dark:bg-white/10'
-                                            }`}
-                                    />
-                                )}
+            {/* Step Indicator */}
+            <div className="px-6 sm:px-8 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] flex-shrink-0">
+                <div className="flex items-center gap-2">
+                    {['warning', 'export', 'confirm'].map((s, i) => (
+                        <div key={s} className="flex items-center">
+                            <div
+                                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-colors ${step === s
+                                    ? 'bg-mintcom-red text-white shadow-sm'
+                                    : ['warning', 'export', 'confirm'].indexOf(step) > i
+                                        ? 'bg-mintcom-red/20 text-mintcom-red'
+                                        : 'bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-gray-500'
+                                    }`}
+                            >
+                                {i + 1}
                             </div>
-                        ))}
-                    </div>
+                            {i < 2 && (
+                                <div
+                                    className={`w-12 h-0.5 mx-2 ${['warning', 'export', 'confirm'].indexOf(step) > i
+                                        ? 'bg-mintcom-red/30'
+                                        : 'bg-gray-200 dark:bg-white/10'
+                                        }`}
+                                />
+                            )}
+                        </div>
+                    ))}
                 </div>
+            </div>
 
-                {/* Content */}
-                <div className="flex-1 overflow-y-auto px-4 sm:px-8 pt-6 pb-safe custom-scrollbar">
-                    <AnimatePresence mode="wait">
-                        {/* Step 1: Warning */}
-                        {step === 'warning' && (
-                            <motion.div
-                                key="warning"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="space-y-6"
-                            >
-                                <div className="bg-mintcom-red/10 dark:bg-mintcom-red/10 border border-red-200 dark:border-mintcom-red/20 rounded-2xl p-4">
-                                    <div className="flex items-center gap-3">
-                                        <AlertTriangle className="text-mintcom-red flex-shrink-0" size={20} />
-                                        <div>
-                                            <h3 className="font-bold text-red-700 dark:text-mintcom-red leading-none">
-                                                {t('security.deletion.warning.title')}
-                                            </h3>
-                                            <p className="text-mintcom-red dark:text-red-300 text-sm mt-1.5 leading-none">
-                                                {t('security.deletion.warning.subtitle')}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4 px-1">
-                                        {t('security.deletion.warning.summary')}
-                                    </h3>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <StatCard
-                                            icon={ShoppingCart}
-                                            label={t('dashboard.stats.totalOrders')}
-                                            value={stats?.stats.orders || 0}
-                                        />
-                                        <StatCard
-                                            icon={User}
-                                            label={t('dashboard.menu.customers')}
-                                            value={stats?.stats.customers || 0}
-                                        />
-                                        <StatCard
-                                            icon={Package}
-                                            label={t('dashboard.menu.products')}
-                                            value={stats?.stats.products || 0}
-                                        />
-                                        <StatCard
-                                            icon={Users}
-                                            label={t('dashboard.menu.team')}
-                                            value={stats?.stats.employees || 0}
-                                        />
-                                    </div>
-                                </div>
-
-                                {stats?.dataRange.age && stats.dataRange.age !== t('common.noData') && (
-                                    <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-2xl p-4">
-                                        <div className="flex items-center gap-3">
-                                            <Clock className="text-amber-500" size={20} />
-                                            <div className="flex items-center gap-1.5 flex-wrap">
-                                                <span className="font-bold text-amber-700 dark:text-amber-400">
-                                                    {stats.dataRange.age.trim()}
-                                                </span>
-                                                <span className="text-amber-600 dark:text-amber-300 text-sm">
-                                                    {t('owner.overview.managed')}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </motion.div>
-                        )}
-
-                        {/* Step 2: Export Options */}
-                        {step === 'export' && (
-                            <motion.div
-                                key="export"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="space-y-6"
-                            >
-                                <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl p-4">
-                                    <div className="flex items-center gap-3">
-                                        <Mail className="text-blue-500 flex-shrink-0" size={20} />
-                                        <div>
-                                            <h3 className="font-bold text-blue-700 dark:text-blue-400 leading-none">
-                                                {t('security.deletion.export.title')}
-                                            </h3>
-                                            <p className="text-blue-600 dark:text-blue-300 text-sm mt-1.5 leading-none">
-                                                {t('security.deletion.export.subtitle')}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3">
-                                    <ExportOption
-                                        label={t('security.deletion.export.financial')}
-                                        description={t('security.deletion.export.financialDesc')}
-                                        checked={true}
-                                        onChange={() => {}}
-                                        disabled={true}
-                                        onDownload={() => handleDownloadExport('financial')}
-                                        count={stats?.stats.orders || 0}
-                                        countLabel={t('dashboard.stats.totalOrders')}
-                                    />
-                                    <ExportOption
-                                        label={t('security.deletion.export.customers')}
-                                        description={t('security.deletion.export.customersDesc')}
-                                        checked={exportOptions.exportCustomers}
-                                        onChange={(v) => setExportOptions({ ...exportOptions, exportCustomers: v })}
-                                        onDownload={() => handleDownloadExport('customers')}
-                                        count={stats?.stats.customers || 0}
-                                        countLabel={t('dashboard.menu.customers')}
-                                    />
-                                    <ExportOption
-                                        label={t('security.deletion.export.inventory')}
-                                        description={t('security.deletion.export.inventoryDesc')}
-                                        checked={exportOptions.exportInventory}
-                                        onChange={(v) => setExportOptions({ ...exportOptions, exportInventory: v })}
-                                        onDownload={() => handleDownloadExport('inventory')}
-                                        count={stats?.stats.products || 0}
-                                        countLabel={t('dashboard.menu.products')}
-                                    />
-                                    <ExportOption
-                                        label={t('security.deletion.export.staff')}
-                                        description={t('security.deletion.export.staffDesc')}
-                                        checked={exportOptions.exportEmployees}
-                                        onChange={(v) => setExportOptions({ ...exportOptions, exportEmployees: v })}
-                                        onDownload={() => handleDownloadExport('employees')}
-                                        count={stats?.stats.employees || 0}
-                                        countLabel={t('dashboard.menu.team')}
-                                    />
-                                    <ExportOption
-                                        label={t('security.deletion.export.shifts')}
-                                        description={t('security.deletion.export.shiftsDesc')}
-                                        checked={exportOptions.exportShifts}
-                                        onChange={(v) => setExportOptions({ ...exportOptions, exportShifts: v })}
-                                        onDownload={() => handleDownloadExport('shifts')}
-                                        count={stats?.stats.shifts || 0}
-                                        countLabel={t('dashboard.menu.shiftsReports')}
-                                    />
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {/* Step 3: Confirmation */}
-                        {step === 'confirm' && (
-                            <motion.div
-                                key="confirm"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="space-y-6"
-                            >
-                                <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl p-4">
-                                    <div className="flex items-start gap-3">
-                                        <Calendar className="text-blue-500 flex-shrink-0 mt-0.5" size={20} />
-                                        <div>
-                                            <h3 className="font-bold text-blue-700 dark:text-blue-400">
-                                                {t('security.deletion.confirm.gracePeriod')}
-                                            </h3>
-                                            <p className="text-blue-600 dark:text-blue-300 text-sm mt-1">
-                                                {t('security.deletion.confirm.gracePeriodDesc')}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="bg-gray-100 dark:bg-white/5 rounded-2xl p-6 text-center">
-                                    <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
-                                        {t('security.deletion.confirm.deletionDate')}
-                                    </p>
-                                    <p className="text-2xl font-bold text-mintcom-red">
-                                        {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', {
-                                            weekday: 'long',
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                        })}
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center">
-                                        {t('security.deletion.confirm.locationId')}
-                                        <QuickInfo text={t('security.deletion.confirm.locationIdTip')} />
-                                    </label>
-                                    <input maxLength={255}
-                                        type="text"
-                                        value={establishmentLoginId}
-                                        onChange={(e) => setEstablishmentLoginId(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
-                                    />
-                                </div>
-
-                                {/* Establishment Password */}
-                                <div>
-                                    <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
-                                        <div className="flex items-center gap-2">
-                                            <Lock size={14} className="text-mintcom-red" />
-                                            {t('security.deletion.confirm.locationPassword')}
-                                        </div>
-                                    </label>
-                                    <div className="relative">
-                                        <input maxLength={255}
-                                            type={showEstablishmentPassword ? 'text' : 'password'}
-                                            value={establishmentPassword}
-                                            onChange={(e) => setEstablishmentPassword(e.target.value)}
-                                            className="w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
-                                            className="absolute right-3 rtl:right-auto rtl:left-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                                        >
-                                            {showEstablishmentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Account Email */}
-                                <div>
-                                    <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
-                                        <div className="flex items-center gap-2">
-                                            <Mail size={14} className="text-mintcom-red" />
-                                            {t('security.deletion.confirm.yourEmail')}
-                                        </div>
-                                    </label>
-                                    <input maxLength={255}
-                                        type="email"
-                                        value={accountEmail}
-                                        onChange={(e) => setAccountEmail(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
-                                    />
-                                </div>
-
-                                {/* Owner identity. The location credential above is a
-                                    separate factor and is still required; this block
-                                    proves the owner is present, using whichever method
-                                    their account supports — a Google/Apple owner has no
-                                    password to type. */}
-                                <div>
-                                    <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
-                                        <div className="flex items-center gap-2">
-                                            <Lock size={14} className="text-mintcom-red" />
-                                            {t('security.deletion.confirm.yourPassword')}
-                                        </div>
-                                        <QuickInfo text={t('security.deletion.confirm.confirmYou')} />
-                                    </label>
-                                    <StepUpVerifier
-                                        action="request-establishment-deletion"
-                                        targetId={establishmentId}
-                                        onVerified={handleRequestDeletion}
-                                        onError={(message) => toast.error(message)}
-                                        submitLabel={t('security.deletion.confirm.button')}
-                                        disabled={isSubmitting}
-                                        canSubmit={
-                                            !!establishmentLoginId &&
-                                            establishmentPassword.length >= 6 &&
-                                            !!accountEmail &&
-                                            accountEmail.includes('@')
-                                        }
-                                    />
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-
-                {/* Footer */}
-                <div className="p-6 border-t border-gray-200 dark:border-white/5 flex gap-3">
-                    {step !== 'warning' && (
-                        <button
-                            onClick={() =>
-                                setStep(step === 'confirm' ? 'export' : 'warning')
-                            }
-                            className="px-6 py-3 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto px-4 sm:px-8 pt-6 pb-safe custom-scrollbar">
+                <AnimatePresence mode="wait">
+                    {/* Step 1: Warning */}
+                    {step === 'warning' && (
+                        <motion.div
+                            key="warning"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="space-y-6"
                         >
-                            {t('common.back')}
-                        </button>
+                            <div className="bg-mintcom-red/10 dark:bg-mintcom-red/10 border border-red-200 dark:border-mintcom-red/20 rounded-2xl p-4">
+                                <div className="flex items-center gap-3">
+                                    <AlertTriangle className="text-mintcom-red flex-shrink-0" size={20} />
+                                    <div>
+                                        <h3 className="font-bold text-red-700 dark:text-mintcom-red leading-none">
+                                            {t('security.deletion.warning.title')}
+                                        </h3>
+                                        <p className="text-mintcom-red dark:text-red-300 text-sm mt-1.5 leading-none">
+                                            {t('security.deletion.warning.subtitle')}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4 px-1">
+                                    {t('security.deletion.warning.summary')}
+                                </h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <StatCard
+                                        icon={ShoppingCart}
+                                        label={t('dashboard.stats.totalOrders')}
+                                        value={stats?.stats.orders || 0}
+                                    />
+                                    <StatCard
+                                        icon={User}
+                                        label={t('dashboard.menu.customers')}
+                                        value={stats?.stats.customers || 0}
+                                    />
+                                    <StatCard
+                                        icon={Package}
+                                        label={t('dashboard.menu.products')}
+                                        value={stats?.stats.products || 0}
+                                    />
+                                    <StatCard
+                                        icon={Users}
+                                        label={t('dashboard.menu.team')}
+                                        value={stats?.stats.employees || 0}
+                                    />
+                                </div>
+                            </div>
+
+                            {stats?.dataRange.age && stats.dataRange.age !== t('common.noData') && (
+                                <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-2xl p-4">
+                                    <div className="flex items-center gap-3">
+                                        <Clock className="text-amber-500" size={20} />
+                                        <div className="flex items-center gap-1.5 flex-wrap">
+                                            <span className="font-bold text-amber-700 dark:text-amber-400">
+                                                {stats.dataRange.age.trim()}
+                                            </span>
+                                            <span className="text-amber-600 dark:text-amber-300 text-sm">
+                                                {t('owner.overview.managed')}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </motion.div>
                     )}
+
+                    {/* Step 2: Export Options */}
+                    {step === 'export' && (
+                        <motion.div
+                            key="export"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="space-y-6"
+                        >
+                            <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl p-4">
+                                <div className="flex items-center gap-3">
+                                    <Mail className="text-blue-500 flex-shrink-0" size={20} />
+                                    <div>
+                                        <h3 className="font-bold text-blue-700 dark:text-blue-400 leading-none">
+                                            {t('security.deletion.export.title')}
+                                        </h3>
+                                        <p className="text-blue-600 dark:text-blue-300 text-sm mt-1.5 leading-none">
+                                            {t('security.deletion.export.subtitle')}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
+                                <ExportOption
+                                    label={t('security.deletion.export.financial')}
+                                    description={t('security.deletion.export.financialDesc')}
+                                    checked={true}
+                                    onChange={() => {}}
+                                    disabled={true}
+                                    onDownload={() => handleDownloadExport('financial')}
+                                    count={stats?.stats.orders || 0}
+                                    countLabel={t('dashboard.stats.totalOrders')}
+                                />
+                                <ExportOption
+                                    label={t('security.deletion.export.customers')}
+                                    description={t('security.deletion.export.customersDesc')}
+                                    checked={exportOptions.exportCustomers}
+                                    onChange={(v) => setExportOptions({ ...exportOptions, exportCustomers: v })}
+                                    onDownload={() => handleDownloadExport('customers')}
+                                    count={stats?.stats.customers || 0}
+                                    countLabel={t('dashboard.menu.customers')}
+                                />
+                                <ExportOption
+                                    label={t('security.deletion.export.inventory')}
+                                    description={t('security.deletion.export.inventoryDesc')}
+                                    checked={exportOptions.exportInventory}
+                                    onChange={(v) => setExportOptions({ ...exportOptions, exportInventory: v })}
+                                    onDownload={() => handleDownloadExport('inventory')}
+                                    count={stats?.stats.products || 0}
+                                    countLabel={t('dashboard.menu.products')}
+                                />
+                                <ExportOption
+                                    label={t('security.deletion.export.staff')}
+                                    description={t('security.deletion.export.staffDesc')}
+                                    checked={exportOptions.exportEmployees}
+                                    onChange={(v) => setExportOptions({ ...exportOptions, exportEmployees: v })}
+                                    onDownload={() => handleDownloadExport('employees')}
+                                    count={stats?.stats.employees || 0}
+                                    countLabel={t('dashboard.menu.team')}
+                                />
+                                <ExportOption
+                                    label={t('security.deletion.export.shifts')}
+                                    description={t('security.deletion.export.shiftsDesc')}
+                                    checked={exportOptions.exportShifts}
+                                    onChange={(v) => setExportOptions({ ...exportOptions, exportShifts: v })}
+                                    onDownload={() => handleDownloadExport('shifts')}
+                                    count={stats?.stats.shifts || 0}
+                                    countLabel={t('dashboard.menu.shiftsReports')}
+                                />
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {/* Step 3: Confirmation */}
+                    {step === 'confirm' && (
+                        <motion.div
+                            key="confirm"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="space-y-6"
+                        >
+                            <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl p-4">
+                                <div className="flex items-start gap-3">
+                                    <Calendar className="text-blue-500 flex-shrink-0 mt-0.5" size={20} />
+                                    <div>
+                                        <h3 className="font-bold text-blue-700 dark:text-blue-400">
+                                            {t('security.deletion.confirm.gracePeriod')}
+                                        </h3>
+                                        <p className="text-blue-600 dark:text-blue-300 text-sm mt-1">
+                                            {t('security.deletion.confirm.gracePeriodDesc')}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-100 dark:bg-white/5 rounded-2xl p-6 text-center">
+                                <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
+                                    {t('security.deletion.confirm.deletionDate')}
+                                </p>
+                                <p className="text-2xl font-bold text-mintcom-red">
+                                    {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', {
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                    })}
+                                </p>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center">
+                                    {t('security.deletion.confirm.locationId')}
+                                    <QuickInfo text={t('security.deletion.confirm.locationIdTip')} />
+                                </label>
+                                <input maxLength={255}
+                                    type="text"
+                                    value={establishmentLoginId}
+                                    onChange={(e) => setEstablishmentLoginId(e.target.value)}
+                                    className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
+                                />
+                            </div>
+
+                            {/* Establishment Password */}
+                            <div>
+                                <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
+                                    <div className="flex items-center gap-2">
+                                        <Lock size={14} className="text-mintcom-red" />
+                                        {t('security.deletion.confirm.locationPassword')}
+                                    </div>
+                                </label>
+                                <div className="relative">
+                                    <input maxLength={255}
+                                        type={showEstablishmentPassword ? 'text' : 'password'}
+                                        value={establishmentPassword}
+                                        onChange={(e) => setEstablishmentPassword(e.target.value)}
+                                        className="w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
+                                        className="absolute right-3 rtl:right-auto rtl:left-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                    >
+                                        {showEstablishmentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Account Email */}
+                            <div>
+                                <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
+                                    <div className="flex items-center gap-2">
+                                        <Mail size={14} className="text-mintcom-red" />
+                                        {t('security.deletion.confirm.yourEmail')}
+                                    </div>
+                                </label>
+                                <input maxLength={255}
+                                    type="email"
+                                    value={accountEmail}
+                                    onChange={(e) => setAccountEmail(e.target.value)}
+                                    className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
+                                />
+                            </div>
+
+                            {/* Owner identity */}
+                            <div>
+                                <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
+                                    <div className="flex items-center gap-2">
+                                        <Lock size={14} className="text-mintcom-red" />
+                                        {t('security.deletion.confirm.yourPassword')}
+                                    </div>
+                                    <QuickInfo text={t('security.deletion.confirm.confirmYou')} />
+                                </label>
+                                <StepUpVerifier
+                                    action="request-establishment-deletion"
+                                    targetId={establishmentId}
+                                    onVerified={handleRequestDeletion}
+                                    onError={(message) => toast.error(message)}
+                                    submitLabel={t('security.deletion.confirm.button')}
+                                    disabled={isSubmitting}
+                                    canSubmit={
+                                        !!establishmentLoginId &&
+                                        establishmentPassword.length >= 6 &&
+                                        !!accountEmail &&
+                                        accountEmail.includes('@')
+                                    }
+                                />
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-gray-200 dark:border-white/5 flex gap-3">
+                {step !== 'warning' && (
                     <button
-                        onClick={onClose}
-                        className="px-6 py-3 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-colors ml-auto"
+                        onClick={() =>
+                            setStep(step === 'confirm' ? 'export' : 'warning')
+                        }
+                        className="px-6 py-3 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                     >
-                        {t('common.cancel')}
+                        {t('common.back')}
                     </button>
-                    {step !== 'confirm' ? (
-                        <button
-                            onClick={() =>
-                                setStep(step === 'warning' ? 'export' : 'confirm')
-                            }
-                            className="px-6 py-3 bg-mintcom-red text-white rounded-xl font-bold hover:bg-mintcom-red transition-colors flex items-center gap-2"
-                        >
-                            {t('common.continue')}
-                            <ChevronRight size={18} />
-                        </button>
-                    ) : (
-                        // The confirm action lives inside StepUpVerifier, which only
-                        // enables it once the owner has proven presence.
-                        isSubmitting && (
-                            <span className="px-6 py-3 text-mintcom-red font-bold flex items-center gap-2">
-                                <Loader2 size={18} className="animate-spin" />
-                                {t('security.deletion.confirm.processing')}
-                            </span>
-                        )
-                    )}
-                </div>
-            </motion.div>
-        </div>,
-        document.body
+                )}
+                <button
+                    onClick={onClose}
+                    className="px-6 py-3 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-colors ml-auto"
+                >
+                    {t('common.cancel')}
+                </button>
+                {step !== 'confirm' ? (
+                    <button
+                        onClick={() =>
+                            setStep(step === 'warning' ? 'export' : 'confirm')
+                        }
+                        className="px-6 py-3 bg-mintcom-red text-white rounded-xl font-bold hover:bg-mintcom-red transition-colors flex items-center gap-2"
+                    >
+                        {t('common.continue')}
+                        <ChevronRight size={18} />
+                    </button>
+                ) : (
+                    // The confirm action lives inside StepUpVerifier, which only
+                    // enables it once the owner has proven presence.
+                    isSubmitting && (
+                        <span className="px-6 py-3 text-mintcom-red font-bold flex items-center gap-2">
+                            <Loader2 size={18} className="animate-spin" />
+                            {t('security.deletion.confirm.processing')}
+                        </span>
+                    )
+                )}
+            </div>
+        </Modal>
     );
 }
 

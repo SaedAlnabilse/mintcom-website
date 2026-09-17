@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tablet, Printer, X, CheckCircle2 } from 'lucide-react';
+import { ModalCloseButton } from './ui';
 
 
 
@@ -239,12 +240,7 @@ export const Hardware = () => {
                     <p className="font-barlow text-gray-500 dark:text-gray-400 text-sm">{selectedHardware.description}</p>
                   </div>
                 </div>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors"
-                >
-                  <X size={20} className="text-gray-400" />
-                </button>
+                <ModalCloseButton onClose={() => setShowModal(false)} />
               </div>
 
               {/* Content */}

@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { createPortal } from 'react-dom';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   Plus,
@@ -7,7 +6,6 @@ import {
   Pizza,
   Edit2,
   Trash2,
-  X,
   RefreshCcw,
   CheckCircle2,
   AlertTriangle,
@@ -26,7 +24,8 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { CustomSelect } from '../../components/CustomSelect';
 import { QuickInfo } from '../../components/QuickInfo';
-import { SearchInput, Pagination, SelectInput } from '../../components/ui';
+import { EmptyState, SearchInput, Pagination, SelectInput, PageHeader, Badge, Card } from '../../components/ui';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton } from '../../components/ui';
 import { biIcon } from '../../components/ui/BiIcon';
 import { StatValue } from '../../components/ui/StatValue';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
@@ -786,55 +785,54 @@ export function RecipesPage() {
       <BusyOverlay visible={isLoading} />
 
       {/* Page Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('manufacturing.title')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-            <span>{t('manufacturing.subtitle')}</span>
-            {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                {currentEstablishment.name}
-              </span>
-            )}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => {
-              if (activeTab === 'materials') {
-                setEditingMaterial(null);
-                setMaterialForm({ name: '', unit: 'Kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
-                setShowMaterialModal(true);
-              } else if (activeTab === 'final') {
-                if (menuItems.length === 0 && !isLoading) {
-                  setConfirmConfig({
-                    isOpen: true,
-                    title: t('manufacturing.messages.noProducts'),
-                    message: t('manufacturing.messages.noProductsDesc'),
-                    type: 'warning',
-                    onConfirm: () => {
-                      navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true } });
-                    }
-                  });
-                  return;
-                }
-                setEditingRecipe(null);
-                setFinalRecipeForm({ itemId: '', ingredients: [] });
-                setShowFinalRecipeModal(true);
-              } else {
-                setEditingRecipe(null);
-                setSubRecipeForm({ name: '', description: '', yield: 1, yieldUnit: 'Units', ingredients: [] });
-                setShowSubRecipeModal(true);
-              }
-            }}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
-          >
-            <Plus size={18} />
-            <span>{activeTab === 'materials' ? t('inventory.addIngredient', {defaultValue: 'Add Ingredient'}) : activeTab === 'final' ? t('manufacturing.linkProduct') : t('manufacturing.newPrep')}</span>
-          </button>
-        </div>
-      </div>
+      <PageHeader
+          title={t('manufacturing.title')}
+          subtitle={
+              <>
+                  <span>{t('manufacturing.subtitle')}</span>
+                  {currentEstablishment?.name && (
+                      <Badge>{currentEstablishment.name}</Badge>
+                  )}
+              </>
+          }
+          actions={
+              <>
+                  <button
+                      onClick={() => {
+                          if (activeTab === 'materials') {
+                              setEditingMaterial(null);
+                              setMaterialForm({ name: '', unit: 'Kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
+                              setShowMaterialModal(true);
+                          } else if (activeTab === 'final') {
+                              if (menuItems.length === 0 && !isLoading) {
+                                  setConfirmConfig({
+                                      isOpen: true,
+                                      title: t('manufacturing.messages.noProducts'),
+                                      message: t('manufacturing.messages.noProductsDesc'),
+                                      type: 'warning',
+                                      onConfirm: () => {
+                                          navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true } });
+                                      }
+                                  });
+                                  return;
+                              }
+                              setEditingRecipe(null);
+                              setFinalRecipeForm({ itemId: '', ingredients: [] });
+                              setShowFinalRecipeModal(true);
+                          } else {
+                              setEditingRecipe(null);
+                              setSubRecipeForm({ name: '', description: '', yield: 1, yieldUnit: 'Units', ingredients: [] });
+                              setShowSubRecipeModal(true);
+                          }
+                      }}
+                      className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                  >
+                      <Plus size={18} />
+                      <span>{activeTab === 'materials' ? t('inventory.addIngredient', {defaultValue: 'Add Ingredient'}) : activeTab === 'final' ? t('manufacturing.linkProduct') : t('manufacturing.newPrep')}</span>
+                  </button>
+              </>
+          }
+      />
 
       {/* 3-PILLAR UNIFIED TABS WITH COUNT BADGES (matching POS) */}
       <div className="flex p-1.5 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl w-fit">
@@ -1055,7 +1053,7 @@ export function RecipesPage() {
       </div>
 
       {/* FILTER & SEARCH BAR */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
+      <Card padding="sm">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
           <div className="flex-1 w-full">
             <SearchInput
@@ -1116,7 +1114,7 @@ export function RecipesPage() {
             )}
           </div>
         </div>
-      </div>
+      </Card>
 
       <AnimatePresence mode="wait">
         {isLoading ? (
@@ -1125,25 +1123,23 @@ export function RecipesPage() {
             <p className="label-strong font-sans">{t('common.loading')}</p>
           </div>
         ) : paginatedItems.length === 0 ? (
-          <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
-            <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
-              <Pizza size={32} className="text-gray-300" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-              {hasRecipeSearch
+          <EmptyState
+            icon={Pizza}
+            title={
+              hasRecipeSearch
                 ? t('common.noResults')
                 : hasRecipeFilters
                   ? t('common.noFilteredResults')
-                  : t('manufacturing.noRecipes')}
-            </h3>
-            <p className="text-sm font-medium text-gray-500 max-w-xs">
-              {hasRecipeSearch
+                  : t('manufacturing.noRecipes')
+            }
+            description={
+              hasRecipeSearch
                 ? t('common.noMatchingResults', { entity: 'recipes', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
                 : hasRecipeFilters
                   ? t('common.noFilteredResultsDesc')
-                  : t('manufacturing.noRecipesDesc')}
-            </p>
-          </div>
+                  : t('manufacturing.noRecipesDesc')
+            }
+          />
         ) : (
           <div className="space-y-8">
             {activeTab === 'materials' ? (
@@ -1162,9 +1158,9 @@ export function RecipesPage() {
                             </div>
                             <div className="min-w-0">
                               <p className="font-bold text-gray-900 dark:text-white text-sm truncate">{m.name}</p>
-                              <span className={`inline-flex mt-1 px-2 py-0.5 rounded-full text-[10px] font-black ${active ? 'bg-mintcom-green/10 text-mintcom-green' : 'bg-mintcom-red/10 text-mintcom-red'}`}>
+                              <Badge tone={active ? 'green' : 'red'} className="mt-1">
                                 {active ? t('common.active', { defaultValue: 'Active' }) : t('common.inactive', { defaultValue: 'Inactive' })}
-                              </span>
+                              </Badge>
                             </div>
                           </div>
                           <div className="flex gap-1 flex-shrink-0">
@@ -1218,9 +1214,9 @@ export function RecipesPage() {
                               <span className="ml-1 text-xs font-medium text-gray-500">{m.unit}</span>
                             </td>
                             <td className="px-6 py-4 text-center">
-                              <span className={`inline-flex px-3 py-1 rounded-full text-xs font-black ${active ? 'bg-mintcom-green/10 text-mintcom-green' : 'bg-mintcom-red/10 text-mintcom-red'}`}>
+                              <Badge tone={active ? 'green' : 'red'}>
                                 {active ? t('common.active', { defaultValue: 'Active' }) : t('common.inactive', { defaultValue: 'Inactive' })}
-                              </span>
+                              </Badge>
                             </td>
                             <td className="px-6 py-4 text-end">
                               <div className="flex items-center justify-end gap-2 transition-opacity">
@@ -1275,9 +1271,9 @@ export function RecipesPage() {
                               </h3>
                               <p className="label-strong font-sans">{((recipe as any).ingredients || []).length} {t('manufacturing.ingredients')}</p>
                               <div className="flex items-center gap-2 mt-2">
-                                <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-black ${active ? 'bg-mintcom-green/10 text-mintcom-green' : 'bg-mintcom-red/10 text-mintcom-red'}`}>
+                                <Badge tone={active ? 'green' : 'red'}>
                                   {active ? t('common.active', { defaultValue: 'Active' }) : t('common.inactive', { defaultValue: 'Inactive' })}
-                                </span>
+                                </Badge>
                                 {activeTab === 'final' && (recipe as FinalRecipe).version && (
                                   <span className="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-black bg-gray-100 dark:bg-white/5 text-gray-500">
                                     v{(recipe as FinalRecipe).version}
@@ -1343,266 +1339,228 @@ export function RecipesPage() {
         )}
       </AnimatePresence>
 
-      {createPortal(
-        <>
-          <AnimatePresence>
-            {showMaterialModal && (
-              <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
-                <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ type: "spring", duration: 0.4, bounce: 0.2 }} className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl max-h-[92vh] sm:max-h-[85vh] flex flex-col">
-                  <div className="sm:hidden flex justify-center pt-3 pb-1"><div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" /></div>
-                  <div className="p-4 sm:p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingMaterial ? t('inventory.editIngredient', {defaultValue: 'Edit Ingredient'}) : t('inventory.addIngredient', {defaultValue: 'Add Ingredient'})}</h2>
-                    <button onClick={() => setShowMaterialModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={20} /></button>
-                  </div>
-                  <form onSubmit={handleMaterialSubmit} className="p-4 sm:p-8 space-y-6 overflow-y-auto flex-1">
-                    <div>
-                      <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-mintcom-red mx-1">*</span></label>
-                      <input maxLength={255} type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
-                      {errors.name && <p className="mt-2 text-xs font-bold text-mintcom-red px-1">{errors.name}</p>}
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
-                          {t('inventory.form.unit', {defaultValue: 'Unit'})}
-                          <QuickInfo text={t('inventory.tips.unit', {defaultValue: 'The primary unit used to measure this ingredient (e.g., Kg, Liters).'})} />
-                        </label>
-                        <CustomSelect value={materialForm.unit} onChange={(val) => setMaterialForm({ ...materialForm, unit: val as string })} options={units.map(u => ({ value: u, label: u }))} />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
-                          {t('inventory.form.totalQuantity', {defaultValue: 'Total Quantity'})}
-                          <QuickInfo text={t('inventory.tips.quantity', {defaultValue: 'Current stock available for this ingredient.'})} />
-                        </label>
-                        <div className="relative">
-                          <input maxLength={255}
-                            type="text"
-                            inputMode="decimal"
-                            value={materialForm.quantity === 0 ? '' : materialForm.quantity.toFixed(2)}
-                            placeholder={formatInputPlaceholder("0.00", t('common.locale'))}
-                            onChange={(e) => {
-                              const val = e.target.value.replace(/\D/g, '');
-                              if (val.length > 19) return;
-                              const numericValue = parseInt(val || '0', 10) / 100;
-                              setMaterialForm({ ...materialForm, quantity: numericValue });
-                            }}
-                            className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all"
-                          />
-                          <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                  <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] flex items-center gap-3">
-                    {editingMaterial && !isEntityActive(editingMaterial) ? (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => setShowMaterialModal(false)}
-                          disabled={isSubmitting}
-                          className="flex-1 px-5 py-3.5 bg-white dark:bg-white/[0.03] text-gray-700 dark:text-gray-200 font-bold rounded-2xl border border-gray-200 dark:border-white/10 transition-all shadow-sm hover:bg-gray-50 dark:hover:bg-white/5"
-                        >
-                          {t('common.cancel', { defaultValue: 'Cancel' })}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleReactivateMaterial(editingMaterial.id)}
-                          disabled={isSubmitting}
-                          className="flex-1 px-5 py-3.5 bg-mintcom-green text-black font-bold rounded-2xl transition-all shadow-lg shadow-mintcom-green/20 flex items-center justify-center gap-2 hover:bg-[#5fa888]"
-                        >
-                          <RefreshCcw size={16} />
-                          {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        {editingMaterial && isEntityActive(editingMaterial) && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setShowMaterialModal(false);
-                              handleDeleteMaterial(editingMaterial.id, editingMaterial.name);
-                            }}
-                            disabled={isSubmitting}
-                            className="flex-1 px-5 py-3.5 border border-mintcom-red/20 text-mintcom-red font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2 hover:bg-mintcom-red/5"
-                          >
-                            <Trash2 size={16} />
-                            {t('common.archive', { defaultValue: 'Archive' })}
-                          </button>
-                        )}
-                        <button onClick={handleMaterialSubmit} disabled={isSubmitting} className="flex-1 px-5 py-3.5 bg-mintcom-green hover:bg-[#5fa888] text-black font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
-                          {isSubmitting ? <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : t('common.save', {defaultValue: 'Save'})}
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </motion.div>
+      <Modal isOpen={showMaterialModal} onClose={() => setShowMaterialModal(false)} size="sm">
+        <ModalHeader
+          title={editingMaterial ? t('inventory.editIngredient', {defaultValue: 'Edit Ingredient'}) : t('inventory.addIngredient', {defaultValue: 'Add Ingredient'})}
+          onClose={() => setShowMaterialModal(false)}
+        />
+        <form onSubmit={handleMaterialSubmit}>
+          <ModalBody className="pt-8 sm:pt-10">
+            <div>
+              <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-mintcom-red mx-1">*</span></label>
+              <input maxLength={255} type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
+              {errors.name && <p className="mt-2 text-xs font-bold text-mintcom-red px-1">{errors.name}</p>}
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                  {t('inventory.form.unit', {defaultValue: 'Unit'})}
+                  <QuickInfo text={t('inventory.tips.unit', {defaultValue: 'The primary unit used to measure this ingredient (e.g., Kg, Liters).'})} />
+                </label>
+                <CustomSelect value={materialForm.unit} onChange={(val) => setMaterialForm({ ...materialForm, unit: val as string })} options={units.map(u => ({ value: u, label: u }))} />
               </div>
+              <div>
+                <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                  {t('inventory.form.totalQuantity', {defaultValue: 'Total Quantity'})}
+                  <QuickInfo text={t('inventory.tips.quantity', {defaultValue: 'Current stock available for this ingredient.'})} />
+                </label>
+                <div className="relative">
+                  <input maxLength={255}
+                    type="text"
+                    inputMode="decimal"
+                    value={materialForm.quantity === 0 ? '' : materialForm.quantity.toFixed(2)}
+                    placeholder={formatInputPlaceholder("0.00", t('common.locale'))}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '');
+                      if (val.length > 19) return;
+                      const numericValue = parseInt(val || '0', 10) / 100;
+                      setMaterialForm({ ...materialForm, quantity: numericValue });
+                    }}
+                    className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all"
+                  />
+                  <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
+                </div>
+              </div>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            {editingMaterial && !isEntityActive(editingMaterial) ? (
+              <>
+                <ModalCancelButton onClick={() => setShowMaterialModal(false)} disabled={isSubmitting}>
+                  {t('common.cancel', { defaultValue: 'Cancel' })}
+                </ModalCancelButton>
+                <ModalSubmitButton type="button" loading={isSubmitting} onClick={() => handleReactivateMaterial(editingMaterial.id)}>
+                  <RefreshCcw size={16} />
+                  {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                </ModalSubmitButton>
+              </>
+            ) : (
+              <>
+                {editingMaterial && isEntityActive(editingMaterial) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowMaterialModal(false);
+                      handleDeleteMaterial(editingMaterial.id, editingMaterial.name);
+                    }}
+                    disabled={isSubmitting}
+                    className="flex-1 px-5 py-3.5 border border-mintcom-red/20 text-mintcom-red font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2 hover:bg-mintcom-red/5"
+                  >
+                    <Trash2 size={16} />
+                    {t('common.archive', { defaultValue: 'Archive' })}
+                  </button>
+                )}
+                <ModalSubmitButton form="material-form" loading={isSubmitting}>
+                  {t('common.save', {defaultValue: 'Save'})}
+                </ModalSubmitButton>
+              </>
             )}
-          </AnimatePresence>
+          </ModalFooter>
+        </form>
+      </Modal>
 
-          <AnimatePresence>
-            {showSubRecipeModal && (
-              <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
-                  <div className="p-5 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? t('manufacturing.formula.edit') : t('manufacturing.formula.new')}</h2>
-                    <button onClick={() => setShowSubRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
-                  </div>
-                  <div className="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
-                    <div>
-                      <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
-                        {t('manufacturing.formula.name')} <span className="text-mintcom-red mx-1">*</span>
-                      </label>
-                      <input maxLength={255}
-                        type="text"
-                        value={subRecipeForm.name}
-                        onChange={(e) => {
-                          setSubRecipeForm({ ...subRecipeForm, name: e.target.value });
-                          if (errors.name) setErrors({ ...errors, name: '' });
+      <Modal isOpen={showSubRecipeModal} onClose={() => setShowSubRecipeModal(false)} size="md">
+        <ModalHeader
+          title={editingRecipe ? t('manufacturing.formula.edit') : t('manufacturing.formula.new')}
+          onClose={() => setShowSubRecipeModal(false)}
+        />
+        <ModalBody className="pt-8 sm:pt-10">
+          <div>
+            <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+              {t('manufacturing.formula.name')} <span className="text-mintcom-red mx-1">*</span>
+            </label>
+            <input maxLength={255}
+              type="text"
+              value={subRecipeForm.name}
+              onChange={(e) => {
+                setSubRecipeForm({ ...subRecipeForm, name: e.target.value });
+                if (errors.name) setErrors({ ...errors, name: '' });
+              }}
+              className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all`}
+              placeholder={formatInputPlaceholder(t('manufacturing.formula.namePlaceholder'), t('common.locale'))}
+            />
+            {errors.name && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.name}</p>}
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col">
+              <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                {t('manufacturing.formula.yield')}
+                <QuickInfo text={t('manufacturing.tips.yield', {defaultValue: 'How much of the Prep this recipe makes (e.g., 5 Liters of sauce).'})} />
+              </label>
+              <input
+                maxLength={255}
+                type="number"
+                min="0"
+                value={subRecipeForm.yield}
+                onKeyDown={(e) => {
+                  if (e.key === '-' || e.key === 'e') {
+                    e.preventDefault();
+                  }
+                }}
+                onChange={(e) => {
+                  if (e.target.value.length > 19) return;
+                  const val = parseFloat(e.target.value);
+                  if (!isNaN(val) && val >= 0) {
+                    setSubRecipeForm({ ...subRecipeForm, yield: val });
+                  } else if (e.target.value === '') {
+                    setSubRecipeForm({ ...subRecipeForm, yield: 0 });
+                  }
+                }}
+                className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-sm text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-mintcom-green/20 transition-all outline-none shadow-sm hover:border-mintcom-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                {formatInputLabel(t('manufacturing.formula.unit'), t('common.locale'))}
+              </label>
+              <CustomSelect
+                value={subRecipeForm.yieldUnit}
+                onChange={(val) => setSubRecipeForm({ ...subRecipeForm, yieldUnit: String(val) })}
+                options={units.map(u => ({ label: t(`inventory.units.${u.toLowerCase()}`, { defaultValue: u }), value: u }))}
+                className="w-full"
+              />
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between px-1">
+              <label className="text-sm font-normal text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
+              <span className="label-strong font-sans bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
+            </div>
+
+            <div className="space-y-3 min-h-[40px]">
+              <AnimatePresence>
+                {subRecipeForm.ingredients.map((ing, index) => {
+                  const material = rawMaterials.find(m => m.id === ing.rawMaterialId);
+                  const baseUnit = material?.unit || 'units';
+                  const availableUnits = getCompatibleUnits(baseUnit);
+                  const currentUnit = ing.selectedUnit || baseUnit;
+
+                  return (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      key={index}
+                      className="flex gap-3 items-center p-3 bg-gray-50 dark:bg-white/[0.04] rounded-2xl border border-gray-200 dark:border-white/10"
+                    >
+                      <CustomSelect
+                        value={ing.rawMaterialId}
+                        onChange={(val) => {
+                          const stringVal = String(val);
+                          const m = rawMaterials.find(rm => rm.id === stringVal);
+                          const updated = [...subRecipeForm.ingredients];
+                          updated[index].rawMaterialId = stringVal;
+                          updated[index].selectedUnit = m?.unit;
+                          updated[index].quantity = 0;
+                          setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
                         }}
-                        className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all`}
-                        placeholder={formatInputPlaceholder(t('manufacturing.formula.namePlaceholder'), t('common.locale'))}
+                        options={(material && !isEntityActive(material) ? [material, ...activeRawMaterials] : activeRawMaterials).map(m => ({ label: `${m.name} (${m.unit})`, value: m.id }))}
+                        placeholder={formatInputPlaceholder(t('manufacturing.formula.selectItem'), t('common.locale'))}
+                        className="flex-[2]"
                       />
-                      {errors.name && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.name}</p>}
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="flex flex-col">
-                        <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
-                          {t('manufacturing.formula.yield')}
-                          <QuickInfo text={t('manufacturing.tips.yield', {defaultValue: 'How much of the Prep this recipe makes (e.g., 5 Liters of sauce).'})} />
-                        </label>
+
+                      <div className="flex bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-300 dark:border-white/10 overflow-hidden w-40">
                         <input
                           maxLength={255}
                           type="number"
                           min="0"
-                          value={subRecipeForm.yield}
                           onKeyDown={(e) => {
                             if (e.key === '-' || e.key === 'e') {
                               e.preventDefault();
                             }
                           }}
+                          value={ing.quantity || ''}
                           onChange={(e) => {
                             if (e.target.value.length > 19) return;
-                            const val = parseFloat(e.target.value);
-                            if (!isNaN(val) && val >= 0) {
-                              setSubRecipeForm({ ...subRecipeForm, yield: val });
-                            } else if (e.target.value === '') {
-                              setSubRecipeForm({ ...subRecipeForm, yield: 0 });
-                            }
+                            const updated = [...subRecipeForm.ingredients];
+                            updated[index].quantity = parseFloat(e.target.value) || 0;
+                            setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
                           }}
-                          className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-sm text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-mintcom-green/20 transition-all outline-none shadow-sm hover:border-mintcom-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]"
+                          placeholder={formatInputPlaceholder("Qty", t('common.locale'))}
+                          className="w-full px-3 py-2 bg-transparent text-sm font-bold text-gray-900 dark:text-white outline-none"
                         />
-                      </div>
-                      <div className="flex flex-col">
-                        <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
-                          {formatInputLabel(t('manufacturing.formula.unit'), t('common.locale'))}
-                        </label>
-                        <CustomSelect
-                          value={subRecipeForm.yieldUnit}
-                          onChange={(val) => setSubRecipeForm({ ...subRecipeForm, yieldUnit: String(val) })}
-                          options={units.map(u => ({ label: t(`inventory.units.${u.toLowerCase()}`, { defaultValue: u }), value: u }))}
-                          className="w-full"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between px-1">
-                        <label className="text-sm font-normal text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
-                        <span className="label-strong font-sans bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
-                      </div>
-
-                      <div className="space-y-3 min-h-[40px]">
-                        <AnimatePresence>
-                          {subRecipeForm.ingredients.map((ing, index) => {
-                            const material = rawMaterials.find(m => m.id === ing.rawMaterialId);
-                            const baseUnit = material?.unit || 'units';
-                            const availableUnits = getCompatibleUnits(baseUnit);
-                            const currentUnit = ing.selectedUnit || baseUnit;
-
-                            return (
-                              <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                key={index}
-                                className="flex gap-3 items-center p-3 bg-gray-50 dark:bg-white/[0.04] rounded-2xl border border-gray-200 dark:border-white/10"
-                              >
-                                <CustomSelect
-                                  value={ing.rawMaterialId}
-                                  onChange={(val) => {
-                                    const stringVal = String(val);
-                                    const m = rawMaterials.find(rm => rm.id === stringVal);
-                                    const updated = [...subRecipeForm.ingredients];
-                                    updated[index].rawMaterialId = stringVal;
-                                    updated[index].selectedUnit = m?.unit;
-                                    updated[index].quantity = 0;
-                                    setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
-                                  }}
-                                  options={(material && !isEntityActive(material) ? [material, ...activeRawMaterials] : activeRawMaterials).map(m => ({ label: `${m.name} (${m.unit})`, value: m.id }))}
-                                  placeholder={formatInputPlaceholder(t('manufacturing.formula.selectItem'), t('common.locale'))}
-                                  className="flex-[2]"
-                                />
-
-                                <div className="flex bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-300 dark:border-white/10 overflow-hidden w-40">
-                                  <input
-                                    maxLength={255}
-                                    type="number"
-                                    min="0"
-                                    onKeyDown={(e) => {
-                                      if (e.key === '-' || e.key === 'e') {
-                                        e.preventDefault();
-                                      }
-                                    }}
-                                    value={ing.quantity || ''}
-                                    onChange={(e) => {
-                                      if (e.target.value.length > 19) return;
-                                      const updated = [...subRecipeForm.ingredients];
-                                      updated[index].quantity = parseFloat(e.target.value) || 0;
-                                      setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
-                                    }}
-                                    placeholder={formatInputPlaceholder("Qty", t('common.locale'))}
-                                    className="w-full px-3 py-2 bg-transparent text-sm font-bold text-gray-900 dark:text-white outline-none"
-                                  />
-                                  {availableUnits.length > 1 ? (
-                                    <div className="relative border-l border-gray-300 dark:border-white/10 bg-gray-50 dark:bg-white/5 flex items-center">
-                                      <select
-                                        value={currentUnit}
-                                        onChange={(e) => {
-                                          const newUnit = e.target.value;
-                                          const updated = [...subRecipeForm.ingredients];
-                                          updated[index].selectedUnit = newUnit;
-                                          setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
-                                        }}
-                                        className="appearance-none bg-transparent pl-2 pr-6 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 outline-none cursor-pointer"
-                                      >
-                                        {availableUnits.map(u => (
-                                          <option key={u} value={u} className="bg-white dark:bg-[#1E293B]">{u}</option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                  ) : (
-                                    <span className="px-3 py-2 bg-gray-50 dark:bg-white/5 border-l border-gray-300 dark:border-white/10 text-xs font-bold text-gray-400 flex items-center">
-                                      {baseUnit}
-                                    </span>
-                                  )}
-                                </div>
-
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setSubRecipeForm({
-                                      ...subRecipeForm,
-                                      ingredients: subRecipeForm.ingredients.filter((_, i) => i !== index),
-                                    });
-                                  }}
-                                  className="p-2 text-gray-400 hover:text-mintcom-red transition-colors"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-                              </motion.div>
-                            );
-                          })}
-                        </AnimatePresence>
+                        {availableUnits.length > 1 ? (
+                          <div className="relative border-l border-gray-300 dark:border-white/10 bg-gray-50 dark:bg-white/5 flex items-center">
+                            <select
+                              value={currentUnit}
+                              onChange={(e) => {
+                                const newUnit = e.target.value;
+                                const updated = [...subRecipeForm.ingredients];
+                                updated[index].selectedUnit = newUnit;
+                                setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
+                              }}
+                              className="appearance-none bg-transparent pl-2 pr-6 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 outline-none cursor-pointer"
+                            >
+                              {availableUnits.map(u => (
+                                <option key={u} value={u} className="bg-white dark:bg-[#1E293B]">{u}</option>
+                              ))}
+                            </select>
+                          </div>
+                        ) : (
+                          <span className="px-3 py-2 bg-gray-50 dark:bg-white/5 border-l border-gray-300 dark:border-white/10 text-xs font-bold text-gray-400 flex items-center">
+                            {baseUnit}
+                          </span>
+                        )}
                       </div>
 
                       <button
@@ -1610,187 +1568,183 @@ export function RecipesPage() {
                         onClick={() => {
                           setSubRecipeForm({
                             ...subRecipeForm,
-                            ingredients: [...subRecipeForm.ingredients, { rawMaterialId: '', quantity: 0 }],
+                            ingredients: subRecipeForm.ingredients.filter((_, i) => i !== index),
                           });
                         }}
-                        className="w-full py-3 border border-dashed border-gray-200 dark:border-white/10 rounded-2xl text-xs font-bold text-gray-500 hover:text-mintcom-green hover:border-mintcom-green/50 transition-all flex items-center justify-center gap-2"
+                        className="p-2 text-gray-400 hover:text-mintcom-red transition-colors"
                       >
-                        <Plus size={14} />
-                        <span>{t('manufacturing.formula.addIngredient')}</span>
+                        <Trash2 size={16} />
                       </button>
-                    </div>
-                  </div>
-                  <div className="p-5 sm:p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] flex items-center justify-end gap-3">
-                    <button type="button" onClick={() => setShowSubRecipeModal(false)} className="px-5 py-2.5 rounded-xl font-bold text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">{t('common.cancel')}</button>
-                    <button type="button" onClick={handleSubRecipeSubmit} disabled={isSubmitting} className="px-6 py-2.5 rounded-xl bg-mintcom-green hover:bg-[#5fa888] text-black font-bold text-sm transition-all shadow-sm">
-                      {isSubmitting ? <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : t('common.save')}
-                    </button>
-                  </div>
-                </motion.div>
-              </div>
-            )}
-          </AnimatePresence>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </div>
 
-          <AnimatePresence>
-            {showFinalRecipeModal && (
-              <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
-                  <div className="p-5 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? t('manufacturing.recipe.edit') : t('manufacturing.recipe.new')}</h2>
-                    <button onClick={() => setShowFinalRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
-                  </div>
-                  <div className="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
-                    <div>
-                      <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
-                        {t('manufacturing.recipe.product')} <span className="text-mintcom-red mx-1">*</span>
-                      </label>
-                      <CustomSelect
-                        value={finalRecipeForm.itemId}
-                        onChange={(val) => {
-                          setFinalRecipeForm({ ...finalRecipeForm, itemId: String(val) });
-                          if (errors.itemId) setErrors({ ...errors, itemId: '' });
-                        }}
-                        options={products.map(p => ({ label: p.name, value: p.id }))}
-                        placeholder={formatInputPlaceholder(t('manufacturing.recipe.selectProduct'), t('common.locale'))}
-                        disabled={!!editingRecipe}
-                        className="w-full"
-                      />
-                      {errors.itemId && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.itemId}</p>}
-                    </div>
+            <button
+              type="button"
+              onClick={() => {
+                setSubRecipeForm({
+                  ...subRecipeForm,
+                  ingredients: [...subRecipeForm.ingredients, { rawMaterialId: '', quantity: 0 }],
+                });
+              }}
+              className="w-full py-3 border border-dashed border-gray-200 dark:border-white/10 rounded-2xl text-xs font-bold text-gray-500 hover:text-mintcom-green hover:border-mintcom-green/50 transition-all flex items-center justify-center gap-2"
+            >
+              <Plus size={14} />
+              <span>{t('manufacturing.formula.addIngredient')}</span>
+            </button>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <ModalCancelButton onClick={() => setShowSubRecipeModal(false)}>
+            {t('common.cancel')}
+          </ModalCancelButton>
+          <ModalSubmitButton type="button" loading={isSubmitting} onClick={handleSubRecipeSubmit}>
+            {t('common.save')}
+          </ModalSubmitButton>
+        </ModalFooter>
+      </Modal>
 
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between px-1">
-                        <label className="text-sm font-normal text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
-                        <span className="label-strong font-sans bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
+      <Modal isOpen={showFinalRecipeModal} onClose={() => setShowFinalRecipeModal(false)} size="md">
+        <ModalHeader
+          title={editingRecipe ? t('manufacturing.recipe.edit') : t('manufacturing.recipe.new')}
+          onClose={() => setShowFinalRecipeModal(false)}
+        />
+        <ModalBody className="pt-8 sm:pt-10">
+          <div>
+            <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+              {t('manufacturing.recipe.product')} <span className="text-mintcom-red mx-1">*</span>
+            </label>
+            <CustomSelect
+              value={finalRecipeForm.itemId}
+              onChange={(val) => {
+                setFinalRecipeForm({ ...finalRecipeForm, itemId: String(val) });
+                if (errors.itemId) setErrors({ ...errors, itemId: '' });
+              }}
+              options={products.map(p => ({ label: p.name, value: p.id }))}
+              placeholder={formatInputPlaceholder(t('manufacturing.recipe.selectProduct'), t('common.locale'))}
+              disabled={!!editingRecipe}
+              className="w-full"
+            />
+            {errors.itemId && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.itemId}</p>}
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between px-1">
+              <label className="text-sm font-normal text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
+              <span className="label-strong font-sans bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
+            </div>
+
+            <div className="space-y-3 min-h-[40px]">
+              <AnimatePresence>
+                {finalRecipeForm.ingredients.map((ing, index) => {
+                  const isRaw = ing.type === 'raw';
+                  const item = isRaw ? rawMaterials.find(m => m.id === ing.rawMaterialId) : subRecipes.find(s => s.id === ing.subRecipeId);
+                  const baseUnit = isRaw ? (item as RawMaterial)?.unit || 'units' : (item as SubRecipe)?.yieldUnit || 'units';
+                  const availableUnits = getCompatibleUnits(baseUnit);
+                  const currentUnit = ing.selectedUnit || baseUnit;
+
+                  return (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      key={index}
+                      className="flex gap-2 items-center p-3 bg-gray-50 dark:bg-white/[0.04] rounded-2xl border border-gray-200 dark:border-white/10"
+                    >
+                      <div className="flex bg-white dark:bg-[#1E293B] rounded-xl p-1 border border-gray-200 dark:border-white/10 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...finalRecipeForm.ingredients];
+                            updated[index] = { type: 'raw', rawMaterialId: '', quantity: 0 };
+                            setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
+                          }}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all ${ing.type === 'raw' ? 'bg-mintcom-green text-black' : 'text-gray-400'}`}
+                        >
+                          RAW
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...finalRecipeForm.ingredients];
+                            updated[index] = { type: 'sub', subRecipeId: '', quantity: 0 };
+                            setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
+                          }}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all ${ing.type === 'sub' ? 'bg-mintcom-green text-black' : 'text-gray-400'}`}
+                        >
+                          PREP
+                        </button>
                       </div>
 
-                      <div className="space-y-3 min-h-[40px]">
-                        <AnimatePresence>
-                          {finalRecipeForm.ingredients.map((ing, index) => {
-                            const isRaw = ing.type === 'raw';
-                            const item = isRaw ? rawMaterials.find(m => m.id === ing.rawMaterialId) : subRecipes.find(s => s.id === ing.subRecipeId);
-                            const baseUnit = isRaw ? (item as RawMaterial)?.unit || 'units' : (item as SubRecipe)?.yieldUnit || 'units';
-                            const availableUnits = getCompatibleUnits(baseUnit);
-                            const currentUnit = ing.selectedUnit || baseUnit;
+                      <CustomSelect
+                        value={(ing.type === 'raw' ? ing.rawMaterialId : ing.subRecipeId) || ''}
+                        onChange={(val) => {
+                          const stringVal = String(val);
+                          const updated = [...finalRecipeForm.ingredients];
+                          if (ing.type === 'raw') {
+                            const m = rawMaterials.find(rm => rm.id === stringVal);
+                            updated[index].rawMaterialId = stringVal;
+                            updated[index].selectedUnit = m?.unit;
+                          } else {
+                            const s = subRecipes.find(sr => sr.id === stringVal);
+                            updated[index].subRecipeId = stringVal;
+                            updated[index].selectedUnit = s?.yieldUnit;
+                          }
+                          updated[index].quantity = 0;
+                          setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
+                        }}
+                        options={ing.type === 'raw'
+                          ? activeRawMaterials.map(m => ({ label: `${m.name} (${m.unit})`, value: m.id }))
+                          : activeSubRecipes.map(s => ({ label: `${s.name} (${s.yieldUnit})`, value: s.id }))
+                        }
+                        placeholder={formatInputPlaceholder(t('manufacturing.recipe.selectComponent'), t('common.locale'))}
+                        className="flex-[2]"
+                      />
 
-                            return (
-                              <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                key={index}
-                                className="flex gap-2 items-center p-3 bg-gray-50 dark:bg-white/[0.04] rounded-2xl border border-gray-200 dark:border-white/10"
-                              >
-                                <div className="flex bg-white dark:bg-[#1E293B] rounded-xl p-1 border border-gray-200 dark:border-white/10 shrink-0">
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      const updated = [...finalRecipeForm.ingredients];
-                                      updated[index] = { type: 'raw', rawMaterialId: '', quantity: 0 };
-                                      setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
-                                    }}
-                                    className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all ${ing.type === 'raw' ? 'bg-mintcom-green text-black' : 'text-gray-400'}`}
-                                  >
-                                    RAW
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      const updated = [...finalRecipeForm.ingredients];
-                                      updated[index] = { type: 'sub', subRecipeId: '', quantity: 0 };
-                                      setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
-                                    }}
-                                    className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all ${ing.type === 'sub' ? 'bg-mintcom-green text-black' : 'text-gray-400'}`}
-                                  >
-                                    PREP
-                                  </button>
-                                </div>
-
-                                <CustomSelect
-                                  value={(ing.type === 'raw' ? ing.rawMaterialId : ing.subRecipeId) || ''}
-                                  onChange={(val) => {
-                                    const stringVal = String(val);
-                                    const updated = [...finalRecipeForm.ingredients];
-                                    if (ing.type === 'raw') {
-                                      const m = rawMaterials.find(rm => rm.id === stringVal);
-                                      updated[index].rawMaterialId = stringVal;
-                                      updated[index].selectedUnit = m?.unit;
-                                    } else {
-                                      const s = subRecipes.find(sr => sr.id === stringVal);
-                                      updated[index].subRecipeId = stringVal;
-                                      updated[index].selectedUnit = s?.yieldUnit;
-                                    }
-                                    updated[index].quantity = 0;
-                                    setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
-                                  }}
-                                  options={ing.type === 'raw'
-                                    ? activeRawMaterials.map(m => ({ label: `${m.name} (${m.unit})`, value: m.id }))
-                                    : activeSubRecipes.map(s => ({ label: `${s.name} (${s.yieldUnit})`, value: s.id }))
-                                  }
-                                  placeholder={formatInputPlaceholder(t('manufacturing.recipe.selectComponent'), t('common.locale'))}
-                                  className="flex-[2]"
-                                />
-
-                                <div className="flex bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-300 dark:border-white/10 overflow-hidden w-36 shrink-0">
-                                  <input
-                                    maxLength={255}
-                                    type="number"
-                                    min="0"
-                                    onKeyDown={(e) => {
-                                      if (e.key === '-' || e.key === 'e') {
-                                        e.preventDefault();
-                                      }
-                                    }}
-                                    value={ing.quantity || ''}
-                                    onChange={(e) => {
-                                      if (e.target.value.length > 19) return;
-                                      const updated = [...finalRecipeForm.ingredients];
-                                      updated[index].quantity = parseFloat(e.target.value) || 0;
-                                      setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
-                                    }}
-                                    placeholder={formatInputPlaceholder("Qty", t('common.locale'))}
-                                    className="w-full px-3 py-2 bg-transparent text-sm font-bold text-gray-900 dark:text-white outline-none"
-                                  />
-                                  {availableUnits.length > 1 ? (
-                                    <div className="relative border-l border-gray-300 dark:border-white/10 bg-gray-50 dark:bg-white/5 flex items-center">
-                                      <select
-                                        value={currentUnit}
-                                        onChange={(e) => {
-                                          const newUnit = e.target.value;
-                                          const updated = [...finalRecipeForm.ingredients];
-                                          updated[index].selectedUnit = newUnit;
-                                          setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
-                                        }}
-                                        className="appearance-none bg-transparent pl-2 pr-6 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 outline-none cursor-pointer"
-                                      >
-                                        {availableUnits.map(u => (
-                                          <option key={u} value={u} className="bg-white dark:bg-[#1E293B]">{u}</option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                  ) : (
-                                    <span className="px-2 py-2 bg-gray-50 dark:bg-white/5 border-l border-gray-300 dark:border-white/10 text-xs font-bold text-gray-400 flex items-center">
-                                      {baseUnit}
-                                    </span>
-                                  )}
-                                </div>
-
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setFinalRecipeForm({
-                                      ...finalRecipeForm,
-                                      ingredients: finalRecipeForm.ingredients.filter((_, i) => i !== index),
-                                    });
-                                  }}
-                                  className="p-2 text-gray-400 hover:text-mintcom-red transition-colors"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-                              </motion.div>
-                            );
-                          })}
-                        </AnimatePresence>
+                      <div className="flex bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-300 dark:border-white/10 overflow-hidden w-36 shrink-0">
+                        <input
+                          maxLength={255}
+                          type="number"
+                          min="0"
+                          onKeyDown={(e) => {
+                            if (e.key === '-' || e.key === 'e') {
+                              e.preventDefault();
+                            }
+                          }}
+                          value={ing.quantity || ''}
+                          onChange={(e) => {
+                            if (e.target.value.length > 19) return;
+                            const updated = [...finalRecipeForm.ingredients];
+                            updated[index].quantity = parseFloat(e.target.value) || 0;
+                            setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
+                          }}
+                          placeholder={formatInputPlaceholder("Qty", t('common.locale'))}
+                          className="w-full px-3 py-2 bg-transparent text-sm font-bold text-gray-900 dark:text-white outline-none"
+                        />
+                        {availableUnits.length > 1 ? (
+                          <div className="relative border-l border-gray-300 dark:border-white/10 bg-gray-50 dark:bg-white/5 flex items-center">
+                            <select
+                              value={currentUnit}
+                              onChange={(e) => {
+                                const newUnit = e.target.value;
+                                const updated = [...finalRecipeForm.ingredients];
+                                updated[index].selectedUnit = newUnit;
+                                setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
+                              }}
+                              className="appearance-none bg-transparent pl-2 pr-6 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 outline-none cursor-pointer"
+                            >
+                              {availableUnits.map(u => (
+                                <option key={u} value={u} className="bg-white dark:bg-[#1E293B]">{u}</option>
+                              ))}
+                            </select>
+                          </div>
+                        ) : (
+                          <span className="px-2 py-2 bg-gray-50 dark:bg-white/5 border-l border-gray-300 dark:border-white/10 text-xs font-bold text-gray-400 flex items-center">
+                            {baseUnit}
+                          </span>
+                        )}
                       </div>
 
                       <button
@@ -1798,65 +1752,83 @@ export function RecipesPage() {
                         onClick={() => {
                           setFinalRecipeForm({
                             ...finalRecipeForm,
-                            ingredients: [...finalRecipeForm.ingredients, { type: 'raw', rawMaterialId: '', quantity: 0 }],
+                            ingredients: finalRecipeForm.ingredients.filter((_, i) => i !== index),
                           });
                         }}
-                        className="w-full py-3 border border-dashed border-gray-200 dark:border-white/10 rounded-2xl text-xs font-bold text-gray-500 hover:text-mintcom-green hover:border-mintcom-green/50 transition-all flex items-center justify-center gap-2"
+                        className="p-2 text-gray-400 hover:text-mintcom-red transition-colors"
                       >
-                        <Plus size={14} />
-                        <span>{t('manufacturing.recipe.addIngredient')}</span>
+                        <Trash2 size={16} />
                       </button>
-                    </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setFinalRecipeForm({
+                  ...finalRecipeForm,
+                  ingredients: [...finalRecipeForm.ingredients, { type: 'raw', rawMaterialId: '', quantity: 0 }],
+                });
+              }}
+              className="w-full py-3 border border-dashed border-gray-200 dark:border-white/10 rounded-2xl text-xs font-bold text-gray-500 hover:text-mintcom-green hover:border-mintcom-green/50 transition-all flex items-center justify-center gap-2"
+            >
+              <Plus size={14} />
+              <span>{t('manufacturing.recipe.addIngredient')}</span>
+            </button>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <ModalCancelButton onClick={() => setShowFinalRecipeModal(false)}>
+            {t('common.cancel')}
+          </ModalCancelButton>
+          <ModalSubmitButton type="button" loading={isSubmitting} onClick={handleFinalRecipeSubmit}>
+            {t('common.save')}
+          </ModalSubmitButton>
+        </ModalFooter>
+      </Modal>
+
+      <Modal isOpen={showManufactureModal && !!manufactureRecipe} onClose={() => setShowManufactureModal(false)} size="sm">
+        {manufactureRecipe && (
+          <>
+            <ModalHeader
+              title={t('manufacturing.produceBatch')}
+              onClose={() => setShowManufactureModal(false)}
+            />
+            <ModalBody className="pt-6 sm:pt-8">
+              <p className="text-sm font-medium text-gray-500 mb-6">{t('manufacturing.produceSubtitle', { name: manufactureRecipe.name })}</p>
+
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('manufacturing.numberOfBatches')}</label>
+                  <div className="flex items-center gap-3">
+                    <button type="button" onClick={() => setNumBatches(Math.max(1, numBatches - 1))} className="p-3 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 transition-colors font-bold text-lg">-</button>
+                    <input maxLength={255} type="number" min="1" value={numBatches} onChange={(e) => setNumBatches(Math.max(1, parseInt(e.target.value) || 1))} className="flex-1 text-center font-black text-xl py-2 bg-transparent text-gray-900 dark:text-white outline-none border-b-2 border-mintcom-green" />
+                    <button type="button" onClick={() => setNumBatches(numBatches + 1)} className="p-3 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 transition-colors font-bold text-lg">+</button>
                   </div>
-                  <div className="p-5 sm:p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] flex items-center justify-end gap-3">
-                    <button type="button" onClick={() => setShowFinalRecipeModal(false)} className="px-5 py-2.5 rounded-xl font-bold text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">{t('common.cancel')}</button>
-                    <button type="button" onClick={handleFinalRecipeSubmit} disabled={isSubmitting} className="px-6 py-2.5 rounded-xl bg-mintcom-green hover:bg-[#5fa888] text-black font-bold text-sm transition-all shadow-sm">
-                      {isSubmitting ? <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : t('common.save')}
-                    </button>
+                </div>
+
+                <div className="p-4 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500 font-bold">{t('manufacturing.totalYield')}:</span>
+                    <span className="text-mintcom-green font-black">{numBatches * manufactureRecipe.yield} {manufactureRecipe.yieldUnit}</span>
                   </div>
-                </motion.div>
+                </div>
               </div>
-            )}
-          </AnimatePresence>
-
-          <AnimatePresence>
-            {showManufactureModal && manufactureRecipe && (
-              <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl p-6">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('manufacturing.produceBatch')}</h2>
-                  <p className="text-sm font-medium text-gray-500 mb-6">{t('manufacturing.produceSubtitle', { name: manufactureRecipe.name })}</p>
-                  
-                  <div className="space-y-4 mb-6">
-                    <div>
-                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('manufacturing.numberOfBatches')}</label>
-                      <div className="flex items-center gap-3">
-                        <button type="button" onClick={() => setNumBatches(Math.max(1, numBatches - 1))} className="p-3 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 transition-colors font-bold text-lg">-</button>
-                        <input maxLength={255} type="number" min="1" value={numBatches} onChange={(e) => setNumBatches(Math.max(1, parseInt(e.target.value) || 1))} className="flex-1 text-center font-black text-xl py-2 bg-transparent text-gray-900 dark:text-white outline-none border-b-2 border-mintcom-green" />
-                        <button type="button" onClick={() => setNumBatches(numBatches + 1)} className="p-3 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 transition-colors font-bold text-lg">+</button>
-                      </div>
-                    </div>
-
-                    <div className="p-4 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-gray-500 font-bold">{t('manufacturing.totalYield')}:</span>
-                        <span className="text-mintcom-green font-black">{numBatches * manufactureRecipe.yield} {manufactureRecipe.yieldUnit}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-end gap-3">
-                    <button type="button" onClick={() => setShowManufactureModal(false)} className="px-5 py-2.5 rounded-xl font-bold text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">{t('common.cancel')}</button>
-                    <button type="button" onClick={handleManufacture} disabled={isSubmitting} className="px-6 py-2.5 rounded-xl bg-mintcom-green hover:bg-[#5fa888] text-black font-bold text-sm transition-all shadow-sm">
-                      {isSubmitting ? <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : t('manufacturing.produceNow')}
-                    </button>
-                  </div>
-                </motion.div>
-              </div>
-            )}
-          </AnimatePresence>
-        </>,
-        document.body
-      )}
+            </ModalBody>
+            <ModalFooter>
+              <ModalCancelButton onClick={() => setShowManufactureModal(false)}>
+                {t('common.cancel')}
+              </ModalCancelButton>
+              <ModalSubmitButton type="button" loading={isSubmitting} onClick={handleManufacture}>
+                {t('manufacturing.produceNow')}
+              </ModalSubmitButton>
+            </ModalFooter>
+          </>
+        )}
+      </Modal>
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}

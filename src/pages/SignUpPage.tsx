@@ -23,6 +23,7 @@ import { formatInputPlaceholder } from '../utils/textCase';
 import { getSignUpSchema, STRONG_PASSWORD, type SignUpFormData } from '../utils/validation';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { ModalCloseButton } from '../components/ui';
 import { getPostLoginDestination } from '../utils/postLoginRedirect';
 
 export function SignUpPage() {
@@ -616,6 +617,10 @@ export function SignUpPage() {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-3xl border border-gray-200 bg-white p-6 sm:p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
             >
+              <ModalCloseButton
+                onClose={() => setShowGoogleTermsModal(false)}
+                autoPositionAbsolute
+              />
               <div className="mb-8 text-center">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-mintcom-green/10">
                   <ShieldCheck size={28} className="text-mintcom-green" />

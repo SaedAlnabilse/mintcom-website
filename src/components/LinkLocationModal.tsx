@@ -1,9 +1,7 @@
 import { useState, useMemo } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
-    X, 
     Store, 
     Check, 
     Loader2, 
@@ -16,12 +14,12 @@ import {
     CheckCircle2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useScrollLock } from '../hooks/useScrollLock';
 import { getBusinessTypeIcon } from '../utils/businessTypeIcons';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 import { formatInputPlaceholder } from '../utils/textCase';
 import { getPersonDisplayName } from '../utils/personName';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton } from './ui';
 
 interface EmployeeForMerging {
     id: string;
@@ -64,8 +62,6 @@ export function LinkLocationModal({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingEmployees, setIsLoadingEmployees] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-
-    useScrollLock(isOpen);
 
     // Filter establishments that are NOT linked to ANY brand
     const availableEstablishments = useMemo(() => {
@@ -171,59 +167,31 @@ export function LinkLocationModal({
         }
     };
 
-    if (!isOpen) return null;
+    return (
+        <Modal isOpen={isOpen} onClose={handleClose} size="lg" closeOnBackdrop={false}>
+            <ModalHeader
+                title={step === 1 ? t('owner.brands.linkLocations') : t('owner.brands.wizard.step3')}
+                subtitle={
+                    step === 1
+                        ? t('owner.brands.selectLocationsToLink')
+                        : t('owner.brands.wizard.finalStepDesc')
+                }
+                icon={step === 1 ? <Building2 size={24} /> : <Users size={24} />}
+                onClose={handleClose}
+            />
 
-    return createPortal(
-        <AnimatePresence>
-            <div
-                dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-            >
+            {/* Progress Bar */}
+            <div className="h-1.5 bg-gray-100 dark:bg-white/5 overflow-hidden shrink-0">
                 <motion.div
-                    initial={{ opacity: 0, y: 100 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 100 }}
-                    transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                    className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-xl rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/5"
-                >
-                    {/* Header */}
-                    <div className="px-8 pt-10 pb-6 flex items-start justify-between">
-                        <div className="flex items-center gap-5">
-                            <div className="w-16 h-16 rounded-[1.25rem] bg-[#F0FDF4] dark:bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
-                                {step === 1 ? <Building2 size={32} /> : <Users size={32} />}
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-sans font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
-                                    {step === 1 ? t('owner.brands.linkLocations') : t('owner.brands.wizard.step3')}
-                                </h2>
-                                <p className="text-base font-sans font-medium text-gray-500 mt-1">
-                                    {step === 1 
-                                        ? t('owner.brands.selectLocationsToLink')
-                                        : t('owner.brands.wizard.finalStepDesc')
-                                    }
-                                </p>
-                            </div>
-                        </div>
-                        <button
-                            onClick={handleClose}
-                            aria-label={t('common.close', { defaultValue: 'Close' })}
-                            className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
-                        >
-                            <X size={18} />
-                        </button>
-                    </div>
+                    initial={{ width: "50%" }}
+                    animate={{ width: step === 1 ? "50%" : "100%" }}
+                    className="h-full bg-mintcom-green transition-all duration-500"
+                />
+            </div>
 
-                    {/* Progress Bar */}
-                    <div className="h-1.5 bg-gray-100 dark:bg-white/5 overflow-hidden">
-                        <motion.div 
-                            initial={{ width: "50%" }}
-                            animate={{ width: step === 1 ? "50%" : "100%" }}
-                            className="h-full bg-mintcom-green transition-all duration-500"
-                        />
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+            {/* Content */}
+            <ModalBody>
+                <div className="space-y-6">
                         {step === 1 ? (
                             <>
                                 {/* Search */}
@@ -363,45 +331,37 @@ export function LinkLocationModal({
                             </div>
                         )}
                     </div>
+            </ModalBody>
 
-                    {/* Footer */}
-                    {availableEstablishments.length > 0 && (
-                        <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-white/[0.02]">
-                            <button
-                                onClick={step === 1 ? handleClose : () => setStep(1)}
-                                className="flex-1 py-4 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2"
-                            >
-                                {step === 2 && <ChevronLeft size={16} />}
-                                {step === 1 ? t('common.cancel') : t('common.back')}
-                            </button>
-                            {step === 1 ? (
-                                <button
-                                    onClick={handleNext}
-                                    disabled={selectedIds.length === 0 || isLoadingEmployees}
-                                    className="flex-[2] py-4 bg-mintcom-green text-black rounded-2xl text-xs font-black shadow-lg shadow-mintcom-green/20 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
-                                >
-                                    {isLoadingEmployees ? <Loader2 size={18} className="animate-spin" /> : <>
-                                        {t('common.next')}
-                                        <ChevronRight size={16} />
-                                    </>}
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={handleLink}
-                                    disabled={isSubmitting}
-                                    className="flex-[2] py-4 bg-black dark:bg-white text-white dark:text-black rounded-2xl text-xs font-black shadow-lg transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
-                                >
-                                    {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <>
-                                        <Building2 size={18} />
-                                        {t('owner.brands.linkLocations')}
-                                    </>}
-                                </button>
-                            )}
-                        </div>
+            {/* Footer */}
+            {availableEstablishments.length > 0 && (
+                <ModalFooter>
+                    <ModalCancelButton onClick={step === 1 ? handleClose : () => setStep(1)}>
+                        {step === 2 && <ChevronLeft size={16} />}
+                        {step === 1 ? t('common.cancel') : t('common.back')}
+                    </ModalCancelButton>
+                    {step === 1 ? (
+                        <ModalSubmitButton
+                            type="button"
+                            onClick={handleNext}
+                            disabled={selectedIds.length === 0 || isLoadingEmployees}
+                            loading={isLoadingEmployees}
+                        >
+                            {t('common.next')}
+                            <ChevronRight size={16} />
+                        </ModalSubmitButton>
+                    ) : (
+                        <ModalSubmitButton
+                            type="button"
+                            onClick={handleLink}
+                            loading={isSubmitting}
+                        >
+                            <Building2 size={18} />
+                            {t('owner.brands.linkLocations')}
+                        </ModalSubmitButton>
                     )}
-                </motion.div>
-            </div>
-        </AnimatePresence>,
-        document.body
+                </ModalFooter>
+            )}
+        </Modal>
     );
 }

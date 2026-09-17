@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { ArrowLeft, Download, Eye, FileText, Printer, Table, X } from 'lucide-react';
+import { ArrowLeft, Download, Eye, FileText, Printer, Table } from 'lucide-react';
 
 import api from '../../config/api';
 import { Pagination } from '../ui';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton } from '../ui';
 import {
   SubscriptionInvoiceModal,
   downloadHtmlDocument,
@@ -292,222 +291,183 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
     [invoices],
   );
 
-  if (typeof document === 'undefined') return null;
-
   const hasInvoices = invoices.length > 0;
 
   return (
     <>
-      {createPortal(
-        <AnimatePresence>
-          {establishment && !openInvoice && (
-            <div
-              dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-              className="fixed inset-0 z-[9998] popup-surface flex items-end justify-center p-0 sm:items-center sm:p-4 font-sans"
-            >
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/40 dark:bg-black/80 backdrop-blur-sm"
-                onClick={onClose}
-              />
+      <Modal isOpen={!!establishment && !openInvoice} onClose={onClose} size="xl" className="sm:max-w-4xl">
+        <ModalHeader
+          title={t('owner.billing.invoice.historyTitle', { defaultValue: 'Invoice History' })}
+          subtitle={`${establishment?.name ?? ''}${total > 0 ? ` · ${total}` : ''}`}
+          onClose={onClose}
+        />
 
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 24 }}
-                className="relative z-10 flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#1E293B] sm:rounded-2xl"
-                onClick={(event) => event.stopPropagation()}
-              >
-                <div className="flex items-center justify-between gap-4 border-b border-gray-100 px-5 py-4 dark:border-white/5">
-                  <div className="min-w-0">
-                    <h3 className="truncate text-lg font-bold text-gray-900 dark:text-white">
-                      {t('owner.billing.invoice.historyTitle', { defaultValue: 'Invoice History' })}
-                    </h3>
-                    <p className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                      {establishment.name}
-                      {total > 0 ? ` · ${total}` : ''}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={handleDownloadCsv}
-                      disabled={!hasInvoices || isExporting}
-                      className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
-                    >
-                      <Table size={15} />
-                      <span className="hidden sm:inline">
-                        {t('owner.billing.invoice.exportCsv', { defaultValue: 'CSV' })}
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleDownloadHistory}
-                      disabled={!hasInvoices || isExporting}
-                      className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
-                    >
-                      <Download size={15} />
-                      <span className="hidden sm:inline">
-                        {t('owner.billing.invoice.downloadHistory', { defaultValue: 'Download All' })}
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handlePrintHistory}
-                      disabled={!hasInvoices || isExporting}
-                      className="flex items-center gap-2 rounded-xl border border-mintcom-green/20 bg-mintcom-green/10 px-3 py-2 text-xs font-bold text-mintcom-green transition hover:bg-mintcom-green/20 disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                      <Printer size={15} />
-                      <span className="hidden sm:inline">
-                        {t('owner.billing.invoice.printHistory', { defaultValue: 'Print History' })}
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={onClose}
-                      aria-label={t('common.close', { defaultValue: 'Close' })}
-                      className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
-                    >
-                      <X size={18} />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="min-h-0 flex-1 overflow-y-auto p-5">
-                  {isLoading ? (
-                    <div className="space-y-2">
-                      {[0, 1, 2].map((row) => (
-                        <div key={row} className="h-14 animate-pulse rounded-xl bg-gray-100 dark:bg-white/5" />
-                      ))}
-                    </div>
-                  ) : loadError ? (
-                    <div className="py-12 text-center">
-                      <p className="text-sm font-bold text-gray-900 dark:text-white">
-                        {t('owner.billing.invoice.loadFailed', { defaultValue: 'Could not load invoices' })}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => setReloadToken((token) => token + 1)}
-                        className="mt-3 rounded-xl bg-mintcom-green/10 px-4 py-2 text-xs font-bold text-mintcom-green"
-                      >
-                        {t('common.retry', { defaultValue: 'Retry' })}
-                      </button>
-                    </div>
-                  ) : !hasInvoices ? (
-                    <div className="py-12 text-center">
-                      <FileText size={32} className="mx-auto text-gray-300 dark:text-white/20" />
-                      <p className="mt-3 text-sm font-bold text-gray-900 dark:text-white">
-                        {t('owner.billing.invoice.emptyTitle', { defaultValue: 'No Invoices Yet' })}
-                      </p>
-                      <p className="mx-auto mt-1 max-w-md text-xs font-medium text-gray-500 dark:text-gray-400">
-                        {t('owner.billing.invoice.emptyBody', {
-                          defaultValue:
-                            'A numbered invoice is issued automatically the first time a payment for this location settles.',
-                        })}
-                      </p>
-                      {fallbackSummary && (
-                        <button
-                          type="button"
-                          onClick={() => setOpenInvoice(fallbackSummary)}
-                          className="mt-4 inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
-                        >
-                          <Eye size={14} />
-                          {t('owner.billing.invoice.viewSummary', { defaultValue: 'View Subscription Summary' })}
-                        </button>
-                      )}
-                    </div>
-                  ) : (
-                    <>
-                      <div className="overflow-x-auto">
-                        <table className="w-full min-w-[640px] text-left">
-                          <thead>
-                            <tr className="border-b border-gray-100 dark:border-white/5">
-                              {[
-                                t('owner.billing.invoice.colNumber', { defaultValue: 'Invoice' }),
-                                t('owner.billing.invoice.colDate', { defaultValue: 'Date' }),
-                                t('owner.billing.invoice.colPeriod', { defaultValue: 'Period' }),
-                                t('owner.billing.invoice.colStatus', { defaultValue: 'Status' }),
-                                t('owner.billing.invoice.colAmount', { defaultValue: 'Amount' }),
-                                '',
-                              ].map((header, index) => (
-                                <th
-                                  key={`${header}-${index}`}
-                                  className={`px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-gray-400 ${
-                                    index === 4 ? 'text-right' : ''
-                                  }`}
-                                >
-                                  {header}
-                                </th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {invoices.map((invoice) => (
-                              <tr
-                                key={invoice.id}
-                                className="border-b border-gray-50 transition hover:bg-gray-50 dark:border-white/5 dark:hover:bg-white/5"
-                              >
-                                <td className="px-3 py-3 text-xs font-bold tabular-nums text-gray-900 dark:text-white">
-                                  {invoice.number}
-                                </td>
-                                <td className="px-3 py-3 text-xs font-medium text-gray-600 dark:text-gray-300">
-                                  {formatDate(invoice.issueDate, locale)}
-                                </td>
-                                <td className="px-3 py-3 text-xs font-medium text-gray-500 dark:text-gray-400">
-                                  {invoice.periodStart && invoice.periodEnd
-                                    ? `${formatDate(invoice.periodStart, locale)} – ${formatDate(invoice.periodEnd, locale)}`
-                                    : '—'}
-                                </td>
-                                <td className="px-3 py-3">
-                                  <span className="rounded-lg bg-mintcom-green/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-mintcom-green">
-                                    {invoice.status}
-                                  </span>
-                                </td>
-                                <td className="px-3 py-3 text-right text-xs font-bold tabular-nums text-gray-900 dark:text-white">
-                                  {money(invoice.total, invoice.currency)}
-                                </td>
-                                <td className="px-3 py-3 text-right">
-                                  <button
-                                    type="button"
-                                    onClick={() => setOpenInvoice(invoice)}
-                                    className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-2.5 py-1.5 text-[11px] font-bold text-gray-600 transition hover:bg-white dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10"
-                                  >
-                                    <Eye size={13} />
-                                    {t('owner.billing.invoice.view', { defaultValue: 'View' })}
-                                  </button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                          {t('owner.billing.invoice.pageTotal', {
-                            defaultValue: 'This page: {{amount}}',
-                            amount: money(summaryTotal, currency),
-                          })}
-                        </p>
-                        {totalPages > 1 && (
-                          <Pagination
-                            currentPage={page}
-                            totalPages={totalPages}
-                            onPageChange={setPage}
-                          />
-                        )}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </motion.div>
+        <ModalBody>
+          {isLoading ? (
+            <div className="space-y-2">
+              {[0, 1, 2].map((row) => (
+                <div key={row} className="h-14 animate-pulse rounded-xl bg-gray-100 dark:bg-white/5" />
+              ))}
             </div>
+          ) : loadError ? (
+            <div className="py-12 text-center">
+              <p className="text-sm font-bold text-gray-900 dark:text-white">
+                {t('owner.billing.invoice.loadFailed', { defaultValue: 'Could not load invoices' })}
+              </p>
+              <button
+                type="button"
+                onClick={() => setReloadToken((token) => token + 1)}
+                className="mt-3 rounded-xl bg-mintcom-green/10 px-4 py-2 text-xs font-bold text-mintcom-green"
+              >
+                {t('common.retry', { defaultValue: 'Retry' })}
+              </button>
+            </div>
+          ) : !hasInvoices ? (
+            <div className="py-12 text-center">
+              <FileText size={32} className="mx-auto text-gray-300 dark:text-white/20" />
+              <p className="mt-3 text-sm font-bold text-gray-900 dark:text-white">
+                {t('owner.billing.invoice.emptyTitle', { defaultValue: 'No Invoices Yet' })}
+              </p>
+              <p className="mx-auto mt-1 max-w-md text-xs font-medium text-gray-500 dark:text-gray-400">
+                {t('owner.billing.invoice.emptyBody', {
+                  defaultValue:
+                    'A numbered invoice is issued automatically the first time a payment for this location settles.',
+                })}
+              </p>
+              {fallbackSummary && (
+                <button
+                  type="button"
+                  onClick={() => setOpenInvoice(fallbackSummary)}
+                  className="mt-4 inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
+                >
+                  <Eye size={14} />
+                  {t('owner.billing.invoice.viewSummary', { defaultValue: 'View Subscription Summary' })}
+                </button>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[640px] text-left">
+                  <thead>
+                    <tr className="border-b border-gray-100 dark:border-white/5">
+                      {[
+                        t('owner.billing.invoice.colNumber', { defaultValue: 'Invoice' }),
+                        t('owner.billing.invoice.colDate', { defaultValue: 'Date' }),
+                        t('owner.billing.invoice.colPeriod', { defaultValue: 'Period' }),
+                        t('owner.billing.invoice.colStatus', { defaultValue: 'Status' }),
+                        t('owner.billing.invoice.colAmount', { defaultValue: 'Amount' }),
+                        '',
+                      ].map((header, index) => (
+                        <th
+                          key={`${header}-${index}`}
+                          className={`px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-gray-400 ${
+                            index === 4 ? 'text-right' : ''
+                          }`}
+                        >
+                          {header}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {invoices.map((invoice) => (
+                      <tr
+                        key={invoice.id}
+                        className="border-b border-gray-50 transition hover:bg-gray-50 dark:border-white/5 dark:hover:bg-white/5"
+                      >
+                        <td className="px-3 py-3 text-xs font-bold tabular-nums text-gray-900 dark:text-white">
+                          {invoice.number}
+                        </td>
+                        <td className="px-3 py-3 text-xs font-medium text-gray-600 dark:text-gray-300">
+                          {formatDate(invoice.issueDate, locale)}
+                        </td>
+                        <td className="px-3 py-3 text-xs font-medium text-gray-500 dark:text-gray-400">
+                          {invoice.periodStart && invoice.periodEnd
+                            ? `${formatDate(invoice.periodStart, locale)} – ${formatDate(invoice.periodEnd, locale)}`
+                            : '—'}
+                        </td>
+                        <td className="px-3 py-3">
+                          <span className="rounded-lg bg-mintcom-green/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-mintcom-green">
+                            {invoice.status}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3 text-right text-xs font-bold tabular-nums text-gray-900 dark:text-white">
+                          {money(invoice.total, invoice.currency)}
+                        </td>
+                        <td className="px-3 py-3 text-right">
+                          <button
+                            type="button"
+                            onClick={() => setOpenInvoice(invoice)}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-2.5 py-1.5 text-[11px] font-bold text-gray-600 transition hover:bg-white dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10"
+                          >
+                            <Eye size={13} />
+                            {t('owner.billing.invoice.view', { defaultValue: 'View' })}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                  {t('owner.billing.invoice.pageTotal', {
+                    defaultValue: 'This page: {{amount}}',
+                    amount: money(summaryTotal, currency),
+                  })}
+                </p>
+                {totalPages > 1 && (
+                  <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={setPage}
+                  />
+                )}
+              </div>
+            </>
           )}
-        </AnimatePresence>,
-        document.body,
-      )}
+        </ModalBody>
+
+        <ModalFooter>
+          <div className="flex items-center gap-2 w-full justify-end">
+            <button
+              type="button"
+              onClick={handleDownloadCsv}
+              disabled={!hasInvoices || isExporting}
+              className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
+            >
+              <Table size={15} />
+              <span className="hidden sm:inline">
+                {t('owner.billing.invoice.exportCsv', { defaultValue: 'CSV' })}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadHistory}
+              disabled={!hasInvoices || isExporting}
+              className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
+            >
+              <Download size={15} />
+              <span className="hidden sm:inline">
+                {t('owner.billing.invoice.downloadHistory', { defaultValue: 'Download All' })}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={handlePrintHistory}
+              disabled={!hasInvoices || isExporting}
+              className="flex items-center gap-2 rounded-xl border border-mintcom-green/20 bg-mintcom-green/10 px-3 py-2 text-xs font-bold text-mintcom-green transition hover:bg-mintcom-green/20 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <Printer size={15} />
+              <span className="hidden sm:inline">
+                {t('owner.billing.invoice.printHistory', { defaultValue: 'Print History' })}
+              </span>
+            </button>
+          </div>
+        </ModalFooter>
+      </Modal>
 
       <SubscriptionInvoiceModal
         data={openInvoice}

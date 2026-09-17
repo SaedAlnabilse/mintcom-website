@@ -27,7 +27,7 @@ import api, { extractErrorMessage } from '../../config/api';
 import { fetchAllPages } from '../../utils/fetchAllPages';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
-import { Pagination, SearchInput, SelectInput } from '../../components/ui';
+import { Pagination, SearchInput, SelectInput, PageHeader, Badge } from '../../components/ui';
 import { ThumbnailImage } from '../../components/OptimizedImage';
 import { useCurrency } from '../../context/CurrencyContext';
 import { biIcon } from '../../components/ui/BiIcon';
@@ -620,21 +620,17 @@ export function StockManagementPage() {
   return (
     <div className="space-y-6 sm:space-y-8 pb-10 font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Page Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-            {t('stockManagement.title', { defaultValue: 'Stock & Availability' })}
-          </h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-            <span>{t('stockManagement.subtitle', { defaultValue: 'Manage item stock counts and add-on availability' })}</span>
-            {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                {currentEstablishment.name}
-              </span>
-            )}
-          </p>
-        </div>
-      </div>
+      <PageHeader
+          title={t('stockManagement.title', { defaultValue: 'Stock & Availability' })}
+          subtitle={
+              <>
+                  <span>{t('stockManagement.subtitle', { defaultValue: 'Manage item stock counts and add-on availability' })}</span>
+                  {currentEstablishment?.name && (
+                      <Badge>{currentEstablishment.name}</Badge>
+                  )}
+              </>
+          }
+      />
 
       {/* Main Tabs (Stock vs Addons) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

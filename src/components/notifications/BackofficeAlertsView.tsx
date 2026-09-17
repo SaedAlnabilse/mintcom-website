@@ -24,6 +24,7 @@ import type {
   BackofficeAlertScope,
 } from '../../services/backofficeAlertsApi';
 import { AlertRow } from './AlertRow';
+import { EmptyState } from '../ui';
 import {
   isAlertKindInCategory,
   isCashAlertKind,
@@ -538,15 +539,11 @@ export function BackofficeAlertsView({
           </button>
         </div>
       ) : groupedAlerts.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center dark:border-white/10 dark:bg-[#0D0D0D]">
-          <BellOff className="mx-auto text-gray-400" size={34} />
-          <h2 className="mt-4 text-lg font-black text-gray-900 dark:text-white">
-            {t(emptyKey)}
-          </h2>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            {t('notifications.empty.subtitle')}
-          </p>
-        </div>
+        <EmptyState
+          icon={BellOff}
+          title={t(emptyKey)}
+          description={t('notifications.empty.subtitle')}
+        />
       ) : (
         <div className="space-y-5">
           {groupedAlerts.map((group) => (

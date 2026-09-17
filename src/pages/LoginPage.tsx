@@ -3,9 +3,9 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
-  Eye, EyeOff, ArrowLeft, Mail, Lock, X,
+  Eye, EyeOff, ArrowLeft, Mail, Lock,
   AlertTriangle, Send, ArrowRight, KeyRound, UserPlus, Clock,
 } from 'lucide-react';
 import MintcomLeafIcon from '../assets/small-logo.svg';
@@ -20,7 +20,7 @@ import { ThemeToggle } from '../components/ThemeToggle';
 import MintcomLogoGreen from '../assets/green-full-logo.svg';
 import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
-import { useScrollLock } from '../hooks/useScrollLock';
+import { ModalCloseButton, Modal, ModalBody } from '../components/ui';
 import { getPostLoginDestination } from '../utils/postLoginRedirect';
 
 type SocialProvider = 'google' | 'apple';
@@ -75,10 +75,6 @@ export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, loginWithGoogle, loginWithApple, resendVerification } = useAuth();
-
-  const anyAuthModalOpen =
-    showVerifyModal || showWrongCredentialsModal || showNoAccountModal || showRateLimitModal;
-  useScrollLock(anyAuthModalOpen);
 
   const redirectTo = (location.state as { from?: string })?.from;
 
@@ -423,320 +419,232 @@ export function LoginPage() {
       </motion.div>
 
       {/* Verification modal */}
-      <AnimatePresence>
-        {showVerifyModal && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowVerifyModal(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-md"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="verify-email-title"
-              className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-3xl border border-gray-200 bg-white p-6 sm:p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
-            >
-              <button
-                type="button"
-                onClick={() => setShowVerifyModal(false)}
-                aria-label={t('auth.login.ariaCloseModal')}
-                className="absolute end-4 top-4 flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/10 dark:hover:text-white"
-              >
-                <X size={18} />
-              </button>
+      <Modal
+        isOpen={showVerifyModal}
+        onClose={() => setShowVerifyModal(false)}
+        size="sm"
+        ariaLabel={t('auth.verifyEmail.verifyingTitle')}
+      >
+        <ModalCloseButton onClose={() => setShowVerifyModal(false)} autoPositionAbsolute />
 
-              <div className="mb-6 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-100 dark:bg-amber-900/30">
-                  <AlertTriangle size={28} className="text-amber-600 dark:text-amber-400" />
-                </div>
-                <h3 id="verify-email-title" className="font-barlow text-2xl font-bold text-gray-900 dark:text-white">
-                  {t('auth.verifyEmail.verifyingTitle')}
-                </h3>
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  {t('auth.verifyEmail.verifyingSubtitle')}
-                </p>
-                <p className="mt-1 text-sm font-bold text-gray-900 dark:text-white">{unverifiedEmail}</p>
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <motion.button
-                  whileHover={{ y: -1 }}
-                  whileTap={{ scale: 0.97 }}
-                  type="button"
-                  onClick={handleResendVerification}
-                  disabled={isResending}
-                  className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all disabled:opacity-60"
-                >
-                  <span aria-hidden className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                  {isResending ? (
-                    <span className="relative">{t('auth.verifyEmail.sending')}</span>
-                  ) : (
-                    <>
-                      <Send size={15} className="relative" />
-                      <span className="relative">{t('auth.verifyEmail.resendButton')}</span>
-                    </>
-                  )}
-                </motion.button>
-                <button
-                  type="button"
-                  onClick={() => setShowVerifyModal(false)}
-                  className="w-full rounded-2xl border border-gray-200 py-3 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 dark:border-white/10 dark:text-gray-400 dark:hover:bg-white/5"
-                >
-                  {t('common.close')}
-                </button>
-              </div>
-            </motion.div>
+        <ModalBody>
+          <div className="mb-6 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-100 dark:bg-amber-900/30">
+              <AlertTriangle size={28} className="text-amber-600 dark:text-amber-400" />
+            </div>
+            <h3 id="verify-email-title" className="font-barlow text-2xl font-bold text-gray-900 dark:text-white">
+              {t('auth.verifyEmail.verifyingTitle')}
+            </h3>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              {t('auth.verifyEmail.verifyingSubtitle')}
+            </p>
+            <p className="mt-1 text-sm font-bold text-gray-900 dark:text-white">{unverifiedEmail}</p>
           </div>
-        )}
-      </AnimatePresence>
+
+          <div className="flex flex-col gap-3">
+            <motion.button
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.97 }}
+              type="button"
+              onClick={handleResendVerification}
+              disabled={isResending}
+              className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all disabled:opacity-60"
+            >
+              <span aria-hidden className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              {isResending ? (
+                <span className="relative">{t('auth.verifyEmail.sending')}</span>
+              ) : (
+                <>
+                  <Send size={15} className="relative" />
+                  <span className="relative">{t('auth.verifyEmail.resendButton')}</span>
+                </>
+              )}
+            </motion.button>
+            <button
+              type="button"
+              onClick={() => setShowVerifyModal(false)}
+              className="w-full rounded-2xl border border-gray-200 py-3 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 dark:border-white/10 dark:text-gray-400 dark:hover:bg-white/5"
+            >
+              {t('common.close')}
+            </button>
+          </div>
+        </ModalBody>
+      </Modal>
 
       {/* Wrong email / password modal */}
-      <AnimatePresence>
-        {showWrongCredentialsModal && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowWrongCredentialsModal(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+      <Modal
+        isOpen={showWrongCredentialsModal}
+        onClose={() => setShowWrongCredentialsModal(false)}
+        size="sm"
+        ariaLabel={t('auth.login.wrongCredentialsTitle')}
+      >
+        <ModalCloseButton onClose={() => setShowWrongCredentialsModal(false)} autoPositionAbsolute />
+
+        <ModalBody>
+          <div className="relative mb-6 text-center">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-rose-400/15 blur-3xl"
             />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="wrong-credentials-title"
-              className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-3xl border border-gray-200 bg-white p-6 sm:p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
+            <div className="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-100 dark:bg-rose-900/30">
+              <KeyRound size={28} className="text-rose-600 dark:text-rose-400" />
+            </div>
+            <h3
+              id="wrong-credentials-title"
+              className="relative font-barlow text-2xl font-bold text-gray-900 dark:text-white"
             >
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-rose-400/15 blur-3xl"
-              />
-              <button
-                type="button"
-                onClick={() => setShowWrongCredentialsModal(false)}
-                aria-label={t('auth.login.ariaCloseModal')}
-                className="absolute end-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/10 dark:hover:text-white"
-              >
-                <X size={18} />
-              </button>
-
-              <div className="relative mb-6 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-100 dark:bg-rose-900/30">
-                  <KeyRound size={28} className="text-rose-600 dark:text-rose-400" />
-                </div>
-                <h3
-                  id="wrong-credentials-title"
-                  className="font-barlow text-2xl font-bold text-gray-900 dark:text-white"
-                >
-                  {t('auth.login.wrongCredentialsTitle')}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-                  {t('auth.login.wrongCredentialsMessage')}
-                </p>
-              </div>
-
-              <div className="relative flex flex-col gap-3 sm:flex-row">
-                <motion.button
-                  whileHover={{ y: -1 }}
-                  whileTap={{ scale: 0.97 }}
-                  type="button"
-                  onClick={handleTryAgain}
-                  className="group relative inline-flex min-h-[3.25rem] flex-1 items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green px-4 py-3.5 font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all"
-                >
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-                  />
-                  <KeyRound size={15} className="relative" />
-                  <span className="relative">{t('auth.login.tryAgain')}</span>
-                </motion.button>
-                <motion.button
-                  whileHover={{ y: -1 }}
-                  whileTap={{ scale: 0.97 }}
-                  type="button"
-                  onClick={goToSignUp}
-                  className="inline-flex min-h-[3.25rem] flex-1 items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm font-bold text-gray-800 transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
-                >
-                  <UserPlus size={15} />
-                  {t('auth.login.createAccount')}
-                </motion.button>
-              </div>
-            </motion.div>
+              {t('auth.login.wrongCredentialsTitle')}
+            </h3>
+            <p className="relative mt-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+              {t('auth.login.wrongCredentialsMessage')}
+            </p>
           </div>
-        )}
-      </AnimatePresence>
+
+          <div className="relative flex flex-col gap-3 sm:flex-row">
+            <motion.button
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.97 }}
+              type="button"
+              onClick={handleTryAgain}
+              className="group relative inline-flex min-h-[3.25rem] flex-1 items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green px-4 py-3.5 font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all"
+            >
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+              />
+              <KeyRound size={15} className="relative" />
+              <span className="relative">{t('auth.login.tryAgain')}</span>
+            </motion.button>
+            <motion.button
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.97 }}
+              type="button"
+              onClick={goToSignUp}
+              className="inline-flex min-h-[3.25rem] flex-1 items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm font-bold text-gray-800 transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+            >
+              <UserPlus size={15} />
+              {t('auth.login.createAccount')}
+            </motion.button>
+          </div>
+        </ModalBody>
+      </Modal>
 
       {/* Google / Apple — no linked Mintcom account */}
-      <AnimatePresence>
-        {showNoAccountModal && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowNoAccountModal(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+      <Modal
+        isOpen={showNoAccountModal}
+        onClose={() => setShowNoAccountModal(false)}
+        size="sm"
+        ariaLabel={t('auth.login.noSocialAccountTitle')}
+      >
+        <ModalCloseButton onClose={() => setShowNoAccountModal(false)} autoPositionAbsolute />
+
+        <ModalBody>
+          <div className="relative mb-6 text-center">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -left-12 -top-12 h-40 w-40 rounded-full bg-mintcom-green/20 blur-3xl"
             />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="no-social-account-title"
-              className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-3xl border border-gray-200 bg-white p-6 sm:p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
+            <div className="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-mintcom-green/15 dark:bg-mintcom-green/20">
+              <img src={MintcomLeafIcon} alt="" style={{ width: 28, height: 28 }} className="scale-x-[-1] object-contain" />
+            </div>
+            <h3
+              id="no-social-account-title"
+              className="relative font-barlow text-2xl font-bold text-gray-900 dark:text-white"
             >
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -left-12 -top-12 h-40 w-40 rounded-full bg-mintcom-green/20 blur-3xl"
-              />
-              <button
-                type="button"
-                onClick={() => setShowNoAccountModal(false)}
-                aria-label={t('auth.login.ariaCloseModal')}
-                className="absolute end-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/10 dark:hover:text-white"
-              >
-                <X size={18} />
-              </button>
-
-              <div className="relative mb-6 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-mintcom-green/15 dark:bg-mintcom-green/20">
-                  <img src={MintcomLeafIcon} alt="" style={{ width: 28, height: 28 }} className="scale-x-[-1] object-contain" />
-                </div>
-                <h3
-                  id="no-social-account-title"
-                  className="font-barlow text-2xl font-bold text-gray-900 dark:text-white"
-                >
-                  {t('auth.login.noSocialAccountTitle')}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-                  {t('auth.login.noSocialAccountMessage', {
-                    provider:
-                      socialProvider === 'apple'
-                        ? t('auth.login.noSocialAccountApple')
-                        : t('auth.login.noSocialAccountGoogle'),
-                  })}
-                </p>
-              </div>
-
-              <div className="relative flex flex-col gap-3">
-                <motion.button
-                  whileHover={{ y: -1 }}
-                  whileTap={{ scale: 0.97 }}
-                  type="button"
-                  onClick={goToSignUp}
-                  className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all"
-                >
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-                  />
-                  <UserPlus size={16} className="relative" />
-                  <span className="relative">{t('auth.login.createAccount')}</span>
-                  <ArrowRight
-                    size={16}
-                    className={`relative transition-transform ${isRtl ? 'rotate-180' : ''}`}
-                  />
-                </motion.button>
-                <button
-                  type="button"
-                  onClick={() => setShowNoAccountModal(false)}
-                  className="w-full rounded-2xl border border-gray-200 py-3 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 dark:border-white/10 dark:text-gray-400 dark:hover:bg-white/5"
-                >
-                  {t('common.close')}
-                </button>
-              </div>
-            </motion.div>
+              {t('auth.login.noSocialAccountTitle')}
+            </h3>
+            <p className="relative mt-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+              {t('auth.login.noSocialAccountMessage', {
+                provider:
+                  socialProvider === 'apple'
+                    ? t('auth.login.noSocialAccountApple')
+                    : t('auth.login.noSocialAccountGoogle'),
+              })}
+            </p>
           </div>
-        )}
-      </AnimatePresence>
+
+          <div className="relative flex flex-col gap-3">
+            <motion.button
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.97 }}
+              type="button"
+              onClick={goToSignUp}
+              className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all"
+            >
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+              />
+              <UserPlus size={16} className="relative" />
+              <span className="relative">{t('auth.login.createAccount')}</span>
+              <ArrowRight
+                size={16}
+                className={`relative transition-transform ${isRtl ? 'rotate-180' : ''}`}
+              />
+            </motion.button>
+            <button
+              type="button"
+              onClick={() => setShowNoAccountModal(false)}
+              className="w-full rounded-2xl border border-gray-200 py-3 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 dark:border-white/10 dark:text-gray-400 dark:hover:bg-white/5"
+            >
+              {t('common.close')}
+            </button>
+          </div>
+        </ModalBody>
+      </Modal>
 
       {/* Rate limit / Too many requests modal */}
-      <AnimatePresence>
-        {showRateLimitModal && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowRateLimitModal(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+      <Modal
+        isOpen={showRateLimitModal}
+        onClose={() => setShowRateLimitModal(false)}
+        size="sm"
+        ariaLabel={t('auth.login.rateLimitTitle', { defaultValue: 'Too Many Attempts' })}
+      >
+        <ModalCloseButton onClose={() => setShowRateLimitModal(false)} autoPositionAbsolute />
+
+        <ModalBody>
+          <div className="relative mb-6 text-center">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-amber-400/15 blur-3xl"
             />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="rate-limit-title"
-              className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-3xl border border-gray-200 bg-white p-6 sm:p-8 shadow-2xl dark:border-white/10 dark:bg-[#0e0e0e]"
+            <div className="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-100 dark:bg-amber-900/30">
+              <Clock size={28} className="text-amber-600 dark:text-amber-400" />
+            </div>
+            <h3
+              id="rate-limit-title"
+              className="relative font-barlow text-2xl font-bold text-gray-900 dark:text-white"
             >
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-amber-400/15 blur-3xl"
-              />
-              <button
-                type="button"
-                onClick={() => setShowRateLimitModal(false)}
-                aria-label={t('auth.login.ariaCloseModal')}
-                className="absolute end-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/10 dark:hover:text-white"
-              >
-                <X size={18} />
-              </button>
-
-              <div className="relative mb-6 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-100 dark:bg-amber-900/30">
-                  <Clock size={28} className="text-amber-600 dark:text-amber-400" />
-                </div>
-                <h3
-                  id="rate-limit-title"
-                  className="font-barlow text-2xl font-bold text-gray-900 dark:text-white"
-                >
-                  {t('auth.login.rateLimitTitle', { defaultValue: 'Too Many Attempts' })}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-                  {t('auth.login.rateLimitMessage', {
-                    defaultValue:
-                      'For your security, sign-in attempts have been temporarily limited due to multiple rapid attempts. Please wait 1 minute before trying again.',
-                  })}
-                </p>
-              </div>
-
-              <div className="relative flex flex-col gap-3">
-                <motion.button
-                  whileHover={{ y: -1 }}
-                  whileTap={{ scale: 0.97 }}
-                  type="button"
-                  onClick={() => setShowRateLimitModal(false)}
-                  className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all"
-                >
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-                  />
-                  <Clock size={16} className="relative" />
-                  <span className="relative">
-                    {t('auth.login.rateLimitClose', { defaultValue: 'I Understand' })}
-                  </span>
-                </motion.button>
-              </div>
-            </motion.div>
+              {t('auth.login.rateLimitTitle', { defaultValue: 'Too Many Attempts' })}
+            </h3>
+            <p className="relative mt-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+              {t('auth.login.rateLimitMessage', {
+                defaultValue:
+                  'For your security, sign-in attempts have been temporarily limited due to multiple rapid attempts. Please wait 1 minute before trying again.',
+              })}
+            </p>
           </div>
-        )}
-      </AnimatePresence>
+
+          <div className="relative flex flex-col gap-3">
+            <motion.button
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.97 }}
+              type="button"
+              onClick={() => setShowRateLimitModal(false)}
+              className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all"
+            >
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+              />
+              <Clock size={16} className="relative" />
+              <span className="relative">
+                {t('auth.login.rateLimitClose', { defaultValue: 'I Understand' })}
+              </span>
+            </motion.button>
+          </div>
+        </ModalBody>
+      </Modal>
     </div>
   );
 }

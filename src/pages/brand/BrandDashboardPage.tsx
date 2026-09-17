@@ -16,6 +16,7 @@ import {
     Globe,
 } from 'lucide-react';
 import { biIcon } from '../../components/ui/BiIcon';
+import { PageHeader } from '../../components/ui';
 import {
     Area,
     ComposedChart,
@@ -310,34 +311,32 @@ export function BrandDashboardPage() {
             )}
 
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-50">
-                <div>
-                    <div className="flex items-center gap-4">
-                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{brandName}</h1>
-                    </div>
-                    <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400 text-sm sm:text-base mt-2">
-                        <div className="flex items-center gap-1.5">
+            <PageHeader
+                title={brandName}
+                subtitle={
+                    <>
+                        <span className="flex items-center gap-1.5">
                             <Store size={16} />
                             <span>{locations.length} {t('brand.dashboard.locations')}</span>
-                        </div>
+                        </span>
                         <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                        <div className="flex items-center gap-1.5">
+                        <span className="flex items-center gap-1.5">
                             <Clock size={16} />
                             <span>{t('brand.dashboard.updatedNow')}</span>
-                        </div>
+                        </span>
                         {hasMixedCurrencies && (
                             <>
                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold">
+                                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold">
                                     <Globe size={13} />
                                     <span>{t('brand.dashboard.standardizedIn', { currency: baseCurrency })}</span>
-                                </div>
+                                </span>
                             </>
                         )}
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-3 relative z-50 w-full lg:w-auto">
+                    </>
+                }
+                actions={
+                    <>
                     {/* Unified Filter Control Deck */}
                     <div className="bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5 w-full lg:w-auto">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">
@@ -415,8 +414,10 @@ export function BrandDashboardPage() {
                             })()}
                         </div>
                     </div>
-                </div>
-            </div>
+                    </>
+                }
+                className="relative z-50"
+            />
 
             {/* Kpi Grid */}
             <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>

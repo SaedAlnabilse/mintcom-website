@@ -16,6 +16,7 @@ import {
   Percent,
   X,
 } from 'lucide-react';
+import { ModalCloseButton } from '../ui/ModalCloseButton';
 
 export type DemoProductFormValue = {
   id?: string;
@@ -262,13 +263,7 @@ export function DemoProductFormModal({
           <h3 className="text-lg font-semibold text-text-primary dark:text-white">
             {mode === 'edit' ? 'Edit product' : 'Add product'}
           </h3>
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-11 w-11 items-center justify-center rounded-xl text-text-tertiary hover:bg-cream-100 dark:hover:bg-white/10"
-          >
-            <X size={20} />
-          </button>
+          <ModalCloseButton onClose={onClose} />
         </div>
 
         {/* Body */}

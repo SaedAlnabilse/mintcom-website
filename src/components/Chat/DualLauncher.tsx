@@ -6,6 +6,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import MintcomLeafIcon from '../../assets/small-logo.svg';
 import { useChatPageContext } from '../../hooks/useChatPageContext';
+import { ModalCloseButton } from '../ui';
 
 interface DualLauncherProps {
   onOpenChat: () => void;
@@ -158,13 +159,7 @@ export function DualLauncher({
           </div>
 
           {/* Global Close Button */}
-          <button
-            onClick={onCloseAll}
-            className="h-11 w-11 shrink-0 flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors"
-            aria-label={t('common.close')}
-          >
-            <X size={18} />
-          </button>
+          <ModalCloseButton onClose={onCloseAll} />
         </motion.div>
       </div>
     );

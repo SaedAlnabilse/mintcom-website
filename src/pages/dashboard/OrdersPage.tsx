@@ -32,7 +32,7 @@ import { toast } from 'react-hot-toast';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
-import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { SearchInput, SelectInput, Pagination, ModalCloseButton, PageHeader, Badge } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { SingleSelect } from '../../components/SingleSelect';
 import { BusyOverlay } from '../../components/BusyOverlay';
@@ -727,13 +727,19 @@ export function OrdersPage() {
         paymentStatus: 'HELD',
         status: 'HELD',
         createdAt: h.pinnedAt,
-        items: (h.orderData?.items || []).map((item: Record<string, any>) => ({
-          id: item.itemId,
-          name: item.name,
-          quantity: item.quantity,
-          price: item.basePrice,
-          total: item.finalPrice,
-        })),
+        items: (h.orderData?.items || []).map((item: Record<string, any>) => {
+          const qty = Number(item.quantity) || 1;
+          const unit = Number(item.finalPrice ?? item.basePrice ?? item.price ?? 0);
+          const total = Number(item.total ?? (qty * unit));
+          return {
+            id: item.itemId,
+            name: item.name,
+            quantity: qty,
+            price: Number(item.basePrice ?? unit),
+            finalPrice: unit,
+            total,
+          };
+        }),
         user: {
           username: h.heldBy?.username || t('common.notAvailable'),
         },
@@ -1133,18 +1139,18 @@ export function OrdersPage() {
     }
   }, [fetchOrders, selectedOrder, loadOrderDetails]);
 
-  const getStatusStyle = (status: string) => {
+  const getStatusTone = (status: string): 'green' | 'red' | 'amber' | 'gray' => {
     switch (status) {
       case 'COMPLETED':
-        return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
+        return 'green';
       case 'PENDING':
       case 'HELD':
-        return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
+        return 'amber';
       case 'REFUNDED':
       case 'PARTIALLY_REFUNDED':
-        return 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20';
+        return 'red';
       default:
-        return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+        return 'gray';
     }
   };
 
@@ -1217,13 +1223,19 @@ export function OrdersPage() {
           paymentStatus: 'HELD',
           status: 'HELD',
           createdAt: h.pinnedAt,
-          items: (h.orderData?.items || []).map((item: Record<string, any>) => ({
-            id: item.itemId,
-            name: item.name,
-            quantity: item.quantity,
-            price: item.basePrice,
-            total: item.finalPrice,
-          })),
+          items: (h.orderData?.items || []).map((item: Record<string, any>) => {
+            const qty = Number(item.quantity) || 1;
+            const unit = Number(item.finalPrice ?? item.basePrice ?? item.price ?? 0);
+            const total = Number(item.total ?? (qty * unit));
+            return {
+              id: item.itemId,
+              name: item.name,
+              quantity: qty,
+              price: Number(item.basePrice ?? unit),
+              finalPrice: unit,
+              total,
+            };
+          }),
           user: { username: h.heldBy?.username || t('common.notAvailable') },
           note: h.orderData?.note,
         }));
@@ -1342,20 +1354,18 @@ export function OrdersPage() {
           pagination, date range) is in flight — realtime refreshes stay silent. */}
       <BusyOverlay visible={isLoading} />
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('orders.title')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+      <PageHeader
+        title={t('orders.title')}
+        subtitle={
+          <>
             <span>{t('orders.subtitle')}</span>
             {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                {currentEstablishment.name}
-              </span>
+              <Badge>{currentEstablishment.name}</Badge>
             )}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 sm:gap-3">
+          </>
+        }
+        actions={
+          <>
           {/* Shift Selector */}
           {canUseShiftFeatures && (shiftStatus?.shiftStatus === 'ACTIVE' || lastShiftSnapshot) && (
             <div className="w-[200px]">
@@ -1393,8 +1403,9 @@ export function OrdersPage() {
           {canExport && (
             <ExportMenu onExport={handleExport} disabled={isExporting} />
           )}
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* Unified Filter Control Deck */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl sm:rounded-[24px] border border-gray-200 dark:border-white/5 p-2 shadow-sm">
@@ -1815,9 +1826,9 @@ export function OrdersPage() {
                       </p>
                     </div>
                   </div>
-                  <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                  <Badge tone={getStatusTone(order.paymentStatus || order.status || 'PENDING')}>
                     {getOrderStatusLabel(order)}
-                  </span>
+                  </Badge>
                 </div>
 
                 {/* Card Body: Customer and Amount */}
@@ -1976,9 +1987,9 @@ export function OrdersPage() {
                     </td>
                     <td className="px-6 py-4 text-end">
                       <div className="flex justify-end">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                        <Badge tone={getStatusTone(order.paymentStatus || order.status || 'PENDING')}>
                           {getOrderStatusLabel(order)}
-                        </span>
+                        </Badge>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-end">
@@ -2090,7 +2101,11 @@ export function OrdersPage() {
       {/* Refund shift-required error popup — centered like ConfirmModal */}
       {refundErrorPopup.open && (
         <div className="fixed inset-0 z-[10001] flex items-end justify-center bg-black/40 p-0 backdrop-blur-sm sm:items-center sm:p-4 dark:bg-black/80">
-          <div className="w-full max-w-sm rounded-t-3xl border border-gray-200 bg-white p-6 text-center shadow-2xl dark:border-white/10 dark:bg-[#1E293B] sm:rounded-2xl">
+          <div className="relative w-full max-w-sm rounded-t-3xl border border-gray-200 bg-white p-6 text-center shadow-2xl dark:border-white/10 dark:bg-[#1E293B] sm:rounded-2xl">
+            <ModalCloseButton
+              onClose={() => setRefundErrorPopup({ open: false, message: '' })}
+              autoPositionAbsolute
+            />
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-mintcom-red/10 text-mintcom-red">
               <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />

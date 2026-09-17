@@ -20,6 +20,7 @@ import { ReceiptsReport } from '../../components/dashboard/reports/ReceiptsRepor
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { SingleSelect } from '../../components/SingleSelect';
 import { ExportMenu } from '../../components/ExportMenu';
+import { PageHeader, Badge } from '../../components/ui';
 import { exportTable, exportSections } from '../../utils/export';
 import type { ExportFormat, ExportColumn, ExportMeta, ExportSection } from '../../utils/export';
 import { DateRangePicker } from '../../components/DateRangePicker';
@@ -948,25 +949,24 @@ export function ReportsPage() {
   return (
     <div className="relative space-y-6 sm:space-y-8 pb-10 font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'} aria-busy={busy}>
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('dashboard.menu.salesAndReporting')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('dashboard.trackingPerformance')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {canExport && (
-            <ExportMenu onExport={handleExport} />
-          )}
-        </div>
-      </div>
+      <PageHeader
+          title={t('dashboard.menu.salesAndReporting')}
+          subtitle={
+              <>
+                  <span>{t('dashboard.trackingPerformance')}</span>
+                  {currentEstablishment?.name && (
+                      <Badge>{currentEstablishment.name}</Badge>
+                  )}
+              </>
+          }
+          actions={
+              <>
+                  {canExport && (
+                      <ExportMenu onExport={handleExport} />
+                  )}
+              </>
+          }
+      />
 
       {/* Dynamic Filter Strip */}
       <div className="space-y-2">

@@ -18,7 +18,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { CustomRoleFormModal } from '../../components/CustomRoleFormModal';
 import { RoleDeleteResolutionModal } from '../../components/RoleDeleteResolutionModal';
-import { Pagination, SearchInput } from '../../components/ui';
+import { Pagination, SearchInput, PageHeader } from '../../components/ui';
 import { getLocalizedRoleName } from '../../utils/roleNames';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { retryTransientRequest } from '../../utils/retryTransientRequest';
@@ -296,13 +296,11 @@ export function OwnerRolesPage() {
           stacked on an in-flight request. */}
       <BusyOverlay visible={isLoading} />
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.roles.title')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">{t('owner.roles.subtitle')}</p>
-        </div>
-
-        <div className="flex items-center gap-3">
+      <PageHeader
+        title={t('owner.roles.title')}
+        subtitle={t('owner.roles.subtitle')}
+        actions={
+          <>
           <button
             onClick={openCreateModal}
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
@@ -310,8 +308,9 @@ export function OwnerRolesPage() {
             <Plus size={18} />
             <span>{t('owner.roles.createNew')}</span>
           </button>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

@@ -1,23 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import {
   CheckCircle2,
   Circle,
   List,
-  Loader2,
   Minus,
   Package,
   Plus,
   RotateCcw,
   ShoppingBag,
-  X,
 } from 'lucide-react';
 import api, { extractErrorMessage } from '../config/api';
 import { TEXT_INPUT_LIMITS } from '../config/textLimits';
 import { useCurrency } from '../context/CurrencyContext';
-import { useScrollLock } from '../hooks/useScrollLock';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton } from './ui';
 import { formatInputLabel, formatInputPlaceholder } from '../utils/textCase';
 import {
   calculateSelectedRefundAmount,
@@ -245,8 +242,6 @@ export function OrderRefundModal({
     fetchActiveShifts();
   }, [isOpen, fetchActiveShifts]);
 
-  useScrollLock(isOpen);
-
   const refundableItems = useMemo(() => buildRefundableItems(order), [order]);
   const canRefundByItem = refundableItems.length > 0;
   const hasStockTrackedItems = useMemo(
@@ -472,48 +467,18 @@ const generateClientRequestId = (): string => {
     }
   };
 
-  if (!isOpen) {
-    return null;
-  }
+  return (
+    <Modal isOpen={isOpen} onClose={closeRefundModal} size="xl">
+      <ModalHeader
+        title={t('orders.details.refundConfirmTitle')}
+        subtitle={`${t('orders.table.order')} #${order.orderNumber} - ${formatAmount(Math.abs(Number(order.total || 0)))}`}
+        icon={<RotateCcw size={24} />}
+        onClose={closeRefundModal}
+        closeDisabled={isRefundSubmitting}
+      />
 
-  return createPortal(
-    <div
-      dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-      className="fixed inset-0 z-[10000] flex items-end justify-center bg-black/50 p-0 backdrop-blur-sm sm:items-center sm:p-4"
-    >
-      <div className="absolute inset-0" onClick={closeRefundModal} />
-
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="refund-order-title"
-          className="relative flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#1E293B] sm:max-h-[86vh] sm:rounded-2xl"
-        >
-          <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/10 sm:px-6">
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-mintcom-red/10 text-mintcom-red">
-                <RotateCcw size={20} />
-              </div>
-              <div className="min-w-0">
-                <h3 id="refund-order-title" className="text-lg font-bold text-gray-900 dark:text-white">
-                  {t('orders.details.refundConfirmTitle')}
-                </h3>
-                <p className="truncate text-xs font-bold text-gray-500 dark:text-gray-400">
-                  {t('orders.table.order')} #{order.orderNumber} - {formatAmount(Math.abs(Number(order.total || 0)))}
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={closeRefundModal}
-              disabled={isRefundSubmitting}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-gray-200 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-900 disabled:opacity-50 dark:border-white/10 dark:hover:bg-white/5 dark:hover:text-white"
-            >
-              <X size={18} />
-            </button>
-          </div>
-
-          <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4 sm:px-6">
+      <ModalBody>
+        <div>
             <p className="mb-4 text-sm font-semibold text-gray-600 dark:text-gray-300">
               {t('orders.details.refundConfirmMessage')}
             </p>
@@ -762,29 +727,22 @@ const generateClientRequestId = (): string => {
               </p>
             )}
           </div>
+      </ModalBody>
 
-          <div className="flex gap-3 border-t border-gray-100 px-5 py-4 dark:border-white/10 sm:px-6">
-            <button
-              type="button"
-              onClick={closeRefundModal}
-              disabled={isRefundSubmitting}
-              className="flex-1 rounded-xl border border-gray-300 px-4 py-3 text-sm font-bold text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-60 dark:border-white/15 dark:text-gray-200 dark:hover:bg-white/5"
-            >
-              {t('common.cancel')}
-            </button>
-            <button
-              type="button"
-              onClick={submitRefundWithReason}
-              disabled={isRefundSubmitting}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-mintcom-red px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-mintcom-red/90 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isRefundSubmitting && <Loader2 size={16} className="animate-spin" />}
-              {isRefundSubmitting ? t('common.loading') : t('orders.actions.refund')}
-            </button>
-          </div>
-        </div>
-    </div>,
-    document.body,
+      <ModalFooter>
+        <ModalCancelButton onClick={closeRefundModal} disabled={isRefundSubmitting}>
+          {t('common.cancel')}
+        </ModalCancelButton>
+        <ModalSubmitButton
+          type="button"
+          onClick={submitRefundWithReason}
+          loading={isRefundSubmitting}
+        >
+          {!isRefundSubmitting && <RotateCcw size={16} />}
+          {isRefundSubmitting ? t('common.loading') : t('orders.actions.refund')}
+        </ModalSubmitButton>
+      </ModalFooter>
+    </Modal>
   );
 }
 

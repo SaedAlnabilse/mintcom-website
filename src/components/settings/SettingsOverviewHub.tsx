@@ -11,6 +11,7 @@ import {
   ArrowRight,
   ArrowLeft,
 } from 'lucide-react';
+import { PageHeader, Badge } from '../ui';
 
 interface SettingsOverviewHubProps {
   settings: any;
@@ -293,24 +294,22 @@ export function SettingsOverviewHub({
   return (
     <div className="space-y-8 animate-fadeIn font-sans" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
-      <div>
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-            {t('settings.overview.title', 'Settings & Configuration')}
-          </h1>
-          {currentEstablishment?.name && (
-            <span className="hidden sm:inline-flex px-3 py-1 rounded-lg bg-mintcom-green/10 text-mintcom-green font-semibold text-xs border border-mintcom-green/20">
-              {currentEstablishment.name}
+      <PageHeader
+        title={t('settings.overview.title', 'Settings & Configuration')}
+        subtitle={
+          <>
+            <span>
+              {t(
+                'settings.overview.subtitle',
+                'Manage your store profile, financial setup, hardware registers, and integrations.',
+              )}
             </span>
-          )}
-        </div>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5 max-w-2xl">
-          {t(
-            'settings.overview.subtitle',
-            'Manage your store profile, financial setup, hardware registers, and integrations.',
-          )}
-        </p>
-      </div>
+            {currentEstablishment?.name && (
+              <Badge>{currentEstablishment.name}</Badge>
+            )}
+          </>
+        }
+      />
 
       {/* Categorized Settings Cards */}
       {categories.length > 0 ? (

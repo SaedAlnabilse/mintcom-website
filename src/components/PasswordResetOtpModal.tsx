@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Shield, Key, CheckCircle2, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Mail, Shield, Key, CheckCircle2, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
-import { useScrollLock } from '../hooks/useScrollLock';
+import { Modal, ModalHeader, ModalBody } from './ui';
 import { useTranslation } from 'react-i18next';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 
@@ -49,8 +47,6 @@ export function PasswordResetOtpModal({
 
     const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
     const errorRef = useRef<HTMLDivElement>(null);
-
-    useScrollLock(isOpen);
 
     useEffect(() => {
         if (isOpen) {
@@ -227,50 +223,16 @@ export function PasswordResetOtpModal({
         onClose();
     };
 
-    if (!isOpen) return null;
+    return (
+        <Modal isOpen={isOpen} onClose={handleClose} size="sm">
+            <ModalHeader
+                title={title}
+                icon={<Shield size={24} />}
+                onClose={handleClose}
+            />
 
-    return createPortal(
-        <AnimatePresence>
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-                onClick={handleClose}
-            >
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    onClick={(e) => e.stopPropagation()}
-                    className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden max-h-[92dvh] sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
-                >
-                    {/* Mobile Drag Handle */}
-                    <div className="sm:hidden flex justify-center pt-2 pb-1">
-                      <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                    </div>
-                    {/* Header */}
-                    <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/[0.05]">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center">
-                                <Shield className="w-5 h-5 text-mintcom-green" />
-                            </div>
-                            <h2 className="font-barlow text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                                {title}
-                            </h2>
-                        </div>
-                        <button
-                            onClick={handleClose}
-                            aria-label={t('common.close', { defaultValue: 'Close' })}
-                            className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
-                        >
-                            <X size={18} />
-                        </button>
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-6">
+            <ModalBody>
+                <div>
                         {/* Step 1: Request Otp */}
                         {step === 'request' && (
                             <div className="space-y-6">
@@ -498,9 +460,7 @@ export function PasswordResetOtpModal({
                             </div>
                         )}
                     </div>
-                </motion.div>
-            </motion.div>
-        </AnimatePresence>,
-        document.body
+            </ModalBody>
+        </Modal>
     );
 }

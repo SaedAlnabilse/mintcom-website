@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -20,7 +19,7 @@ import {
   Lock,
   RotateCcw
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import api, { API_BASE_URL } from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -29,7 +28,7 @@ import { useAuth } from '../../context/AuthContext';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatPaymentBrandName } from '../../utils/paymentCard';
-import { SelectInput } from '../../components/ui';
+import { SelectInput, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, PageHeader, Badge } from '../../components/ui';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
@@ -491,19 +490,17 @@ export function PaymentMethodsPage() {
           realtime refreshes stay silent. */}
       <BusyOverlay visible={isLoading} />
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.title')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-            <span>{t('paymentMethods.subtitle')}</span>
-            {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                {currentEstablishment.name}
-              </span>
-            )}
-          </p>
-        </div>
-      </div>
+      <PageHeader
+          title={t('paymentMethods.title')}
+          subtitle={
+              <>
+                  <span>{t('paymentMethods.subtitle')}</span>
+                  {currentEstablishment?.name && (
+                      <Badge>{currentEstablishment.name}</Badge>
+                  )}
+              </>
+          }
+      />
 
       {/* Card Types Section */}
       <section className="bg-white dark:bg-[#1E293B] rounded-[32px] border border-gray-200 dark:border-white/[0.03] p-6 sm:p-8 shadow-sm overflow-hidden relative">
@@ -598,13 +595,9 @@ export function PaymentMethodsPage() {
                     <h3 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate" title={formatPaymentBrandName(card.name)}>
                       {formatPaymentBrandName(card.name)}
                     </h3>
-                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold shrink-0 ${
-                      card.isActive === false
-                        ? 'bg-mintcom-red/10 text-mintcom-red'
-                        : 'bg-mintcom-green/10 text-mintcom-green'
-                    }`}>
+                    <Badge tone={card.isActive === false ? 'red' : 'green'}>
                       {card.isActive === false ? t('common.inactive', 'Inactive') : t('common.active', 'Active')}
-                    </span>
+                    </Badge>
                   </div>
                   
                   <div className="flex items-center gap-1.5">
@@ -734,13 +727,9 @@ export function PaymentMethodsPage() {
                 <div className="p-3 sm:p-3.5 flex flex-col gap-2.5 border-t border-gray-100 dark:border-white/5">
                   <div className="flex items-center justify-between gap-1.5 min-w-0">
                     <h3 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate" title={method.name}>{method.name}</h3>
-                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold shrink-0 ${
-                      method.isActive
-                        ? 'bg-mintcom-green/10 text-mintcom-green'
-                        : 'bg-mintcom-red/10 text-mintcom-red'
-                    }`}>
+                    <Badge tone={method.isActive ? 'green' : 'red'}>
                       {method.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
-                    </span>
+                    </Badge>
                   </div>
                   
                   <div className="flex items-center gap-1.5">
@@ -798,50 +787,15 @@ export function PaymentMethodsPage() {
       </section>
 
       {/* Payment Method Modal */}
-      {createPortal(
-        <AnimatePresence mode="wait">
-          {showModal && (
-            <div
-              dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-              className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-            >
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setShowModal(false)}
-                className="absolute inset-0"
-              />
-              <motion.div
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 100 }}
-                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
-              >
-                {/* Mobile Drag Handle */}
-                <div className="sm:hidden flex justify-center pt-2 pb-1">
-                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                </div>
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)} size="md">
+        <ModalHeader
+          title={editingMethod ? t('paymentMethods.editPayment') : t('paymentMethods.addPayment')}
+          icon={<Wallet size={24} />}
+          onClose={() => setShowModal(false)}
+        />
 
-              <div className="px-8 py-6 border-b border-gray-50 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
-                    <Wallet size={24} />
-                  </div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                    {editingMethod ? t('paymentMethods.editPayment') : t('paymentMethods.addPayment')}
-                  </h2>
-                </div>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90 active:scale-90"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalBody className="space-y-8">
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all hover:border-mintcom-green/50">
                     {imagePreview ? (
@@ -883,110 +837,57 @@ export function PaymentMethodsPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  {isEditingInactiveMethod ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => setShowModal(false)}
-                        disabled={isSubmitting}
-                        className="flex-1 py-4 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-xs tracking-[0.2em] uppercase rounded-2xl border border-gray-200 dark:border-white/10 hover:text-gray-900 dark:hover:text-white transition-all disabled:opacity-50"
-                      >
-                        {t('common.cancel')}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => reactivatePaymentMethod(editingMethod.id)}
-                        disabled={isSubmitting}
-                        className="flex-1 py-4 bg-mintcom-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg shadow-mintcom-green/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100"
-                      >
-                        <RotateCcw size={16} />
-                        {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      {editingMethod && !editingMethod.isDefault && editingMethod.isActive && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowModal(false);
-                            handleDelete(editingMethod.id, editingMethod.name);
-                          }}
-                          disabled={isSubmitting}
-                          className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                        >
-                          <Trash2 size={16} />
-                          {t('common.deactivate')}
-                        </button>
-                      )}
-                      <button
-                        type="submit"
-                        disabled={isSubmitting || !watchName?.trim()}
-                        className={`flex-1 py-4 bg-mintcom-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${watchName?.trim() ? 'shadow-mintcom-green/20' : 'shadow-black/5'}`}
-                      >
-                        {isSubmitting ? (
-                          <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                        ) : (
-                          editingMethod ? t('common.save') : t('common.add')
-                        )}
-                      </button>
-                    </>
-                  )}
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>,
-      document.body
-      )}
+          </ModalBody>
+
+          <ModalFooter>
+            {isEditingInactiveMethod ? (
+              <>
+                <ModalCancelButton onClick={() => setShowModal(false)} disabled={isSubmitting}>
+                  {t('common.cancel')}
+                </ModalCancelButton>
+                <ModalSubmitButton
+                  type="button"
+                  onClick={() => editingMethod && reactivatePaymentMethod(editingMethod.id)}
+                  loading={isSubmitting}
+                >
+                  <RotateCcw size={16} />
+                  {t('common.reactivate', { defaultValue: 'Reactivate' })}
+                </ModalSubmitButton>
+              </>
+            ) : (
+              <>
+                {editingMethod && !editingMethod.isDefault && editingMethod.isActive && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowModal(false);
+                      handleDelete(editingMethod.id, editingMethod.name);
+                    }}
+                    disabled={isSubmitting}
+                    className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    <Trash2 size={16} />
+                    {t('common.deactivate')}
+                  </button>
+                )}
+                <ModalSubmitButton loading={isSubmitting} disabled={!watchName?.trim()}>
+                  {editingMethod ? t('common.save') : t('common.add')}
+                </ModalSubmitButton>
+              </>
+            )}
+          </ModalFooter>
+        </form>
+      </Modal>
 
       {/* Card Type Modal */}
-      {createPortal(
-        <AnimatePresence mode="wait">
-          {showCardModal && (
-            <div
-              dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-              className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-            >
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setShowCardModal(false)}
-                className="absolute inset-0"
-              />
-              <motion.div
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 100 }}
-                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
-              >
-                {/* Mobile drag handle */}
-                <div className="sm:hidden flex justify-center pt-2 pb-1">
-                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                </div>
+      <Modal isOpen={showCardModal} onClose={() => setShowCardModal(false)} size="md">
+        <ModalHeader
+          title={editingCard ? t('paymentMethods.editBrand') : t('paymentMethods.addBrand')}
+          icon={<CreditCard size={24} />}
+          onClose={() => setShowCardModal(false)}
+        />
 
-              <div className="px-8 py-6 border-b border-gray-50 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
-                    <CreditCard size={24} />
-                  </div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                    {editingCard ? t('paymentMethods.editBrand') : t('paymentMethods.addBrand')}
-                  </h2>
-                </div>
-                <button
-                  onClick={() => setShowCardModal(false)}
-                  className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90 active:scale-90"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              <div className="p-8 space-y-8">
+        <ModalBody className="space-y-8">
                 <div className="flex flex-col items-center gap-4">
                   <div className={`w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all ${isEditingSystemCard ? '' : 'hover:border-mintcom-green/50'}`}>
                     {isEditingSystemCard ? (
@@ -1042,64 +943,51 @@ export function PaymentMethodsPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  {isEditingInactiveCard ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => setShowCardModal(false)}
-                        disabled={isSubmitting}
-                        className="flex-1 py-4 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-xs tracking-[0.2em] uppercase rounded-2xl border border-gray-200 dark:border-white/10 hover:text-gray-900 dark:hover:text-white transition-all disabled:opacity-50"
-                      >
-                        {t('common.cancel')}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => reactivateCardType(editingCard.id)}
-                        disabled={isSubmitting}
-                        className="flex-1 py-4 bg-mintcom-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-mintcom-green/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100"
-                      >
-                        <RotateCcw size={16} />
-                        {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      {editingCard && editingCard.isActive !== false && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowCardModal(false);
-                            handleDeleteCardType(editingCard.id, editingCard.name);
-                          }}
-                          disabled={isSubmitting}
-                          className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                        >
-                          <Trash2 size={16} />
-                          {t('common.deactivate')}
-                        </button>
-                      )}
-                      <button
-                        onClick={handleAddCardType}
-                        disabled={isSubmitting || isEditingSystemCard || !newCardName.trim()}
-                        className={`flex-1 py-4 bg-mintcom-green text-black font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:scale-100 ${newCardName.trim() ? 'shadow-mintcom-green/20' : 'shadow-black/5'}`}
-                      >
-                        {isSubmitting ? (
-                          <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                        ) : (
-                          editingCard ? t('common.save') : t('common.add')
-                        )}
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>,
-      document.body
-      )}
+        </ModalBody>
+
+        <ModalFooter>
+          {isEditingInactiveCard ? (
+            <>
+              <ModalCancelButton onClick={() => setShowCardModal(false)} disabled={isSubmitting}>
+                {t('common.cancel')}
+              </ModalCancelButton>
+              <ModalSubmitButton
+                type="button"
+                onClick={() => editingCard && reactivateCardType(editingCard.id)}
+                loading={isSubmitting}
+              >
+                <RotateCcw size={16} />
+                {t('common.reactivate', { defaultValue: 'Reactivate' })}
+              </ModalSubmitButton>
+            </>
+          ) : (
+            <>
+              {editingCard && editingCard.isActive !== false && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCardModal(false);
+                    handleDeleteCardType(editingCard.id, editingCard.name);
+                  }}
+                  disabled={isSubmitting}
+                  className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <Trash2 size={16} />
+                  {t('common.deactivate')}
+                </button>
+              )}
+              <ModalSubmitButton
+                type="button"
+                onClick={handleAddCardType}
+                loading={isSubmitting}
+                disabled={isEditingSystemCard || !newCardName.trim()}
+              >
+                {editingCard ? t('common.save') : t('common.add')}
+              </ModalSubmitButton>
+            </>
+          )}
+        </ModalFooter>
+      </Modal>
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}

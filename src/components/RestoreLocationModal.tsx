@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { X, Shield, Lock, User, RefreshCw, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Shield, Lock, User, RefreshCw, AlertTriangle, ArrowRight } from 'lucide-react';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
 import { GoogleAuthButton } from './GoogleAuthButton';
+import { Modal, ModalHeader, ModalBody } from './ui';
 import { AppleAuthButton, type AppleAuthCredential } from './AppleAuthButton';
 
 export type RestoreLocationAuthProvider = 'password' | 'google' | 'apple';
@@ -92,52 +91,18 @@ export function RestoreLocationModal({
         await onRestore(formData);
     };
 
-    if (!isOpen) return null;
+    return (
+        <Modal isOpen={isOpen} onClose={() => !isRestoring && onClose()} size="sm" closeOnBackdrop={!isRestoring}>
+            <ModalHeader
+                title={t('security.restore.title')}
+                subtitle={t('security.restore.step', { current: step, total: 2 })}
+                icon={<RefreshCw size={24} />}
+                onClose={() => !isRestoring && onClose()}
+                closeDisabled={isRestoring}
+            />
 
-    return createPortal(
-        <AnimatePresence>
-            <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={() => !isRestoring && onClose()}
-                    className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
-                />
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
-                >
-                    {/* Mobile Drag Handle */}
-                    <div className="sm:hidden flex justify-center pt-2 pb-1">
-                      <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                    </div>
-                    <div className="p-6 sm:p-8">
-                        <div className="flex items-center justify-between mb-8">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2.5 rounded-2xl bg-mintcom-green/10 text-mintcom-green">
-                                    <RefreshCw size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                                        {t('security.restore.title')}
-                                    </h3>
-                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-0.5">
-                                        {t('security.restore.step', { current: step, total: 2 })}
-                                    </p>
-                                </div>
-                            </div>
-                            <button
-                                onClick={() => !isRestoring && onClose()}
-                                disabled={isRestoring}
-                                aria-label={t('common.close', { defaultValue: 'Close' })}
-                                className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90 disabled:opacity-50"
-                            >
-                                <X size={18} />
-                            </button>
-                        </div>
+            <ModalBody>
+                <div>
 
                         {step === 1 ? (
                             authProvider === 'password' ? (
@@ -343,9 +308,7 @@ export function RestoreLocationModal({
                             </form>
                         )}
                     </div>
-                </motion.div>
-            </div>
-        </AnimatePresence>,
-        document.body
+            </ModalBody>
+        </Modal>
     );
 }

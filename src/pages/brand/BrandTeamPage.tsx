@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
 
 import {
     Users,
@@ -25,7 +23,7 @@ import toast from 'react-hot-toast';
 import { CustomSelect } from '../../components/CustomSelect';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { useAuth } from '../../context/AuthContext';
-import { Pagination } from '../../components/ui';
+import { EmptyState, Pagination, Modal, ModalBody, ModalFooter, ModalCancelButton, ModalCloseButton, PageHeader, Badge, Card } from '../../components/ui';
 import { AppStrings } from '../../constants/AppStrings';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -310,12 +308,11 @@ export default function BrandTeamPage() {
         return role.toUpperCase() === 'ADMIN' ? t('staff.roles.admin') : t('staff.roles.user');
     };
 
-    const getRoleBadgeStyle = (role: string) => {
-        const base = "px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border";
+    const getRoleBadgeTone = (role: string): 'green' | 'blue' => {
         if (role.toUpperCase() === 'ADMIN') {
-            return `${base} bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20`;
+            return 'green';
         }
-        return `${base} bg-blue-500/10 text-blue-500 border-blue-500/20`;
+        return 'blue';
     };
 
     const clearFilters = () => {
@@ -338,20 +335,18 @@ export default function BrandTeamPage() {
     return (
         <div className="space-y-6 sm:space-y-8 pb-10 font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+            <PageHeader
+                title={t('owner.staff.title')}
+                subtitle={
+                    <>
                         <span>{t('owner.staff.subtitle')}</span>
                         {brandName && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                                {brandName}
-                            </span>
+                            <Badge>{brandName}</Badge>
                         )}
-                    </p>
-                </div>
-
-                <div className="flex items-center gap-3">
+                    </>
+                }
+                actions={
+                    <>
                     <button
                         onClick={handleAddEmployee}
                         className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
@@ -359,8 +354,9 @@ export default function BrandTeamPage() {
                         <UserPlus size={18} />
                         <span>{t('staff.newEmployee')}</span>
                     </button>
-                </div>
-            </div>
+                    </>
+                }
+            />
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -392,7 +388,7 @@ export default function BrandTeamPage() {
             </div>
 
             {/* Filters Bar */}
-            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
+            <Card padding="sm">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                     {/* Search */}
                     <div className="relative flex-1">
@@ -486,31 +482,31 @@ export default function BrandTeamPage() {
                         )}
                         </div>
                         </div>
-                        </div>
+            </Card>
 
                         {/* Team Display */}
                         {filteredEmployees.length === 0 ? (
-                            <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                                <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                                <p className="text-lg font-medium text-gray-900 dark:text-white">
-                                    {hasSearch ? t('common.noResults') : hasOnlyFilters ? t('common.noFilteredResults') : t('owner.staff.noStaffFound')}
-                                </p>
-                                <p className="mx-auto mt-2 max-w-sm text-sm text-gray-500">
-                                    {hasSearch
+                            <EmptyState
+                                icon={Users}
+                                title={hasSearch ? t('common.noResults') : hasOnlyFilters ? t('common.noFilteredResults') : t('owner.staff.noStaffFound')}
+                                description={
+                                    hasSearch
                                         ? t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
                                         : hasOnlyFilters
                                             ? t('common.noFilteredResultsDesc')
-                                            : t('owner.staff.addStaffDesc')}
-                                </p>
-                                {hasActiveFilters && (
-                                    <button
-                                        onClick={clearFilters}
-                                        className="mt-4 px-6 py-2 rounded-xl bg-mintcom-green text-black text-sm font-bold hover:bg-[#5fa888] transition-all"
-                                    >
-                                        {t('attributes.filters.reset')}
-                                    </button>
-                                )}
-                            </div>
+                                            : t('owner.staff.addStaffDesc')
+                                }
+                                action={
+                                    hasActiveFilters ? (
+                                        <button
+                                            onClick={clearFilters}
+                                            className="mt-4 px-6 py-2 rounded-xl bg-mintcom-green text-black text-sm font-bold hover:bg-[#5fa888] transition-all"
+                                        >
+                                            {t('attributes.filters.reset')}
+                                        </button>
+                                    ) : undefined
+                                }
+                            />
                         ) : (
                             <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                                 {viewMode === 'grid' ? (
@@ -580,13 +576,10 @@ export default function BrandTeamPage() {
 
                                                 {/* Status Badge */}
                                                 <div className="mb-4">
-                                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${emp.isActive
-                                                        ? 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20 dark:bg-mintcom-green/ dark:text-mintcom-green dark:border-mintcom-green/'
-                                                        : 'bg-gray-100 text-gray-500 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
-                                                        }`}>
+                                                    <Badge tone={emp.isActive ? 'green' : 'gray'}>
                                                         <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-mintcom-green' : 'bg-gray-400'}`} />
                                                         {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
-                                                    </span>
+                                                    </Badge>
                                                 </div>
 
                                                 {/* Contact Info */}
@@ -617,9 +610,9 @@ export default function BrandTeamPage() {
                                                                         {est.name}
                                                                     </span>
                                                                 </div>
-                                                                <span className={getRoleBadgeStyle(est.role)}>
+                                                                <Badge tone={getRoleBadgeTone(est.role)}>
                                                                     {getRoleDisplay(est.role)}
-                                                                </span>
+                                                                </Badge>
                                                             </div>
                                                         ))}
                                                         {emp.establishments.length > 2 && (
@@ -693,9 +686,9 @@ export default function BrandTeamPage() {
                                                     <div className="grid grid-cols-2 gap-3 text-xs">
                                                         <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                                                             <p className="text-gray-500 mb-1">{t('common.role')}</p>
-                                                            <span className={getRoleBadgeStyle(emp.establishments[0]?.role || 'USER')}>
+                                                            <Badge tone={getRoleBadgeTone(emp.establishments[0]?.role || 'USER')}>
                                                                 {getRoleDisplay(emp.establishments[0]?.role || 'USER')}
-                                                            </span>
+                                                            </Badge>
                                                         </div>
                                                         <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                                                             <p className="text-gray-500 mb-1">{t('brand.dashboard.locations')}</p>
@@ -746,21 +739,18 @@ export default function BrandTeamPage() {
 
                                                     {/* Status */}
                                                     <div className="col-span-2 flex items-center justify-center">
-                                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium tracking-wider border ${emp.isActive
-                                                            ? 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20 dark:bg-mintcom-green/ dark:text-mintcom-green dark:border-mintcom-green/'
-                                                            : 'bg-gray-100 text-gray-500 border-gray-200'
-                                                            }`}>
+                                                        <Badge tone={emp.isActive ? 'green' : 'gray'}>
                                                             <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-mintcom-green' : 'bg-gray-400'}`} />
                                                             {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
-                                                        </span>
+                                                        </Badge>
                                                     </div>
 
                                                     {/* Primary Role */}
                                                     <div className="col-span-2 flex items-center justify-center">
                                                         {emp.establishments[0] && (
-                                                            <span className={getRoleBadgeStyle(emp.establishments[0].role)}>
+                                                            <Badge tone={getRoleBadgeTone(emp.establishments[0].role)}>
                                                                 {getRoleDisplay(emp.establishments[0].role)}
-                                                            </span>
+                                                            </Badge>
                                                         )}
                                                     </div>
 
@@ -824,74 +814,63 @@ export default function BrandTeamPage() {
             />
 
             {/* Delete Confirmation Modal */}
-            {deleteModalOpen && employeeToDelete && createPortal(
-                <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
-                    <motion.div 
-                       initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                       animate={{ opacity: 1, scale: 1, y: 0 }}
-                       className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
-                    >
-                        {/* Mobile Drag Handle */}
-                        <div className="sm:hidden flex justify-center pt-2 pb-1">
-                          <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                        </div>
-                        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
-                        <div className="p-10 pb-6 flex flex-col items-center text-center">
-                            <div className="w-20 h-20 rounded-3xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
-                                <AlertTriangle size={40} />
-                            </div>
-                            <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3 leading-tight">
-                                {t('brand.team.removeAccessTitle', 'Remove Brand Access')}
-                            </h3>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm font-bold leading-relaxed max-w-[320px]">
-                                {t('brand.team.removeAccessPrefix', 'Remove brand-wide access for')}
-                                <span className="text-gray-900 dark:text-white font-black mx-1">
-                                    {employeeToDelete.firstName} {employeeToDelete.lastName}
-                                </span>
-                                {t('brand.team.removeAccessFrom', 'from')}
-                                <span className="text-gray-900 dark:text-white font-black mx-1">
-                                    {brandName}
-                                </span>
-                                <span className="text-gray-900 dark:text-white font-black uppercase tracking-tighter text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-md">
-                                    {t('owner.staff.brandLabel')}
-                                </span>.
-                                <br /><br />
-                                <span className="text-xs opacity-70 font-medium italic">
-                                    {t('brand.team.removeAccessWarning', 'This only removes shared brand access. Direct establishment assignments stay active.')}
-                                </span>
-                            </p>
-                         </div>
-                        <div className="px-10 pb-8 space-y-5">
-                            {deleteError && (
-                                <p className="px-1 text-[11px] font-black text-red-500 flex items-center gap-1.5">
-                                    <AlertTriangle size={12} /> {deleteError}
+            <Modal isOpen={deleteModalOpen} onClose={closeDeleteModal} size="sm">
+                {employeeToDelete && (
+                    <>
+                        <ModalCloseButton onClose={closeDeleteModal} autoPositionAbsolute />
+                        <ModalBody>
+                            <div className="flex flex-col items-center text-center">
+                                <div className="w-20 h-20 rounded-3xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
+                                    <AlertTriangle size={40} />
+                                </div>
+                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3 leading-tight">
+                                    {t('brand.team.removeAccessTitle', 'Remove Brand Access')}
+                                </h3>
+                                <p className="text-gray-500 dark:text-gray-400 text-sm font-bold leading-relaxed max-w-[320px]">
+                                    {t('brand.team.removeAccessPrefix', 'Remove brand-wide access for')}
+                                    <span className="text-gray-900 dark:text-white font-black mx-1">
+                                        {employeeToDelete.firstName} {employeeToDelete.lastName}
+                                    </span>
+                                    {t('brand.team.removeAccessFrom', 'from')}
+                                    <span className="text-gray-900 dark:text-white font-black mx-1">
+                                        {brandName}
+                                    </span>
+                                    <span className="text-gray-900 dark:text-white font-black uppercase tracking-tighter text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-md">
+                                        {t('owner.staff.brandLabel')}
+                                    </span>.
+                                    <br /><br />
+                                    <span className="text-xs opacity-70 font-medium italic">
+                                        {t('brand.team.removeAccessWarning', 'This only removes shared brand access. Direct establishment assignments stay active.')}
+                                    </span>
                                 </p>
-                            )}
-                            {/* Offers whichever proof this owner can actually produce —
-                                a Google/Apple owner has no password to type here. */}
-                            <StepUpVerifier
-                                action="revoke-brand-access"
-                                targetId={employeeToDelete.id}
-                                onVerified={confirmDelete}
-                                onError={setDeleteError}
-                                submitLabel={t('brand.team.removeAccessConfirm', 'Remove access')}
-                                disabled={isDeleting}
-                            />
-                        </div>
-                        </div>
+                            </div>
+                            <div className="mt-6 space-y-5">
+                                {deleteError && (
+                                    <p className="px-1 text-[11px] font-black text-red-500 flex items-center gap-1.5">
+                                        <AlertTriangle size={12} /> {deleteError}
+                                    </p>
+                                )}
+                                {/* Offers whichever proof this owner can actually produce —
+                                    a Google/Apple owner has no password to type here. */}
+                                <StepUpVerifier
+                                    action="revoke-brand-access"
+                                    targetId={employeeToDelete.id}
+                                    onVerified={confirmDelete}
+                                    onError={setDeleteError}
+                                    submitLabel={t('brand.team.removeAccessConfirm', 'Remove access')}
+                                    disabled={isDeleting}
+                                />
+                            </div>
+                        </ModalBody>
 
-                        <div className="p-8 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20">
-                            <button
-                                onClick={closeDeleteModal}
-                                className="w-full py-4 rounded-2xl border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest uppercase hover:bg-white dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all active:scale-95"
-                            >
+                        <ModalFooter>
+                            <ModalCancelButton onClick={closeDeleteModal}>
                                 {t('common.cancel')}
-                            </button>
-                        </div>
-                    </motion.div>
-                </div>,
-                document.body
-            )}        </div >
+                            </ModalCancelButton>
+                        </ModalFooter>
+                    </>
+                )}
+            </Modal>        </div >
     );
 }
 

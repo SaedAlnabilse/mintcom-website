@@ -30,6 +30,7 @@ import type { DatePeriod } from '../../utils/datePeriods';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatCurrencyCode } from '../../utils/currency';
 import { StatValue } from '../../components/ui/StatValue';
+import { PageHeader } from '../../components/ui';
 import { QuickInfo } from '../../components/QuickInfo';
 import { biIcon } from '../../components/ui/BiIcon';
 
@@ -172,15 +173,11 @@ export function OwnerOverviewPage() {
                 so filters can't be stacked on an in-flight request. */}
             <BusyOverlay visible={isLoading} />
             {/* Header with Integrated Filter */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.overview.title')}</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
-                        {t('owner.overview.subtitle', { count: establishments.length, brands: stats.totalBrands })}
-                    </p>
-                </div>
-
-                <div className="flex items-stretch lg:items-center gap-3 w-full lg:w-auto">
+            <PageHeader
+                title={t('owner.overview.title')}
+                subtitle={t('owner.overview.subtitle', { count: establishments.length, brands: stats.totalBrands })}
+                actions={
+                    <>
                     <div className="w-full lg:w-auto bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0">
                             <div className={`flex-none w-full xl:w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-mintcom-green/5 border-mintcom-green ring-1 ring-mintcom-green shadow-lg shadow-mintcom-green/10' : 'border-transparent'}`}>
@@ -245,8 +242,9 @@ export function OwnerOverviewPage() {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                    </>
+                }
+            />
 
             {/* KPI Grid — portfolio counts first, then money metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Plus, CreditCard, DollarSign, Trash2, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, ArrowUpDown, RotateCcw, Check, FileText, X } from 'lucide-react';
+import { Plus, CreditCard, DollarSign, Trash2, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, ArrowUpDown, RotateCcw, Check, FileText } from 'lucide-react';
 
 import api from '../../config/api';
 import { BILLING_CYCLES, getMintcomPrice } from '../../config/pricing';
@@ -13,7 +12,7 @@ import { SecurityVerificationModal } from '../../components/SecurityVerification
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Pagination } from '../../components/ui';
+import { Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalSubmitButton, PageHeader } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import {
     isActivePendingCancellation,
@@ -371,14 +370,22 @@ export function OwnerBillingPage() {
 
     const billingCurrency = activeEstablishments[0]?.currency || 'USD';
 
-    // Helper to get correct price for an establishment by its index and currency
+    // Helper to get correct price for an establishment by its index and currency.
+    // Prices arrive from the API as Prisma Decimal JSON (strings like "29"),
+    // so coerce to Number first — otherwise `+=` below concatenates strings
+    // ("0" + "29" + "17" = "02917") instead of adding numbers.
+    const toFinitePrice = (value: unknown): number | null => {
+        if (value === null || value === undefined || value === '') return null;
+        const num = Number(value);
+        return Number.isFinite(num) ? num : null;
+    };
     const getEstablishmentPrice = (est: EstablishmentBilling, index: number) => {
         const estCurrency = est.currency || billingCurrency;
         const isAdditional = index > 0;
         if (est.billingCycle === 'yearly') {
-            return est.yearlyPrice || getMintcomPrice(BILLING_CYCLES.YEARLY, isAdditional, estCurrency);
+            return toFinitePrice(est.yearlyPrice) ?? getMintcomPrice(BILLING_CYCLES.YEARLY, isAdditional, estCurrency);
         }
-        return est.monthlyPrice || getMintcomPrice(BILLING_CYCLES.MONTHLY, isAdditional, estCurrency);
+        return toFinitePrice(est.monthlyPrice) ?? getMintcomPrice(BILLING_CYCLES.MONTHLY, isAdditional, estCurrency);
     };
 
     let totalMonthlyCost = 0;
@@ -406,7 +413,7 @@ export function OwnerBillingPage() {
         const estCurrency = est.currency || billingCurrency;
         const isYearly = est.billingCycle === 'yearly';
         const isAdditional = index > 0;
-        const monthlyRate = est.monthlyPrice || getMintcomPrice(BILLING_CYCLES.MONTHLY, isAdditional, estCurrency);
+        const monthlyRate = toFinitePrice(est.monthlyPrice) ?? getMintcomPrice(BILLING_CYCLES.MONTHLY, isAdditional, estCurrency);
         const total = getEstablishmentPrice(est, index);
         const quantity = isYearly ? 12 : 1;
         const subtotal = monthlyRate * quantity;
@@ -538,15 +545,11 @@ export function OwnerBillingPage() {
                 be stacked on an in-flight request. */}
             <BusyOverlay visible={isLoading} />
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.billing.title')}</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
-                        {t('owner.billing.subtitle')}
-                    </p>
-                </div>
-
-                <div className="flex items-center gap-6">
+            <PageHeader
+                title={t('owner.billing.title')}
+                subtitle={t('owner.billing.subtitle')}
+                actions={
+                    <>
                     <div className="text-right hidden sm:block">
                         <p className="text-[10px] font-bold text-gray-400 tracking-widest capitalize mb-1">
                             {t('owner.billing.monthly')}
@@ -582,8 +585,9 @@ export function OwnerBillingPage() {
                         <Plus size={18} />
                         <span>{t('owner.billing.addPaymentMethod')}</span>
                     </button>
-                </div>
-            </div>
+                    </>
+                }
+            />
 
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1021,125 +1025,95 @@ export function OwnerBillingPage() {
                 linkEstablishmentName={addCardEstablishmentName}
             />
 
-            {typeof document !== 'undefined' &&
-                createPortal(
-                    <AnimatePresence>
-                        {cardAssignmentEstablishment && billingData && (
-                            <div
-                                dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                                className="fixed inset-0 z-[9999] popup-surface flex items-end justify-center p-0 sm:items-center sm:p-4 font-sans"
-                            >
-                                {/* Full-viewport dimmer — same layering as other owner popups */}
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    className="fixed inset-0 bg-black/40 dark:bg-black/80 backdrop-blur-sm"
-                                    onClick={() =>
-                                        !isAssigningCard && setCardAssignmentEstablishment(null)
-                                    }
-                                />
+            <Modal
+                isOpen={cardAssignmentEstablishment !== null}
+                onClose={() => setCardAssignmentEstablishment(null)}
+                size="sm"
+                closeOnBackdrop={!isAssigningCard}
+            >
+                {cardAssignmentEstablishment && billingData && (
+                    <>
+                        <ModalHeader
+                            title={t('owner.billing.change_card', {
+                                defaultValue: 'Change Card',
+                            })}
+                            subtitle={cardAssignmentEstablishment.name}
+                            icon={<CreditCard size={24} />}
+                            onClose={() => setCardAssignmentEstablishment(null)}
+                            closeDisabled={isAssigningCard}
+                        />
 
-                                <motion.div
-                                    initial={{ opacity: 0, y: 24 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 24 }}
-                                    className="relative z-10 w-full max-w-md rounded-t-2xl border border-gray-200 bg-white p-5 shadow-2xl dark:border-white/10 dark:bg-[#1E293B] sm:rounded-2xl"
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    <div className="mb-4 flex items-start justify-between gap-4">
-                                        <div>
-                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                                                {t('owner.billing.change_card', {
-                                                    defaultValue: 'Change Card',
-                                                })}
-                                            </h3>
-                                            <p className="mt-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                {cardAssignmentEstablishment.name}
-                                            </p>
-                                        </div>
+                        <ModalBody>
+                            <div className="space-y-2">
+                                {billingData.savedCards.map((card) => {
+                                    const isCurrent =
+                                        cardAssignmentEstablishment.paymentCard?.id ===
+                                        card.id;
+                                    return (
                                         <button
+                                            key={card.id}
                                             type="button"
-                                            disabled={isAssigningCard}
-                                            onClick={() => setCardAssignmentEstablishment(null)}
-                                            aria-label={t('common.close', { defaultValue: 'Close' })}
-                                            className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90 disabled:opacity-50"
+                                            disabled={isAssigningCard || isCurrent}
+                                            onClick={() =>
+                                                handleAssignCardToEstablishment(
+                                                    card.id,
+                                                    cardAssignmentEstablishment.id,
+                                                )
+                                            }
+                                            className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition ${
+                                                isCurrent
+                                                    ? 'border-mintcom-green/40 bg-mintcom-green/10'
+                                                    : 'border-gray-200 hover:border-mintcom-green/40 hover:bg-gray-50 dark:border-white/10 dark:hover:bg-white/5'
+                                            } disabled:cursor-default`}
                                         >
-                                            <X size={18} />
+                                            <span>
+                                                <span className="block text-sm font-bold text-gray-900 dark:text-white">
+                                                    {card.brand} •••• {card.last4}
+                                                </span>
+                                                <span className="block text-xs font-medium text-gray-500 dark:text-gray-400">
+                                                    {card.cardholderName ||
+                                                        t('owner.billing.cardholder', {
+                                                            defaultValue: 'Cardholder',
+                                                        })}
+                                                </span>
+                                            </span>
+                                            {isCurrent && (
+                                                <Check
+                                                    size={18}
+                                                    className="text-mintcom-green"
+                                                />
+                                            )}
                                         </button>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        {billingData.savedCards.map((card) => {
-                                            const isCurrent =
-                                                cardAssignmentEstablishment.paymentCard?.id ===
-                                                card.id;
-                                            return (
-                                                <button
-                                                    key={card.id}
-                                                    type="button"
-                                                    disabled={isAssigningCard || isCurrent}
-                                                    onClick={() =>
-                                                        handleAssignCardToEstablishment(
-                                                            card.id,
-                                                            cardAssignmentEstablishment.id,
-                                                        )
-                                                    }
-                                                    className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition ${
-                                                        isCurrent
-                                                            ? 'border-mintcom-green/40 bg-mintcom-green/10'
-                                                            : 'border-gray-200 hover:border-mintcom-green/40 hover:bg-gray-50 dark:border-white/10 dark:hover:bg-white/5'
-                                                    } disabled:cursor-default`}
-                                                >
-                                                    <span>
-                                                        <span className="block text-sm font-bold text-gray-900 dark:text-white">
-                                                            {card.brand} •••• {card.last4}
-                                                        </span>
-                                                        <span className="block text-xs font-medium text-gray-500 dark:text-gray-400">
-                                                            {card.cardholderName ||
-                                                                t('owner.billing.cardholder', {
-                                                                    defaultValue: 'Cardholder',
-                                                                })}
-                                                        </span>
-                                                    </span>
-                                                    {isCurrent && (
-                                                        <Check
-                                                            size={18}
-                                                            className="text-mintcom-green"
-                                                        />
-                                                    )}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-
-                                    <button
-                                        type="button"
-                                        disabled={isAssigningCard}
-                                        onClick={() => {
-                                            const establishmentId =
-                                                cardAssignmentEstablishment.id;
-                                            const establishmentName =
-                                                cardAssignmentEstablishment.name;
-                                            setCardAssignmentEstablishment(null);
-                                            openAddCardModal(
-                                                establishmentId,
-                                                establishmentName,
-                                            );
-                                        }}
-                                        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-mintcom-green px-4 py-3 text-sm font-bold text-black transition hover:bg-[#5fa888] disabled:opacity-60"
-                                    >
-                                        <Plus size={16} />
-                                        {t('owner.billing.add_new_card', {
-                                            defaultValue: 'Add new card',
-                                        })}
-                                    </button>
-                                </motion.div>
+                                    );
+                                })}
                             </div>
-                        )}
-                    </AnimatePresence>,
-                    document.body,
+                        </ModalBody>
+
+                        <ModalFooter>
+                            <ModalSubmitButton
+                                type="button"
+                                disabled={isAssigningCard}
+                                onClick={() => {
+                                    const establishmentId =
+                                        cardAssignmentEstablishment.id;
+                                    const establishmentName =
+                                        cardAssignmentEstablishment.name;
+                                    setCardAssignmentEstablishment(null);
+                                    openAddCardModal(
+                                        establishmentId,
+                                        establishmentName,
+                                    );
+                                }}
+                            >
+                                <Plus size={16} />
+                                {t('owner.billing.add_new_card', {
+                                    defaultValue: 'Add new card',
+                                })}
+                            </ModalSubmitButton>
+                        </ModalFooter>
+                    </>
                 )}
+            </Modal>
 
             <InvoiceHistoryModal
                 establishment={invoiceHistoryFor}

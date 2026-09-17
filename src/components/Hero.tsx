@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Play, X, ArrowRight, Store } from 'lucide-react';
+import { ModalCloseButton } from './ui';
 import { useAuth } from '../context/AuthContext';
 import { DEMO_VIDEO_POSTER_URL, HERO_VIDEO_URL, isNativeVideoUrl } from '../config/downloads';
 import heroImage from '../assets/mintcom-pos-hero.png';
@@ -169,12 +170,11 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4"
             onClick={() => setIsVideoOpen(false)}
           >
-            <button
-              onClick={() => setIsVideoOpen(false)}
-              className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full"
-            >
-              <X size={32} />
-            </button>
+            <ModalCloseButton
+              onClose={() => setIsVideoOpen(false)}
+              autoPositionAbsolute
+              className="top-6 end-6 !bg-white/10 !border-white/20 !text-white hover:!text-white hover:!bg-white/20"
+            />
 
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}

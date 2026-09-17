@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { ItemReportData, ItemReportBreakdown, ItemPriceHistory } from '../../../../types';
-import { Pagination } from '../../../ui';
+import { Pagination, ModalCloseButton } from '../../../ui';
 import { useState, useMemo, useEffect } from 'react';
 import React from 'react';
 import api from '../../../../config/api';
@@ -744,12 +744,7 @@ export const ItemsView = React.memo(function ItemsView({
                        </p>
                      </div>
                    </div>
-                  <button
-                    onClick={() => setSelectedHistoryItem(null)}
-                    className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90"
-                  >
-                    <X size={20} />
-                  </button>
+                  <ModalCloseButton onClose={() => setSelectedHistoryItem(null)} />
                 </div>
 
                  {/* Content */}
@@ -936,12 +931,7 @@ export const ItemsView = React.memo(function ItemsView({
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => setIsBreakdownModalOpen(false)}
-                    className="w-12 h-12 rounded-2xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-colors shadow-sm"
-                  >
-                    <X size={24} />
-                  </button>
+                  <ModalCloseButton onClose={() => setIsBreakdownModalOpen(false)} />
                 </div>
 
                 {/* Filter Bar */}

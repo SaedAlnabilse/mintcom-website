@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type ElementType } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
     User,
@@ -43,7 +42,7 @@ import { BusyOverlay } from '../../components/BusyOverlay';
 import toast from 'react-hot-toast';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { SectionLoader } from '../../components/LoadingState';
-import { Pagination } from '../../components/ui';
+import { Pagination, Modal, ModalHeader, ModalBody, Badge } from '../../components/ui';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { StepUpVerifier } from '../../components/StepUpVerifier';
 import { reauthHeaders } from '../../services/stepUp';
@@ -684,14 +683,14 @@ export function OwnerAccountManagementPage() {
                                                     <span className="truncate">{accountDetails?.email}</span>
                                                 </span>
                                                 {accountDetails?.emailVerified ? (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-mintcom-green/10 border border-mintcom-green/20 rounded-md text-[10px] font-bold text-mintcom-green shrink-0">
+                                                    <Badge tone="green">
                                                         <Shield size={10} />
                                                         {t('owner.account.verified')}
-                                                    </span>
+                                                    </Badge>
                                                 ) : (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded-md text-[10px] font-bold text-amber-600 dark:text-amber-400 shrink-0">
+                                                    <Badge tone="amber">
                                                         {t('owner.account.unverified', { defaultValue: 'Unverified' })}
-                                                    </span>
+                                                    </Badge>
                                                 )}
                                             </div>
                                         </div>
@@ -1100,17 +1099,17 @@ export function OwnerAccountManagementPage() {
                                                                     <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white truncate" title={row.name}>
                                                                         {row.name}
                                                                     </h3>
-                                                                    <span
-                                                                        className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${
-                                                                            row.isActive
-                                                                                ? row.kind === 'brand'
-                                                                                    ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
-                                                                                    : 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'
-                                                                                : 'bg-gray-100 dark:bg-white/5 text-gray-400 border-gray-200 dark:border-white/10'
-                                                                        }`}
+                                                                    <Badge
+                                                                        tone={
+                                                                            !row.isActive
+                                                                                ? 'gray'
+                                                                                : row.kind === 'brand'
+                                                                                    ? 'blue'
+                                                                                    : 'green'
+                                                                        }
                                                                     >
                                                                         {row.statusLabel}
-                                                                    </span>
+                                                                    </Badge>
                                                                 </div>
                                                                 {row.meta && (
                                                                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 truncate">
@@ -1605,40 +1604,23 @@ export function OwnerAccountManagementPage() {
             />
 
             {/* Delete Account Confirmation Modal */}
-            {showDeleteConfirm && createPortal(
-                <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white dark:bg-[#1E293B] rounded-3xl border border-gray-200 dark:border-white/[0.05] p-8 max-w-md w-full shadow-2xl"
-                    >
-                        <div className="flex items-center justify-between mb-6">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
-                                    <AlertTriangle className="w-5 h-5 text-red-500" />
-                                </div>
-                                <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                    {t('owner.account.deleteAccountModal.title')}
-                                </h3>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <div className="flex gap-1">
-                                    {[1, 2, 3].map((step) => (
-                                        <div
-                                            key={step}
-                                            className={`w-2 h-2 rounded-full transition-colors ${deleteStep >= step ? 'bg-red-500' : 'bg-gray-200 dark:bg-white/10'
-                                                }`}
-                                        />
-                                    ))}
-                                </div>
-                                <button
-                                    onClick={() => setShowDeleteConfirm(false)}
-                                    className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors"
-                                >
-                                    <X size={20} />
-                                </button>
-                            </div>
-                        </div>
+            <Modal isOpen={showDeleteConfirm} onClose={() => setShowDeleteConfirm(false)} size="sm">
+                <ModalHeader
+                    title={t('owner.account.deleteAccountModal.title')}
+                    icon={<AlertTriangle size={24} />}
+                    onClose={() => setShowDeleteConfirm(false)}
+                />
+
+                <ModalBody>
+                    <div className="flex justify-center gap-1 mb-6">
+                        {[1, 2, 3].map((step) => (
+                            <div
+                                key={step}
+                                className={`w-2 h-2 rounded-full transition-colors ${deleteStep >= step ? 'bg-red-500' : 'bg-gray-200 dark:bg-white/10'
+                                    }`}
+                            />
+                        ))}
+                    </div>
 
                         {deleteStep === 1 && (
                             <div className="space-y-6">
@@ -1767,10 +1749,8 @@ export function OwnerAccountManagementPage() {
                                 </div>
                             </div>
                         )}
-                    </motion.div>
-                </div>,
-                document.body
-            )}
+                </ModalBody>
+            </Modal>
 
             {/* Warning before changing the system currency for all locations. */}
             <ChangeCurrencyModal

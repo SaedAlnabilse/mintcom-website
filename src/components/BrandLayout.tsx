@@ -25,6 +25,7 @@ import {
 
 import api from '../config/api';
 import { FullScreenLoader } from './LoadingState';
+import { ModalCloseButton } from './ui/ModalCloseButton';
 
 // Mintcom Logo imports
 import MintcomLogoGreen from '../assets/green-full-logo.svg';
@@ -434,13 +435,10 @@ export function BrandLayout() {
                                 <img src={MintcomLeafIcon} className="w-8 h-8 object-contain shrink-0" alt={t('brand.name').charAt(0)} />
                                 <span className="font-bold text-gray-900 dark:text-white truncate">{t('brand.name')}</span>
                             </div>
-                            <button
-                                onClick={() => setMobileMenuOpen(false)}
-                                aria-label={t('common.close', { defaultValue: 'Close menu' })}
-                                className="min-h-[44px] min-w-[44px] p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center justify-center shrink-0"
-                            >
-                                <X size={20} className="text-gray-600 dark:text-gray-400" />
-                            </button>
+                            <ModalCloseButton
+                                onClose={() => setMobileMenuOpen(false)}
+                                label={t('common.close', { defaultValue: 'Close menu' })}
+                            />
                         </div>
 
                         {/* Brand Card */}

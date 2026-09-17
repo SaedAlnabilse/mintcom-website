@@ -18,7 +18,7 @@ import toast from 'react-hot-toast';
 import { CustomSelect } from '../../components/CustomSelect';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
-import { Pagination } from '../../components/ui';
+import { EmptyState, Pagination, PageHeader, Badge } from '../../components/ui';
 import { SingleSelect } from '../../components/SingleSelect';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CustomTimePicker } from '../../components/CustomTimePicker';
@@ -292,16 +292,16 @@ export function BrandLocationsPage() {
         window.open(`/dashboard/${slug}`, '_blank');
     };
 
-    const getStatusColor = (status: string) => {
+    const getStatusTone = (status: string): 'green' | 'red' | 'amber' | 'gray' => {
         switch (status) {
             case 'ACTIVE':
-                return 'bg-mintcom-green/ text-mintcom-green border-mintcom-green/';
+                return 'green';
             case 'INACTIVE':
-                return 'bg-red-500/10 text-red-500 border-red-500/20';
+                return 'red';
             case 'TRIAL':
-                return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
+                return 'amber';
             default:
-                return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+                return 'gray';
         }
     };
 
@@ -326,20 +326,18 @@ export function BrandLocationsPage() {
     return (
         <div className="space-y-6 sm:space-y-8 pb-10 font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-50">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('brand.menu.locations')}</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+            <PageHeader
+                title={t('brand.menu.locations')}
+                subtitle={
+                    <>
                         <span>{t('brand.dashboard.manageLocationsDesc')}</span>
                         {brandName && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                                {brandName}
-                            </span>
+                            <Badge>{brandName}</Badge>
                         )}
-                    </p>
-                </div>
-
-                <div className="flex items-center gap-3 relative z-50">
+                    </>
+                }
+                actions={
+                    <>
                     <div className="bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">
                             <div className={`flex-none w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-mintcom-green/5 border-mintcom-green ring-1 ring-mintcom-green shadow-lg shadow-mintcom-green/10' : 'border-transparent'}`}>
@@ -409,9 +407,10 @@ export function BrandLocationsPage() {
                             })()}
                         </div>
                     </div>
-
-                </div>
-            </div>
+                    </>
+                }
+                className="relative z-50"
+            />
 
             {/* Stats Grid */}
             <div className={`grid grid-cols-2 lg:grid-cols-5 gap-4 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
@@ -541,24 +540,24 @@ export function BrandLocationsPage() {
 
             {/* Locations Display */}
             {filteredLocations.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                    <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white">
-                        {isFilterOnlyEmptyState
+                <EmptyState
+                    icon={Store}
+                    title={
+                        isFilterOnlyEmptyState
                             ? t('common.noFilteredResults')
                             : searchQuery.trim()
                                 ? t('common.noResults')
-                                : t('brand.dashboard.noLocations')}
-                    </p>
-                    <p className="mx-auto mt-2 max-w-sm text-sm text-gray-500">
-                        {isFilterOnlyEmptyState
+                                : t('brand.dashboard.noLocations')
+                    }
+                    description={
+                        isFilterOnlyEmptyState
                             ? t('common.noFilteredResultsDesc')
                             : searchQuery.trim()
                                 ? t('common.noMatchingResults', { entity: 'locations', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
-                                : t('brand.dashboard.addLocationsDesc')}
-                    </p>
-                    <div className="flex items-center justify-center gap-4 mt-6">
-                        {hasActiveFilters ? (
+                                : t('brand.dashboard.addLocationsDesc')
+                    }
+                    action={
+                        hasActiveFilters ? (
                             <button
                                 onClick={clearFilters}
                                 className="px-6 py-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 text-sm font-bold hover:bg-gray-200 transition-all"
@@ -573,9 +572,9 @@ export function BrandLocationsPage() {
                                 <Plus size={16} />
                                 {t('owner.overview.addLocation')}
                             </button>
-                        )}
-                    </div>
-                </div>
+                        )
+                    }
+                />
             ) : (
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                     {/* List View */}
@@ -616,13 +615,13 @@ export function BrandLocationsPage() {
 
                                         {/* Status */}
                                         <div className="col-span-2 flex items-center justify-center">
-                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(loc.subscriptionStatus)}`}>
+                                            <Badge tone={getStatusTone(loc.subscriptionStatus)}>
                                                 <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-mintcom-green' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                                 {loc.subscriptionStatus === 'ACTIVE' ? t('common.active') :
                                                  loc.subscriptionStatus === 'INACTIVE' ? t('paymentMethods.messages.notActive') :
                                                  loc.subscriptionStatus === 'TRIAL' ? t('owner.locations.trial') :
                                                  loc.subscriptionStatus}
-                                            </span>
+                                            </Badge>
                                         </div>
 
                                         {/* Revenue */}

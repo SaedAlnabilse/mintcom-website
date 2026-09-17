@@ -1,9 +1,8 @@
 import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { createPortal } from 'react-dom';
 import { useCurrency } from '../../context/CurrencyContext';
-import { useNavigate, useLocation, useOutletContext, useParams } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -13,7 +12,6 @@ import {
   ChevronRight,
   Edit2,
   Trash2,
-  X,
   Tag,
   AlertTriangle,
   Grid,
@@ -27,7 +25,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CategoryFormModal, ICON_MAP } from '../../components/forms/CategoryFormModal';
 import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
-import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { EmptyState, SearchInput, SelectInput, Pagination, Modal, ModalHeader, ModalBody, PageHeader, Badge } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { ThumbnailImage } from '../../components/OptimizedImage';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
@@ -93,7 +91,6 @@ export function CategoriesPage() {
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { sidebarOpen } = useOutletContext<{ sidebarOpen: boolean }>();
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -580,38 +577,37 @@ export function CategoriesPage() {
           background/realtime refreshes stay silent. */}
       <BusyOverlay visible={isLoading} />
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('categories.title')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-            <span>{t('categories.subtitle')}</span>
-            {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                {currentEstablishment.name}
-              </span>
-            )}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 sm:gap-3">
-          <ExportMenu onExport={handleExport} formats={['xlsx', 'pdf', 'csv']} className="!px-3 sm:!px-4 !py-2.5 sm:!py-3" />
-          <button
-            onClick={() => setShowCsvImport(true)}
-            className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
-          >
-            <Upload size={18} className="group-hover:text-mintcom-green transition-colors" />
-            <span className="font-bold text-xs sm:text-sm hidden sm:inline">{t('products.importCsv')}</span>
-          </button>
-          <button
-            onClick={openCreateModal}
-            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-mintcom-green text-black font-bold text-xs sm:text-sm hover:bg-[#5fa888] transition-all shadow-sm"
-          >
-            <Plus size={18} />
-            <span className="hidden xs:inline">{t('categories.newCategory')}</span>
-            <span className="xs:hidden">{t('common.add')}</span>
-          </button>
-        </div>
-      </div>
+      <PageHeader
+          title={t('categories.title')}
+          subtitle={
+              <>
+                  <span>{t('categories.subtitle')}</span>
+                  {currentEstablishment?.name && (
+                      <Badge>{currentEstablishment.name}</Badge>
+                  )}
+              </>
+          }
+          actions={
+              <>
+                  <ExportMenu onExport={handleExport} formats={['xlsx', 'pdf', 'csv']} className="!px-3 sm:!px-4 !py-2.5 sm:!py-3" />
+                  <button
+                      onClick={() => setShowCsvImport(true)}
+                      className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
+                  >
+                      <Upload size={18} className="group-hover:text-mintcom-green transition-colors" />
+                      <span className="font-bold text-xs sm:text-sm hidden sm:inline">{t('products.importCsv')}</span>
+                  </button>
+                  <button
+                      onClick={openCreateModal}
+                      className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-mintcom-green text-black font-bold text-xs sm:text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                  >
+                      <Plus size={18} />
+                      <span className="hidden xs:inline">{t('categories.newCategory')}</span>
+                      <span className="xs:hidden">{t('common.add')}</span>
+                  </button>
+              </>
+          }
+      />
 
       <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 scrollbar-none snap-x snap-mandatory">
         {[
@@ -699,15 +695,11 @@ export function CategoriesPage() {
           <p className="text-xs font-black text-gray-400">{t('categories.messages.loading')}</p>
         </div>
       ) : filteredCategories.length === 0 ? (
-        <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
-          <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
-            <Layers className="w-10 h-10 text-gray-300" />
-          </div>
-          <h3 className="dashboard-card-value mb-2">{categoriesEmptyTitle}</h3>
-          {categoriesEmptyDescription ? (
-            <p className="text-sm font-bold text-gray-500 max-w-xs">{categoriesEmptyDescription}</p>
-          ) : null}
-        </div>
+        <EmptyState
+          icon={Layers}
+          title={categoriesEmptyTitle}
+          description={categoriesEmptyDescription}
+        />
       ) : (
         <div className="space-y-8">
           {viewMode === 'grid' ? (
@@ -757,13 +749,9 @@ export function CategoriesPage() {
                       </h3>
 
                       <div className="mt-3 relative z-10">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
-                          isCategoryActive(category)
-                            ? 'bg-mintcom-green/10 text-mintcom-green'
-                            : 'bg-mintcom-red/10 text-mintcom-red'
-                        }`}>
+                        <Badge tone={isCategoryActive(category) ? 'green' : 'red'}>
                           {isCategoryActive(category) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
-                        </span>
+                        </Badge>
                       </div>
 
                       <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
@@ -817,13 +805,9 @@ export function CategoriesPage() {
                             <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">{category.name}</p>
                           </td>
                           <td className="px-6 py-4 text-center">
-                            <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
-                              isCategoryActive(category)
-                                ? 'bg-mintcom-green/10 text-mintcom-green'
-                                : 'bg-mintcom-red/10 text-mintcom-red'
-                            }`}>
+                            <Badge tone={isCategoryActive(category) ? 'green' : 'red'}>
                               {isCategoryActive(category) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
-                            </span>
+                            </Badge>
                           </td>
                           <td className="px-6 py-4 text-end">
                             <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 dashboard-card-meta">
@@ -871,64 +855,22 @@ export function CategoriesPage() {
         </div>
       )}
 
-      {createPortal(
-        <AnimatePresence>
-          {viewingCategory && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className={`fixed inset-0 z-[100] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm transition-all duration-300 ${sidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-[100px]'}`}
-              onClick={() => setViewingCategory(null)}
-            >
-              <motion.div
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 100 }}
-                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                className={`bg-white dark:bg-[#1E293B] w-full ${
-                  categoryProducts.length === 0 
-                    ? 'sm:max-w-md' 
-                    : categoryProducts.length === 1 
-                      ? 'sm:max-w-2xl' 
-                      : 'sm:max-w-4xl'
-                } rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] border border-gray-200 dark:border-white/10 shadow-2xl`}
-                onClick={e => e.stopPropagation()}
-              >
-                <div className="sm:hidden flex justify-center pt-3 pb-1">
-                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                </div>
+      <Modal
+        isOpen={!!viewingCategory}
+        onClose={() => setViewingCategory(null)}
+        size={categoryProducts.length === 0 ? 'sm' : 'xl'}
+        className={categoryProducts.length > 1 ? 'sm:max-w-4xl' : ''}
+      >
+        {viewingCategory && (
+          <>
+            <ModalHeader
+              title={viewingCategory.name}
+              subtitle={t('categories.itemsCount', { count: categoryProducts.length })}
+              icon={<ViewingIcon size={24} />}
+              onClose={() => setViewingCategory(null)}
+            />
 
-                <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-mintcom-green/10 text-mintcom-green">
-                      <ViewingIcon size={24} />
-                    </div>
-                    <div>
-                      <h2 className="dashboard-card-value leading-none">{viewingCategory.name}</h2>
-                      <p className="text-[11px] font-medium text-mintcom-green mt-1.5">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {isCategoryActive(viewingCategory) && (
-                      <button
-                        onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                        className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-mintcom-green transition-colors"
-                        title={t('common.add')}
-                      >
-                        <Plus size={20} />
-                      </button>
-                    )}
-                    <button
-                      onClick={() => setViewingCategory(null)}
-                      className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                    >
-                      <X size={20} />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
+            <ModalBody>
                   {categoryProducts.length === 0 ? (
                     <div className="py-20 text-center flex flex-col items-center">
                       <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 shadow-sm">
@@ -990,13 +932,10 @@ export function CategoriesPage() {
                       )}
                     </div>
                   )}
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+            </ModalBody>
+          </>
+        )}
+      </Modal>
 
       <CategoryFormModal
         isOpen={showModal}
@@ -1032,45 +971,25 @@ export function CategoriesPage() {
         maxRows={200}
       />
 
-      {createPortal(
-        <AnimatePresence>
-          {deleteBlockedCategory && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className={`fixed inset-0 z-[100] popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all duration-300 ${sidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-[100px]'}`}
-              onClick={() => setDeleteBlockedCategory(null)}
-            >
-              <motion.div
-                initial={{ scale: 0.95, y: 20 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.95, y: 20 }}
-                className="bg-white dark:bg-[#1E293B] w-full max-w-4xl rounded-2xl overflow-hidden flex flex-col max-h-[85vh] border border-gray-200 dark:border-white/10 shadow-2xl"
-                onClick={e => e.stopPropagation()}
-              >
-                <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-red-500/10 text-red-500">
-                      {(() => {
-                        const Icon = ICON_MAP[deleteBlockedCategory.icon || 'tag'] || Tag;
-                        return <Icon size={24} />;
-                      })()}
-                    </div>
-                    <div>
-                      <h2 className="dashboard-card-value tracking-tight leading-none">{deleteBlockedCategory.name}</h2>
-                      <p className="text-[11px] font-medium text-red-500 mt-1.5">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setDeleteBlockedCategory(null)}
-                    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
+      <Modal
+        isOpen={!!deleteBlockedCategory}
+        onClose={() => setDeleteBlockedCategory(null)}
+        size="xl"
+        className="sm:max-w-4xl"
+      >
+        {deleteBlockedCategory && (
+          <>
+            <ModalHeader
+              title={deleteBlockedCategory.name}
+              subtitle={t('categories.itemsCount', { count: categoryProducts.length })}
+              icon={(() => {
+                const Icon = ICON_MAP[deleteBlockedCategory.icon || 'tag'] || Tag;
+                return <Icon size={24} />;
+              })()}
+              onClose={() => setDeleteBlockedCategory(null)}
+            />
 
-                <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
+            <ModalBody>
                   <div className="mb-6 p-4 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
                     <p className="text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-2">
                       <AlertTriangle size={16} />
@@ -1102,13 +1021,10 @@ export function CategoriesPage() {
                       </div>
                     ))}
                   </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+            </ModalBody>
+          </>
+        )}
+      </Modal>
     </div>
   );
 }

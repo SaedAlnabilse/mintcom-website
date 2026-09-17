@@ -1,8 +1,7 @@
 import { useCallback, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Download, Printer, X } from 'lucide-react';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton } from '../ui';
+import { Download, Printer } from 'lucide-react';
 
 /** Official Mintcom logo SVG vector */
 const MintcomLogoSvg = ({ height = 28 }: { height?: number }) => (
@@ -620,85 +619,50 @@ export function SubscriptionInvoiceModal({ data, onClose, leadingAction }: Subsc
     downloadHtmlDocument(html, documentTitle, `Mintcom-${documentSlug(data)}.html`);
   }, [data, documentTitle, getInvoiceHtml]);
 
-  if (typeof document === 'undefined') return null;
+  if (!data) return null;
 
-  return createPortal(
-    <AnimatePresence>
-      {data && (
-        <div
-          dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-          className="fixed inset-0 z-[9999] popup-surface flex items-end justify-center p-0 sm:items-center sm:p-4 font-sans"
-        >
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 dark:bg-black/80 backdrop-blur-sm"
-            onClick={onClose}
-          />
+  return (
+    <Modal isOpen={!!data} onClose={onClose} size="xl" className="sm:max-w-3xl">
+      <ModalHeader
+        title={data.number
+          ? t('owner.billing.invoice.title', { defaultValue: 'Subscription Invoice' })
+          : t('owner.billing.invoice.summaryTitle', { defaultValue: 'Subscription Summary' })}
+        subtitle={`${data.snapshot.billTo.name}${data.number ? ` · #${data.number}` : ''}`}
+        onClose={onClose}
+      />
 
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 24 }}
-            className="relative z-10 flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#1E293B] sm:rounded-2xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="flex items-center justify-between gap-4 border-b border-gray-100 px-5 py-4 dark:border-white/5">
-              <div className="flex min-w-0 items-center gap-3">
-                {leadingAction}
-                <div className="min-w-0">
-                  <h3 className="truncate text-lg font-bold text-gray-900 dark:text-white">
-                    {data.number
-                      ? t('owner.billing.invoice.title', { defaultValue: 'Subscription Invoice' })
-                      : t('owner.billing.invoice.summaryTitle', { defaultValue: 'Subscription Summary' })}
-                  </h3>
-                  <p className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                    {data.snapshot.billTo.name}
-                    {data.number ? ` · #${data.number}` : ''}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleDownload}
-                  className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
-                >
-                  <Download size={15} />
-                  <span className="hidden sm:inline">
-                    {t('owner.billing.invoice.download', { defaultValue: 'Download' })}
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={handlePrint}
-                  className="flex items-center gap-2 rounded-xl border border-mintcom-green/20 bg-mintcom-green/10 px-3 py-2 text-xs font-bold text-mintcom-green transition hover:bg-mintcom-green/20"
-                >
-                  <Printer size={15} />
-                  <span className="hidden sm:inline">
-                    {t('owner.billing.invoice.print', { defaultValue: 'Print / Save PDF' })}
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  aria-label={t('common.close', { defaultValue: 'Close' })}
-                  className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-white"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-            </div>
-
-            <div ref={documentRef} className="min-h-0 flex-1 overflow-y-auto bg-gray-100/70 p-4 dark:bg-black/40 sm:p-6">
-              <SubscriptionInvoiceDocument data={data} />
-            </div>
-          </motion.div>
+      <ModalBody>
+        <div ref={documentRef} className="bg-gray-100/70 dark:bg-black/40 p-4 sm:p-6">
+          <SubscriptionInvoiceDocument data={data} />
         </div>
-      )}
-    </AnimatePresence>,
-    document.body,
+      </ModalBody>
+
+      <ModalFooter>
+        <div className="flex items-center gap-2 w-full justify-end">
+          {leadingAction}
+          <button
+            type="button"
+            onClick={handleDownload}
+            className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
+          >
+            <Download size={15} />
+            <span className="hidden sm:inline">
+              {t('owner.billing.invoice.download', { defaultValue: 'Download' })}
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="flex items-center gap-2 rounded-xl border border-mintcom-green/20 bg-mintcom-green/10 px-3 py-2 text-xs font-bold text-mintcom-green transition hover:bg-mintcom-green/20"
+          >
+            <Printer size={15} />
+            <span className="hidden sm:inline">
+              {t('owner.billing.invoice.print', { defaultValue: 'Print / Save PDF' })}
+            </span>
+          </button>
+        </div>
+      </ModalFooter>
+    </Modal>
   );
 }
 

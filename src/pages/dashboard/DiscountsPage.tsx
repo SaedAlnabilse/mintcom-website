@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { DiscountFormModal } from '../../components/forms/DiscountFormModal';
-import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { EmptyState, SearchInput, SelectInput, Pagination, PageHeader, Badge } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
@@ -355,29 +355,28 @@ export function DiscountsPage() {
           realtime refreshes stay silent. */}
       <BusyOverlay visible={isLoading} />
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('discounts.title')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('discounts.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={openCreateModal}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
-          >
-            <Plus size={18} />
-            <span>{t('discounts.newDiscount')}</span>
-          </button>
-        </div>
-      </div>
+      <PageHeader
+          title={t('discounts.title')}
+          subtitle={
+              <>
+                  <span>{t('discounts.subtitle')}</span>
+                  {currentEstablishment?.name && (
+                      <Badge>{currentEstablishment.name}</Badge>
+                  )}
+              </>
+          }
+          actions={
+              <>
+                  <button
+                      onClick={openCreateModal}
+                      className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                  >
+                      <Plus size={18} />
+                      <span>{t('discounts.newDiscount')}</span>
+                  </button>
+              </>
+          }
+      />
 
       {/* Stats Cards */}
       <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 scrollbar-none snap-x snap-mandatory">
@@ -460,35 +459,29 @@ export function DiscountsPage() {
           <div className="w-12 h-12 border-4 border-mintcom-green/30 border-t-mintcom-green rounded-full animate-spin" />
         </div>
       ) : discounts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-          <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-center mb-6">
-            <Tag className="w-10 h-10 text-gray-300 dark:text-gray-600" />
-          </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('discounts.messages.emptyTitle', 'No discounts created yet')}</h3>
-          <p className="text-sm font-bold text-gray-500 max-w-sm mb-6">
-            {t('discounts.messages.emptySubtitle', 'Create your first discount to start offering special deals to your customers.')}
-          </p>
-          <button
-            onClick={() => {
-              setEditingDiscount(null);
-              setShowModal(true);
-            }}
-            className="flex items-center gap-2 px-6 py-3 bg-mintcom-green text-black rounded-xl font-bold text-sm hover:bg-[#5fa888] hover:scale-105 active:scale-95 transition-all shadow-sm"
-          >
-            <Plus size={18} />
-            {t('discounts.newDiscount')}
-          </button>
-        </div>
+        <EmptyState
+          icon={Tag}
+          title={t('discounts.messages.emptyTitle', 'No discounts created yet')}
+          description={t('discounts.messages.emptySubtitle', 'Create your first discount to start offering special deals to your customers.')}
+          action={
+            <button
+              onClick={() => {
+                setEditingDiscount(null);
+                setShowModal(true);
+              }}
+              className="flex items-center gap-2 px-6 py-3 bg-mintcom-green text-black rounded-xl font-bold text-sm hover:bg-[#5fa888] hover:scale-105 active:scale-95 transition-all shadow-sm"
+            >
+              <Plus size={18} />
+              {t('discounts.newDiscount')}
+            </button>
+          }
+        />
       ) : filteredDiscounts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-          <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-center mb-6">
-            <Tag className="w-10 h-10 text-gray-300 dark:text-gray-600" />
-          </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{discountsEmptyTitle}</h3>
-          {discountsEmptyDescription ? (
-            <p className="text-sm font-bold text-gray-500 max-w-xs">{discountsEmptyDescription}</p>
-          ) : null}
-        </div>
+        <EmptyState
+          icon={Tag}
+          title={discountsEmptyTitle}
+          description={discountsEmptyDescription}
+        />
       ) : (
         <div className="space-y-8">
           {viewMode === 'grid' ? (
@@ -539,13 +532,9 @@ export function DiscountsPage() {
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-mintcom-green transition-colors" title={discount.name}>{discount.name}</h3>
                       <div className="flex items-center justify-between gap-3 mb-4">
                         <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{formatValue(discount)}</p>
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
-                          discount.isActive
-                            ? 'bg-mintcom-green/10 text-mintcom-green'
-                            : 'bg-mintcom-red/10 text-mintcom-red'
-                        }`}>
+                        <Badge tone={discount.isActive ? 'green' : 'red'}>
                           {discount.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
-                        </span>
+                        </Badge>
                       </div>
 
                       <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
@@ -638,13 +627,9 @@ export function DiscountsPage() {
                             <span className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{formatValue(discount)}</span>
                           </td>
                           <td className="px-6 py-4 text-center">
-                            <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
-                              discount.isActive
-                                ? 'bg-mintcom-green/10 text-mintcom-green'
-                                : 'bg-mintcom-red/10 text-mintcom-red'
-                            }`}>
+                            <Badge tone={discount.isActive ? 'green' : 'red'}>
                               {discount.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
-                            </span>
+                            </Badge>
                           </td>
                           <td className="px-6 py-4 text-center">
                             {discount.adminOnly ? (

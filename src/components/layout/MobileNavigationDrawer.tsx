@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { X, LogOut, type LucideIcon } from 'lucide-react';
 import { SidebarPreferencesHelpMenu } from './SidebarPreferencesHelpMenu';
+import { ModalCloseButton } from '../ui';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import MintcomLogoGreen from '../../assets/green-full-logo.svg';
 import MintcomLogoWhite from '../../assets/white-green-full-logo.svg';
@@ -89,13 +90,10 @@ export const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
                 className="h-8 w-auto max-w-[140px] object-contain hidden dark:block"
               />
             </div>
-            <button
-              onClick={onClose}
-              aria-label={t('common.close', { defaultValue: 'Close menu' })}
-              className="min-h-[44px] min-w-[44px] p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center justify-center"
-            >
-              <X size={20} className="text-gray-600 dark:text-gray-400" />
-            </button>
+            <ModalCloseButton
+              onClose={onClose}
+              label={t('common.close', { defaultValue: 'Close menu' })}
+            />
           </div>
 
           {/* Navigation */}

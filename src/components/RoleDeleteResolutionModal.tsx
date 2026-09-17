@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { AnimatePresence, motion } from 'framer-motion';
-import { AlertTriangle, ArrowRightLeft, ShieldCheck, X } from 'lucide-react';
-import { useScrollLock } from '../hooks/useScrollLock';
+import { AlertTriangle, ArrowRightLeft, ShieldCheck } from 'lucide-react';
+import { Modal, ModalBody, ModalCloseButton } from './ui';
 
 interface ReplacementRole {
   id: string;
@@ -38,50 +36,19 @@ export function RoleDeleteResolutionModal({
   const { t } = useTranslation();
   const [selectedReplacementId, setSelectedReplacementId] = useState('');
 
-  useScrollLock(isOpen);
-
   useEffect(() => {
     if (!isOpen) return;
     setSelectedReplacementId(replacementRoles[0]?.id || '');
   }, [isOpen, replacementRoles]);
 
-  if (typeof document === 'undefined') return null;
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="md" closeOnBackdrop={!isSubmitting}>
+      <div className="absolute top-0 inset-x-0 h-1.5 bg-amber-500 z-10" />
 
-  return createPortal(
-    <AnimatePresence mode="wait">
-      {isOpen && (
-        <div
-          dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-          className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans"
-        >
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={isSubmitting ? undefined : onClose}
-            className="fixed inset-0 bg-black/30 dark:bg-black/80 backdrop-blur-sm"
-          />
+      <ModalCloseButton onClose={onClose} disabled={isSubmitting} autoPositionAbsolute />
 
-          <motion.div
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 100 }}
-            transition={{ type: 'spring', duration: 0.4, bounce: 0.2 }}
-            className="relative z-10 w-full sm:max-w-lg overflow-hidden rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10"
-          >
-            <div className="absolute top-0 inset-x-0 h-1.5 bg-amber-500" />
-
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={isSubmitting}
-              aria-label={t('common.closeModal')}
-              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90 disabled:opacity-50"
-            >
-              <X size={18} />
-            </button>
-
-            <div className="p-6 sm:p-8 pb-safe">
+      <ModalBody>
+        <div>
               <div className="flex items-start gap-4 pr-12">
                 <div className="mt-1 p-3 rounded-xl bg-amber-500/10 text-amber-500 ring-1 ring-inset ring-amber-500/20">
                   <AlertTriangle size={24} />
@@ -208,10 +175,7 @@ export function RoleDeleteResolutionModal({
                 {t('common.cancel')}
               </button>
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>,
-    document.body,
+      </ModalBody>
+    </Modal>
   );
 }

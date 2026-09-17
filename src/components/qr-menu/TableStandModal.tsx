@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { X, Printer, Sparkles, Wifi } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { RESTAURANT_INFO } from './menuData';
+import { ModalCloseButton } from '../ui';
 
 interface TableStandModalProps {
   tableNumber: string;
@@ -119,12 +120,7 @@ export const TableStandModal: React.FC<TableStandModalProps> = ({
             </span>
             <h3 className="text-sm font-bold text-slate-900 dark:text-white">Table Stand Print Preview</h3>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <ModalCloseButton onClose={onClose} />
         </div>
 
         {/* Printable Physical Table Stand Card (ONLY this prints) */}

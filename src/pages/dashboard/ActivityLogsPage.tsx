@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createPortal } from 'react-dom';
 import {
   fetchActivityPage,
   type ActivityLogQuery,
@@ -12,6 +11,7 @@ import {
   UserRound,
   Layers,
 } from 'lucide-react';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, PageHeader, Badge } from '../../components/ui';
 
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -474,25 +474,24 @@ export function ActivityLogsPage() {
           stacked on top of an in-flight request. */}
       <BusyOverlay visible={isLoading} />
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('activity.title')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('activity.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {canExport && (
-            <ExportMenu onExport={handleExport} disabled={isExporting} />
-          )}
-        </div>
-      </div>
+      <PageHeader
+          title={t('activity.title')}
+          subtitle={
+              <>
+                  <span>{t('activity.subtitle')}</span>
+                  {currentEstablishment?.name && (
+                      <Badge>{currentEstablishment.name}</Badge>
+                  )}
+              </>
+          }
+          actions={
+              <>
+                  {canExport && (
+                      <ExportMenu onExport={handleExport} disabled={isExporting} />
+                  )}
+              </>
+          }
+      />
 
       {/* Control Panel */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 sm:p-5 shadow-sm space-y-3">
@@ -727,31 +726,16 @@ export function ActivityLogsPage() {
       </div>
 
             {/* Detail Modal */}
-        {selectedLog && createPortal(
-          <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
-            <div
-              className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-2xl rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
-            >
-                {/* Mobile Drag Handle */}
-                <div className="sm:hidden flex justify-center pt-2 pb-1 shrink-0">
-                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                </div>
-              <div className="p-8 border-b border-gray-200 dark:border-white/5 flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-[1.25rem] bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
-                    <Shield size={24} />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('activity.logDetails')}</h2>
-                    <p className="label-strong font-sans text-mintcom-green">{selectedLog.action ? getActionLabel(selectedLog.action) : ''}</p>
-                  </div>
-                </div>
-                <button onClick={() => setSelectedLog(null)} className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-black dark:hover:text-white transition-colors">
-                  <X size={24} />
-                </button>
-              </div>
-
-              <div className="p-8 overflow-y-auto custom-scrollbar space-y-8">
+        <Modal isOpen={!!selectedLog} onClose={() => setSelectedLog(null)} size="lg">
+          {selectedLog && (
+            <>
+              <ModalHeader
+                title={t('activity.logDetails')}
+                subtitle={selectedLog.action ? getActionLabel(selectedLog.action) : ''}
+                icon={<Shield size={24} />}
+                onClose={() => setSelectedLog(null)}
+              />
+              <ModalBody className="pt-8 sm:pt-10">
                 <div className="grid grid-cols-2 gap-8">
                   <div>
                     <p className="label-strong font-sans mb-2">{t('activity.time')}</p>
@@ -806,17 +790,15 @@ export function ActivityLogsPage() {
                     );
                   })()}
                 </div>
-              </div>
-
-              <div className="p-8 border-t border-gray-200 dark:border-white/5">
-                <button onClick={() => setSelectedLog(null)} className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl tracking-widest text-xs hover:scale-[1.02] transition-transform">
+              </ModalBody>
+              <ModalFooter>
+                <ModalCancelButton onClick={() => setSelectedLog(null)}>
                   {t('common.close')}
-                </button>
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+                </ModalCancelButton>
+              </ModalFooter>
+            </>
+          )}
+        </Modal>
     </div>
   );
 }

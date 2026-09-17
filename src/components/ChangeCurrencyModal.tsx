@@ -1,8 +1,6 @@
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Landmark, Lightbulb } from 'lucide-react';
-import { useScrollLock } from '../hooks/useScrollLock';
+import { Landmark, Lightbulb } from 'lucide-react';
+import { Modal, ModalBody, ModalCloseButton } from './ui';
 
 export interface ChangeCurrencyModalProps {
   isOpen: boolean;
@@ -23,49 +21,12 @@ export function ChangeCurrencyModal({
 }: ChangeCurrencyModalProps) {
   const { t } = useTranslation();
 
-  useScrollLock(isOpen);
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="sm">
+      <ModalCloseButton onClose={onClose} autoPositionAbsolute />
 
-  if (!isOpen) return null;
-
-  return createPortal(
-    <AnimatePresence mode="wait">
-      {isOpen && (
-        <div
-          dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-          className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-mintcom-green selection:text-black"
-        >
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/40 dark:bg-black/80 backdrop-blur-sm transition-colors duration-300"
-          />
-
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: 'spring', duration: 0.35, bounce: 0.15 }}
-            className="relative w-full sm:max-w-md overflow-hidden rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 shadow-2xl transition-colors duration-300 z-10"
-          >
-            {/* Mobile drag handle */}
-            <div className="sm:hidden flex justify-center pt-3">
-              <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-            </div>
-
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              aria-label={t('common.closeModal', { defaultValue: 'Close modal' })}
-              className="absolute top-4 sm:top-5 right-4 sm:right-5 p-2 min-w-[40px] min-h-[40px] flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/5 shadow-sm transition-all z-10 active:scale-90"
-            >
-              <X size={18} />
-            </button>
-
-            <div className="relative p-6 sm:p-7 pb-safe">
+      <ModalBody>
+        <div className="relative pt-2">
               <div className="flex flex-col items-center text-center">
                 {/* Minimal Green Icon */}
                 <div className="w-12 h-12 rounded-2xl bg-mintcom-green/10 border border-mintcom-green/20 text-mintcom-green flex items-center justify-center mb-4 shrink-0 shadow-sm">
@@ -135,10 +96,7 @@ export function ChangeCurrencyModal({
                 </button>
               </div>
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>,
-    document.body
+      </ModalBody>
+    </Modal>
   );
 }

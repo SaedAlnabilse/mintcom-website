@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
     ShieldAlert,
-    X,
     AlertTriangle,
     ShieldCheck,
     CreditCard,
@@ -13,7 +11,7 @@ import {
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
-import { useScrollLock } from '../hooks/useScrollLock';
+import { Modal, ModalBody, ModalCloseButton } from './ui';
 import { StepUpVerifier } from './StepUpVerifier';
 import { reauthHeaders, type StepUpAction } from '../services/stepUp';
 
@@ -86,8 +84,6 @@ export function SecurityVerificationModal({
     const { t } = useTranslation();
     const [error, setError] = useState('');
     const errorBannerRef = useRef<HTMLDivElement>(null);
-
-    useScrollLock(isOpen);
 
     useEffect(() => {
         if (!isOpen) setError('');
@@ -293,108 +289,79 @@ export function SecurityVerificationModal({
         [config.endpoint, config.method, extraBody, onClose, onError, onSuccess, showError, t]
     );
 
-    return createPortal(
-        <AnimatePresence mode="wait">
-            {isOpen && (
-                <div
-                    dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                    className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-mintcom-green selection:text-black"
-                >
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="fixed inset-0 bg-black/40 dark:bg-black/80 backdrop-blur-sm"
-                    />
-
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        transition={{ type: 'spring', duration: 0.4, bounce: 0.2 }}
-                        className="relative w-full sm:max-w-lg bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden flex flex-col max-h-[92dvh] transition-colors duration-300 shadow-2xl shadow-black/20"
+    return (
+        <Modal isOpen={isOpen} onClose={onClose} size="md">
+            {/* Header */}
+            <div className="px-5 sm:px-8 py-5 sm:py-6 border-b border-gray-100 dark:border-white/5 flex items-start justify-between gap-3 bg-gray-50/50 dark:bg-black/20">
+                <div className="flex items-center gap-4 min-w-0">
+                    <div
+                        className={`w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-xl ${config.bg} flex items-center justify-center ${config.color} shadow-sm`}
                     >
-                        {/* Header */}
-                        <div className="px-5 sm:px-8 py-5 sm:py-6 border-b border-gray-100 dark:border-white/5 flex items-start justify-between gap-3 bg-gray-50/50 dark:bg-black/20">
-                            <div className="flex items-center gap-4 min-w-0">
-                                <div
-                                    className={`w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-xl ${config.bg} flex items-center justify-center ${config.color} shadow-sm`}
-                                >
-                                    {React.createElement(config.icon, { size: 26 })}
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
-                                        {config.title}
-                                    </h2>
-                                    <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">
-                                        {t('security.highImpact')}
-                                    </p>
-                                </div>
-                            </div>
-                            <button
-                                onClick={onClose}
-                                aria-label={t('common.close', { defaultValue: 'Close' })}
-                                className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
-                            >
-                                <X size={18} />
-                            </button>
-                        </div>
-
-                        <div className="overflow-y-auto px-8 py-8 custom-scrollbar flex-1 pb-safe space-y-6">
-                            <AnimatePresence>
-                                {!!error && (
-                                    <motion.div
-                                        ref={errorBannerRef}
-                                        role="alert"
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        exit={{ opacity: 0, height: 0 }}
-                                        className="p-4 rounded-xl bg-mintcom-red/10 border border-mintcom-red/20 flex items-center gap-3.5"
-                                    >
-                                        <ShieldAlert className="text-mintcom-red shrink-0" size={20} />
-                                        <p className="text-[13px] font-black text-mintcom-red">{error}</p>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                            {/* Warning Box */}
-                            <div className="p-5 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-500/20 shadow-sm">
-                                <div className="flex gap-4">
-                                    <AlertTriangle
-                                        className="text-amber-600 dark:text-amber-500 shrink-0 mt-0.5"
-                                        size={20}
-                                    />
-                                    <p className="text-sm font-bold text-amber-700 dark:text-amber-400 leading-relaxed">
-                                        {config.warning}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <StepUpVerifier
-                                action={config.action}
-                                targetId={stepUpTargetId}
-                                onVerified={runAction}
-                                onError={showError}
-                                submitLabel={config.buttonText}
-                                tone={config.color === 'text-mintcom-red' ? 'danger' : 'primary'}
-                            />
-                        </div>
-
-                        {/* Footer */}
-                        <div className="px-8 pt-6 pb-10 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 sticky bottom-0">
-                            <button
-                                type="button"
-                                onClick={onClose}
-                                className="w-full py-4 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-[11px] font-black text-gray-500 tracking-[0.15em] uppercase hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
-                            >
-                                {t('common.cancel')}
-                            </button>
-                        </div>
-                    </motion.div>
+                        {React.createElement(config.icon, { size: 26 })}
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
+                            {config.title}
+                        </h2>
+                        <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">
+                            {t('security.highImpact')}
+                        </p>
+                    </div>
                 </div>
-            )}
-        </AnimatePresence>,
-        document.body
+                <ModalCloseButton onClose={onClose} />
+            </div>
+
+            {/* Body */}
+            <div className="overflow-y-auto px-8 py-8 custom-scrollbar flex-1 pb-safe space-y-6">
+                <AnimatePresence>
+                    {!!error && (
+                        <motion.div
+                            ref={errorBannerRef}
+                            role="alert"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="p-4 rounded-xl bg-mintcom-red/10 border border-mintcom-red/20 flex items-center gap-3.5"
+                        >
+                            <ShieldAlert className="text-mintcom-red shrink-0" size={20} />
+                            <p className="text-[13px] font-black text-mintcom-red">{error}</p>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Warning Box */}
+                <div className="p-5 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-500/20 shadow-sm">
+                    <div className="flex gap-4">
+                        <AlertTriangle
+                            className="text-amber-600 dark:text-amber-500 shrink-0 mt-0.5"
+                            size={20}
+                        />
+                        <p className="text-sm font-bold text-amber-700 dark:text-amber-400 leading-relaxed">
+                            {config.warning}
+                        </p>
+                    </div>
+                </div>
+
+                <StepUpVerifier
+                    action={config.action}
+                    targetId={stepUpTargetId}
+                    onVerified={runAction}
+                    onError={showError}
+                    submitLabel={config.buttonText}
+                    tone={config.color === 'text-mintcom-red' ? 'danger' : 'primary'}
+                />
+            </div>
+
+            {/* Footer */}
+            <div className="px-8 pt-6 pb-10 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 sticky bottom-0">
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-full py-4 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-[11px] font-black text-gray-500 tracking-[0.15em] uppercase hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
+                >
+                    {t('common.cancel')}
+                </button>
+            </div>
+        </Modal>
     );
 }

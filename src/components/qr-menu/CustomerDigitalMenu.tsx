@@ -24,6 +24,7 @@ import {
   Send,
   AlertCircle,
 } from 'lucide-react';
+import { ModalCloseButton } from '../ui';
 import {
   RESTAURANT_INFO,
   MENU_CATEGORIES,
@@ -888,12 +889,11 @@ export const CustomerDigitalMenu: React.FC<CustomerDigitalMenuProps> = ({
               />
 
               {/* Close Button */}
-              <button
-                onClick={() => setSelectedItem(null)}
-                className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/90 transition-colors shadow-lg"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <ModalCloseButton
+                onClose={() => setSelectedItem(null)}
+                autoPositionAbsolute
+                className="top-3.5 right-3.5 z-20 !bg-black/70 !border-white/20 !text-white hover:!text-white hover:!bg-black/90"
+              />
             </div>
 
             {/* Modal Body */}
@@ -1072,12 +1072,7 @@ export const CustomerDigitalMenu: React.FC<CustomerDigitalMenuProps> = ({
                   <p className="text-[11px] text-slate-400">{t.itemsCount(totalCartCount)}</p>
                 </div>
               </div>
-              <button
-                onClick={() => setShowCartModal(false)}
-                className="p-1.5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <ModalCloseButton onClose={() => setShowCartModal(false)} />
             </div>
 
             {/* Cart Items Scrollable List */}

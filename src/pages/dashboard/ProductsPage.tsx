@@ -28,7 +28,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { ProductFormModal } from '../../components/forms/ProductFormModal';
 import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
-import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { SearchInput, SelectInput, Pagination, PageHeader, Badge, EmptyState } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { OptimizedImage, ThumbnailImage } from '../../components/OptimizedImage';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -1151,20 +1151,18 @@ export function ProductsPage() {
                 background/realtime refreshes stay silent. */}
             <BusyOverlay visible={isLoading} />
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('products.title')}</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+            <PageHeader
+                title={t('products.title')}
+                subtitle={
+                    <>
                         <span>{t('products.subtitle')}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                                {currentEstablishment.name}
-                            </span>
+                            <Badge>{currentEstablishment.name}</Badge>
                         )}
-                    </p>
-                </div>
-
-                <div className="flex items-center gap-2 sm:gap-3">
+                    </>
+                }
+                actions={
+                    <>
                     <ExportMenu onExport={handleExport} formats={['xlsx', 'pdf', 'csv']} className="!px-3 sm:!px-4 !py-2.5 sm:!py-3" />
                     <button
                         onClick={() => setShowCsvImport(true)}
@@ -1182,8 +1180,9 @@ export function ProductsPage() {
                         <span className="hidden xs:inline">{t('products.addProduct')}</span>
                         <span className="xs:hidden">{t('common.add')}</span>
                     </button>
-                </div>
-            </div>
+                    </>
+                }
+            />
 
             {/* Stat Cards */}
             <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 md:grid-cols-4 scrollbar-none snap-x snap-mandatory">
@@ -1430,24 +1429,22 @@ export function ProductsPage() {
 
             {/* Content */}
                             {filteredProducts.length === 0 ? (
-                <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
-                    <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
-                        <Package className="w-10 h-10 text-gray-300" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{emptyStateTitle}</h3>
-                    {emptyStateDescription && (
-                        <p className="text-sm font-bold text-gray-500 max-w-xs mb-6">{emptyStateDescription}</p>
-                    )}
-                    {!hasAnyProducts && (
-                        <button
-                            onClick={handleCreateNew}
-                            className="flex items-center gap-2 px-6 py-3 bg-mintcom-green text-black font-bold text-xs rounded-xl hover:bg-[#5fa888] transition-all tracking-widest"
-                        >
-                            <Plus size={16} />
-                            {t('products.messages.addFirst')}
-                        </button>
-                    )}
-                </div>
+                <EmptyState
+                    icon={Package}
+                    title={emptyStateTitle}
+                    description={emptyStateDescription}
+                    action={
+                        !hasAnyProducts ? (
+                            <button
+                                onClick={handleCreateNew}
+                                className="flex items-center gap-2 px-6 py-3 bg-mintcom-green text-black font-bold text-xs rounded-xl hover:bg-[#5fa888] transition-all tracking-widest"
+                            >
+                                <Plus size={16} />
+                                {t('products.messages.addFirst')}
+                            </button>
+                        ) : undefined
+                    }
+                />
             ) : (
                 <>
                     {viewMode === 'grid' ? (
@@ -1529,13 +1526,9 @@ export function ProductsPage() {
                                                         <span className="text-[9px] uppercase font-black text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md h-fit tracking-tighter">
                                                             {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
                                                         </span>
-                                                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                                                            isProductActive(p)
-                                                                ? 'bg-mintcom-green/10 text-mintcom-green'
-                                                                : 'bg-mintcom-red/10 text-mintcom-red'
-                                                        }`}>
+                                                        <Badge tone={isProductActive(p) ? 'green' : 'red'}>
                                                             {isProductActive(p) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
-                                                        </span>
+                                                        </Badge>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1659,13 +1652,9 @@ export function ProductsPage() {
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
-                                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
-                                                        isProductActive(p)
-                                                            ? 'bg-mintcom-green/10 text-mintcom-green'
-                                                            : 'bg-mintcom-red/10 text-mintcom-red'
-                                                    }`}>
+                                                    <Badge tone={isProductActive(p) ? 'green' : 'red'}>
                                                         {isProductActive(p) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
-                                                    </span>
+                                                    </Badge>
                                                 </td>
                                                 <td className="px-6 py-4 text-end">
                                                     {p.trackStock ? (

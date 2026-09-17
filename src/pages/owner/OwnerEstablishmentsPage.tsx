@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { CustomSelect } from '../../components/CustomSelect';
-import { Pagination } from '../../components/ui';
+import { EmptyState, Pagination, PageHeader, Card } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { formatBusinessTypeLabel } from '../../utils/businessTypeLabel';
@@ -160,15 +160,11 @@ export function OwnerEstablishmentsPage() {
     return (
         <div className="space-y-6 sm:space-y-8 pb-10 font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.locations.title')}</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
-                        {t('owner.locations.subtitle')}
-                    </p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3">
+            <PageHeader
+                title={t('owner.locations.title')}
+                subtitle={t('owner.locations.subtitle')}
+                actions={
+                    <>
                     <button
                         onClick={() => navigate('/owner/brands')}
                         className="px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all flex items-center gap-2"
@@ -184,8 +180,9 @@ export function OwnerEstablishmentsPage() {
                         <Plus size={20} strokeWidth={3} />
                         <span>{t('owner.overview.addLocation')}</span>
                     </button>
-                </div>
-            </div>
+                    </>
+                }
+            />
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -236,7 +233,7 @@ export function OwnerEstablishmentsPage() {
             </div>
 
             {/* Filters Bar */}
-            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
+            <Card padding="sm">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                     {/* Search */}
                     <div className="relative flex-1">
@@ -299,35 +296,37 @@ export function OwnerEstablishmentsPage() {
                 </div>
 
 
-            </div>
+            </Card>
 
             {/* Establishments Grid */}
             {filteredEstablishments.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                    <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">
-                        {hasSearch
+                <EmptyState
+                    icon={Store}
+                    title={
+                        hasSearch
                             ? t('common.noResults')
                             : hasOnlyFilters
                                 ? t('common.noFilteredResults')
-                                : t('owner.locations.noLocations')}
-                    </p>
-                    <p className="mx-auto mt-2 max-w-sm text-sm font-bold text-gray-500">
-                        {hasSearch
+                                : t('owner.locations.noLocations')
+                    }
+                    description={
+                        hasSearch
                             ? t('common.noMatchingResults', { entity: 'locations', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
                             : hasOnlyFilters
                                 ? t('common.noFilteredResultsDesc')
-                                : t('owner.locations.addFirstLocation')}
-                    </p>
-                    {hasActiveFilters && (
-                        <button
-                            onClick={clearFilters}
-                            className="mt-6 px-6 py-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 text-sm font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
-                        >
-                            {t('attributes.filters.reset')}
-                        </button>
-                    )}
-                </div>
+                                : t('owner.locations.addFirstLocation')
+                    }
+                    action={
+                        hasActiveFilters ? (
+                            <button
+                                onClick={clearFilters}
+                                className="mt-6 px-6 py-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 text-sm font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
+                            >
+                                {t('attributes.filters.reset')}
+                            </button>
+                        ) : undefined
+                    }
+                />
             ) : viewMode === 'grid' ? (
                 /* Grid View */
                 <div className="space-y-8">

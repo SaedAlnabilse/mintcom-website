@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Check, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ModalCloseButton } from './ui';
 import { useAuth } from '../context/AuthContext';
 import { BILLING_CYCLES, MINTCOM_PRICING, getMintcomDiscountPercent, getMintcomEffectiveMonthlyPrice } from '../config/pricing';
 import { ONBOARDING_START_PATH } from '../utils/onboardingLaunch';
@@ -229,6 +230,7 @@ export const PricingDownload = () => {
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             className="bg-white dark:bg-[#1a1a1a] w-full max-w-sm rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5 p-12 text-center"
                         >
+                            <ModalCloseButton onClose={() => setShowAlreadySignedIn(false)} autoPositionAbsolute />
                             <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
                                 <Check size={40} className="text-mintcom-green stroke-[3px]" />
                             </div>

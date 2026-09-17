@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { Check, ChevronDown, ChevronUp, ClipboardList, ExternalLink, X } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, ClipboardList, ExternalLink } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import {
   readCompletedTasksMap,
   SETUP_TASK_IDS,
 } from '../../data/setupTasks';
+import { ModalCloseButton } from '../ui';
 
 interface TasksModalProps {
   isOpen: boolean;
@@ -345,13 +346,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
               </div>
               <h3 className="font-bold text-gray-900 dark:text-white text-lg">{t('chat.tasks.title')}</h3>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors"
-              aria-label={t('common.close')}
-            >
-              <X size={18} />
-            </button>
+            <ModalCloseButton onClose={onClose} />
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-3">

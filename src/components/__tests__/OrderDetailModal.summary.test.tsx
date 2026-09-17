@@ -287,4 +287,65 @@ describe('OrderDetailModal - Receipt Summary Redesign Parity', () => {
 
     expect(screen.getByText('Tax on items (Customized)')).toBeInTheDocument();
   });
+
+  it('Scenario G: Multi-quantity item shows line total (qty × unit price) on the far right', () => {
+    const order: Order = {
+      id: 'ord_7',
+      orderNumber: 'INV-2026-00317',
+      createdAt: '2026-09-13T20:39:00Z',
+      status: 'COMPLETED',
+      paymentMethod: 'CARD',
+      cardType: 'VISA',
+      taxRate: 16,
+      subtotal: 15.95,
+      discount: 0,
+      serviceChargeAmount: 0.8,
+      tax: 2.55,
+      total: 19.3,
+      items: [
+        {
+          id: 'item_1',
+          name: 'Pistachio Baklava Box',
+          quantity: 1,
+          price: 5.6,
+          finalPrice: 5.6,
+          total: 5.6,
+        },
+        {
+          id: 'item_2',
+          name: 'Knafeh Bite',
+          quantity: 2,
+          price: 7.33,
+          finalPrice: 7.33,
+          // Even if the backend sent 7.33 (the unit price) or undefined
+          total: 7.33,
+        },
+        {
+          id: 'item_3',
+          name: 'Crispy Fries with Sumac',
+          quantity: 1,
+          price: 3.02,
+          finalPrice: 3.02,
+          total: 3.02,
+        },
+      ],
+    };
+
+    render(<OrderDetailModal order={order} onClose={vi.fn()} />);
+
+    // Pistachio Baklava: Qty 1 × 5.60, total 5.60
+    expect(screen.getByText('Pistachio Baklava Box')).toBeInTheDocument();
+    expect(screen.getByText('Qty: 1 × 5.60')).toBeInTheDocument();
+    expect(screen.getByText('5.60')).toBeInTheDocument();
+
+    // Knafeh Bite: Qty 2 × 7.33, line total must be 14.66, NOT 7.33!
+    expect(screen.getByText('Knafeh Bite')).toBeInTheDocument();
+    expect(screen.getByText('Qty: 2 × 7.33')).toBeInTheDocument();
+    expect(screen.getByText('14.66')).toBeInTheDocument();
+
+    // Crispy Fries: Qty 1 × 3.02, total 3.02
+    expect(screen.getByText('Crispy Fries with Sumac')).toBeInTheDocument();
+    expect(screen.getByText('Qty: 1 × 3.02')).toBeInTheDocument();
+    expect(screen.getByText('3.02')).toBeInTheDocument();
+  });
 });

@@ -4,6 +4,7 @@ import { Percent, Plus, Trash2, Settings2, X, Search, Edit3 } from 'lucide-react
 import api, { extractErrorMessage } from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../ConfirmModal';
+import { EmptyState, ModalCloseButton } from '../ui';
 
 interface TaxRate {
   id: string;
@@ -201,25 +202,21 @@ export function TaxRatesManager() {
 
       {/* Empty state */}
       {taxes.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-gray-200 dark:border-white/10 bg-gray-50/60 dark:bg-white/[0.02] px-6 py-10 text-center">
-          <div className="w-12 h-12 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 mx-auto grid place-items-center mb-3 shadow-sm">
-            <Settings2 size={18} className="text-gray-400" />
-          </div>
-          <p className="text-sm font-black text-gray-900 dark:text-white">
-            {t('settings.taxes.emptyTitle', 'No tax rates yet')}
-          </p>
-          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mt-1 max-w-sm mx-auto leading-relaxed">
-            {t('settings.taxes.emptyDesc', 'Set up your standard sales tax rate or add custom rates.')}
-          </p>
-          <button
-            type="button"
-            onClick={openCreate}
-            className="mt-4 inline-flex items-center gap-1.5 px-4 h-9 rounded-xl bg-mintcom-green hover:bg-[#5fa888] text-black text-xs font-black shadow-sm"
-          >
-            <Plus size={14} strokeWidth={2.5} />
-            {t('settings.taxes.createFirst', 'Create tax rate')}
-          </button>
-        </div>
+        <EmptyState
+          icon={Settings2}
+          title={t('settings.taxes.emptyTitle', 'No tax rates yet')}
+          description={t('settings.taxes.emptyDesc', 'Set up your standard sales tax rate or add custom rates.')}
+          action={
+            <button
+              type="button"
+              onClick={openCreate}
+              className="mt-4 inline-flex items-center gap-1.5 px-4 h-9 rounded-xl bg-mintcom-green hover:bg-[#5fa888] text-black text-xs font-black shadow-sm"
+            >
+              <Plus size={14} strokeWidth={2.5} />
+              {t('settings.taxes.createFirst', 'Create tax rate')}
+            </button>
+          }
+        />
       )}
 
       {/* No matches after filtering */}
@@ -322,14 +319,10 @@ export function TaxRatesManager() {
                     : t('settings.taxes.customHint', 'Enter a custom tax rate for specific products.')}
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() => setEditor(null)}
+              <ModalCloseButton
+                onClose={() => setEditor(null)}
                 disabled={saving}
-                className="w-8 h-8 grid place-items-center rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
-              >
-                <X size={14} strokeWidth={2.5} />
-              </button>
+              />
             </div>
 
             <div className="space-y-1.5">

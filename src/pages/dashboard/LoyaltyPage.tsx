@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { RewardFormModal } from '../../components/forms/RewardFormModal';
-import { Pagination } from '../../components/ui';
+import { EmptyState, Pagination, PageHeader, Badge } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
 import { SectionLoader } from '../../components/LoadingState';
@@ -379,27 +379,29 @@ export function LoyaltyPage() {
                 be stacked on an in-flight request. */}
             <BusyOverlay visible={isLoading} />
 
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('rewards.title')}</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+            <PageHeader
+                title={t('rewards.title')}
+                subtitle={
+                    <>
                         <span>{t('rewards.subtitle')}</span>
                         {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                                {currentEstablishment.name}
-                            </span>
+                            <Badge>{currentEstablishment.name}</Badge>
                         )}
-                    </p>
-                </div>
-                {hasChanges && (
-                    <button
-                        onClick={saveConfig}
-                        className="px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
-                    >
-                        {t('common.save')}
-                    </button>
-                )}
-            </div>
+                    </>
+                }
+                actions={
+                    <>
+                        {hasChanges && (
+                            <button
+                                onClick={saveConfig}
+                                className="px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                            >
+                                {t('common.save')}
+                            </button>
+                        )}
+                    </>
+                }
+            />
 
             {loyaltyConfig && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 shadow-sm">
@@ -491,13 +493,11 @@ export function LoyaltyPage() {
                                 </button>
                             </div>
                             {rewards.length === 0 ? (
-                                <div className="text-center py-16 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-gray-50/50 dark:bg-black/5">
-                                    <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-mintcom-green shadow-sm">
-                                        <Award size={24} />
-                                    </div>
-                                    <p className="text-sm font-bold text-gray-500">{t('rewards.catalogEmpty', { defaultValue: 'Catalog Empty' })}</p>
-                                    <p className="text-xs font-medium text-gray-400 mt-1">{t('rewards.createTiers')}</p>
-                                </div>
+                                <EmptyState
+                                    icon={Award}
+                                    title={t('rewards.catalogEmpty', { defaultValue: 'Catalog Empty' })}
+                                    description={t('rewards.createTiers')}
+                                />
                             ) : (
                                 <div className="space-y-4">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

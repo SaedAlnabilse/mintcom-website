@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
 import {
     Users,
     Shield,
@@ -16,7 +14,6 @@ import {
     List,
     MoreVertical,
     ArrowUpDown,
-  X
 } from 'lucide-react';
 
 import api from '../../config/api';
@@ -24,7 +21,7 @@ import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
-import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { EmptyState, SearchInput, SelectInput, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ModalCloseButton, PageHeader } from '../../components/ui';
 import { PortalDropdown } from '../../components/PortalDropdown';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -485,16 +482,11 @@ export function OwnerEmployeesPage() {
                 be stacked on an in-flight request. */}
             <BusyOverlay visible={isLoading} />
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
-                        {t('owner.staff.subtitle')}
-                    </p>
-                </div>
-
-                <div className="flex items-center gap-3">
-
+            <PageHeader
+                title={t('owner.staff.title')}
+                subtitle={t('owner.staff.subtitle')}
+                actions={
+                    <>
                     <button
                         id="tour-add-employee-btn"
                         onClick={handleOpenAddEmployeeModal}
@@ -503,8 +495,9 @@ export function OwnerEmployeesPage() {
                         <UserPlus size={18} />
                         <span>{t('staff.newEmployee')}</span>
                     </button>
-                </div>
-            </div>
+                    </>
+                }
+            />
 
             {/* Stats Grid */}
             <div id="tour-stats-grid" className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -600,23 +593,23 @@ export function OwnerEmployeesPage() {
             {isLoading ? (
                 <SectionLoader message={t('owner.staff.loading')} minHeightClassName="py-20" />
             ) : filteredEmployees.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                    <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="dashboard-card-value">
-                        {hasEmployeeSearch
+                <EmptyState
+                    icon={Users}
+                    title={
+                        hasEmployeeSearch
                             ? t('common.noResults')
                             : hasEmployeeFilters
                                 ? t('common.noFilteredResults')
-                                : t('owner.staff.noStaffFound')}
-                    </p>
-                    <p className="mx-auto mt-2 max-w-sm text-sm font-medium text-gray-500">
-                        {hasEmployeeSearch
+                                : t('owner.staff.noStaffFound')
+                    }
+                    description={
+                        hasEmployeeSearch
                             ? t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
                             : hasEmployeeFilters
                                 ? t('common.noFilteredResultsDesc')
-                                : t('owner.staff.noStaffDesc')}
-                    </p>
-                </div>
+                                : t('owner.staff.noStaffDesc')
+                    }
+                />
             ) : (
                 <>
                     {viewMode === 'grid' ? (
@@ -1069,38 +1062,16 @@ export function OwnerEmployeesPage() {
                 } : null}
             />
 
-            {accessModalEmployee && createPortal(
-                <div
-                    className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/40 dark:bg-black/80 backdrop-blur-sm p-4"
-                    onClick={() => setAccessModalEmployee(null)}
-                >
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.96, y: 16 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        className="w-full max-w-lg rounded-[2rem] bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 shadow-2xl shadow-black/20 overflow-hidden"
-                        onClick={(event) => event.stopPropagation()}
-                    >
-                        <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-gray-100 dark:border-white/5">
-                            <div>
-                                <p className="text-xs font-black tracking-[0.18em] uppercase text-mintcom-green mb-2">
-                                    {t('owner.staff.accessRights', 'Access Rights')}
-                                </p>
-                                <h3 className="text-xl font-black text-gray-900 dark:text-white">
-                                    {accessModalEmployee.firstName} {accessModalEmployee.lastName}
-                                </h3>
-                                <p className="text-sm text-gray-500 mt-1">{accessModalEmployee.username}</p>
-                            </div>
-                            <button
-                                type="button"
-                                onClick={() => setAccessModalEmployee(null)}
-                                aria-label={t('common.close', 'Close')}
-                                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
-                            >
-                                <X size={18} />
-                            </button>
-                        </div>
+            <Modal isOpen={accessModalEmployee !== null} onClose={() => setAccessModalEmployee(null)} size="md">
+                {accessModalEmployee && (
+                    <>
+                        <ModalHeader
+                            title={`${accessModalEmployee.firstName} ${accessModalEmployee.lastName}`.trim() || accessModalEmployee.username}
+                            subtitle={accessModalEmployee.username}
+                            onClose={() => setAccessModalEmployee(null)}
+                        />
 
-                        <div className="px-6 py-5 space-y-4">
+                        <ModalBody>
                             <div className="flex items-center justify-between rounded-2xl bg-gray-50 dark:bg-white/5 px-4 py-3 border border-gray-200 dark:border-white/5">
                                 <div className="flex items-center gap-3">
                                     <MapPin size={16} className="text-mintcom-green" />
@@ -1120,13 +1091,13 @@ export function OwnerEmployeesPage() {
                             </div>
 
                             {getActiveAssignments(accessModalEmployee).length === 0 ? (
-                                <div className="rounded-2xl border border-dashed border-gray-200 dark:border-white/10 px-4 py-8 text-center">
+                                <div className="rounded-2xl border border-dashed border-gray-200 dark:border-white/10 px-4 py-8 text-center mt-4">
                                     <p className="text-sm font-medium text-gray-500">
                                         {t('owner.staff.noLocationsAssigned')}
                                     </p>
                                 </div>
                             ) : (
-                                <div className="space-y-3">
+                                <div className="space-y-3 mt-4">
                                     {getActiveAssignments(accessModalEmployee).map((assignment) => (
                                         <div
                                             key={assignment.assignmentsId}
@@ -1148,70 +1119,57 @@ export function OwnerEmployeesPage() {
                                     ))}
                                 </div>
                             )}
-                        </div>
-                    </motion.div>
-                </div>,
-                document.body
-            )}
+                        </ModalBody>
+                    </>
+                )}
+            </Modal>
 
             {/* Delete Confirmation Modal */}
-            {deleteModalOpen && employeeToDelete && createPortal(
-                <div className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans transition-all duration-300">
-                    <motion.div 
-                       initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                       animate={{ opacity: 1, scale: 1, y: 0 }}
-                       className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10"
-                    >
-                        {/* Mobile Drag Handle */}
-                        <div className="sm:hidden flex justify-center pt-2 pb-1 shrink-0">
-                          <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                        </div>
-                        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
-                        <div className="p-10 pb-6 flex flex-col items-center text-center">
-                            <div className="w-20 h-20 rounded-3xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
-                                <AlertTriangle size={40} />
-                            </div>
-                            <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3 leading-tight">
-                                {t('security.modes.deleteEmployee.title')}
-                            </h3>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm font-bold leading-relaxed max-w-[300px]">
-                                {t('security.modes.deleteEmployee.warning', {
-                                    name: `${employeeToDelete.firstName} ${employeeToDelete.lastName}`.trim(),
-                                })}
-                            </p>
-                        </div>
+            <Modal isOpen={deleteModalOpen && !!employeeToDelete} onClose={closeDeleteModal} size="sm">
+              {employeeToDelete && (
+                <>
+                  <ModalCloseButton onClose={closeDeleteModal} autoPositionAbsolute />
+                  <ModalBody className="pt-10">
+                      <div className="p-10 pb-6 flex flex-col items-center text-center">
+                          <div className="w-20 h-20 rounded-3xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
+                              <AlertTriangle size={40} />
+                          </div>
+                          <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3 leading-tight">
+                              {t('security.modes.deleteEmployee.title')}
+                          </h3>
+                          <p className="text-gray-500 dark:text-gray-400 text-sm font-bold leading-relaxed max-w-[300px]">
+                              {t('security.modes.deleteEmployee.warning', {
+                                  name: `${employeeToDelete.firstName} ${employeeToDelete.lastName}`.trim(),
+                              })}
+                          </p>
+                      </div>
 
-                        <div className="px-10 pb-8 space-y-5">
-                            {deleteError && (
-                                <p className="px-1 text-[11px] font-black text-red-500 flex items-center gap-1.5">
-                                    <AlertTriangle size={12} /> {deleteError}
-                                </p>
-                            )}
-                            {/* Offers whichever proof this owner can actually produce —
-                                a Google/Apple owner has no password to type here. */}
-                            <StepUpVerifier
-                                action="delete-account-employee"
-                                targetId={employeeToDelete.id}
-                                onVerified={confirmDelete}
-                                onError={setDeleteError}
-                                submitLabel={t('popups.deleteEmployee.button', 'Deactivate Member')}
-                                disabled={isDeleting}
-                            />
-                        </div>
-                        </div>
-
-                        <div className="p-8 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20">
-                            <button
-                                onClick={closeDeleteModal}
-                                className="w-full py-4 rounded-2xl border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest uppercase hover:bg-white dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all active:scale-95"
-                            >
-                                {t('common.cancel')}
-                            </button>
-                        </div>
-                    </motion.div>
-                </div>,
-                document.body
-            )}
+                      <div className="px-10 pb-8 space-y-5">
+                          {deleteError && (
+                              <p className="px-1 text-[11px] font-black text-red-500 flex items-center gap-1.5">
+                                  <AlertTriangle size={12} /> {deleteError}
+                              </p>
+                          )}
+                          {/* Offers whichever proof this owner can actually produce —
+                              a Google/Apple owner has no password to type here. */}
+                          <StepUpVerifier
+                              action="delete-account-employee"
+                              targetId={employeeToDelete.id}
+                              onVerified={confirmDelete}
+                              onError={setDeleteError}
+                              submitLabel={t('popups.deleteEmployee.button', 'Deactivate Member')}
+                              disabled={isDeleting}
+                          />
+                      </div>
+                  </ModalBody>
+                  <ModalFooter>
+                      <ModalCancelButton onClick={closeDeleteModal}>
+                          {t('common.cancel')}
+                      </ModalCancelButton>
+                  </ModalFooter>
+                </>
+              )}
+            </Modal>
 
 
         </div>

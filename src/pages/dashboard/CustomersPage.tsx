@@ -21,7 +21,7 @@ import { PortalDropdown } from '../../components/PortalDropdown';
 import { exportTable } from '../../utils/export';
 import type { ExportFormat } from '../../utils/export';
 import { ExportMenu } from '../../components/ExportMenu';
-import { SearchInput, Pagination } from '../../components/ui';
+import { SearchInput, Pagination, PageHeader, Badge } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useCurrency } from '../../context/CurrencyContext';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -388,30 +388,29 @@ export function CustomersPage() {
           is in flight — realtime refreshes stay silent. */}
       <BusyOverlay visible={isLoading} />
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('customers.title')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-            <span>{t('customers.subtitle')}</span>
-            {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                {currentEstablishment.name}
-              </span>
-            )}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 sm:gap-3">
-          <ExportMenu onExport={handleExport} className="hidden sm:flex" />
-          <button
-            onClick={() => setCustomerModalConfig({ isOpen: true, customer: null, initialTab: 'profile' })}
-            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm touch-target cursor-pointer"
-          >
-            <Plus size={18} />
-            <span className="hidden xs:inline">{t('customers.addCustomer')}</span>
-          </button>
-        </div>
-      </div>
+      <PageHeader
+          title={t('customers.title')}
+          subtitle={
+              <>
+                  <span>{t('customers.subtitle')}</span>
+                  {currentEstablishment?.name && (
+                      <Badge>{currentEstablishment.name}</Badge>
+                  )}
+              </>
+          }
+          actions={
+              <>
+                  <ExportMenu onExport={handleExport} className="hidden sm:flex" />
+                  <button
+                      onClick={() => setCustomerModalConfig({ isOpen: true, customer: null, initialTab: 'profile' })}
+                      className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm touch-target cursor-pointer"
+                  >
+                      <Plus size={18} />
+                      <span className="hidden xs:inline">{t('customers.addCustomer')}</span>
+                  </button>
+              </>
+          }
+      />
 
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { FAQ_DATA } from '../../data/faq';
 import type { FAQItem } from '../../data/faq';
 import { formatInputPlaceholder } from '../../utils/textCase';
+import { ModalCloseButton } from '../ui';
 
 interface FAQModalProps {
   isOpen: boolean;
@@ -86,12 +87,10 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
                 <p className="text-white/80 text-xs font-medium">{t('support.qa.subtitle')}</p>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-xl transition-colors"
-            >
-              <X size={18} className="text-white" />
-            </button>
+            <ModalCloseButton
+              onClose={onClose}
+              className="!bg-white/10 !border-white/20 !text-white hover:!text-white hover:!bg-white/20"
+            />
           </div>
 
           {/* Search */}

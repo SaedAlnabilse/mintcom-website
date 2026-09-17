@@ -2,6 +2,7 @@ import { modalSlideVariants as slideVariants } from "./landing/modalSlideVariant
 import { SectionCarouselFooter } from "./landing/SectionCarouselFooter";
 import { LandingFeatureCard } from './landing/LandingFeatureCard';
 import { useModalKeyboardGuard } from '../hooks/useModalKeyboardGuard';
+import { ModalCloseButton } from './ui';
 import { useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -170,14 +171,7 @@ const WorkflowFeatureModal = ({
         aria-modal="true"
         aria-label={feature.title}
       >
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={String(t('common.close', 'Close'))}
-          className="absolute end-4 top-4 z-30 flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15"
-        >
-          <X size={16} strokeWidth={2.5} />
-        </button>
+        <ModalCloseButton onClose={onClose} autoPositionAbsolute className="z-30" />
 
         <div className="absolute start-4 top-4 z-30 flex items-center gap-1 px-1 py-1 text-xs font-bold text-mintcom-green">
           <span className="tabular-nums">{activeIndex + 1}</span>

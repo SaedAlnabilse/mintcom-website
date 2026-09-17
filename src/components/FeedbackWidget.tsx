@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Star, CheckCircle2, ChevronDown } from 'lucide-react';
+import { MessageSquare, Send, Star, CheckCircle2, ChevronDown } from 'lucide-react';
+import { ModalCloseButton } from './ui';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -186,12 +187,7 @@ export const FeedbackWidget = () => {
                                     <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{t('feedback.title')}</h3>
                                     <p className="text-xs font-bold text-gray-500 mt-1">{t('feedback.subtitle')}</p>
                                 </div>
-                                <button
-                                    onClick={() => setIsOpen(false)}
-                                    className="p-2 bg-gray-100 dark:bg-[#1E293B] rounded-xl text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                                >
-                                    <X size={18} />
-                                </button>
+                                <ModalCloseButton onClose={() => setIsOpen(false)} />
                             </div>
 
                             <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">

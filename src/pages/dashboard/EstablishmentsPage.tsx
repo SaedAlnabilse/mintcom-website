@@ -13,7 +13,7 @@ import {
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
-import { SearchInput, Pagination } from '../../components/ui';
+import { EmptyState, SearchInput, Pagination, PageHeader, Badge } from '../../components/ui';
 import { useTranslation } from 'react-i18next';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatBusinessTypeLabel } from '../../utils/businessTypeLabel';
@@ -106,38 +106,28 @@ export function EstablishmentsPage() {
   return (
     <div className="space-y-10 pb-16" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#1E293B] p-8 border border-gray-200 dark:border-white/5 shadow-sm">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-mintcom-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-mintcom-green flex items-center justify-center shadow-sm">
-              <Store size={28} className="text-black" />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('establishments.title')}</h1>
-              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('establishments.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate('/onboarding')}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
-            >
-              <Plus size={18} />
-              <span>{t('establishments.addLocation')}</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+          title={t('establishments.title')}
+          subtitle={
+              <>
+                  <span>{t('establishments.subtitle')}</span>
+                  {currentEstablishment?.name && (
+                      <Badge>{currentEstablishment.name}</Badge>
+                  )}
+              </>
+          }
+          actions={
+              <>
+                  <button
+                      onClick={() => navigate('/onboarding')}
+                      className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                  >
+                      <Plus size={18} />
+                      <span>{t('establishments.addLocation')}</span>
+                  </button>
+              </>
+          }
+      />
 
       {/* Search Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -245,19 +235,16 @@ export function EstablishmentsPage() {
             ))}
 
             {searchQuery.trim() && paginatedEstablishments.length === 0 && (
-              <div className="col-span-full py-20 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Store size={28} className="text-gray-300" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('common.noResults')}</h3>
-                <p className="text-sm font-bold text-gray-500">
-                  {t('common.noMatchingResults', {
-                    entity: 'locations',
-                    query: searchQuery.trim(),
-                    defaultValue: 'No {{entity}} matching "{{query}}"',
-                  })}
-                </p>
-              </div>
+              <EmptyState
+                icon={Store}
+                title={t('common.noResults')}
+                description={t('common.noMatchingResults', {
+                  entity: 'locations',
+                  query: searchQuery.trim(),
+                  defaultValue: 'No {{entity}} matching "{{query}}"',
+                })}
+                className="col-span-full"
+              />
             )}
 
             {/* Add New Establishment Card */}

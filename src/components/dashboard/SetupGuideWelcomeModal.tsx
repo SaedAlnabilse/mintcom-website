@@ -6,8 +6,9 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { PartyPopper, X } from 'lucide-react';
+import { PartyPopper } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { ModalCloseButton } from '../ui';
 import { useScrollLock } from '../../hooks/useScrollLock';
 
 type SetupGuideWelcomeModalProps = {
@@ -144,15 +145,11 @@ export function SetupGuideWelcomeModal({
             transition={{ duration: 0.18, ease: 'easeOut' }}
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <button
+            <ModalCloseButton
               ref={closeButtonRef}
-              type="button"
-              onClick={close}
-              aria-label={t('common.close')}
-              className="absolute end-4 top-4 flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-400 shadow-sm transition-colors hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green dark:border-white/10 dark:bg-white/5 dark:hover:text-white"
-            >
-              <X size={18} aria-hidden="true" />
-            </button>
+              onClose={close}
+              autoPositionAbsolute
+            />
 
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-mintcom-green/15 text-mintcom-green">
               <PartyPopper size={34} aria-hidden="true" />

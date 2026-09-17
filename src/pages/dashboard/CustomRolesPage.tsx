@@ -21,7 +21,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { CustomRoleFormModal } from '../../components/CustomRoleFormModal';
 import { RoleDeleteResolutionModal } from '../../components/RoleDeleteResolutionModal';
-import { Pagination, SearchInput } from '../../components/ui';
+import { Pagination, SearchInput, PageHeader, Badge } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { getLocalizedRoleName } from '../../utils/roleNames';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -356,29 +356,28 @@ export function CustomRolesPage() {
           stacked on an in-flight request. */}
       <BusyOverlay visible={isLoading} />
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('dashboard.roles.title')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('dashboard.roles.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleCreateNew}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
-          >
-            <Plus size={18} />
-            <span>{t('dashboard.roles.addRole')}</span>
-          </button>
-        </div>
-      </div>
+      <PageHeader
+          title={t('dashboard.roles.title')}
+          subtitle={
+              <>
+                  <span>{t('dashboard.roles.subtitle')}</span>
+                  {currentEstablishment?.name && (
+                      <Badge>{currentEstablishment.name}</Badge>
+                  )}
+              </>
+          }
+          actions={
+              <>
+                  <button
+                      onClick={handleCreateNew}
+                      className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                  >
+                      <Plus size={18} />
+                      <span>{t('dashboard.roles.addRole')}</span>
+                  </button>
+              </>
+          }
+      />
 
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

@@ -1,11 +1,8 @@
 import { useMemo, useState } from 'react';
-import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { QuickInfo } from './QuickInfo';
-import { X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useScrollLock } from '../hooks/useScrollLock';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton } from './ui';
 import { useCurrency } from '../context/CurrencyContext';
 import { OrderRefundModal } from './OrderRefundModal';
 import { StatValue } from './ui/StatValue';
@@ -41,6 +38,51 @@ export interface OrderItem {
     taxRateSnapshot?: number;
     taxAmountSnapshot?: number;
 }
+
+export const getItemUnitPrice = (item: OrderItem): number => {
+    const qty = Math.max(1, Number(item.quantity) || 1);
+    const candidate = Number(
+        item.unitPrice ??
+        item.finalUnitPrice ??
+        item.price ??
+        item.basePrice
+    );
+    if (Number.isFinite(candidate) && candidate > 0) {
+        return candidate;
+    }
+    if (Number.isFinite(item.finalPrice) && Number(item.finalPrice) > 0) {
+        return Number(item.finalPrice);
+    }
+    if (Number.isFinite(item.total) && Number(item.total) > 0) {
+        return Number(item.total) / qty;
+    }
+    return 0;
+};
+
+export const getItemLineTotal = (item: OrderItem): number => {
+    const qty = Math.max(1, Number(item.quantity) || 1);
+    const unitPrice = getItemUnitPrice(item);
+    const rawTotal = Number(item.total);
+
+    if (Number.isFinite(rawTotal) && rawTotal > 0) {
+        // If qty > 1 and rawTotal equals single unit price, rawTotal was mistakenly set to unit price
+        if (qty > 1 && Math.abs(rawTotal - unitPrice) < 0.01) {
+            return qty * unitPrice;
+        }
+        return rawTotal;
+    }
+
+    if (unitPrice > 0) {
+        return qty * unitPrice;
+    }
+
+    const finalPrice = Number(item.finalPrice);
+    if (Number.isFinite(finalPrice) && finalPrice > 0) {
+        return qty > 1 ? qty * finalPrice : finalPrice;
+    }
+
+    return 0;
+};
 
 export interface Order {
     id: string;
@@ -120,8 +162,6 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
     const { t } = useTranslation();
     const { currentEstablishment } = useAuth();
     const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
-
-    useScrollLock(!!order);
 
     // Use global currency context instead of hardcoded JOD
     const { currencySymbol, formatAmount } = useCurrency();
@@ -363,48 +403,16 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                         ? formatPaymentBrandName(order.otherPaymentMethod)
                         : formatPaymentBrandName(order.paymentMethod);
 
-    return createPortal(
-        <AnimatePresence>
-            <div
-                dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/70 font-sans"
-                onClick={(e) => {
-                    if (e.target === e.currentTarget) onClose();
-                }}
-            >
-                <motion.div
-                    initial={{ opacity: 0, y: 24 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 24 }}
-                    transition={{ duration: 0.2 }}
-                    className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-2xl border border-gray-200 dark:border-white/10 w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[85vh] flex flex-col overflow-hidden shadow-xl"
-                >
-                    {/* Header — sticky */}
-                    <div className="shrink-0 border-b border-gray-100 dark:border-white/10">
-                        <div className="sm:hidden flex justify-center pt-2.5 pb-1">
-                            <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                        </div>
-                        <div className="px-4 sm:px-6 py-4 flex items-start justify-between gap-3">
-                            <div className="min-w-0">
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5">
-                                    {t('orders.details.title')}
-                                </p>
-                                <h2 className="text-xl font-bold text-gray-900 dark:text-white truncate">
-                                    {t('orders.table.order')} {order.invoiceNumber ?? `#${order.orderNumber}`}
-                                </h2>
-                            </div>
-                            <button
-                                onClick={onClose}
-                                aria-label={t('common.close')}
-                                className="shrink-0 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
-                            >
-                                <X size={18} />
-                            </button>
-                        </div>
-                    </div>
+    return (
+        <Modal isOpen={!!order} onClose={onClose} size="xl">
+            <ModalHeader
+                title={`${t('orders.table.order')} ${order.invoiceNumber ?? `#${order.orderNumber}`}`}
+                subtitle={t('orders.details.title')}
+                onClose={onClose}
+            />
 
-                    {/* Scrollable body */}
-                    <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-4 sm:p-6 space-y-5 custom-scrollbar-modal">
+            <ModalBody>
+                <div className="space-y-5">
                         {/* Meta grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                             <div className="rounded-xl border border-gray-100 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.03] p-3">
@@ -524,22 +532,28 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             </h3>
                             <div className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
                                 <div className="divide-y divide-gray-100 dark:divide-white/10">
-                                    {order.items?.map((item) => (
-                                        <div key={item.id} className="px-3.5 py-3 flex items-start justify-between gap-3">
-                                            <div className="min-w-0">
-                                                <p className="text-sm font-semibold text-gray-900 dark:text-white">{stripNameMarkers(item.name)}</p>
-                                                <p className="text-xs text-gray-500 mt-0.5">
-                                                    {t('orders.details.qty')}: {item.quantity.toLocaleString(t('common.locale'))} × {formatCurrency(item.price || item.basePrice || 0)}
-                                                </p>
+                                    {order.items?.map((item) => {
+                                        const qty = Math.max(1, Number(item.quantity) || 1);
+                                        const unitPrice = getItemUnitPrice(item);
+                                        const lineTotal = getItemLineTotal(item);
+
+                                        return (
+                                            <div key={item.id} className="px-3.5 py-3 flex items-start justify-between gap-3">
+                                                <div className="min-w-0">
+                                                    <p className="text-sm font-semibold text-gray-900 dark:text-white">{stripNameMarkers(item.name)}</p>
+                                                    <p className="text-xs text-gray-500 mt-0.5">
+                                                        {t('orders.details.qty')}: {qty.toLocaleString(t('common.locale'))} × {formatCurrency(unitPrice)}
+                                                    </p>
+                                                </div>
+                                                <StatValue
+                                                    value={lineTotal}
+                                                    currency={currencySymbol}
+                                                    className="text-sm font-semibold text-gray-900 dark:text-white"
+                                                    containerClassName="justify-end shrink-0"
+                                                />
                                             </div>
-                                            <StatValue
-                                                value={item.total || item.finalPrice || 0}
-                                                currency={currencySymbol}
-                                                className="text-sm font-semibold text-gray-900 dark:text-white"
-                                                containerClassName="justify-end shrink-0"
-                                            />
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -619,53 +633,45 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             </div>
                         )}
                     </div>
+            </ModalBody>
 
-                    {/* Sticky footer actions */}
-                    <div className="shrink-0 border-t border-gray-100 dark:border-white/10 bg-white dark:bg-[#1E293B] px-4 sm:px-6 py-3 sm:py-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-                        <div className="flex items-center gap-3">
-                            <button
-                                onClick={onClose}
-                                className="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 transition-colors"
-                            >
-                                {t('common.close')}
-                            </button>
-                            {isRefundable && (
-                                <div className="flex-1">
-                                    <button
-                                        onClick={() => {
-                                            if (!canRefund) return;
-                                            handleRefund();
-                                        }}
-                                        disabled={!canRefund}
-                                        className={`w-full py-2.5 px-4 rounded-xl text-sm font-semibold border transition-colors ${canRefund
-                                            ? 'bg-mintcom-red text-white border-mintcom-red hover:bg-mintcom-red/90'
-                                            : 'bg-gray-100 dark:bg-white/5 text-gray-400 border-gray-200 dark:border-white/10 cursor-not-allowed'
-                                            }`}
-                                    >
-                                        {t('orders.actions.refund')}
-                                    </button>
-                                    {!canRefund && (
-                                        <p className="mt-1.5 text-xs font-medium text-red-600 text-center">
-                                            {t('orders.messages.noRefundPermission')}
-                                        </p>
-                                    )}
-                                </div>
-                            )}
-                        </div>
+            <ModalFooter>
+                <ModalCancelButton onClick={onClose}>
+                    {t('common.close')}
+                </ModalCancelButton>
+                {isRefundable && (
+                    <div className="flex-1">
+                        <button
+                            onClick={() => {
+                                if (!canRefund) return;
+                                handleRefund();
+                            }}
+                            disabled={!canRefund}
+                            className={`w-full py-2.5 px-4 rounded-xl text-sm font-semibold border transition-colors ${canRefund
+                                ? 'bg-mintcom-red text-white border-mintcom-red hover:bg-mintcom-red/90'
+                                : 'bg-gray-100 dark:bg-white/5 text-gray-400 border-gray-200 dark:border-white/10 cursor-not-allowed'
+                                }`}
+                        >
+                            {t('orders.actions.refund')}
+                        </button>
+                        {!canRefund && (
+                            <p className="mt-1.5 text-xs font-medium text-red-600 text-center">
+                                {t('orders.messages.noRefundPermission')}
+                            </p>
+                        )}
                     </div>
-                </motion.div>
+                )}
+            </ModalFooter>
 
-                <OrderRefundModal
-                    order={order}
-                    isOpen={isRefundModalOpen}
-                    onClose={() => setIsRefundModalOpen(false)}
-                    onRefundSuccess={onRefundSuccess}
-                    canRefund={canRefund}
-                    canRestock={canRestock}
-                />
-            </div>
-        </AnimatePresence>,
-        document.body
+            <OrderRefundModal
+                order={order}
+                isOpen={isRefundModalOpen}
+                onClose={() => setIsRefundModalOpen(false)}
+                onRefundSuccess={onRefundSuccess}
+                canRefund={canRefund}
+                canRestock={canRestock}
+            />
+        </Modal>
     );
 }
 
