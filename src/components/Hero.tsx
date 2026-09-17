@@ -2,7 +2,7 @@ import { SplitText } from "./landing/SplitText";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Play, X, ArrowRight, Store } from 'lucide-react';
+import { X, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { ModalCloseButton } from './ui';
 import { useAuth } from '../context/AuthContext';
 import { DEMO_VIDEO_POSTER_URL, HERO_VIDEO_URL, isNativeVideoUrl } from '../config/downloads';
@@ -45,12 +45,9 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="mb-5 inline-flex max-w-full items-center gap-2.5 sm:mb-8"
+              className="mb-5 sm:mb-8"
             >
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-mintcom-green">
-                <Store size={14} strokeWidth={2.4} className="text-black" />
-              </span>
-              <span className="min-w-0 text-[13px] font-semibold leading-snug tracking-wider text-gray-900 dark:text-white/85 md:text-sm">
+              <span className="text-[13px] font-bold uppercase leading-snug tracking-[0.12em] text-mintcom-green">
                 {t('landing.hero.badge')}
               </span>
             </motion.div>
@@ -63,30 +60,36 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
 
             <p className="mb-6 max-w-md text-base leading-relaxed text-gray-600 dark:text-gray-400 sm:mb-8 sm:text-lg md:text-xl lg:max-w-none" dangerouslySetInnerHTML={{ __html: t('landing.hero.description').replace('360° POS solution', '<strong class="text-gray-900 dark:text-white">360° POS solution</strong>') }} />
 
-            <div className="flex w-full flex-col items-stretch justify-start gap-2.5 sm:flex-row sm:flex-nowrap sm:gap-3">
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={() => window.open('/try-pos', '_blank')}
-                className="group flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-center text-[15px] font-bold leading-snug text-gray-900 transition-colors hover:border-mintcom-green dark:border-white/15 dark:bg-transparent dark:text-white sm:px-4 sm:py-3.5 sm:text-base md:px-5 md:text-[17px] sm:whitespace-nowrap"
-              >
-                <Play size={15} fill="currentColor" className="shrink-0 text-mintcom-green sm:h-[18px] sm:w-[18px]" />
-                <span className="min-w-0">{t('landing.hero.tryDesktop')}</span>
-              </motion.button>
+            <div className="flex w-full flex-col items-start justify-start gap-4">
+              <div className="flex w-full flex-col items-stretch gap-2.5 sm:w-auto sm:flex-row sm:items-center sm:gap-6">
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleCtaClick}
+                  className="group inline-flex items-center justify-center gap-2 rounded-lg bg-mintcom-green px-6 py-3 text-center text-[15px] font-bold leading-snug text-black transition-colors hover:bg-mintcom-green/90 sm:whitespace-nowrap"
+                >
+                  <span>
+                    {isAuthenticated
+                      ? needsOnboarding
+                        ? t('nav.continueOnboarding', { defaultValue: 'Continue Onboarding' })
+                        : t('nav.dashboard', 'Go to Dashboard')
+                      : t('landing.hero.cta')}
+                  </span>
+                  <ArrowRight size={16} className={`shrink-0 transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:-translate-x-0.5' : 'group-hover:translate-x-0.5'}`} />
+                </motion.button>
 
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={handleCtaClick}
-                className="group flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-lg bg-mintcom-green px-4 py-3 text-center text-[15px] font-bold leading-snug text-black transition-colors hover:bg-mintcom-green/90 sm:px-4 sm:py-3.5 sm:text-base md:px-5 md:text-[17px] sm:whitespace-nowrap"
-              >
-                <span className="min-w-0">
-                  {isAuthenticated
-                    ? needsOnboarding
-                      ? t('nav.continueOnboarding', { defaultValue: 'Continue Onboarding' })
-                      : t('nav.dashboard', 'Go to Dashboard')
-                    : t('landing.hero.cta')}
-                </span>
-                <ArrowRight size={17} className={`shrink-0 transition-transform sm:h-5 sm:w-5 ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} />
-              </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => window.open('/try-pos', '_blank')}
+                  className="group inline-flex items-center justify-center gap-1 py-3 text-[15px] font-bold text-gray-900 underline decoration-mintcom-green decoration-2 underline-offset-4 transition-colors hover:text-mintcom-green dark:text-white sm:whitespace-nowrap"
+                >
+                  <span>{t('landing.hero.tryDesktop')}</span>
+                  <ArrowUpRight size={15} className="shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </motion.button>
+              </div>
+              <p className="text-[13px] leading-relaxed text-gray-500 dark:text-gray-400">
+                {t('pages.pricing.trialNote', { defaultValue: 'Start with a 14-day free trial. Cancel anytime.' })}
+              </p>
+            </div>
 
               {/* Temporarily hidden — re-enable when a dedicated hero video CTA is needed
               {HERO_VIDEO_URL && (
@@ -100,7 +103,6 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                 </motion.button>
               )}
               */}
-            </div>
 
 
           </motion.div>

@@ -7,26 +7,7 @@ import { useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { MINTCOM_PRICING } from '../config/pricing';
-import {
-  CreditCard,
-  ShieldCheck,
-  Users,
-  BarChart3,
-  ChefHat,
-  Building2,
-  LayoutDashboard,
-  Zap,
-  Lock,
-  Heart,
-  Smartphone,
-  Sparkles,
-  Grid3x3,
-  Gem,
-  Puzzle,
-  DollarSign,
-  X,
-  type LucideIcon,
-} from 'lucide-react';
+import { CreditCard, ShieldCheck, Users, BarChart3, ChefHat, Building2, LayoutDashboard, Zap, Lock, Heart, Smartphone, Sparkles, Grid3x3, Gem, Puzzle, X, type LucideIcon } from 'lucide-react';
 import MintcomLeafIcon from '../assets/small-logo.svg';
 import { FeatureInteractiveDemo, hasInteractiveDemo } from './FeatureInteractiveDemos';
 
@@ -392,11 +373,7 @@ export const Features = () => {
             transition={{ duration: 0.5 }}
             className="mb-8 inline-flex max-w-full items-center gap-2.5 mx-auto"
           >
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-mintcom-green">
-              <DollarSign size={14} strokeWidth={2.4} className="text-black" />
-            </span>
-            <span aria-hidden="true" className="h-4 w-px bg-black/15 dark:bg-white/20" />
-            <span className="min-w-0 text-[13px] font-semibold leading-snug tracking-widest uppercase text-gray-900 dark:text-white/85 md:text-sm">
+            <span className="text-[13px] font-bold uppercase leading-snug tracking-[0.12em] text-mintcom-green">
               {t('landing.workflow.badge')}
             </span>
           </motion.div>

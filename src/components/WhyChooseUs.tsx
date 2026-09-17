@@ -6,29 +6,7 @@ import { ModalCloseButton } from './ui';
 import { useState, useEffect, useRef, useCallback, Fragment } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import {
-  ShieldCheck,
-  Zap,
-  Settings,
-  Store,
-  Play,
-  X,
-  Users,
-  Check,
-  Smartphone,
-  BarChart3,
-  Heart,
-  Package,
-  CreditCard,
-  ChefHat,
-  Cloud,
-  Home,
-  ShoppingBag,
-  ArrowRight,
-  MapPin,
-  Coffee,
-  Briefcase,
-} from 'lucide-react';
+import { Store, ShieldCheck, Zap, Settings, Play, X, Users, Check, Smartphone, BarChart3, Heart, Package, CreditCard, ChefHat, Cloud, Home, ShoppingBag, ArrowRight, MapPin, Coffee, Briefcase } from 'lucide-react';
 import { Logo } from './Logo';
 import MintcomLeafIcon from '../assets/small-logo.svg';
 import { FeaturePosScreenshot } from './FeaturePosScreenshot';
@@ -615,11 +593,7 @@ export const WhyChooseUs = () => {
           className="mb-12 text-center lg:mb-16"
         >
           <div className="mb-8 inline-flex max-w-full items-center gap-2.5">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-mintcom-green">
-              <Store size={14} strokeWidth={2.4} className="text-black" />
-            </span>
-            <span aria-hidden="true" className="h-4 w-px bg-black/15 dark:bg-white/20" />
-            <span className="min-w-0 text-[13px] font-semibold leading-snug tracking-widest uppercase text-gray-900 dark:text-white/85 md:text-sm">
+            <span className="text-[13px] font-bold uppercase leading-snug tracking-[0.12em] text-mintcom-green">
               {t('landing.features.badge')}
             </span>
           </div>

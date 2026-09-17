@@ -10,52 +10,7 @@ import {
   type Variants,
 } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import {
-  Cloud,
-  Crown,
-  Tags,
-  Building2,
-  ShoppingCart,
-  Users,
-  BarChart2,
-  TrendingUp,
-  X,
-  ArrowUpRight,
-  LayoutDashboard,
-  Store,
-  Shield,
-  CreditCard,
-  KeyRound,
-  DollarSign,
-  Wallet,
-  Calendar,
-  Menu,
-  Bell,
-  PlayCircle,
-  RefreshCw,
-  Download,
-  Home,
-  Package,
-  ShoppingBag,
-  Activity,
-  CornerDownLeft,
-  ChevronDown,
-  Receipt,
-  Percent,
-  TrendingDown,
-  Award,
-  Target,
-  Timer,
-  LogOut,
-  Moon,
-  Smartphone,
-  FileBarChart,
-  Heart,
-  Sliders,
-  Settings,
-  MapPin,
-  type LucideIcon,
-} from 'lucide-react';
+import { Crown, Tags, Building2, ShoppingCart, Users, BarChart2, TrendingUp, X, ArrowUpRight, LayoutDashboard, Store, Shield, CreditCard, KeyRound, DollarSign, Wallet, Calendar, Menu, Bell, PlayCircle, RefreshCw, Download, Home, Package, ShoppingBag, Activity, CornerDownLeft, ChevronDown, Receipt, Percent, TrendingDown, Award, Target, Timer, LogOut, Moon, Smartphone, FileBarChart, Heart, Sliders, Settings, MapPin, type LucideIcon } from 'lucide-react';
 import MintcomLeafIcon from '../assets/small-logo.svg';
 import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
 import MintcomLogoDark from '../assets/green-full-logo.svg';
@@ -1574,11 +1529,7 @@ export const CloudControl = () => {
               transition={{ duration: 0.5 }}
               className="mb-8 inline-flex max-w-full items-center gap-2.5"
             >
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-mintcom-green">
-                <Cloud size={14} strokeWidth={2.4} className="text-black" />
-              </span>
-              <span aria-hidden="true" className="h-4 w-px bg-black/15 dark:bg-white/20" />
-              <span className="min-w-0 text-[13px] font-semibold leading-snug tracking-widest uppercase text-gray-900 dark:text-white/85 md:text-sm">
+              <span className="text-[13px] font-bold uppercase leading-snug tracking-[0.12em] text-mintcom-green">
                 {t('landing.cloudControl.badge')}
               </span>
             </motion.div>
