@@ -46,11 +46,10 @@ export const Contact = () => {
     <section id="contact" className="py-16 lg:py-20 bg-white dark:bg-[#0f0f0f] relative overflow-hidden transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 relative z-10">
         <div className="w-full mx-auto">
-          <div className="flex flex-col lg:flex-row items-stretch bg-gray-50 dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none">
+          <div className="flex flex-col lg:flex-row items-stretch bg-gray-50 dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-none">
 
             {/* Contact Info Sidebar — neutral dark to match landing (#0f0f0f / #121212) */}
             <div className="relative flex flex-col justify-between overflow-hidden border-b border-gray-200 bg-gray-100 p-8 sm:p-12 lg:w-2/5 lg:border-b-0 lg:border-e lg:border-gray-200 dark:border-white/10 dark:bg-[#0a0a0a] dark:lg:border-white/10 lg:p-16">
-              <div className="pointer-events-none absolute -start-16 top-1/4 h-48 w-48 rounded-full bg-mintcom-green/10 blur-3xl dark:bg-mintcom-green/8" aria-hidden />
               <div className="relative z-10">
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-magilio mb-6 leading-tight tracking-tight">
                   <span className="text-mintcom-green">{t('landing.contact.title')}</span>
@@ -201,7 +200,7 @@ export const Contact = () => {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="flex w-full items-center justify-center gap-2.5 rounded-xl bg-mintcom-green py-4 text-base font-semibold tracking-tight text-gray-900 shadow-[0_8px_28px_-8px_rgba(125,198,162,0.55)] transition-all hover:bg-mintcom-green/90 hover:shadow-[0_12px_32px_-8px_rgba(125,198,162,0.65)] active:scale-[0.98] disabled:opacity-50 sm:py-[1.125rem] sm:text-[17px]"
+                      className="flex w-full items-center justify-center gap-2.5 rounded-lg bg-mintcom-green py-4 text-base font-semibold tracking-tight text-gray-900 transition-colors hover:bg-mintcom-green/90 active:scale-[0.98] disabled:opacity-50 sm:py-[1.125rem] sm:text-[17px]"
                     >
                       {isSubmitting ? (
                         <Loader2 className="animate-spin opacity-80" size={20} strokeWidth={2} />

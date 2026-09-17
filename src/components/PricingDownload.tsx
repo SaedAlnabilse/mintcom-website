@@ -68,8 +68,6 @@ export const PricingDownload = () => {
         <section id="pricing" className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] relative overflow-hidden">
             {/* Background Decor */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-7xl pointer-events-none">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-mintcom-green/5 rounded-full blur-[120px]" />
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-mintcom-green/5 rounded-full blur-[120px]" />
             </div>
 
             <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 relative z-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
@@ -96,7 +94,7 @@ export const PricingDownload = () => {
                         transition={{ duration: 0.8, ease: "easeOut" }}
                         className="w-full"
                     >
-                        <div className="relative overflow-hidden rounded-[1.75rem] border border-gray-100 bg-white p-5 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.06),0_4px_12px_-4px_rgba(0,0,0,0.04)] group sm:rounded-[2.5rem] sm:p-8 lg:p-10 dark:border-white/5 dark:bg-[#1a1a1a] dark:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.35)]">
+                        <div className="relative overflow-hidden rounded-[1.75rem] border border-gray-200 bg-white p-5 shadow-sm group sm:rounded-[2.5rem] sm:p-8 lg:p-10 dark:border-white/5 dark:bg-[#1a1a1a] dark:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.35)]">
                             <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:gap-12">
                                 
                                 {/* Left Side: Pricing & CTA */}
@@ -162,7 +160,7 @@ export const PricingDownload = () => {
                                         <div className="w-full">
                                             <button
                                                 onClick={handleCtaAction}
-                                                className="group/btn flex w-full items-center justify-center gap-2.5 rounded-xl bg-mintcom-green py-3.5 text-base font-semibold tracking-tight text-gray-900 shadow-[0_8px_28px_-8px_rgba(125,198,162,0.55)] transition-all hover:bg-mintcom-green/90 hover:shadow-[0_12px_32px_-8px_rgba(125,198,162,0.65)] active:scale-[0.98] sm:py-4 sm:text-[17px]"
+                                                className="group/btn flex w-full items-center justify-center gap-2.5 rounded-lg bg-mintcom-green py-3.5 text-base font-semibold tracking-tight text-gray-900 transition-colors hover:bg-mintcom-green/90 active:scale-[0.98] sm:py-4 sm:text-[17px]"
                                             >
                                                 <span className="font-semibold">{t('landing.pricing.getStarted', 'Get Started')}</span>
                                                 <ArrowRight size={18} strokeWidth={2} className={`opacity-80 transition-transform duration-300 group-hover/btn:translate-x-1.5 ${t('common.locale') === 'ar' && 'rotate-180 group-hover/btn:-translate-x-1.5'}`} />
@@ -256,7 +254,7 @@ export const PricingDownload = () => {
                                         }
                                         navigate('/owner');
                                     }}
-                                    className="w-full bg-mintcom-green text-black py-4 rounded-xl font-black text-lg transition-all hover:bg-mintcom-green/90 shadow-lg shadow-mintcom-green/20"
+                                    className="w-full bg-mintcom-green text-black py-4 rounded-lg font-black text-lg transition-colors hover:bg-mintcom-green/90"
                                 >
                                     {needsOnboarding
                                         ? t('nav.continueOnboarding', { defaultValue: 'Continue Onboarding' })

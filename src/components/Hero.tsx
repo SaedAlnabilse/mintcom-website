@@ -31,30 +31,6 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
 
   return (
     <section className="relative overflow-hidden bg-white pb-12 pt-24 dark:bg-[#0f0f0f] sm:pb-16 sm:pt-28 lg:pb-20 lg:pt-32" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-            x: [0, 50, 0],
-            y: [0, 30, 0]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-mintcom-green/20 rounded-full blur-[120px]"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.2, 0.4, 0.2],
-            x: [0, -30, 0],
-            y: [0, -50, 0]
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-mintcom-green/10 rounded-full blur-[100px]"
-        />
-      </div>
-
       <div className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
         <div className="flex flex-col items-start gap-8 lg:flex-row lg:items-center lg:gap-12 xl:gap-16">
 
@@ -71,10 +47,9 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               transition={{ delay: 0.2, duration: 0.6 }}
               className="mb-5 inline-flex max-w-full items-center gap-2.5 sm:mb-8"
             >
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] border border-black/10 bg-mintcom-green shadow-[0_1px_2px_rgba(0,0,0,0.12)] dark:border-white/10 dark:shadow-none">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-mintcom-green">
                 <Store size={14} strokeWidth={2.4} className="text-black" />
               </span>
-              <span aria-hidden="true" className="h-4 w-px bg-black/15 dark:bg-white/20" />
               <span className="min-w-0 text-[13px] font-semibold leading-snug tracking-wider text-gray-900 dark:text-white/85 md:text-sm">
                 {t('landing.hero.badge')}
               </span>
@@ -92,7 +67,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => window.open('/try-pos', '_blank')}
-                className="group flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-xl border-2 border-mintcom-green/40 bg-mintcom-green/10 px-4 py-3 text-center text-[15px] font-bold leading-snug text-gray-900 transition-colors hover:border-mintcom-green hover:bg-mintcom-green/15 dark:text-white sm:px-4 sm:py-3.5 sm:text-base md:px-5 md:text-[17px] sm:whitespace-nowrap"
+                className="group flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-center text-[15px] font-bold leading-snug text-gray-900 transition-colors hover:border-mintcom-green dark:border-white/15 dark:bg-transparent dark:text-white sm:px-4 sm:py-3.5 sm:text-base md:px-5 md:text-[17px] sm:whitespace-nowrap"
               >
                 <Play size={15} fill="currentColor" className="shrink-0 text-mintcom-green sm:h-[18px] sm:w-[18px]" />
                 <span className="min-w-0">{t('landing.hero.tryDesktop')}</span>
@@ -101,7 +76,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCtaClick}
-                className="group flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-xl bg-mintcom-green px-4 py-3 text-center text-[15px] font-bold leading-snug text-black transition-all sm:px-4 sm:py-3.5 sm:text-base md:px-5 md:text-[17px] sm:whitespace-nowrap"
+                className="group flex min-h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-lg bg-mintcom-green px-4 py-3 text-center text-[15px] font-bold leading-snug text-black transition-colors hover:bg-mintcom-green/90 sm:px-4 sm:py-3.5 sm:text-base md:px-5 md:text-[17px] sm:whitespace-nowrap"
               >
                 <span className="min-w-0">
                   {isAuthenticated
@@ -137,17 +112,13 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
             className="relative mt-2 flex w-full min-w-0 flex-1 justify-center sm:mt-8 lg:mt-16 lg:justify-end"
           >
-            <motion.div
-              className="relative w-full max-w-[340px] sm:max-w-[420px] md:max-w-[500px] lg:max-w-[620px] xl:max-w-[760px]"
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            >
+            <div className="relative w-full max-w-[340px] sm:max-w-[420px] md:max-w-[500px] lg:max-w-[620px] xl:max-w-[760px]">
               <picture className="relative z-10 block h-auto w-full">
                 <source srcSet={heroImageWebp} type="image/webp" />
                 <img
                   src={heroImage}
                   alt={t('landing.hero.alt', 'Mintcom All-in-One POS System')}
-                  className="h-auto w-full object-contain drop-shadow-2xl"
+                  className="h-auto w-full object-contain"
                   width={1350}
                   height={1250}
                   decoding="async"
@@ -155,7 +126,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                   draggable={false}
                 />
               </picture>
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </div>

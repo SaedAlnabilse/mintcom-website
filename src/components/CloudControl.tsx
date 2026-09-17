@@ -140,11 +140,10 @@ const PortalRail = ({
         lg ? 'py-2.5' : 'py-1'
       }`}
     >
-      <div className="pointer-events-none absolute end-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-mintcom-green/25 to-transparent opacity-60" />
 
       <div className={`flex shrink-0 items-center justify-center ${lg ? 'mb-1.5 px-2' : 'mb-0.5 px-0.5'}`}>
         <span
-          className={`flex items-center justify-center rounded-xl border border-mintcom-green/20 bg-gradient-to-br from-mintcom-green/20 to-mintcom-green/5 ${leafBox}`}
+          className={`flex items-center justify-center rounded-xl border border-mintcom-green/20 bg-mintcom-green/10 ${leafBox}`}
         >
           <img
             src={MintcomLeafIcon}
@@ -681,7 +680,7 @@ const DashboardCard = ({
       viewport={{ once: true }}
       transition={{ delay: (index % 3) * 0.08, duration: 0.5 }}
       whileHover={{ y: -6 }}
-      className="group relative flex h-full min-h-[248px] cursor-pointer flex-col overflow-hidden rounded-2xl border border-transparent bg-white p-6 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)] transition-all duration-500 hover:border-mintcom-green/25 hover:shadow-[0_16px_40px_-14px_rgba(124,195,159,0.28)] focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:border-mintcom-green/30 active:outline-none active:ring-0 dark:border-transparent dark:bg-[#121212] dark:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.45)] dark:hover:border-mintcom-green/20"
+      className="group relative flex h-full min-h-[248px] cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-colors duration-200 hover:border-mintcom-green/40 focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:border-mintcom-green/30 active:outline-none active:ring-0 dark:border-transparent dark:bg-[#121212] dark:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.45)] dark:hover:border-mintcom-green/20"
     >
       <div className="relative z-10 mb-4 flex min-h-[56px] items-center gap-4">
         <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 shadow-inner transition-all duration-500 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-mintcom-green dark:bg-mintcom-green/15">
@@ -808,7 +807,7 @@ const ScopeDashboardModal = ({
 
                 {/* Product preview — same frame as Why feature shots */}
                 <div className="order-1 w-full min-w-0 lg:order-2">
-                  <div className="overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-lg shadow-black/10 dark:border-white/10 dark:bg-mintcom-dark dark:shadow-black/40">
+                  <div className="overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-sm dark:border-white/10 dark:bg-mintcom-dark">
                     <div className="h-[min(52vh,380px)] w-full overflow-hidden sm:h-[420px] md:h-[440px]">
                       <ScopePreview scope={item.scope} t={t} size="lg" />
                     </div>
@@ -925,7 +924,6 @@ const DeviceMockup = ({ t }: { t: any }) => {
   return (
     <div className="relative w-full h-full flex items-center justify-center min-h-[320px] sm:min-h-[420px] lg:min-h-[520px] select-none">
       <div className="absolute inset-0 -z-10 flex items-center justify-center">
-        <div className="w-[80%] h-[80%] bg-mintcom-green/10 rounded-full blur-[100px]" />
       </div>
 
       {/* ── MacBook ── */}
@@ -974,7 +972,6 @@ const DeviceMockup = ({ t }: { t: any }) => {
           <div className="w-full h-full flex transition-colors duration-300" style={{ backgroundColor: MAC_BG }}>
             {/* ── Real OwnerLayout sidebar ── */}
             <div className={`hidden sm:flex w-[22%] min-w-0 flex-col border-r ${MAC_BORDER} py-2 px-1.5 relative transition-colors duration-300`} style={{ backgroundColor: MAC_SIDEBAR_BG }}>
-              <div className="absolute top-0 end-0 w-px h-full bg-gradient-to-b from-transparent via-mintcom-green/20 to-transparent opacity-50 pointer-events-none" />
 
               {/* Brand header */}
               <div className="flex items-center gap-1.5 px-1.5 h-8 mb-1 shrink-0">
@@ -1559,8 +1556,6 @@ export const CloudControl = () => {
       dir={isRtl ? 'rtl' : 'ltr'}
     >
       {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-mintcom-green/5 rounded-full blur-[120px] -z-10" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-mintcom-green/5 rounded-full blur-[100px] -z-10" />
 
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
         {/* Top Section: Header + Devices */}
@@ -1579,7 +1574,7 @@ export const CloudControl = () => {
               transition={{ duration: 0.5 }}
               className="mb-8 inline-flex max-w-full items-center gap-2.5"
             >
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] border border-black/10 bg-mintcom-green shadow-[0_1px_2px_rgba(0,0,0,0.12)] dark:border-white/10 dark:shadow-none">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-mintcom-green">
                 <Cloud size={14} strokeWidth={2.4} className="text-black" />
               </span>
               <span aria-hidden="true" className="h-4 w-px bg-black/15 dark:bg-white/20" />

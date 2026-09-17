@@ -112,7 +112,7 @@ function WhyCompletePreview({ isRtl }: { isRtl?: boolean }) {
         {mods.map((m) => (
           <div
             key={m.name}
-            className="flex min-h-0 flex-col items-center justify-center rounded-xl border border-gray-200/80 bg-gradient-to-b from-white to-gray-50 px-1 text-center shadow-sm dark:border-white/10 dark:from-[#1a1a1a] dark:to-[#141414] sm:rounded-2xl"
+            className="flex min-h-0 flex-col items-center justify-center rounded-xl border border-gray-200/80 bg-white px-1 text-center shadow-sm dark:border-white/10 dark:bg-[#1a1a1a] sm:rounded-2xl"
           >
             <span className="mb-1 flex h-8 w-8 items-center justify-center rounded-lg bg-mintcom-green/12 text-mintcom-green sm:mb-1.5 sm:h-9 sm:w-9 sm:rounded-xl">
               <m.Icon size={16} strokeWidth={2} className="sm:hidden" />
@@ -605,8 +605,6 @@ export const WhyChooseUs = () => {
       className="relative overflow-hidden bg-gray-50 py-16 dark:bg-[#0f0f0f] lg:py-20"
       dir={isRtl ? 'rtl' : 'ltr'}
     >
-      <div className="absolute end-0 top-0 -z-10 h-[600px] w-[600px] rounded-full bg-mintcom-green/5 blur-[120px]" />
-      <div className="absolute bottom-0 start-0 -z-10 h-[400px] w-[400px] rounded-full bg-mintcom-green/3 blur-[100px]" />
 
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
         <motion.div
@@ -617,7 +615,7 @@ export const WhyChooseUs = () => {
           className="mb-12 text-center lg:mb-16"
         >
           <div className="mb-8 inline-flex max-w-full items-center gap-2.5">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] border border-black/10 bg-mintcom-green shadow-[0_1px_2px_rgba(0,0,0,0.12)] dark:border-white/10 dark:shadow-none">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-mintcom-green">
               <Store size={14} strokeWidth={2.4} className="text-black" />
             </span>
             <span aria-hidden="true" className="h-4 w-px bg-black/15 dark:bg-white/20" />
@@ -659,7 +657,7 @@ export const WhyChooseUs = () => {
             transition={{ duration: 0.7 }}
             className="mx-auto w-full"
           >
-            <div className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-900 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] dark:border-white/10">
+            <div className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-900 dark:border-white/10">
               {isVideoVisible && demoIsNative ? (
                 <video
                   src={demoSrc}
@@ -711,7 +709,7 @@ export const WhyChooseUs = () => {
                     whileTap={{ scale: 0.97 }}
                     whileHover={{ scale: 1.02 }}
                     onClick={() => window.open('/try-pos', '_blank', 'noopener,noreferrer')}
-                    className="group/cta inline-flex items-center gap-3 rounded-2xl bg-mintcom-green px-6 py-3.5 text-base font-bold text-black shadow-[0_12px_40px_-10px_rgba(124,195,159,0.65)] transition-shadow hover:shadow-[0_16px_48px_-8px_rgba(124,195,159,0.8)] sm:px-8 sm:py-4 sm:text-lg md:text-xl"
+                    className="group/cta inline-flex items-center gap-3 rounded-lg bg-mintcom-green px-6 py-3.5 text-base font-bold text-black transition-colors hover:bg-mintcom-green/90 sm:px-8 sm:py-4 sm:text-lg md:text-xl"
                   >
                     <Play size={18} fill="currentColor" className="shrink-0 sm:h-5 sm:w-5" />
                     <span>{t('landing.hero.tryDesktop')}</span>

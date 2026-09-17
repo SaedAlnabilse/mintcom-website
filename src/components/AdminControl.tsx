@@ -1328,7 +1328,6 @@ export const AdminControl = () => {
       className="py-16 lg:py-20 bg-white dark:bg-[#0f0f0f] overflow-x-clip relative"
       dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
     >
-      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
 
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
         <div className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16">
@@ -1411,7 +1410,7 @@ export const AdminControl = () => {
               transition={{ duration: 0.5 }}
               className="mb-8 inline-flex max-w-full items-center gap-2.5"
             >
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] border border-black/10 bg-mintcom-green shadow-[0_1px_2px_rgba(0,0,0,0.12)] dark:border-white/10 dark:shadow-none">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-mintcom-green">
                 <Smartphone size={14} strokeWidth={2.4} className="text-black" />
               </span>
               <span aria-hidden="true" className="h-4 w-px bg-black/15 dark:bg-white/20" />

@@ -135,7 +135,6 @@ export const Hardware = () => {
     <>
       <section id="hardware" className="py-16 lg:py-20 bg-gray-50 dark:bg-[#0a0a0a] overflow-hidden relative">
         {/* Background Decor */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-mintcom-green/5 rounded-full blur-[120px] -z-10" />
 
         <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
           <motion.div
@@ -161,7 +160,7 @@ export const Hardware = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white dark:bg-white/5 rounded-xl p-8 border border-gray-200 dark:border-white/10 hover:border-mintcom-green/30 transition-all shadow-lg shadow-gray-200/50 dark:shadow-none"
+                className="bg-white dark:bg-white/5 rounded-xl p-8 border border-gray-200 dark:border-white/10 hover:border-mintcom-green/30 transition-colors shadow-sm dark:shadow-none"
               >
                 <div className="flex items-start gap-4 mb-6">
                   <div className="w-14 h-14 rounded-2xl bg-mintcom-green/10 dark:bg-mintcom-green/20 flex items-center justify-center">

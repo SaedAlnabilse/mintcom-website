@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Menu, X, LogOut, User, Headset, ArrowRight, Play } from 'lucide-react';
 import MintcomLeafIcon from '../assets/small-logo.svg';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Logo } from './Logo';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -12,31 +12,19 @@ import { useScrollLock } from '../hooks/useScrollLock';
 import { ONBOARDING_START_PATH } from '../utils/onboardingLaunch';
 
 /* -----------------------------------------------------------
-   Navbar — Floating Capsule Design
-   - Centered floating pill that hovers above content
-   - Splits into distinct zones: brand | navigation | actions
-   - Magnetic hover effects on nav items
-   - Gradient border glow on scroll
-   - Micro-interactions with spring physics
-   - Dark mode: inverted luminance with neon accents
+   Navbar — plain flat bar.
+   - Full-width bar with a hairline bottom border, no capsule,
+     no glow, no shimmer. Same logo, same system green.
 ----------------------------------------------------------- */
 
 export const Navbar = ({ hideCommercialLinks = false }: { hideCommercialLinks?: boolean }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated, logout, needsOnboarding } = useAuth();
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const isRtl = t('common.locale') === 'ar';
 
   useScrollLock(isMobileMenuOpen);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const navLinks = isAuthenticated
     ? []
@@ -56,132 +44,199 @@ export const Navbar = ({ hideCommercialLinks = false }: { hideCommercialLinks?: 
     }
   };
 
+  const scrollToSection = (e: React.MouseEvent, href: string) => {
+    if (href.startsWith('/#') && window.location.pathname === '/') {
+      const el = document.getElementById(href.slice(2));
+      if (el) {
+        e.preventDefault();
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <nav
       dir={isRtl ? 'rtl' : 'ltr'}
-      className="fixed inset-x-0 top-0 z-50 flex items-start justify-center px-4 sm:px-6 lg:px-8"
+      className="fixed inset-x-0 top-0 z-50 border-b border-gray-200 bg-white dark:border-white/10 dark:bg-[#0a0a0a]"
     >
-      {/* Floating capsule container */}
-      <motion.div
-        initial={false}
-        animate={{
-          marginTop: isScrolled ? 12 : 16,
-          width: isScrolled ? '96%' : '100%',
-        }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="relative w-full max-w-7xl"
-      >
-        {/* Animated gradient border */}
-        <div
-          aria-hidden
-          className={`absolute -inset-[1px] rounded-[20px] transition-opacity duration-700 ${
-            isScrolled ? 'opacity-100' : 'opacity-0'
-          }`}
-          style={{
-            background: 'linear-gradient(135deg, #7dc6a2 0%, transparent 40%, transparent 60%, #7dc6a2 100%)',
-            mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            maskComposite: 'exclude',
-            WebkitMaskComposite: 'xor',
-            padding: '1px',
-            borderRadius: '20px',
-          }}
-        />
-
-        {/* Main navbar body */}
-        <div
-          className={`relative rounded-[20px] transition-all duration-500 ${
-            isScrolled
-              ? 'bg-white/95 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)] dark:bg-[#0a0a0a]/95 dark:shadow-[0_8px_40px_-12px_rgba(125,198,162,0.08)]'
-              : 'bg-white/90 dark:bg-[#0a0a0a]/90'
-          }`}
-          style={{
-            backdropFilter: 'blur(20px) saturate(1.8)',
-            WebkitBackdropFilter: 'blur(20px) saturate(1.8)',
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Logo */}
+        <Link
+          to="/"
+          className="flex shrink-0 items-center"
+          onClick={() => {
+            setIsMobileMenuOpen(false);
+            if (window.location.pathname === '/') {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
           }}
         >
-          {/* Inner content */}
-          <div className="relative z-10 flex items-center justify-between px-3 py-3 xs:px-4 sm:px-5 md:px-7">
-            {/* Left zone: Logo */}
+          <span className="navbar-logo-full min-w-0">
+            <Logo size="lg" />
+          </span>
+          <span className="navbar-logo-icon">
+            <Logo variant="icon" size="lg" />
+          </span>
+        </Link>
+
+        {/* Desktop links */}
+        <div className="hidden items-center gap-7 lg:flex">
+          {!isAuthenticated && navLinks.map((link) => (
             <Link
-              to="/"
-              className="relative z-[60] flex shrink-0 items-center"
-              onClick={() => {
-                setIsMobileMenuOpen(false);
-                if (window.location.pathname === '/') {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-              }}
+              key={link.id}
+              to={link.href}
+              target={link.target}
+              rel={link.rel}
+              onClick={(e) => scrollToSection(e, link.href)}
+              className="text-sm font-semibold text-gray-600 hover:text-mintcom-green dark:text-gray-300 dark:hover:text-mintcom-green"
             >
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-              >
-                <span className="navbar-logo-full min-w-0">
-                  <Logo size="lg" className="transition-transform duration-500" />
-                </span>
-                <span className="navbar-logo-icon">
-                  <Logo variant="icon" size="lg" className="transition-transform duration-500" />
-                </span>
-              </motion.div>
+              {link.name}
             </Link>
+          ))}
+        </div>
 
-            {/* Center zone: Navigation links */}
-            <div className="relative z-[60] hidden items-center lg:flex">
-              {!isAuthenticated && navLinks.length > 0 && (
-                <div className="relative flex items-center rounded-xl bg-gray-100/70 px-1.5 py-1.5 dark:bg-white/[0.06]">
-                  {/* Animated highlight pill */}
-                  <AnimatePresence>
-                    {hoveredLink && (
-                      <motion.div
-                        layoutId="nav-highlight"
-                        className="absolute inset-y-1.5 rounded-lg bg-white shadow-sm dark:bg-white/10"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                      />
-                    )}
-                  </AnimatePresence>
-
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.id}
-                      to={link.href}
-                      target={link.target}
-                      rel={link.rel}
-                      onMouseEnter={() => setHoveredLink(link.id)}
-                      onMouseLeave={() => setHoveredLink(null)}
-                      className="relative z-10 px-5 py-2 text-[13px] font-semibold text-gray-600 transition-colors duration-200 hover:text-mintcom-green dark:text-gray-400 dark:hover:text-mintcom-green"
-                      onClick={(e) => {
-                        if (
-                          link.href.startsWith('/#') &&
-                          window.location.pathname === '/'
-                        ) {
-                          const el = document.getElementById(link.href.slice(2));
-                          if (el) {
-                            e.preventDefault();
-                            el.scrollIntoView({ behavior: 'smooth' });
-                          }
-                        }
-                      }}
-                    >
-                      {link.name}
-                    </Link>
-                  ))}
-                </div>
+        {/* Desktop actions */}
+        <div className="hidden items-center gap-2 lg:flex">
+          {isAuthenticated ? (
+            <>
+              <Link
+                to="/support"
+                className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-[13px] font-semibold text-gray-600 hover:border-mintcom-green/40 hover:text-mintcom-green dark:border-white/10 dark:text-gray-300"
+              >
+                <Headset size={14} />
+                {t('nav.support')}
+              </Link>
+              {needsOnboarding ? (
+                <Link
+                  to={ONBOARDING_START_PATH}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg bg-mintcom-green px-5 py-2.5 text-[13px] font-bold text-black hover:bg-mintcom-green/90"
+                >
+                  <img src={MintcomLeafIcon} alt="" style={{ width: 14, height: 14 }} className="scale-x-[-1] object-contain brightness-0" />
+                  {t('nav.continueOnboarding', { defaultValue: 'Continue Onboarding' })}
+                </Link>
+              ) : (
+                <Link
+                  to="/owner"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg bg-mintcom-green px-5 py-2.5 text-[13px] font-bold text-black hover:bg-mintcom-green/90"
+                >
+                  <User size={14} />
+                  {t('nav.dashboard', 'Dashboard')}
+                </Link>
               )}
-            </div>
+              <button
+                onClick={handleLogout}
+                className="inline-flex items-center gap-2 rounded-lg bg-rose-50 px-4 py-2 text-[13px] font-semibold text-rose-500 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20"
+              >
+                <LogOut size={14} />
+                {t('nav.logout')}
+              </button>
+            </>
+          ) : !hideCommercialLinks ? (
+            <>
+              <Link
+                to="/login"
+                className="rounded-lg px-4 py-2 text-[13px] font-semibold text-gray-600 hover:text-mintcom-green dark:text-gray-300 dark:hover:text-mintcom-green"
+              >
+                {t('nav.login')}
+              </Link>
+              <Link
+                to="/signup"
+                className="inline-flex items-center gap-2 rounded-lg bg-mintcom-green px-5 py-2.5 text-[13px] font-bold text-black hover:bg-mintcom-green/90"
+              >
+                {t('nav.getStarted')}
+                <ArrowRight size={13} className={isRtl ? 'rotate-180' : ''} />
+              </Link>
+            </>
+          ) : null}
 
-            {/* Right zone: Actions */}
-            <div className="relative z-[60] hidden items-center gap-2 lg:flex">
+          <div className="mx-2 h-6 w-px bg-gray-200 dark:bg-white/10" />
+
+          <LanguageSwitcher
+            dropdownDirection="down"
+            buttonClassName="rounded-lg bg-transparent border-0 hover:bg-gray-100 dark:hover:bg-white/[0.06] px-3 py-2"
+          />
+          <ThemeToggle
+            dropdownDirection="down"
+            iconSize={17}
+            className="h-9 w-9 rounded-lg border-0 bg-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/[0.06] dark:hover:text-white"
+          />
+        </div>
+
+        {/* Mobile controls */}
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2 lg:hidden">
+          <LanguageSwitcher compact buttonClassName="min-h-9 px-2.5 xs:px-3 rounded-lg text-sm" iconSize={15} />
+          <ThemeToggle
+            iconSize={17}
+            className="h-9 w-9 rounded-lg border border-gray-200 bg-gray-50 text-gray-600 hover:text-mintcom-green dark:border-white/10 dark:bg-white/5 dark:text-gray-400 dark:hover:text-mintcom-green"
+          />
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={
+              isMobileMenuOpen
+                ? t('common.aria.closeMenu')
+                : t('common.aria.openMenu')
+            }
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
+            className="flex h-9 w-9 items-center justify-center rounded-lg p-1.5 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
+          >
+            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu — plain dropdown panel */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            id="mobile-menu"
+            role="navigation"
+            aria-label={t('common.aria.mobileNav')}
+            className="overflow-hidden border-t border-gray-200 bg-white dark:border-white/10 dark:bg-[#0a0a0a] lg:hidden"
+          >
+            <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 px-4 py-4 sm:px-6">
+              {!isAuthenticated && navLinks.map((link) => (
+                <Link
+                  key={link.id}
+                  to={link.href}
+                  target={link.target}
+                  rel={link.rel}
+                  onClick={(e) => {
+                    setIsMobileMenuOpen(false);
+                    if (link.target === '_blank') return;
+                    scrollToSection(e, link.href);
+                  }}
+                  className={`flex w-full items-center justify-between gap-3 rounded-lg px-4 py-3 text-base font-bold text-gray-900 dark:text-white ${
+                    link.id === 'try-pos'
+                      ? 'bg-mintcom-green text-black'
+                      : 'border border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-white/5'
+                  }`}
+                >
+                  <span className="min-w-0 truncate">{link.name}</span>
+                  {link.id === 'try-pos' ? (
+                    <Play size={17} fill="currentColor" className="shrink-0" />
+                  ) : (
+                    <ArrowRight size={18} className={isRtl ? 'rotate-180' : ''} />
+                  )}
+                </Link>
+              ))}
+
               {isAuthenticated ? (
                 <>
                   <Link
                     to="/support"
-                    className="group inline-flex items-center gap-2 rounded-xl border border-gray-200/80 px-4 py-2 text-[13px] font-semibold text-gray-600 transition-all duration-300 hover:border-mintcom-green/30 hover:text-mintcom-green dark:border-white/10 dark:text-gray-300 dark:hover:border-mintcom-green/30 dark:hover:text-mintcom-green"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-3 text-center text-base font-bold text-gray-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   >
-                    <Headset size={14} className="transition-transform duration-300 group-hover:scale-110" />
+                    <Headset size={18} />
                     {t('nav.support')}
                   </Link>
                   {needsOnboarding ? (
@@ -189,9 +244,10 @@ export const Navbar = ({ hideCommercialLinks = false }: { hideCommercialLinks?: 
                       to={ONBOARDING_START_PATH}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-mintcom-green to-emerald-400 px-5 py-2.5 text-[13px] font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_6px_24px_-4px_rgba(124,195,159,0.7)] active:scale-[0.97]"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-mintcom-green px-4 py-3 text-center text-base font-bold text-black"
                     >
-                      <img src={MintcomLeafIcon} alt="" style={{ width: 14, height: 14 }} className="scale-x-[-1] object-contain brightness-0" />
+                      <img src={MintcomLeafIcon} alt="" style={{ width: 18, height: 18 }} className="scale-x-[-1] object-contain brightness-0" />
                       {t('nav.continueOnboarding', { defaultValue: 'Continue Onboarding' })}
                     </Link>
                   ) : (
@@ -199,17 +255,21 @@ export const Navbar = ({ hideCommercialLinks = false }: { hideCommercialLinks?: 
                       to="/owner"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-mintcom-green to-emerald-400 px-5 py-2.5 text-[13px] font-bold text-white shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_6px_24px_-4px_rgba(124,195,159,0.7)] active:scale-[0.97] dark:from-mintcom-green dark:to-emerald-500"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-mintcom-green px-4 py-3 text-center text-base font-bold text-black"
                     >
-                      <User size={14} />
+                      <User size={18} />
                       {t('nav.dashboard', 'Dashboard')}
                     </Link>
                   )}
                   <button
-                    onClick={handleLogout}
-                    className="inline-flex items-center gap-2 rounded-xl bg-rose-50 px-4 py-2 text-[13px] font-semibold text-rose-500 transition-all duration-300 hover:bg-rose-100 hover:shadow-sm active:scale-[0.97] dark:bg-rose-500/10 dark:hover:bg-rose-500/20"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-3 text-center text-base font-bold text-rose-500 dark:bg-rose-500/10"
                   >
-                    <LogOut size={14} />
+                    <LogOut size={18} />
                     {t('nav.logout')}
                   </button>
                 </>
@@ -217,258 +277,20 @@ export const Navbar = ({ hideCommercialLinks = false }: { hideCommercialLinks?: 
                 <>
                   <Link
                     to="/login"
-                    className="group relative overflow-hidden rounded-full px-4 py-2 text-[13px] font-semibold text-gray-600 transition-all duration-300 hover:text-mintcom-green dark:text-gray-400 dark:hover:text-mintcom-green"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-center text-base font-bold text-gray-900 dark:border-white/20 dark:text-white"
                   >
-                    <span className="relative z-10 inline-flex items-center gap-1.5">
-                      {t('nav.login')}
-                      <ArrowRight
-                        size={12}
-                        className={`opacity-0 transition-all duration-300 group-hover:opacity-100 ${
-                          isRtl
-                            ? 'translate-x-1 rotate-180 group-hover:translate-x-0'
-                            : '-translate-x-1 group-hover:translate-x-0'
-                        }`}
-                      />
-                    </span>
-                    {/* Subtle underline that grows on hover */}
-                    <span className="absolute inset-x-4 bottom-1.5 h-[2px] origin-left scale-x-0 rounded-full bg-mintcom-green/50 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                    {t('nav.login')}
                   </Link>
-                  <motion.div
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                  <Link
+                    to="/signup"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full rounded-lg bg-mintcom-green px-4 py-3 text-center text-base font-bold text-black"
                   >
-                    <Link
-                      to="/signup"
-                      className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-mintcom-green px-5 py-2.5 text-[13px] font-bold text-black shadow-[0_2px_12px_-2px_rgba(124,195,159,0.5)] transition-all duration-300 hover:shadow-[0_6px_24px_-4px_rgba(124,195,159,0.7)]"
-                    >
-                      {/* Shimmer effect */}
-                      <span
-                        aria-hidden
-                        className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 ease-out group-hover:translate-x-full"
-                      />
-                      <span className="relative">{t('nav.getStarted')}</span>
-                      <ArrowRight
-                        size={13}
-                        className={`relative transition-transform duration-300 ${
-                          isRtl
-                            ? 'rotate-180 group-hover:-translate-x-0.5'
-                            : 'group-hover:translate-x-0.5'
-                        }`}
-                      />
-                    </Link>
-                  </motion.div>
+                    {t('nav.getStarted')}
+                  </Link>
                 </>
               ) : null}
-
-              {/* Divider */}
-              <div className="mx-2 h-6 w-px bg-gray-200 dark:bg-white/10" />
-
-              {/* Utilities */}
-              <LanguageSwitcher
-                dropdownDirection="down"
-                buttonClassName="rounded-full bg-transparent border-0 hover:bg-gray-100 dark:hover:bg-white/[0.06] px-3 py-2"
-              />
-              <ThemeToggle
-                dropdownDirection="down"
-                iconSize={17}
-                className="h-9 w-9 rounded-full border-0 bg-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/[0.06] dark:hover:text-white"
-              />
-            </div>
-
-            {/* Mobile controls */}
-            <div className="relative z-[60] flex shrink-0 items-center gap-1 xs:gap-1.5 sm:gap-2 lg:hidden">
-              {/* Keep the globe on mobile: a bare "EN" chip reads as a label,
-                  not a control, and QA reported the homepage as having no
-                  language switcher at all (TC-036). */}
-              <LanguageSwitcher compact buttonClassName="min-h-9 px-2.5 xs:px-3 rounded-full text-sm" iconSize={15} />
-              <ThemeToggle
-                iconSize={17}
-                className="h-9 w-9 rounded-full border border-gray-200 bg-gray-50 text-gray-600 hover:text-mintcom-green dark:border-white/10 dark:bg-white/5 dark:text-gray-400 dark:hover:text-mintcom-green"
-              />
-              <motion.button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                aria-label={
-                  isMobileMenuOpen
-                    ? t('common.aria.closeMenu')
-                    : t('common.aria.openMenu')
-                }
-                aria-expanded={isMobileMenuOpen}
-                aria-controls="mobile-menu"
-                whileTap={{ scale: 0.9 }}
-                className="flex h-9 w-9 items-center justify-center rounded-full p-1.5 text-gray-900 transition-colors hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
-              >
-                <AnimatePresence mode="wait">
-                  {isMobileMenuOpen ? (
-                    <motion.div
-                      key="close"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <X size={22} />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="menu"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <Menu size={22} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.button>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Mobile menu — full screen overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, clipPath: 'circle(0% at calc(100% - 40px) 40px)' }}
-            animate={{ opacity: 1, clipPath: 'circle(150% at calc(100% - 40px) 40px)' }}
-            exit={{ opacity: 0, clipPath: 'circle(0% at calc(100% - 40px) 40px)' }}
-            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-            id="mobile-menu"
-            role="navigation"
-            aria-label={t('common.aria.mobileNav')}
-            className="fixed inset-0 z-40 bg-white dark:bg-[#050505] lg:hidden"
-          >
-            <div className="flex min-h-full flex-col items-center justify-center overflow-y-auto overscroll-contain px-5 pb-6 pt-28 sm:px-8" style={{ paddingTop: 'max(7rem, env(safe-area-inset-top))', paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
-              {/* Nav links */}
-              <div className="flex w-full max-w-sm flex-col items-stretch gap-2.5 sm:gap-4">
-                {!isAuthenticated && navLinks.map((link, index) => (
-                  <motion.div
-                    key={link.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 + index * 0.08, duration: 0.4, ease: 'easeOut' }}
-                  >
-                    <Link
-                      to={link.href}
-                      target={link.target}
-                      rel={link.rel}
-                      onClick={(e) => {
-                        setIsMobileMenuOpen(false);
-                        if (link.target === '_blank') {
-                          return;
-                        }
-                        if (
-                          link.href.startsWith('/#') &&
-                          window.location.pathname === '/'
-                        ) {
-                          const el = document.getElementById(link.href.slice(2));
-                          if (el) {
-                            e.preventDefault();
-                            el.scrollIntoView({ behavior: 'smooth' });
-                          }
-                        }
-                      }}
-                      className={`flex min-h-14 w-full items-center justify-between gap-3 rounded-xl px-4 py-3 font-barlow text-2xl font-black text-gray-900 transition-all active:scale-[0.98] dark:text-white sm:min-h-16 sm:text-3xl ${
-                        link.id === 'try-pos'
-                          ? 'bg-mintcom-green text-black shadow-xl shadow-mintcom-green/25 dark:text-black'
-                          : 'border border-gray-200 bg-gray-50 hover:border-mintcom-green/30 hover:text-mintcom-green dark:border-white/10 dark:bg-white/5'
-                      }`}
-                    >
-                      <span className="min-w-0 truncate">{link.name}</span>
-                      {link.id === 'try-pos' ? (
-                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black text-white">
-                          <Play size={17} fill="currentColor" />
-                        </span>
-                      ) : (
-                        <ArrowRight size={18} className={isRtl ? 'rotate-180' : ''} />
-                      )}
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Divider */}
-              {!isAuthenticated && (
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.35, duration: 0.4 }}
-                  className="my-5 h-px w-32 bg-gray-200 dark:bg-white/15 sm:my-7"
-                />
-              )}
-
-              {/* Action buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.4 }}
-                className="flex w-full max-w-xs flex-col gap-3"
-              >
-                {isAuthenticated ? (
-                  <>
-                    <Link
-                      to="/support"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex w-full items-center justify-center gap-3 rounded-2xl border border-gray-200 bg-white py-5 text-center text-lg font-black tracking-tight text-gray-900 shadow-sm transition-transform active:scale-95 dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white"
-                    >
-                      <Headset size={20} />
-                      {t('nav.support')}
-                    </Link>
-                    {needsOnboarding ? (
-                      <Link
-                        to={ONBOARDING_START_PATH}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-mintcom-green to-emerald-400 py-5 text-center text-lg font-black tracking-tight text-black shadow-xl shadow-mintcom-green/30 transition-transform hover:scale-[1.02] active:scale-95"
-                      >
-                        <img src={MintcomLeafIcon} alt="" style={{ width: 20, height: 20 }} className="scale-x-[-1] object-contain brightness-0" />
-                        {t('nav.continueOnboarding', { defaultValue: 'Continue Onboarding' })}
-                      </Link>
-                    ) : (
-                      <Link
-                        to="/owner"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-mintcom-green to-emerald-400 py-5 text-center text-lg font-black tracking-tight text-white shadow-xl shadow-mintcom-green/30 transition-transform hover:scale-[1.02] active:scale-95"
-                      >
-                        <User size={20} />
-                        {t('nav.dashboard', 'Dashboard')}
-                      </Link>
-                    )}
-                    <button
-                      onClick={() => {
-                        setIsMobileMenuOpen(false);
-                        handleLogout();
-                      }}
-                      className="flex w-full items-center justify-center gap-3 rounded-2xl bg-rose-50 py-5 text-center text-lg font-black tracking-tight text-rose-500 transition-colors hover:bg-rose-100 active:scale-95 dark:bg-rose-500/10 dark:hover:bg-rose-500/20"
-                    >
-                      <LogOut size={20} />
-                      {t('nav.logout')}
-                    </button>
-                  </>
-                ) : !hideCommercialLinks ? (
-                  <>
-                    <Link
-                      to="/login"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full rounded-2xl border-2 border-gray-900 py-4 text-center text-lg font-black tracking-tight text-gray-900 transition-all active:scale-95 dark:border-white dark:text-white"
-                    >
-                      {t('nav.login')}
-                    </Link>
-                    <Link
-                      to="/signup"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-mintcom-green py-4 text-center text-lg font-black tracking-tight text-black shadow-xl shadow-mintcom-green/30 transition-all active:scale-95"
-                    >
-                      {t('nav.getStarted')}
-                    </Link>
-                  </>
-                ) : null}
-              </motion.div>
             </div>
           </motion.div>
         )}
