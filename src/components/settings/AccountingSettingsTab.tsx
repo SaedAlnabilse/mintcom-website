@@ -21,6 +21,7 @@ import {
 import toast from 'react-hot-toast';
 import api, { extractErrorMessage } from '../../config/api';
 import { getAccountingRedirectUri } from '../../utils/accountingOAuth';
+import { ErrorBanner } from '../ui';
 
 interface AccountInfo {
   code: string;
@@ -608,7 +609,7 @@ export const AccountingSettingsTab: React.FC = () => {
           </div>
 
           {accountsError && (
-            <div className="mt-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 text-sm text-red-800 dark:text-red-300 flex items-start gap-3">
+            <ErrorBanner hideDot className="mt-6 !items-start !gap-3 text-red-800 dark:text-red-300 font-normal">
               <AlertTriangle size={18} className="shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="font-semibold">Couldn't load your {status.provider === 'XERO' ? 'Xero' : 'QuickBooks'} Chart of Accounts</p>
@@ -623,7 +624,7 @@ export const AccountingSettingsTab: React.FC = () => {
                   Retry loading accounts
                 </button>
               </div>
-            </div>
+            </ErrorBanner>
           )}
           {!accountsError && accounts.length === 0 && (
             <div className="mt-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 text-sm text-amber-800 dark:text-amber-300 flex items-start gap-3">

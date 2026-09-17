@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, MousePointerClick, CheckSquare, AlertCircle } from 'lucide-react';
+import { Trash2, MousePointerClick, CheckSquare, AlertCircle } from 'lucide-react';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, TextInput, Toggle, ErrorBanner } from '../ui';
 import { QuickInfo } from '../QuickInfo';
-import { useScrollLock } from '../../hooks/useScrollLock';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { TEXT_INPUT_LIMITS } from '../../config/textLimits';
 
@@ -37,8 +35,6 @@ export function AttributeFormModal({
     const [inputType, setInputType] = useState<'SINGLE_SELECT' | 'MULTI_SELECT'>('SINGLE_SELECT');
     const [isRequired, setIsRequired] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
-
-    useScrollLock(isOpen);
 
     useEffect(() => {
         if (isOpen) {
@@ -83,69 +79,34 @@ export function AttributeFormModal({
         await onSubmit(name, inputType, isRequired);
     };
 
-    if (!isOpen) return null;
+    return (
+        <Modal isOpen={isOpen} onClose={onClose} size="lg">
+            <ModalHeader
+                title={initialData ? t('attributes.editAttribute') : t('attributes.newAttribute')}
+                onClose={onClose}
+            />
 
-    return createPortal(
-        <AnimatePresence>
-            <div
-                dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-            >
-                <motion.div
-                    initial={{ opacity: 0, y: 100 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 100 }}
-                    transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                    className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-xl rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/5"
-                >
-                    {/* Mobile drag handle */}
-                    <div className="sm:hidden flex justify-center pt-2 pb-1">
-                        <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                    </div>
-
-                    {/* Header */}
-                    <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10">
-                        <div className="absolute top-0 right-0 w-48 h-48 bg-mintcom-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                                {initialData ? t('attributes.editAttribute') : t('attributes.newAttribute')}
-                            </h2>
-                        </div>
-                        <button
-                            onClick={onClose}
-                            className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
-                        >
-                            <X size={20} />
-                        </button>
-                    </div>
-
-                    <div className="overflow-y-auto p-6 sm:p-8 pt-8 sm:pt-10 custom-scrollbar flex-1 pb-safe">
-                        <form id="attribute-form" onSubmit={handleSubmit} className="space-y-8">
+            <ModalBody className="pt-8 sm:pt-10">
+                <form id="attribute-form" onSubmit={handleSubmit} className="space-y-8">
                             {/* Error Banner */}
                             {Object.keys(errors).length > 0 && (
-                                <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                                <ErrorBanner ref={errorBannerRef} className="animate-pulse">
                                     {t('common.validationError')}
-                                </div>
+                                </ErrorBanner>
                             )}
 
                             {/* Name */}
-                            <div className="space-y-2">
-                                <label className="label-strong block flex items-center gap-1">
-                                    {t('attributes.form.nameLabel')} <span className="text-mintcom-red">*</span>
-                                    <QuickInfo text={t('attributes.form.nameTip')} />
-                                </label>
-                                <input
-                                    name="attribute-name"
-                                    maxLength={TEXT_INPUT_LIMITS.ATTRIBUTE_NAME}
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                                    placeholder={formatInputPlaceholder(t('attributes.form.namePlaceholder'), t('common.locale'))}
-                                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
-                                />
-                                {errors.name && <p className="mt-1.5 px-1 text-xs font-medium text-mintcom-red">{errors.name}</p>}
-                            </div>
+                            <TextInput
+                                label={<>{t('attributes.form.nameLabel')} <QuickInfo text={t('attributes.form.nameTip')} /></>}
+                                required
+                                name="attribute-name"
+                                maxLength={TEXT_INPUT_LIMITS.ATTRIBUTE_NAME}
+                                type="text"
+                                value={name}
+                                onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
+                                placeholder={formatInputPlaceholder(t('attributes.form.namePlaceholder'), t('common.locale'))}
+                                error={errors.name}
+                            />
 
                             {/* Input Type Selection */}
                             <div className="space-y-2">
@@ -206,10 +167,11 @@ export function AttributeFormModal({
                                     <p className="text-sm font-medium text-gray-900 dark:text-white">{t('attributes.form.requiredLabel')}</p>
                                     <p className="text-xs font-bold text-gray-500 mt-0.5">{t('attributes.form.requiredDesc')}</p>
                                 </div>
-                                <label className="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" checked={isRequired} onChange={() => setIsRequired(!isRequired)} className="sr-only peer" />
-                                    <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-mintcom-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
-                                </label>
+                                <Toggle
+                                    size="lg"
+                                    checked={isRequired}
+                                    onChange={() => setIsRequired(!isRequired)}
+                                />
                             </div>
 
                             <div className="bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/10 rounded-xl p-4 flex gap-3">
@@ -223,44 +185,27 @@ export function AttributeFormModal({
                             </div>
 
                         </form>
-                    </div>
+            </ModalBody>
 
-                    {/* Footer */}
-                    <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-gray-50 dark:bg-black/20 transition-colors sticky bottom-0 pb-safe">
-                        {initialData && onDelete && (
-                            <button
-                                type="button"
-                                onClick={() => onDelete(initialData.id)}
-                                title={t('common.archive')}
-                                className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-mintcom-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90"
-                            >
-                                <Trash2 size={24} className="group-hover:scale-110 transition-transform" />
-                            </button>
-                        )}
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-barlow font-black text-xs tracking-widest hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
-                        >
-                            {t('common.cancel')}
-                        </button>
-                        <button
-                            type="submit"
-                            form="attribute-form"
-                            disabled={isSubmitting}
-                            className="flex-[2] h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
-                        >
-                            {isSubmitting ? (
-                                <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                            ) : (
-                                initialData ? t('common.save') : t('common.add')
-                            )}
-                        </button>
-                    </div>
-                </motion.div>
-            </div>
-        </AnimatePresence>,
-        document.body
+            <ModalFooter>
+                {initialData && onDelete && (
+                    <button
+                        type="button"
+                        onClick={() => onDelete(initialData.id)}
+                        title={t('common.archive')}
+                        className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-mintcom-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90 shrink-0"
+                    >
+                        <Trash2 size={24} className="group-hover:scale-110 transition-transform" />
+                    </button>
+                )}
+                <ModalCancelButton onClick={onClose}>
+                    {t('common.cancel')}
+                </ModalCancelButton>
+                <ModalSubmitButton form="attribute-form" loading={isSubmitting}>
+                    {initialData ? t('common.save') : t('common.add')}
+                </ModalSubmitButton>
+            </ModalFooter>
+        </Modal>
     );
 }
 

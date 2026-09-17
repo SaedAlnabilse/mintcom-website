@@ -1,546 +1,462 @@
-import { useMemo, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-  ArrowLeft,
   CheckCircle2,
   AlertTriangle,
   XCircle,
   UploadCloud,
   FileSpreadsheet,
-  Store,
-  ArrowRight,
+  Download,
+  FlaskConical,
+  Loader2,
   Pencil,
   Rocket,
+  Store,
 } from 'lucide-react';
+import { readSpreadsheet, dryRun, toCsv, type DryRunResult } from '../../utils/spreadsheetReader';
+import { SAMPLE_ROWS, MINTOM_TEMPLATE_HEADERS, type SourceId } from '../../utils/posImportMaps';
+import { runMigrationImport, type MigrationImportResult } from '../../services/migrationImporter';
+import { withExcelBom } from '../../utils/csvBom';
+import { ErrorBanner } from '../../components/ui';
 
-type SourceId = 'foodics' | 'loyverse' | 'square' | 'other';
-type Step = 'source' | 'wants' | 'upload' | 'result';
+type Phase = 'idle' | 'parsing' | 'preview' | 'importing' | 'done';
 
-interface SourceOption {
-  id: SourceId;
+const SOURCES: { id: SourceId; name: string }[] = [
+  { id: 'foodics', name: 'Foodics' },
+  { id: 'loyverse', name: 'Loyverse' },
+  { id: 'square', name: 'Square' },
+  { id: 'other', name: 'Other / Excel' },
+];
+
+const DRAFT_KEY = 'mintcom:migration:draft:v1';
+
+interface EditableRow {
+  key: number;
   name: string;
-  guide: string[];
+  price: string;
+  category: string;
+  sourceRowNum: number;
 }
-
-const SOURCES: SourceOption[] = [
-  {
-    id: 'foodics',
-    name: 'Foodics',
-    guide: [
-      'Open your Foodics dashboard',
-      'Go to Inventory > Products',
-      'Click Export, then upload that file here',
-    ],
-  },
-  {
-    id: 'loyverse',
-    name: 'Loyverse',
-    guide: [
-      'Open your Loyverse Back Office',
-      'Go to Items > Export',
-      'Download the CSV, then upload it here',
-    ],
-  },
-  {
-    id: 'square',
-    name: 'Square',
-    guide: [
-      'Open your Square Dashboard',
-      'Go to Items > Export Library',
-      'Download the CSV, then upload it here',
-    ],
-  },
-  {
-    id: 'other',
-    name: 'Other / Excel',
-    guide: [
-      'Open your current spreadsheet or export',
-      'Make sure it has columns for name and price',
-      'Upload the file here (.csv or .xlsx)',
-    ],
-  },
-];
-
-interface WantOption {
-  id: string;
-  label: string;
-  detail: string;
-  optional?: boolean;
-}
-
-const WANTS: WantOption[] = [
-  { id: 'menu', label: 'Menu', detail: 'Categories, items, prices' },
-  { id: 'modifiers', label: 'Modifiers / Add-ons', detail: 'Variants and extras' },
-  { id: 'customers', label: 'Customers + loyalty points', detail: 'Profiles and balances' },
-  { id: 'employees', label: 'Employees', detail: 'Names and roles' },
-  { id: 'sales', label: 'Sales history', detail: 'Optional - slower', optional: true },
-];
-
-interface ProblemRow {
-  id: string;
-  label: string;
-  action: string;
-  hint: string;
-  fixLabel: string;
-  fixPlaceholder: string;
-  fixDefault: string;
-}
-
-interface ResultData {
-  got: { label: string; value: string }[];
-  problems: ProblemRow[];
-  blocked: { label: string; value: string }[];
-}
-
-const MOCK_RESULT: ResultData = {
-  got: [
-    { label: 'Categories', value: '12' },
-    { label: 'Products (incl. prices, SKUs)', value: '148' },
-    { label: 'Modifiers', value: '24' },
-    { label: 'Customers', value: '312' },
-  ],
-  problems: [
-    { id: 'p1', label: 'Row 45: price is "Free"', action: 'Set to 0', hint: 'Mocked fix — nothing is saved.', fixLabel: 'Corrected price', fixPlaceholder: '0.00', fixDefault: '0' },
-    { id: 'p2', label: 'Row 72: duplicate "Cappuccino"', action: 'Keep both', hint: 'Mocked fix — nothing is saved.', fixLabel: 'Resolution', fixPlaceholder: 'Keep both', fixDefault: 'Keep both' },
-    { id: 'p3', label: '14 products without images', action: 'Add later', hint: 'Mocked fix — nothing is saved.', fixLabel: 'Note', fixPlaceholder: 'Add later', fixDefault: 'Add later' },
-  ],
-  blocked: [
-    { label: 'Employee passwords', value: 'We created temp PINs, staff reset on first login' },
-    { label: 'Old invoice numbers', value: 'ZATCA requires a new sequence' },
-  ],
-};
-
-const cardClass =
-  'rounded-2xl border border-cream-300 dark:border-white/10 bg-white dark:bg-dark-light p-6 shadow-sm';
-const primaryBtn =
-  'inline-flex items-center justify-center gap-2 rounded-xl bg-mintcom-green px-6 py-3 text-sm font-semibold text-black transition-all hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40';
-const ghostBtn =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-cream-300 dark:border-white/10 px-6 py-3 text-sm font-semibold text-text-primary dark:text-white transition-all hover:bg-cream-100 dark:hover:bg-white/5';
 
 export function MigrationPage() {
-  const [step, setStep] = useState<Step>('source');
-  const [source, setSource] = useState<SourceId | null>(null);
-  const [wants, setWants] = useState<string[]>(WANTS.filter((w) => !w.optional).map((w) => w.id));
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [dragging, setDragging] = useState(false);
-  const [expandedProblem, setExpandedProblem] = useState<string | null>(null);
-  const [fixValues, setFixValues] = useState<Record<string, string>>({});
-  const [fixedProblems, setFixedProblems] = useState<string[]>([]);
+  const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [phase, setPhase] = useState<Phase>('idle');
+  const [dragging, setDragging] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [sourceHint, setSourceHint] = useState<SourceId | null>(null);
+  const [dry, setDry] = useState<DryRunResult | null>(null);
+  const [fatal, setFatal] = useState<string | null>(null);
+  const [editRows, setEditRows] = useState<EditableRow[]>([]);
+  const [expanded, setExpanded] = useState<number | null>(null);
+  const [progress, setProgress] = useState({ done: 0, total: 0 });
+  const [result, setResult] = useState<MigrationImportResult | null>(null);
 
-  const activeSource = useMemo(() => SOURCES.find((s) => s.id === source) ?? null, [source]);
+  // Restore small drafts (<=500 rows) so a refresh mid-fix doesn't lose work.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const d = JSON.parse(raw) as { fileName: string; rows: EditableRow[] };
+      if (Array.isArray(d.rows) && d.rows.length > 0 && d.rows.length <= 500) {
+        setFileName(d.fileName);
+        setEditRows(d.rows);
+        setPhase('preview');
+      }
+    } catch { /* ignore corrupt draft */ }
+  }, []);
 
-  const toggleWant = (id: string) =>
-    setWants((prev) => (prev.includes(id) ? prev.filter((w) => w !== id) : [...prev, id]));
+  useEffect(() => {
+    try {
+      if (phase === 'preview' && editRows.length > 0 && editRows.length <= 500) {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({ fileName, rows: editRows }));
+      } else if (phase === 'done' || phase === 'idle') {
+        localStorage.removeItem(DRAFT_KEY);
+      }
+    } catch { /* quota — skip persisting */ }
+  }, [phase, editRows, fileName]);
 
-  const handleFile = (name: string) => {
-    setFileName(name);
-    setStep('result');
+  const validCount = editRows.length;
+  const invalidCount = useMemo(() => dry ? dry.stats.invalid : 0, [dry]);
+
+  const ingestFile = async (file: File) => {
+    setFatal(null);
+    setResult(null);
+    setPhase('parsing');
+    setFileName(file.name);
+    try {
+      const sheet = await readSpreadsheet(file);
+      const res = dryRun(sheet);
+      if (res.validRows.length === 0) {
+        setDry(res);
+        setEditRows([]);
+        setPhase('preview');
+        return;
+      }
+      setDry(res);
+      setEditRows(
+        res.validRows.map((r, i) => ({
+          key: i,
+          name: r.name,
+          price: r.price,
+          category: r.category,
+          sourceRowNum: r._rowNum,
+        })),
+      );
+      if (sourceHint === null) setSourceHint(res.detectedSource);
+      setPhase('preview');
+    } catch (e) {
+      setFatal(e instanceof Error ? e.message : 'Failed to read the file.');
+      setPhase('idle');
+    }
   };
 
-  const onDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) handleFile(file.name);
+  const useSampleFile = () => {
+    const headers = SAMPLE_ROWS[0];
+    const body = SAMPLE_ROWS.slice(1);
+    const blob = new Blob([withExcelBom(toCsv(headers, body))], { type: 'text/csv;charset=utf-8;' });
+    const file = new File([blob], 'mintcom_sample_foodics.csv', { type: 'text/csv' });
+    void ingestFile(file);
+  };
+
+  const downloadTemplate = () => {
+    const sample: string[][] = [
+      ['Cappuccino', '14.50', '', 'Hot Drinks', 'Classic Italian coffee', 'Size: Small | Medium +1.00', '', ''],
+      ['Iced Latte', '18.00', '', 'Cold Drinks', 'Chilled espresso', '', '', ''],
+    ];
+    const blob = new Blob([withExcelBom(toCsv(MINTOM_TEMPLATE_HEADERS, sample))], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mintcom_import_template.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadErrors = () => {
+    if (!dry) return;
+    const rows = dry.errors.map((e) => [e]);
+    const blob = new Blob([withExcelBom(toCsv(['Error'], rows))], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'migration_errors.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const updateRow = (key: number, patch: Partial<EditableRow>) =>
+    setEditRows((prev) => prev.map((r) => (r.key === key ? { ...r, ...patch } : null)).filter(Boolean) as EditableRow[]);
+
+  const removeRow = (key: number) => setEditRows((prev) => prev.filter((r) => r.key !== key));
+
+  const startImport = async () => {
+    if (editRows.length === 0) return;
+    setPhase('importing');
+    setProgress({ done: 0, total: editRows.length });
+    const payload = editRows.map((r, i) => ({
+      name: r.name.trim(),
+      price: r.price.trim(),
+      cost_price: '',
+      category: r.category.trim() || 'Uncategorized',
+      description: '',
+      addons: dry?.validRows[i]?.addons ?? '',
+      track_stock: 'false',
+      available_stock: '',
+      _rowNum: r.sourceRowNum,
+    }));
+    // Preserve addons/description from dry-run by matching on source row number
+    const byRow = new Map((dry?.validRows ?? []).map((v) => [v._rowNum, v]));
+    const full = payload.map((p) => {
+      const orig = byRow.get(p._rowNum);
+      return { ...p, addons: orig?.addons ?? '', description: orig?.description ?? '', cost_price: orig?.cost_price ?? '' };
+    });
+    const res = await runMigrationImport(full, (done, total) => setProgress({ done, total }));
+    setResult(res);
+    setPhase('done');
   };
 
   const reset = () => {
-    setStep('source');
-    setSource(null);
+    setPhase('idle');
+    setDry(null);
+    setEditRows([]);
     setFileName(null);
-    setExpandedProblem(null);
-    setFixValues({});
-    setFixedProblems([]);
+    setFatal(null);
+    setResult(null);
+    setProgress({ done: 0, total: 0 });
+    setSourceHint(null);
+    if (inputRef.current) inputRef.current.value = '';
   };
 
-  const applyFix = (id: string) => {
-    setFixedProblems((prev) => (prev.includes(id) ? prev : [...prev, id]));
-    setExpandedProblem(null);
-  };
-
-  const remainingProblems = MOCK_RESULT.problems.length - fixedProblems.length;
+  const pct = progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0;
 
   return (
-    <div className="space-y-6 sm:space-y-8 pb-10 font-sans">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-text-primary dark:text-white">
-          Switch from another POS
-        </h1>
+    <div className="space-y-6 pb-10 font-sans">
+      <div>
+        <h1 className="text-2xl font-bold text-text-primary dark:text-white">Switch from another POS</h1>
         <p className="mt-1 text-sm text-text-secondary">
-          Bring your menu, customers and staff across in a couple of minutes.
+          Drop your export below — we detect Foodics, Loyverse or Square automatically and import in seconds.
         </p>
       </div>
 
-      <Stepper current={step} source={source} />
-
-      <AnimatePresence mode="wait">
-        {step === 'source' && (
-          <StepShell key="source">
-            <h2 className="text-lg font-semibold text-text-primary dark:text-white">
-              Where are you coming from?
-            </h2>
-            <p className="mt-1 mb-5 text-sm text-text-secondary">
-              Pick your current system so we can read its export format.
-            </p>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {SOURCES.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => setSource(s.id)}
-                  className={`flex flex-col items-center gap-2 rounded-xl border p-4 text-sm font-semibold transition-all ${
-                    source === s.id
-                      ? 'border-mintcom-green bg-mintcom-green/10 text-text-primary dark:text-white'
-                      : 'border-cream-300 dark:border-white/10 text-text-secondary hover:border-mintcom-green/60'
-                  }`}
-                >
-                  <Store size={22} />
-                  {s.name}
-                </button>
-              ))}
-            </div>
-            <div className="mt-6 flex justify-end">
-              <button
-                className={primaryBtn}
-                disabled={!source}
-                onClick={() => setStep('wants')}
-              >
-                Continue <ArrowRight size={16} />
-              </button>
-            </div>
-          </StepShell>
-        )}
-
-        {step === 'wants' && (
-          <StepShell key="wants">
-            <h2 className="text-lg font-semibold text-text-primary dark:text-white">
-              What do you want to bring?
-            </h2>
-            <p className="mt-1 mb-5 text-sm text-text-secondary">
-              Everything is pre-selected. Just tap Next if you're happy.
-            </p>
-            <div className="space-y-2">
-              {WANTS.map((w) => {
-                const checked = wants.includes(w.id);
-                return (
-                  <button
-                    key={w.id}
-                    onClick={() => toggleWant(w.id)}
-                    className={`flex w-full items-center gap-3 rounded-xl border p-4 text-left transition-all ${
-                      checked
-                        ? 'border-mintcom-green bg-mintcom-green/5'
-                        : 'border-cream-300 dark:border-white/10'
-                    }`}
-                  >
-                    <span
-                      className={`flex h-5 w-5 items-center justify-center rounded-md border ${
-                        checked
-                          ? 'border-mintcom-green bg-mintcom-green text-black'
-                          : 'border-cream-400 dark:border-white/20'
-                      }`}
-                    >
-                      {checked && <CheckCircle2 size={14} />}
-                    </span>
-                    <span className="flex-1">
-                      <span className="block text-sm font-semibold text-text-primary dark:text-white">
-                        {w.label}
-                      </span>
-                      <span className="block text-xs text-text-tertiary">{w.detail}</span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            <div className="mt-6 flex justify-between">
-              <button className={ghostBtn} onClick={() => setStep('source')}>
-                <ArrowLeft size={16} /> Back
-              </button>
-              <button className={primaryBtn} onClick={() => setStep('upload')}>
-                Next <ArrowRight size={16} />
-              </button>
-            </div>
-          </StepShell>
-        )}
-
-        {step === 'upload' && (
-          <StepShell key="upload">
-            <h2 className="text-lg font-semibold text-text-primary dark:text-white">
-              Give us the file
-            </h2>
-            <p className="mt-1 mb-5 text-sm text-text-secondary">
-              Export from {activeSource?.name ?? 'your system'} and drop it below. Takes about 30
-              seconds.
-            </p>
-
-            {activeSource && (
-              <ol className="mb-5 space-y-1.5 rounded-xl bg-cream-100 p-4 text-sm text-text-secondary dark:bg-white/5">
-                {activeSource.guide.map((line, i) => (
-                  <li key={i} className="flex gap-2">
-                    <span className="font-semibold text-mintcom-green">{i + 1}.</span>
-                    {line}
-                  </li>
-                ))}
-              </ol>
-            )}
-
-            <div
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragging(true);
-              }}
-              onDragLeave={() => setDragging(false)}
-              onDrop={onDrop}
-              onClick={() => inputRef.current?.click()}
-              className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-10 text-center transition-all ${
-                dragging
-                  ? 'border-mintcom-green bg-mintcom-green/10'
-                  : 'border-cream-400 dark:border-white/15 hover:border-mintcom-green/60'
+      {/* ── 1. Single dropzone + source reassurance + quick actions ── */}
+      <div className="rounded-2xl border border-cream-300 dark:border-white/10 bg-white dark:bg-dark-light p-6 shadow-sm">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          {SOURCES.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => setSourceHint(s.id)}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+                (sourceHint ?? dry?.detectedSource) === s.id
+                  ? 'border-mintcom-green bg-mintcom-green/10 text-text-primary dark:text-white'
+                  : 'border-cream-300 dark:border-white/10 text-text-secondary hover:border-mintcom-green/60'
               }`}
             >
-              <UploadCloud size={36} className="text-mintcom-green" />
-              <div>
-                <p className="text-sm font-semibold text-text-primary dark:text-white">
-                  Drag your export file here
-                </p>
-                <p className="text-xs text-text-tertiary">.csv or .xlsx</p>
-              </div>
-              <input
-                ref={inputRef}
-                type="file"
-                accept=".csv,.xlsx"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleFile(file.name);
-                }}
-              />
-            </div>
-
-            <p className="mt-4 text-center text-xs text-text-tertiary">
-              Demo mode - no file is uploaded or stored.
-            </p>
-
-            <div className="mt-6 flex justify-between">
-              <button className={ghostBtn} onClick={() => setStep('wants')}>
-                <ArrowLeft size={16} /> Back
-              </button>
-            </div>
-          </StepShell>
-        )}
-
-        {step === 'result' && (
-          <StepShell key="result">
-            <div className="mb-5 flex items-center gap-2 text-sm text-text-secondary">
-              <FileSpreadsheet size={16} />
-              {fileName}
-            </div>
-
-            <ResultList
-              tone="ok"
-              title="Got it - ready"
-              icon={<CheckCircle2 size={18} />}
-              rows={MOCK_RESULT.got.map((g) => ({ id: g.label, label: g.label, trailing: g.value }))}
-            />
-
-            <div className="mb-4">
-              <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-amber-500">
-                <AlertTriangle size={18} />
-                Needs your check{remainingProblems > 0 ? ` (${remainingProblems} left)` : ' — all fixed'}
-              </div>
-              <div className="space-y-1.5">
-                {MOCK_RESULT.problems.map((p) => {
-                  const fixed = fixedProblems.includes(p.id);
-                  const expanded = expandedProblem === p.id;
-                  const value = fixValues[p.id] ?? p.fixDefault;
-                  return (
-                    <div
-                      key={p.id}
-                      className="rounded-lg border border-cream-200 bg-cream-50 px-4 py-2.5 text-sm dark:border-white/5 dark:bg-white/[0.02]"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="flex items-center gap-2 text-text-primary dark:text-white">
-                          {fixed && <CheckCircle2 size={14} className="text-mintcom-green" />}
-                          {p.label}
-                          {fixed && (
-                            <span className="rounded-full bg-mintcom-green/15 px-2 py-0.5 text-[11px] font-semibold text-mintcom-green">
-                              Fixed (mock)
-                            </span>
-                          )}
-                        </span>
-                        {!fixed && (
-                          <button
-                            onClick={() => setExpandedProblem(expanded ? null : p.id)}
-                            className="inline-flex items-center gap-1 rounded-lg border border-cream-300 px-3 py-1 text-xs font-semibold text-text-primary transition-all hover:bg-cream-200 dark:border-white/10 dark:text-white dark:hover:bg-white/10"
-                          >
-                            <Pencil size={12} /> {expanded ? 'Close' : p.action}
-                          </button>
-                        )}
-                      </div>
-                      <AnimatePresence initial={false}>
-                        {expanded && !fixed && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.18 }}
-                            className="overflow-hidden"
-                          >
-                            <div className="pt-3">
-                              <label className="mb-1 block text-xs font-semibold text-text-secondary">
-                                {p.fixLabel}
-                              </label>
-                              <div className="flex gap-2">
-                                <input
-                                  value={value}
-                                  onChange={(e) =>
-                                    setFixValues((prev) => ({ ...prev, [p.id]: e.target.value }))
-                                  }
-                                  placeholder={p.fixPlaceholder}
-                                  className="min-w-0 flex-1 rounded-lg border border-cream-300 bg-white px-3 py-2 text-sm text-text-primary outline-none focus:border-mintcom-green dark:border-white/10 dark:bg-white/5 dark:text-white"
-                                />
-                                <button
-                                  onClick={() => applyFix(p.id)}
-                                  className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-mintcom-green px-4 py-2 text-xs font-bold text-black hover:brightness-95"
-                                >
-                                  <CheckCircle2 size={13} /> Apply
-                                </button>
-                              </div>
-                              <p className="mt-1.5 text-[11px] text-text-tertiary">{p.hint}</p>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <ResultList
-              tone="no"
-              title="We cannot bring"
-              icon={<XCircle size={18} />}
-              rows={MOCK_RESULT.blocked.map((b) => ({
-                id: b.label,
-                label: b.label,
-                trailing: b.value,
-              }))}
-            />
-
-            <div className="mt-6 flex justify-between">
-              <button className={ghostBtn} onClick={reset}>
-                <ArrowLeft size={16} /> Start over
-              </button>
-              <button className={primaryBtn} onClick={reset}>
-                <Rocket size={16} /> Review &amp; Go Live
-              </button>
-            </div>
-          </StepShell>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-function StepShell({ children }: { children: React.ReactNode }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.18 }}
-      className={cardClass}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function Stepper({ current, source }: { current: Step; source: SourceId | null }) {
-  const steps: { id: Step; label: string }[] = [
-    { id: 'source', label: 'Source' },
-    { id: 'wants', label: 'Data' },
-    { id: 'upload', label: 'Upload' },
-    { id: 'result', label: 'Review' },
-  ];
-  const currentIndex = steps.findIndex((s) => s.id === current);
-  return (
-    <div className="mb-6 flex items-center gap-2">
-      {steps.map((s, i) => {
-        const done = i < currentIndex;
-        const active = i === currentIndex;
-        const label = s.id === 'source' && source ? 'Source' : s.label;
-        return (
-          <div key={s.id} className="flex flex-1 items-center gap-2">
-            <div
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                done || active
-                  ? 'bg-mintcom-green text-black'
-                  : 'bg-cream-200 text-text-tertiary dark:bg-white/10'
-              }`}
-            >
-              {done ? <CheckCircle2 size={14} /> : i + 1}
-            </div>
-            <span
-              className={`text-xs font-medium ${
-                active ? 'text-text-primary dark:text-white' : 'text-text-tertiary'
-              }`}
-            >
-              {label}
+              <Store size={13} /> {s.name}
+            </button>
+          ))}
+          {dry && (
+            <span className="text-xs text-text-tertiary">
+              Detected: <strong className="text-mintcom-green">{dry.detectedSource}</strong>
             </span>
-            {i < steps.length - 1 && (
-              <div
-                className={`h-px flex-1 ${done ? 'bg-mintcom-green' : 'bg-cream-300 dark:bg-white/10'}`}
-              />
-            )}
+          )}
+        </div>
+
+        <div
+          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragging(false);
+            const f = e.dataTransfer.files?.[0];
+            if (f) void ingestFile(f);
+          }}
+          onClick={() => inputRef.current?.click()}
+          className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-8 text-center transition-all ${
+            dragging ? 'border-mintcom-green bg-mintcom-green/10' : 'border-cream-400 dark:border-white/15 hover:border-mintcom-green/60'
+          }`}
+        >
+          {phase === 'parsing' ? (
+            <Loader2 size={32} className="animate-spin text-mintcom-green" />
+          ) : (
+            <UploadCloud size={32} className="text-mintcom-green" />
+          )}
+          <div>
+            <p className="text-sm font-semibold text-text-primary dark:text-white">
+              {phase === 'parsing' ? 'Reading your file…' : 'Drag your export file here, or click to browse'}
+            </p>
+            <p className="text-xs text-text-tertiary">.csv or .xlsx — up to 2,000 rows per import</p>
           </div>
-        );
-      })}
-    </div>
-  );
-}
+          <input
+            ref={inputRef}
+            type="file"
+            accept=".csv,.xlsx,.xls"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) void ingestFile(f);
+            }}
+          />
+        </div>
 
-function ResultList({
-  tone,
-  title,
-  icon,
-  rows,
-}: {
-  tone: 'ok' | 'warn' | 'no';
-  title: string;
-  icon: React.ReactNode;
-  rows: { id: string; label: string; trailing?: string; action?: string }[];
-}) {
-  const toneClasses = {
-    ok: 'text-mintcom-green',
-    warn: 'text-amber-500',
-    no: 'text-accent',
-  }[tone];
-
-  return (
-    <div className="mb-4">
-      <div className={`mb-2 flex items-center gap-2 text-sm font-semibold ${toneClasses}`}>
-        {icon}
-        {title}
-      </div>
-      <div className="space-y-1.5">
-        {rows.map((r) => (
-          <div
-            key={r.id}
-            className="flex items-center justify-between gap-3 rounded-lg border border-cream-200 bg-cream-50 px-4 py-2.5 text-sm dark:border-white/5 dark:bg-white/[0.02]"
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            onClick={downloadTemplate}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-cream-300 dark:border-white/10 px-4 py-2 text-xs font-semibold text-text-primary dark:text-white hover:bg-cream-100 dark:hover:bg-white/5"
           >
-            <span className="text-text-primary dark:text-white">{r.label}</span>
-            {r.trailing && (
-              <span className="font-semibold text-text-secondary">{r.trailing}</span>
-            )}
-            {r.action && (
-              <button className="inline-flex items-center gap-1 rounded-lg border border-cream-300 px-3 py-1 text-xs font-semibold text-text-primary transition-all hover:bg-cream-200 dark:border-white/10 dark:text-white dark:hover:bg-white/10">
-                <Pencil size={12} /> {r.action}
-              </button>
+            <Download size={13} /> Download template
+          </button>
+          <button
+            onClick={useSampleFile}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-mintcom-green/40 bg-mintcom-green/10 px-4 py-2 text-xs font-semibold text-text-primary dark:text-white hover:bg-mintcom-green/20"
+          >
+            <FlaskConical size={13} /> Try with sample file
+          </button>
+        </div>
+
+        {fatal && (
+          <ErrorBanner hideDot className="mt-3 !p-3 font-normal">
+            <XCircle size={16} /> {fatal}
+          </ErrorBanner>
+        )}
+      </div>
+
+      {/* ── 2. Preview + inline fixes ── */}
+      {(phase === 'preview' || phase === 'importing' || phase === 'done') && dry && (
+        <div className="rounded-2xl border border-cream-300 dark:border-white/10 bg-white dark:bg-dark-light p-6 shadow-sm">
+          <div className="mb-4 flex items-center gap-2 text-sm text-text-secondary">
+            <FileSpreadsheet size={16} /> {fileName}
+            <span className="rounded-full bg-mintcom-green/15 px-2 py-0.5 text-[11px] font-semibold text-mintcom-green">
+              {validCount} ready
+            </span>
+            {invalidCount > 0 && (
+              <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-semibold text-amber-600">
+                {invalidCount} need attention
+              </span>
             )}
           </div>
-        ))}
-      </div>
+
+          {dry.warnings.slice(0, 3).map((w, i) => (
+            <p key={i} className="mb-1 text-xs text-text-tertiary">• {w}</p>
+          ))}
+
+          {/* Valid rows — inline editable name/price/category */}
+          <div className="mb-2 mt-3 flex items-center gap-2 text-sm font-semibold text-mintcom-green">
+            <CheckCircle2 size={18} /> Ready to import ({validCount})
+          </div>
+          <div className="space-y-1.5">
+            {editRows.slice(0, 10).map((r) => {
+              const open = expanded === r.key;
+              return (
+                <div key={r.key} className="rounded-lg border border-cream-200 bg-cream-50 px-4 py-2.5 text-sm dark:border-white/5 dark:bg-white/[0.02]">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="min-w-0 flex-1 truncate text-text-primary dark:text-white">
+                      <strong>{r.name}</strong>
+                      <span className="text-text-tertiary"> · {r.category} · {r.price}</span>
+                    </span>
+                    <span className="flex shrink-0 gap-1.5">
+                      <button
+                        onClick={() => setExpanded(open ? null : r.key)}
+                        className="inline-flex items-center gap-1 rounded-lg border border-cream-300 px-3 py-1 text-xs font-semibold hover:bg-cream-200 dark:border-white/10 dark:hover:bg-white/10"
+                      >
+                        <Pencil size={12} /> {open ? 'Close' : 'Fix'}
+                      </button>
+                      <button
+                        onClick={() => removeRow(r.key)}
+                        className="rounded-lg border border-red-200 px-3 py-1 text-xs font-semibold text-red-500 hover:bg-red-50"
+                      >
+                        Skip
+                      </button>
+                    </span>
+                  </div>
+                  {open && (
+                    <div className="grid grid-cols-1 gap-2 pt-3 sm:grid-cols-3">
+                      <label className="text-xs">Name
+                        <input value={r.name} onChange={(e) => updateRow(r.key, { name: e.target.value })}
+                          className="mt-1 w-full rounded-lg border border-cream-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5" />
+                      </label>
+                      <label className="text-xs">Price
+                        <input value={r.price} onChange={(e) => updateRow(r.key, { price: e.target.value })}
+                          inputMode="decimal" placeholder="0.00"
+                          className="mt-1 w-full rounded-lg border border-cream-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5" />
+                      </label>
+                      <label className="text-xs">Category
+                        <input value={r.category} onChange={(e) => updateRow(r.key, { category: e.target.value })}
+                          className="mt-1 w-full rounded-lg border border-cream-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5" />
+                      </label>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            {editRows.length > 10 && (
+              <p className="text-center text-xs text-text-tertiary">…and {editRows.length - 10} more rows will be imported</p>
+            )}
+          </div>
+
+          {/* Fatal row errors */}
+          {dry.errors.length > 0 && (
+            <div className="mt-4">
+              <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-amber-500">
+                <AlertTriangle size={18} /> Couldn't read ({dry.errors.length})
+                <button onClick={downloadErrors} className="ml-auto text-xs underline">Download list</button>
+              </div>
+              <div className="max-h-32 space-y-1 overflow-y-auto">
+                {dry.errors.slice(0, 20).map((e, i) => (
+                  <p key={i} className="rounded-lg bg-amber-50 dark:bg-amber-900/10 px-3 py-1.5 text-xs text-amber-600 dark:text-amber-400">{e}</p>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Blocked-by-platform notice */}
+          <div className="mt-4">
+            <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-text-secondary">
+              <XCircle size={18} /> We can't bring automatically
+            </div>
+            <div className="space-y-1.5 text-sm">
+              <div className="flex justify-between gap-3 rounded-lg border border-cream-200 px-4 py-2.5 dark:border-white/5">
+                <span>Employee passwords</span>
+                <span className="text-right text-xs text-text-secondary">Temp PINs are created; staff reset on first login</span>
+              </div>
+              <div className="flex justify-between gap-3 rounded-lg border border-cream-200 px-4 py-2.5 dark:border-white/5">
+                <span>Old invoice numbers</span>
+                <span className="text-right text-xs text-text-secondary">ZATCA requires a new sequence</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Progress */}
+          {phase === 'importing' && (
+            <div className="mt-4">
+              <div className="mb-1 flex justify-between text-xs font-semibold">
+                <span>Importing… {progress.done}/{progress.total}</span>
+                <span>{pct}%</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-cream-200 dark:bg-white/10">
+                <div className="h-full bg-mintcom-green transition-all" style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+          )}
+
+          {/* Result */}
+          {phase === 'done' && result && (
+            <div className={`mt-4 rounded-xl border p-4 text-sm ${result.failed === 0 ? 'border-mintcom-green/30 bg-mintcom-green/10' : 'border-amber-300 bg-amber-50 dark:bg-amber-900/10'}`}>
+              <p className="font-bold">
+                Imported {result.success} products{result.failed > 0 && `, ${result.failed} skipped`}
+              </p>
+              {result.createdCategories.length > 0 && (
+                <p className="mt-1 text-xs">New categories: {result.createdCategories.join(', ')}</p>
+              )}
+              {result.createdAddons.length > 0 && (
+                <p className="mt-1 text-xs">New add-on groups: {result.createdAddons.join(', ')}</p>
+              )}
+              {result.errors.length > 0 && (
+                <ul className="mt-2 max-h-32 space-y-0.5 overflow-y-auto text-xs">
+                  {result.errors.slice(0, 20).map((e, i) => <li key={i}>• {e}</li>)}
+                </ul>
+              )}
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  onClick={() => navigate('/dashboard/products')}
+                  className="rounded-xl bg-mintcom-green px-5 py-2.5 text-sm font-bold text-black hover:brightness-95"
+                >
+                  Open Products
+                </button>
+                <button
+                  onClick={reset}
+                  className="rounded-xl border border-cream-300 px-5 py-2.5 text-sm font-semibold dark:border-white/10"
+                >
+                  Import another file
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Actions */}
+          {phase === 'preview' && (
+            <div className="mt-6 flex justify-between">
+              <button
+                onClick={reset}
+                className="rounded-xl border border-cream-300 dark:border-white/10 px-6 py-3 text-sm font-semibold hover:bg-cream-100 dark:hover:bg-white/5"
+              >
+                Start over
+              </button>
+              <button
+                onClick={startImport}
+                disabled={editRows.length === 0}
+                className="inline-flex items-center gap-2 rounded-xl bg-mintcom-green px-6 py-3 text-sm font-semibold text-black hover:brightness-95 disabled:opacity-40"
+              >
+                <Rocket size={16} /> Import {editRows.length} products
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

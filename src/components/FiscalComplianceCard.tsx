@@ -8,6 +8,7 @@ import {
 import toast from 'react-hot-toast';
 import api, { extractErrorMessage } from '../config/api';
 import { ConfirmModal } from './ConfirmModal';
+import { ModalCloseButton, Toggle } from './ui';
 import {
   getCountryConfig,
   listCountryConfigs,
@@ -825,10 +826,12 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                             {t('settings.fiscal.autoSubmitDesc', 'Report each sale to the tax authority automatically as it is completed.')}
                           </span>
                         </div>
-                        <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                          <input type="checkbox" checked={autoSubmit} onChange={e => setAutoSubmit(e.target.checked)} className="sr-only peer" />
-                          <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm" />
-                        </label>
+                        <Toggle
+                          size="sm"
+                          checked={autoSubmit}
+                          onChange={setAutoSubmit}
+                          className="shrink-0"
+                        />
                       </div>
                       <div className="flex items-center justify-between py-3">
                         <div className="pr-4">
@@ -839,10 +842,12 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                             {t('settings.fiscal.blockOnFailureDesc', 'Prevent completing a sale if it cannot be reported. Leave off to queue and retry instead.')}
                           </span>
                         </div>
-                        <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                          <input type="checkbox" checked={blockOnFailure} onChange={e => setBlockOnFailure(e.target.checked)} className="sr-only peer" />
-                          <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm" />
-                        </label>
+                        <Toggle
+                          size="sm"
+                          checked={blockOnFailure}
+                          onChange={setBlockOnFailure}
+                          className="shrink-0"
+                        />
                       </div>
                     </div>
                   )}
@@ -899,14 +904,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                     {countryConfig.flag} {countryConfig.name}
                   </p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => { setPickerOpen(false); setSearch(''); }}
-                  aria-label={t('common.close', 'Close')}
-                  className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
-                >
-                  <X size={18} />
-                </button>
+                <ModalCloseButton onClose={() => { setPickerOpen(false); setSearch(''); }} />
               </div>
 
               <div className="p-4 border-b border-gray-100 dark:border-white/5">

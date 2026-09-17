@@ -1,12 +1,11 @@
 import { useState, useRef, useCallback } from 'react';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
-    X, Upload, Download, FileSpreadsheet, AlertCircle, CheckCircle2,
-    Loader2, Trash2, FileWarning, ChevronDown, ChevronUp, Info
+    Upload, Download, FileSpreadsheet, AlertCircle, CheckCircle2,
+    Trash2, FileWarning, ChevronDown, ChevronUp, Info
 } from 'lucide-react';
-import { useScrollLock } from '../hooks/useScrollLock';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ErrorBanner } from './ui';
 import { withExcelBom } from '../utils/csvBom';
 
 // Types
@@ -123,7 +122,6 @@ export function CsvImportModal({
     maxRows = 500,
 }: CsvImportModalProps) {
     const { t } = useTranslation();
-    useScrollLock(isOpen);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [dragOver, setDragOver] = useState(false);
@@ -356,51 +354,17 @@ export function CsvImportModal({
         }
     };
 
-    if (!isOpen) return null;
+    return (
+        <Modal isOpen={isOpen} onClose={handleClose} size="xl">
+            <ModalHeader
+                title={title}
+                subtitle={description}
+                icon={<FileSpreadsheet size={24} />}
+                onClose={handleClose}
+            />
 
-    return createPortal(
-        <AnimatePresence>
-            <div
-                dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-                onClick={handleClose}
-            >
-                <motion.div
-                    initial={{ opacity: 0, y: 100 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 100 }}
-                    transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                    className="bg-white dark:bg-[#1E293B] w-full sm:w-[95vw] sm:max-w-3xl rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh] border border-gray-200 dark:border-white/5"
-                    onClick={e => e.stopPropagation()}
-                >
-                    {/* Mobile drag handle */}
-                    <div className="sm:hidden flex justify-center pt-3 pb-1">
-                        <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                    </div>
-
-                    {/* Header */}
-                    <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 dark:border-white/5">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center">
-                                <FileSpreadsheet size={20} className="text-mintcom-green" />
-                            </div>
-                            <div>
-                                <h2 className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h2>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{description}</p>
-                            </div>
-                        </div>
-                        <button
-                            onClick={handleClose}
-                            aria-label={t('common.close', { defaultValue: 'Close' })}
-                            className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
-                        >
-                            <X size={18} />
-                        </button>
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar">
-                        {/* Step 1: Upload */}
+            <ModalBody>
+                {/* Step 1: Upload */}
                         {step === 'upload' && (
                             <div className="space-y-5">
                                 {/* Download Sample Button */}
@@ -471,7 +435,7 @@ export function CsvImportModal({
 
                                 {/* Parse Errors */}
                                 {parseErrors.length > 0 && (
-                                    <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20">
+                                    <ErrorBanner hideDot className="block">
                                         <div className="flex items-center gap-2 mb-2">
                                             <FileWarning size={16} className="text-red-500" />
                                             <p className="text-sm font-bold text-red-600 dark:text-red-400">{t('csv.issuesFound')}</p>
@@ -484,7 +448,7 @@ export function CsvImportModal({
                                                 </li>
                                             ))}
                                         </ul>
-                                    </div>
+                                    </ErrorBanner>
                                 )}
                             </div>
                         )}
@@ -691,60 +655,39 @@ export function CsvImportModal({
                                 )}
                             </div>
                         )}
-                    </div>
+            </ModalBody>
 
-                    {/* Footer */}
-                    <div className="p-4 sm:p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 bg-gray-50 dark:bg-black/20">
-                        {step === 'upload' && (
-                            <button
-                                onClick={handleClose}
-                                className="flex-1 h-12 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 font-bold text-sm hover:text-gray-900 dark:hover:text-white transition-all"
-                            >
-                                {t('common.cancel')}
-                            </button>
-                        )}
+            <ModalFooter>
+                {step === 'upload' && (
+                    <ModalCancelButton onClick={handleClose}>
+                        {t('common.cancel')}
+                    </ModalCancelButton>
+                )}
 
-                        {step === 'preview' && (
-                            <>
-                                <button
-                                    onClick={resetState}
-                                    className="flex-1 h-12 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 font-bold text-sm hover:text-gray-900 dark:hover:text-white transition-all"
-                                >
-                                    {t('common.back')}
-                                </button>
-                                <button
-                                    onClick={handleImport}
-                                    disabled={isImporting || parsedData.length === 0}
-                                    className="flex-[2] h-12 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
-                                >
-                                    {isImporting ? (
-                                        <>
-                                            <Loader2 size={16} className="animate-spin" />
-                                            {t('csv.importing')}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Upload size={16} />
-                                            {t('csv.importRows', { count: parsedData.length })}
-                                        </>
-                                    )}
-                                </button>
-                            </>
-                        )}
+                {step === 'preview' && (
+                    <>
+                        <ModalCancelButton onClick={resetState}>
+                            {t('common.back')}
+                        </ModalCancelButton>
+                        <ModalSubmitButton
+                            type="button"
+                            onClick={handleImport}
+                            disabled={isImporting || parsedData.length === 0}
+                            loading={isImporting}
+                        >
+                            <Upload size={16} />
+                            {isImporting ? t('csv.importing') : t('csv.importRows', { count: parsedData.length })}
+                        </ModalSubmitButton>
+                    </>
+                )}
 
-                        {step === 'result' && (
-                            <button
-                                onClick={handleClose}
-                                className="flex-1 h-12 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] active:scale-[0.98] transition-all shadow-lg shadow-mintcom-green/20"
-                            >
-                                {t('common.done')}
-                            </button>
-                        )}
-                    </div>
-                </motion.div>
-            </div>
-        </AnimatePresence>,
-        document.body
+                {step === 'result' && (
+                    <ModalSubmitButton type="button" onClick={handleClose}>
+                        {t('common.done')}
+                    </ModalSubmitButton>
+                )}
+            </ModalFooter>
+        </Modal>
     );
 }
 

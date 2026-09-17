@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, Copy, Key, Shield, ShieldCheck, MonitorSmartphone, BookOpen, ArrowLeft } from 'lucide-react';
 import api, { extractErrorMessage } from '../../config/api';
 import { FiscalComplianceCard } from '../../components/FiscalComplianceCard';
+import { Toggle } from '../../components/ui';
 import { AccountingSettingsTab } from '../../components/settings/AccountingSettingsTab';
 import { SettingsOverviewHub } from '../../components/settings/SettingsOverviewHub';
 import toast from 'react-hot-toast';
@@ -1355,15 +1356,11 @@ export function SettingsPage() {
                         <span className="block text-xs font-bold text-gray-700 dark:text-gray-200">{t('settings.sales.serviceChargeTaxable', { defaultValue: 'Taxable Service Charge' })}</span>
                         <span className="block text-[10px] text-gray-400 mt-0.5">{t('settings.sales.serviceChargeTaxableDesc', { defaultValue: 'Apply sales tax to this service charge' })}</span>
                       </div>
-                      <label className={`relative inline-flex items-center ${serviceChargeEnabled ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
-                        <input
-                          type="checkbox"
-                          disabled={!serviceChargeEnabled}
-                          {...register('serviceChargeTaxable')}
-                          className="sr-only peer"
-                        />
-                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm peer-disabled:opacity-60"></div>
-                      </label>
+                      <Toggle
+                        size="sm"
+                        disabled={!serviceChargeEnabled}
+                        {...register('serviceChargeTaxable')}
+                      />
                     </div>
 
                     <div className="flex items-center justify-between py-3">
@@ -1371,15 +1368,11 @@ export function SettingsPage() {
                         <span className="block text-xs font-bold text-gray-700 dark:text-gray-200">{t('settings.sales.serviceChargeAutoApply', { defaultValue: 'Auto apply to orders' })}</span>
                         <span className="block text-[10px] text-gray-400 mt-0.5">{t('settings.sales.serviceChargeAutoApplyDesc', { defaultValue: 'Add charge to all new orders automatically' })}</span>
                       </div>
-                      <label className={`relative inline-flex items-center ${serviceChargeEnabled ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
-                        <input
-                          type="checkbox"
-                          disabled={!serviceChargeEnabled}
-                          {...register('serviceChargeAutoApply')}
-                          className="sr-only peer"
-                        />
-                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm peer-disabled:opacity-60"></div>
-                      </label>
+                      <Toggle
+                        size="sm"
+                        disabled={!serviceChargeEnabled}
+                        {...register('serviceChargeAutoApply')}
+                      />
                     </div>
 
                     <div className="flex items-center justify-between py-3">
@@ -1387,15 +1380,11 @@ export function SettingsPage() {
                         <span className="block text-xs font-bold text-gray-700 dark:text-gray-200">{t('settings.sales.serviceChargeOverride', { defaultValue: 'Allow cashier override' })}</span>
                         <span className="block text-[10px] text-gray-400 mt-0.5">{t('settings.sales.serviceChargeOverrideDesc', { defaultValue: 'Allow cashiers to remove or modify this charge' })}</span>
                       </div>
-                      <label className={`relative inline-flex items-center ${serviceChargeEnabled ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
-                        <input
-                          type="checkbox"
-                          disabled={!serviceChargeEnabled}
-                          {...register('serviceChargeAllowCashierOverride')}
-                          className="sr-only peer"
-                        />
-                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm peer-disabled:opacity-60"></div>
-                      </label>
+                      <Toggle
+                        size="sm"
+                        disabled={!serviceChargeEnabled}
+                        {...register('serviceChargeAllowCashierOverride')}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1513,10 +1502,11 @@ export function SettingsPage() {
                     <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showName')}</span>
                     <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showNameDesc')}</span>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                    <input type="checkbox" {...register('showRestaurantName')} className="sr-only peer" />
-                    <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                  </label>
+                  <Toggle
+                    size="sm"
+                    className="shrink-0"
+                    {...register('showRestaurantName')}
+                  />
                 </div>
                 <input
                   type="text"
@@ -1535,10 +1525,11 @@ export function SettingsPage() {
                     <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showTagline')}</span>
                     <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showTaglineDesc')}</span>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                    <input type="checkbox" {...register('showDescription')} className="sr-only peer" />
-                    <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                  </label>
+                  <Toggle
+                    size="sm"
+                    className="shrink-0"
+                    {...register('showDescription')}
+                  />
                 </div>
                 <input
                   type="text"
@@ -1559,10 +1550,11 @@ export function SettingsPage() {
                   <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showLogoDesc')}</span>
                   <p className="text-[10px] text-gray-400 font-bold mt-1.5">{t('settings.profile.logoGuidelines')}</p>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                  <input type="checkbox" {...register('showLogoOnReceipt')} className="sr-only peer" />
-                  <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                </label>
+                <Toggle
+                  size="sm"
+                  className="shrink-0"
+                  {...register('showLogoOnReceipt')}
+                />
               </div>
               <div className={`overflow-hidden transition-all duration-300 ${watch('showLogoOnReceipt') ? 'opacity-100' : 'opacity-50 pointer-events-none grayscale'}`}>
                 <div className="flex items-center gap-6 p-2">
@@ -1584,10 +1576,11 @@ export function SettingsPage() {
                   <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showAddress')}</span>
                   <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showAddressDesc')}</span>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                  <input type="checkbox" {...register('showAddress')} className="sr-only peer" />
-                  <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                </label>
+                <Toggle
+                  size="sm"
+                  className="shrink-0"
+                  {...register('showAddress')}
+                />
               </div>
               <input
                 type="text"
@@ -1606,10 +1599,11 @@ export function SettingsPage() {
                   <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showTaxId')}</span>
                   <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showTaxIdDesc')}</span>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                  <input type="checkbox" {...register('showTaxId')} className="sr-only peer" />
-                  <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                </label>
+                <Toggle
+                  size="sm"
+                  className="shrink-0"
+                  {...register('showTaxId')}
+                />
               </div>
               <input
                 type="text"
@@ -1634,10 +1628,11 @@ export function SettingsPage() {
                   <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.footerMessage')}</span>
                   <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.footerMessageDesc')}</span>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                  <input type="checkbox" {...register('showFarewellMessage')} className="sr-only peer" />
-                  <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                </label>
+                <Toggle
+                  size="sm"
+                  className="shrink-0"
+                  {...register('showFarewellMessage')}
+                />
               </div>
               <textarea
                 {...farewellMessageField}

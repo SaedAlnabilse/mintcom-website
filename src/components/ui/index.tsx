@@ -9,4 +9,5 @@ export * from './Badge';
 export * from './EmptyState';
 export * from './Card';
 export * from './TextInput';
-
+export * from './Toggle';
+export * from './ErrorBanner';

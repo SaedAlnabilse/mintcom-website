@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronDown, Check, Info } from 'lucide-react';
+import { ChevronDown, Check, Info } from 'lucide-react';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ErrorBanner } from './ui';
 import api from '../config/api';
 import { QuickInfo } from './QuickInfo';
 import {
@@ -10,7 +10,6 @@ import {
   BASIC_POS_ASSIGNABLE_PERMISSION_IDS,
   normalizePermissions,
 } from '../config/permissions';
-import { useScrollLock } from '../hooks/useScrollLock';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { formatInputPlaceholder, formatInputLabel } from '../utils/textCase';
@@ -251,10 +250,6 @@ export function CustomRoleFormModal({
   const [name, setName] = useState('');
   const [baseRole, setBaseRole] = useState<CustomRole['baseRole']>('USER');
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  useScrollLock(isOpen);
-
-  // Access Control State
   const [posAccess, setPosAccess] = useState(true);
   const [backofficeAccess, setBackofficeAccess] = useState(false);
 
@@ -465,363 +460,317 @@ export function CustomRoleFormModal({
     await onSubmit(payload);
   };
 
-  if (!isOpen) return null;
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <ModalHeader
+        title={initialData ? t('roles.editRole') : t('roles.newRole')}
+        subtitle={t('roles.permissions')}
+        onClose={onClose}
+      />
 
-  return createPortal(
-    <AnimatePresence>
-      <div
-        dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-        className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 100 }}
-          transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-          className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-xl rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col border border-gray-200 dark:border-white/10"
-        >
-          {/* Mobile drag handle */}
-          <div className="sm:hidden flex justify-center pt-3 pb-1">
-            <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-          </div>
+      <ModalBody className="px-4 sm:px-8 pt-0">
+        <form id="role-form" onSubmit={handleSubmit} className="space-y-8">
+          {errors.general && (
+            <ErrorBanner>
+              {errors.general}
+            </ErrorBanner>
+          )}
 
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 border-b border-gray-100 dark:border-white/5">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                {initialData ? t('roles.editRole') : t('roles.newRole')} | {t('roles.permissions')}
-              </h2>
+          {/* Role Setup Help Info */}
+          <div className="px-4 py-3.5 rounded-2xl bg-blue-50/50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/10 flex items-start gap-3">
+            <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <Info size={14} strokeWidth={2.5} />
             </div>
-            <button
-              onClick={onClose}
-              aria-label={t('common.close', { defaultValue: 'Close' })}
-              className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
-            >
-              <X size={18} />
-            </button>
+            <p className="text-xs sm:text-sm text-blue-700/80 dark:text-blue-300/80 font-medium leading-relaxed">
+              {t('roles.form.roleSetupHelp')}
+            </p>
           </div>
 
-          <div className="overflow-y-auto p-4 sm:p-8 pt-4 custom-scrollbar flex-1 pb-safe">
-            <form id="role-form" onSubmit={handleSubmit} className="space-y-8">
-              {errors.general && (
-                <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
-                  {errors.general}
-                </div>
-              )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Name Input */}
+            <div className="relative space-y-2">
+              <label className="label-strong block">{formatInputLabel(t('roles.form.roleNameLabel'), t('common.locale'))}</label>
+              <input maxLength={255}
+                type="text"
+                value={name}
+                onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
+                placeholder={formatInputPlaceholder(t('roles.form.roleNamePlaceholder'), t('common.locale'))}
+                className={`w-full bg-transparent border-b-2 ${errors.name ? 'border-mintcom-red' : 'border-gray-200 dark:border-gray-700'} py-2 text-lg font-bold text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:border-mintcom-green transition-colors`}
+              />
+              {errors.name && <p className="absolute -bottom-5 left-0 text-xs font-bold text-mintcom-red">{errors.name}</p>}
+            </div>
 
-              {/* Role Setup Help Info */}
-              <div className="px-4 py-3.5 rounded-2xl bg-blue-50/50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/10 flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Info size={14} strokeWidth={2.5} />
-                </div>
-                <p className="text-xs sm:text-sm text-blue-700/80 dark:text-blue-300/80 font-medium leading-relaxed">
-                  {t('roles.form.roleSetupHelp')}
-                </p>
+            {/* Base Role Selection */}
+            <div className="relative space-y-2">
+              <label className="label-strong block">{formatInputLabel(t('roles.form.baseRoleLabel'), t('common.locale'))}</label>
+              <select
+                value={baseRole}
+                onChange={(e) => setBaseRole(e.target.value as CustomRole['baseRole'])}
+                className="w-full bg-transparent border-b-2 border-gray-200 dark:border-gray-700 py-2 text-lg font-bold text-gray-900 dark:text-white focus:outline-none focus:border-mintcom-green transition-colors appearance-none cursor-pointer"
+              >
+                <option value="USER" className="dark:bg-[#1E293B]">{t('staff.roles.user')}</option>
+                <option value="CASHIER" className="dark:bg-[#1E293B]">{t('staff.roles.cashier')}</option>
+                <option value="MANAGER" className="dark:bg-[#1E293B]">{t('staff.roles.manager')}</option>
+              </select>
+              <div className={`absolute bottom-3 ${t('common.locale') === 'ar' ? 'left-2' : 'right-2'} pointer-events-none text-gray-400`}>
+                <ChevronDown size={20} />
               </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Name Input */}
-                <div className="relative space-y-2">
-                  <label className="label-strong block">{formatInputLabel(t('roles.form.roleNameLabel'), t('common.locale'))}</label>
-                  <input maxLength={255}
-                    type="text"
-                    value={name}
-                    onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                    placeholder={formatInputPlaceholder(t('roles.form.roleNamePlaceholder'), t('common.locale'))}
-                    className={`w-full bg-transparent border-b-2 ${errors.name ? 'border-mintcom-red' : 'border-gray-200 dark:border-gray-700'} py-2 text-lg font-bold text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:border-mintcom-green transition-colors`}
-                  />
-                  {errors.name && <p className="absolute -bottom-5 left-0 text-xs font-bold text-mintcom-red">{errors.name}</p>}
-                </div>
+            </div>
+          </div>
 
-                {/* Base Role Selection */}
-                <div className="relative space-y-2">
-                  <label className="label-strong block">{formatInputLabel(t('roles.form.baseRoleLabel'), t('common.locale'))}</label>
-                  <select
-                    value={baseRole}
-                    onChange={(e) => setBaseRole(e.target.value as CustomRole['baseRole'])}
-                    className="w-full bg-transparent border-b-2 border-gray-200 dark:border-gray-700 py-2 text-lg font-bold text-gray-900 dark:text-white focus:outline-none focus:border-mintcom-green transition-colors appearance-none cursor-pointer"
-                  >
-                    <option value="USER" className="dark:bg-[#1E293B]">{t('staff.roles.user')}</option>
-                    <option value="CASHIER" className="dark:bg-[#1E293B]">{t('staff.roles.cashier')}</option>
-                    <option value="MANAGER" className="dark:bg-[#1E293B]">{t('staff.roles.manager')}</option>
-                  </select>
-                  <div className={`absolute bottom-3 ${t('common.locale') === 'ar' ? 'left-2' : 'right-2'} pointer-events-none text-gray-400`}>
-                    <ChevronDown size={20} />
-                  </div>
-                </div>
+          {/* POS Section */}
+          <div className="rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300">
+            <div
+              className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-100/50 dark:hover:bg-white/[0.02]"
+              onClick={() => setPosAccess(!posAccess)}
+            >
+              <div className="flex flex-col">
+                <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                  {t('roles.pos.title')}
+                  <QuickInfo text={t('roles.pos.defaultSalesInfo', { defaultValue: 'Sales screen access is included by default when this section is enabled.' })} />
+                </h3>
+                <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">{t('roles.pos.description')}</p>
               </div>
+              <button
+                type="button"
+                className={`w-14 h-8 rounded-full transition-all duration-300 relative ${posAccess ? 'bg-mintcom-green shadow-inner' : 'bg-gray-300 dark:bg-gray-600'}`}
+              >
+                <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-sm transition-all duration-300 ${posAccess ? 'left-[calc(100%-1.75rem)]' : 'left-1'}`} />
+              </button>
+            </div>
 
-              {/* POS Section */}
-              <div className="rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300">
-                <div
-                  className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-100/50 dark:hover:bg-white/[0.02]"
-                  onClick={() => setPosAccess(!posAccess)}
+            <AnimatePresence>
+              {posAccess && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="border-t border-gray-200 dark:border-white/10"
                 >
-                  <div className="flex flex-col">
-                    <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-1">
-                      {t('roles.pos.title')}
-                      <QuickInfo text={t('roles.pos.defaultSalesInfo', { defaultValue: 'Sales screen access is included by default when this section is enabled.' })} />
-                    </h3>
-                    <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">{t('roles.pos.description')}</p>
-                  </div>
-                  <button
-                    type="button"
-                    className={`w-14 h-8 rounded-full transition-all duration-300 relative ${posAccess ? 'bg-mintcom-green shadow-inner' : 'bg-gray-300 dark:bg-gray-600'}`}
-                  >
-                    <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-sm transition-all duration-300 ${posAccess ? 'left-[calc(100%-1.75rem)]' : 'left-1'}`} />
-                  </button>
-                </div>
-
-                <AnimatePresence>
-                  {posAccess && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-gray-200 dark:border-white/10"
-                    >
-                      <div className="p-5 space-y-6">
-                        {/* POS Defaults Info */}
-                        <div className="p-3.5 sm:p-4 rounded-2xl bg-mintcom-green/5 border border-mintcom-green/15 flex items-start gap-3">
-                          <div className="w-6 h-6 rounded-full bg-mintcom-green/10 text-mintcom-green flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <Check size={14} strokeWidth={2.5} />
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold text-mintcom-green mb-1">{t('roles.form.includedByDefault')}</p>
-                            <p className="text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
-                              {t('roles.pos.includedDefaults')}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* POS Permissions List */}
-                        <div className="space-y-3">
-                          {POS_PERMISSIONS.map(perm => (
-                            <div
-                              key={perm.id}
-                              className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                              onClick={() => togglePermission(perm.id)}
-                            >
-                              <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${permissions.includes(perm.id)
-                                ? 'bg-mintcom-green border-mintcom-green shadow-sm'
-                                : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
-                                }`}>
-                                {permissions.includes(perm.id) && <Check size={14} className="text-white" />}
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
-                                {perm.description && 
-                                 perm.description.toLowerCase().trim() !== perm.label.toLowerCase().trim() && 
-                                 perm.description.toLowerCase().replace(/[^a-z0-9]/g, '') !== perm.label.toLowerCase().replace(/[^a-z0-9]/g, '') && (
-                                  <QuickInfo text={perm.description} />
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Discounts Section */}
-                        {permissions.includes('discounts') && (
-                          <div className="pt-4 border-t border-gray-200 dark:border-white/10" ref={discountsContainerRef}>
-                            <div
-                              className="flex items-center justify-between py-2 cursor-pointer group"
-                              onClick={() => setShowDiscountsDropdown(!showDiscountsDropdown)}
-                            >
-                              <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">{t('roles.form.allowedDiscounts')}</p>
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs font-medium text-gray-500 bg-white dark:bg-white/5 px-2 py-1 rounded-md border border-gray-200 dark:border-white/10">
-                                  {allDiscountsSelected ? t('roles.form.allAllowed') : t('roles.form.selectedCount', { count: allowedDiscounts.length })}
-                                </span>
-                                <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${showDiscountsDropdown ? 'rotate-180' : ''} ${t('common.locale') === 'ar' ? 'mr-auto' : ''}`} />
-                              </div>
-                            </div>
-
-                            <AnimatePresence>
-                              {showDiscountsDropdown && (
-                                <motion.div
-                                  initial={{ height: 0, opacity: 0 }}
-                                  animate={{ height: 'auto', opacity: 1 }}
-                                  exit={{ height: 0, opacity: 0 }}
-                                  className="space-y-2 pt-3 overflow-hidden"
-                                >
-                                  <div
-                                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                                    onClick={() => {
-                                      setAllDiscountsSelected(!allDiscountsSelected);
-                                      if (!allDiscountsSelected) setAllowedDiscounts([]);
-                                    }}
-                                  >
-                                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${allDiscountsSelected
-                                      ? 'bg-mintcom-green border-mintcom-green shadow-sm'
-                                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
-                                      }`}>
-                                      {allDiscountsSelected && <Check size={14} className="text-white" />}
-                                    </div>
-                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('roles.form.allowAllDiscounts')}</p>
-                                  </div>
-
-                                  {!allDiscountsSelected && availableDiscounts.map(discount => (
-                                    <div
-                                      key={discount.id}
-                                      className="flex items-start gap-3 pl-4 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                                      onClick={() => toggleDiscount(discount.id)}
-                                    >
-                                      <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${allowedDiscounts.includes(discount.id)
-                                        ? 'bg-mintcom-green border-mintcom-green shadow-sm'
-                                        : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
-                                        }`}>
-                                        {allowedDiscounts.includes(discount.id) && <Check size={14} className="text-white" />}
-                                      </div>
-                                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                                        {discount.name} ({discount.percentage.toLocaleString(t('common.locale'))}%)
-                                      </p>
-                                    </div>
-                                  ))}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        )}
+                  <div className="p-5 space-y-6">
+                    {/* POS Defaults Info */}
+                    <div className="p-3.5 sm:p-4 rounded-2xl bg-mintcom-green/5 border border-mintcom-green/15 flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-mintcom-green/10 text-mintcom-green flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Check size={14} strokeWidth={2.5} />
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                      <div>
+                        <p className="text-sm font-bold text-mintcom-green mb-1">{t('roles.form.includedByDefault')}</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
+                          {t('roles.pos.includedDefaults')}
+                        </p>
+                      </div>
+                    </div>
 
-              {/* Back Office Section */}
-              <div className="rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300">
-                <div
-                  className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-100/50 dark:hover:bg-white/[0.02]"
-                  onClick={() =>
-                    setBackofficeAccess((prev) => {
-                      const next = !prev;
-                      if (next) {
-                        setBackofficePermissions((current) =>
-                          buildEffectiveBackofficePermissions(current, true),
-                        );
-                      }
-                      return next;
-                    })
-                  }
-                >
-                  <div className="flex flex-col">
-                    <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-1">
-                      {t('roles.backoffice.title')}
-                      <QuickInfo text="Basic sales operations are included by default with back office access." />
-                    </h3>
-                    <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">{t('roles.backoffice.description')}</p>
-                  </div>
-                  <button
-                    type="button"
-                    className={`w-14 h-8 rounded-full transition-all duration-300 relative ${backofficeAccess ? 'bg-mintcom-green shadow-inner' : 'bg-gray-300 dark:bg-gray-600'}`}
-                  >
-                    <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-sm transition-all duration-300 ${backofficeAccess ? 'left-[calc(100%-1.75rem)]' : 'left-1'}`} />
-                  </button>
-                </div>
-
-                <AnimatePresence>
-                  {backofficeAccess && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-gray-200 dark:border-white/10"
-                    >
-                      <div className="p-5 space-y-3">
-                        {/* Backoffice Defaults Info */}
-                        <div className="p-3.5 sm:p-4 rounded-2xl bg-mintcom-green/5 border border-mintcom-green/15 flex items-start gap-3 mb-4">
-                          <div className="w-6 h-6 rounded-full bg-mintcom-green/10 text-mintcom-green flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <Check size={14} strokeWidth={2.5} />
+                    {/* POS Permissions List */}
+                    <div className="space-y-3">
+                      {POS_PERMISSIONS.map(perm => (
+                        <div
+                          key={perm.id}
+                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                          onClick={() => togglePermission(perm.id)}
+                        >
+                          <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${permissions.includes(perm.id)
+                            ? 'bg-mintcom-green border-mintcom-green shadow-sm'
+                            : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                            }`}>
+                            {permissions.includes(perm.id) && <Check size={14} className="text-white" />}
                           </div>
-                          <div>
-                            <p className="text-sm font-bold text-mintcom-green mb-1">{t('roles.form.includedByDefault')}</p>
-                            <p className="text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
-                              {t('roles.backoffice.includedDefaults')}
-                            </p>
-                          </div>
-                        </div>
-
-                        {BACKOFFICE_PERMISSIONS.map(perm => (
-                          <div key={perm.id}>
-                            <div
-                              className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                              onClick={() => toggleBackofficePermission(perm.id)}
-                            >
-                              <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(perm.id)
-                                ? 'bg-mintcom-green border-mintcom-green shadow-sm'
-                                : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
-                                }`}>
-                                {backofficePermissions.includes(perm.id) && <Check size={14} className="text-white" />}
-                              </div>
-                              <div>
-                                <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
-                              </div>
-                            </div>
-
-                            {/* Settings Sub-permissions */}
-                            {perm.id === 'manage_settings' && backofficePermissions.includes('manage_settings') && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                className="ml-8 mt-2 space-y-2 border-l-2 border-mintcom-green/20 pl-4 mb-4"
-                              >
-                                {SETTINGS_SUB_PERMISSIONS.map(sub => (
-                                  <div
-                                    key={sub.id}
-                                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                                    onClick={() => toggleBackofficePermission(sub.id)}
-                                  >
-                                    <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(sub.id)
-                                      ? 'bg-mintcom-green border-mintcom-green shadow-sm'
-                                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
-                                      }`}>
-                                      {backofficePermissions.includes(sub.id) && <Check size={12} className="text-white" />}
-                                    </div>
-                                    <div>
-                                      <p className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-none">{sub.label}</p>
-                                    </div>
-                                  </div>
-                                ))}
-                              </motion.div>
+                          <div className="flex items-center gap-1">
+                            <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
+                            {perm.description &&
+                              perm.description.toLowerCase().trim() !== perm.label.toLowerCase().trim() &&
+                              perm.description.toLowerCase().replace(/[^a-z0-9]/g, '') !== perm.label.toLowerCase().replace(/[^a-z0-9]/g, '') && (
+                              <QuickInfo text={perm.description} />
                             )}
                           </div>
-                        ))}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Discounts Section */}
+                    {permissions.includes('discounts') && (
+                      <div className="pt-4 border-t border-gray-200 dark:border-white/10" ref={discountsContainerRef}>
+                        <div
+                          className="flex items-center justify-between py-2 cursor-pointer group"
+                          onClick={() => setShowDiscountsDropdown(!showDiscountsDropdown)}
+                        >
+                          <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">{t('roles.form.allowedDiscounts')}</p>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-medium text-gray-500 bg-white dark:bg-white/5 px-2 py-1 rounded-md border border-gray-200 dark:border-white/10">
+                              {allDiscountsSelected ? t('roles.form.allAllowed') : t('roles.form.selectedCount', { count: allowedDiscounts.length })}
+                            </span>
+                            <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${showDiscountsDropdown ? 'rotate-180' : ''} ${t('common.locale') === 'ar' ? 'mr-auto' : ''}`} />
+                          </div>
+                        </div>
+
+                        <AnimatePresence>
+                          {showDiscountsDropdown && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="space-y-2 pt-3 overflow-hidden"
+                            >
+                              <div
+                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                                onClick={() => {
+                                  setAllDiscountsSelected(!allDiscountsSelected);
+                                  if (!allDiscountsSelected) setAllowedDiscounts([]);
+                                }}
+                              >
+                                <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${allDiscountsSelected
+                                  ? 'bg-mintcom-green border-mintcom-green shadow-sm'
+                                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                  }`}>
+                                  {allDiscountsSelected && <Check size={14} className="text-white" />}
+                                </div>
+                                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('roles.form.allowAllDiscounts')}</p>
+                              </div>
+
+                              {!allDiscountsSelected && availableDiscounts.map(discount => (
+                                <div
+                                  key={discount.id}
+                                  className="flex items-start gap-3 pl-4 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                                  onClick={() => toggleDiscount(discount.id)}
+                                >
+                                  <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${allowedDiscounts.includes(discount.id)
+                                    ? 'bg-mintcom-green border-mintcom-green shadow-sm'
+                                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                    }`}>
+                                    {allowedDiscounts.includes(discount.id) && <Check size={14} className="text-white" />}
+                                  </div>
+                                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    {discount.name} ({discount.percentage.toLocaleString(t('common.locale'))}%)
+                                  </p>
+                                </div>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-            </form>
-          </div>
-
-          {/* Footer */}
-          <div className="p-4 sm:p-8 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-white dark:bg-[#1E293B] sticky bottom-0 pb-safe">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 h-12 sm:h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-black text-xs tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
-            >
-              {t('common.cancel')}
-            </button>
-            <button
-              type="submit"
-              form="role-form"
-              disabled={isSubmitting}
-              className="flex-1 h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-mintcom-green/20 disabled:opacity-50 flex items-center justify-center"
-            >
-              {isSubmitting ? (
-                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-              ) : (
-                initialData ? t('common.saveChanges') : t('roles.createRole')
+                    )}
+                  </div>
+                </motion.div>
               )}
-            </button>
+            </AnimatePresence>
           </div>
-        </motion.div>
-      </div>
-    </AnimatePresence>,
-    document.body
+
+          {/* Back Office Section */}
+          <div className="rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300">
+            <div
+              className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-100/50 dark:hover:bg-white/[0.02]"
+              onClick={() =>
+                setBackofficeAccess((prev) => {
+                  const next = !prev;
+                  if (next) {
+                    setBackofficePermissions((current) =>
+                      buildEffectiveBackofficePermissions(current, true),
+                    );
+                  }
+                  return next;
+                })
+              }
+            >
+              <div className="flex flex-col">
+                <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                  {t('roles.backoffice.title')}
+                  <QuickInfo text="Basic sales operations are included by default with back office access." />
+                </h3>
+                <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">{t('roles.backoffice.description')}</p>
+              </div>
+              <button
+                type="button"
+                className={`w-14 h-8 rounded-full transition-all duration-300 relative ${backofficeAccess ? 'bg-mintcom-green shadow-inner' : 'bg-gray-300 dark:bg-gray-600'}`}
+              >
+                <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-sm transition-all duration-300 ${backofficeAccess ? 'left-[calc(100%-1.75rem)]' : 'left-1'}`} />
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {backofficeAccess && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="border-t border-gray-200 dark:border-white/10"
+                >
+                  <div className="p-5 space-y-3">
+                    {/* Backoffice Defaults Info */}
+                    <div className="p-3.5 sm:p-4 rounded-2xl bg-mintcom-green/5 border border-mintcom-green/15 flex items-start gap-3 mb-4">
+                      <div className="w-6 h-6 rounded-full bg-mintcom-green/10 text-mintcom-green flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Check size={14} strokeWidth={2.5} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-mintcom-green mb-1">{t('roles.form.includedByDefault')}</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
+                          {t('roles.backoffice.includedDefaults')}
+                        </p>
+                      </div>
+                    </div>
+
+                    {BACKOFFICE_PERMISSIONS.map(perm => (
+                      <div key={perm.id}>
+                        <div
+                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                          onClick={() => toggleBackofficePermission(perm.id)}
+                        >
+                          <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(perm.id)
+                            ? 'bg-mintcom-green border-mintcom-green shadow-sm'
+                            : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                            }`}>
+                            {backofficePermissions.includes(perm.id) && <Check size={14} className="text-white" />}
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
+                          </div>
+                        </div>
+
+                        {/* Settings Sub-permissions */}
+                        {perm.id === 'manage_settings' && backofficePermissions.includes('manage_settings') && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            className="ml-8 mt-2 space-y-2 border-l-2 border-mintcom-green/20 pl-4 mb-4"
+                          >
+                            {SETTINGS_SUB_PERMISSIONS.map(sub => (
+                              <div
+                                key={sub.id}
+                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                                onClick={() => toggleBackofficePermission(sub.id)}
+                              >
+                                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(sub.id)
+                                  ? 'bg-mintcom-green border-mintcom-green shadow-sm'
+                                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                  }`}>
+                                  {backofficePermissions.includes(sub.id) && <Check size={12} className="text-white" />}
+                                </div>
+                                <div>
+                                  <p className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-none">{sub.label}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+        </form>
+      </ModalBody>
+
+      <ModalFooter>
+        <ModalCancelButton onClick={onClose}>
+          {t('common.cancel')}
+        </ModalCancelButton>
+        <ModalSubmitButton form="role-form" loading={isSubmitting}>
+          {initialData ? t('common.saveChanges') : t('roles.createRole')}
+        </ModalSubmitButton>
+      </ModalFooter>
+    </Modal>
   );
 }
 

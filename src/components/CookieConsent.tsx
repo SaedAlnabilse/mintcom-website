@@ -4,6 +4,7 @@ import { X, ChevronDown, ChevronRight, Check, Shield, BarChart3, Globe, Cookie }
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { updateConsentState } from '../utils/analytics';
+import { Toggle } from './ui';
 
 interface CookiePreferences {
   essential: boolean;
@@ -253,15 +254,11 @@ export function CookieConsent() {
                         {expandedSection === 'analytics' ? <ChevronDown size={18} className="text-gray-400" /> : <ChevronRight size={18} className="text-gray-400" />}
                       </button>
 
-                      <label className="relative inline-flex items-center cursor-pointer ml-4">
-                        <input
-                          type="checkbox"
-                          checked={preferences.analytics}
-                          onChange={() => togglePreference('analytics')}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm transition-colors"></div>
-                      </label>
+                      <Toggle
+                        checked={preferences.analytics}
+                        onChange={() => togglePreference('analytics')}
+                        className="ml-4"
+                      />
                     </div>
                     <AnimatePresence>
                       {expandedSection === 'analytics' && (
@@ -293,15 +290,11 @@ export function CookieConsent() {
                         {expandedSection === 'marketing' ? <ChevronDown size={18} className="text-gray-400" /> : <ChevronRight size={18} className="text-gray-400" />}
                       </button>
 
-                      <label className="relative inline-flex items-center cursor-pointer ml-4">
-                        <input
-                          type="checkbox"
-                          checked={preferences.marketing}
-                          onChange={() => togglePreference('marketing')}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm transition-colors"></div>
-                      </label>
+                      <Toggle
+                        checked={preferences.marketing}
+                        onChange={() => togglePreference('marketing')}
+                        className="ml-4"
+                      />
                     </div>
                     <AnimatePresence>
                       {expandedSection === 'marketing' && (

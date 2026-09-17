@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation, Trans } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Eye, EyeOff, ChevronDown, Check, MapPin, Globe, Plus } from 'lucide-react';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ErrorBanner } from '../ui';
 import api from '../../config/api';
 import {
   POS_PERMISSIONS as CANONICAL_POS_PERMISSIONS,
@@ -11,7 +11,6 @@ import {
   normalizePermissions,
 } from '../../config/permissions';
 import { useAuth } from '../../context/AuthContext';
-import { useScrollLock } from '../../hooks/useScrollLock';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { CustomRoleFormModal } from '../CustomRoleFormModal';
 
@@ -238,8 +237,6 @@ export function EmployeeFormModal({
         description: t(`staff.permissions.descriptions.${id}`, { defaultValue: description }),
       }));
   }, [t]);
-
-  useScrollLock(isOpen);
 
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
@@ -1697,54 +1694,26 @@ export function EmployeeFormModal({
     </AnimatePresence>
   );
 
-  if (!isOpen) return null;
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <ModalHeader
+        title={initialData ? t('staff.editEmployee') : t('staff.newEmployee')}
+        onClose={onClose}
+      />
 
-  return createPortal(
-    <AnimatePresence>
-      <div
-        dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-        className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 100 }}
-          transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-          className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-xl rounded-t-3xl sm:rounded-2xl overflow-hidden max-h-[92dvh] sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/10"
-        >
-          {/* Mobile drag handle */}
-          <div className="sm:hidden flex justify-center pt-2 pb-1">
-            <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-          </div>
-
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 border-b border-gray-200 dark:border-white/10">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                {initialData ? t('staff.editEmployee') : t('staff.newEmployee')}
-              </h2>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors"
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <div ref={scrollRef} className="overflow-y-auto p-4 sm:p-8 pt-4 custom-scrollbar flex-1 pb-safe">
-            <form
-              id="employee-form"
-              onSubmit={handleSubmit}
-              autoComplete="off"
-              className="space-y-6"
-            >
+      <ModalBody className="px-4 sm:px-8 pt-0">
+        <div ref={scrollRef}>
+          <form
+            id="employee-form"
+            onSubmit={handleSubmit}
+            autoComplete="off"
+            className="space-y-6"
+          >
               {/* Error Banner */}
               {Object.keys(errors).length > 0 && (
-                <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                <ErrorBanner ref={errorBannerRef} className="animate-pulse">
                   {t('common.validationError')}
-                </div>
+                </ErrorBanner>
               )}
 
               {/* Name (optional) */}
@@ -2249,43 +2218,28 @@ export function EmployeeFormModal({
                 {errors.confirmPassword && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.confirmPassword}</p>}
               </div>
 
-            </form>
-          </div>
+          </form>
+        </div>
+      </ModalBody>
 
-          {/* Footer */}
-          <div className="p-4 sm:p-8 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-white dark:bg-[#1E293B] sticky bottom-0 pb-safe">
-            {initialData && onDelete && !isOwnerMode && (
-              <button
-                type="button"
-                onClick={() => onDelete(initialData.id)}
-                title={t('common.deactivate')}
-                className="w-14 h-14 flex items-center justify-center bg-mintcom-red/10 text-mintcom-red rounded-xl hover:bg-mintcom-red/20 transition-colors border border-mintcom-red/20"
-              >
-                <Trash2 size={20} />
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 h-12 sm:h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-barlow font-black text-xs tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
-            >
-              {t('common.cancel')}
-            </button>
-            <button
-              type="submit"
-              form="employee-form"
-              disabled={isSubmitting}
-              className="flex-1 h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-mintcom-green/20 disabled:opacity-50 flex items-center justify-center"
-            >
-              {isSubmitting ? (
-                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-              ) : (
-                initialData ? t('common.save') : t('common.add')
-              )}
-            </button>
-          </div>
-        </motion.div>
-      </div>
+      <ModalFooter>
+        {initialData && onDelete && !isOwnerMode && (
+          <button
+            type="button"
+            onClick={() => onDelete(initialData.id)}
+            title={t('common.deactivate')}
+            className="w-14 h-14 flex items-center justify-center bg-mintcom-red/10 text-mintcom-red rounded-xl hover:bg-mintcom-red/20 transition-colors border border-mintcom-red/20"
+          >
+            <Trash2 size={20} />
+          </button>
+        )}
+        <ModalCancelButton onClick={onClose}>
+          {t('common.cancel')}
+        </ModalCancelButton>
+        <ModalSubmitButton form="employee-form" loading={isSubmitting}>
+          {initialData ? t('common.save') : t('common.add')}
+        </ModalSubmitButton>
+      </ModalFooter>
 
       {/* Nested role form. Both are portals, so this simply stacks on top and
           returns to the employee form with the new role already selected. */}
@@ -2297,7 +2251,6 @@ export function EmployeeFormModal({
           isSubmitting={isSavingNewRole}
         />
       )}
-    </AnimatePresence>,
-    document.body
+    </Modal>
   );
 }

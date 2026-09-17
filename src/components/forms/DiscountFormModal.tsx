@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, RotateCcw } from 'lucide-react';
+import { Trash2, RotateCcw } from 'lucide-react';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, TextInput, Toggle, ErrorBanner } from '../ui';
 import { QuickInfo } from '../QuickInfo';
-import { useScrollLock } from '../../hooks/useScrollLock';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { TEXT_INPUT_LIMITS } from '../../config/textLimits';
 
@@ -41,8 +39,6 @@ export function DiscountFormModal({
   const [percentage, setPercentage] = useState<string>('');
   const [adminOnly, setAdminOnly] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  useScrollLock(isOpen);
 
   useEffect(() => {
     if (isOpen) {
@@ -121,68 +117,37 @@ export function DiscountFormModal({
     await onSubmit(name, numVal, adminOnly);
   };
 
-  if (!isOpen) return null;
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="md">
+      <ModalHeader
+        title={initialData ? t('discounts.editDiscount') : t('discounts.newDiscount')}
+        onClose={onClose}
+      />
 
-  return createPortal(
-    <AnimatePresence>
-      <div
-        dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-        className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 100 }}
-          transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-          className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/5"
-        >
-          {/* Mobile drag handle */}
-          <div className="sm:hidden flex justify-center pt-2 pb-1">
-            <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-          </div>
-
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {initialData ? t('discounts.editDiscount') : t('discounts.newDiscount')}
-            </h2>
-            <button
-              onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
-            >
-              <X size={24} />
-            </button>
-          </div>
-
-          <div className="p-4 sm:p-6 pt-2 flex-1 overflow-y-auto custom-scrollbar pb-safe">
-            <form id="discount-form" onSubmit={handleSubmit} className="space-y-6">
+      <ModalBody className="p-4 sm:p-6 pt-2">
+        <form id="discount-form" onSubmit={handleSubmit} className="space-y-6">
               {/* Error Banner */}
               {Object.keys(errors).length > 0 && (
-                <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                <ErrorBanner ref={errorBannerRef} className="animate-pulse">
                   {t('common.validationError')}
-                </div>
+                </ErrorBanner>
               )}
 
               {/* Name */}
-              <div className="space-y-2">
-                <label className="label-strong block flex items-center gap-1">
-                  {t('discounts.form.nameLabel')} <span className="text-mintcom-red">*</span>
-                  <QuickInfo text={t('discounts.form.nameTip')} />
-                </label>
-                <input
-                  maxLength={TEXT_INPUT_LIMITS.DISCOUNT_NAME}
-                  type="text"
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value.slice(0, TEXT_INPUT_LIMITS.DISCOUNT_NAME));
-                    if (errors.name) setErrors({ ...errors, name: '' });
-                  }}
-                  placeholder={formatInputPlaceholder(t('discounts.form.namePlaceholder'), t('common.locale'))}
-                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
-                />
-                {errors.name && <p className="mt-1.5 px-1 text-xs font-bold text-mintcom-red">{errors.name}</p>}
-              </div>
+              <TextInput
+                label={<>{t('discounts.form.nameLabel')} <QuickInfo text={t('discounts.form.nameTip')} /></>}
+                required
+                fontBold
+                maxLength={TEXT_INPUT_LIMITS.DISCOUNT_NAME}
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value.slice(0, TEXT_INPUT_LIMITS.DISCOUNT_NAME));
+                  if (errors.name) setErrors({ ...errors, name: '' });
+                }}
+                placeholder={formatInputPlaceholder(t('discounts.form.namePlaceholder'), t('common.locale'))}
+                error={errors.name}
+              />
 
               {/* Percentage */}
               <div className="space-y-2">
@@ -220,81 +185,52 @@ export function DiscountFormModal({
                   <span className="text-sm font-bold text-gray-900 dark:text-white">{t('discounts.form.managerOnly')}</span>
                   <QuickInfo text={t('discounts.form.managerOnlyTip')} />
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={adminOnly}
-                    onChange={(e) => setAdminOnly(e.target.checked)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
-                </label>
+                <Toggle
+                  checked={adminOnly}
+                  onChange={setAdminOnly}
+                />
               </div>
 
             </form>
-          </div>
+      </ModalBody>
 
-          {/* Footer */}
-          <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-gray-50 dark:bg-black/20 transition-colors sticky bottom-0 pb-safe">
-            {isReactivationMode ? (
-              <>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  disabled={isSubmitting}
-                  className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-barlow font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
-                >
-                  {t('common.cancel')}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => initialData && onReactivate?.(initialData.id)}
-                  disabled={isSubmitting}
-                  className="flex-1 h-12 sm:h-14 bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
-                >
-                  <RotateCcw size={16} />
-                  <span>{t('common.reactivate', { defaultValue: 'Reactivate' })}</span>
-                </button>
-              </>
-            ) : (
-              <>
-                {initialData && onDelete && (
-                  <button
-                    type="button"
-                    onClick={() => onDelete(initialData.id)}
-                    className="flex-1 h-14 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-widest rounded-2xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2"
-                  >
-                    <Trash2 size={16} />
-                    <span>{t('common.deactivate')}</span>
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={onClose}
-                  disabled={isSubmitting}
-                  className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-barlow font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
-                >
-                  {t('common.cancel')}
-                </button>
-                <button
-                  type="submit"
-                  form="discount-form"
-                  disabled={isSubmitting}
-                  className="flex-1 h-12 sm:h-14 bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
-                >
-                  {isSubmitting ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    initialData ? t('common.save') : t('common.add')
-                  )}
-                </button>
-              </>
+      <ModalFooter>
+        {isReactivationMode ? (
+          <>
+            <ModalCancelButton onClick={onClose} disabled={isSubmitting}>
+              {t('common.cancel')}
+            </ModalCancelButton>
+            <ModalSubmitButton
+              type="button"
+              onClick={() => initialData && onReactivate?.(initialData.id)}
+              loading={isSubmitting}
+            >
+              <RotateCcw size={16} />
+              <span>{t('common.reactivate', { defaultValue: 'Reactivate' })}</span>
+            </ModalSubmitButton>
+          </>
+        ) : (
+          <>
+            {initialData && onDelete && (
+              <button
+                type="button"
+                onClick={() => onDelete(initialData.id)}
+                className="flex-1 h-12 sm:h-14 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-widest rounded-xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 shrink-0"
+              >
+                <Trash2 size={16} />
+                <span>{t('common.deactivate')}</span>
+              </button>
             )}
-          </div>
-        </motion.div>
-      </div>
-    </AnimatePresence>,
-    document.body
+            <ModalCancelButton onClick={onClose} disabled={isSubmitting}>
+              {t('common.cancel')}
+            </ModalCancelButton>
+            <ModalSubmitButton form="discount-form" loading={isSubmitting}>
+              {initialData ? t('common.save') : t('common.add')}
+            </ModalSubmitButton>
+          </>
+        )}
+      </ModalFooter>
+    </Modal>
   );
 }
 

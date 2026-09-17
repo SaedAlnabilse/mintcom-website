@@ -2,8 +2,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus,
   Search,
@@ -24,7 +22,7 @@ import api from '../../config/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
-import { Pagination, SelectInput } from '../../components/ui';
+import { EmptyState, Pagination, SelectInput, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, PageHeader, Badge, Toggle } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { QuickInfo } from '../../components/QuickInfo';
@@ -39,7 +37,6 @@ interface SubAttribute {
   deletedAt?: string | null;
   deactivatedAt?: string | null;
   attributeId: string;
-  // PROTOTYPE (UI preview only, backend not wired yet):
   trackStock?: boolean;
   availableStock?: number;
 }
@@ -148,9 +145,6 @@ export function AddonsPage() {
     name: '',
     price: '',
     isAvailable: true,
-    // PROTOTYPE preview state — stripped before API call until backend supports it
-    trackStock: false,
-    availableStock: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -285,17 +279,15 @@ export function AddonsPage() {
     setParentAttributeId(attributeId);
     if (subAttr) {
       setEditingSubAttribute(subAttr);
-      setSubAttributeForm({
-        name: subAttr.name,
-        price: formatExistingATMAmount(Number(subAttr.price)),
-        isAvailable: subAttr.isAvailable,
-        trackStock: subAttr.trackStock ?? false,
-        availableStock: subAttr.availableStock != null ? String(subAttr.availableStock) : '',
-      });
-    } else {
-      setEditingSubAttribute(null);
-      setSubAttributeForm({ name: '', price: '', isAvailable: true, trackStock: false, availableStock: '' });
-    }
+       setSubAttributeForm({
+         name: subAttr.name,
+         price: formatExistingATMAmount(Number(subAttr.price)),
+         isAvailable: subAttr.isAvailable,
+       });
+   } else {
+       setEditingSubAttribute(null);
+       setSubAttributeForm({ name: '', price: '', isAvailable: true });
+     }
     setShowSubAttributeModal(true);
     setErrors({});
   };
@@ -382,20 +374,13 @@ export function AddonsPage() {
     }
     if (!parentAttributeId) return;
 
-    setIsSubmitting(true);
-    try {
-      // NOTE: trackStock / availableStock are PREVIEW-ONLY for now.
-      // They are kept in local state for the demo and stripped here so the
-      // current backend (forbidNonWhitelisted) does not reject the request.
-      // Once you approve, we wire them through API + Prisma + POS.
-      const { trackStock: _trackStockPreview, availableStock: _stockPreview, ...restForm } = subAttributeForm;
-      void _trackStockPreview;
-      void _stockPreview;
-      const payload = {
-        ...restForm,
-        name: subAttributeForm.name.trim(),
-        price: Number.parseFloat(subAttributeForm.price) || 0,
-      };
+     setIsSubmitting(true);
+     try {
+       const payload = {
+         name: subAttributeForm.name.trim(),
+         price: Number.parseFloat(subAttributeForm.price) || 0,
+         isAvailable: subAttributeForm.isAvailable,
+       };
       if (editingSubAttribute) {
         await api.patch(`/api/attributes/sub-attributes/${editingSubAttribute.id}`, payload);
         toast.success(t('attributes.messages.optionUpdated'));
@@ -652,29 +637,28 @@ export function AddonsPage() {
           stacked on an in-flight request. */}
       <BusyOverlay visible={isLoading} />
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('attributes.title')}</h1>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-            <span>{t('attributes.subtitle')}</span>
-            {currentEstablishment?.name && (
-              <span className="px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 text-mintcom-green label-strong font-sans border border-mintcom-green/20">
-                {currentEstablishment.name}
-              </span>
-            )}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => openAttributeModal()}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
-          >
-            <Plus size={18} />
-            <span>{t('attributes.newGroup')}</span>
-          </button>
-        </div>
-      </div>
+      <PageHeader
+          title={t('attributes.title')}
+          subtitle={
+              <>
+                  <span>{t('attributes.subtitle')}</span>
+                  {currentEstablishment?.name && (
+                      <Badge>{currentEstablishment.name}</Badge>
+                  )}
+              </>
+          }
+          actions={
+              <>
+                  <button
+                      onClick={() => openAttributeModal()}
+                      className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                  >
+                      <Plus size={18} />
+                      <span>{t('attributes.newGroup')}</span>
+                  </button>
+              </>
+          }
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -823,15 +807,11 @@ export function AddonsPage() {
           <div className="w-12 h-12 border-4 border-mintcom-green/30 border-t-mintcom-green rounded-full animate-spin mb-4" />
         </div>
       ) : paginatedAttributes.length === 0 ? (
-        <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
-          <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
-            <Package size={32} className="text-gray-300" />
-          </div>
-          <h3 className="dashboard-card-value mb-2">{addonsEmptyTitle}</h3>
-          {addonsEmptyDescription ? (
-            <p className="text-sm font-bold text-gray-500 max-w-xs">{addonsEmptyDescription}</p>
-          ) : null}
-        </div>
+        <EmptyState
+          icon={Package}
+          title={addonsEmptyTitle}
+          description={addonsEmptyDescription}
+        />
       ) : (
         <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
           <div className="p-6 space-y-4">
@@ -865,13 +845,9 @@ export function AddonsPage() {
                       {attr.isRequired && (
                         <span className="label-strong font-sans shrink-0 px-2 py-0.5 bg-mintcom-green/10 text-mintcom-green rounded-md border border-mintcom-green/20">{t('attributes.list.mandatory')}</span>
                       )}
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide ${
-                        isAttributeActive(attr)
-                          ? 'bg-mintcom-green/10 text-mintcom-green'
-                          : 'bg-mintcom-red/10 text-mintcom-red'
-                      } shrink-0`}>
+                      <Badge tone={isAttributeActive(attr) ? 'green' : 'red'}>
                         {isAttributeActive(attr) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
-                      </span>
+                      </Badge>
                     </div>
                     <div className="flex items-center gap-3">
                       {isAttributeActive(attr) && (
@@ -939,36 +915,14 @@ export function AddonsPage() {
                             <div className="min-w-0 flex-1">
                               <div className="flex min-w-0 items-center gap-2 flex-wrap">
                                 <p className="min-w-0 flex-1 overflow-safe-wrap line-clamp-2 font-bold text-gray-900 dark:text-white text-base leading-snug" title={sub.name}>{sub.name}</p>
-                                <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                                  isSubAttributeActive(sub)
-                                    ? 'bg-mintcom-green/10 text-mintcom-green'
-                                    : 'bg-mintcom-red/10 text-mintcom-red'
-                                } shrink-0`}>
+                                <Badge tone={isSubAttributeActive(sub) ? 'green' : 'red'}>
                                   {isSubAttributeActive(sub) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
-                                </span>
+                                </Badge>
                               </div>
-                              <p className="text-xs font-medium text-mintcom-green mt-1">
-                                {Number(sub.price) > 0 ? `+${formatAmount(Number(sub.price))}` : t('attributes.list.complimentary')}
-                              </p>
-                              {/* PROTOTYPE: stock badge preview */}
-                              {sub.trackStock ? (
-                                <p className={`mt-1 inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                                  (sub.availableStock ?? 0) <= 0
-                                    ? 'bg-mintcom-red/10 text-mintcom-red'
-                                    : (sub.availableStock ?? 0) <= 5
-                                      ? 'bg-amber-500/10 text-amber-600'
-                                      : 'bg-mintcom-green/10 text-mintcom-green'
-                                }`}>
-                                  {(sub.availableStock ?? 0) <= 0
-                                    ? t('stockManagement.outOfStock', { defaultValue: 'Out of stock' })
-                                    : `${t('stockManagement.onHandStock', { defaultValue: 'Stock' })}: ${sub.availableStock ?? 0}`}
-                                </p>
-                              ) : (
-                                <p className="mt-1 text-[10px] font-medium text-gray-400">
-                                  {t('stockManagement.notTracked', { defaultValue: 'Stock: not tracked (preview)' })}
-                                </p>
-                              )}
-                            </div>
+                               <p className="text-xs font-medium text-mintcom-green mt-1">
+                                 {Number(sub.price) > 0 ? `+${formatAmount(Number(sub.price))}` : t('attributes.list.complimentary')}
+                               </p>
+                             </div>
                             <div className="flex shrink-0 gap-1 transition-opacity">
                               <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10" title={t('common.edit')}>
                                 <Edit2 size={14} />
@@ -1003,31 +957,12 @@ export function AddonsPage() {
       )}
 
       {/* Add-on Group Modal */}
-      {createPortal(
-        <AnimatePresence>
-          {showAttributeModal && (
-            <div
-              key="attribute-group-modal-overlay"
-              className="fixed inset-0 z-[10000] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-              dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-            >
-              <motion.div
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 100 }}
-                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden h-[92vh] sm:h-auto flex flex-col"
-              >
-                <div className="sm:hidden flex justify-center pt-3 pb-1">
-                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                </div>
-                <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.groupTitle')}</h2>
-                  <button onClick={() => setShowAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
-                    <X size={24} />
-                  </button>
-                </div>
-                <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+      <Modal isOpen={showAttributeModal} onClose={() => setShowAttributeModal(false)} size="sm">
+        <ModalHeader
+          title={t('attributes.form.groupTitle')}
+          onClose={() => setShowAttributeModal(false)}
+        />
+        <ModalBody className="space-y-6">
                   <div>
                     <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">
                       {t('attributes.form.groupNameLabel')} <span className="text-mintcom-red">*</span>
@@ -1098,82 +1033,59 @@ export function AddonsPage() {
                       <p className="text-sm font-medium text-gray-900 dark:text-white leading-none mb-1">{t('attributes.form.requiredLabel')}</p>
                       <p className="text-xs text-gray-500 font-medium">{t('attributes.form.requiredDesc')}</p>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" checked={attributeForm.isRequired} onChange={() => setAttributeForm({ ...attributeForm, isRequired: !attributeForm.isRequired })} className="sr-only peer" />
-                      <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-mintcom-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
-                    </label>
+                    <Toggle
+                      size="lg"
+                      checked={attributeForm.isRequired}
+                      onChange={() => setAttributeForm({ ...attributeForm, isRequired: !attributeForm.isRequired })}
+                    />
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    {editingAttribute && !isAttributeActive(editingAttribute) ? (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => setShowAttributeModal(false)}
-                          disabled={isSubmitting}
-                          className="flex-1 py-4 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black rounded-2xl border border-gray-200 dark:border-white/10 hover:text-gray-900 dark:hover:text-white tracking-widest text-xs transition-all flex items-center justify-center gap-2"
-                        >
-                          {t('common.cancel')}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleReactivateAttribute(editingAttribute)}
-                          disabled={isSubmitting}
-                          className="flex-1 py-4 bg-mintcom-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20 transition-all"
-                        >
-                          <RotateCcw size={16} />
-                          {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        {editingAttribute && isAttributeActive(editingAttribute) && (
-                          <button
-                            onClick={() => {
-                              setShowAttributeModal(false);
-                              handleDeleteAttribute(editingAttribute);
-                            }}
-                            disabled={isSubmitting}
-                            className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black rounded-2xl hover:bg-mintcom-red/5 tracking-widest text-xs flex items-center justify-center gap-2"
-                          >
-                            <Trash2 size={16} />
-                            {t('common.archive')}
-                          </button>
-                        )}
-                        <button onClick={handleSaveAttribute} disabled={isSubmitting} className="flex-1 py-4 bg-mintcom-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
-                          {t('common.save')}
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          )}
+        </ModalBody>
 
-          {showSubAttributeModal && (
-            <div
-              key="sub-attribute-modal-overlay"
-              className="fixed inset-0 z-[10000] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-              dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-            >
-              <motion.div
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 100 }}
-                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden h-[92vh] sm:h-auto flex flex-col"
+        <ModalFooter>
+          {editingAttribute && !isAttributeActive(editingAttribute) ? (
+            <>
+              <ModalCancelButton onClick={() => setShowAttributeModal(false)} disabled={isSubmitting}>
+                {t('common.cancel')}
+              </ModalCancelButton>
+              <ModalSubmitButton
+                type="button"
+                onClick={() => editingAttribute && handleReactivateAttribute(editingAttribute)}
+                loading={isSubmitting}
               >
-                <div className="sm:hidden flex justify-center pt-3 pb-1">
-                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-                </div>
-                <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.optionTitle')}</h2>
-                  <button onClick={() => setShowSubAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
-                    <X size={24} />
-                  </button>
-                </div>
-                <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+                <RotateCcw size={16} />
+                {t('common.reactivate', { defaultValue: 'Reactivate' })}
+              </ModalSubmitButton>
+            </>
+          ) : (
+            <>
+              {editingAttribute && isAttributeActive(editingAttribute) && (
+                <button
+                  onClick={() => {
+                    setShowAttributeModal(false);
+                    handleDeleteAttribute(editingAttribute);
+                  }}
+                  disabled={isSubmitting}
+                  className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black rounded-2xl hover:bg-mintcom-red/5 tracking-widest text-xs flex items-center justify-center gap-2"
+                >
+                  <Trash2 size={16} />
+                  {t('common.archive')}
+                </button>
+              )}
+              <ModalSubmitButton type="button" onClick={handleSaveAttribute} loading={isSubmitting}>
+                {t('common.save')}
+              </ModalSubmitButton>
+            </>
+          )}
+        </ModalFooter>
+      </Modal>
+
+      <Modal isOpen={showSubAttributeModal} onClose={() => setShowSubAttributeModal(false)} size="sm">
+        <ModalHeader
+          title={t('attributes.form.optionTitle')}
+          onClose={() => setShowSubAttributeModal(false)}
+        />
+        <ModalBody className="space-y-6">
                   <div>
                     <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">
                       {t('attributes.form.optionNameLabel')} <span className="text-mintcom-red">*</span>
@@ -1226,101 +1138,52 @@ export function AddonsPage() {
                       <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.availableLabel')}</span>
                       <QuickInfo text={t('attributes.form.availableTip')} />
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" checked={subAttributeForm.isAvailable} onChange={() => setSubAttributeForm({ ...subAttributeForm, isAvailable: !subAttributeForm.isAvailable })} className="sr-only peer" />
-                      <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-mintcom-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
-                    </label>
-                  </div>
+                    <Toggle
+                      size="lg"
+                      checked={subAttributeForm.isAvailable}
+                      onChange={() => setSubAttributeForm({ ...subAttributeForm, isAvailable: !subAttributeForm.isAvailable })}
+                    />
+                   </div>
 
-                  {/* PROTOTYPE — stock tracking preview (not saved to backend yet) */}
-                  <div className="p-5 bg-amber-50 dark:bg-amber-500/5 rounded-2xl border border-dashed border-amber-500/40 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
-                          {t('stockManagement.trackStock', { defaultValue: 'Track stock for this add-on' })}
-                          <span className="ml-2 px-1.5 py-0.5 rounded-md text-[10px] font-black bg-amber-500/15 text-amber-600 align-middle">PREVIEW</span>
-                        </p>
-                        <p className="text-xs text-gray-500 font-medium mt-0.5">
-                          {t('stockManagement.trackStockDesc', { defaultValue: 'When on, POS auto-hides this option at 0. Same as products.' })}
-                        </p>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" checked={subAttributeForm.trackStock} onChange={() => setSubAttributeForm({ ...subAttributeForm, trackStock: !subAttributeForm.trackStock })} className="sr-only peer" />
-                        <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-mintcom-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
-                      </label>
-                    </div>
-                    {subAttributeForm.trackStock && (
-                      <div>
-                        <label className="block text-xs font-normal text-gray-400 tracking-normal mb-2 px-1 lowercase">
-                          {t('stockManagement.onHandStock', { defaultValue: 'On-hand stock' })}
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={subAttributeForm.availableStock}
-                          onChange={(e) => {
-                            const val = e.target.value.replace(/[^0-9]/g, '');
-                            setSubAttributeForm({ ...subAttributeForm, availableStock: val });
-                          }}
-                          className="w-full px-5 py-3.5 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold text-center focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all"
-                          placeholder="0"
-                        />
-                        <p className="mt-2 text-[10px] font-medium text-gray-500 px-1">
-                          {t('stockManagement.previewNote', { defaultValue: 'Preview only — value is not saved yet. Approve to wire backend + POS deduction.' })}
-                        </p>
-                      </div>
-                    )}
-                  </div>
+        </ModalBody>
 
-                  <div className="flex items-center gap-3">
-                    {editingSubAttribute && !isSubAttributeActive(editingSubAttribute) ? (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => setShowSubAttributeModal(false)}
-                          disabled={isSubmitting}
-                          className="flex-1 py-4 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black rounded-2xl border border-gray-200 dark:border-white/10 hover:text-gray-900 dark:hover:text-white tracking-widest text-xs transition-all flex items-center justify-center gap-2"
-                        >
-                          {t('common.cancel')}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleReactivateSubAttribute(editingSubAttribute)}
-                          disabled={isSubmitting}
-                          className="flex-1 py-4 bg-mintcom-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
-                        >
-                          <RotateCcw size={16} />
-                          {t('common.reactivate', { defaultValue: 'Reactivate' })}
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        {editingSubAttribute && isSubAttributeActive(editingSubAttribute) && (
-                          <button
-                            onClick={() => {
-                              setShowSubAttributeModal(false);
-                              handleDeleteSubAttribute(editingSubAttribute);
-                            }}
-                            disabled={isSubmitting}
-                            className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black rounded-2xl hover:bg-mintcom-red/5 tracking-widest text-xs transition-all flex items-center justify-center gap-2"
-                          >
-                            <Trash2 size={16} />
-                            {t('common.archive')}
-                          </button>
-                        )}
-                        <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="flex-1 py-4 bg-mintcom-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
-                          {t('common.save')}
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+        <ModalFooter>
+          {editingSubAttribute && !isSubAttributeActive(editingSubAttribute) ? (
+            <>
+              <ModalCancelButton onClick={() => setShowSubAttributeModal(false)} disabled={isSubmitting}>
+                {t('common.cancel')}
+              </ModalCancelButton>
+              <ModalSubmitButton
+                type="button"
+                onClick={() => editingSubAttribute && handleReactivateSubAttribute(editingSubAttribute)}
+                loading={isSubmitting}
+              >
+                <RotateCcw size={16} />
+                {t('common.reactivate', { defaultValue: 'Reactivate' })}
+              </ModalSubmitButton>
+            </>
+          ) : (
+            <>
+              {editingSubAttribute && isSubAttributeActive(editingSubAttribute) && (
+                <button
+                  onClick={() => {
+                    setShowSubAttributeModal(false);
+                    handleDeleteSubAttribute(editingSubAttribute);
+                  }}
+                  disabled={isSubmitting}
+                  className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black rounded-2xl hover:bg-mintcom-red/5 tracking-widest text-xs transition-all flex items-center justify-center gap-2"
+                >
+                  <Trash2 size={16} />
+                  {t('common.archive')}
+                </button>
+              )}
+              <ModalSubmitButton type="button" onClick={handleSaveSubAttribute} loading={isSubmitting}>
+                {t('common.save')}
+              </ModalSubmitButton>
+            </>
           )}
-        </AnimatePresence>,
-        document.body
-      )}
+        </ModalFooter>
+      </Modal>
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}

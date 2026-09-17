@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,6 +8,7 @@ import toast from 'react-hot-toast';
 import api from '../../config/api';
 import { QuickInfo } from '../QuickInfo';
 import { ConfirmModal } from '../ConfirmModal';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, TextInput, TextArea, Toggle, ErrorBanner } from '../ui';
 import {
   buildProductImagePrompt,
   buildProductImageSignature,
@@ -22,7 +22,6 @@ import { AttributeFormModal } from './AttributeFormModal';
 
 
 import { CategoryFormModal } from './CategoryFormModal';
-import { useScrollLock } from '../../hooks/useScrollLock';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { TEXT_INPUT_LIMITS } from '../../config/textLimits';
 
@@ -185,8 +184,6 @@ export function ProductFormModal({
   const addonsTriggerRef = useRef<HTMLButtonElement>(null);
   const taxTriggerRef = useRef<HTMLButtonElement>(null);
   const imageGenerationStartedAtRef = useRef<number | null>(null);
-
-  // New states for FE parity
   const [attributes, setAttributes] = useState<Attribute[]>([]);
   const [selectedAttributeIds, setSelectedAttributeIds] = useState<string[]>([]);
   const [showAddonsDropdown, setShowAddonsDropdown] = useState(false);
@@ -206,8 +203,6 @@ export function ProductFormModal({
   const [showReactivateConfirm, setShowReactivateConfirm] = useState(false);
   const isInitialLoad = useRef(true);
   const hydratedFormKeyRef = useRef<string | null>(null);
-
-  useScrollLock(isOpen);
 
   // When editing an active product, resolve whether removing it will permanently
   // delete it (unused) or archive it (has sales/report history) so the delete
@@ -1098,81 +1093,43 @@ export function ProductFormModal({
               ? t('products.image.savedReady', { defaultValue: 'Saved image will be kept unless you replace it.' })
               : t('products.image.generateHint', { defaultValue: 'A high-quality product photo is added automatically. If none is found, a clean designed image is used instead.' });
 
-  if (!isOpen) return null;
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <ModalHeader
+        title={initialData?.id ? t('products.editProduct') : t('products.newProduct')}
+        onClose={onClose}
+        closeDisabled={isGeneratingImage}
+      />
 
-  return createPortal(
-    <>
-      <AnimatePresence>
-        <div
-          key="product-form-modal-overlay"
-          dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-          className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 100 }}
-            transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-            className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-xl rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 relative"
-          >
-            {/* Mobile drag handle */}
-            <div className="sm:hidden flex justify-center pt-2 pb-1">
-              <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-            </div>
-
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-mintcom-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
-              <div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
-                  {initialData?.id ? t('products.editProduct') : t('products.newProduct')}
-                </h2>
-              </div>
-              <button
-                onClick={() => !isGeneratingImage && onClose()}
-                disabled={isGeneratingImage}
-                className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90 disabled:opacity-30"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="overflow-y-auto px-4 sm:px-8 pt-8 sm:pt-10 custom-scrollbar flex-1 pb-safe" ref={scrollRef}>
-              <form id="product-form" onSubmit={handleSubmit} className="space-y-6 pb-6 sm:pb-8">
+      <ModalBody className="pt-8 sm:pt-10">
+        <div ref={scrollRef}>
+          <form id="product-form" onSubmit={handleSubmit} className="space-y-6 pb-6 sm:pb-8">
                 {/* Error Banner */}
                 {Object.keys(errors).length > 0 && (
-                  <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                  <ErrorBanner ref={errorBannerRef} className="animate-pulse">
                     {t('common.validationError')}
-                  </div>
+                  </ErrorBanner>
                 )}
 
                 {/* Name */}
-                <div className="space-y-2">
-                  <label className={`${popupLabelBaseClass} block flex items-center gap-1`}>
-                    {t('products.form.nameLabel')} <span className="text-mintcom-red">*</span>
-                    <QuickInfo text="Names are used to generate images" />
-                  </label>
-                  <input
-                    name="product-name"
-                    maxLength={TEXT_INPUT_LIMITS.PRODUCT_NAME}
-                    type="text"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      if (errors.name) {
-                        const newErrors = { ...errors };
-                        delete newErrors.name;
-                        setErrors(newErrors);
-                      }
-                    }}
-                    placeholder={formatInputPlaceholder(t('products.form.namePlaceholder'), t('common.locale'))}
-                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
-                  />
-                  {errors.name && (
-                    <p className="mt-1.5 px-1 text-xs font-bold text-mintcom-red">{errors.name}</p>
-                  )}
-                </div>
+                <TextInput
+                  label={<>{t('products.form.nameLabel')} <QuickInfo text="Names are used to generate images" /></>}
+                  required
+                  name="product-name"
+                  maxLength={TEXT_INPUT_LIMITS.PRODUCT_NAME}
+                  type="text"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (errors.name) {
+                      const newErrors = { ...errors };
+                      delete newErrors.name;
+                      setErrors(newErrors);
+                    }
+                  }}
+                  placeholder={formatInputPlaceholder(t('products.form.namePlaceholder'), t('common.locale'))}
+                  error={errors.name}
+                />
 
                 {/* Image Picker */}
                 <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 shadow-inner p-3 sm:p-4 mb-2">
@@ -1537,14 +1494,13 @@ export function ProductFormModal({
                       {description.length.toLocaleString(t('common.locale'))}/{TEXT_INPUT_LIMITS.ITEM_DESCRIPTION.toLocaleString(t('common.locale'))}
                     </span>
                   </div>
-                  <textarea
+                  <TextArea
                     name="product-description"
                     maxLength={TEXT_INPUT_LIMITS.ITEM_DESCRIPTION}
                     value={description}
                     onChange={(e) => setDescription(e.target.value.slice(0, TEXT_INPUT_LIMITS.ITEM_DESCRIPTION))}
                     placeholder={formatInputPlaceholder(t('products.form.descriptionPlaceholder'), t('common.locale'))}
                     rows={2}
-                    className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all resize-none shadow-sm group-hover:border-mintcom-green/50"
                   />
                 </div>
 
@@ -1853,15 +1809,11 @@ export function ProductFormModal({
                       </h4>
                       <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-0.5">{t('products.form.inventory.subtitle')}</p>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={trackStock}
-                        onChange={(e) => setTrackStock(e.target.checked)}
-                        className="sr-only peer"
-                      />
-                      <div className="w-12 h-7 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
-                    </label>
+                    <Toggle
+                      size="lg"
+                      checked={trackStock}
+                      onChange={setTrackStock}
+                    />
                   </div>
 
                   {trackStock && (
@@ -1873,15 +1825,10 @@ export function ProductFormModal({
                           </h4>
                           <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-0.5">{t('products.form.inventory.oversellingDesc')}</p>
                         </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={allowNegativeStock}
-                            onChange={(e) => setAllowNegativeStock(e.target.checked)}
-                            className="sr-only peer"
-                          />
-                          <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
-                        </label>
+                        <Toggle
+                          checked={allowNegativeStock}
+                          onChange={setAllowNegativeStock}
+                        />
                       </div>
 
                       <div className="space-y-2">
@@ -2011,145 +1958,123 @@ export function ProductFormModal({
                   )}
                 </div>
 
-              </form>
-            </div >
+          </form>
+        </div>
+      </ModalBody>
 
-            {/* Footer */}
-            <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-gray-50 dark:bg-black/20 transition-colors sticky bottom-0 pb-safe">
-              {isReactivationMode ? (
-                <>
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    disabled={isSubmitting || isGeneratingImage}
-                    className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-barlow font-bold text-sm rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
-                  >
-                    {t('common.cancel')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowReactivateConfirm(true)}
-                    disabled={isSubmitting || isGeneratingImage || reactivationCategoryProblem}
-                    className="flex-1 h-12 sm:h-14 bg-mintcom-green text-black font-barlow font-bold text-sm rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
-                  >
-                    <RotateCcw size={18} />
-                    <span>{t('common.reactivate', { defaultValue: 'Reactivate' })}</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  {initialData?.id && onDelete && (
-                    <button
-                      type="button"
-                      onClick={() => setShowDeleteConfirm(true)}
-                      className="flex-1 h-12 sm:h-14 border border-mintcom-red/20 text-mintcom-red font-bold text-sm rounded-xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 shadow-sm"
-                    >
-                      <Trash2 size={18} />
-                      <span>{willHardDelete ? t('common.delete') : t('common.archive')}</span>
-                    </button>
-                  )}
+      <ModalFooter>
+        {isReactivationMode ? (
+          <>
+            <ModalCancelButton onClick={onClose} disabled={isSubmitting || isGeneratingImage}>
+              {t('common.cancel')}
+            </ModalCancelButton>
+            <ModalSubmitButton
+              type="button"
+              onClick={() => setShowReactivateConfirm(true)}
+              loading={isSubmitting || isGeneratingImage}
+              disabled={reactivationCategoryProblem}
+            >
+              <RotateCcw size={18} />
+              <span>{t('common.reactivate', { defaultValue: 'Reactivate' })}</span>
+            </ModalSubmitButton>
+          </>
+        ) : (
+          <>
+            {initialData?.id && onDelete && (
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(true)}
+                className="flex-1 h-12 sm:h-14 border border-mintcom-red/20 text-mintcom-red font-bold text-sm rounded-xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 shadow-sm"
+              >
+                <Trash2 size={18} />
+                <span>{willHardDelete ? t('common.delete') : t('common.archive')}</span>
+              </button>
+            )}
 
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    disabled={isSubmitting || isGeneratingImage}
-                    className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-barlow font-bold text-sm rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
-                  >
-                    {t('common.cancel')}
-                  </button>
+            <ModalCancelButton onClick={onClose} disabled={isSubmitting || isGeneratingImage}>
+              {t('common.cancel')}
+            </ModalCancelButton>
 
-                  <button
-                    type="submit"
-                    form="product-form"
-                    disabled={isSubmitting || isGeneratingImage}
-                    className="flex-1 h-12 sm:h-14 bg-mintcom-green text-black font-barlow font-bold text-sm rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
-                  >
-                    {isSubmitting ? (
-                      <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                    ) : (
-                      initialData?.id ? t('common.save') : t('common.add')
-                    )}
-                  </button>
-                </>
-              )}
-            </div >
-          </motion.div >
-        </div >
+            <ModalSubmitButton form="product-form" loading={isSubmitting} disabled={isGeneratingImage}>
+              {initialData?.id ? t('common.save') : t('common.add')}
+            </ModalSubmitButton>
+          </>
+        )}
+      </ModalFooter>
 
+      <ConfirmModal
+        key="addons-discard-confirmation"
+        isOpen={showAddonsWarning}
+        onClose={() => setShowAddonsWarning(false)}
+        onConfirm={() => {
+          onClose();
+          navigate(`/dashboard/${locationSlug}/addons`, { state: { openCreateModal: true } });
+        }}
+        title={t('products.messages.discardTitle')}
+        message={t('products.messages.discardMessage')}
+        confirmText={t('products.messages.discardConfirm')}
+        cancelText={t('common.cancel')}
+        type="warning"
+      />
+
+      <ConfirmModal
+        key="image-quota-exceeded"
+        isOpen={showImageQuotaExceeded}
+        onClose={() => setShowImageQuotaExceeded(false)}
+        onConfirm={() => setShowImageQuotaExceeded(false)}
+        title={t('products.image.quotaExceededTitle', {
+          defaultValue: 'Monthly image limit reached',
+        })}
+        message={t('products.image.quotaExceededMessage', {
+          limit: imageQuota?.limit ?? 200,
+          resetDate: imageQuotaResetDate,
+          defaultValue: `You have used all ${imageQuota?.limit ?? 200} image generations for this month. Please wait until ${imageQuotaResetDate || 'next month'} to generate more images.`,
+        })}
+        confirmText={t('common.ok', { defaultValue: 'OK' })}
+        showCancel={false}
+        type="warning"
+      />
+
+      {initialData?.id && onDelete && (
         <ConfirmModal
-          key="addons-discard-confirmation"
-          isOpen={showAddonsWarning}
-          onClose={() => setShowAddonsWarning(false)}
+          key="product-delete-confirmation"
+          isOpen={showDeleteConfirm}
+          onClose={() => setShowDeleteConfirm(false)}
           onConfirm={() => {
+            onDelete(initialData.id!);
             onClose();
-            navigate(`/dashboard/${locationSlug}/addons`, { state: { openCreateModal: true } });
           }}
-          title={t('products.messages.discardTitle')}
-          message={t('products.messages.discardMessage')}
-          confirmText={t('products.messages.discardConfirm')}
-          cancelText={t('common.cancel')}
-          type="warning"
+          title={willHardDelete ? t('products.messages.hardDeleteTitle') : t('products.messages.deleteTitle')}
+          message={willHardDelete ? t('products.messages.hardDeleteMessage', { name: initialData.name }) : t('products.messages.deleteMessage', { name: initialData.name })}
+          confirmText={willHardDelete ? t('common.delete') : t('common.archive')}
+          type="danger"
         />
+      )}
 
+      {initialData?.id && onReactivate && (
         <ConfirmModal
-          key="image-quota-exceeded"
-          isOpen={showImageQuotaExceeded}
-          onClose={() => setShowImageQuotaExceeded(false)}
-          onConfirm={() => setShowImageQuotaExceeded(false)}
-          title={t('products.image.quotaExceededTitle', {
-            defaultValue: 'Monthly image limit reached',
+          key="product-reactivate-confirmation"
+          isOpen={showReactivateConfirm}
+          onClose={() => setShowReactivateConfirm(false)}
+          onConfirm={() => {
+            if (reactivationCategoryProblem) {
+              toast.error(t('products.reactivate.selectActiveCategory', {
+                defaultValue: 'Select an active category before reactivating this product.',
+              }));
+              return;
+            }
+            onReactivate(initialData.id!, categoryId);
+            onClose();
+          }}
+          title={t('common.reactivate', { defaultValue: 'Reactivate' })}
+          message={t('products.reactivate.message', {
+            name: initialData.name,
+            defaultValue: `Reactivate "${initialData.name}" so it can be used in new sales again? Historical receipts keep their original snapshots.`,
           })}
-          message={t('products.image.quotaExceededMessage', {
-            limit: imageQuota?.limit ?? 200,
-            resetDate: imageQuotaResetDate,
-            defaultValue: `You have used all ${imageQuota?.limit ?? 200} image generations for this month. Please wait until ${imageQuotaResetDate || 'next month'} to generate more images.`,
-          })}
-          confirmText={t('common.ok', { defaultValue: 'OK' })}
-          showCancel={false}
-          type="warning"
+          confirmText={t('common.reactivate', { defaultValue: 'Reactivate' })}
+          type="success"
         />
-
-        {initialData?.id && onDelete && (
-          <ConfirmModal
-            key="product-delete-confirmation"
-            isOpen={showDeleteConfirm}
-            onClose={() => setShowDeleteConfirm(false)}
-            onConfirm={() => {
-              onDelete(initialData.id!);
-              onClose();
-            }}
-            title={willHardDelete ? t('products.messages.hardDeleteTitle') : t('products.messages.deleteTitle')}
-            message={willHardDelete ? t('products.messages.hardDeleteMessage', { name: initialData.name }) : t('products.messages.deleteMessage', { name: initialData.name })}
-            confirmText={willHardDelete ? t('common.delete') : t('common.archive')}
-            type="danger"
-          />
-        )}
-
-        {initialData?.id && onReactivate && (
-          <ConfirmModal
-            key="product-reactivate-confirmation"
-            isOpen={showReactivateConfirm}
-            onClose={() => setShowReactivateConfirm(false)}
-            onConfirm={() => {
-              if (reactivationCategoryProblem) {
-                toast.error(t('products.reactivate.selectActiveCategory', {
-                  defaultValue: 'Select an active category before reactivating this product.',
-                }));
-                return;
-              }
-              onReactivate(initialData.id!, categoryId);
-              onClose();
-            }}
-            title={t('common.reactivate', { defaultValue: 'Reactivate' })}
-            message={t('products.reactivate.message', {
-              name: initialData.name,
-              defaultValue: `Reactivate "${initialData.name}" so it can be used in new sales again? Historical receipts keep their original snapshots.`,
-            })}
-            confirmText={t('common.reactivate', { defaultValue: 'Reactivate' })}
-            type="success"
-          />
-        )}
-      </AnimatePresence >
+      )}
 
       <CategoryFormModal
         isOpen={showCategoryModal}
@@ -2165,7 +2090,6 @@ export function ProductFormModal({
         onSubmit={handleAttributeSubmit}
         isSubmitting={isAttributeSubmitting}
       />
-    </>,
-    document.body
+    </Modal>
   );
 }

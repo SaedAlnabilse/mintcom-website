@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Award, Check } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Award, Check } from 'lucide-react';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ErrorBanner } from '../ui';
 import { CustomSelect } from '../CustomSelect';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
@@ -114,50 +114,21 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
     });
   };
 
-  if (!isOpen) return null;
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="md">
+      <ModalHeader
+        title={initialData ? t('rewards.editReward') : t('rewards.newReward')}
+        icon={<Award size={22} strokeWidth={2.5} />}
+        onClose={onClose}
+      />
 
-  return createPortal(
-    <AnimatePresence>
-      <div
-        dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-        className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 100 }}
-          transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-          className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:w-[90vw] sm:max-w-lg relative overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh]"
-        >
-          {/* Mobile drag handle */}
-          <div className="sm:hidden flex justify-center pt-2 pb-1">
-            <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
-          </div>
-
-          <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200 dark:border-white/10 flex items-center justify-between bg-white dark:bg-[#1E293B]">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
-                <Award size={22} strokeWidth={2.5} />
-              </div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                {initialData ? t('rewards.editReward') : t('rewards.newReward')}
-              </h2>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <form id="reward-form" onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 flex-1 overflow-y-auto custom-scrollbar pb-safe">
+      <ModalBody className="p-4 sm:p-6">
+        <form id="reward-form" onSubmit={handleSubmit} className="space-y-4">
             {/* Error Banner */}
             {Object.keys(errors).length > 0 && (
-              <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse mb-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+              <ErrorBanner ref={errorBannerRef} className="animate-pulse mb-2">
                 {t('common.validationError')}
-              </div>
+              </ErrorBanner>
             )}
 
             {/* Reward Type */}
@@ -274,29 +245,18 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             </div>
 
           </form>
+      </ModalBody>
 
-          {/* Footer */}
-          <div className="p-4 sm:p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-gray-50 dark:bg-black/20 transition-colors sticky bottom-0 pb-safe">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-barlow font-black text-xs tracking-widest hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
-            >
-              {t('common.cancel')}
-            </button>
-            <button
-              type="submit"
-              form="reward-form"
-              className="flex-[2] h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-barlow font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
-            >
-              <Check size={18} strokeWidth={3} />
-              {initialData ? t('common.save') : t('common.add')}
-            </button>
-          </div>
-        </motion.div>
-      </div>
-    </AnimatePresence >,
-    document.body
+      <ModalFooter>
+        <ModalCancelButton onClick={onClose}>
+          {t('common.cancel')}
+        </ModalCancelButton>
+        <ModalSubmitButton form="reward-form">
+          <Check size={18} strokeWidth={3} />
+          {initialData ? t('common.save') : t('common.add')}
+        </ModalSubmitButton>
+      </ModalFooter>
+    </Modal>
   );
 }
 
