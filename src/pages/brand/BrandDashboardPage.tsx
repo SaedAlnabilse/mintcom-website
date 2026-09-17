@@ -16,7 +16,7 @@ import {
     Globe,
 } from 'lucide-react';
 import { biIcon } from '../../components/ui/BiIcon';
-import { PageHeader } from '../../components/ui';
+import { PageHeader, FilterBar, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass } from '../../components/ui';
 import {
     Area,
     ComposedChart,
@@ -338,11 +338,10 @@ export function BrandDashboardPage() {
                 actions={
                     <>
                     {/* Unified Filter Control Deck */}
-                    <div className="bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5 w-full lg:w-auto">
-                        <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">
+                    <FilterBar className="w-full lg:w-auto">
 
-                            {/* Sector 1: Quick Period Dropdown */}
-                            <div className={`flex-none w-full xl:w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-mintcom-green/5 border-mintcom-green ring-1 ring-mintcom-green shadow-lg shadow-mintcom-green/10' : 'border-transparent'}`}>
+                            {/* Quick Period Dropdown */}
+                            <div className="flex-none w-full sm:w-[160px]">
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
                                     onChange={(val) => setQuickDate(val as DateRangePreset || 'today')}
@@ -351,21 +350,18 @@ export function BrandDashboardPage() {
                                     searchable={false}
                                     placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                                     className="w-full"
-                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-mintcom-green' : ''}`}
+                                    buttonClassName={`${filterSelectButtonClass} ${selectedDateRange !== 'custom' ? filterSelectActiveClass : filterSelectInactiveClass}`}
                                 />
                             </div>
 
-                            {/* Vertical Divider (Desktop) */}
-                            <div className="hidden xl:block w-px h-8 bg-gray-100 dark:bg-white/10 mx-3" />
-
-                            {/* Sector 2: Time & Date Controls */}
+                            {/* Time & Date Controls */}
                             {(() => {
                                 const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
 
                                 return (
-                                    <div className="flex-1 flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center w-full">
+                                    <>
                                         {/* Date Input Group */}
-                                        <div className="flex-none w-full sm:min-w-[200px] lg:min-w-[240px] relative z-[60]">
+                                        <div className="flex-none w-full sm:w-[200px] lg:w-[240px] relative z-[60]">
                                             <DateRangePicker
                                                 startDate={startDate}
                                                 endDate={endDate}
@@ -380,15 +376,9 @@ export function BrandDashboardPage() {
                                             />
                                         </div>
 
-                                        {/* Vertical Divider (Inner) */}
-                                        <div className="hidden md:block w-px h-6 bg-gray-100 dark:bg-white/10" />
-
                                         {/* Time Input Group */}
                                         <div className={`flex-none w-full sm:w-auto sm:min-w-[180px] relative z-[55]`}>
-                                            <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
-                                                ? 'bg-mintcom-green/5 border-mintcom-green'
-                                                : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-mintcom-green/50'
-                                                }`}>
+                                            <div className={`flex flex-col justify-center px-4 h-12 rounded-lg border transition-colors ${isTimeFiltered ? filterBoxActiveClass : filterBoxInactiveClass}`}>
                                                 <div className="flex items-center gap-2 justify-between relative">
                                                     <CustomTimePicker
                                                         value={startTime}
@@ -397,7 +387,7 @@ export function BrandDashboardPage() {
                                                         showIcon={true}
                                                         isActive={isTimeFiltered}
                                                     />
-                                                    <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7dc6a2]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                                                    <span className={`text-xs font-semibold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-emerald-700/60 dark:text-mintcom-green/60" : "text-gray-300 dark:text-white/10"}`}>-</span>
                                                     <CustomTimePicker
                                                         value={endTime}
                                                         onChange={(val) => { setEndTime(val); }}
@@ -409,11 +399,10 @@ export function BrandDashboardPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </>
                                 );
                             })()}
-                        </div>
-                    </div>
+                    </FilterBar>
                     </>
                 }
                 className="relative z-50"

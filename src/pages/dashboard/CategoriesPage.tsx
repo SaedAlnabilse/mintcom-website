@@ -599,9 +599,9 @@ export function CategoriesPage() {
                   </button>
                   <button
                       onClick={openCreateModal}
-                      className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-mintcom-green text-black font-bold text-xs sm:text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                   >
-                      <Plus size={18} />
+                      <Plus size={18} strokeWidth={2.5} />
                       <span className="hidden xs:inline">{t('categories.newCategory')}</span>
                       <span className="xs:hidden">{t('common.add')}</span>
                   </button>
@@ -881,9 +881,9 @@ export function CategoriesPage() {
                       {isCategoryActive(viewingCategory) && (
                         <button
                           onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                          className="px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-colors flex items-center gap-2 shadow-sm"
+                          className="px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex items-center gap-2"
                         >
-                          <Plus size={18} />
+                          <Plus size={18} strokeWidth={2.5} />
                           {t('common.add')}
                         </button>
                       )}

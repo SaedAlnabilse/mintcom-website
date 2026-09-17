@@ -206,7 +206,7 @@ export function ModalSubmitButton({
       form={form}
       onClick={onClick}
       disabled={disabled || loading}
-      className="flex-[2] h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-bold text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-mintcom-green/20"
+      className="flex-[2] h-12 sm:h-14 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
     >
       {loading ? (
         <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />

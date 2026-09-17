@@ -13,7 +13,6 @@ import {
     CheckCircle2,
     Shield,
     Info,
-    KeyRound,
     AlertTriangle,
     Lock,
     Trash2,
@@ -42,7 +41,7 @@ import { BusyOverlay } from '../../components/BusyOverlay';
 import toast from 'react-hot-toast';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { SectionLoader } from '../../components/LoadingState';
-import { Pagination, Modal, ModalHeader, ModalBody, Badge } from '../../components/ui';
+import { Pagination, Modal, ModalHeader, ModalBody, Badge, avatarClass } from '../../components/ui';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { StepUpVerifier } from '../../components/StepUpVerifier';
 import { reauthHeaders } from '../../services/stepUp';
@@ -535,18 +534,13 @@ export function OwnerAccountManagementPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className={`flex items-center justify-between shrink-0 ${fit ? 'gap-3' : ''}`}
             >
-                <div className={`flex items-center ${fit ? 'gap-3' : 'gap-4'}`}>
-                    <div className={`${fit ? 'w-10 h-10 rounded-xl' : 'w-14 h-14 rounded-2xl'} bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center shadow-lg shadow-mintcom-green/20 shrink-0`}>
-                        <KeyRound className={fit ? 'w-5 h-5 text-black' : 'w-7 h-7 text-black'} />
-                    </div>
-                    <div className="min-w-0">
-                        <h1 className={`${fit ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'} font-bold text-gray-900 dark:text-white tracking-tight truncate`}>
-                            {t('owner.account.title')}
-                        </h1>
-                        <p className={`${fit ? 'text-xs mt-0.5 line-clamp-1' : 'text-sm sm:text-base mt-2'} text-gray-500 dark:text-gray-400`}>
-                            {t('owner.account.subtitle')}
-                        </p>
-                    </div>
+                <div className="min-w-0">
+                    <h1 className={`${fit ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'} font-bold text-gray-900 dark:text-white tracking-tight truncate`}>
+                        {t('owner.account.title')}
+                    </h1>
+                    <p className={`${fit ? 'text-xs mt-0.5 line-clamp-1' : 'text-sm sm:text-base mt-2'} text-gray-500 dark:text-gray-400`}>
+                        {t('owner.account.subtitle')}
+                    </p>
                 </div>
 
             </motion.div>
@@ -563,10 +557,7 @@ export function OwnerAccountManagementPage() {
                     >
                         {/* Top bar — shared metrics with System Currency header (padding / icon / title) */}
                         <div className={`flex flex-col sm:items-center justify-between gap-2 border-b border-gray-100 dark:border-white/[0.05] ${isRtl ? 'sm:flex-row-reverse' : 'sm:flex-row'} ${fit ? 'px-4 py-2.5' : 'px-5 sm:px-6 py-3.5 gap-3'}`}>
-                            <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center shrink-0">
-                                    <User className="w-5 h-5 text-mintcom-green" />
-                                </div>
+                            <div className="flex items-center min-w-0">
                                 <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-none">
                                     {t('owner.account.ownerAccountTitle')}
                                 </h2>
@@ -576,14 +567,14 @@ export function OwnerAccountManagementPage() {
                                     <>
                                         <button
                                             onClick={handleCancelEdit}
-                                            className="px-3.5 py-2 bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.1] text-gray-600 dark:text-gray-300 rounded-xl text-sm font-bold transition-all"
+                                            className="px-3.5 py-2 bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.1] text-gray-600 dark:text-gray-300 rounded-lg text-sm font-semibold transition-colors"
                                             disabled={isSaving}
                                         >
                                             {t('owner.account.cancel')}
                                         </button>
                                         <button
                                             onClick={handleSaveProfile}
-                                            className="flex items-center gap-2 px-3.5 py-2 bg-mintcom-green hover:bg-[#5fa888] text-black rounded-xl text-sm font-bold transition-all disabled:opacity-70"
+                                            className="flex items-center gap-2 px-3.5 py-2 bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black rounded-lg text-sm font-semibold transition-colors disabled:opacity-70"
                                             disabled={isSaving}
                                         >
                                             {isSaving ? (
@@ -603,13 +594,13 @@ export function OwnerAccountManagementPage() {
                                     <>
                                         <button
                                             onClick={handleEditClick}
-                                            className="px-3.5 py-2 bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.1] text-gray-600 dark:text-gray-300 rounded-xl text-sm font-bold transition-all"
+                                            className="px-3.5 py-2 bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.1] text-gray-600 dark:text-gray-300 rounded-lg text-sm font-semibold transition-colors"
                                         >
                                             {t('owner.account.editProfile')}
                                         </button>
                                         <button
                                             onClick={() => openPasswordModal('account')}
-                                            className="flex items-center gap-2 px-3.5 py-2 bg-mintcom-green/10 hover:bg-mintcom-green/20 text-mintcom-green rounded-xl text-sm font-bold transition-all"
+                                            className="flex items-center gap-2 px-3.5 py-2 bg-mintcom-green/10 hover:bg-mintcom-green/20 text-emerald-700 dark:text-mintcom-green rounded-lg text-sm font-semibold transition-colors"
                                         >
                                             <Key size={15} />
                                             {t('owner.account.resetPassword')}
@@ -669,7 +660,7 @@ export function OwnerAccountManagementPage() {
                                 <div className={`flex flex-col sm:items-center gap-5 ${isRtl ? 'sm:flex-row-reverse' : 'sm:flex-row'}`}>
                                     {/* Avatar + identity */}
                                     <div className="flex items-center gap-4 min-w-0 flex-1">
-                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-mintcom-green to-[#5BA882] text-white flex items-center justify-center text-lg font-black shadow-md shadow-mintcom-green/20 shrink-0">
+                                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 text-lg ${avatarClass}`}>
                                             {(accountDetails?.firstName?.[0] || accountDetails?.email?.[0] || 'O').toUpperCase()}
                                             {(accountDetails?.lastName?.[0] || '').toUpperCase()}
                                         </div>
@@ -816,10 +807,7 @@ export function OwnerAccountManagementPage() {
                             {/* Header */}
                             <div className={`shrink-0 border-b border-gray-100 dark:border-white/[0.05] ${fit ? 'p-3 sm:p-4' : 'p-5 sm:p-6'}`}>
                                 <div className={`flex flex-col lg:items-center lg:justify-between gap-4 ${isRtl ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
-                                    <div className="flex items-center gap-3 min-w-0">
-                                        <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center shrink-0">
-                                            <Key className="w-5 h-5 text-mintcom-green" />
-                                        </div>
+                                    <div className="flex items-center min-w-0">
                                         <div className="min-w-0">
                                             <h2 className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                                                 {t('owner.account.accessCredentials', {
@@ -1551,7 +1539,7 @@ export function OwnerAccountManagementPage() {
                                     {accountDetails?.deletionRequestedAt ? (
                                         <button
                                             onClick={handleRestoreAccount}
-                                            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-mintcom-green hover:bg-[#5fa888] text-black rounded-xl text-sm font-black transition-all shadow-lg shadow-mintcom-green/20"
+                                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black rounded-lg text-sm font-semibold transition-colors"
                                         >
                                             {t('owner.account.restoreMyAccount')}
                                         </button>

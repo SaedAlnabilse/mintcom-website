@@ -141,7 +141,7 @@ export default function AppDownloadRedirectPage() {
               <a
                 href={redirectUrl}
                 download={isDirectInstallerDownload(redirectUrl) ? true : undefined}
-                className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-mintcom-green hover:bg-[#5fa888] text-black font-bold text-base transition-all duration-200 active:scale-95 shadow-lg shadow-mintcom-green/20"
+                className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-lg bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black font-semibold text-base transition-colors"
               >
                 <span>
                   {platform === 'ios'

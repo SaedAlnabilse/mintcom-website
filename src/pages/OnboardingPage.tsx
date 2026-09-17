@@ -18,9 +18,6 @@ import {
   Loader2,
   CreditCard,
   Building2,
-  UtensilsCrossed,
-  Coffee,
-  ShoppingBag,
   KeyRound,
   Hash,
   ShieldCheck,
@@ -44,7 +41,12 @@ import {
   Globe,
   RefreshCw,
   CalendarClock,
-  LayoutDashboard
+  LayoutDashboard,
+  Users,
+  GitBranch,
+  Repeat,
+  Megaphone,
+  Phone
 } from 'lucide-react';
 import MintcomLeafIcon from '../assets/small-logo.svg';
 import MintcomLeafIconWhite from '../assets/small-logo-white.svg';
@@ -52,6 +54,7 @@ import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { QuickInfo } from '../components/QuickInfo';
+import { Toggle } from '../components/ui';
 import { formatCurrencyCode } from '../utils/currency';
 import {
   ANDROID_DOWNLOAD_URL,
@@ -100,7 +103,7 @@ import {
   MAX_FORMATTED_CARD_NUMBER_LENGTH,
 } from '../utils/paymentCard';
 import { TEXT_INPUT_LIMITS } from '../config/textLimits';
-import { onboardingApi } from '../services/onboardingApi';
+import { onboardingApi, type OnboardingProfilePayload } from '../services/onboardingApi';
 import { useBlockHistoryBack } from '../hooks/useBlockHistoryBack';
 import {
   clampPhase,
@@ -132,7 +135,65 @@ const SAFE_DRAFT_KEYS = [
   'duplicateDiscounts',
   'duplicatePaymentMethods',
   'establishmentId',
+  'contactPhone',
+  'staffSize',
+  'branchesPlanned',
+  'currentPos',
+  'heardAbout',
+  'referralCode',
+  'marketingConsent',
 ] as const;
+
+const STAFF_OPTIONS = [
+  { value: '1–5', labelKey: 'onboarding.businessProfile.staffOptions.1-5' },
+  { value: '6–15', labelKey: 'onboarding.businessProfile.staffOptions.6-15' },
+  { value: '16–50', labelKey: 'onboarding.businessProfile.staffOptions.16-50' },
+  { value: '50+', labelKey: 'onboarding.businessProfile.staffOptions.50+' },
+];
+
+const BRANCH_OPTIONS = [
+  { value: 'Just this one', labelKey: 'onboarding.businessProfile.branchesOptions.single' },
+  { value: '2–5', labelKey: 'onboarding.businessProfile.branchesOptions.2-5' },
+  { value: '5+', labelKey: 'onboarding.businessProfile.branchesOptions.5+' },
+];
+
+const POS_OPTIONS = [
+  { value: 'None — new business', labelKey: 'onboarding.businessProfile.posOptions.none' },
+  { value: 'Cash / paper', labelKey: 'onboarding.businessProfile.posOptions.cash' },
+  { value: 'Square', labelKey: 'onboarding.businessProfile.posOptions.square' },
+  { value: 'Foodics', labelKey: 'onboarding.businessProfile.posOptions.foodics' },
+  { value: 'Other POS', labelKey: 'onboarding.businessProfile.posOptions.other' },
+];
+
+const SOURCE_OPTIONS = [
+  { value: 'Google', labelKey: 'onboarding.businessProfile.sourceOptions.google' },
+  { value: 'Instagram / TikTok', labelKey: 'onboarding.businessProfile.sourceOptions.social' },
+  { value: 'Friend / referral', labelKey: 'onboarding.businessProfile.sourceOptions.referral' },
+  { value: 'Partner', labelKey: 'onboarding.businessProfile.sourceOptions.partner' },
+  { value: 'Other', labelKey: 'onboarding.businessProfile.sourceOptions.other' },
+];
+
+const BusinessPill = ({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`px-5 py-3 rounded-2xl border-2 text-sm font-sans font-medium transition-all active:scale-95 ${
+      active
+        ? 'border-mintcom-green bg-mintcom-green/5 text-mintcom-green font-bold'
+        : 'border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-transparent text-gray-600 dark:text-gray-400 hover:border-gray-200 dark:hover:border-white/10'
+    }`}
+  >
+    {children}
+  </button>
+);
 
 const sanitizeDraftForStorage = (value: Record<string, unknown>) => {
   const safe: Record<string, unknown> = {};
@@ -369,6 +430,14 @@ export function OnboardingPage() {
   const sessionBootRef = useRef(false);
 
   const [formData, setFormData] = useState<any>(() => readStoredLaunchData());
+  const [step1SubStep, setStep1SubStep] = useState<'location' | 'businessProfile'>('location');
+  const [contactPhone, setContactPhone] = useState<string>(formData.contactPhone || '');
+  const [staffSize, setStaffSize] = useState<string>(formData.staffSize || '');
+  const [branchesPlanned, setBranchesPlanned] = useState<string>(formData.branchesPlanned || '');
+  const [currentPos, setCurrentPos] = useState<string>(formData.currentPos || '');
+  const [heardAbout, setHeardAbout] = useState<string>(formData.heardAbout || '');
+  const [referralCode, setReferralCode] = useState<string>(formData.referralCode || '');
+  const [marketingConsent, setMarketingConsent] = useState<boolean>(!!formData.marketingConsent);
   const launchLocked = isLaunchLocked(serverPhase, apiPhase);
 
   const [useSavedCard, setUseSavedCard] = useState(true); // Default to using saved card if available
@@ -428,6 +497,15 @@ export function OnboardingPage() {
     setApiPhase(session.phase);
     setServerPhase(mapped);
     if (session.draft && typeof session.draft === 'object') {
+      const draft = session.draft as Record<string, unknown>;
+      if (typeof draft.contactPhone === 'string') setContactPhone(draft.contactPhone);
+      if (typeof draft.staffSize === 'string') setStaffSize(draft.staffSize);
+      if (typeof draft.branchesPlanned === 'string') setBranchesPlanned(draft.branchesPlanned);
+      if (typeof draft.currentPos === 'string') setCurrentPos(draft.currentPos);
+      if (typeof draft.heardAbout === 'string') setHeardAbout(draft.heardAbout);
+      if (typeof draft.referralCode === 'string') setReferralCode(draft.referralCode);
+      if (typeof draft.marketingConsent === 'boolean') setMarketingConsent(draft.marketingConsent);
+
       setFormData((prev: any) => {
         const merged = {
           ...prev,
@@ -497,6 +575,9 @@ export function OnboardingPage() {
     if (launchLocked) {
       goToPhase('launch');
       return;
+    }
+    if (nextStep === 1) {
+      setStep1SubStep('businessProfile');
     }
     const phase = stepNumberToPhase[Math.min(5, Math.max(1, nextStep))] || 'profile';
     goToPhase(phase);
@@ -820,9 +901,9 @@ export function OnboardingPage() {
   // location — this is the worldwide store clock for all reports/dates.
   const timezoneOptions = useMemo(() => {
     const list = getCountryTimeZones(selectedCountry);
+    if (list.length > 0) return list;
     const device = getDeviceTimeZone();
-    if (device && !list.includes(device)) return [...list, device];
-    return list.length > 0 ? list : [device || 'UTC'];
+    return [device || 'UTC'];
   }, [selectedCountry]);
 
   useEffect(() => {
@@ -854,12 +935,11 @@ export function OnboardingPage() {
     }
   }, [form4, hasSavedCard, useSavedCard]);
 
-  const onStep1Submit = async (data: any) => {
+  const onLocationDetailsSubmit = (data: any) => {
     if (launchLocked) {
       goToPhase('launch');
       return;
     }
-    setIsLoading(true);
     const finalData = {
       ...data,
       currency: establishments.length > 0 ? establishments[0].currency : data.currency,
@@ -868,6 +948,31 @@ export function OnboardingPage() {
       duplicateInventory: duplicateFromId ? duplicateInventory : false,
       duplicateDiscounts: duplicateFromId ? duplicateDiscounts : false,
       duplicatePaymentMethods: duplicateFromId ? duplicatePaymentMethods : false,
+    };
+    updateFormData((prev: any) => ({ ...prev, ...finalData }));
+    setStep1SubStep('businessProfile');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const submitProfilePayload = async (extraPayload: Partial<OnboardingProfilePayload> = {}) => {
+    if (launchLocked) {
+      goToPhase('launch');
+      return;
+    }
+    setIsLoading(true);
+    const locationValues = form1.getValues();
+    const finalData: OnboardingProfilePayload = {
+      name: locationValues.name || formData.name,
+      type: locationValues.type || formData.type,
+      country: locationValues.country || formData.country,
+      currency: establishments.length > 0 ? establishments[0].currency : (locationValues.currency || formData.currency),
+      address: locationValues.address || formData.address,
+      timezone: normalizeTimeZone(locationValues.timezone || formData.timezone) || getBestTimeZoneForCountry(locationValues.country || formData.country, getDeviceTimeZone()),
+      duplicateFromId: duplicateFromId || undefined,
+      duplicateInventory: duplicateFromId ? duplicateInventory : false,
+      duplicateDiscounts: duplicateFromId ? duplicateDiscounts : false,
+      duplicatePaymentMethods: duplicateFromId ? duplicatePaymentMethods : false,
+      ...extraPayload,
     };
 
     try {
@@ -887,6 +992,23 @@ export function OnboardingPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSkipBusinessProfile = async () => {
+    await submitProfilePayload({});
+  };
+
+  const handleContinueBusinessProfile = async () => {
+    const businessData: Partial<OnboardingProfilePayload> = {
+      contactPhone: contactPhone.trim() || undefined,
+      staffSize: staffSize || undefined,
+      branchesPlanned: branchesPlanned || undefined,
+      currentPos: currentPos || undefined,
+      heardAbout: heardAbout || undefined,
+      referralCode: heardAbout === 'Friend / referral' ? (referralCode.trim() || undefined) : undefined,
+      marketingConsent: marketingConsent,
+    };
+    await submitProfilePayload(businessData);
   };
 
   const onStep2Submit = async (data: any) => {
@@ -1203,12 +1325,40 @@ export function OnboardingPage() {
     }
   };
 
-  const businessTypes = [
-    { id: 'restaurant', label: t('onboarding.step1.businessTypes.restaurant'), icon: UtensilsCrossed },
-    { id: 'cafe', label: t('onboarding.step1.businessTypes.cafe'), icon: Coffee },
-    { id: 'retail', label: t('onboarding.step1.businessTypes.retail'), icon: ShoppingBag },
-    { id: 'other', label: t('onboarding.step1.businessTypes.other'), icon: Building2 },
-  ];
+  const businessTypeGroups = useMemo(() => [
+    {
+      category: t('onboarding.step1.businessCategories.foodAndBeverage'),
+      options: [
+        { id: 'restaurant', label: t('onboarding.step1.businessTypes.restaurant') },
+        { id: 'fast_food', label: t('onboarding.step1.businessTypes.fast_food') },
+        { id: 'fine_dining', label: t('onboarding.step1.businessTypes.fine_dining') },
+        { id: 'cafe', label: t('onboarding.step1.businessTypes.cafe') },
+        { id: 'roastery', label: t('onboarding.step1.businessTypes.roastery') },
+        { id: 'bakery', label: t('onboarding.step1.businessTypes.bakery') },
+        { id: 'dessert', label: t('onboarding.step1.businessTypes.dessert') },
+        { id: 'cloud_kitchen', label: t('onboarding.step1.businessTypes.cloud_kitchen') },
+        { id: 'food_truck', label: t('onboarding.step1.businessTypes.food_truck') },
+        { id: 'pizzeria', label: t('onboarding.step1.businessTypes.pizzeria') },
+        { id: 'juice_bar', label: t('onboarding.step1.businessTypes.juice_bar') },
+        { id: 'bar', label: t('onboarding.step1.businessTypes.bar') },
+        { id: 'catering', label: t('onboarding.step1.businessTypes.catering') },
+      ],
+    },
+    {
+      category: t('onboarding.step1.businessCategories.retailAndGroceries'),
+      options: [
+        { id: 'retail', label: t('onboarding.step1.businessTypes.retail') },
+        { id: 'grocery', label: t('onboarding.step1.businessTypes.grocery') },
+        { id: 'butchery', label: t('onboarding.step1.businessTypes.butchery') },
+      ],
+    },
+    {
+      category: t('onboarding.step1.businessCategories.other'),
+      options: [
+        { id: 'other', label: t('onboarding.step1.businessTypes.other') },
+      ],
+    },
+  ], [t]);
 
   const getEstablishmentTypeLabel = (type?: string) => {
     const normalizedType = String(type || 'restaurant').toLowerCase();
@@ -1280,323 +1430,531 @@ export function OnboardingPage() {
       <div className="flex-1 flex items-center justify-center p-6">
         <AnimatePresence mode="wait">
 
-          {/* STEP 1: Location Details */}
+          {/* STEP 1: Location Details & Know Your Business */}
           {step === 1 && (
             <motion.div
-              key="step1"
+              key={step1SubStep === 'businessProfile' ? 'step1-business' : 'step1-location'}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               className="max-w-2xl w-full"
             >
               <div className="bg-white dark:bg-white/5 rounded-3xl sm:rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
-                <div className="mb-10">
-                  {/* Steps 2–4 each have a Back control; step 1 had none, so a
-                      first-time owner arriving from signup was stranded here
-                      with no way out but the browser's own back button
-                      (TC-042). There is no previous step, so this exits the
-                      wizard: to the owner portal when adding another location,
-                      otherwise back to the site. */}
-                  <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-white/5">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        isAdditionalLocation ? navigate('/owner') : navigate('/')
-                      }
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
-                    >
-                      {!isRTL && <ArrowLeft size={16} />}
-                      {t('onboarding.back')}
-                      {isRTL && <ArrowLeft size={16} />}
-                    </button>
-                    {isAdditionalLocation && (
-                      <button
-                        type="button"
-                        onClick={() => navigate('/owner')}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-mintcom-green dark:text-gray-300 dark:hover:text-mintcom-green transition-colors"
-                      >
-                        <LayoutDashboard size={16} />
-                        {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
-                      </button>
-                    )}
-                  </div>
-                  <div className="flex justify-between items-start mb-2">
-                    <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('onboarding.step1.title')}</h2>
-                  </div>
-                  <p className="text-sm font-sans text-gray-600 dark:text-gray-300">{t('onboarding.step1.subtitle')}</p>
-                </div>
-
-                <form onSubmit={form1.handleSubmit(onStep1Submit)} autoComplete="off" className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                      <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
-                        {t('onboarding.step1.locationName')} <span className="text-mintcom-red mx-1">*</span>
-                      </label>
-                      <div className="relative group">
-                        <Store className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
-                        <input
-                          maxLength={TEXT_INPUT_LIMITS.BUSINESS_NAME}
-                          type="text"
-                          {...form1.register('name')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
-                          placeholder={formatInputPlaceholder(t('onboarding.step1.locationNamePlaceholder'), t('common.locale'))}
-                        />
-                      </div>
-                      {form1.formState.errors.name && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.name.message as string}</p>}
-                    </div>
-
-                    <div className="space-y-3">
-                      <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
-                        {t('onboarding.step1.businessType')}
-                      </label>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        {businessTypes.map((type) => (
+                {step1SubStep === 'location' ? (
+                  <>
+                    <div className="mb-10">
+                      {/* Steps 2–4 each have a Back control; step 1 had none, so a
+                          first-time owner arriving from signup was stranded here
+                          with no way out but the browser's own back button
+                          (TC-042). There is no previous step, so this exits the
+                          wizard: to the owner portal when adding another location,
+                          otherwise back to the site. */}
+                      <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-white/5">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            isAdditionalLocation ? navigate('/owner') : navigate('/')
+                          }
+                          className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                        >
+                          {!isRTL && <ArrowLeft size={16} />}
+                          {t('onboarding.back')}
+                          {isRTL && <ArrowLeft size={16} />}
+                        </button>
+                        {isAdditionalLocation && (
                           <button
-                            key={type.id}
                             type="button"
-                            onClick={() => form1.setValue('type', type.id)}
-                            className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${form1.watch('type') === type.id ? 'border-mintcom-green bg-mintcom-green/5 text-mintcom-green' : 'border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-transparent text-gray-400'
-                              }`}
+                            onClick={() => navigate('/owner')}
+                            className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-mintcom-green dark:text-gray-300 dark:hover:text-mintcom-green transition-colors"
                           >
-                            <type.icon size={24} />
-                            <span className="text-xs font-sans font-medium">{type.label}</span>
+                            <LayoutDashboard size={16} />
+                            {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
                           </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Country first — currency is linked to the selected country/region */}
-                    <div className="space-y-2">
-                      <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
-                        {t('onboarding.step1.country', { defaultValue: 'Country' })} <span className="text-mintcom-red mx-1">*</span>
-                      </label>
-                      <div className="relative">
-                        <Globe className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
-                        <select
-                          {...form1.register('country')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.country ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
-                        >
-                          {countryOptions.map((countryOption) => (
-                            <option key={countryOption.code} value={countryOption.code}>
-                              {countryOption.label}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
-                      </div>
-                      {form1.formState.errors.country && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.country.message as string}</p>}
-                    </div>
-
-                    {/* Store timezone — per-location wall clock for all dates/reports */}
-                    <div className="space-y-2">
-                      <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
-                        {t('onboarding.step1.timezone', { defaultValue: 'Store timezone' })} <span className="text-mintcom-red mx-1">*</span>
-                      </label>
-                      <div className="relative">
-                        <CalendarClock className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
-                        <select
-                          {...form1.register('timezone')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.timezone ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
-                        >
-                          {timezoneOptions.map((tz) => (
-                            <option key={tz} value={tz}>
-                              {tz}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
-                      </div>
-                      <p className="text-xs font-sans text-gray-500 dark:text-gray-400 mt-1.5 mx-1 flex items-center gap-1.5">
-                        <Info size={14} className="flex-shrink-0" />
-                        <span>
-                          {t('onboarding.step1.timezoneHint', {
-                            defaultValue: 'All sales, shifts and reports use this timezone. Current time there: {{time}}.',
-                            time: (() => { try { return new Intl.DateTimeFormat(locale || 'en-US', { hour: '2-digit', minute: '2-digit', timeZone: selectedTimezone || timezoneOptions[0] }).format(new Date()); } catch { return ''; } })(),
-                          })}
-                        </span>
-                      </p>
-                      {form1.formState.errors.timezone && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.timezone.message as string}</p>}
-                    </div>
-
-                    {/* Base Currency Row: auto-filled from country, always free to change on first location */}
-                    <div className="space-y-2">
-                      <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
-                        {t('onboarding.step1.currency')} <span className="text-mintcom-red mx-1">*</span>
-                      </label>
-                      <div className="relative">
-                        <DollarSign className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 ${isCurrencyLocked ? 'text-gray-500' : 'text-gray-400'}`} size={20} />
-                        <select
-                          {...form1.register('currency')}
-                          disabled={isCurrencyLocked}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none ${isCurrencyLocked ? 'opacity-60 cursor-not-allowed bg-gray-100 dark:bg-white/5' : ''}`}
-                        >
-                          {currencyOptions.map((currencyOption) => (
-                            <option key={currencyOption.code} value={currencyOption.code}>
-                              {currencyOption.label}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
-                        {isCurrencyLocked && (
-                          <div className={`absolute ${isRTL ? 'left-10' : 'right-10'} top-1/2 -translate-y-1/2`}>
-                            <Lock size={16} className="text-gray-400" />
-                          </div>
                         )}
                       </div>
-                      {!isCurrencyLocked && (
-                        <p className="text-xs font-sans text-gray-500 dark:text-gray-400 mt-1.5 mx-1 flex items-center gap-1.5">
-                          <Info size={14} className="flex-shrink-0" />
-                          <span>
-                            {t('onboarding.step1.currencyLinkedToCountry', {
-                              defaultValue: 'Currency is set from the selected country. You can change it if needed.',
-                            })}
-                          </span>
-                        </p>
-                      )}
-                      {isCurrencyLocked && (
-                        <div className="text-xs font-sans text-amber-800 dark:text-amber-300 mt-2 mx-1 flex items-start gap-2 bg-amber-50 dark:bg-amber-500/10 p-3 rounded-xl border border-amber-200 dark:border-amber-500/20 leading-relaxed">
-                          <Info size={16} className="flex-shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
-                          <span>{t('onboarding.step1.currencyLockedNote')}</span>
-                        </div>
-                      )}
-                      {form1.formState.errors.currency && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.currency.message as string}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
-                        {t('onboarding.step1.address')} <span className="text-mintcom-red mx-1">*</span>
-                      </label>
-                      <div className="relative">
-                        <MapPin className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
-                        <input maxLength={255}
-                          type="text"
-                          {...form1.register('address')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
-                          placeholder={formatInputPlaceholder(t('onboarding.step1.addressPlaceholder'), t('common.locale'))}
-                        />
+                      <div className="flex justify-between items-start mb-2">
+                        <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('onboarding.step1.title')}</h2>
                       </div>
-                      {form1.formState.errors.address && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.address.message as string}</p>}
+                      <p className="text-sm font-sans text-gray-600 dark:text-gray-300">{t('onboarding.step1.subtitle')}</p>
                     </div>
 
-                    {/* Import Settings Section - Only show if user has existing establishments */}
-                    {establishments.length > 0 && (
-                      <div className="pt-4 border-t border-gray-100 dark:border-white/5">
-                        <div className="flex items-center gap-2 mb-4">
-                          <Copy className="text-mintcom-green" size={20} />
-                          <h3 className="font-sans text-base font-bold text-gray-900 dark:text-white">{t('onboarding.step1.quickSetup')}</h3>
+                    <form onSubmit={form1.handleSubmit(onLocationDetailsSubmit)} autoComplete="off" className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+                      <div className="space-y-6">
+                        <div className="space-y-2">
+                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                            {t('onboarding.step1.locationName')} <span className="text-mintcom-red mx-1">*</span>
+                          </label>
+                          <div className="relative group">
+                            <Store className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
+                            <input
+                              maxLength={TEXT_INPUT_LIMITS.BUSINESS_NAME}
+                              type="text"
+                              {...form1.register('name')}
+                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                              placeholder={formatInputPlaceholder(t('onboarding.step1.locationNamePlaceholder'), t('common.locale'))}
+                            />
+                          </div>
+                          {form1.formState.errors.name && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.name.message as string}</p>}
                         </div>
 
-                        <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5 border border-gray-100 dark:border-white/5">
-                          <label className="text-xs font-sans text-gray-400 mb-2 flex items-center">
-                            {t('onboarding.step1.copySettings')}
-                            <QuickInfo text={t('onboarding.step1.copySettingsTip')} />
+                        <div className="space-y-2">
+                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                            {t('onboarding.step1.businessType')} <span className="text-mintcom-red mx-1">*</span>
                           </label>
-                          <div className="relative mb-4">
+                          <div className="relative">
+                            <Building2 className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
                             <select
-                              value={duplicateFromId}
-                              onChange={(e) => handleDuplicateSourceChange(e.target.value)}
-                              className="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 text-gray-900 dark:text-white font-sans focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 appearance-none"
+                              {...form1.register('type')}
+                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.type ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
                             >
-                              <option value="">{t('onboarding.step1.startFresh')}</option>
-                              {establishments.map((est) => (
-                                <option key={est.id} value={est.id}>
-                                  {est.name} ({getEstablishmentTypeLabel(est.type)})
+                              {businessTypeGroups.map((group) => (
+                                <optgroup
+                                  key={group.category}
+                                  label={group.category}
+                                  className="bg-white dark:bg-[#121212] text-gray-900 dark:text-white font-semibold"
+                                >
+                                  {group.options.map((opt) => (
+                                    <option
+                                      key={opt.id}
+                                      value={opt.id}
+                                      className="bg-white dark:bg-[#121212] text-gray-900 dark:text-white font-normal"
+                                    >
+                                      {opt.label}
+                                    </option>
+                                  ))}
+                                </optgroup>
+                              ))}
+                            </select>
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
+                          </div>
+                          {form1.formState.errors.type && (
+                            <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">
+                              {form1.formState.errors.type.message as string}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Country first — currency is linked to the selected country/region */}
+                        <div className="space-y-2">
+                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                            {t('onboarding.step1.country', { defaultValue: 'Country' })} <span className="text-mintcom-red mx-1">*</span>
+                          </label>
+                          <div className="relative">
+                            <Globe className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
+                            <select
+                              {...form1.register('country')}
+                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.country ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
+                            >
+                              {countryOptions.map((countryOption) => (
+                                <option key={countryOption.code} value={countryOption.code}>
+                                  {countryOption.label}
                                 </option>
                               ))}
                             </select>
-                            <ChevronDown className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
                           </div>
+                          {form1.formState.errors.country && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.country.message as string}</p>}
+                        </div>
 
-                          {/* Checkboxes - Only show if an establishment is selected */}
-                          <AnimatePresence>
-                            {duplicateFromId && (
-                              <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                className="space-y-3 overflow-hidden"
-                              >
-                                <p className="text-xs font-sans text-gray-400 mb-2">{t('onboarding.step1.selectData')}</p>
+                        {/* Store timezone — per-location wall clock for all dates/reports */}
+                        <div className="space-y-2">
+                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                            {t('onboarding.step1.timezone', { defaultValue: 'Store timezone' })} <span className="text-mintcom-red mx-1">*</span>
+                          </label>
+                          <div className="relative">
+                            <CalendarClock className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
+                            <select
+                              {...form1.register('timezone')}
+                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.timezone ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
+                            >
+                              {timezoneOptions.map((tz) => (
+                                <option key={tz} value={tz}>
+                                  {tz}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
+                          </div>
+                          <p className="text-xs font-sans text-gray-500 dark:text-gray-400 mt-1.5 mx-1 flex items-center gap-1.5">
+                            <Info size={14} className="flex-shrink-0" />
+                            <span>
+                              {t('onboarding.step1.timezoneHint', {
+                                defaultValue: 'All sales, shifts and reports use this timezone. Current time there: {{time}}.',
+                                time: (() => { try { return new Intl.DateTimeFormat(locale || 'en-US', { hour: '2-digit', minute: '2-digit', timeZone: selectedTimezone || timezoneOptions[0] }).format(new Date()); } catch { return ''; } })(),
+                              })}
+                            </span>
+                          </p>
+                          {form1.formState.errors.timezone && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.timezone.message as string}</p>}
+                        </div>
 
-                                {/* Inventory Checkbox */}
-                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateInventory ? 'border-mintcom-green bg-mintcom-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
-                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateInventory ? 'bg-mintcom-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
-                                    {duplicateInventory && <Check size={14} strokeWidth={4} />}
-                                  </div>
-                                  <input
-                                    type="checkbox"
-                                    className="hidden"
-                                    checked={duplicateInventory}
-                                    onChange={(e) => setDuplicateInventory(e.target.checked)}
-                                  />
-                                  <div className="flex-1 flex items-center gap-2">
-                                    <Box size={16} className={duplicateInventory ? 'text-mintcom-green' : 'text-gray-400'} />
-                                    <div>
-                                      <p className="text-sm font-sans text-gray-900 dark:text-white">{t('onboarding.step1.menu')}</p>
-                                      <p className="text-xs font-sans text-gray-500">{t('onboarding.step1.menuDesc')}</p>
-                                    </div>
-                                  </div>
-                                </label>
-
-                                {/* Discounts Checkbox */}
-                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateDiscounts ? 'border-mintcom-green bg-mintcom-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
-                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateDiscounts ? 'bg-mintcom-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
-                                    {duplicateDiscounts && <Check size={14} strokeWidth={4} />}
-                                  </div>
-                                  <input
-                                    type="checkbox"
-                                    className="hidden"
-                                    checked={duplicateDiscounts}
-                                    onChange={(e) => setDuplicateDiscounts(e.target.checked)}
-                                  />
-                                  <div className="flex-1 flex items-center gap-2">
-                                    <Tags size={16} className={duplicateDiscounts ? 'text-mintcom-green' : 'text-gray-400'} />
-                                    <div>
-                                      <p className="text-sm font-sans text-gray-900 dark:text-white">{t('onboarding.step1.discounts')}</p>
-                                      <p className="text-xs font-sans text-gray-500">{t('onboarding.step1.discountsDesc')}</p>
-                                    </div>
-                                  </div>
-                                </label>
-
-                                {/* Payment Methods Checkbox */}
-                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicatePaymentMethods ? 'border-mintcom-green bg-mintcom-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
-                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicatePaymentMethods ? 'bg-mintcom-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
-                                    {duplicatePaymentMethods && <Check size={14} strokeWidth={4} />}
-                                  </div>
-                                  <input
-                                    type="checkbox"
-                                    className="hidden"
-                                    checked={duplicatePaymentMethods}
-                                    onChange={(e) => setDuplicatePaymentMethods(e.target.checked)}
-                                  />
-                                  <div className="flex-1 flex items-center gap-2">
-                                    <CreditCard size={16} className={duplicatePaymentMethods ? 'text-mintcom-green' : 'text-gray-400'} />
-                                    <div>
-                                      <p className="text-sm font-sans text-gray-900 dark:text-white">{t('onboarding.step1.paymentMethods')}</p>
-                                      <p className="text-xs font-sans text-gray-500">{t('onboarding.step1.paymentMethodsDesc')}</p>
-                                    </div>
-                                  </div>
-                                </label>
-                              </motion.div>
+                        {/* Base Currency Row: auto-filled from country, always free to change on first location */}
+                        <div className="space-y-2">
+                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                            {t('onboarding.step1.currency')} <span className="text-mintcom-red mx-1">*</span>
+                          </label>
+                          <div className="relative">
+                            <DollarSign className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 ${isCurrencyLocked ? 'text-gray-500' : 'text-gray-400'}`} size={20} />
+                            <select
+                              {...form1.register('currency')}
+                              disabled={isCurrencyLocked}
+                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none ${isCurrencyLocked ? 'opacity-60 cursor-not-allowed bg-gray-100 dark:bg-white/5' : ''}`}
+                            >
+                              {currencyOptions.map((currencyOption) => (
+                                <option key={currencyOption.code} value={currencyOption.code}>
+                                  {currencyOption.label}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
+                            {isCurrencyLocked && (
+                              <div className={`absolute ${isRTL ? 'left-10' : 'right-10'} top-1/2 -translate-y-1/2`}>
+                                <Lock size={16} className="text-gray-400" />
+                              </div>
                             )}
-                          </AnimatePresence>
+                          </div>
+                          {!isCurrencyLocked && (
+                            <p className="text-xs font-sans text-gray-500 dark:text-gray-400 mt-1.5 mx-1 flex items-center gap-1.5">
+                              <Info size={14} className="flex-shrink-0" />
+                              <span>
+                                {t('onboarding.step1.currencyLinkedToCountry', {
+                                  defaultValue: 'Currency is set from the selected country. You can change it if needed.',
+                                })}
+                              </span>
+                            </p>
+                          )}
+                          {isCurrencyLocked && (
+                            <div className="text-xs font-sans text-amber-800 dark:text-amber-300 mt-2 mx-1 flex items-start gap-2 bg-amber-50 dark:bg-amber-500/10 p-3 rounded-xl border border-amber-200 dark:border-amber-500/20 leading-relaxed">
+                              <Info size={16} className="flex-shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                              <span>{t('onboarding.step1.currencyLockedNote')}</span>
+                            </div>
+                          )}
+                          {form1.formState.errors.currency && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.currency.message as string}</p>}
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                            {t('onboarding.step1.address')} <span className="text-mintcom-red mx-1">*</span>
+                          </label>
+                          <div className="relative">
+                            <MapPin className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
+                            <input maxLength={255}
+                              type="text"
+                              {...form1.register('address')}
+                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                              placeholder={formatInputPlaceholder(t('onboarding.step1.addressPlaceholder'), t('common.locale'))}
+                            />
+                          </div>
+                          {form1.formState.errors.address && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.address.message as string}</p>}
+                        </div>
+
+                        {/* Import Settings Section - Only show if user has existing establishments */}
+                        {establishments.length > 0 && (
+                          <div className="pt-4 border-t border-gray-100 dark:border-white/5">
+                            <div className="flex items-center gap-2 mb-4">
+                              <Copy className="text-mintcom-green" size={20} />
+                              <h3 className="font-sans text-base font-bold text-gray-900 dark:text-white">{t('onboarding.step1.quickSetup')}</h3>
+                            </div>
+
+                            <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5 border border-gray-100 dark:border-white/5">
+                              <label className="text-xs font-sans text-gray-400 mb-2 flex items-center">
+                                {t('onboarding.step1.copySettings')}
+                                <QuickInfo text={t('onboarding.step1.copySettingsTip')} />
+                              </label>
+                              <div className="relative mb-4">
+                                <select
+                                  value={duplicateFromId}
+                                  onChange={(e) => handleDuplicateSourceChange(e.target.value)}
+                                  className="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 text-gray-900 dark:text-white font-sans focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 appearance-none"
+                                >
+                                  <option value="">{t('onboarding.step1.startFresh')}</option>
+                                  {establishments.map((est) => (
+                                    <option key={est.id} value={est.id}>
+                                      {est.name} ({getEstablishmentTypeLabel(est.type)})
+                                    </option>
+                                  ))}
+                                </select>
+                                <ChevronDown className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                              </div>
+
+                              {/* Checkboxes - Only show if an establishment is selected */}
+                              <AnimatePresence>
+                                {duplicateFromId && (
+                                  <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="space-y-3 overflow-hidden"
+                                  >
+                                    <p className="text-xs font-sans text-gray-400 mb-2">{t('onboarding.step1.selectData')}</p>
+
+                                    {/* Inventory Checkbox */}
+                                    <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateInventory ? 'border-mintcom-green bg-mintcom-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
+                                      <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateInventory ? 'bg-mintcom-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                        {duplicateInventory && <Check size={14} strokeWidth={4} />}
+                                      </div>
+                                      <input
+                                        type="checkbox"
+                                        className="hidden"
+                                        checked={duplicateInventory}
+                                        onChange={(e) => setDuplicateInventory(e.target.checked)}
+                                      />
+                                      <div className="flex-1 flex items-center gap-2">
+                                        <Box size={16} className={duplicateInventory ? 'text-mintcom-green' : 'text-gray-400'} />
+                                        <div>
+                                          <p className="text-sm font-sans text-gray-900 dark:text-white">{t('onboarding.step1.menu')}</p>
+                                          <p className="text-xs font-sans text-gray-500">{t('onboarding.step1.menuDesc')}</p>
+                                        </div>
+                                      </div>
+                                    </label>
+
+                                    {/* Discounts Checkbox */}
+                                    <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateDiscounts ? 'border-mintcom-green bg-mintcom-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
+                                      <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateDiscounts ? 'bg-mintcom-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                        {duplicateDiscounts && <Check size={14} strokeWidth={4} />}
+                                      </div>
+                                      <input
+                                        type="checkbox"
+                                        className="hidden"
+                                        checked={duplicateDiscounts}
+                                        onChange={(e) => setDuplicateDiscounts(e.target.checked)}
+                                      />
+                                      <div className="flex-1 flex items-center gap-2">
+                                        <Tags size={16} className={duplicateDiscounts ? 'text-mintcom-green' : 'text-gray-400'} />
+                                        <div>
+                                          <p className="text-sm font-sans text-gray-900 dark:text-white">{t('onboarding.step1.discounts')}</p>
+                                          <p className="text-xs font-sans text-gray-500">{t('onboarding.step1.discountsDesc')}</p>
+                                        </div>
+                                      </div>
+                                    </label>
+
+                                    {/* Payment Methods Checkbox */}
+                                    <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicatePaymentMethods ? 'border-mintcom-green bg-mintcom-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
+                                      <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicatePaymentMethods ? 'bg-mintcom-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                        {duplicatePaymentMethods && <Check size={14} strokeWidth={4} />}
+                                      </div>
+                                      <input
+                                        type="checkbox"
+                                        className="hidden"
+                                        checked={duplicatePaymentMethods}
+                                        onChange={(e) => setDuplicatePaymentMethods(e.target.checked)}
+                                      />
+                                      <div className="flex-1 flex items-center gap-2">
+                                        <CreditCard size={16} className={duplicatePaymentMethods ? 'text-mintcom-green' : 'text-gray-400'} />
+                                        <div>
+                                          <p className="text-sm font-sans text-gray-900 dark:text-white">{t('onboarding.step1.paymentMethods')}</p>
+                                          <p className="text-xs font-sans text-gray-500">{t('onboarding.step1.paymentMethodsDesc')}</p>
+                                        </div>
+                                      </div>
+                                    </label>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          </div>
+                        )}
+
+                      </div>
+
+                      <div className="pt-4">
+                        <button
+                          type="submit"
+                          className="w-full py-5 bg-mintcom-green text-black text-base font-sans font-bold rounded-2xl hover:bg-mintcom-green/90 transition-all shadow-xl shadow-mintcom-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                        >
+                          {isRTL && <ArrowRight size={24} />}
+                          {t('onboarding.nextStep')}
+                          {!isRTL && <ArrowRight size={24} />}
+                        </button>
+                      </div>
+                    </form>
+                  </>
+                ) : (
+                  <>
+                    <div className="mb-10">
+                      <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-white/5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setStep1SubStep('location');
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                        >
+                          {!isRTL && <ArrowLeft size={16} />}
+                          {t('onboarding.back')}
+                          {isRTL && <ArrowLeft size={16} />}
+                        </button>
+                        {isAdditionalLocation && (
+                          <button
+                            type="button"
+                            onClick={() => navigate('/owner')}
+                            className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-mintcom-green dark:text-gray-300 dark:hover:text-mintcom-green transition-colors"
+                          >
+                            <LayoutDashboard size={16} />
+                            {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="flex justify-between items-start mb-2">
+                        <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                          {t('onboarding.businessProfile.title')}
+                        </h2>
+                      </div>
+                      <p className="text-sm font-sans text-gray-600 dark:text-gray-300">
+                        {t('onboarding.businessProfile.subtitle')}
+                      </p>
+                    </div>
+
+                    <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+                      <div className="space-y-6">
+                        {/* Contact Phone */}
+                        <div className="space-y-2">
+                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                            {t('onboarding.businessProfile.phoneLabel')}
+                          </label>
+                          <div className="relative group">
+                            <Phone className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
+                            <input
+                              type="tel"
+                              value={contactPhone}
+                              onChange={(e) => setContactPhone(e.target.value)}
+                              className={`w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                              placeholder={formatInputPlaceholder(t('onboarding.businessProfile.phonePlaceholder'), t('common.locale'))}
+                            />
+                          </div>
+                          <p className="text-xs font-sans text-gray-500 dark:text-gray-400 mt-1.5 mx-1 flex items-center gap-1.5">
+                            <Info size={14} className="flex-shrink-0" />
+                            <span>{t('onboarding.businessProfile.phoneHint')}</span>
+                          </p>
+                        </div>
+
+                        {/* Staff Size */}
+                        <div className="space-y-3">
+                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                            {t('onboarding.businessProfile.staffLabel')}
+                          </label>
+                          <div className="flex flex-wrap gap-3">
+                            {STAFF_OPTIONS.map((opt) => (
+                              <BusinessPill
+                                key={opt.value}
+                                active={staffSize === opt.value}
+                                onClick={() => setStaffSize((prev) => (prev === opt.value ? '' : opt.value))}
+                              >
+                                {t(opt.labelKey)}
+                              </BusinessPill>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Branches Planned */}
+                        <div className="space-y-3">
+                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                            {t('onboarding.businessProfile.branchesLabel')}
+                          </label>
+                          <div className="flex flex-wrap gap-3">
+                            {BRANCH_OPTIONS.map((opt) => (
+                              <BusinessPill
+                                key={opt.value}
+                                active={branchesPlanned === opt.value}
+                                onClick={() => setBranchesPlanned((prev) => (prev === opt.value ? '' : opt.value))}
+                              >
+                                {t(opt.labelKey)}
+                              </BusinessPill>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Current POS */}
+                        <div className="space-y-3">
+                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                            {t('onboarding.businessProfile.posLabel')}
+                          </label>
+                          <div className="flex flex-wrap gap-3">
+                            {POS_OPTIONS.map((opt) => (
+                              <BusinessPill
+                                key={opt.value}
+                                active={currentPos === opt.value}
+                                onClick={() => setCurrentPos((prev) => (prev === opt.value ? '' : opt.value))}
+                              >
+                                {t(opt.labelKey)}
+                              </BusinessPill>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* How did you hear about us */}
+                        <div className="space-y-3">
+                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                            {t('onboarding.businessProfile.sourceLabel')}
+                          </label>
+                          <div className="flex flex-wrap gap-3">
+                            {SOURCE_OPTIONS.map((opt) => (
+                              <BusinessPill
+                                key={opt.value}
+                                active={heardAbout === opt.value}
+                                onClick={() => setHeardAbout((prev) => (prev === opt.value ? '' : opt.value))}
+                              >
+                                {t(opt.labelKey)}
+                              </BusinessPill>
+                            ))}
+                          </div>
+                          {heardAbout === 'Friend / referral' && (
+                            <div className="space-y-2 pt-2">
+                              <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                                {t('onboarding.businessProfile.referralCodeLabel')}
+                              </label>
+                              <div className="relative group">
+                                <Tags className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
+                                <input
+                                  type="text"
+                                  value={referralCode}
+                                  onChange={(e) => setReferralCode(e.target.value)}
+                                  className={`w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                                  placeholder={formatInputPlaceholder(t('onboarding.businessProfile.referralCodePlaceholder'), t('common.locale'))}
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Marketing Consent */}
+                        <div className="bg-gray-50 dark:bg-black/20 p-5 rounded-2xl flex items-center justify-between border border-gray-100 dark:border-white/5">
+                          <span className="text-sm font-sans font-medium text-gray-900 dark:text-white">
+                            {t('onboarding.businessProfile.marketingConsent')}
+                          </span>
+                          <Toggle checked={marketingConsent} onChange={setMarketingConsent} size="md" />
                         </div>
                       </div>
-                    )}
 
-                  </div>
-
-                  <div className="pt-4">
-                    <button
-                      type="submit"
-                      className="w-full py-5 bg-mintcom-green text-black text-base font-sans font-bold rounded-2xl hover:bg-mintcom-green/90 transition-all shadow-xl shadow-mintcom-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
-                    >
-                      {isRTL && <ArrowRight size={24} />}
-                      {t('onboarding.nextStep')}
-                      {!isRTL && <ArrowRight size={24} />}
-                    </button>
-                  </div>
-                </form>
+                      <div className="flex items-center gap-3 pt-4">
+                        <button
+                          type="button"
+                          onClick={handleSkipBusinessProfile}
+                          disabled={isLoading}
+                          className="flex-1 py-5 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-sans font-bold rounded-2xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-base active:scale-[0.98] disabled:opacity-50"
+                        >
+                          {t('onboarding.businessProfile.skip')}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleContinueBusinessProfile}
+                          disabled={isLoading}
+                          className="flex-[2] py-5 bg-mintcom-green text-black text-base font-sans font-bold rounded-2xl hover:bg-mintcom-green/90 transition-all shadow-xl shadow-mintcom-green/20 flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50"
+                        >
+                          {isLoading ? (
+                            <Loader2 className="animate-spin" size={24} />
+                          ) : (
+                            <>
+                              {isRTL && <ArrowRight size={24} />}
+                              <span>{t('onboarding.businessProfile.continue')}</span>
+                              {!isRTL && <ArrowRight size={24} />}
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </motion.div>
           )}

@@ -435,7 +435,7 @@ export function CustomerModal({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex items-center gap-1.5 px-5 py-2 bg-mintcom-green text-black font-bold text-xs sm:text-sm rounded-xl hover:bg-[#5fa888] disabled:opacity-50 transition-all shadow-sm cursor-pointer"
+                    className="flex items-center gap-1.5 px-4 py-2.5 bg-mintcom-green text-black font-semibold text-sm rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 disabled:opacity-50 transition-colors cursor-pointer"
                   >
                     {isSubmitting ? (
                       <>
@@ -611,7 +611,7 @@ export function CustomerModal({
                   aria-label={pointsAction === 'add' ? 'Apply Add Points' : 'Apply Deduct Points'}
                   className={`flex items-center gap-1.5 px-5 py-2 rounded-xl font-black text-xs sm:text-sm transition-all shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                     pointsAction === 'add'
-                      ? 'bg-mintcom-green text-black hover:bg-[#5fa888]'
+                      ? 'bg-mintcom-green text-black hover:bg-mintcom-green/90 active:bg-mintcom-green/80'
                       : 'bg-mintcom-red text-white hover:bg-red-600'
                   }`}
                 >

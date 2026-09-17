@@ -30,6 +30,7 @@ import {
 import MintcomLogoGreen from '../assets/green-full-logo.svg';
 import MintcomLogoWhite from '../assets/white-green-full-logo.svg';
 import MintcomLeafIcon from '../assets/small-logo.svg';
+import { activeRowClass, inactiveRowClass } from './ui/sharedStyles';
 
 export function OwnerLayout() {
     const { t } = useTranslation();
@@ -235,10 +236,8 @@ export function OwnerLayout() {
                                 onBlur={hideCollapsedNavTooltip}
                                 aria-label={!sidebarOpen ? item.label : undefined}
                                 className={({ isActive }) =>
-                                    `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
-                                    ${isActive
-                                        ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20 active-menu-item'
-                                        : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
+                                    `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group
+                                    ${isActive ? activeRowClass : inactiveRowClass}
                                     ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
                                 }
                             >

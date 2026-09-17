@@ -22,7 +22,7 @@ import api from '../../config/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
-import { EmptyState, Pagination, SelectInput, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, PageHeader, Badge, Toggle } from '../../components/ui';
+import { EmptyState, Pagination, SelectInput, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, PageHeader, Badge, Toggle, Button } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { QuickInfo } from '../../components/QuickInfo';
@@ -649,13 +649,12 @@ export function AddonsPage() {
           }
           actions={
               <>
-                  <button
+                  <Button
                       onClick={() => openAttributeModal()}
-                      className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
                   >
-                      <Plus size={18} />
+                      <Plus size={18} strokeWidth={2.5} />
                       <span>{t('attributes.newGroup')}</span>
-                  </button>
+                  </Button>
               </>
           }
       />
@@ -856,7 +855,7 @@ export function AddonsPage() {
                             e.stopPropagation();
                             openSubAttributeModal(attr.id);
                           }}
-                          className="w-10 h-10 flex items-center justify-center bg-mintcom-green text-black rounded-xl hover:bg-[#5fa888] transition-all shadow-lg shadow-mintcom-green/20 active:scale-90"
+                          className="w-10 h-10 flex items-center justify-center bg-mintcom-green text-black rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                           title={t('attributes.list.addOption')}
                         >
                           <Plus size={20} strokeWidth={3} />
@@ -896,7 +895,7 @@ export function AddonsPage() {
                       {isAttributeActive(attr) && (
                         <button
                           onClick={() => openSubAttributeModal(attr.id)}
-                          className="w-8 h-8 flex items-center justify-center bg-mintcom-green text-black rounded-lg hover:bg-[#5fa888] transition-all shadow-md shadow-mintcom-green/10 active:scale-90"
+                          className="w-8 h-8 flex items-center justify-center bg-mintcom-green text-black rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                           title={t('attributes.list.addOption')}
                         >
                           <Plus size={16} strokeWidth={3} />

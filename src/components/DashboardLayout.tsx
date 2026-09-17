@@ -13,6 +13,7 @@ import { BottomNavigation } from './mobile/BottomNavigation';
 import { AlertsBell } from './notifications/AlertsBell';
 import { SidebarPreferencesHelpMenu } from './layout/SidebarPreferencesHelpMenu';
 import { ModalCloseButton } from './ui/ModalCloseButton';
+import { activeRowClass, inactiveRowClass, inactiveMobileRowClass, activeGroupClass, activeSubRowClass, inactiveSubRowClass, subDotActiveClass, subDotInactiveClass, avatarClass, userCardClass, userNameClass, userEmailClass, eyebrowClass, accentTextClass } from './ui/sharedStyles';
 import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
@@ -838,28 +839,27 @@ export function DashboardLayout() {
         {sidebarOpen ? (
           <div className="px-2 pb-2 pt-0">
             <div
-              className={`p-3.5 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm relative overflow-hidden group transition-all duration-300 ${canSwitchLocation ? 'cursor-pointer hover:border-mintcom-green/30' : ''}`}
+              className={`p-3 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-xl relative overflow-hidden group transition-colors duration-200 ${canSwitchLocation ? 'cursor-pointer hover:border-mintcom-green/40' : ''}`}
               onClick={canSwitchLocation ? () => navigate('/select-establishment') : undefined}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 dark:bg-mintcom-green/10 rounded-full blur-3xl pointer-events-none transition-transform duration-1000" />
               <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-2.5">
-                  <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center flex-shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-lg bg-mintcom-green/12 flex items-center justify-center flex-shrink-0">
                     {(() => {
                       const Icon = getBusinessTypeIcon(currentEstablishment?.type || '');
-                      return <Icon size={18} className="text-mintcom-green" />;
+                      return <Icon size={18} className="text-emerald-700 dark:text-mintcom-green" />;
                     })()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="label-strong font-sans text-mintcom-green mb-0.5">{t('dashboard.menu.activeLocation')}</p>
-                    <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
+                    <p className={`${eyebrowClass} leading-none mb-1`}>{t('dashboard.menu.activeLocation')}</p>
+                    <h2 className="text-[15px] font-bold text-gray-900 dark:text-white tracking-tight leading-tight font-sans truncate">
                       {currentEstablishment?.name || t('common.loading')}
                     </h2>
                   </div>
                 </div>
-                <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-gray-100 dark:border-white/10">
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100 dark:border-white/10">
                   <div className="flex items-center gap-1.5">
-                    <RealtimeStatusIndicator />
+                    <RealtimeStatusIndicator variant="inline" />
                   </div>
                   <div className="flex items-center gap-2">
                     {showOwnerPortalLink && (
@@ -875,8 +875,8 @@ export function DashboardLayout() {
                       </button>
                     )}
                     {canSwitchLocation && (
-                      <div className="flex items-center gap-1 text-xs font-medium text-gray-400 tracking-widest group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                        {t('dashboard.menu.switchLocation')} <ChevronRight size={10} className={`mt-0.5 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
+                      <div className={`flex items-center gap-0.5 text-xs font-semibold ${accentTextClass}`}>
+                        {t('dashboard.menu.switchLocation')} <ChevronRight size={14} className={`${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
                       </div>
                     )}
                   </div>
@@ -931,11 +931,11 @@ export function DashboardLayout() {
                     onBlur={() => !sidebarOpen && scheduleHideCollapsedNavOverlay()}
                     aria-label={!sidebarOpen ? item.label : undefined}
                     className={`
-                      flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group relative
+                      flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group relative
                       ${sidebarOpen ? 'w-full' : ''}
                       ${isActive
-                        ? (!sidebarOpen ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20' : 'bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white')
-                        : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
+                        ? (!sidebarOpen ? activeRowClass : activeGroupClass)
+                        : inactiveRowClass}
                       ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}
                     `}
                   >
@@ -965,20 +965,14 @@ export function DashboardLayout() {
                               end={subItem.path === 'settings'}
                               onClick={() => setSidebarOpen(false)}
                               className={({ isActive }) =>
-                                `flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
-                                  ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20 active-menu-item'
-                                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
-                                }`
+                                `flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${isActive ? activeSubRowClass : inactiveSubRowClass}`
                               }
                             >
                               {({ isActive }) => (
                                 <>
-                                  <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActive ? 'bg-black' : 'bg-gray-300 dark:bg-gray-600'
+                                  <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActive ? subDotActiveClass : subDotInactiveClass
                                     }`} />
                                   <span>{subItem.label}</span>
-                                  {isActive && (
-                                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-black" />
-                                  )}
                                 </>
                               )}
                             </NavLink>
@@ -1006,10 +1000,8 @@ export function DashboardLayout() {
                   onBlur={() => !sidebarOpen && scheduleHideCollapsedNavOverlay()}
                   aria-label={!sidebarOpen ? item.label : undefined}
                   className={({ isActive }) =>
-                    `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
-                    ${isActive
-                      ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20 active-menu-item'
-                      : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
+                    `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group
+                    ${isActive ? activeRowClass : inactiveRowClass}
                     ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
                   }
                 >
@@ -1066,10 +1058,8 @@ export function DashboardLayout() {
                           hideCollapsedNavOverlay();
                         }}
                         className={({ isActive }) =>
-                          `flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                            isActive
-                              ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20 active-menu-item'
-                              : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
+                          `flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${
+                            isActive ? activeSubRowClass : inactiveSubRowClass
                           }`
                         }
                       >
@@ -1077,7 +1067,7 @@ export function DashboardLayout() {
                           <>
                             <span
                               className={`w-1.5 h-1.5 shrink-0 rounded-full transition-colors ${
-                                isActive ? 'bg-black' : 'bg-gray-300 dark:bg-gray-600'
+                                isActive ? subDotActiveClass : subDotInactiveClass
                               }`}
                             />
                             <span className="truncate">{subItem.label}</span>
@@ -1100,15 +1090,15 @@ export function DashboardLayout() {
         <div className="p-3 border-t border-gray-100 dark:border-white/5 relative shrink-0 mt-auto">
           {sidebarOpen ? (
             <div className="space-y-1">
-              <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-xl">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
+              <div className={`flex items-center gap-3 p-3 mb-2 ${userCardClass}`}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm ${avatarClass}`}>
                   {account?.firstName?.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                  <p className={userNameClass}>
                     {account?.firstName} {account?.lastName}
                   </p>
-                  <p className="text-xs text-gray-500 truncate">{account?.email || t('staff.roles.manager')}</p>
+                  <p className={userEmailClass}>{account?.email || t('staff.roles.manager')}</p>
                 </div>
               </div>
 
@@ -1324,10 +1314,7 @@ export function DashboardLayout() {
                       to={item.path}
                       onClick={() => setMobileMenuOpen(false)}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 p-3.5 rounded-xl transition-all ${isActive
-                          ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20'
-                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'
-                        }`
+                        `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 ${isActive ? activeRowClass : inactiveMobileRowClass}`
                       }
                     >
                       <Icon size={20} />
@@ -1359,13 +1346,13 @@ export function DashboardLayout() {
                   onOpenHelpCenter={openHelpCenter}
                 />
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center">
-                  <span className="text-black font-bold">{account?.firstName?.charAt(0).toUpperCase()}</span>
+              <div className={`flex items-center gap-3 p-3 ${userCardClass}`}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm ${avatarClass}`}>
+                  {account?.firstName?.charAt(0).toUpperCase()}
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-bold text-gray-900 dark:text-white">{account?.firstName}</p>
-                  <p className="text-xs text-gray-500">{t('owner.staff.standardUsers')}</p>
+                <div className="flex-1 min-w-0">
+                  <p className={userNameClass}>{account?.firstName}</p>
+                  <p className={userEmailClass}>{t('owner.staff.standardUsers')}</p>
                 </div>
                 <button
                   onClick={handleLogout}

@@ -25,6 +25,7 @@ import type {
 } from '../../services/backofficeAlertsApi';
 import { AlertRow } from './AlertRow';
 import { EmptyState } from '../ui';
+import { tintBubbleClass } from '../ui/sharedStyles';
 import {
   isAlertKindInCategory,
   isCashAlertKind,
@@ -456,7 +457,7 @@ export function BackofficeAlertsView({
               <span
                 className={`rounded-full px-1.5 text-[11px] font-bold ${
                   activeTab === tab.id
-                    ? 'bg-mintcom-green/15 text-emerald-700 dark:text-mintcom-green'
+                    ? tintBubbleClass
                     : 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-400'
                 }`}
               >
@@ -471,7 +472,7 @@ export function BackofficeAlertsView({
             <button
               type="button"
               onClick={() => setSelectedLocationId('all')}
-              className={`rounded-full border px-3.5 py-1.5 text-sm font-semibold transition ${
+              className={`rounded-lg border px-3.5 py-1.5 text-sm font-semibold transition ${
                 selectedLocationId === 'all'
                   ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900'
                   : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400 dark:border-white/10 dark:bg-black/20 dark:text-gray-300 dark:hover:border-white/30'
@@ -491,7 +492,7 @@ export function BackofficeAlertsView({
                   key={location.id}
                   type="button"
                   onClick={() => setSelectedLocationId(location.id)}
-                  className={`max-w-full truncate rounded-full border px-3.5 py-1.5 text-sm font-semibold transition ${
+                  className={`max-w-full truncate rounded-lg border px-3.5 py-1.5 text-sm font-semibold transition ${
                     selectedLocationId === location.id
                       ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900'
                       : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400 dark:border-white/10 dark:bg-black/20 dark:text-gray-300 dark:hover:border-white/30'

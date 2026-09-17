@@ -45,7 +45,7 @@ export function ConfirmModal({
       case 'info':
       case 'success':
       default:
-        return 'bg-mintcom-green hover:bg-[#5fa888] text-black shadow-sm';
+        return 'bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black';
     }
   };
 

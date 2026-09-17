@@ -1026,7 +1026,7 @@ export const CustomerDigitalMenu: React.FC<CustomerDigitalMenuProps> = ({
                   {/* Add to Order Button */}
                   <button
                     onClick={handleAddToCart}
-                    className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-black text-xs transition-all shadow-md shadow-emerald-500/25 flex items-center justify-between active:scale-[0.98]"
+                    className="flex-1 py-3 px-4 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-sm transition-colors flex items-center justify-between"
                   >
                     <span className="flex items-center gap-1.5 text-white">
                       <ShoppingCart className="w-4 h-4" />

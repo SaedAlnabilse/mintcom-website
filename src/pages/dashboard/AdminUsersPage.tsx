@@ -208,9 +208,9 @@ export function AdminUsersPage() {
                                 resetForm();
                                 setShowModal(true);
                             }}
-                            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                         >
-                            <Plus size={18} />
+                            <Plus size={18} strokeWidth={2.5} />
                             <span>{t('adminUsers.newAdmin')}</span>
                         </button>
                     </>
@@ -410,7 +410,7 @@ export function AdminUsersPage() {
                 onClose={() => setShowModal(false)}
               />
               <form onSubmit={handleSubmit}>
-                <ModalBody className="pt-8 sm:pt-10">
+                <ModalBody className="space-y-6">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="block label-strong font-sans px-1">

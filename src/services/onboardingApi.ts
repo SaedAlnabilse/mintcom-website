@@ -13,6 +13,27 @@ export type OnboardingSessionResponse = {
   alreadyComplete?: boolean;
 };
 
+export type OnboardingProfilePayload = {
+  name?: string;
+  type?: string;
+  country?: string;
+  currency?: string;
+  address?: string;
+  timezone?: string;
+  duplicateFromId?: string;
+  duplicateInventory?: boolean;
+  duplicateDiscounts?: boolean;
+  duplicatePaymentMethods?: boolean;
+  contactPhone?: string;
+  staffSize?: string;
+  branchesPlanned?: string;
+  currentPos?: string;
+  heardAbout?: string;
+  referralCode?: string;
+  marketingConsent?: boolean;
+  [key: string]: unknown;
+};
+
 const skipHeader = { 'X-Skip-Establishment-Header': 'true' };
 
 export const onboardingApi = {
@@ -21,7 +42,9 @@ export const onboardingApi = {
     return res.data;
   },
 
-  async saveProfile(body: Record<string, unknown>): Promise<OnboardingSessionResponse> {
+  async saveProfile(
+    body: OnboardingProfilePayload | Record<string, unknown>,
+  ): Promise<OnboardingSessionResponse> {
     const res = await api.post('/api/onboarding/checkpoints/profile', body, {
       headers: skipHeader,
     });

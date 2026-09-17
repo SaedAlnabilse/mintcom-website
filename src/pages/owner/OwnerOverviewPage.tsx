@@ -30,7 +30,7 @@ import type { DatePeriod } from '../../utils/datePeriods';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatCurrencyCode } from '../../utils/currency';
 import { StatValue } from '../../components/ui/StatValue';
-import { PageHeader } from '../../components/ui';
+import { PageHeader, FilterBar, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass } from '../../components/ui';
 import { QuickInfo } from '../../components/QuickInfo';
 import { biIcon } from '../../components/ui/BiIcon';
 
@@ -178,9 +178,8 @@ export function OwnerOverviewPage() {
                 subtitle={t('owner.overview.subtitle', { count: establishments.length, brands: stats.totalBrands })}
                 actions={
                     <>
-                    <div className="w-full lg:w-auto bg-white dark:bg-[#1E293B] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
-                        <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0">
-                            <div className={`flex-none w-full xl:w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-mintcom-green/5 border-mintcom-green ring-1 ring-mintcom-green shadow-lg shadow-mintcom-green/10' : 'border-transparent'}`}>
+                    <FilterBar className="w-full lg:w-auto">
+                            <div className="flex-none w-full sm:w-[160px]">
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
                                     onChange={(val) => setQuickDate((val || 'today') as DatePeriod)}
@@ -189,14 +188,12 @@ export function OwnerOverviewPage() {
                                     searchable={false}
                                     placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                                     className="w-full"
-                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold !justify-center xl:!justify-between ${selectedDateRange !== 'custom' ? '!text-mintcom-green' : ''}`}
+                                    buttonClassName={`${filterSelectButtonClass} ${selectedDateRange !== 'custom' ? filterSelectActiveClass : filterSelectInactiveClass}`}
                                 />
                             </div>
 
-                            <div className="hidden xl:block w-px h-8 bg-gray-100 dark:bg-white/10 mx-3" />
-
-                            <div className="flex-1 flex flex-col md:flex-row gap-4 items-stretch md:items-center">
-                                <div className="w-full md:w-auto md:min-w-[240px] relative z-[60]">
+                            {/* Date Input Group */}
+                            <div className="w-full md:w-[240px] relative z-[60]">
                                     <DateRangePicker
                                         startDate={startDate}
                                         endDate={endDate}
@@ -212,13 +209,8 @@ export function OwnerOverviewPage() {
                                     />
                                 </div>
 
-                                <div className="hidden md:block w-px h-6 bg-gray-100 dark:bg-white/10" />
-
                                 <div className={`w-full md:w-auto md:min-w-[180px] relative z-[55]`}>
-                                    <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${startTime !== '00:00' || endTime !== '23:59'
-                                        ? 'bg-mintcom-green/5 border-mintcom-green'
-                                        : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-mintcom-green/50'
-                                        }`}>
+                                    <div className={`flex flex-col justify-center px-4 h-12 rounded-lg border transition-colors ${(startTime !== '00:00' || endTime !== '23:59') ? filterBoxActiveClass : filterBoxInactiveClass}`}>
                                         <div className="flex items-center gap-2 justify-center md:justify-between relative">
                                             <CustomTimePicker
                                                 value={startTime}
@@ -227,7 +219,7 @@ export function OwnerOverviewPage() {
                                                 buttonClassName="justify-center md:justify-start"
                                                 showIcon={true}
                                             />
-                                            <span className={`text-xs font-bold transition-colors flex-shrink-0 ${(startTime !== '00:00' || endTime !== '23:59') ? "text-[#7dc6a2]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                                            <span className={`text-xs font-semibold transition-colors flex-shrink-0 ${(startTime !== '00:00' || endTime !== '23:59') ? "text-emerald-700/60 dark:text-mintcom-green/60" : "text-gray-300 dark:text-white/10"}`}>-</span>
                                             <CustomTimePicker
                                                 value={endTime}
                                                 onChange={(val) => { setEndTime(val); }}
@@ -239,9 +231,7 @@ export function OwnerOverviewPage() {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
+                    </FilterBar>
                     </>
                 }
             />
@@ -467,7 +457,7 @@ export function OwnerOverviewPage() {
                             <div className="space-y-2">
                                 <button
                                     onClick={() => navigate('/onboarding?new=1')}
-                                    className="w-full py-2.5 bg-mintcom-green text-black font-bold rounded-xl text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                                    className="w-full py-2.5 bg-mintcom-green text-black font-semibold rounded-lg text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                                 >
                                     {t('owner.overview.addLocation')}
                                 </button>

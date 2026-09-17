@@ -4,6 +4,7 @@ import { ChevronDown, Check, X, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { formatInputLabel, formatInputPlaceholder } from '../utils/textCase';
+import { accentTextClass } from './ui/sharedStyles';
 
 interface Option {
     label: string;
@@ -290,9 +291,9 @@ export function SingleSelect({
                 ref={buttonRef}
                 type="button"
                 onClick={toggleOpen}
-                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-start flex items-center transition-[color,background-color,border-color,box-shadow] duration-150 ease-out outline-none shadow-sm
+                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-lg text-start flex items-center transition-colors duration-150 ease-out outline-none
                     ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:border-mintcom-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
-                    ${buttonClassName} ${isOpen || isFilterActive ? '!bg-mintcom-green/5 dark:!bg-mintcom-green/10 !border-mintcom-green !text-mintcom-green !ring-[3px] !ring-mintcom-green/10' : ''} ${buttonClassName.includes('justify-center') ? 'justify-center' : 'justify-between'}`}
+                    ${buttonClassName} ${isOpen || isFilterActive ? '!bg-mintcom-green/10 !border-mintcom-green/30 !text-gray-900 dark:!text-white' : ''} ${buttonClassName.includes('justify-center') ? 'justify-center' : 'justify-between'}`}
             >
                 <div className={`flex items-center gap-2 overflow-hidden ${buttonClassName.includes('justify-center') ? 'flex-none' : 'flex-1'}`}>
                      {selectedOption?.icon && (
@@ -317,7 +318,7 @@ export function SingleSelect({
                 </div>
                 <ChevronDown
                     size={18}
-                    className={`transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''} ${isOpen || isFilterActive ? 'text-mintcom-green' : 'text-gray-400'} ${buttonClassName.includes('justify-center') ? 'absolute right-5' : ''}`}
+                    className={`transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''} ${isOpen || isFilterActive ? accentTextClass : 'text-gray-400'} ${buttonClassName.includes('justify-center') ? 'absolute right-5' : ''}`}
                 />
             </button>
 

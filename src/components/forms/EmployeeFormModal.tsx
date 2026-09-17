@@ -1844,7 +1844,7 @@ export function EmployeeFormModal({
                           <button
                             type="button"
                             onClick={() => setActiveDropdown(null)}
-                            className="w-full py-2.5 bg-mintcom-green text-black font-black text-xs tracking-wide rounded-lg hover:bg-mintcom-green/90 transition-colors shadow-sm"
+                            className="w-full py-2.5 bg-mintcom-green text-black font-semibold text-sm rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                           >
                             {t('common.done')}
                           </button>

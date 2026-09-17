@@ -40,8 +40,6 @@ export function SignUpPage() {
   const [isResendingVerification, setIsResendingVerification] = useState(false);
   const [showGoogleTermsModal, setShowGoogleTermsModal] = useState(false);
   const [modalAgreed, setModalAgreed] = useState(false);
-  const [subscribeToNews, setSubscribeToNews] = useState(false);
-  const [modalSubscribeToNews, setModalSubscribeToNews] = useState(false);
   const googleAuthRef = useRef<GoogleAuthButtonHandle>(null);
 
   const navigate = useNavigate();
@@ -106,7 +104,6 @@ export function SignUpPage() {
     if (!agreed) {
       e.stopPropagation();
       setModalAgreed(false);
-      setModalSubscribeToNews(false);
       setShowGoogleTermsModal(true);
     }
   }, [agreed]);
@@ -117,7 +114,7 @@ export function SignUpPage() {
       return;
     }
     try {
-      const result = await loginWithGoogle(credential, subscribeToNews, 'signup');
+      const result = await loginWithGoogle(credential, false, 'signup');
       if (result.success) {
         toast.success(result.message || t('auth.signup.success'));
         finishSignup(result);
@@ -127,7 +124,7 @@ export function SignUpPage() {
     } catch {
       toast.error(t('common.error'));
     }
-  }, [agreed, subscribeToNews, loginWithGoogle, setError, t]);
+  }, [agreed, loginWithGoogle, setError, t]);
 
   const handleGoogleError = useCallback((error: string) => toast.error(error), []);
 
@@ -137,7 +134,7 @@ export function SignUpPage() {
       return;
     }
     try {
-      const result = await loginWithApple({ ...credential, subscribeToNews }, 'signup');
+      const result = await loginWithApple({ ...credential }, 'signup');
       if (result.success) {
         toast.success(result.message || t('auth.signup.success'));
         finishSignup(result);
@@ -157,7 +154,7 @@ export function SignUpPage() {
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
-        subscribeToNews,
+        subscribeToNews: false,
         acceptedTerms: !!data.agreeToTerms,
       });
       if (result.success) {
@@ -332,7 +329,6 @@ export function SignUpPage() {
                     onBeforeSignIn={() => {
                       if (!agreed) {
                         setModalAgreed(false);
-                        setModalSubscribeToNews(false);
                         setShowGoogleTermsModal(true);
                         return false;
                       }
@@ -533,19 +529,6 @@ export function SignUpPage() {
                     <p id="agreeToTerms-error" className="mt-1.5 ps-7 text-[11px] font-bold text-red-500">{errors.agreeToTerms.message}</p>
                   )}
                 </div>
-
-                <div className="flex items-start gap-3">
-                  <input
-                    id="subscribeToNews"
-                    type="checkbox"
-                    checked={subscribeToNews}
-                    onChange={(e) => setSubscribeToNews(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green dark:border-white/20 dark:bg-white/5"
-                  />
-                  <label htmlFor="subscribeToNews" className="cursor-pointer text-sm font-medium text-gray-600 dark:text-gray-300">
-                    {t('auth.signup.subscribeToNews', 'Send me occasional product updates, features, and business tips.')}
-                  </label>
-                </div>
               </div>
 
               <motion.button
@@ -653,31 +636,14 @@ export function SignUpPage() {
                   </div>
                 </div>
 
-                <div
-                  className="flex cursor-pointer items-start gap-3 rounded-2xl border border-gray-100 bg-gray-50/80 p-4 transition-colors hover:border-mintcom-green/30 dark:border-white/5 dark:bg-white/[0.03]"
-                  onClick={() => setModalSubscribeToNews(!modalSubscribeToNews)}
-                >
-                  <input
-                    id="modal-subscribe"
-                    type="checkbox"
-                    checked={modalSubscribeToNews}
-                    readOnly
-                    className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green dark:border-white/20"
-                  />
-                  <div className="text-xs leading-relaxed text-gray-600 dark:text-gray-300" onClick={(e) => e.stopPropagation()}>
-                    {t('auth.signup.subscribeToNews', 'Send me occasional product updates and feature releases.')}
-                  </div>
-                </div>
-
                 <div className="space-y-3 pt-2">
                   {GOOGLE_CLIENT_ID && (
                     <GoogleAuthButton
                       onSuccess={async (credential) => {
                         setValue('agreeToTerms', true);
-                        setSubscribeToNews(modalSubscribeToNews);
                         setShowGoogleTermsModal(false);
                         try {
-                          const result = await loginWithGoogle(credential, modalSubscribeToNews, 'signup');
+                          const result = await loginWithGoogle(credential, false, 'signup');
                           if (result.success) {
                             toast.success(result.message || t('auth.signup.success'));
                             finishSignup(result);
@@ -697,11 +663,10 @@ export function SignUpPage() {
                     <AppleAuthButton
                       onSuccess={async (credential) => {
                         setValue('agreeToTerms', true);
-                        setSubscribeToNews(modalSubscribeToNews);
                         setShowGoogleTermsModal(false);
                         try {
                           const result = await loginWithApple(
-                            { ...credential, subscribeToNews: modalSubscribeToNews },
+                            { ...credential },
                             'signup',
                           );
                           if (result.success) {

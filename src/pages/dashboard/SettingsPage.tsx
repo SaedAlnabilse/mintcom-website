@@ -177,6 +177,7 @@ export function SettingsPage() {
     establishments,
     setCurrentEstablishment,
     refreshEstablishments,
+    updateAccount,
     isLoading: isAuthLoading,
   } = useAuth();
   const manualDeletionPending = isManualEstablishmentDeletionPending(currentEstablishment);
@@ -289,6 +290,34 @@ export function SettingsPage() {
   const [selectedReceiptLogo, setSelectedReceiptLogo] = useState<File | null>(null);
   const [initialSettings, setInitialSettings] = useState<AppSettings | null>(null);
   const [pendingCurrencyData, setPendingCurrencyData] = useState<AppSettings | null>(null);
+  const [isConsentUpdating, setIsConsentUpdating] = useState(false);
+
+  const handleMarketingConsentToggle = async (checked: boolean) => {
+    setIsConsentUpdating(true);
+    try {
+      const response = await api.patch('/api/accounts/marketing-consent', {
+        marketingConsent: checked,
+      });
+      if (response.data?.success) {
+        updateAccount({
+          marketingConsent: response.data.marketingConsent,
+          marketingConsentedAt: response.data.marketingConsentedAt,
+        });
+        toast.success(
+          checked
+            ? t('settings.profile.marketingConsentSubscribed')
+            : t('settings.profile.marketingConsentUnsubscribed'),
+        );
+      }
+    } catch (err: any) {
+      toast.error(
+        err?.response?.data?.message ||
+          t('settings.profile.marketingConsentError'),
+      );
+    } finally {
+      setIsConsentUpdating(false);
+    }
+  };
 
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -967,7 +996,7 @@ export function SettingsPage() {
                   type="button"
                   onClick={handleSubmit(onSubmit, showFormValidationError)}
                   disabled={isSaving || !hasUnsavedChanges}
-                  className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm disabled:opacity-50 disabled:shadow-none shrink-0"
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50 shrink-0"
                 >
                   {isSaving ? (
                     <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
@@ -1641,6 +1670,25 @@ export function SettingsPage() {
                 maxLength={MAX_RECEIPT_FAREWELL_LENGTH}
                 className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
                 placeholder={formatInputPlaceholder(t('settings.receipts.footerPlaceholder'), t('common.locale'))}
+              />
+            </div>
+
+            {/* Product News & Offers (Marketing Consent) */}
+            <div className="pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+              <div>
+                <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">
+                  {t('settings.profile.marketingConsentTitle')}
+                </span>
+                <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  {t('settings.profile.marketingConsentDesc')}
+                </span>
+              </div>
+              <Toggle
+                size="sm"
+                className="shrink-0"
+                checked={Boolean(account?.marketingConsent)}
+                onChange={handleMarketingConsentToggle}
+                disabled={isConsentUpdating}
               />
             </div>
           </motion.div>

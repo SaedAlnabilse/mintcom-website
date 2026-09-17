@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { activePageClass, inactivePageClass } from './sharedStyles';
 
 interface PaginationProps {
     currentPage: number;
@@ -110,7 +111,7 @@ export function Pagination({
                 <button
                     onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
-                    className="p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-mintcom-green disabled:opacity-30 transition-all shadow-sm"
+                    className="p-3 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-emerald-700 dark:hover:text-mintcom-green disabled:opacity-30 transition-colors"
                     title={t('common.previous')}
                 >
                     <ArrowUpRight size={18} className="rotate-[225deg]" />
@@ -128,10 +129,7 @@ export function Pagination({
                             <button
                                 key={pageNum}
                                 onClick={() => handlePageChange(pageNum)}
-                                className={`w-10 h-10 rounded-xl text-xs font-medium transition-all ${currentPage === pageNum
-                                    ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
-                                    : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white shadow-sm'
-                                    }`}
+                                className={`w-10 h-10 rounded-lg text-sm transition-colors ${currentPage === pageNum ? activePageClass : inactivePageClass}`}
                             >
                                 {pageNum.toLocaleString(t('common.locale'))}
                             </button>
@@ -141,7 +139,7 @@ export function Pagination({
                 <button
                     onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
-                    className="p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-mintcom-green disabled:opacity-30 transition-all shadow-sm"
+                    className="p-3 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-emerald-700 dark:hover:text-mintcom-green disabled:opacity-30 transition-colors"
                     title={t('common.next')}
                 >
                     <ArrowUpRight size={18} className="rotate-45" />

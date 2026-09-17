@@ -476,7 +476,7 @@ export const AccountingSettingsTab: React.FC = () => {
                   type="button"
                   onClick={() => handleConnect('XERO')}
                   disabled={connectingProvider !== null}
-                  className="flex items-center gap-3 px-6 py-3 rounded-xl bg-[#13B5EA] text-white font-bold text-sm hover:bg-[#0fa4d4] transition-all shadow-sm disabled:opacity-50"
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#13B5EA] text-white font-semibold text-sm hover:bg-[#0fa4d4] transition-colors disabled:opacity-50"
                 >
                   {connectingProvider === 'XERO' ? (
                     <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
@@ -492,7 +492,7 @@ export const AccountingSettingsTab: React.FC = () => {
                   type="button"
                   onClick={() => handleConnect('QUICKBOOKS')}
                   disabled={connectingProvider !== null}
-                  className="flex items-center gap-3 px-6 py-3 rounded-xl bg-[#2CA01C] text-white font-bold text-sm hover:bg-[#258d18] transition-all shadow-sm disabled:opacity-50"
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#2CA01C] text-white font-semibold text-sm hover:bg-[#258d18] transition-colors disabled:opacity-50"
                 >
                   {connectingProvider === 'QUICKBOOKS' ? (
                     <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
@@ -596,7 +596,7 @@ export const AccountingSettingsTab: React.FC = () => {
                 type="button"
                 onClick={handleAutoSetup}
                 disabled={autoSettingUp || savingMapping}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm disabled:opacity-50 self-start shrink-0"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50 self-start shrink-0"
               >
                 {autoSettingUp ? (
                   <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
@@ -853,7 +853,7 @@ export const AccountingSettingsTab: React.FC = () => {
               <button
                 type="submit"
                 disabled={savingMapping}
-                className="flex items-center gap-2 px-8 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50"
               >
                 {savingMapping ? (
                   <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />

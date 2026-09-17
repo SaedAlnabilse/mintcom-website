@@ -15,7 +15,10 @@ import { useTranslation } from 'react-i18next';
  * <RealtimeStatusIndicator />
  * ```
  */
-export const RealtimeStatusIndicator: React.FC = () => {
+export const RealtimeStatusIndicator: React.FC<{ variant?: 'pill' | 'inline'; className?: string }> = ({
+  variant = 'pill',
+  className = '',
+}) => {
   const { t } = useTranslation();
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
 
@@ -74,6 +77,21 @@ export const RealtimeStatusIndicator: React.FC = () => {
       realtimeService.reconnect();
     }
   };
+
+  if (variant === 'inline') {
+    return (
+      <button
+        onClick={handleClick}
+        className={`flex items-center gap-1.5 text-xs font-medium ${config.color} transition-opacity hover:opacity-80 ${
+          status === 'disconnected' || status === 'error' ? 'cursor-pointer' : 'cursor-default'
+        } ${className}`}
+        title={status === 'disconnected' || status === 'error' ? t('common.status.reconnect') : `${t('common.status.label')}: ${t(`common.status.${status}`)}`}
+      >
+        {config.icon}
+        <span>{config.text}</span>
+      </button>
+    );
+  }
 
   return (
     <button

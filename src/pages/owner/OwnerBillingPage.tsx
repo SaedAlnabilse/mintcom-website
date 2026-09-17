@@ -580,9 +580,9 @@ export function OwnerBillingPage() {
                     <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
                     <button
                         onClick={() => openAddCardModal()}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                     >
-                        <Plus size={18} />
+                        <Plus size={18} strokeWidth={2.5} />
                         <span>{t('owner.billing.addPaymentMethod')}</span>
                     </button>
                     </>

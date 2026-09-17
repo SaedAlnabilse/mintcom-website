@@ -493,9 +493,9 @@ export function OwnerBrandsPage() {
                                 setShowCreateModal(true);
                             }
                         }}
-                        className="flex w-full sm:w-auto items-center justify-center gap-2 px-5 py-3 min-h-[48px] rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm active:scale-[0.98]"
+                        className="flex w-full sm:w-auto items-center justify-center gap-2 px-4 py-2.5 min-h-[48px] rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                     >
-                        <Plus size={18} className="shrink-0" />
+                        <Plus size={18} strokeWidth={2.5} className="shrink-0" />
                         <span className="truncate">{t('owner.brands.createBrand')}</span>
                     </button>
                     </>
@@ -591,7 +591,7 @@ export function OwnerBrandsPage() {
                                         setShowCreateModal(true);
                                     }
                                 }}
-                                className="mt-6 px-6 py-3 bg-mintcom-green text-black font-bold rounded-xl hover:bg-[#5fa888] transition-all shadow-sm flex items-center gap-2 mx-auto"
+                                className="mt-6 px-4 py-2.5 bg-mintcom-green text-black font-semibold rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex items-center gap-2 mx-auto"
                             >
                                 <Link2 size={18} />
                                 {t('owner.brands.createFirstBrand')}

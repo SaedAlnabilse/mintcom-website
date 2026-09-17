@@ -165,7 +165,7 @@ export function RestoreLocationModal({
 
                                 <button
                                     type="submit"
-                                    className="w-full py-4 bg-mintcom-green text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-[#5fa888] transition-all shadow-lg flex items-center justify-center gap-2"
+                                    className="w-full py-2.5 bg-mintcom-green text-black font-semibold text-sm rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex items-center justify-center gap-2"
                                 >
                                     {t('common.next')}
                                     <ArrowRight size={16} />
@@ -296,7 +296,7 @@ export function RestoreLocationModal({
                                     <button
                                         type="submit"
                                         disabled={isRestoring}
-                                        className="flex-[2] py-4 bg-mintcom-green text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-[#5fa888] transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
+                                        className="flex-[2] py-2.5 bg-mintcom-green text-black font-semibold text-sm rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                                     >
                                         {isRestoring ? (
                                             <RefreshCw size={16} className="animate-spin" />

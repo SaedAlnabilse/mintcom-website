@@ -168,7 +168,7 @@ export function CookiePolicyPage() {
                 onClick={() => {
                    window.dispatchEvent(new Event('open-cookie-preferences'));
                 }}
-                className="px-6 py-2.5 bg-mintcom-green text-black label-strong font-sans rounded-lg hover:bg-[#5fa888] transition-colors shadow-sm"
+                className="px-4 py-2.5 bg-mintcom-green text-black font-semibold text-sm font-sans rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
               >
                 {t('legal.cookies.openSettings')}
               </button>

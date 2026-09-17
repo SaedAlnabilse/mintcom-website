@@ -349,9 +349,9 @@ export default function BrandTeamPage() {
                     <>
                     <button
                         onClick={handleAddEmployee}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                     >
-                        <UserPlus size={18} />
+                        <UserPlus size={18} strokeWidth={2.5} />
                         <span>{t('staff.newEmployee')}</span>
                     </button>
                     </>
@@ -500,7 +500,7 @@ export default function BrandTeamPage() {
                                     hasActiveFilters ? (
                                         <button
                                             onClick={clearFilters}
-                                            className="mt-4 px-6 py-2 rounded-xl bg-mintcom-green text-black text-sm font-bold hover:bg-[#5fa888] transition-all"
+                                            className="mt-4 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                                         >
                                             {t('attributes.filters.reset')}
                                         </button>

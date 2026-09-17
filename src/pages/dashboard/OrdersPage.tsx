@@ -1408,7 +1408,7 @@ export function OrdersPage() {
       />
 
       {/* Unified Filter Control Deck */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl sm:rounded-[24px] border border-gray-200 dark:border-white/5 p-2 shadow-sm">
+      <div>
         {/* Even responsive grid so controls align in tidy rows/columns */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 items-stretch [&>*]:min-w-0">
 
@@ -1648,7 +1648,7 @@ export function OrdersPage() {
             className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink
               ${stat.onClick ? 'cursor-pointer' : 'cursor-default'}
               ${stat.active
-                ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
+                ? 'border-mintcom-green/40 bg-mintcom-green/[0.04]'
                 : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'}`}
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg} ${stat.active ? 'opacity-20' : 'group-hover:opacity-10'}`} />

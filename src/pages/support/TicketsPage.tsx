@@ -283,7 +283,7 @@ export const TicketsPage = () => {
               to="/support/tickets/new"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
             >
-              <Plus size={18} />
+              <Plus size={18} strokeWidth={2.5} />
               {t('support.tickets.new')}
             </Link>
           </div>
@@ -517,7 +517,7 @@ export const TicketsPage = () => {
                     to="/support/tickets/new"
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
                   >
-                    <Plus size={18} />
+                    <Plus size={18} strokeWidth={2.5} />
                     {t('support.tickets.createFirst')}
                   </Link>
                 )}

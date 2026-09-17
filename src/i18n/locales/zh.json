@@ -2104,10 +2104,15 @@
     "switch": "切换",
     "title": "门店",
     "types": {
+      "bakery": "烘焙店",
+      "bar": "酒吧",
       "cafe": "咖啡馆",
+      "food_truck": "快餐车",
+      "grocery": "杂货店",
       "other": "其他",
       "restaurant": "餐厅",
-      "retail": "零售店"
+      "retail": "零售店",
+      "retail_store": "零售店"
     }
   },
   "feedback": {
@@ -3681,6 +3686,49 @@
     "whyMintcom": "为何选择 Mintcom"
   },
   "onboarding": {
+    "businessProfile": {
+      "title": "告诉我们您的业务",
+      "subtitle": "可选 — 帮助我们为您配置 Mintcom。仅需 30 秒。",
+      "stepBadge": "第 2 步，共 3 步 · 可选",
+      "phoneLabel": "联系电话",
+      "phonePlaceholder": "+1 555 000 1234",
+      "phoneHint": "仅在您请求帮助时使用 — 绝不泄露。",
+      "staffLabel": "员工人数？",
+      "staffOptions": {
+        "1-5": "1–5",
+        "6-15": "6–15",
+        "16-50": "16–50",
+        "50+": "50+"
+      },
+      "branchesLabel": "计划开设的分店？",
+      "branchesOptions": {
+        "single": "仅此一家",
+        "2-5": "2–5",
+        "5+": "5+"
+      },
+      "posLabel": "是否从其他 POS 系统切换？",
+      "posOptions": {
+        "none": "无 — 新业务",
+        "cash": "现金 / 纸质",
+        "square": "Square",
+        "foodics": "Foodics",
+        "other": "其他 POS"
+      },
+      "sourceLabel": "您是如何得知我们的？",
+      "sourceOptions": {
+        "google": "Google",
+        "social": "Instagram / TikTok",
+        "referral": "朋友 / 推荐",
+        "partner": "合作伙伴",
+        "other": "其他"
+      },
+      "referralCodeLabel": "推荐码",
+      "referralCodePlaceholder": "例如：AHMED-123",
+      "marketingConsent": "通过电子邮件接收产品动态和优惠信息",
+      "skip": "暂时跳过",
+      "continue": "继续",
+      "back": "返回位置详情"
+    },
     "back": "返回",
     "backToWebsite": "返回 Mintcom 网站",
     "backToWebsiteShort": "网站",
@@ -3708,13 +3756,30 @@
       "address": "地址",
       "addressPlaceholder": "城市、区域、楼宇",
       "addressTip": "门店地址。",
+      "businessCategories": {
+        "foodAndBeverage": "餐饮美食",
+        "other": "其他",
+        "retailAndGroceries": "零售与生鲜杂货"
+      },
       "businessType": "业务类型",
       "businessTypes": {
-        "bakery": "烘焙店",
-        "cafe": "咖啡馆",
-        "other": "其他",
-        "restaurant": "餐厅",
-        "retail": "零售店"
+        "bakery": "烘焙与糕点",
+        "bar": "酒吧与休闲吧",
+        "butchery": "肉铺与生鲜肉店",
+        "cafe": "咖啡馆与咖啡厅",
+        "catering": "餐饮配餐服务",
+        "cloud_kitchen": "云厨房/外卖厨房",
+        "dessert": "甜点与冰淇淋",
+        "fast_food": "快餐/快餐便当",
+        "fine_dining": "高级餐厅",
+        "food_truck": "餐车与流动小吃亭",
+        "grocery": "杂货与超市",
+        "juice_bar": "果汁与冰沙吧",
+        "other": "其他业务",
+        "pizzeria": "披萨店",
+        "restaurant": "堂食餐厅",
+        "retail": "零售店",
+        "roastery": "烘焙咖啡馆/精品咖啡"
       },
       "businessTypeTip": "选择您的业务类型。",
       "copySettings": "复制设置",
@@ -5902,7 +5967,12 @@
       "passwordResetNote": "密码重置只能在业主后台进行",
       "taxId": "税号/TRN",
       "taxIdDisclaimer": "这在您所在的国家可能是法律要求。请核查当地税务规定，并在需要时填写。",
-      "taxIdPlaceholder": "例如：100123456700003 或 GB123456789"
+      "taxIdPlaceholder": "例如：100123456700003 或 GB123456789",
+      "marketingConsentTitle": "产品动态与优惠",
+      "marketingConsentDesc": "通过电子邮件接收产品更新、使用技巧和促销优惠。",
+      "marketingConsentSubscribed": "已订阅产品动态和优惠。",
+      "marketingConsentUnsubscribed": "已退订产品动态和优惠。",
+      "marketingConsentError": "更新邮件偏好设置失败。请重试。"
     },
     "receipts": {
       "footerMessage": "页脚信息",

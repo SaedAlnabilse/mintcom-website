@@ -394,7 +394,7 @@ export function LoyaltyPage() {
                         {hasChanges && (
                             <button
                                 onClick={saveConfig}
-                                className="px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                                className="px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                             >
                                 {t('common.save')}
                             </button>

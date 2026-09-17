@@ -17,6 +17,7 @@ interface CustomSelectProps {
     options: (Option | string)[];
     placeholder?: string;
     className?: string;
+    buttonClassName?: string;
     error?: string;
     required?: boolean;
     direction?: 'up' | 'down';
@@ -33,6 +34,7 @@ export function CustomSelect({
     options = [],
     placeholder,
     className = '',
+    buttonClassName = '',
     error,
     required,
     direction = 'down',
@@ -186,7 +188,7 @@ export function CustomSelect({
     );
 
     return (
-        <div className={`relative ${className}`} ref={containerRef}>
+        <div className={`relative min-w-0 ${className}`.trim()} ref={containerRef}>
             {label && (
                 <label className="block label-strong font-sans mb-3 px-1">
                     {formatInputLabel(label, t('common.locale'))} {required && <span className="text-mintcom-red">*</span>}
@@ -198,9 +200,9 @@ export function CustomSelect({
                 type="button"
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 disabled={disabled}
-                className={`w-full border text-left flex items-center justify-between transition-[color,background-color,border-color,box-shadow,ring] outline-none
+                className={`w-full min-w-0 border text-left flex items-center justify-between transition-[color,background-color,border-color,box-shadow,ring] outline-none
                     ${size === 'compact'
-                        ? 'h-11 px-3 py-0 rounded-xl shadow-none bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'
+                        ? 'h-11 px-3.5 py-0 rounded-xl shadow-sm bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10'
                         : 'px-5 py-3.5 rounded-2xl shadow-sm bg-white dark:bg-white/[0.03] backdrop-blur-sm border-gray-200 dark:border-white/[0.08]'}
                     ${disabled
                         ? 'cursor-not-allowed opacity-70 bg-gray-50 dark:bg-white/[0.03] text-gray-500'
@@ -210,7 +212,7 @@ export function CustomSelect({
                         : !disabled && (isOpen || isFilterActive)
                             ? 'ring-[3px] ring-mintcom-green/10 border-mintcom-green bg-mintcom-green/5 dark:bg-mintcom-green/10 !ring-[3px] !ring-mintcom-green/10 !border-mintcom-green !bg-mintcom-green/5 dark:!bg-mintcom-green/10'
                             : ''
-                    }`}
+                    } ${buttonClassName}`.trim()}
             >
                 <span className={`text-sm ${size === 'compact' ? 'font-semibold' : 'font-normal'} truncate pr-2 ${selectedOption ? (disabled ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-white') : 'text-gray-400'}`}>
                     {selectedOption ? selectedOption.label : displayPlaceholder}

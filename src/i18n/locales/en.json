@@ -2104,10 +2104,15 @@
     "switch": "Switch",
     "title": "Establishments",
     "types": {
+      "bakery": "Bakery",
+      "bar": "Bar",
       "cafe": "Cafe",
+      "food_truck": "Food Truck",
+      "grocery": "Grocery",
       "other": "Other",
       "restaurant": "Restaurant",
-      "retail": "Retail Store"
+      "retail": "Retail Store",
+      "retail_store": "Retail Store"
     }
   },
   "feedback": {
@@ -3681,6 +3686,49 @@
     "tryDesktop": "Try on Desktop"
   },
   "onboarding": {
+    "businessProfile": {
+      "title": "Tell us about your business",
+      "subtitle": "Optional — helps us set up Mintcom for you. Takes 30 seconds.",
+      "stepBadge": "Step 2 of 3 · optional",
+      "phoneLabel": "Contact phone",
+      "phonePlaceholder": "+1 555 000 1234",
+      "phoneHint": "Only used if you ask for help — never shared.",
+      "staffLabel": "How many staff?",
+      "staffOptions": {
+        "1-5": "1–5",
+        "6-15": "6–15",
+        "16-50": "16–50",
+        "50+": "50+"
+      },
+      "branchesLabel": "Branches planned?",
+      "branchesOptions": {
+        "single": "Just this one",
+        "2-5": "2–5",
+        "5+": "5+"
+      },
+      "posLabel": "Switching from another POS?",
+      "posOptions": {
+        "none": "None — new business",
+        "cash": "Cash / paper",
+        "square": "Square",
+        "foodics": "Foodics",
+        "other": "Other POS"
+      },
+      "sourceLabel": "How did you hear about us?",
+      "sourceOptions": {
+        "google": "Google",
+        "social": "Instagram / TikTok",
+        "referral": "Friend / referral",
+        "partner": "Partner",
+        "other": "Other"
+      },
+      "referralCodeLabel": "Referral code",
+      "referralCodePlaceholder": "e.g. AHMED-123",
+      "marketingConsent": "Email me product news & offers",
+      "skip": "Skip for now",
+      "continue": "Continue",
+      "back": "Back to location details"
+    },
     "back": "Back",
     "backToWebsite": "Back to Mintcom website",
     "backToWebsiteShort": "Website",
@@ -3708,13 +3756,30 @@
       "address": "Address",
       "addressPlaceholder": "City, Area, Building",
       "addressTip": "Establishment address.",
+      "businessCategories": {
+        "foodAndBeverage": "Food & Beverage",
+        "other": "Other",
+        "retailAndGroceries": "Retail & Groceries"
+      },
       "businessType": "Business Type",
       "businessTypes": {
-        "bakery": "Bakery",
-        "cafe": "Cafe",
-        "other": "Other",
-        "restaurant": "Restaurant",
-        "retail": "Retail Store"
+        "bakery": "Bakery & Pastry",
+        "bar": "Bar & Lounge",
+        "butchery": "Butchery & Meat Shop",
+        "cafe": "Cafe & Coffee Shop",
+        "catering": "Catering & Events",
+        "cloud_kitchen": "Cloud Kitchen / Ghost Kitchen",
+        "dessert": "Dessert & Ice Cream",
+        "fast_food": "Fast Food / Quick Service",
+        "fine_dining": "Fine Dining",
+        "food_truck": "Food Truck & Kiosk",
+        "grocery": "Grocery & Supermarket",
+        "juice_bar": "Juice & Smoothie Bar",
+        "other": "Other Business",
+        "pizzeria": "Pizzeria",
+        "restaurant": "Restaurant (Dine-In)",
+        "retail": "Retail Store",
+        "roastery": "Roastery & Specialty Coffee"
       },
       "businessTypeTip": "Select your business type.",
       "copySettings": "Copy Settings",
@@ -5909,7 +5974,12 @@
       "passwordResetNote": "Password reset can only be done from the Owner Portal",
       "taxId": "Tax ID/TRN",
       "taxIdDisclaimer": "This may be legally required in your country. Check your local tax rules and add it if needed.",
-      "taxIdPlaceholder": "e.g., 100123456700003 or GB123456789"
+      "taxIdPlaceholder": "e.g., 100123456700003 or GB123456789",
+      "marketingConsentTitle": "Product news & offers",
+      "marketingConsentDesc": "Receive product updates, tips, and promotional offers via email.",
+      "marketingConsentSubscribed": "Subscribed to product news and offers.",
+      "marketingConsentUnsubscribed": "Unsubscribed from product news and offers.",
+      "marketingConsentError": "Failed to update email preferences. Please try again."
     },
     "receipts": {
       "footerMessage": "Footer Message",

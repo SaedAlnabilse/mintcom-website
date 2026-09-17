@@ -735,7 +735,7 @@ export function ActivityLogsPage() {
                 icon={<Shield size={24} />}
                 onClose={() => setSelectedLog(null)}
               />
-              <ModalBody className="pt-8 sm:pt-10">
+              <ModalBody className="space-y-8">
                 <div className="grid grid-cols-2 gap-8">
                   <div>
                     <p className="label-strong font-sans mb-2">{t('activity.time')}</p>

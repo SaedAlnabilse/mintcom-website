@@ -9,6 +9,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 import { BusyOverlay } from '../../components/BusyOverlay';
+import { Button } from '../../components/ui/Button';
 
 export function OwnerMergePage() {
     const { t } = useTranslation();
@@ -84,13 +85,14 @@ export function OwnerMergePage() {
                         </div>
                     </div>
 
-                    <button
+                    <Button
+                        variant="secondary"
                         onClick={() => step === 'configure' ? setStep('select') : navigate('/owner/brands')}
-                        className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gray-50 dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white font-black text-xs tracking-widest hover:bg-gray-100 dark:hover:bg-white/5 transition-all self-start xl:self-center shadow-lg"
+                        className="self-start xl:self-center"
                     >
                         <ArrowLeft size={18} />
                         {t('common.cancel')}
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -207,13 +209,14 @@ export function OwnerMergePage() {
                                             </div>
                                         </div>
 
-                                        <button
+                                        <Button
+                                            size="lg"
                                             onClick={handleContinue}
                                             disabled={selectedEstablishments.length < 2}
-                                            className="w-full py-5 bg-mintcom-green text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-xl shadow-mintcom-green/20 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
+                                            className="w-full"
                                         >
                                             {t('owner.merge.nextStep', { count: selectedEstablishments.length })}
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -263,16 +266,18 @@ export function OwnerMergePage() {
                             </div>
 
                             <div className="flex gap-4">
-                                <button
+                                <Button
+                                    variant="secondary"
+                                    size="lg"
                                     onClick={() => setStep('select')}
-                                    className="flex-1 py-5 rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
+                                    className="flex-1"
                                 >
                                     {t('common.back')}
-                                </button>
+                                </Button>
                                 <button
                                     onClick={handleMerge}
                                     disabled={isSubmitting || !brandName.trim()}
-                                    className="flex-[2] py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3"
+                                    className="flex-[2] py-3.5 bg-black dark:bg-white text-white dark:text-black rounded-lg font-semibold text-base hover:bg-black/85 dark:hover:bg-white/85 transition-colors flex items-center justify-center gap-3 disabled:opacity-50"
                                 >
                                     {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <img src={MintcomLeafIcon} alt="" style={{ width: 18, height: 18 }} className="scale-x-[-1] object-contain" />}
                                     {t('owner.merge.createBrand')}

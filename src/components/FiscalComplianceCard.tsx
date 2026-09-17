@@ -613,7 +613,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                       href={portalUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                     >
                       <ExternalLink size={16} />
                       {isJordan
@@ -625,7 +625,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="px-6 py-3 rounded-xl border border-mintcom-green text-mintcom-green font-bold text-sm hover:bg-mintcom-green/5 transition-all"
+                      className="px-4 py-2.5 rounded-lg border border-mintcom-green text-mintcom-green font-semibold text-sm hover:bg-mintcom-green/5 transition-colors"
                     >
                       {t('settings.fiscal.haveKeys', 'I have my keys →')}
                     </button>
@@ -702,7 +702,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                           type="button"
                           onClick={handleTestConnection}
                           disabled={testing || saving || !credentialsComplete}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-mintcom-green text-mintcom-green font-bold text-sm hover:bg-mintcom-green/5 transition-all disabled:opacity-50"
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-mintcom-green text-mintcom-green font-semibold text-sm hover:bg-mintcom-green/5 transition-colors disabled:opacity-50"
                         >
                           {testing ? <Loader2 size={18} className="animate-spin" /> : <Plug size={18} />}
                           {testing ? t('settings.fiscal.testing', 'Testing…') : t('settings.fiscal.testConnection', 'Test connection')}
@@ -752,7 +752,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                     type="button"
                     onClick={handleConnect}
                     disabled={testing || saving || !credentialsComplete}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50"
                   >
                     {testing || saving ? <Loader2 size={18} className="animate-spin" /> : <Plug size={18} />}
                     {testing || saving
@@ -865,7 +865,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                       type="button"
                       onClick={handleSave}
                       disabled={!dirty || saving}
-                      className="flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm disabled:opacity-50 disabled:shadow-none"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50"
                     >
                       {saving ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
                       {t('settings.fiscal.save', 'Save e-invoicing settings')}

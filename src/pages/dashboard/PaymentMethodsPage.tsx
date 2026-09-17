@@ -864,7 +864,7 @@ export function PaymentMethodsPage() {
                       handleDelete(editingMethod.id, editingMethod.name);
                     }}
                     disabled={isSubmitting}
-                    className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="flex-1 py-2.5 border border-mintcom-red/20 text-mintcom-red font-semibold text-sm rounded-lg hover:bg-mintcom-red/10 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     <Trash2 size={16} />
                     {t('common.deactivate')}
@@ -970,7 +970,7 @@ export function PaymentMethodsPage() {
                     handleDeleteCardType(editingCard.id, editingCard.name);
                   }}
                   disabled={isSubmitting}
-                  className="flex-1 py-4 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-[0.2em] uppercase rounded-2xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="flex-1 py-2.5 border border-mintcom-red/20 text-mintcom-red font-semibold text-sm rounded-lg hover:bg-mintcom-red/10 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   <Trash2 size={16} />
                   {t('common.deactivate')}

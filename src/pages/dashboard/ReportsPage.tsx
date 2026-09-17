@@ -20,7 +20,7 @@ import { ReceiptsReport } from '../../components/dashboard/reports/ReceiptsRepor
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { SingleSelect } from '../../components/SingleSelect';
 import { ExportMenu } from '../../components/ExportMenu';
-import { PageHeader, Badge } from '../../components/ui';
+import { PageHeader, Badge, FilterBar, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass } from '../../components/ui';
 import { exportTable, exportSections } from '../../utils/export';
 import type { ExportFormat, ExportColumn, ExportMeta, ExportSection } from '../../utils/export';
 import { DateRangePicker } from '../../components/DateRangePicker';
@@ -1009,12 +1009,12 @@ export function ReportsPage() {
                     navigate(`/dashboard/${locationSlug}/reports/${type.id}`);
                   }
                 }}
-                className={`relative shrink-0 flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-xl transition-all duration-150 text-xs sm:text-sm font-bold whitespace-nowrap border shadow-sm ${isSelected
-                  ? 'bg-[#7dc6a2] text-black border-[#7dc6a2] shadow-mintcom-green/20'
+                className={`relative shrink-0 flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-lg transition-colors duration-150 text-xs sm:text-sm font-semibold whitespace-nowrap border ${isSelected
+                  ? 'bg-mintcom-green/12 text-gray-900 dark:text-white border-mintcom-green/30'
                   : 'bg-white dark:bg-[#1E293B] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 border-gray-200 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/20'
                   }`}
               >
-                <type.icon size={15} className={`shrink-0 ${isSelected ? 'text-black' : 'text-gray-400 dark:text-gray-400'}`} />
+                <type.icon size={15} className={`shrink-0 ${isSelected ? 'text-emerald-700 dark:text-mintcom-green' : 'text-gray-400 dark:text-gray-400'}`} />
                 <span className="relative z-10">{type.label}</span>
               </button>
             );
@@ -1062,9 +1062,7 @@ export function ReportsPage() {
         {/* Unified Filter Dashboard */}
 
         {/* Unified Filter Control Deck */}
-        <div className="bg-white dark:bg-[#1E293B] rounded-[20px] border border-gray-100 dark:border-white/[0.05] p-2">
-          {/* Single Row Layout - wraps on smaller screens */}
-          <div className="flex flex-wrap items-stretch gap-2">
+        <FilterBar>
 
             {/* Quick Period Dropdown */}
             <div className="w-full xs:w-auto xs:flex-1 sm:flex-none sm:w-[130px] md:w-[150px]">
@@ -1076,10 +1074,7 @@ export function ReportsPage() {
                 searchable={false}
                 placeholder={formatInputPlaceholder(t('owner.overview.selectPeriod'), t('common.locale'))}
                 className="w-full h-full"
-                buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
-                  ? '!bg-mintcom-green/5 !border-mintcom-green !text-mintcom-green'
-                  : '!bg-white dark:!bg-[#1E293B] !border-gray-200 dark:!border-white/10 hover:!bg-gray-50 dark:hover:!bg-white/10'
-                  }`}
+                buttonClassName={`${filterSelectButtonClass} ${selectedDateRange !== 'custom' ? filterSelectActiveClass : filterSelectInactiveClass}`}
               />
             </div>
 
@@ -1105,10 +1100,7 @@ export function ReportsPage() {
               const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
               return (
                 <div className={`w-full xs:w-auto xs:flex-none xs:min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
-                  <div className={`flex flex-col justify-center px-3 h-12 rounded-xl border transition-all shadow-sm ${isTimeFiltered
-                    ? 'bg-mintcom-green/5 border-mintcom-green'
-                    : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 hover:border-mintcom-green/50'
-                    }`}>
+                  <div className={`flex flex-col justify-center px-4 h-12 rounded-lg border transition-colors ${isTimeFiltered ? filterBoxActiveClass : filterBoxInactiveClass}`}>
                     <div className="flex items-center gap-2 justify-between relative">
                       <CustomTimePicker
                         value={startTime}
@@ -1117,7 +1109,7 @@ export function ReportsPage() {
                         showIcon={true}
                         isActive={isTimeFiltered}
                       />
-                      <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7dc6a2]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                      <span className={`text-xs font-semibold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-emerald-700/60 dark:text-mintcom-green/60" : "text-gray-300 dark:text-white/10"}`}>-</span>
                       <CustomTimePicker
                         value={endTime}
                         onChange={(val) => { setEndTime(val); setSelectedShiftId(null); }}
@@ -1131,9 +1123,6 @@ export function ReportsPage() {
               );
             })()}
 
-            {/* Vertical Divider (visible on larger screens) */}
-            <div className="hidden xl:block w-px self-stretch bg-gray-100 dark:bg-white/10 my-1" />
-
             {/* Staff Dropdown */}
             <div className="flex-1 min-w-[120px] sm:min-w-[150px] relative z-50">
               <SingleSelect
@@ -1145,10 +1134,7 @@ export function ReportsPage() {
                 options={employees}
                 placeholder={formatInputPlaceholder(t('common.allStaff'), t('common.locale'))}
                 className="w-full h-full"
-                buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedEmployeeId
-                  ? '!bg-mintcom-green/5 !border-mintcom-green !text-mintcom-green'
-                  : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
-                  }`}
+                buttonClassName={`${filterSelectButtonClass} ${selectedEmployeeId ? filterSelectActiveClass : filterSelectInactiveClass}`}
               />
             </div>
 
@@ -1161,15 +1147,10 @@ export function ReportsPage() {
                 placeholder={formatInputPlaceholder(t('common.selectShift'), t('common.locale'))}
                 searchable={false}
                 className="w-full h-full"
-                buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedShiftId
-                  ? '!bg-mintcom-green/5 !border-mintcom-green !text-mintcom-green'
-                  : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
-                  }`}
+                buttonClassName={`${filterSelectButtonClass} ${selectedShiftId ? filterSelectActiveClass : filterSelectInactiveClass}`}
               />
             </div>
-
-          </div>
-        </div>
+        </FilterBar>
       </div>
 
       {/* Content. The busy overlay (below) mutes/blocks this area while a

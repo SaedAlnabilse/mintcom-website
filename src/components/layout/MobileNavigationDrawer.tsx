@@ -9,6 +9,7 @@ import { useScrollLock } from '../../hooks/useScrollLock';
 import MintcomLogoGreen from '../../assets/green-full-logo.svg';
 import MintcomLogoWhite from '../../assets/white-green-full-logo.svg';
 import type { Account } from '../../types';
+import { activeRowClass, inactiveMobileRowClass, avatarClass, userCardClass, userNameClass, userEmailClass } from '../ui/sharedStyles';
 
 export interface MenuItem {
   icon: LucideIcon;
@@ -110,12 +111,8 @@ export const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
                   to={item.path}
                   onClick={onClose}
                   className={`
-                    flex items-center gap-3 p-3.5 rounded-xl transition-all
-                    ${
-                      isActive
-                        ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20'
-                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'
-                    }
+                    flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200
+                    ${isActive ? activeRowClass : inactiveMobileRowClass}
                   `}
                 >
                   <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
@@ -131,15 +128,13 @@ export const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
               <SidebarPreferencesHelpMenu onOpenHelpCenter={() => navigate('/support')} />
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 shrink-0 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center">
-                <span className="text-black font-bold">
+            <div className={`flex items-center gap-3 p-3 ${userCardClass}`}>
+              <div className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-sm ${avatarClass}`}>
                   {account?.firstName?.charAt(0).toUpperCase()}
-                </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{account?.firstName}</p>
-                <p className="text-xs text-gray-500 truncate">
+                <p className={userNameClass}>{account?.firstName}</p>
+                <p className={userEmailClass}>
                   {scope === 'owner' ? t('owner.menu.enterpriseOwner') : t('brand.menu.brandAdmin')}
                 </p>
               </div>

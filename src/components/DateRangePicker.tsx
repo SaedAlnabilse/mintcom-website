@@ -341,15 +341,15 @@ export function DateRangePicker({
                 aria-label={t('common.aria.selectDateRange')}
                 aria-expanded={isOpen}
                 className={`
-                    flex items-center gap-3 w-full h-12 px-4 text-sm font-bold rounded-xl border transition-all shadow-sm
+                    flex items-center gap-3 w-full h-12 px-4 text-sm font-semibold rounded-lg border transition-colors
                     ${(isOpen || isActive)
-                        ? 'border-mintcom-green bg-mintcom-green/5 text-mintcom-green'
+                        ? 'border-mintcom-green/30 bg-mintcom-green/10 text-gray-900 dark:text-white'
                         : 'border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white hover:border-mintcom-green/50'
                     }
                     ${buttonClassName}
                 `}
             >
-                <CalendarIcon size={18} className={(isOpen || isActive) ? 'text-mintcom-green' : 'text-gray-400'} />
+                <CalendarIcon size={18} className={(isOpen || isActive) ? 'text-emerald-700 dark:text-mintcom-green' : 'text-gray-400'} />
                 <span className="truncate">{displayValue()}</span>
             </button>
 

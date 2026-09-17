@@ -215,7 +215,7 @@ export function DiscountFormModal({
               <button
                 type="button"
                 onClick={() => onDelete(initialData.id)}
-                className="flex-1 h-12 sm:h-14 border border-mintcom-red/20 text-mintcom-red font-black text-xs tracking-widest rounded-xl hover:bg-mintcom-red/5 transition-all flex items-center justify-center gap-2 shrink-0"
+                className="flex-1 h-12 sm:h-14 border border-mintcom-red/20 text-mintcom-red font-semibold text-sm rounded-lg hover:bg-mintcom-red/10 transition-colors flex items-center justify-center gap-2 shrink-0"
               >
                 <Trash2 size={16} />
                 <span>{t('common.deactivate')}</span>

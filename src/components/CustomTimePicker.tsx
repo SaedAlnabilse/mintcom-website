@@ -90,12 +90,12 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                     setIsOpen(!isOpen);
                 }}
                 className={`
-          flex items-center gap-2 w-full bg-transparent p-0 text-sm font-bold border-none focus:ring-0 cursor-pointer transition-colors
-          ${(isOpen || isActive) ? 'text-[#7dc6a2]' : 'text-gray-600 dark:text-white/60'}
+          flex items-center gap-2 w-full bg-transparent p-0 text-sm font-semibold border-none focus:ring-0 cursor-pointer transition-colors
+          ${(isOpen || isActive) ? 'text-emerald-700 dark:text-mintcom-green' : 'text-gray-600 dark:text-white/60'}
           ${buttonClassName}
         `}
             >
-                {showIcon && <Clock size={14} className={(isOpen || isActive) ? 'text-[#7dc6a2]' : 'text-gray-400'} />}
+                {showIcon && <Clock size={14} className={(isOpen || isActive) ? 'text-emerald-700 dark:text-mintcom-green' : 'text-gray-400'} />}
                 <span>
                     {hour.toLocaleString(t('common.locale'), { minimumIntegerDigits: 2 })}:{minute.toLocaleString(t('common.locale'), { minimumIntegerDigits: 2 })} <span className="text-xs ml-0.5">{period === 'AM' ? t('common.time.am') : t('common.time.pm')}</span>
                 </span>
@@ -126,7 +126,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                                         }}
                                         className={`
                     text-center py-[3px] text-xs cursor-pointer rounded-md transition-colors
-                    ${h === hour ? 'bg-mintcom-green text-white font-bold' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'}
+                    ${h === hour ? 'bg-mintcom-green/12 text-gray-900 dark:text-white font-semibold' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'}
                   `}
                                     >
                                         {h.toLocaleString(t('common.locale'))}
@@ -149,7 +149,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                                         }}
                                         className={`
                     text-center py-[3px] text-xs cursor-pointer rounded-md transition-colors
-                    ${m === minute ? 'bg-mintcom-green text-white font-bold' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'}
+                    ${m === minute ? 'bg-mintcom-green/12 text-gray-900 dark:text-white font-semibold' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'}
                   `}
                                     >
                                         {m.toLocaleString(t('common.locale'), { minimumIntegerDigits: 2 })}
@@ -169,7 +169,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                                     }}
                                     className={`
                      text-center py-1.5 text-[11px] font-bold cursor-pointer rounded-md transition-colors
-                     ${p === period ? 'bg-mintcom-green text-white' : 'bg-gray-50 dark:bg-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10'}
+                     ${p === period ? 'bg-mintcom-green/12 text-gray-900 dark:text-white font-semibold' : 'bg-gray-50 dark:bg-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10'}
                    `}
                                 >
                                     {p === 'AM' ? t('common.time.am') : t('common.time.pm')}

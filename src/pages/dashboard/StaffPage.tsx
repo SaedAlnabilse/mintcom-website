@@ -494,9 +494,9 @@ export function StaffPage() {
                   <ExportMenu onExport={handleExport} className="hidden sm:flex" />
                   <button
                       onClick={handleOpenAddEmployeeModal}
-                      className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-mintcom-green text-black font-bold text-sm hover:bg-[#5fa888] transition-all shadow-sm touch-target"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                   >
-                      <Plus size={18} />
+                      <Plus size={18} strokeWidth={2.5} />
                       <span className="hidden xs:inline">{t('staff.addMember')}</span>
                   </button>
               </>

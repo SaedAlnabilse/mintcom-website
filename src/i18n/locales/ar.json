@@ -2104,10 +2104,15 @@
     "switch": "تبديل",
     "title": "المنشآت",
     "types": {
+      "bakery": "مخبز",
+      "bar": "بار",
       "cafe": "مقهى",
+      "food_truck": "عربة طعام",
+      "grocery": "بقالة",
       "other": "أخرى",
       "restaurant": "مطعم",
-      "retail": "تجارة تجزئة"
+      "retail": "متجر تجزئة",
+      "retail_store": "متجر تجزئة"
     }
   },
   "feedback": {
@@ -3681,6 +3686,49 @@
     "tryDesktop": "جرّب على سطح المكتب"
   },
   "onboarding": {
+    "businessProfile": {
+      "title": "أخبرنا عن نشاطك التجاري",
+      "subtitle": "اختياري — يساعدنا في إعداد Mintcom لك. يستغرق 30 ثانية.",
+      "stepBadge": "الخطوة 2 من 3 · اختياري",
+      "phoneLabel": "رقم الهاتف للتواصل",
+      "phonePlaceholder": "+1 555 000 1234",
+      "phoneHint": "يُستخدم فقط إذا طلبت المساعدة — لا تتم مشاركته أبداً.",
+      "staffLabel": "كم عدد الموظفين لديك؟",
+      "staffOptions": {
+        "1-5": "1–5",
+        "6-15": "6–15",
+        "16-50": "16–50",
+        "50+": "50+"
+      },
+      "branchesLabel": "كم عدد الفروع المخطط لها؟",
+      "branchesOptions": {
+        "single": "هذا الفرع فقط",
+        "2-5": "2–5",
+        "5+": "5+"
+      },
+      "posLabel": "هل تنتقل من نظام نقاط بيع آخر؟",
+      "posOptions": {
+        "none": "لا يوجد — نشاط تجاري جديد",
+        "cash": "نقدي / ورقي",
+        "square": "Square",
+        "foodics": "Foodics",
+        "other": "نظام نقاط بيع آخر"
+      },
+      "sourceLabel": "كيف سمعت عنا؟",
+      "sourceOptions": {
+        "google": "Google",
+        "social": "Instagram / TikTok",
+        "referral": "صديق / إحالة",
+        "partner": "شريك",
+        "other": "أخرى"
+      },
+      "referralCodeLabel": "رمز الإحالة",
+      "referralCodePlaceholder": "مثال: AHMED-123",
+      "marketingConsent": "أرسل لي أخبار المنتج والعروض عبر البريد الإلكتروني",
+      "skip": "تخطي الآن",
+      "continue": "متابعة",
+      "back": "الرجوع إلى تفاصيل الموقع"
+    },
     "back": "رجوع",
     "backToWebsite": "العودة إلى موقع Mintcom",
     "backToWebsiteShort": "المنشأة",
@@ -3708,13 +3756,30 @@
       "address": "العنوان",
       "addressPlaceholder": "المدينة، المنطقة، البناء",
       "addressTip": "عنوان المنشأة.",
+      "businessCategories": {
+        "foodAndBeverage": "الأغذية والمشروبات",
+        "other": "أخرى",
+        "retailAndGroceries": "التجزئة والبقالة"
+      },
       "businessType": "نوع العمل",
       "businessTypes": {
-        "bakery": "مخبز",
-        "cafe": "مقهى",
-        "other": "أخرى",
-        "restaurant": "مطعم",
-        "retail": "متجر تجزئة"
+        "bakery": "مخبز وحلويات",
+        "bar": "بار وصالة",
+        "butchery": "ملحمة ومتجر لحوم",
+        "cafe": "مقهى وكوفي شوب",
+        "catering": "تموين وضيافة",
+        "cloud_kitchen": "مطبخ سحابي",
+        "dessert": "حلويات ومثلجات",
+        "fast_food": "وجبات سريعة / خدمة سريعة",
+        "fine_dining": "مطعم فاخر",
+        "food_truck": "عربة طعام وكشك",
+        "grocery": "تموينات وسوبرماركت",
+        "juice_bar": "عصائر ومشروبات",
+        "other": "نشاط تجاري آخر",
+        "pizzeria": "مطعم بيتزا",
+        "restaurant": "مطعم (خدمة كاملة / جلوس)",
+        "retail": "متجر تجزئة",
+        "roastery": "محمصة وقهوة مختصة"
       },
       "businessTypeTip": "اختر نوع عملك.",
       "copySettings": "نسخ الإعدادات",
@@ -5909,7 +5974,12 @@
       "passwordResetNote": "لا يمكن إعادة تعيين كلمة المرور إلا من خلال بوابة المالك",
       "taxId": "الرقم الضريبي",
       "taxIdDisclaimer": "قد يكون هذا مطلوباً قانونياً في بلدك. تحقق من القواعد الضريبية المحلية وأضفه عند الحاجة.",
-      "taxIdPlaceholder": "مثال: 100123456700003 أو GB123456789"
+      "taxIdPlaceholder": "مثال: 100123456700003 أو GB123456789",
+      "marketingConsentTitle": "أخبار المنتج والعروض",
+      "marketingConsentDesc": "استلم تحديثات المنتج والنصائح والعروض الترويجية عبر البريد الإلكتروني.",
+      "marketingConsentSubscribed": "تم الاشتراك في أخبار المنتج والعروض.",
+      "marketingConsentUnsubscribed": "تم إلغاء الاشتراك في أخبار المنتج والعروض.",
+      "marketingConsentError": "فشل تحديث تفضيلات البريد الإلكتروني. يرجى المحاولة مرة أخرى."
     },
     "receipts": {
       "footerMessage": "رسالة التذييل",

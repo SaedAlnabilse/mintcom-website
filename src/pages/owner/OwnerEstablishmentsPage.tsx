@@ -175,7 +175,7 @@ export function OwnerEstablishmentsPage() {
 
                     <button
                         onClick={handleAddEstablishment}
-                        className="flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green text-black font-black text-xs tracking-widest hover:bg-[#5fa888] transition-all shadow-sm active:scale-95 flex-shrink-0 justify-center"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex-shrink-0 justify-center"
                     >
                         <Plus size={20} strokeWidth={3} />
                         <span>{t('owner.overview.addLocation')}</span>
@@ -612,7 +612,7 @@ export function OwnerEstablishmentsPage() {
                                                 e.stopPropagation();
                                                 handleEstablishmentClick(est);
                                             }}
-                                            className="px-4 py-2 rounded-lg bg-mintcom-green text-black text-xs font-bold tracking-wide hover:bg-[#5fa888] transition-all flex items-center gap-2"
+                                            className="px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex items-center gap-2"
                                         >
                                             {t('owner.locations.enter')}
                                         </button>

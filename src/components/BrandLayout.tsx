@@ -26,6 +26,7 @@ import {
 import api from '../config/api';
 import { FullScreenLoader } from './LoadingState';
 import { ModalCloseButton } from './ui/ModalCloseButton';
+import { activeRowClass, inactiveRowClass, inactiveMobileRowClass, avatarClass, userCardClass, userNameClass, userEmailClass } from './ui/sharedStyles';
 
 // Mintcom Logo imports
 import MintcomLogoGreen from '../assets/green-full-logo.svg';
@@ -334,10 +335,8 @@ export function BrandLayout() {
                                 onBlur={hideCollapsedNavTooltip}
                                 aria-label={!sidebarOpen ? item.label : undefined}
                                 className={({ isActive }) =>
-                                    `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
-                                    ${isActive
-                                        ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20 active-menu-item'
-                                        : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
+                                    `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group
+                                    ${isActive ? activeRowClass : inactiveRowClass}
                                     ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
                                 }
                             >
@@ -476,10 +475,8 @@ export function BrandLayout() {
                                         key={item.path}
                                         to={item.path}
                                         className={`
-                                            flex items-center gap-3 p-3.5 rounded-xl transition-all
-                                            ${isActive
-                                                ? 'bg-mintcom-green text-black font-semibold shadow-lg shadow-mintcom-green/20'
-                                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'}
+                                            flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200
+                                            ${isActive ? activeRowClass : inactiveMobileRowClass}
                                         `}
                                     >
                                         <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
@@ -500,13 +497,13 @@ export function BrandLayout() {
                                 <ThemeToggle dropdownDirection="up" />
                             </div>
 
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center">
-                                    <span className="text-black font-bold">{account?.firstName?.charAt(0).toUpperCase()}</span>
+                            <div className={`flex items-center gap-3 p-3 ${userCardClass}`}>
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm ${avatarClass}`}>
+                                    {account?.firstName?.charAt(0).toUpperCase()}
                                 </div>
-                                <div className="flex-1">
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white">{account?.firstName}</p>
-                                    <p className="text-xs text-gray-500">{t('brand.menu.brandAdmin')}</p>
+                                <div className="flex-1 min-w-0">
+                                    <p className={userNameClass}>{account?.firstName}</p>
+                                    <p className={userEmailClass}>{t('brand.menu.brandAdmin')}</p>
                                 </div>
                                 <button
                                     onClick={handleLogout}

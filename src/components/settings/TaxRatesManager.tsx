@@ -170,7 +170,7 @@ export function TaxRatesManager() {
         <button
           type="button"
           onClick={openCreate}
-          className="shrink-0 inline-flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-mintcom-green hover:bg-[#5fa888] text-black text-xs font-black tracking-wide shadow-sm transition-colors"
+          className="shrink-0 inline-flex items-center gap-1.5 px-3.5 h-9 rounded-lg bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black text-xs font-semibold tracking-wide transition-colors"
         >
           <Plus size={14} strokeWidth={2.5} />
           {t('settings.taxes.add', 'Add Tax')}
@@ -210,7 +210,7 @@ export function TaxRatesManager() {
             <button
               type="button"
               onClick={openCreate}
-              className="mt-4 inline-flex items-center gap-1.5 px-4 h-9 rounded-xl bg-mintcom-green hover:bg-[#5fa888] text-black text-xs font-black shadow-sm"
+              className="mt-4 inline-flex items-center gap-1.5 px-4 h-9 rounded-lg bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black text-xs font-semibold"
             >
               <Plus size={14} strokeWidth={2.5} />
               {t('settings.taxes.createFirst', 'Create tax rate')}
@@ -369,7 +369,7 @@ export function TaxRatesManager() {
                 type="button"
                 onClick={handleSave}
                 disabled={saving}
-                className="px-5 h-10 rounded-xl bg-mintcom-green hover:bg-[#5fa888] text-black text-sm font-black shadow-sm transition-colors disabled:opacity-50"
+                className="px-4 h-10 rounded-lg bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black text-sm font-semibold transition-colors disabled:opacity-50"
               >
                 {saving ? t('common.saving', 'Saving…') : t('common.save', 'Save')}
               </button>

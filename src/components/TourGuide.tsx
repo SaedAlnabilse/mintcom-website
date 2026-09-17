@@ -369,7 +369,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete, onStepChange }: 
                   )}
                   <button
                     onClick={handleNext}
-                    className="flex items-center gap-2 px-4 py-2 bg-mintcom-green text-black font-bold text-sm rounded-xl hover:bg-mintcom-green/90 transition-all shadow-lg shadow-mintcom-green/20"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-mintcom-green text-black font-semibold text-sm rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
                   >
                     {isRTL && !isLastStep && <ChevronLeft size={16} />}
                     {isLastStep ? t('common.finish') : t('common.next')}

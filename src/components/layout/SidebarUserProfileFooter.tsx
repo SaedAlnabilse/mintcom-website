@@ -5,6 +5,7 @@ import { LogOut, Smartphone } from 'lucide-react';
 import { SidebarPreferencesHelpMenu } from './SidebarPreferencesHelpMenu';
 import { AlertsBell, type AlertsBellLocation } from '../notifications/AlertsBell';
 import type { Account } from '../../types';
+import { avatarClass, userCardClass, userNameClass, userEmailClass } from '../ui/sharedStyles';
 
 export interface SidebarUserProfileFooterProps {
   sidebarOpen: boolean;
@@ -33,15 +34,15 @@ export const SidebarUserProfileFooter: React.FC<SidebarUserProfileFooterProps> =
       {sidebarOpen ? (
         <div className="space-y-1">
           {/* Profile Header */}
-          <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-xl">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-mintcom-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
+          <div className={`flex items-center gap-3 p-3 mb-2 ${userCardClass}`}>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm ${avatarClass}`}>
               {account?.firstName?.charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
+              <p className={userNameClass}>
                 {account?.firstName} {account?.lastName}
               </p>
-              <p className="text-xs text-gray-500 truncate">
+              <p className={userEmailClass}>
                 {account?.email || (scope === 'owner' ? t('owner.menu.enterpriseOwner') : t('brand.menu.brandAdmin'))}
               </p>
             </div>

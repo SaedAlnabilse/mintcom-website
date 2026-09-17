@@ -17,6 +17,14 @@ export interface Account {
   permissions?: string[]; // Admin permissions
   isSecondaryAdmin?: boolean; // Flag for secondary admin users
   hasPassword?: boolean; // Whether the user has a local password
+  contactPhone?: string;
+  staffSize?: string;
+  branchesPlanned?: string;
+  currentPos?: string;
+  heardAbout?: string;
+  referralCode?: string;
+  marketingConsent?: boolean;
+  marketingConsentedAt?: string | null;
 }
 
 export interface Establishment {
@@ -39,6 +47,14 @@ export interface Establishment {
   deletionExportSentTo?: string | null;
   accessLockedAt?: string | null;
   accessLockReason?: string | null;
+  contactPhone?: string;
+  staffSize?: string;
+  branchesPlanned?: string;
+  currentPos?: string;
+  heardAbout?: string;
+  referralCode?: string;
+  marketingConsent?: boolean;
+  marketingConsentedAt?: string | null;
 }
 
 export interface StaffMember {
