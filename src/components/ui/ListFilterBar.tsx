@@ -54,13 +54,13 @@ export function ListFilterBar({
         {showViewToggle && (
           <div
             id={viewToggleId}
-            className="flex items-center bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-12 shrink-0"
+            className="flex items-center bg-stone-100 dark:bg-zinc-800 rounded-xl border border-stone-200 dark:border-zinc-800 p-1 h-12 shrink-0"
           >
             <button
               type="button"
               onClick={() => onViewModeChange('grid')}
               aria-label="Grid view"
-              className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-zinc-800 text-mintcom-green shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
             >
               <Grid3X3 size={18} />
             </button>
@@ -68,7 +68,7 @@ export function ListFilterBar({
               type="button"
               onClick={() => onViewModeChange('list')}
               aria-label="List view"
-              className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-zinc-800 text-mintcom-green shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
             >
               <List size={18} />
             </button>

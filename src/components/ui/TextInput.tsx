@@ -1,12 +1,12 @@
 import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes, type ReactNode } from 'react';
 
 const BASE_INPUT =
-  'w-full bg-gray-50 dark:bg-black/20 border rounded-2xl px-5 py-4 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm';
+  'w-full bg-stone-50 dark:bg-black/20 border rounded-2xl px-5 py-4 text-sm text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm';
 
 function inputBorder(hasError: boolean) {
   return hasError
     ? 'border-mintcom-red ring-2 ring-mintcom-red/20'
-    : 'border-gray-200 dark:border-white/10';
+    : 'border-stone-200 dark:border-zinc-800';
 }
 
 interface FieldWrapperProps {
@@ -26,7 +26,7 @@ function FieldWrapper({ label, required, error, hint, children }: FieldWrapperPr
         </label>
       )}
       {children}
-      {hint && !error && <p className="mt-1.5 px-1 text-xs font-medium text-gray-400">{hint}</p>}
+      {hint && !error && <p className="mt-1.5 px-1 text-xs font-medium text-stone-400">{hint}</p>}
       {error && <p className="mt-1.5 px-1 text-xs font-bold text-mintcom-red">{error}</p>}
     </div>
   );

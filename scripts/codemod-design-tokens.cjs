@@ -113,6 +113,18 @@ const RULES = [
 
 function rewriteToken(tok) {
   if (Object.prototype.hasOwnProperty.call(EXACT, tok)) return { out: EXACT[tok], rule: 'exact' };
+
+  // `dark:!bg-[#1E293B]` is the same token as `dark:bg-[#1E293B]` with an
+  // !important marker; look it up without the bang and put the bang back.
+  const bang = tok.match(/^((?:[a-z-]+:)*)!(.+)$/);
+  if (bang) {
+    const plain = bang[1] + bang[2];
+    if (Object.prototype.hasOwnProperty.call(EXACT, plain)) {
+      const out = EXACT[plain];
+      const m = out.match(/^((?:[a-z-]+:)*)(.+)$/);
+      return { out: `${m[1]}!${m[2]}`, rule: 'exact' };
+    }
+  }
   for (const rule of RULES) {
     if (rule.test(tok)) {
       const out = rule.apply(tok);

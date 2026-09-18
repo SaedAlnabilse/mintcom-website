@@ -7,7 +7,7 @@ const TONE_CLASS: Record<BadgeTone, string> = {
   red: 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20',
   amber: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
   blue: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
-  gray: 'bg-gray-500/10 text-gray-500 dark:text-gray-400 border-gray-500/20',
+  gray: 'bg-stone-500/10 text-stone-500 dark:text-zinc-400 border-stone-500/20',
 };
 
 interface BadgeProps {

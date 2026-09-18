@@ -74,9 +74,9 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(function Toggle(
         {...restInputProps}
       />
       <div
-        className={`${sizeConfig.track} bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute ${sizeConfig.knob} after:bg-white after:rounded-full after:transition-all ${sizeConfig.translate} shadow-sm transition-colors peer-disabled:opacity-60`}
+        className={`${sizeConfig.track} bg-stone-200 dark:bg-zinc-800 rounded-full peer peer-checked:bg-mintcom-green after:content-[''] after:absolute ${sizeConfig.knob} after:bg-white after:rounded-full after:transition-all ${sizeConfig.translate} shadow-sm transition-colors peer-disabled:opacity-60`}
       />
-      {label && <span className="ml-3 text-sm font-medium text-gray-900 dark:text-white">{label}</span>}
+      {label && <span className="ml-3 text-sm font-medium text-stone-900 dark:text-zinc-100">{label}</span>}
     </label>
   );
 });

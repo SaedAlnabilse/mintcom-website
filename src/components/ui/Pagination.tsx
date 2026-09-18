@@ -89,20 +89,20 @@ export function Pagination({
     const endItem = Math.min(currentPage * itemsPerPage, totalItems || currentPage * itemsPerPage);
 
     const baseStyles = variant === 'footer'
-        ? "px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.03]"
-        : `bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm`;
+        ? "px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-stone-100 dark:border-zinc-800 bg-stone-50/50 dark:bg-zinc-800/40"
+        : `bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm`;
 
     return (
         <div className={`${baseStyles} ${className}`}>
             <div className="flex items-center gap-3">
-                <p className="text-sm text-gray-400 flex items-center font-normal">
+                <p className="text-sm text-stone-400 flex items-center font-normal">
                     <span className="mr-1.5">{t('common.pages', { defaultValue: 'Pages' })}</span>
-                    <span className="text-gray-700 dark:text-gray-200 font-semibold">{currentPage.toLocaleString(t('common.locale'))}</span>
-                    <span className="mx-1 text-gray-400 font-light">/</span>
-                    <span className="text-gray-700 dark:text-gray-200 font-semibold">{totalPages.toLocaleString(t('common.locale'))}</span>
+                    <span className="text-stone-700 dark:text-zinc-200 font-semibold">{currentPage.toLocaleString(t('common.locale'))}</span>
+                    <span className="mx-1 text-stone-400 font-light">/</span>
+                    <span className="text-stone-700 dark:text-zinc-200 font-semibold">{totalPages.toLocaleString(t('common.locale'))}</span>
                 </p>
                 {totalItems !== undefined && variant === 'default' && (
-                    <p className="text-xs font-medium text-gray-400">
+                    <p className="text-xs font-medium text-stone-400">
                         ({t('common.showing')} {startItem.toLocaleString(t('common.locale'))}-{endItem.toLocaleString(t('common.locale'))} / {totalItems.toLocaleString(t('common.locale'))})
                     </p>
                 )}
@@ -111,7 +111,7 @@ export function Pagination({
                 <button
                     onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
-                    className="p-3 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-emerald-700 dark:hover:text-mintcom-green disabled:opacity-30 transition-colors"
+                    className="p-3 rounded-lg bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-stone-500 hover:text-emerald-700 dark:hover:text-mintcom-green disabled:opacity-30 transition-colors"
                     title={t('common.previous')}
                 >
                     <ArrowUpRight size={18} className="rotate-[225deg]" />
@@ -121,7 +121,7 @@ export function Pagination({
                         pageNum === 'ellipsis' ? (
                             <span
                                 key={`ellipsis-${index}`}
-                                className="w-10 h-10 flex items-center justify-center text-gray-400"
+                                className="w-10 h-10 flex items-center justify-center text-stone-400"
                             >
                                 ...
                             </span>
@@ -139,7 +139,7 @@ export function Pagination({
                 <button
                     onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
-                    className="p-3 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-emerald-700 dark:hover:text-mintcom-green disabled:opacity-30 transition-colors"
+                    className="p-3 rounded-lg bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-stone-500 hover:text-emerald-700 dark:hover:text-mintcom-green disabled:opacity-30 transition-colors"
                     title={t('common.next')}
                 >
                     <ArrowUpRight size={18} className="rotate-45" />

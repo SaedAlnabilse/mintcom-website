@@ -70,11 +70,11 @@ export function Modal({
             role="dialog"
             aria-modal="true"
             aria-label={ariaLabel}
-            className={`bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] ${SIZE_CLASS[size]} rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92dvh] sm:max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/5 relative z-10 ${className}`.trim()}
+            className={`bg-white dark:bg-zinc-900/60 w-full sm:w-[90vw] ${SIZE_CLASS[size]} rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92dvh] sm:max-h-[85vh] transition-colors duration-300 border border-stone-200 dark:border-zinc-800 relative z-10 ${className}`.trim()}
           >
             {/* Mobile drag handle */}
             <div className="sm:hidden flex justify-center pt-2 pb-1 shrink-0">
-              <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+              <div className="w-10 h-1 bg-stone-300 dark:bg-zinc-800 rounded-full" />
             </div>
             {children}
           </motion.div>
@@ -109,7 +109,7 @@ export function ModalHeader({
   action,
 }: ModalHeaderProps) {
   return (
-    <div className="flex items-center justify-between gap-3 px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10 shrink-0">
+    <div className="flex items-center justify-between gap-3 px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-stone-200 dark:border-zinc-800 shrink-0">
       <div className="absolute top-0 right-0 w-48 h-48 bg-mintcom-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10 pointer-events-none" />
       <div className="flex items-center gap-4 min-w-0">
         {icon && (
@@ -118,11 +118,11 @@ export function ModalHeader({
           </div>
         )}
         <div className="min-w-0">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight truncate">
+          <h2 className="text-xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight leading-tight truncate">
             {title}
           </h2>
           {subtitle && (
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">
+            <p className="text-sm font-medium text-stone-500 dark:text-zinc-400 mt-0.5 line-clamp-2">
               {subtitle}
             </p>
           )}
@@ -150,11 +150,19 @@ interface ModalFooterProps {
   className?: string;
 }
 
-/** Shared popup footer container (3/3 of the modal kit). */
+/**
+ * Shared popup footer container (3/3 of the modal kit).
+ *
+ * Padding matches ModalHeader's rhythm (px-6 sm:px-8 / py-4 sm:py-5) so the
+ * dialog reads as one block. The bottom value bakes in the safe-area inset
+ * instead of using the `pb-safe` utility: Tailwind emits its own padding
+ * utilities after `pb-safe`, so `p-4` silently won and the iPhone
+ * home-indicator inset was never actually applied.
+ */
 export function ModalFooter({ children, className = '' }: ModalFooterProps) {
   return (
     <div
-      className={`p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-gray-50 dark:bg-black/20 transition-colors sticky bottom-0 pb-safe ${className}`.trim()}
+      className={`px-6 sm:px-8 pt-4 sm:pt-5 pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-[max(env(safe-area-inset-bottom),1.25rem)] border-t border-stone-200 dark:border-zinc-800 flex items-center gap-3 sm:gap-4 bg-stone-50 dark:bg-zinc-900/60 transition-colors sticky bottom-0 ${className}`.trim()}
     >
       {children}
     </div>
@@ -174,7 +182,7 @@ export function ModalCancelButton({ onClick, children, disabled = false }: Modal
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-bold text-xs tracking-widest hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95 disabled:opacity-50"
+      className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 text-stone-500 dark:text-zinc-400 font-bold text-xs tracking-widest hover:text-stone-900 dark:hover:text-zinc-100 transition-all shadow-sm active:scale-95 disabled:opacity-50"
     >
       {children}
     </button>
@@ -206,10 +214,10 @@ export function ModalSubmitButton({
       form={form}
       onClick={onClick}
       disabled={disabled || loading}
-      className="flex-[2] h-12 sm:h-14 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+      className="flex-[2] h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
     >
       {loading ? (
-        <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
+        <div className="w-[18px] h-[18px] border-2 border-stone-200 border-t-black rounded-full animate-spin" />
       ) : (
         children
       )}

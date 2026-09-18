@@ -21,11 +21,11 @@
 export const activeRowClass =
   'bg-mintcom-green/12 text-stone-900 dark:text-zinc-100 font-semibold active-menu-item [&>svg]:text-mintcom-green';
 
-/** Unselected sidebar / drawer row (desktop — gray-500 base). */
+/** Unselected sidebar / drawer row (desktop — stone-500 / zinc-400 base). */
 export const inactiveRowClass =
   'text-stone-500 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-900 dark:hover:text-zinc-100';
 
-/** Unselected drawer row (mobile — gray-600 base for contrast on white). */
+/** Unselected drawer row (mobile — stone-600 base for contrast on white). */
 export const inactiveMobileRowClass =
   'text-stone-600 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800';
 

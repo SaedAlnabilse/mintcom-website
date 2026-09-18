@@ -116,11 +116,9 @@ const targetFiles = [
   path.join(ROOT, 'src', 'components', 'OwnerLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'BrandLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'DashboardLayout.tsx'),
-  path.join(ROOT, 'src', 'components', 'ui', 'theme.ts'),
   path.join(ROOT, 'src', 'components', 'notifications', 'BackofficeAlertsView.tsx'),
   path.join(ROOT, 'src', 'components', 'notifications', 'AlertRow.tsx'),
-  path.join(ROOT, 'src', 'components', 'ui', 'StatValue.tsx'),
-  path.join(ROOT, 'src', 'components', 'ui', 'StatCard.tsx'),
+  ...collectFiles(path.join(ROOT, 'src', 'components', 'ui')),
 ];
 
 const failures = [];

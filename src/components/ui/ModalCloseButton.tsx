@@ -28,7 +28,7 @@ export const ModalCloseButton = forwardRef<HTMLButtonElement, ModalCloseButtonPr
   ) {
     const { t } = useTranslation();
     const baseClassName =
-      'w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-200 dark:border-white/10 transition-all hover:rotate-90 active:scale-90 shrink-0 disabled:opacity-50 disabled:pointer-events-none';
+      'w-10 h-10 rounded-xl bg-white dark:bg-zinc-800 flex items-center justify-center text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 border border-stone-200 dark:border-zinc-800 transition-all hover:rotate-90 active:scale-90 shrink-0 disabled:opacity-50 disabled:pointer-events-none';
     const positionClassName = autoPositionAbsolute ? ' absolute top-4 end-4 z-10' : '';
 
     return (
