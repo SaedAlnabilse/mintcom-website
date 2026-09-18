@@ -154,16 +154,18 @@ interface ModalFooterProps {
 /**
  * Shared popup footer container (3/3 of the modal kit).
  *
- * Padding matches ModalHeader's rhythm (px-6 sm:px-8 / py-4 sm:py-5) so the
- * dialog reads as one block. The bottom value bakes in the safe-area inset
- * instead of using the `pb-safe` utility: Tailwind emits its own padding
- * utilities after `pb-safe`, so `p-4` silently won and the iPhone
- * home-indicator inset was never actually applied.
+ * A flat 16px band (pt-4 / pb-4) at every breakpoint — enough to separate the
+ * actions from the body without leaving dead space under them.
+ *
+ * The bottom value bakes in the safe-area inset rather than using the
+ * `pb-safe` utility: Tailwind emits its own padding utilities after
+ * `pb-safe`, so a plain `p-4` silently won and the iPhone home-indicator
+ * inset was never actually applied.
  */
 export function ModalFooter({ children, className = '' }: ModalFooterProps) {
   return (
     <div
-      className={`px-6 sm:px-8 pt-4 sm:pt-5 pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-[max(env(safe-area-inset-bottom),1.25rem)] border-t border-stone-200 dark:border-zinc-800 flex items-center gap-3 sm:gap-4 bg-stone-50 dark:bg-zinc-900/60 transition-colors sticky bottom-0 ${className}`.trim()}
+      className={`px-6 sm:px-8 pt-4 pb-[max(env(safe-area-inset-bottom),1rem)] border-t border-stone-200 dark:border-zinc-800 flex items-center gap-3 sm:gap-4 bg-stone-50 dark:bg-zinc-900/60 transition-colors sticky bottom-0 ${className}`.trim()}
     >
       {children}
     </div>
@@ -183,7 +185,7 @@ export function ModalCancelButton({ onClick, children, disabled = false }: Modal
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 text-stone-500 dark:text-zinc-400 font-bold text-xs tracking-widest hover:text-stone-900 dark:hover:text-zinc-100 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+      className="flex-1 h-12 rounded-xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 text-stone-500 dark:text-zinc-400 font-bold text-xs tracking-widest hover:text-stone-900 dark:hover:text-zinc-100 transition-all shadow-sm active:scale-95 disabled:opacity-50"
     >
       {children}
     </button>
@@ -221,7 +223,7 @@ export function ModalSubmitButton({
       form={form}
       onClick={onClick}
       disabled={disabled || loading}
-      className={`${primaryButtonClass} flex-[2] h-12 sm:h-14`}
+      className={`${primaryButtonClass} flex-[2] h-12`}
     >
       {loading ? (
         // design-token-exempt: spinner track follows the button's own text color
