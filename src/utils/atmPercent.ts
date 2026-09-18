@@ -33,6 +33,48 @@ export const formatAtmCents = (cents: number): string =>
 
 const digitsOnly = (value: string): string => value.replace(/\D/g, '');
 
+/**
+ * Normalize locale decimal/thousands separators to a canonical ASCII form
+ * BEFORE any parsing, so keyboards that emit a comma (many decimal-pad
+ * locales, e.g. Arabic) behave like a dot.
+ *
+ * - Arabic-Indic digits (٠-٩, ۰-۹) -> Western digits.
+ * - Arabic decimal separator (٫ U+066B) -> '.' (always a decimal point).
+ * - Arabic thousands separator (٬ U+066C) -> removed.
+ * - ASCII comma: a trailing comma with no digits after it yet is a freshly
+ *   typed decimal comma ("0.00," -> "0.00."); when both '.' and ',' are
+ *   present the comma is thousands grouping and is removed ("1,000.5" ->
+ *   "1000.5"). With comma(s) only, a single comma followed by 1-2 digits is
+ *   a decimal comma ("0,1" -> "0.1"); anything else is thousands grouping
+ *   and commas are removed ("1,000").
+ *
+ * Without this, typing "0,1" was read ATM-style as digits "01" (0.01%),
+ * which downstream percent/fraction heuristics then displayed as "Tax 1%".
+ */
+export const normalizeDecimalSeparators = (raw: string): string => {
+  let out = raw
+    .replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)))
+    .replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+    .replace(/٬/g, '')
+    .replace(/٫/g, '.');
+  if (out.endsWith(',')) {
+    // Freshly typed separator with no digits after it yet ("0.00,"): a
+    // decimal comma, not thousands grouping.
+    return `${out.slice(0, -1)}.`;
+  }
+  if (out.includes(',') && out.includes('.')) {
+    return out.replace(/,/g, '');
+  }
+  if (out.includes(',')) {
+    const parts = out.split(',');
+    if (parts.length === 2 && parts[1].length >= 1 && parts[1].length <= 2) {
+      return `${parts[0]}.${parts[1]}`;
+    }
+    return out.replace(/,/g, '');
+  }
+  return out;
+};
+
 const normalizeIntPart = (intPart: string): string => {
   const stripped = digitsOnly(intPart).replace(/^0+(?=\d)/, '');
   return stripped === '' ? '0' : stripped;
@@ -115,35 +157,38 @@ export function changeAtmAmountEdit(
   maxCents: number = MAX_PERCENT_CENTS,
 ): AtmAmountEdit {
   if (raw === '') return { text: '', cents: 0, decimalMode: false };
-  if (digitsOnly(raw) === '') return { text: '.', cents: 0, decimalMode: true };
+  // Normalize locale separators first so a decimal comma (or Arabic decimal
+  // separator) behaves exactly like a dot through every path below.
+  const input = normalizeDecimalSeparators(raw);
+  if (digitsOnly(input) === '') return { text: '.', cents: 0, decimalMode: true };
 
   // Already in decimal mode and the dot is still there: exact decimal typing.
-  if (prev.decimalMode && raw.includes('.')) {
-    const parsed = parseFirstDotDecimal(raw, maxCents);
+  if (prev.decimalMode && input.includes('.')) {
+    const parsed = parseFirstDotDecimal(input, maxCents);
     if (!parsed) return prev; // 3rd decimal / over max -> swallow the keystroke
     return { text: parsed.text, cents: parsed.cents, decimalMode: true };
   }
 
   // Digit-only input (or decimal mode after the dot was deleted): pure ATM.
-  if (!raw.includes('.')) {
-    const cents = Number.parseInt(digitsOnly(raw), 10);
+  if (!input.includes('.')) {
+    const cents = Number.parseInt(digitsOnly(input), 10);
     if (!Number.isFinite(cents) || cents > maxCents) return prev;
     return { text: formatAtmCents(cents), cents, decimalMode: false };
   }
 
   // Dotted input, ATM mode: appended/removed digit on the formatted display
   // keeps shifting; a dot anywhere else enters decimal mode.
-  if (isAtmContinuation(raw, prev.text)) {
-    const cents = Number.parseInt(digitsOnly(raw), 10);
+  if (isAtmContinuation(input, prev.text)) {
+    const cents = Number.parseInt(digitsOnly(input), 10);
     if (!Number.isFinite(cents) || cents > maxCents) return prev;
     return { text: formatAtmCents(cents), cents, decimalMode: false };
   }
 
-  const parsed = parseLastDotDecimal(raw, maxCents);
+  const parsed = parseLastDotDecimal(input, maxCents);
   if (!parsed) {
     // Too many decimals after the new dot (e.g. pasted "0.555"): fall back
     // to reading the digits ATM-style so the entry still shifts predictably.
-    const cents = Number.parseInt(digitsOnly(raw), 10);
+    const cents = Number.parseInt(digitsOnly(input), 10);
     if (!Number.isFinite(cents) || cents > maxCents) return prev;
     return { text: formatAtmCents(cents), cents, decimalMode: false };
   }

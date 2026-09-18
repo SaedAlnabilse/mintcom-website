@@ -5,6 +5,7 @@ import {
   changeAtmAmountEdit,
   formatAtmCents,
   initAtmAmountEdit,
+  normalizeDecimalSeparators,
   type AtmAmountEdit,
 } from '../atmPercent';
 
@@ -107,5 +108,32 @@ describe('atmPercent hybrid ATM + decimal entry', () => {
     expect(initAtmAmountEdit(0.5)).toEqual(edit('0.50', 50));
     expect(initAtmAmountEdit(150)).toEqual(edit('100.00', MAX_PERCENT_CENTS));
     expect(initAtmAmountEdit(Number.NaN)).toEqual(edit('0.00', 0));
+  });
+
+  it('treats a decimal comma like a dot (comma-locale keyboards)', () => {
+    expect(changeAtmAmountEdit(initAtmAmountEdit(0), '0,1')).toEqual(edit('0.1', 10, true));
+    expect(changeAtmAmountEdit(initAtmAmountEdit(0), '2,75')).toEqual(edit('2.75', 275, true));
+    expect(changeAtmAmountEdit(initAtmAmountEdit(16), ',5')).toEqual(edit('0.5', 50, true));
+  });
+
+  it('supports digit-by-digit comma entry after the ATM display', () => {
+    let state = initAtmAmountEdit(0);
+    state = changeAtmAmountEdit(state, '0.000');
+    expect(state).toEqual(edit('0.00', 0));
+    state = changeAtmAmountEdit(state, '0.00,');
+    expect(state).toEqual(edit('0.', 0, true));
+    state = changeAtmAmountEdit(state, '0,1');
+    expect(state).toEqual(edit('0.1', 10, true));
+  });
+
+  it('accepts the Arabic decimal separator and Arabic-Indic digits', () => {
+    expect(changeAtmAmountEdit(initAtmAmountEdit(0), '0٫1')).toEqual(edit('0.1', 10, true));
+    expect(changeAtmAmountEdit(initAtmAmountEdit(0), '٠٫٥')).toEqual(edit('0.5', 50, true));
+  });
+
+  it('still reads thousands commas as grouping, not decimals', () => {
+    expect(normalizeDecimalSeparators('1,000')).toBe('1000');
+    expect(normalizeDecimalSeparators('1,000.5')).toBe('1000.5');
+    expect(normalizeDecimalSeparators('0,1')).toBe('0.1');
   });
 });

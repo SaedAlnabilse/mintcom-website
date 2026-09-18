@@ -26,6 +26,32 @@ const emptyEditor: EditorState = {
   ratePercent: '',
 };
 
+/**
+ * Normalize a typed percent: comma-locale decimal separators (and the Arabic
+ * decimal separator/digits) behave like a dot; thousands commas are dropped.
+ * Without this, typing "0,1" sanitized to "01" and saved a 1% tax instead
+ * of 0.1%.
+ */
+const sanitizePercentInput = (value: string): string => {
+  let out = value
+    .replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)))
+    .replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+    .replace(/٬/g, '')
+    .replace(/٫/g, '.');
+  const commaCount = (out.match(/,/g) || []).length;
+  if (commaCount > 1) {
+    out = out.replace(/,/g, '');
+  } else if (commaCount === 1) {
+    out = out.replace(/,/g, '.');
+  }
+  out = out.replace(/[^0-9.]/g, '');
+  const firstDot = out.indexOf('.');
+  if (firstDot !== -1) {
+    out = out.slice(0, firstDot + 1) + out.slice(firstDot + 1).replace(/\./g, '');
+  }
+  return out;
+};
+
 export function TaxRatesManager() {
   const { t } = useTranslation();
   const [taxes, setTaxes] = useState<TaxRate[]>([]);
@@ -348,7 +374,7 @@ export function TaxRatesManager() {
                   type="text"
                   inputMode="decimal"
                   value={editor.ratePercent}
-                  onChange={(e) => setEditor({ ...editor, ratePercent: e.target.value.replace(/[^0-9.]/g, '') })}
+                  onChange={(e) => setEditor({ ...editor, ratePercent: sanitizePercentInput(e.target.value) })}
                   placeholder="16"
                   className="w-full h-11 pl-3.5 pr-8 bg-white dark:bg-[#0F172A] border border-gray-200 dark:border-white/15 rounded-xl text-sm font-black tabular-nums text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/25 focus:border-mintcom-green"
                 />

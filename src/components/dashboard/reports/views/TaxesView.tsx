@@ -17,9 +17,15 @@ const toNumber = (value: unknown) => {
   return Number.isFinite(numeric) ? numeric : 0;
 };
 
-const ratePct = (rate: number) => {
-  if (!Number.isFinite(rate) || rate === 0) return 0;
-  return rate > 1 ? rate : rate * 100;
+/**
+ * Report buckets (`taxBreakdown[].rate`, `currentTaxRate`) arrive
+ * PERCENT-scale from the server aggregation (`rate * 100`), so they are used
+ * as-is. The old `rate > 1 ? rate : rate * 100` guess read a 0.5% bucket as
+ * 50%.
+ */
+const reportRateToPercent = (rate: number) => {
+  if (!Number.isFinite(rate) || rate <= 0) return 0;
+  return rate;
 };
 
 type TaxRowType = 'current' | 'changed' | 'previous' | 'standard' | 'deleted';
@@ -28,7 +34,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
   const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
   const taxBreakdown = React.useMemo(() => {
-    const currentTaxRate = ratePct(
+    const currentTaxRate = reportRateToPercent(
       toNumber(salesData.currentTaxRate ?? salesData.currentTaxRatePercent),
     );
     const isCurrentRate = (rate: number) =>
@@ -85,7 +91,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
     };
 
     return (salesData.taxBreakdown || []).map((tax: any) => {
-      const rawRate = ratePct(toNumber(tax.rate ?? tax.taxRate));
+      const rawRate = reportRateToPercent(toNumber(tax.rate ?? tax.taxRate));
       const rateLabel = tax.rateLabel || (rawRate > 0 ? `${Number(rawRate.toFixed(2))}%` : '');
       const isChanged = Boolean(tax.isChanged);
       const isDeleted = Boolean(tax.isDeleted || String(tax.taxType).toLowerCase() === 'deleted');
