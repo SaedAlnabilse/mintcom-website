@@ -29,6 +29,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSub
 import { biIcon } from '../../components/ui/BiIcon';
 import { StatValue } from '../../components/ui/StatValue';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { useRealtime } from '../../hooks/useRealtime';
 import { useAuth } from '../../context/AuthContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
@@ -224,9 +225,9 @@ export function RecipesPage() {
 
   const units = ['Units', 'Kg', 'G', 'L', 'Ml', 'Pcs', 'Portions', 'Servings'];
 
-  const fetchData = async () => {
+  const fetchData = async (quiet = false) => {
     try {
-      setIsLoading(true);
+      if (!quiet) setIsLoading(true);
       const [subRes, finalRes, materialsRes, itemsData, attributesRes] = await Promise.all([
         api.get('/api/manufacturing/sub-recipes', { params: { includeInactive: true } }),
         api.get('/api/manufacturing/final-recipes', { params: { includeInactive: true } }),
@@ -272,13 +273,46 @@ export function RecipesPage() {
     } catch {
       toast.error(t('manufacturing.messages.syncFailed', { defaultValue: 'Failed to sync data' }));
     } finally {
-      setIsLoading(false);
+      if (!quiet) setIsLoading(false);
     }
   };
 
+  const fetchDataRef = useRef(fetchData);
+  fetchDataRef.current = fetchData;
+
   useEffect(() => {
-    fetchData();
+    fetchDataRef.current();
   }, []);
+
+  // Live sync: background-refresh on manufacturing + sale events from any
+  // surface (POS, admin portal, second dashboard tab). Debounced so a
+  // multi-item sale or batch restock triggers one quiet refetch, not a storm.
+  const { onRefresh } = useRealtime({
+    establishmentId: currentEstablishment?.id || null,
+  });
+
+  useEffect(() => {
+    let debounceTimer: number | null = null;
+    const unsubscribe = onRefresh((eventType) => {
+      if (
+        eventType.startsWith('raw_material.') ||
+        eventType.startsWith('sub_recipe.') ||
+        eventType.startsWith('final_recipe.') ||
+        eventType.startsWith('manufacturing.') ||
+        eventType.startsWith('item.')
+      ) {
+        if (debounceTimer) window.clearTimeout(debounceTimer);
+        debounceTimer = window.setTimeout(() => {
+          // Quiet: no blocking loader for realtime background refreshes.
+          void fetchDataRef.current(true);
+        }, 500);
+      }
+    });
+    return () => {
+      if (debounceTimer) window.clearTimeout(debounceTimer);
+      unsubscribe();
+    };
+  }, [onRefresh]);
 
   useEffect(() => {
     if (isLoading || navigationTargetHandledRef.current) return;

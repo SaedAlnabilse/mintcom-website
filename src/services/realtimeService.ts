@@ -35,6 +35,16 @@ export const DataChangeEventTypes = {
   HELD_ORDER_CREATED: 'held_order.created',
   HELD_ORDER_UPDATED: 'held_order.updated',
   HELD_ORDER_DELETED: 'held_order.deleted',
+  RAW_MATERIAL_CREATED: 'raw_material.created',
+  RAW_MATERIAL_UPDATED: 'raw_material.updated',
+  RAW_MATERIAL_DELETED: 'raw_material.deleted',
+  SUB_RECIPE_CREATED: 'sub_recipe.created',
+  SUB_RECIPE_UPDATED: 'sub_recipe.updated',
+  SUB_RECIPE_DELETED: 'sub_recipe.deleted',
+  FINAL_RECIPE_CREATED: 'final_recipe.created',
+  FINAL_RECIPE_UPDATED: 'final_recipe.updated',
+  FINAL_RECIPE_DELETED: 'final_recipe.deleted',
+  MANUFACTURING_STOCK_CHANGED: 'manufacturing.stock_changed',
 } as const;
 
 export type DataChangeEventType = typeof DataChangeEventTypes[keyof typeof DataChangeEventTypes];
