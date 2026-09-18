@@ -300,7 +300,7 @@ export const SupportAdminPage = () => {
                       <item.icon size={16} />
                       {item.label}
                     </span>
-                    <span className={`rounded-lg px-2 py-0.5 text-xs font-black ${queue === item.key ? 'bg-zinc-800 dark:bg-black/10' : 'bg-stone-100 dark:bg-zinc-800'}`}>
+                    <span className={`rounded-lg px-2 py-0.5 text-xs font-black ${queue === item.key ? 'bg-white/20 dark:bg-black/10' : 'bg-stone-100 dark:bg-zinc-800'}`}>
                       {item.count}
                     </span>
                   </button>

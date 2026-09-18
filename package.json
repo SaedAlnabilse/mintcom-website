@@ -22,6 +22,7 @@
     "deploy": "npm run build && npx wrangler deploy",
     "check:duplication": "node scripts/check-duplication.cjs",
     "check:tokens": "node scripts/check-legacy-tokens.cjs",
+    "check:overrides": "node scripts/check-component-overrides.cjs",
     "typecheck": "tsc -b"
   },
   "dependencies": {

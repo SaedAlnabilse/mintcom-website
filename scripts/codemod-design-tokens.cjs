@@ -68,10 +68,18 @@ const RULES = [
     },
   },
 
-  // White-alpha surfaces -> zinc. Very low alpha reads as a subtle row tint.
+  // Dark-mode white-alpha surfaces -> zinc. Very low alpha reads as a row tint.
+  //
+  // ONLY touches tokens carrying a `dark:` variant. A bare `bg-white/90` is a
+  // LIGHT-mode surface — mapping it to zinc paints a near-black box on a white
+  // page. That mistake shipped three times (a notice in ProductFormModal, its
+  // image-remove chip, and an active-tab badge in SupportAdminPage) before it
+  // was caught by eye rather than by any check.
   {
     name: 'white-alpha',
-    test: (tok) => /^(?:[a-z-]+:)*!?(?:bg|border|divide|ring)-white\/(?:\[[^\]]+\]|\d+)$/.test(tok),
+    test: (tok) =>
+      /^(?:[a-z-]+:)*!?(?:bg|border|divide|ring)-white\/(?:\[[^\]]+\]|\d+)$/.test(tok) &&
+      /(^|:)dark:/.test(tok),
     apply: (tok) => {
       const [, variants, bang, util, alpha] = tok.match(
         /^((?:[a-z-]+:)*)(!?)(bg|border|divide|ring)-white\/(\[[^\]]+\]|\d+)$/

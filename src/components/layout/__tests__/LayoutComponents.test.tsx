@@ -40,7 +40,7 @@ describe('Layout Deduplicated Components', () => {
     expect(screen.getByText('dashboard.menu.logout')).toBeDefined();
   });
 
-  it('renders MobileNavigationDrawer navigation items and user card', () => {
+  it('renders MobileNavigationDrawer navigation items and keeps logout reachable', () => {
     render(
       <MemoryRouter>
         <MobileNavigationDrawer
@@ -57,6 +57,9 @@ describe('Layout Deduplicated Components', () => {
     );
 
     expect(screen.getByText('Overview')).toBeDefined();
-    expect(screen.getByText('John')).toBeDefined();
+    // The identity card was removed from the drawer; logout must survive it,
+    // since the card's icon button used to be the only way out on mobile.
+    expect(screen.getByText('Log out')).toBeDefined();
+    expect(screen.queryByText('John')).toBeNull();
   });
 });

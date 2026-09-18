@@ -1204,7 +1204,7 @@ export function ProductFormModal({
                         <button
                           type="button"
                           onClick={clearCurrentImage}
-                          className="absolute top-2 right-2 bg-zinc-800 dark:bg-zinc-900/95 rounded-full p-1.5 text-mintcom-red hover:bg-red-50 border border-stone-200 dark:border-zinc-800 shadow-lg active:scale-90 transition-all"
+                          className="absolute top-2 right-2 bg-white/90 dark:bg-zinc-900/95 rounded-full p-1.5 text-mintcom-red hover:bg-red-50 border border-stone-200 dark:border-zinc-800 shadow-lg active:scale-90 transition-all"
                           aria-label={t('common.remove', { defaultValue: 'Remove image' })}
                         >
                           <X size={12} />
@@ -1249,7 +1249,7 @@ export function ProductFormModal({
                       <div className={`flex items-start gap-2 rounded-2xl border px-3 py-2 text-[11px] ${
                         generatedImageNeedsRefresh
                           ? 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-400/30 dark:bg-amber-500/10 dark:text-amber-200'
-                          : 'border-stone-200 bg-zinc-800 text-stone-600 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-300'
+                          : 'border-stone-200 bg-stone-50 text-stone-600 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-300'
                       }`}>
                         <AlertCircle size={14} className="mt-0.5 flex-shrink-0" />
                         <p className="leading-normal">{imageHelperMessage}</p>

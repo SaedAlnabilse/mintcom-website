@@ -497,21 +497,13 @@ export function BrandLayout() {
                                 <ThemeToggle dropdownDirection="up" />
                             </div>
 
-                            <div className={`flex items-center gap-3 p-3 ${userCardClass}`}>
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm ${avatarClass}`}>
-                                    {account?.firstName?.charAt(0).toUpperCase()}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className={userNameClass}>{account?.firstName}</p>
-                                    <p className={userEmailClass}>{t('brand.menu.brandAdmin')}</p>
-                                </div>
-                                <button
-                                    onClick={handleLogout}
-                                    className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-stone-400 dark:text-zinc-500 hover:text-red-500 transition-all"
-                                >
-                                    <LogOut size={18} />
-                                </button>
-                            </div>
+                            <button
+                                onClick={handleLogout}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-stone-600 dark:text-zinc-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-colors"
+                            >
+                                <LogOut size={20} />
+                                <span>{t('dashboard.menu.logout')}</span>
+                            </button>
                         </div>
                     </motion.aside>
                 )}

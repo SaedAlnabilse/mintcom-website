@@ -128,24 +128,14 @@ export const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
               <SidebarPreferencesHelpMenu onOpenHelpCenter={() => navigate('/support')} />
             </div>
 
-            <div className={`flex items-center gap-3 p-3 ${userCardClass}`}>
-              <div className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-sm ${avatarClass}`}>
-                  {account?.firstName?.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className={userNameClass}>{account?.firstName}</p>
-                <p className={userEmailClass}>
-                  {scope === 'owner' ? t('owner.menu.enterpriseOwner') : t('brand.menu.brandAdmin')}
-                </p>
-              </div>
-              <button
-                onClick={onLogout}
-                aria-label={t('dashboard.menu.logout', { defaultValue: 'Log out' })}
-                className="min-h-[44px] min-w-[44px] p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500 transition-all flex items-center justify-center"
-              >
-                <LogOut size={18} />
-              </button>
-            </div>
+            <button
+              onClick={onLogout}
+              aria-label={t('dashboard.menu.logout', { defaultValue: 'Log out' })}
+              className="w-full flex items-center gap-3 px-3 min-h-[44px] rounded-lg text-sm font-semibold text-stone-600 dark:text-zinc-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-colors"
+            >
+              <LogOut size={20} />
+              <span>{t('dashboard.menu.logout', { defaultValue: 'Log out' })}</span>
+            </button>
           </div>
         </motion.aside>
         </>
