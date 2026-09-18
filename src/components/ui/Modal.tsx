@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { ModalCloseButton } from './ModalCloseButton';
+import { primaryButtonClass } from './theme';
 
 type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -199,7 +200,13 @@ interface ModalSubmitButtonProps {
   type?: 'submit' | 'button';
 }
 
-/** Standard primary green action with built-in loading spinner. */
+/**
+ * Standard primary action with built-in loading spinner.
+ *
+ * Colour comes from `primaryButtonClass`, the same token every other portal
+ * CTA uses: stone-900 on white in light mode, mint in dark. Only the dialog
+ * geometry (flex-[2], fixed height) is set here.
+ */
 export function ModalSubmitButton({
   children,
   disabled = false,
@@ -214,10 +221,11 @@ export function ModalSubmitButton({
       form={form}
       onClick={onClick}
       disabled={disabled || loading}
-      className="flex-[2] h-12 sm:h-14 rounded-xl bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+      className={`${primaryButtonClass} flex-[2] h-12 sm:h-14`}
     >
       {loading ? (
-        <div className="w-[18px] h-[18px] border-2 border-stone-200 border-t-black rounded-full animate-spin" />
+        // design-token-exempt: spinner track follows the button's own text color
+        <div className="w-[18px] h-[18px] border-2 border-white/30 border-t-white dark:border-black/20 dark:border-t-black rounded-full animate-spin" />
       ) : (
         children
       )}
