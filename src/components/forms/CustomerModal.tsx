@@ -18,7 +18,7 @@ import {
   Wallet,
   AlertCircle
 } from 'lucide-react';
-import { Modal, ModalHeader, ModalBody } from '../ui';
+import { Modal, ModalHeader, ModalBody, primaryButtonInlineClass } from '../ui';
 import { formatInputLabel } from '../../utils/textCase';
 import { StatValue } from '../ui/StatValue';
 
@@ -237,7 +237,7 @@ export function CustomerModal({
               type="button"
               onClick={() => onDeleteCustomer(customer)}
               disabled={isSubmitting || isPointsSubmitting}
-              className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-mintcom-red hover:bg-red-50 dark:hover:bg-red-500/10 border border-gray-200 dark:border-white/10 transition-all active:scale-90 shrink-0 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+              className="w-10 h-10 rounded-xl bg-white dark:bg-zinc-800 flex items-center justify-center text-stone-400 hover:text-mintcom-red hover:bg-red-50 dark:hover:bg-red-500/10 border border-stone-200 dark:border-zinc-800 transition-all active:scale-90 shrink-0 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
               title={t('customers.messages.removeCustomer', { defaultValue: 'Remove Customer' })}
               aria-label={t('customers.messages.removeCustomer', { defaultValue: 'Remove Customer' })}
             >
@@ -251,42 +251,42 @@ export function CustomerModal({
         {/* Quick Metrics Cards */}
         {isEditing && customer && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-5">
-            <div className="bg-gray-50/80 dark:bg-white/[0.03] rounded-xl p-3 border border-gray-100 dark:border-white/10">
-              <div className="flex items-center gap-1.5 text-gray-400 mb-1">
-                <Award size={12} className="text-amber-500 shrink-0" />
+            <div className="bg-stone-50/80 dark:bg-zinc-800/40 rounded-xl p-3 border border-stone-100 dark:border-zinc-800">
+              <div className="flex items-center gap-1.5 text-stone-400 dark:text-zinc-500 mb-1">
+                <Award size={12} className="shrink-0" />
                 <span className="text-[10px] font-bold uppercase tracking-wider truncate">{t('customers.details.points')}</span>
               </div>
-              <div className="text-sm sm:text-base font-black text-gray-900 dark:text-white truncate">
+              <div className="text-sm sm:text-base font-black text-stone-900 dark:text-zinc-100 truncate">
                 <StatValue value={localPoints} isInteger={true} className="text-sm sm:text-base" />
               </div>
             </div>
 
-            <div className="bg-gray-50/80 dark:bg-white/[0.03] rounded-xl p-3 border border-gray-100 dark:border-white/10">
-              <div className="flex items-center gap-1.5 text-gray-400 mb-1">
-                <Wallet size={12} className="text-mintcom-green shrink-0" />
+            <div className="bg-stone-50/80 dark:bg-zinc-800/40 rounded-xl p-3 border border-stone-100 dark:border-zinc-800">
+              <div className="flex items-center gap-1.5 text-stone-400 dark:text-zinc-500 mb-1">
+                <Wallet size={12} className="shrink-0" />
                 <span className="text-[10px] font-bold uppercase tracking-wider truncate">{t('customers.details.spent')}</span>
               </div>
-              <div className="text-sm sm:text-base font-black text-gray-900 dark:text-white truncate">
+              <div className="text-sm sm:text-base font-black text-stone-900 dark:text-zinc-100 truncate">
                 <StatValue value={customer.totalSpent} currency={currencySymbol} className="text-sm sm:text-base" />
               </div>
             </div>
 
-            <div className="bg-gray-50/80 dark:bg-white/[0.03] rounded-xl p-3 border border-gray-100 dark:border-white/10">
-              <div className="flex items-center gap-1.5 text-gray-400 mb-1">
-                <ShoppingBag size={12} className="text-blue-400 shrink-0" />
+            <div className="bg-stone-50/80 dark:bg-zinc-800/40 rounded-xl p-3 border border-stone-100 dark:border-zinc-800">
+              <div className="flex items-center gap-1.5 text-stone-400 dark:text-zinc-500 mb-1">
+                <ShoppingBag size={12} className="shrink-0" />
                 <span className="text-[10px] font-bold uppercase tracking-wider truncate">{t('customers.details.visits')}</span>
               </div>
-              <div className="text-sm sm:text-base font-black text-gray-900 dark:text-white truncate">
+              <div className="text-sm sm:text-base font-black text-stone-900 dark:text-zinc-100 truncate">
                 <StatValue value={customer.totalVisits} isInteger={true} className="text-sm sm:text-base" />
               </div>
             </div>
 
-            <div className="bg-gray-50/80 dark:bg-white/[0.03] rounded-xl p-3 border border-gray-100 dark:border-white/10">
-              <div className="flex items-center gap-1.5 text-gray-400 mb-1">
-                <TrendingUp size={12} className="text-purple-400 shrink-0" />
+            <div className="bg-stone-50/80 dark:bg-zinc-800/40 rounded-xl p-3 border border-stone-100 dark:border-zinc-800">
+              <div className="flex items-center gap-1.5 text-stone-400 dark:text-zinc-500 mb-1">
+                <TrendingUp size={12} className="shrink-0" />
                 <span className="text-[10px] font-bold uppercase tracking-wider truncate">{t('customers.details.avgValue', { defaultValue: 'Avg' })}</span>
               </div>
-              <div className="text-sm sm:text-base font-black text-gray-900 dark:text-white truncate">
+              <div className="text-sm sm:text-base font-black text-stone-900 dark:text-zinc-100 truncate">
                 <StatValue value={avgOrderValue} currency={currencySymbol} className="text-sm sm:text-base" />
               </div>
             </div>
@@ -295,14 +295,14 @@ export function CustomerModal({
 
         {/* Tab Navigation (Existing Customer Only) */}
         {isEditing && (
-          <div className="flex border-b border-gray-100 dark:border-white/10 gap-4 shrink-0 mb-4">
+          <div className="flex border-b border-stone-100 dark:border-zinc-800 gap-4 shrink-0 mb-4">
             <button
               type="button"
               onClick={() => setActiveTab('profile')}
               className={`flex items-center gap-1.5 pb-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer ${
                 activeTab === 'profile'
                   ? 'border-mintcom-green text-mintcom-green'
-                  : 'border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
+                  : 'border-transparent text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200'
               }`}
             >
               <User size={14} />
@@ -315,7 +315,7 @@ export function CustomerModal({
               className={`flex items-center gap-1.5 pb-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer ${
                 activeTab === 'loyalty'
                   ? 'border-mintcom-green text-mintcom-green'
-                  : 'border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
+                  : 'border-transparent text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200'
               }`}
             >
               <Award size={14} />
@@ -335,21 +335,21 @@ export function CustomerModal({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Phone Field */}
                 <div className="space-y-1">
-                  <label className="flex items-center gap-1 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
+                  <label className="flex items-center gap-1 text-[11px] font-bold text-stone-500 dark:text-zinc-400 uppercase tracking-wider px-1">
                     <span>{formatInputLabel(t('customers.form.phone'), t('common.locale'))}</span>
                     <span className="text-mintcom-red">*</span>
                   </label>
                   <div className="relative">
-                    <Phone size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <Phone size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
                     <input
                       maxLength={CUSTOMER_FIELD_LIMITS.phone}
                       {...register('phone')}
                       placeholder={t('customers.form.phonePlaceholder', { defaultValue: '+1 234 567 8900' })}
-                      className={`w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-white/5 border ${
+                      className={`w-full pl-10 pr-3 py-2.5 bg-stone-50 dark:bg-zinc-800 border ${
                         errors.phone
                           ? 'border-mintcom-red ring-1 ring-mintcom-red'
-                          : 'border-gray-200 dark:border-white/10 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20'
-                      } rounded-xl text-xs sm:text-sm font-medium outline-none transition-all text-gray-900 dark:text-white`}
+                          : 'border-stone-200 dark:border-zinc-800 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20'
+                      } rounded-xl text-xs sm:text-sm font-medium outline-none transition-all text-stone-900 dark:text-zinc-100`}
                     />
                   </div>
                   {errors.phone && <p className="text-[10px] font-bold text-mintcom-red px-1">{errors.phone.message}</p>}
@@ -357,19 +357,19 @@ export function CustomerModal({
 
                 {/* Name Field */}
                 <div className="space-y-1">
-                  <label className="flex items-center gap-1 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
+                  <label className="flex items-center gap-1 text-[11px] font-bold text-stone-500 dark:text-zinc-400 uppercase tracking-wider px-1">
                     <span>{formatInputLabel(t('common.name', { defaultValue: 'Name' }), t('common.locale'))}</span>
-                    <span className="text-[10px] font-normal text-gray-400 dark:text-gray-500 lowercase">
+                    <span className="text-[10px] font-normal text-stone-400 dark:text-zinc-500 lowercase">
                       ({t('common.optional', { defaultValue: 'optional' })})
                     </span>
                   </label>
                   <div className="relative">
-                    <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
                     <input
                       maxLength={CUSTOMER_FIELD_LIMITS.name}
                       {...register('name')}
                       placeholder={t('customers.form.namePlaceholder', { defaultValue: 'Full Name' })}
-                      className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs sm:text-sm font-medium text-gray-900 dark:text-white focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all"
+                      className="w-full pl-10 pr-3 py-2.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-xs sm:text-sm font-medium text-stone-900 dark:text-zinc-100 focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -377,30 +377,30 @@ export function CustomerModal({
 
               {/* Email Field */}
               <div className="space-y-1">
-                <label className="flex items-center gap-1 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
+                <label className="flex items-center gap-1 text-[11px] font-bold text-stone-500 dark:text-zinc-400 uppercase tracking-wider px-1">
                   <span>{formatInputLabel(t('customers.form.email'), t('common.locale'))}</span>
-                  <span className="text-[10px] font-normal text-gray-400 dark:text-gray-500 lowercase">
+                  <span className="text-[10px] font-normal text-stone-400 dark:text-zinc-500 lowercase">
                     ({t('customers.form.optional', { defaultValue: 'optional' })})
                   </span>
                 </label>
                 <div className="relative">
-                  <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
                   <input
                     maxLength={CUSTOMER_FIELD_LIMITS.email}
                     type="email"
                     {...register('email')}
                     placeholder={t('customers.form.emailPlaceholder', { defaultValue: 'customer@example.com' })}
-                    className={`w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-white/5 border ${
+                    className={`w-full pl-10 pr-3 py-2.5 bg-stone-50 dark:bg-zinc-800 border ${
                       errors.email
                         ? 'border-mintcom-red ring-1 ring-mintcom-red'
-                        : 'border-gray-200 dark:border-white/10 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20'
-                    } rounded-xl text-xs sm:text-sm font-medium outline-none transition-all text-gray-900 dark:text-white`}
+                        : 'border-stone-200 dark:border-zinc-800 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20'
+                    } rounded-xl text-xs sm:text-sm font-medium outline-none transition-all text-stone-900 dark:text-zinc-100`}
                   />
                 </div>
                 {errors.email ? (
                   <p className="text-[10px] font-bold text-mintcom-red px-1">{errors.email.message}</p>
                 ) : (
-                  <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500 px-1">
+                  <p className="text-[10px] font-medium text-stone-400 dark:text-zinc-500 px-1">
                     {t('customers.form.emailHelper', {
                       defaultValue: 'Used to email receipts and loyalty passes.',
                     })}
@@ -409,7 +409,7 @@ export function CustomerModal({
               </div>
 
               {/* Submit Profile Actions */}
-              <div className="pt-2 flex items-center justify-between gap-2.5 border-t border-gray-100 dark:border-white/5">
+              <div className="pt-2 flex items-center justify-between gap-2.5 border-t border-stone-100 dark:border-zinc-800">
                 {isEditing && customer && onDeleteCustomer ? (
                   <button
                     type="button"
@@ -428,18 +428,18 @@ export function CustomerModal({
                     type="button"
                     onClick={onClose}
                     disabled={isSubmitting}
-                    className="px-4 py-2 text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
+                    className="px-4 py-2 text-xs sm:text-sm font-semibold text-stone-600 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                   >
                     {t('common.cancel', { defaultValue: 'Cancel' })}
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex items-center gap-1.5 px-4 py-2.5 bg-mintcom-green text-black font-semibold text-sm rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 disabled:opacity-50 transition-colors cursor-pointer"
+                    className={`${primaryButtonInlineClass} disabled:opacity-50 cursor-pointer`}
                   >
                     {isSubmitting ? (
                       <>
-                        <div className="w-3.5 h-3.5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                        <div className="w-3.5 h-3.5 border-2 border-stone-200 border-t-black rounded-full animate-spin" />
                         <span>{t('common.saving', { defaultValue: 'Saving...' })}</span>
                       </>
                     ) : isEditing ? (
@@ -457,7 +457,7 @@ export function CustomerModal({
           {isEditing && activeTab === 'loyalty' && (
             <div className="space-y-3">
               {/* Top Strip: Action Switcher (+ Add / - Deduct) */}
-              <div className="grid grid-cols-2 gap-1.5 p-1 bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200/50 dark:border-white/5">
+              <div className="grid grid-cols-2 gap-1.5 p-1 bg-stone-100 dark:bg-zinc-800 rounded-xl border border-stone-200/50 dark:border-zinc-800">
                 <button
                   type="button"
                   onClick={() => {
@@ -467,7 +467,7 @@ export function CustomerModal({
                   className={`flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-black transition-all cursor-pointer ${
                     pointsAction === 'add'
                       ? 'bg-mintcom-green text-black shadow-xs'
-                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100'
                   }`}
                 >
                   <Plus size={14} />
@@ -483,7 +483,7 @@ export function CustomerModal({
                   className={`flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-black transition-all cursor-pointer ${
                     pointsAction === 'deduct'
                       ? 'bg-mintcom-red text-white shadow-xs'
-                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100'
                   }`}
                 >
                   <Minus size={14} />
@@ -494,16 +494,16 @@ export function CustomerModal({
               {/* Points Amount Input */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between px-1">
-                  <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <label className="text-[11px] font-bold text-stone-500 dark:text-zinc-400 uppercase tracking-wider">
                     {t('customers.details.pointsAmount', { defaultValue: 'Points Amount' })}
                   </label>
-                  <span className="text-[10px] text-gray-400">
+                  <span className="text-[10px] text-stone-400">
                     {t('customers.details.maxPointsHint', { max: MAX_POINTS_ADJUSTMENT.toLocaleString(), defaultValue: `max ${MAX_POINTS_ADJUSTMENT.toLocaleString()}` })}
                   </span>
                 </div>
 
                 <div className="relative">
-                  <Award size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Award size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
                   <input
                     type="number"
                     min={1}
@@ -515,7 +515,7 @@ export function CustomerModal({
                       if (pointsError) setPointsError(null);
                     }}
                     placeholder="0"
-                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm sm:text-base font-black text-gray-900 dark:text-white focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all"
+                    className="w-full pl-10 pr-3 py-2.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm sm:text-base font-black text-stone-900 dark:text-zinc-100 focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green outline-none transition-all"
                   />
                 </div>
                 {pointsError && (
@@ -528,7 +528,7 @@ export function CustomerModal({
 
               {/* 1-Tap Quick Presets */}
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-[10px] font-bold text-gray-400 uppercase mr-1">
+                <span className="text-[10px] font-bold text-stone-400 uppercase mr-1">
                   {t('customers.details.pointsAllocation', { defaultValue: 'Presets' })}:
                 </span>
                 {pointPresets.map((preset) => {
@@ -548,7 +548,7 @@ export function CustomerModal({
                           ? pointsAction === 'add'
                             ? 'bg-mintcom-green text-black border-mintcom-green shadow-xs'
                             : 'bg-mintcom-red text-white border-mintcom-red shadow-xs'
-                          : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
+                          : 'bg-stone-50 dark:bg-zinc-800 border-stone-200 dark:border-zinc-800 text-stone-700 dark:text-zinc-300 hover:bg-stone-100 dark:hover:bg-zinc-800'
                       }`}
                     >
                       {pointsAction === 'add' ? `+${preset}` : `-${preset}`}
@@ -594,12 +594,12 @@ export function CustomerModal({
               ) : null}
 
               {/* Points Action Buttons */}
-              <div className="pt-2 flex items-center justify-end gap-2 border-t border-gray-100 dark:border-white/5">
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-stone-100 dark:border-zinc-800">
                 <button
                   type="button"
                   onClick={() => setPointsAmount(0)}
                   disabled={isPointsSubmitting || pointsAmount === 0}
-                  className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors disabled:opacity-40 cursor-pointer"
+                  className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800 rounded-xl transition-colors disabled:opacity-40 cursor-pointer"
                 >
                   {t('common.clear', { defaultValue: 'Clear' })}
                 </button>

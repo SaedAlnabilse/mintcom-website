@@ -120,15 +120,15 @@ export function AttributeFormModal({
                                         onClick={() => setInputType('SINGLE_SELECT')}
                                         className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${inputType === 'SINGLE_SELECT'
                                             ? 'bg-mintcom-green/10 border-mintcom-green'
-                                            : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-mintcom-green/30'
+                                            : 'bg-white dark:bg-zinc-900/60 border-stone-100 dark:border-zinc-800 hover:border-mintcom-green/30'
                                             }`}
                                     >
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${inputType === 'SINGLE_SELECT' ? 'bg-mintcom-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${inputType === 'SINGLE_SELECT' ? 'bg-mintcom-green text-black' : 'bg-stone-100 dark:bg-zinc-800 text-stone-400'}`}>
                                             <MousePointerClick size={20} strokeWidth={2.5} />
                                         </div>
                                         <div>
-                                            <p className={`text-sm font-bold ${inputType === 'SINGLE_SELECT' ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
-                                            <p className="text-xs font-medium text-gray-500 mt-1">{t('attributes.form.singleDesc')}</p>
+                                            <p className={`text-sm font-bold ${inputType === 'SINGLE_SELECT' ? 'text-mintcom-green' : 'text-stone-900 dark:text-zinc-100'}`}>{t('attributes.form.single')}</p>
+                                            <p className="text-xs font-medium text-stone-500 mt-1">{t('attributes.form.singleDesc')}</p>
                                         </div>
                                         {inputType === 'SINGLE_SELECT' && (
                                             <div className="absolute top-4 right-4 text-mintcom-green">
@@ -142,15 +142,15 @@ export function AttributeFormModal({
                                         onClick={() => setInputType('MULTI_SELECT')}
                                         className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${inputType === 'MULTI_SELECT'
                                             ? 'bg-mintcom-green/10 border-mintcom-green'
-                                            : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-mintcom-green/30'
+                                            : 'bg-white dark:bg-zinc-900/60 border-stone-100 dark:border-zinc-800 hover:border-mintcom-green/30'
                                             }`}
                                     >
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${inputType === 'MULTI_SELECT' ? 'bg-mintcom-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${inputType === 'MULTI_SELECT' ? 'bg-mintcom-green text-black' : 'bg-stone-100 dark:bg-zinc-800 text-stone-400'}`}>
                                             <CheckSquare size={20} strokeWidth={2.5} />
                                         </div>
                                         <div>
-                                            <p className={`text-sm font-bold ${inputType === 'MULTI_SELECT' ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
-                                            <p className="text-xs font-medium text-gray-500 mt-1">{t('attributes.form.multipleDesc')}</p>
+                                            <p className={`text-sm font-bold ${inputType === 'MULTI_SELECT' ? 'text-mintcom-green' : 'text-stone-900 dark:text-zinc-100'}`}>{t('attributes.form.multiple')}</p>
+                                            <p className="text-xs font-medium text-stone-500 mt-1">{t('attributes.form.multipleDesc')}</p>
                                         </div>
                                         {inputType === 'MULTI_SELECT' && (
                                             <div className="absolute top-4 right-4 text-mintcom-green">
@@ -162,10 +162,10 @@ export function AttributeFormModal({
                             </div>
 
                             {/* Required Toggle */}
-                            <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
+                            <div className="flex items-center justify-between p-5 bg-stone-50 dark:bg-zinc-800 rounded-2xl border border-stone-200 dark:border-zinc-800">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{t('attributes.form.requiredLabel')}</p>
-                                    <p className="text-xs font-bold text-gray-500 mt-0.5">{t('attributes.form.requiredDesc')}</p>
+                                    <p className="text-sm font-medium text-stone-900 dark:text-zinc-100">{t('attributes.form.requiredLabel')}</p>
+                                    <p className="text-xs font-bold text-stone-500 mt-0.5">{t('attributes.form.requiredDesc')}</p>
                                 </div>
                                 <Toggle
                                     size="lg"
@@ -178,7 +178,7 @@ export function AttributeFormModal({
                                 <AlertCircle size={18} className="text-blue-500 shrink-0 mt-0.5" />
                                 <div>
                                     <p className="label-strong font-sans text-blue-500 mb-1">{t('attributes.form.infoTitle')}</p>
-                                    <p className="text-xs font-bold text-gray-500 leading-relaxed">
+                                    <p className="text-xs font-bold text-stone-500 leading-relaxed">
                                         {t('attributes.form.infoDesc')}
                                     </p>
                                 </div>
@@ -193,7 +193,7 @@ export function AttributeFormModal({
                         type="button"
                         onClick={() => onDelete(initialData.id)}
                         title={t('common.archive')}
-                        className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-mintcom-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90 shrink-0"
+                        className="w-14 h-14 flex items-center justify-center bg-white dark:bg-zinc-800 text-stone-400 hover:text-mintcom-red rounded-xl border border-stone-200 dark:border-zinc-800 transition-all shadow-sm group active:scale-90 shrink-0"
                     >
                         <Trash2 size={24} className="group-hover:scale-110 transition-transform" />
                     </button>

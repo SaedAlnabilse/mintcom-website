@@ -169,7 +169,7 @@ export function DiscountFormModal({
                       }
                     }}
                     placeholder={formatInputPlaceholder(t('common.zeroDecimal'), t('common.locale'))}
-                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.percentage ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
+                    className={`w-full bg-stone-50 dark:bg-black/20 border ${errors.percentage ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl px-5 py-4 pr-16 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-mintcom-green/10 border border-mintcom-green/20 rounded-lg shadow-sm">
                     <span className="text-mintcom-green text-xs font-black">{t('common.percent')}</span>
@@ -180,9 +180,9 @@ export function DiscountFormModal({
               </div>
 
               {/* Manager Only Toggle */}
-              <div className="bg-gray-50 dark:bg-black/20 p-5 rounded-2xl flex items-center justify-between border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+              <div className="bg-stone-50 dark:bg-black/20 p-5 rounded-2xl flex items-center justify-between border border-stone-200 dark:border-zinc-800 transition-colors shadow-sm">
                 <div className="flex items-center">
-                  <span className="text-sm font-bold text-gray-900 dark:text-white">{t('discounts.form.managerOnly')}</span>
+                  <span className="text-sm font-bold text-stone-900 dark:text-zinc-100">{t('discounts.form.managerOnly')}</span>
                   <QuickInfo text={t('discounts.form.managerOnlyTip')} />
                 </div>
                 <Toggle

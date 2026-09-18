@@ -186,13 +186,13 @@ export function CategoryFormModal({
                         onClick={() => setSelectedIcon(icon)}
                         className={`aspect-square flex items-center justify-center rounded-xl border-2 transition-all duration-300 ${isSelected
                           ? 'bg-mintcom-green border-mintcom-green shadow-lg shadow-mintcom-green/10 scale-110 z-10'
-                          : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-mintcom-green/30'
+                          : 'bg-white dark:bg-zinc-900/60 border-stone-100 dark:border-zinc-800 hover:border-mintcom-green/30'
                           }`}
                       >
                         <IconComp
                           size={22}
                           strokeWidth={isSelected ? 3 : 2}
-                          className={isSelected ? 'text-black' : 'text-gray-400 group-hover:text-gray-600'}
+                          className={isSelected ? 'text-black' : 'text-stone-400 group-hover:text-stone-600'}
                         />
                       </button>
                     );
@@ -208,7 +208,7 @@ export function CategoryFormModal({
             type="button"
             onClick={() => onDelete(initialData.id)}
             title={t('common.delete', { defaultValue: 'Delete' })}
-            className="w-14 h-14 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-mintcom-red rounded-xl border border-gray-200 dark:border-white/10 transition-all shadow-sm group active:scale-90 shrink-0"
+            className="w-14 h-14 flex items-center justify-center bg-white dark:bg-zinc-800 text-stone-400 hover:text-mintcom-red rounded-xl border border-stone-200 dark:border-zinc-800 transition-all shadow-sm group active:scale-90 shrink-0"
           >
             <Trash2 size={24} className="group-hover:scale-110 transition-transform" />
           </button>

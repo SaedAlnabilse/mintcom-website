@@ -134,11 +134,11 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             {/* Reward Type */}
             <div className="space-y-2">
               <label className="label-strong block">{formatInputLabel(t('rewards.form.typeLabel'), t('common.locale'))}</label>
-              <div className="flex p-1 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5 relative isolate">
+              <div className="flex p-1 bg-stone-50 dark:bg-black/20 rounded-xl border border-stone-200 dark:border-zinc-800 relative isolate">
                 <button
                   type="button"
                   onClick={() => setType('DISCOUNT')}
-                  className={`relative flex-1 py-3 rounded-lg font-sans font-bold text-xs tracking-widest transition-all duration-300 z-10 ${type === 'DISCOUNT' ? 'text-black' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                  className={`relative flex-1 py-3 rounded-lg font-sans font-bold text-xs tracking-widest transition-all duration-300 z-10 ${type === 'DISCOUNT' ? 'text-black' : 'text-stone-500 hover:text-stone-900 dark:hover:text-zinc-100'
                     }`}
                 >
                   {type === 'DISCOUNT' && (
@@ -149,7 +149,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                 <button
                   type="button"
                   onClick={() => setType('FREE_ITEM')}
-                  className={`relative flex-1 py-3 rounded-lg font-sans font-bold text-xs tracking-widest transition-all duration-300 z-10 ${type === 'FREE_ITEM' ? 'text-black' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                  className={`relative flex-1 py-3 rounded-lg font-sans font-bold text-xs tracking-widest transition-all duration-300 z-10 ${type === 'FREE_ITEM' ? 'text-black' : 'text-stone-500 hover:text-stone-900 dark:hover:text-zinc-100'
                     }`}
                 >
                   {type === 'FREE_ITEM' && (
@@ -181,7 +181,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                       if (errors.pointsRequired) setErrors({ ...errors, pointsRequired: '' });
                     }
                   }}
-                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all group-hover:border-mintcom-green/50 shadow-sm`}
+                  className={`w-full px-5 py-4 bg-stone-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl pr-16 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all group-hover:border-mintcom-green/50 shadow-sm`}
                   placeholder={formatInputPlaceholder(t('rewards.form.pointsCostPlaceholder'), t('common.locale'))}
                 />
                 <div className="absolute right-5 top-1/2 -translate-y-1/2 text-mintcom-green">
@@ -208,10 +208,10 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                           if (errors.discountPercentage) setErrors({ ...errors, discountPercentage: '' });
                         }
                       }}
-                      className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pr-16 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all group-hover:border-mintcom-green/50 shadow-sm`}
+                      className={`w-full px-5 py-3.5 bg-stone-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl pr-16 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all group-hover:border-mintcom-green/50 shadow-sm`}
                       placeholder={formatInputPlaceholder(t('common.zero'), t('common.locale'))}
                     />
-                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg group-focus-within:text-mintcom-green transition-colors">{t('common.percent')}</div>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-stone-400 font-bold text-lg group-focus-within:text-mintcom-green transition-colors">{t('common.percent')}</div>
                   </div>
                   <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
                   {errors.discountPercentage && <p className="mt-1 px-1 text-xs font-bold text-mintcom-red">{errors.discountPercentage}</p>}

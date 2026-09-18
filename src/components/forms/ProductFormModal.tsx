@@ -1046,7 +1046,7 @@ export function ProductFormModal({
     ? totalRetailPrice - totalRetailPrice / (1 + effectiveTaxRate)
     : 0;
   const netPrice = totalRetailPrice - taxAmount;
-  const popupLabelBaseClass = 'text-xs font-semibold text-gray-400 dark:text-gray-500 tracking-widest uppercase block mb-2';
+  const popupLabelBaseClass = 'text-xs font-semibold text-stone-400 dark:text-zinc-500 tracking-widest uppercase block mb-2';
   const previewImage = imagePreview;
   const generationElapsedLabel = `${(generationElapsedMs / 1000).toFixed(2)}s`;
   const imageQuotaResetDate = imageQuota
@@ -1132,7 +1132,7 @@ export function ProductFormModal({
                 />
 
                 {/* Image Picker */}
-                <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 shadow-inner p-3 sm:p-4 mb-2">
+                <div className="bg-stone-50 dark:bg-black/20 rounded-2xl border border-stone-100 dark:border-zinc-800 shadow-inner p-3 sm:p-4 mb-2">
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -1142,7 +1142,7 @@ export function ProductFormModal({
                   />
 
                   <div className="flex flex-col gap-4">
-                    <div className="relative w-full max-w-[160px] aspect-square mx-auto rounded-2xl overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0F172A] shadow-sm">
+                    <div className="relative w-full max-w-[160px] aspect-square mx-auto rounded-2xl overflow-hidden border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm">
                       {previewImage ? (
                         <img
                           src={previewImage}
@@ -1178,7 +1178,7 @@ export function ProductFormModal({
                         <button
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
-                          className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-gray-400 hover:text-mintcom-green transition-colors"
+                          className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-stone-400 hover:text-mintcom-green transition-colors"
                         >
                           <Upload size={20} strokeWidth={1.8} />
                           <span className="text-[9px] font-bold tracking-wide">{t('products.upload')}</span>
@@ -1188,7 +1188,7 @@ export function ProductFormModal({
                       {(imageSourceLabel || generatedImageNeedsRefresh) && (
                         <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
                           {imageSourceLabel && (
-                            <span className="px-2 py-0.5 rounded-full bg-slate-900/80 text-white text-[9px] font-bold tracking-wide">
+                            <span className="px-2 py-0.5 rounded-full bg-stone-900/80 text-white text-[9px] font-bold tracking-wide">
                               {imageSourceLabel}
                             </span>
                           )}
@@ -1204,7 +1204,7 @@ export function ProductFormModal({
                         <button
                           type="button"
                           onClick={clearCurrentImage}
-                          className="absolute top-2 right-2 bg-white/95 dark:bg-slate-900/95 rounded-full p-1.5 text-mintcom-red hover:bg-red-50 border border-gray-200 dark:border-white/10 shadow-lg active:scale-90 transition-all"
+                          className="absolute top-2 right-2 bg-zinc-800 dark:bg-zinc-900/95 rounded-full p-1.5 text-mintcom-red hover:bg-red-50 border border-stone-200 dark:border-zinc-800 shadow-lg active:scale-90 transition-all"
                           aria-label={t('common.remove', { defaultValue: 'Remove image' })}
                         >
                           <X size={12} />
@@ -1217,7 +1217,7 @@ export function ProductFormModal({
                         <button
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
-                          className="h-10 flex items-center justify-center gap-1.5 rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-700 dark:text-gray-100 text-xs font-semibold hover:border-mintcom-green hover:text-mintcom-green transition-all"
+                          className="h-10 flex items-center justify-center gap-1.5 rounded-2xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 text-stone-700 dark:text-zinc-100 text-xs font-semibold hover:border-mintcom-green hover:text-mintcom-green transition-all"
                         >
                           <Upload size={14} />
                           <span>{t('products.upload')}</span>
@@ -1249,7 +1249,7 @@ export function ProductFormModal({
                       <div className={`flex items-start gap-2 rounded-2xl border px-3 py-2 text-[11px] ${
                         generatedImageNeedsRefresh
                           ? 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-400/30 dark:bg-amber-500/10 dark:text-amber-200'
-                          : 'border-gray-200 bg-white/80 text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300'
+                          : 'border-stone-200 bg-zinc-800 text-stone-600 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-300'
                       }`}>
                         <AlertCircle size={14} className="mt-0.5 flex-shrink-0" />
                         <p className="leading-normal">{imageHelperMessage}</p>
@@ -1271,8 +1271,8 @@ export function ProductFormModal({
                         <div>
                           <div className="relative group">
                             <div className="absolute left-4 inset-y-0 flex items-center pointer-events-none z-10">
-                              <div className="px-2 py-1 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg shadow-sm">
-                                <span className="text-gray-400 text-xs font-black">{currencySymbol}</span>
+                              <div className="px-2 py-1 bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 rounded-lg shadow-sm">
+                                <span className="text-stone-400 text-xs font-black">{currencySymbol}</span>
                               </div>
                             </div>
                             <input
@@ -1282,7 +1282,7 @@ export function ProductFormModal({
                               value={costPrice}
                               onChange={handleCostPriceChange}
                               placeholder={formatInputPlaceholder(t('common.zero'), t('common.locale'))}
-                              className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-5 py-4 text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm group-hover:border-mintcom-green/50"
+                              className="w-full bg-stone-50 dark:bg-black/20 border border-stone-200 dark:border-zinc-800 rounded-2xl pl-16 pr-5 py-4 text-sm font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm group-hover:border-mintcom-green/50"
                             />
                           </div>
                           <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
@@ -1317,7 +1317,7 @@ export function ProductFormModal({
                               }
                             }}
                             placeholder={formatInputPlaceholder(t('common.zero'), t('common.locale'))}
-                            className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.price ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pl-16 pr-5 py-4 text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm group-hover:border-mintcom-green/50`}
+                            className={`w-full bg-stone-50 dark:bg-black/20 border ${errors.price ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl pl-16 pr-5 py-4 text-sm font-medium text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm group-hover:border-mintcom-green/50`}
                           />
                         </div>
                         <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
@@ -1339,14 +1339,14 @@ export function ProductFormModal({
                           setShowCategoryDropdown(false);
                           setShowAddonsDropdown(false);
                         }}
-                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm group-hover:border-mintcom-green/50"
+                        className="w-full bg-stone-50 dark:bg-black/20 border border-stone-200 dark:border-zinc-800 rounded-2xl px-5 py-4 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm group-hover:border-mintcom-green/50"
                       >
-                        <span className={effectiveSelectedTax ? 'text-sm font-bold text-gray-900 dark:text-white' : 'text-sm font-bold text-gray-400'}>
+                        <span className={effectiveSelectedTax ? 'text-sm font-bold text-stone-900 dark:text-zinc-100' : 'text-sm font-bold text-stone-400'}>
                           {effectiveSelectedTax
                             ? `${(effectiveSelectedTax.rate * 100).toLocaleString(t('common.locale'), { maximumFractionDigits: 2 })}% — ${effectiveSelectedTax.name}${effectiveSelectedTax.isDefault ? ` (${t('common.default', { defaultValue: 'Default' })})` : ''}`
                             : t('products.form.selectTax', { defaultValue: 'Select tax rate' })}
                         </span>
-                        <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${showTaxDropdown ? 'rotate-180 text-mintcom-green' : ''}`} />
+                        <ChevronDown size={20} className={`text-stone-400 transition-transform duration-300 ${showTaxDropdown ? 'rotate-180 text-mintcom-green' : ''}`} />
                       </button>
 
                       <AnimatePresence>
@@ -1355,9 +1355,9 @@ export function ProductFormModal({
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[60] max-h-80 flex flex-col shadow-2xl overflow-hidden"
+                            className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl z-[60] max-h-80 flex flex-col shadow-md overflow-hidden"
                           >
-                            <div className="bg-white dark:bg-[#1E293B] p-3 border-b border-gray-100 dark:border-white/5 z-10 shrink-0">
+                            <div className="bg-white dark:bg-zinc-900/60 p-3 border-b border-stone-100 dark:border-zinc-800 z-10 shrink-0">
                               <div className="relative">
                                 <input
                                   maxLength={255}
@@ -1365,7 +1365,7 @@ export function ProductFormModal({
                                   value={taxSearchQuery}
                                   onChange={(e) => setTaxSearchQuery(e.target.value)}
                                   placeholder={formatInputPlaceholder(t('products.form.filterTaxes', { defaultValue: 'Filter taxes…' }), t('common.locale'))}
-                                  className="w-full pl-9 pr-11 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none transition-all"
+                                  className="w-full pl-9 pr-11 py-2.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-xs font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none transition-all"
                                   onClick={(e) => e.stopPropagation()}
                                 />
                                 {taxSearchQuery && (
@@ -1373,19 +1373,19 @@ export function ProductFormModal({
                                     type="button"
                                     onClick={() => setTaxSearchQuery('')}
                                     aria-label={t('common.clearSearch', 'Clear search')}
-                                    className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                    className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
                                   >
                                     <X size={12} strokeWidth={2.75} />
                                   </button>
                                 )}
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={14} />
                               </div>
                             </div>
 
                             <div className="overflow-y-auto custom-scrollbar flex-1">
                               {effectiveFilteredTaxes.length === 0 && (
-                                <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                                  <p className="text-xs font-bold text-gray-400">{t('products.messages.noMatches')}</p>
+                                <div className="p-8 text-center border-b border-stone-100 dark:border-zinc-800">
+                                  <p className="text-xs font-bold text-stone-400">{t('products.messages.noMatches')}</p>
                                 </div>
                               )}
                               {effectiveFilteredTaxes.map((tax) => (
@@ -1397,20 +1397,20 @@ export function ProductFormModal({
                                     setSelectedTaxId(tax.id);
                                     setShowTaxDropdown(false);
                                   }}
-                                  className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5 last:border-none"
+                                  className="w-full px-5 py-4 text-left hover:bg-stone-50 dark:hover:bg-zinc-800/40 flex items-center justify-between group transition-colors border-b border-stone-100 dark:border-zinc-800 last:border-none"
                                 >
                                   <span className="flex items-center gap-2 min-w-0">
-                                    <span className={`text-xs font-bold truncate ${selectedTaxId === tax.id ? 'text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                    <span className={`text-xs font-bold truncate ${selectedTaxId === tax.id ? 'text-mintcom-green' : 'text-stone-700 dark:text-zinc-300'}`}>
                                       {tax.name}
                                       {tax.isDefault && (
-                                        <span className="ml-1.5 text-[11px] font-medium text-gray-400 dark:text-gray-500 align-middle">
+                                        <span className="ml-1.5 text-[11px] font-medium text-stone-400 dark:text-zinc-500 align-middle">
                                           ({t('common.default', { defaultValue: 'Default' })})
                                         </span>
                                       )}
                                     </span>
                                   </span>
                                   <span className="flex items-center gap-2 shrink-0">
-                                    <span className={`text-xs font-black ${selectedTaxId === tax.id ? 'text-mintcom-green' : 'text-gray-500'}`}>
+                                    <span className={`text-xs font-black ${selectedTaxId === tax.id ? 'text-mintcom-green' : 'text-stone-500'}`}>
                                       {(tax.rate * 100).toLocaleString(t('common.locale'), { maximumFractionDigits: 2 })}%
                                     </span>
                                     {selectedTaxId === tax.id && <Check size={18} className="text-mintcom-green" strokeWidth={3} />}
@@ -1423,15 +1423,15 @@ export function ProductFormModal({
                       </AnimatePresence>
                     </div>
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="bg-stone-50 dark:bg-zinc-800 rounded-2xl p-4 border border-stone-100 dark:border-zinc-800 shadow-sm">
                       <div className="flex items-center mb-1.5 gap-1">
-                        <p className="text-xs font-bold text-gray-500 tracking-widest leading-tight">{selectedTax ? selectedTax.name : 'Tax rate'}</p>
+                        <p className="text-xs font-bold text-stone-500 tracking-widest leading-tight">{selectedTax ? selectedTax.name : 'Tax rate'}</p>
                       </div>
                       <div className="flex items-baseline gap-1">
-                        <p className="text-gray-900 dark:text-white font-bold text-lg">
+                        <p className="text-stone-900 dark:text-zinc-100 font-bold text-lg">
                           {displayTaxRatePercent.toLocaleString(t('common.locale'), { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
                         </p>
-                        <p className="text-xs text-gray-400 font-black">{t('common.percent')}</p>
+                        <p className="text-xs text-stone-400 font-black">{t('common.percent')}</p>
                       </div>
                     </div>
                     <div className="bg-mintcom-green/5 rounded-2xl p-4 border border-mintcom-green/20 shadow-sm">
@@ -1490,7 +1490,7 @@ export function ProductFormModal({
                       {t('products.form.descriptionLabel')}
                       <QuickInfo text="Describe your product for customers and employees." />
                     </label>
-                    <span className={`label-strong font-sans ${description.length >= TEXT_INPUT_LIMITS.ITEM_DESCRIPTION ? 'text-mintcom-red' : 'text-gray-400'}`}>
+                    <span className={`label-strong font-sans ${description.length >= TEXT_INPUT_LIMITS.ITEM_DESCRIPTION ? 'text-mintcom-red' : 'text-stone-400'}`}>
                       {description.length.toLocaleString(t('common.locale'))}/{TEXT_INPUT_LIMITS.ITEM_DESCRIPTION.toLocaleString(t('common.locale'))}
                     </span>
                   </div>
@@ -1517,14 +1517,14 @@ export function ProductFormModal({
                       setShowAddonsDropdown(false);
                       setShowTaxDropdown(false);
                     }}
-                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.category ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm group-hover:border-mintcom-green/50`}
+                    className={`w-full bg-stone-50 dark:bg-black/20 border ${errors.category ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl px-5 py-4 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm group-hover:border-mintcom-green/50`}
                   >
-                    <span className={categoryId ? 'text-sm font-bold text-gray-900 dark:text-white' : 'text-sm font-bold text-gray-400'}>
+                    <span className={categoryId ? 'text-sm font-bold text-stone-900 dark:text-zinc-100' : 'text-sm font-bold text-stone-400'}>
                       {selectedCategory
                         ? `${selectedCategory.name}${selectedCategoryInactive ? ` (${t('common.inactive', { defaultValue: 'Inactive' })})` : ''}`
                         : t('products.form.selectCategory')}
                     </span>
-                    <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${showCategoryDropdown ? 'rotate-180 text-mintcom-green' : ''}`} />
+                    <ChevronDown size={20} className={`text-stone-400 transition-transform duration-300 ${showCategoryDropdown ? 'rotate-180 text-mintcom-green' : ''}`} />
                   </button>
                   {errors.category && (
                     <p className="mt-1.5 px-1 text-xs font-bold text-mintcom-red">{errors.category}</p>
@@ -1533,10 +1533,10 @@ export function ProductFormModal({
                     <div className="mt-3 rounded-2xl border border-mintcom-red/20 bg-mintcom-red/5 p-4 flex items-start gap-3">
                       <AlertCircle size={18} className="text-mintcom-red shrink-0 mt-0.5" />
                       <div>
-                        <p className="text-xs font-black text-gray-900 dark:text-white">
+                        <p className="text-xs font-black text-stone-900 dark:text-zinc-100">
                           {t('products.reactivate.categoryTitle', { defaultValue: 'Category needs attention' })}
                         </p>
-                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 leading-relaxed mt-1">
+                        <p className="text-xs font-semibold text-stone-500 dark:text-zinc-400 leading-relaxed mt-1">
                           {t('products.reactivate.categoryProblem', {
                             category: selectedCategory?.name || t('products.form.selectCategory', { defaultValue: 'selected category' }),
                             defaultValue: 'This product belongs to an inactive category. Choose an active category or create a replacement category before reactivating.',
@@ -1552,17 +1552,17 @@ export function ProductFormModal({
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-80 flex flex-col shadow-2xl overflow-hidden"
+                        className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl z-[50] max-h-80 flex flex-col shadow-md overflow-hidden"
                       >
                         {/* Search Bar */}
-                        <div className="bg-white dark:bg-[#1E293B] p-3 border-b border-gray-100 dark:border-white/5 z-10 shrink-0">
+                        <div className="bg-white dark:bg-zinc-900/60 p-3 border-b border-stone-100 dark:border-zinc-800 z-10 shrink-0">
                           <div className="relative">
                             <input maxLength={255}
                               type="text"
                               value={categorySearchQuery}
                               onChange={(e) => setCategorySearchQuery(e.target.value)}
                               placeholder={formatInputPlaceholder(t('products.form.filterCategories'), t('common.locale'))}
-                              className="w-full pl-9 pr-11 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none transition-all"
+                              className="w-full pl-9 pr-11 py-2.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-xs font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
                             {categorySearchQuery && (
@@ -1570,13 +1570,13 @@ export function ProductFormModal({
                                 type="button"
                                 onClick={() => setCategorySearchQuery('')}
                                 aria-label={t('common.clearSearch', 'Clear search')}
-                                className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
                               >
                                 <X size={12} strokeWidth={2.75} />
                               </button>
                             )}
 
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={14} />
                           </div>
                         </div>
 
@@ -1589,9 +1589,9 @@ export function ProductFormModal({
                                 setCategoryId('');
                                 setShowCategoryDropdown(false);
                               }}
-                              className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5"
+                              className="w-full px-5 py-4 text-left hover:bg-stone-50 dark:hover:bg-zinc-800/40 flex items-center justify-between group transition-colors border-b border-stone-100 dark:border-zinc-800"
                             >
-                              <span className={`text-xs font-bold ${!categoryId ? 'text-mintcom-green' : 'text-gray-400'}`}>
+                              <span className={`text-xs font-bold ${!categoryId ? 'text-mintcom-green' : 'text-stone-400'}`}>
                                 {t('products.messages.noneSelected')}
                               </span>
                               {!categoryId && <Check size={18} className="text-mintcom-green" strokeWidth={3} />}
@@ -1599,8 +1599,8 @@ export function ProductFormModal({
                           )}
 
                           {filteredCategories.length === 0 && (
-                            <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                              <p className="text-xs font-bold text-gray-400">{t('products.messages.noMatches')}</p>
+                            <div className="p-8 text-center border-b border-stone-100 dark:border-zinc-800">
+                              <p className="text-xs font-bold text-stone-400">{t('products.messages.noMatches')}</p>
                             </div>
                           )}
 
@@ -1617,9 +1617,9 @@ export function ProductFormModal({
                                   setErrors(newErrors);
                                 }
                               }}
-                              className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5 last:border-none"
+                              className="w-full px-5 py-4 text-left hover:bg-stone-50 dark:hover:bg-zinc-800/40 flex items-center justify-between group transition-colors border-b border-stone-100 dark:border-zinc-800 last:border-none"
                             >
-                              <span className={`text-xs font-bold ${categoryId === cat.id ? 'text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                              <span className={`text-xs font-bold ${categoryId === cat.id ? 'text-mintcom-green' : 'text-stone-700 dark:text-zinc-300'}`}>
                                 {cat.name}
                               </span>
                               {categoryId === cat.id && <Check size={18} className="text-mintcom-green" strokeWidth={3} />}
@@ -1635,7 +1635,7 @@ export function ProductFormModal({
                             setShowCategoryModal(true);
                             setShowCategoryDropdown(false);
                           }}
-                          className="w-full px-5 py-4 text-left bg-gray-50 dark:bg-white/[0.02] hover:bg-mintcom-green/10 flex items-center gap-3 transition-colors text-mintcom-green border-t border-gray-100 dark:border-white/10 shrink-0"
+                          className="w-full px-5 py-4 text-left bg-stone-50 dark:bg-zinc-800/40 hover:bg-mintcom-green/10 flex items-center gap-3 transition-colors text-mintcom-green border-t border-stone-100 dark:border-zinc-800 shrink-0"
                         >
                           <Plus size={16} />
                           <span className="text-xs font-bold tracking-widest">{t('categories.newCategory')}</span>
@@ -1674,13 +1674,13 @@ export function ProductFormModal({
                       setShowCategoryDropdown(false);
                       setShowTaxDropdown(false);
                     }}
-                    className={`w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-left flex min-w-0 items-center justify-between gap-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm ${attributes.length === 0 ? 'opacity-50 cursor-not-allowed' : 'group-hover:border-mintcom-green/50'}`}
+                    className={`w-full bg-stone-50 dark:bg-black/20 border border-stone-200 dark:border-zinc-800 rounded-2xl px-5 py-4 text-left flex min-w-0 items-center justify-between gap-3 text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm ${attributes.length === 0 ? 'opacity-50 cursor-not-allowed' : 'group-hover:border-mintcom-green/50'}`}
                   >
                     <div className="flex min-w-0 flex-1 items-center gap-3">
                       <div className="w-8 h-8 shrink-0 rounded-lg bg-mintcom-green/10 flex items-center justify-center">
                         <Plus size={16} className="text-mintcom-green" strokeWidth={2.5} />
                       </div>
-                      <span className={`min-w-0 truncate ${selectedAttributeIds.length > 0 ? 'text-sm font-bold text-gray-900 dark:text-white' : 'text-sm font-bold text-gray-400'}`}>
+                      <span className={`min-w-0 truncate ${selectedAttributeIds.length > 0 ? 'text-sm font-bold text-stone-900 dark:text-zinc-100' : 'text-sm font-bold text-stone-400'}`}>
                         {selectedAttributeIds.length === 0
                           ? (attributes.length === 0 ? t('products.messages.noAddons') : t('products.form.searchAddons'))
                           : selectedAttributeIds.length === 1
@@ -1688,7 +1688,7 @@ export function ProductFormModal({
                             : t('products.messages.linked', { count: selectedAttributeIds.length })}
                       </span>
                     </div>
-                    <ChevronDown size={20} className={`shrink-0 text-gray-400 transition-transform duration-300 ${showAddonsDropdown ? 'rotate-180 text-mintcom-green' : ''}`} />
+                    <ChevronDown size={20} className={`shrink-0 text-stone-400 transition-transform duration-300 ${showAddonsDropdown ? 'rotate-180 text-mintcom-green' : ''}`} />
                   </button>
 
                   <AnimatePresence>
@@ -1697,17 +1697,17 @@ export function ProductFormModal({
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-80 flex flex-col shadow-2xl overflow-hidden"
+                        className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl z-[50] max-h-80 flex flex-col shadow-md overflow-hidden"
                       >
                         {/* Search Bar */}
-                        <div className="bg-white dark:bg-[#1E293B] p-3 border-b border-gray-100 dark:border-white/5 z-10 shrink-0">
+                        <div className="bg-white dark:bg-zinc-900/60 p-3 border-b border-stone-100 dark:border-zinc-800 z-10 shrink-0">
                           <div className="relative">
                             <input maxLength={255}
                               type="text"
                               value={addonsSearchQuery}
                               onChange={(e) => setAddonsSearchQuery(e.target.value)}
                               placeholder={formatInputPlaceholder(t('products.form.searchAddons'), t('common.locale'))}
-                              className="w-full pl-9 pr-11 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+                              className="w-full pl-9 pr-11 py-2.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-xs font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
                             {addonsSearchQuery && (
@@ -1715,21 +1715,21 @@ export function ProductFormModal({
                                 type="button"
                                 onClick={() => setAddonsSearchQuery('')}
                                 aria-label={t('common.clearSearch', 'Clear search')}
-                                className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
                               >
                                 <X size={12} strokeWidth={2.75} />
                               </button>
                             )}
 
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={14} />
                           </div>
                         </div>
 
                         {/* Scrollable List */}
                         <div className="overflow-y-auto custom-scrollbar flex-1">
                           {filteredAttributes.length === 0 ? (
-                            <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                              <p className="text-xs font-bold text-gray-400">{t('products.messages.noMatches')}</p>
+                            <div className="p-8 text-center border-b border-stone-100 dark:border-zinc-800">
+                              <p className="text-xs font-bold text-stone-400">{t('products.messages.noMatches')}</p>
                             </div>
                           ) : (
                             filteredAttributes.map(attr => (
@@ -1744,19 +1744,19 @@ export function ProductFormModal({
                                   }
                                   setShowAddonsDropdown(false);
                                 }}
-                                className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex min-w-0 items-center justify-between gap-3 group transition-colors border-b border-gray-100 dark:border-white/5 last:border-none"
+                                className="w-full px-5 py-4 text-left hover:bg-stone-50 dark:hover:bg-zinc-800/40 flex min-w-0 items-center justify-between gap-3 group transition-colors border-b border-stone-100 dark:border-zinc-800 last:border-none"
                               >
                                 <div className="flex min-w-0 flex-1 flex-col">
-                                  <span className={`min-w-0 overflow-safe-wrap line-clamp-2 text-sm font-bold leading-snug ${selectedAttributeIds.includes(attr.id) ? 'text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`} title={attr.name}>
+                                  <span className={`min-w-0 overflow-safe-wrap line-clamp-2 text-sm font-bold leading-snug ${selectedAttributeIds.includes(attr.id) ? 'text-mintcom-green' : 'text-stone-700 dark:text-zinc-300'}`} title={attr.name}>
                                     {attr.name}
                                   </span>
-                                  <span className="text-xs text-gray-400 tracking-widest font-black mt-0.5">
+                                  <span className="text-xs text-stone-400 tracking-widest font-black mt-0.5">
                                     {attr.subAttributes?.length === 0
                                       ? t('products.messages.noSubItems')
                                       : t('products.messages.options', { count: attr.subAttributes?.length || 0 })}
                                   </span>
                                 </div>
-                                <div className={`w-6 h-6 shrink-0 rounded-lg border-2 flex items-center justify-center transition-all ${selectedAttributeIds.includes(attr.id) ? 'bg-mintcom-green border-mintcom-green shadow-sm' : 'border-gray-300 dark:border-white/10'}`}>
+                                <div className={`w-6 h-6 shrink-0 rounded-lg border-2 flex items-center justify-center transition-all ${selectedAttributeIds.includes(attr.id) ? 'bg-mintcom-green border-mintcom-green shadow-sm' : 'border-stone-300 dark:border-zinc-800'}`}>
                                   {selectedAttributeIds.includes(attr.id) && <Check size={14} className="text-black" strokeWidth={3} />}
                                 </div>
                               </button>
@@ -1768,7 +1768,7 @@ export function ProductFormModal({
                         <button
                           type="button"
                           onClick={() => { setShowAttributeModal(true); setShowAddonsDropdown(false); }}
-                          className="w-full px-5 py-4 text-left bg-gray-50 dark:bg-white/[0.02] hover:bg-mintcom-green/10 flex items-center gap-3 transition-colors text-mintcom-green border-t border-gray-100 dark:border-white/10 shrink-0"
+                          className="w-full px-5 py-4 text-left bg-stone-50 dark:bg-zinc-800/40 hover:bg-mintcom-green/10 flex items-center gap-3 transition-colors text-mintcom-green border-t border-stone-100 dark:border-zinc-800 shrink-0"
                         >
                           <Plus size={16} />
                           <span className="text-xs font-bold tracking-widest">{t('products.form.createAddon')}</span>
@@ -1801,13 +1801,13 @@ export function ProductFormModal({
                 </div>
 
                 {/* Stock Tracking */}
-                <div ref={stockRef} className="bg-gray-50 dark:bg-black/20 rounded-2xl p-8 border border-gray-200 dark:border-white/5 space-y-8 shadow-inner">
+                <div ref={stockRef} className="bg-stone-50 dark:bg-black/20 rounded-2xl p-8 border border-stone-200 dark:border-zinc-800 space-y-8 shadow-inner">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-gray-900 dark:text-white font-bold text-sm tracking-tight flex items-center gap-2">
+                      <h4 className="text-stone-900 dark:text-zinc-100 font-bold text-sm tracking-tight flex items-center gap-2">
                         {t('products.form.inventory.title')}
                       </h4>
-                      <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-0.5">{t('products.form.inventory.subtitle')}</p>
+                      <p className="text-[11px] font-medium text-stone-500 dark:text-zinc-400 mt-0.5">{t('products.form.inventory.subtitle')}</p>
                     </div>
                     <Toggle
                       size="lg"
@@ -1818,12 +1818,12 @@ export function ProductFormModal({
 
                   {trackStock && (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                      <div className="flex items-center justify-between bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                      <div className="flex items-center justify-between bg-white dark:bg-zinc-900/60 p-5 rounded-2xl border border-stone-100 dark:border-zinc-800 shadow-sm">
                         <div>
-                          <h4 className="text-gray-900 dark:text-white font-bold text-sm tracking-tight flex items-center gap-1">
+                          <h4 className="text-stone-900 dark:text-zinc-100 font-bold text-sm tracking-tight flex items-center gap-1">
                             {t('products.form.inventory.overselling')}
                           </h4>
-                          <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-0.5">{t('products.form.inventory.oversellingDesc')}</p>
+                          <p className="text-[11px] font-medium text-stone-500 dark:text-zinc-400 mt-0.5">{t('products.form.inventory.oversellingDesc')}</p>
                         </div>
                         <Toggle
                           checked={allowNegativeStock}
@@ -1832,7 +1832,7 @@ export function ProductFormModal({
                       </div>
 
                       <div className="space-y-2">
-                        <label className={`text-sm font-normal text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
+                        <label className={`text-sm font-normal text-stone-500 dark:text-zinc-400 flex items-center justify-center gap-1`}>
                           <span className="text-mintcom-green text-sm">&bull;</span> {t('products.form.inventory.quantity')}
                         </label>
                         <input
@@ -1865,7 +1865,7 @@ export function ProductFormModal({
                             }
                           }}
                           placeholder={formatInputPlaceholder((0).toLocaleString(t('common.locale')), t('common.locale'))}
-                          className={`w-full bg-white dark:bg-black/20 border ${errors.stock ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
+                          className={`w-full bg-white dark:bg-black/20 border ${errors.stock ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl px-5 py-3 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 text-center focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
                         />
                         {errors.stock && (
                           <p className="mt-1.5 text-center text-[10px] font-bold text-mintcom-red leading-tight px-1">{errors.stock}</p>
@@ -1874,7 +1874,7 @@ export function ProductFormModal({
 
                       <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className={`text-sm font-normal text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
+                          <label className={`text-sm font-normal text-stone-500 dark:text-zinc-400 flex items-center justify-center gap-1`}>
                             <span className="text-yellow-500 text-sm">&bull;</span> {t('products.form.inventory.low')}
                           </label>
                           <input
@@ -1907,14 +1907,14 @@ export function ProductFormModal({
                               }
                             }}
                             placeholder={formatInputPlaceholder((5).toLocaleString(t('common.locale')), t('common.locale'))}
-                            className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockYellow ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
+                            className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockYellow ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl px-5 py-3 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 text-center focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
                           />
                           {errors.lowStockYellow && (
                             <p className="mt-1.5 text-center text-[10px] font-bold text-mintcom-red leading-tight px-1">{errors.lowStockYellow}</p>
                           )}
                         </div>
                         <div className="space-y-2">
-                          <label className={`text-sm font-normal text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1`}>
+                          <label className={`text-sm font-normal text-stone-500 dark:text-zinc-400 flex items-center justify-center gap-1`}>
                             <span className="text-mintcom-red text-sm">&bull;</span> {t('products.form.inventory.veryLow')}
                           </label>
                           <input
@@ -1947,7 +1947,7 @@ export function ProductFormModal({
                               }
                             }}
                             placeholder={formatInputPlaceholder((2).toLocaleString(t('common.locale')), t('common.locale'))}
-                            className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockRed ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
+                            className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockRed ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl px-5 py-3 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 text-center focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all shadow-sm`}
                           />
                           {errors.lowStockRed && (
                             <p className="mt-1.5 text-center text-[10px] font-bold text-mintcom-red leading-tight px-1">{errors.lowStockRed}</p>

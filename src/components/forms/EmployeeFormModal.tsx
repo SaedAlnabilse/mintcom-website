@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Eye, EyeOff, ChevronDown, Check, MapPin, Globe, Plus } from 'lucide-react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ErrorBanner } from '../ui';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ErrorBanner, primaryButtonClass } from '../ui';
 import api from '../../config/api';
 import {
   POS_PERMISSIONS as CANONICAL_POS_PERMISSIONS,
@@ -189,7 +189,7 @@ function RoleScopeBadge({
       className={`shrink-0 inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide ${
         isGlobal
           ? 'border-blue-200 dark:border-blue-500/30 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'
-          : 'border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400'
+          : 'border-stone-200 dark:border-zinc-800 bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-zinc-400'
       }`}
     >
       {isGlobal ? <Globe size={9} /> : <MapPin size={9} />}
@@ -1469,16 +1469,16 @@ export function EmployeeFormModal({
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="mt-3 w-full bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-80 flex flex-col shadow-2xl overflow-hidden"
+                      className="mt-3 w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl z-[50] max-h-80 flex flex-col shadow-md overflow-hidden"
                     >
                       {/* Which target this list is editing. Without it the
                           list looks identical for every location, which is
                           what made a per-location picker so confusing. */}
-                      <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.03]">
+                      <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-stone-100 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800/40">
                         {roleSelectionTarget === 'ALL' ? (
                           <>
-                            <Globe size={11} className="text-gray-400 shrink-0" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 truncate">
+                            <Globe size={11} className="text-stone-400 shrink-0" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-stone-500 dark:text-zinc-400 truncate">
                               {establishments && selectedEstablishmentIds.length > 1
                                 ? t('staff.form.roleForAllLocations', { defaultValue: 'Role for all locations' })
                                 : t('staff.form.roleLabel', { defaultValue: 'Role' })}
@@ -1487,7 +1487,7 @@ export function EmployeeFormModal({
                         ) : (
                           <>
                             <MapPin size={11} className="text-mintcom-green shrink-0" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 truncate">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-stone-500 dark:text-zinc-400 truncate">
                               {establishments?.find((item) => item.id === roleSelectionTarget)?.name ||
                                 t('staff.form.locationLabel')}
                             </span>
@@ -1533,13 +1533,13 @@ export function EmployeeFormModal({
                                 });
                               }
                             }}
-                            className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${activeTargetOptionId === builtInRoleOptionId('ADMIN') ? 'bg-blue-500/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                            className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${activeTargetOptionId === builtInRoleOptionId('ADMIN') ? 'bg-blue-500/10' : 'hover:bg-stone-50 dark:hover:bg-zinc-800'}`}
                           >
                             <div>
-                              <span className={`text-xs font-bold ${activeTargetOptionId === builtInRoleOptionId('ADMIN') ? 'text-blue-500' : 'text-gray-700 dark:text-gray-300'}`}>
+                              <span className={`text-xs font-bold ${activeTargetOptionId === builtInRoleOptionId('ADMIN') ? 'text-blue-500' : 'text-stone-700 dark:text-zinc-300'}`}>
                                 {t('staff.form.adminRole')}
                               </span>
-                              <p className="text-xs font-bold text-gray-500 mt-0.5">{t('staff.form.adminDesc')}</p>
+                              <p className="text-xs font-bold text-stone-500 mt-0.5">{t('staff.form.adminDesc')}</p>
                             </div>
                             {activeTargetOptionId === builtInRoleOptionId('ADMIN') && <Check size={14} className="text-blue-500" />}
                           </button>
@@ -1556,17 +1556,17 @@ export function EmployeeFormModal({
                         {/* Global Roles Section - Accordion */}
                         {assignableCustomRoles.filter(r => r.isGlobal && isRoleVisibleForTarget(r, roleSelectionTarget)).length > 0 && (
                           <div className="mt-2">
-                            <div className="border-t border-gray-100 dark:border-white/5 mb-2" />
+                            <div className="border-t border-stone-100 dark:border-zinc-800 mb-2" />
                             <button
                               type="button"
                               onClick={(e) => toggleSection('global', e)}
-                              className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                              className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors"
                             >
                               <span className="flex items-center gap-1.5 min-w-0">
                                 <Globe size={11} className="text-blue-500 shrink-0" />
                                 <span className="text-xs font-black text-blue-600 dark:text-blue-400 tracking-widest uppercase truncate">{t('staff.form.globalRoles')}</span>
                               </span>
-                              <ChevronDown size={14} className={`text-gray-400 transition-transform duration-200 ${expandedRoleSections.has('global') ? 'rotate-180' : ''}`} />
+                              <ChevronDown size={14} className={`text-stone-400 transition-transform duration-200 ${expandedRoleSections.has('global') ? 'rotate-180' : ''}`} />
                             </button>
                             <AnimatePresence>
                               {expandedRoleSections.has('global') && (
@@ -1582,13 +1582,13 @@ export function EmployeeFormModal({
                                       key={customRole.id}
                                       type="button"
                                       onClick={() => handleTemplateSelect(customRole)}
-                                      className={`w-full flex items-center justify-between p-3 pl-5 rounded-lg text-left transition-colors ${activeTargetOptionId === customRoleOptionId(customRole.id) ? 'bg-mintcom-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                      className={`w-full flex items-center justify-between p-3 pl-5 rounded-lg text-left transition-colors ${activeTargetOptionId === customRoleOptionId(customRole.id) ? 'bg-mintcom-green/10' : 'hover:bg-stone-50 dark:hover:bg-zinc-800'}`}
                                     >
                                       <div className="min-w-0">
-                                        <span className={`text-xs font-bold ${activeTargetOptionId === customRoleOptionId(customRole.id) ? 'text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                        <span className={`text-xs font-bold ${activeTargetOptionId === customRoleOptionId(customRole.id) ? 'text-mintcom-green' : 'text-stone-700 dark:text-zinc-300'}`}>
                                           {customRole.name}
                                         </span>
-                                        <p className="text-xs font-bold text-gray-500 mt-0.5">{t('staff.form.permissionsCount', { count: customRole.permissions.length + (customRole.backofficePermissions?.length || 0) })}</p>
+                                        <p className="text-xs font-bold text-stone-500 mt-0.5">{t('staff.form.permissionsCount', { count: customRole.permissions.length + (customRole.backofficePermissions?.length || 0) })}</p>
                                       </div>
                                       {activeTargetOptionId === customRoleOptionId(customRole.id) && <Check size={14} className="text-mintcom-green" />}
                                     </button>
@@ -1612,17 +1612,17 @@ export function EmployeeFormModal({
 
                           return Object.entries(grouped).map(([estName, roles]) => (
                             <div key={estName} className="mt-2">
-                              <div className="border-t border-gray-100 dark:border-white/5 mb-2" />
+                              <div className="border-t border-stone-100 dark:border-zinc-800 mb-2" />
                               <button
                                 type="button"
                                 onClick={(e) => toggleSection(estName, e)}
-                                className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors"
                               >
                                 <span className="flex items-center gap-1.5 min-w-0">
-                                  <MapPin size={11} className="text-gray-400 shrink-0" />
-                                  <span className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest uppercase truncate max-w-[200px]">{estName}</span>
+                                  <MapPin size={11} className="text-stone-400 shrink-0" />
+                                  <span className="text-xs font-black text-stone-500 dark:text-zinc-400 tracking-widest uppercase truncate max-w-[200px]">{estName}</span>
                                 </span>
-                                <ChevronDown size={14} className={`text-gray-400 transition-transform duration-200 flex-shrink-0 ${expandedRoleSections.has(estName) ? 'rotate-180' : ''}`} />
+                                <ChevronDown size={14} className={`text-stone-400 transition-transform duration-200 flex-shrink-0 ${expandedRoleSections.has(estName) ? 'rotate-180' : ''}`} />
                               </button>
                               <AnimatePresence>
                                 {expandedRoleSections.has(estName) && (
@@ -1638,13 +1638,13 @@ export function EmployeeFormModal({
                                         key={customRole.id}
                                         type="button"
                                         onClick={() => handleTemplateSelect(customRole)}
-                                        className={`w-full flex items-center justify-between p-3 pl-5 rounded-lg text-left transition-colors ${activeTargetOptionId === customRoleOptionId(customRole.id) ? 'bg-mintcom-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                        className={`w-full flex items-center justify-between p-3 pl-5 rounded-lg text-left transition-colors ${activeTargetOptionId === customRoleOptionId(customRole.id) ? 'bg-mintcom-green/10' : 'hover:bg-stone-50 dark:hover:bg-zinc-800'}`}
                                       >
                                         <div className="min-w-0">
-                                          <span className={`text-xs font-bold ${activeTargetOptionId === customRoleOptionId(customRole.id) ? 'text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                          <span className={`text-xs font-bold ${activeTargetOptionId === customRoleOptionId(customRole.id) ? 'text-mintcom-green' : 'text-stone-700 dark:text-zinc-300'}`}>
                                             {customRole.name}
                                           </span>
-                                          <p className="text-xs font-bold text-gray-500 mt-0.5">{t('staff.form.permissionsCount', { count: customRole.permissions.length + (customRole.backofficePermissions?.length || 0) })}</p>
+                                          <p className="text-xs font-bold text-stone-500 mt-0.5">{t('staff.form.permissionsCount', { count: customRole.permissions.length + (customRole.backofficePermissions?.length || 0) })}</p>
                                         </div>
                                         {activeTargetOptionId === customRoleOptionId(customRole.id) && <Check size={14} className="text-mintcom-green" />}
                                       </button>
@@ -1659,21 +1659,21 @@ export function EmployeeFormModal({
                         {/* No custom roles message */}
                         {assignableCustomRoles.length === 0 && (
                           <div className="p-3 text-center">
-                            <p className="text-xs text-gray-500">{t('staff.form.noRoles')}</p>
+                            <p className="text-xs text-stone-500">{t('staff.form.noRoles')}</p>
                           </div>
                         )}
 
                         {/* Create a role without leaving the employee form. Removing
                             the free-permissions option would otherwise mean bouncing
                             to the Roles page mid-edit just to name a new role. */}
-                        <div className="mt-2 border-t border-gray-100 dark:border-white/5 pt-2">
+                        <div className="mt-2 border-t border-stone-100 dark:border-zinc-800 pt-2">
                           <button
                             type="button"
                             onClick={() => {
                               setActiveDropdown(null);
                               setIsCreatingRole(true);
                             }}
-                            className="w-full flex items-center gap-2 p-3 rounded-lg text-left transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
+                            className="w-full flex items-center gap-2 p-3 rounded-lg text-left transition-colors hover:bg-stone-50 dark:hover:bg-zinc-800"
                           >
                             <span className="w-6 h-6 rounded-lg bg-mintcom-green/10 text-mintcom-green flex items-center justify-center shrink-0">
                               <Plus size={13} />
@@ -1682,7 +1682,7 @@ export function EmployeeFormModal({
                               <span className="block text-xs font-bold text-mintcom-green">
                                 {t('staff.form.createRole', { defaultValue: 'Create a new role…' })}
                               </span>
-                              <span className="block text-xs font-bold text-gray-500 mt-0.5 truncate">
+                              <span className="block text-xs font-bold text-stone-500 mt-0.5 truncate">
                                 {newRoleScopeLabel}
                               </span>
                             </span>
@@ -1718,7 +1718,7 @@ export function EmployeeFormModal({
 
               {/* Name (optional) */}
               <div className="space-y-2">
-                <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                <label className="block text-sm font-normal text-stone-900 dark:text-zinc-100 flex items-center gap-1 tracking-tight">
                   {t('staff.form.nameLabel')} {t('staff.form.nameOptional', { defaultValue: '(Optional)' })}
                 </label>
                 <input maxLength={255}
@@ -1726,7 +1726,7 @@ export function EmployeeFormModal({
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                   placeholder={formatInputPlaceholder(t('staff.form.namePlaceholder'), t('common.locale'))}
-                  className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
+                  className={`w-full bg-stone-50 dark:bg-zinc-800 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-xl px-4 py-3 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
                 />
                 {errors.name && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.name}</p>}
               </div>
@@ -1734,15 +1734,15 @@ export function EmployeeFormModal({
               {/* Establishment Selection (Only if establishments prop is provided) */}
               {establishments && (
                 <div className="relative space-y-2">
-                  <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                  <label className="block text-sm font-normal text-stone-900 dark:text-zinc-100 flex items-center gap-1 tracking-tight">
                     {t('staff.form.accessLabel')} <span className="text-mintcom-red">*</span>
                   </label>
                   {isOwnerMode ? (
-                    <div className="w-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-left flex items-center justify-between">
-                      <span className="text-sm font-bold text-gray-900 dark:text-white">
+                    <div className="w-full bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-left flex items-center justify-between">
+                      <span className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                         {t('staff.form.allLocations')}
                       </span>
-                      <span className="text-[11px] font-black uppercase tracking-wide text-gray-400">
+                      <span className="text-[11px] font-black uppercase tracking-wide text-stone-400">
                         {t('common.locked', { defaultValue: 'Locked' })}
                       </span>
                     </div>
@@ -1751,16 +1751,16 @@ export function EmployeeFormModal({
                       ref={establishmentButtonRef}
                       type="button"
                       onClick={() => setActiveDropdown(activeDropdown === 'ESTABLISHMENT' ? null : 'ESTABLISHMENT')}
-                      className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.establishments ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors`}
+                      className={`w-full bg-stone-50 dark:bg-zinc-800 border ${errors.establishments ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors`}
                     >
-                      <span className={`text-sm font-bold ${selectedEstablishmentIds.length ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>
+                      <span className={`text-sm font-bold ${selectedEstablishmentIds.length ? 'text-stone-900 dark:text-zinc-100' : 'text-stone-400 dark:text-zinc-500'}`}>
                         {selectedEstablishmentIds.length === 0
                           ? t('staff.form.selectLocation')
                           : selectedEstablishmentIds.length === establishments.length
                             ? t('staff.form.allLocations')
                             : t('staff.form.locationsCount', { count: selectedEstablishmentIds.length })}
                       </span>
-                      <ChevronDown size={16} className={`text-gray-400 transition-transform ${activeDropdown === 'ESTABLISHMENT' ? 'rotate-180' : ''}`} />
+                      <ChevronDown size={16} className={`text-stone-400 transition-transform ${activeDropdown === 'ESTABLISHMENT' ? 'rotate-180' : ''}`} />
                     </button>
                   )}
                   {errors.establishments && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.establishments}</p>}
@@ -1772,16 +1772,16 @@ export function EmployeeFormModal({
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="mt-3 w-full bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-[340px] flex flex-col shadow-2xl overflow-hidden"
+                        className="mt-3 w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl z-[50] max-h-[340px] flex flex-col shadow-md overflow-hidden"
                       >
                         {/* Search */}
-                        <div className="relative p-3 border-b border-gray-100 dark:border-white/5 shrink-0">
+                        <div className="relative p-3 border-b border-stone-100 dark:border-zinc-800 shrink-0">
                           <input maxLength={255}
                             type="text"
                             placeholder={formatInputPlaceholder(t('common.search'), t('common.locale'))}
                             value={establishmentSearch}
                             onChange={(e) => setEstablishmentSearch(e.target.value)}
-                            className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-lg pl-3 pr-11 py-2 text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:ring-0"
+                            className="w-full bg-stone-50 dark:bg-zinc-800 border-none rounded-lg pl-3 pr-11 py-2 text-xs font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:ring-0"
                             autoFocus
                           />
                           {establishmentSearch && (
@@ -1789,7 +1789,7 @@ export function EmployeeFormModal({
                               type="button"
                               onClick={() => setEstablishmentSearch('')}
                               aria-label={t('common.clearSearch', 'Clear search')}
-                              className="absolute right-5 top-1/2 -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                              className="absolute right-5 top-1/2 -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
                             >
                               <X size={11} strokeWidth={2.75} />
                             </button>
@@ -1826,9 +1826,9 @@ export function EmployeeFormModal({
                                         : [...prev, est.id];
                                     });
                                   }}
-                                  className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${isSelected ? 'bg-mintcom-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                  className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${isSelected ? 'bg-mintcom-green/10' : 'hover:bg-stone-50 dark:hover:bg-zinc-800'}`}
                                 >
-                                  <span className={`text-xs font-bold ${isSelected ? 'text-mintcom-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                  <span className={`text-xs font-bold ${isSelected ? 'text-mintcom-green' : 'text-stone-700 dark:text-zinc-300'}`}>
                                     {est.name}
                                   </span>
                                   {isSelected && <Check size={14} className="text-mintcom-green" />}
@@ -1836,15 +1836,15 @@ export function EmployeeFormModal({
                               );
                             })}
                           {establishments.filter(e => e.name.toLowerCase().includes(establishmentSearch.toLowerCase())).length === 0 && (
-                            <div className="p-4 text-center text-xs font-bold text-gray-500">{t('products.messages.noMatches')}</div>
+                            <div className="p-4 text-center text-xs font-bold text-stone-500">{t('products.messages.noMatches')}</div>
                           )}
                         </div>
                         {/* Footer */}
-                        <div className="p-3 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] shrink-0">
+                        <div className="p-3 border-t border-stone-100 dark:border-zinc-800 bg-stone-50/50 dark:bg-zinc-800/40 shrink-0">
                           <button
                             type="button"
                             onClick={() => setActiveDropdown(null)}
-                            className="w-full py-2.5 bg-mintcom-green text-black font-semibold text-sm rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                            className={primaryButtonClass}
                           >
                             {t('common.done')}
                           </button>
@@ -1857,7 +1857,7 @@ export function EmployeeFormModal({
 
               {/* Role Selection - Now uses Role Template dropdown */}
               <div className="relative space-y-2">
-                <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 flex items-center justify-between tracking-normal">
+                <label className="block text-sm font-normal text-stone-600 dark:text-zinc-300 flex items-center justify-between tracking-normal">
                   <span className="flex items-center gap-1">{t('staff.form.roleLabel')} <span className="text-mintcom-red">*</span></span>
                   {!isOwnerMode && isModifiedFromTemplate() && (
                     <span className="text-mintcom-red lowercase font-bold tracking-normal">{t('staff.form.modified')}</span>
@@ -1865,17 +1865,17 @@ export function EmployeeFormModal({
                 </label>
                 {/* Show hint if no establishments selected in owner mode */}
                 {isOwnerMode ? (
-                  <div className="w-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-left flex items-center justify-between">
-                    <span className="text-sm font-bold text-gray-900 dark:text-white">
+                  <div className="w-full bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-left flex items-center justify-between">
+                    <span className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                       {t('common.owner', { defaultValue: 'Owner' })}
                     </span>
-                    <span className="text-[11px] font-black uppercase tracking-wide text-gray-400">
+                    <span className="text-[11px] font-black uppercase tracking-wide text-stone-400">
                       {t('common.locked', { defaultValue: 'Locked' })}
                     </span>
                   </div>
                 ) : establishments && selectedEstablishmentIds.length === 0 ? (
-                  <div className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-left">
-                    <span className="text-sm font-bold text-gray-400 dark:text-gray-500">{t('staff.form.selectLocation')}</span>
+                  <div className="w-full bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-left">
+                    <span className="text-sm font-bold text-stone-400 dark:text-zinc-500">{t('staff.form.selectLocation')}</span>
                   </div>
                 ) : (
                   <>
@@ -1883,7 +1883,7 @@ export function EmployeeFormModal({
                         checkbox: the two modes show different controls, so the
                         choice needs to read as a mode, not an option. */}
                     {establishments && selectedEstablishmentIds.length > 1 && (
-                      <div className="mb-3 grid grid-cols-2 gap-1 rounded-xl bg-gray-100 dark:bg-white/5 p-1">
+                      <div className="mb-3 grid grid-cols-2 gap-1 rounded-xl bg-stone-100 dark:bg-zinc-800 p-1">
                         {([true, false] as const).map((sameMode) => (
                           <button
                             key={String(sameMode)}
@@ -1909,8 +1909,8 @@ export function EmployeeFormModal({
                             }}
                             className={`rounded-lg px-3 py-2 text-xs font-black tracking-tight transition-colors ${
                               sameRoleForAllLocations === sameMode
-                                ? 'bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white shadow-sm'
-                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                                ? 'bg-white dark:bg-zinc-900/60 text-stone-900 dark:text-zinc-100 shadow-sm'
+                                : 'text-stone-500 dark:text-zinc-400 hover:text-stone-700 dark:hover:text-zinc-200'
                             }`}
                           >
                             {sameMode
@@ -1934,23 +1934,23 @@ export function EmployeeFormModal({
                           }}
                           className={`w-full rounded-xl px-4 py-3 text-left flex items-center justify-between gap-3 border transition-colors ${
                             isRoleChosenForTarget('ALL')
-                              ? 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'
+                              ? 'bg-stone-50 dark:bg-zinc-800 border-stone-200 dark:border-zinc-800'
                               : 'bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/30'
                           }`}
                         >
                           <span className="min-w-0 flex items-center gap-2">
-                            <span className={`text-sm font-bold truncate ${isRoleChosenForTarget('ALL') ? 'text-gray-900 dark:text-white' : 'text-amber-700 dark:text-amber-400'}`}>
+                            <span className={`text-sm font-bold truncate ${isRoleChosenForTarget('ALL') ? 'text-stone-900 dark:text-zinc-100' : 'text-amber-700 dark:text-amber-400'}`}>
                               {getRoleOptionForTarget('ALL')
                                 ? getRoleOptionLabel(getRoleOptionForTarget('ALL'))
                                 : t('staff.form.chooseRole', { defaultValue: 'Choose a role' })}
                             </span>
                             <RoleScopeBadge scope={getRoleOptionScope(getRoleOptionForTarget('ALL'))} t={t} />
                           </span>
-                          <ChevronDown size={16} className={`text-gray-400 shrink-0 transition-transform ${activeDropdown === 'ROLE' ? 'rotate-180' : ''}`} />
+                          <ChevronDown size={16} className={`text-stone-400 shrink-0 transition-transform ${activeDropdown === 'ROLE' ? 'rotate-180' : ''}`} />
                         </button>
 
                         {establishments && selectedEstablishmentIds.length > 1 && (
-                          <p className="mt-2 px-1 text-[11px] font-bold text-gray-400 dark:text-gray-500">
+                          <p className="mt-2 px-1 text-[11px] font-bold text-stone-400 dark:text-zinc-500">
                             {t('staff.form.appliesToLocations', {
                               count: selectedEstablishmentIds.length,
                               defaultValue: `Applies to all ${selectedEstablishmentIds.length} locations`,
@@ -1984,19 +1984,19 @@ export function EmployeeFormModal({
                               }}
                               className={`w-full rounded-xl px-4 py-3 text-left flex items-center justify-between gap-3 border transition-colors ${
                                 isChosen
-                                  ? 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'
+                                  ? 'bg-stone-50 dark:bg-zinc-800 border-stone-200 dark:border-zinc-800'
                                   : 'bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/30'
                               }`}
                             >
                               <span className="min-w-0">
                                 <span className="flex items-center gap-1.5">
-                                  <MapPin size={10} className="text-gray-400 shrink-0" />
-                                  <span className="block text-xs font-black text-gray-500 dark:text-gray-400 truncate">
+                                  <MapPin size={10} className="text-stone-400 shrink-0" />
+                                  <span className="block text-xs font-black text-stone-500 dark:text-zinc-400 truncate">
                                     {establishment?.name || t('staff.form.locationLabel')}
                                   </span>
                                 </span>
                                 <span className="mt-0.5 flex items-center gap-2">
-                                  <span className={`text-sm font-bold truncate ${isChosen ? 'text-gray-900 dark:text-white' : 'text-amber-700 dark:text-amber-400'}`}>
+                                  <span className={`text-sm font-bold truncate ${isChosen ? 'text-stone-900 dark:text-zinc-100' : 'text-amber-700 dark:text-amber-400'}`}>
                                     {optionId
                                       ? getRoleOptionLabel(optionId)
                                       : t('staff.form.chooseRole', { defaultValue: 'Choose a role' })}
@@ -2004,7 +2004,7 @@ export function EmployeeFormModal({
                                   <RoleScopeBadge scope={getRoleOptionScope(optionId)} t={t} />
                                 </span>
                               </span>
-                              <ChevronDown size={16} className={`text-gray-400 shrink-0 transition-transform ${isOpenForThis ? 'rotate-180' : ''}`} />
+                              <ChevronDown size={16} className={`text-stone-400 shrink-0 transition-transform ${isOpenForThis ? 'rotate-180' : ''}`} />
                             </button>
                             {renderRoleDropdown(establishmentId)}
                             </div>
@@ -2017,7 +2017,7 @@ export function EmployeeFormModal({
                     {!establishments && currentEstablishment?.name && (
                       <div className="flex items-center gap-1.5 mt-1.5 px-1 opacity-80">
                         <MapPin size={10} className="text-mintcom-green" />
-                        <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-tight">{currentEstablishment.name}</span>
+                        <span className="text-[11px] font-bold text-stone-400 dark:text-zinc-500 tracking-tight">{currentEstablishment.name}</span>
                       </div>
                     )}
 
@@ -2029,11 +2029,11 @@ export function EmployeeFormModal({
 
                 {/* UX Improvement: Location Disclaimer */}
                 {!establishments && (
-                  <div className="mt-4 p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-start gap-3">
+                  <div className="mt-4 p-4 rounded-xl bg-stone-50 dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 text-mintcom-green flex items-center justify-center shrink-0">
                       <MapPin size={16} />
                     </div>
-                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+                    <p className="text-xs font-bold text-stone-500 dark:text-zinc-400 leading-relaxed">
                       <Trans
                         i18nKey="staff.form.locationDisclaimer"
                         components={[
@@ -2056,7 +2056,7 @@ export function EmployeeFormModal({
                   visible it is always required. */}
               {!isOwnerMode && requiresEmail && (
                 <div className="space-y-2">
-                  <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                  <label className="block text-sm font-normal text-stone-900 dark:text-zinc-100 flex items-center gap-1 tracking-tight">
                     {t('staff.form.emailLabel')} <span className="text-mintcom-red">*</span>
                   </label>
                   <input maxLength={255}
@@ -2064,7 +2064,7 @@ export function EmployeeFormModal({
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); setResendState('idle'); if (errors.email) setErrors({ ...errors, email: '' }); }}
                     placeholder={formatInputPlaceholder(t('staff.form.emailPlaceholder'), t('common.locale'))}
-                    className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.email ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
+                    className={`w-full bg-stone-50 dark:bg-zinc-800 border ${errors.email ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-xl px-4 py-3 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
                   />
                   {/* Verification status. Only meaningful for a saved address —
                       a freshly typed/changed email is verified after saving. */}
@@ -2101,7 +2101,7 @@ export function EmployeeFormModal({
                       </div>
                     )
                   ) : (
-                    <p className="mt-1 text-xs font-bold text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 text-xs font-bold text-stone-500 dark:text-zinc-400">
                       {t('staff.form.emailVerifyHint', {
                         defaultValue: 'We’ll email a confirmation link to verify this address so password recovery works.',
                       })}
@@ -2113,7 +2113,7 @@ export function EmployeeFormModal({
 
               {/* Username */}
               <div className="space-y-2">
-                <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                <label className="block text-sm font-normal text-stone-900 dark:text-zinc-100 flex items-center gap-1 tracking-tight">
                   {t('staff.form.usernameLabel')} <span className="text-mintcom-red">*</span>
                 </label>
                 <input maxLength={255}
@@ -2128,7 +2128,7 @@ export function EmployeeFormModal({
                     if (errors.username) setErrors({ ...errors, username: '' });
                   }}
                   placeholder={formatInputPlaceholder(t('staff.form.usernamePlaceholder'), t('common.locale'))}
-                  className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.username || usernameAvailabilityError ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
+                  className={`w-full bg-stone-50 dark:bg-zinc-800 border ${errors.username || usernameAvailabilityError ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-xl px-4 py-3 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
                 />
                 {(errors.username || usernameAvailabilityError) && (
                   <p className="mt-1 text-xs font-bold text-mintcom-red">
@@ -2136,7 +2136,7 @@ export function EmployeeFormModal({
                   </p>
                 )}
                 {isCheckingUsername && !errors.username && !usernameAvailabilityError && (
-                  <p className="mt-1 text-xs font-bold text-gray-400">
+                  <p className="mt-1 text-xs font-bold text-stone-400">
                     {t('staff.form.checkingUsername', { defaultValue: 'Checking username...' })}
                   </p>
                 )}
@@ -2145,7 +2145,7 @@ export function EmployeeFormModal({
               {/* Phone */}
               {!isOwnerMode && (
                 <div className="space-y-2">
-                  <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                  <label className="block text-sm font-normal text-stone-900 dark:text-zinc-100 flex items-center gap-1 tracking-tight">
                     {t('staff.form.phoneLabel')} {t('staff.form.phoneOptional')}
                   </label>
                   <input maxLength={255}
@@ -2153,14 +2153,14 @@ export function EmployeeFormModal({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder={formatInputPlaceholder(t('staff.form.phonePlaceholder'), t('common.locale'))}
-                    className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors"
+                    className="w-full bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors"
                   />
                 </div>
               )}
 
               {/* Password wrapper start (to match existing indentation/structure) */}
-              <div className="pt-4 border-t border-gray-100 dark:border-white/5 space-y-2">
-                <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+              <div className="pt-4 border-t border-stone-100 dark:border-zinc-800 space-y-2">
+                <label className="block text-sm font-normal text-stone-900 dark:text-zinc-100 flex items-center gap-1 tracking-tight">
                   {initialData ? t('staff.form.newPasswordOptional') : t('staff.form.passwordLabel')} {(!initialData) && <span className="text-mintcom-red">*</span>}
                 </label>
                 <div className="relative">
@@ -2170,22 +2170,22 @@ export function EmployeeFormModal({
                     autoComplete="new-password"
                     onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors({ ...errors, password: '' }); }}
                     placeholder={formatInputPlaceholder(initialData ? t('staff.form.leaveBlank') : t('staff.form.passwordPlaceholder'), t('common.locale'))}
-                    className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.password ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
+                    className={`w-full bg-stone-50 dark:bg-zinc-800 border ${errors.password ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-700 dark:hover:text-zinc-100"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                <p className="mt-1 text-xs font-bold text-gray-500 dark:text-gray-400">
+                <p className="mt-1 text-xs font-bold text-stone-500 dark:text-zinc-400">
                   {t('staff.form.passwordRequirements', {
                     defaultValue: 'At least 6 characters (any characters).',
                   })}
                 </p>
-                <p className="mt-1 text-xs font-bold text-gray-500 dark:text-gray-400">
+                <p className="mt-1 text-xs font-bold text-stone-500 dark:text-zinc-400">
                   {t('staff.form.passwordAdminHint', {
                     defaultValue:
                       'Staff cannot reset their own POS password. Leave blank to keep the current one. Passwords are never shown, for security. Only enter a value if you want a new password to share with them.',
@@ -2195,7 +2195,7 @@ export function EmployeeFormModal({
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-normal text-gray-900 dark:text-white flex items-center gap-1 tracking-tight">
+                <label className="block text-sm font-normal text-stone-900 dark:text-zinc-100 flex items-center gap-1 tracking-tight">
                   {t('staff.form.confirmPasswordLabel')} {(!initialData || password) && <span className="text-mintcom-red">*</span>}
                 </label>
                 <div className="relative">
@@ -2205,12 +2205,12 @@ export function EmployeeFormModal({
                     autoComplete="new-password"
                     onChange={(e) => { setConfirmPassword(e.target.value); if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: '' }); }}
                     placeholder={formatInputPlaceholder(t('staff.form.confirmPasswordPlaceholder', { defaultValue: 'Enter Password' }), t('common.locale'))}
-                    className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.confirmPassword ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
+                    className={`w-full bg-stone-50 dark:bg-zinc-800 border ${errors.confirmPassword ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green transition-colors`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-700 dark:hover:text-zinc-100"
                   >
                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
