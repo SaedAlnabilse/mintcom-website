@@ -72,6 +72,15 @@ const RULES = [
     hint: 'not a real Tailwind class — check for a botched find-and-replace',
     re: /\b(?:bg|text|border|divide|ring|from|to|via)-(?:white|black)\d+|\b(?:stone|zinc|gray|slate|neutral)-(?:0|1000|\d{4,})\b/,
   },
+  {
+    // A stone/zinc utility must be followed by a real shade. A truncated sweep
+    // pattern leaves things like `dark:border-zinc/5` or `dark:border-zinc-5`,
+    // which no legacy rule above would ever match — the class is simply dropped
+    // by Tailwind and the border silently disappears.
+    name: 'truncated-palette-class',
+    hint: 'stone/zinc utility with no valid shade — a sweep pattern was cut short',
+    re: /\b(?:[a-z-]+:)*(?:bg|text|border|divide|ring|from|to|via)-(?:zinc|stone)(?!-(?:50|100|200|300|400|500|600|700|800|900|950)\b)[^\s"'`]*/,
+  },
 ];
 
 /**
@@ -102,6 +111,7 @@ const targetFiles = [
   ...collectFiles(path.join(ROOT, 'src', 'pages', 'brand')),
   path.join(ROOT, 'src', 'components', 'OwnerLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'BrandLayout.tsx'),
+  path.join(ROOT, 'src', 'components', 'DashboardLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'ui', 'theme.ts'),
   path.join(ROOT, 'src', 'components', 'notifications', 'BackofficeAlertsView.tsx'),
   path.join(ROOT, 'src', 'components', 'notifications', 'AlertRow.tsx'),

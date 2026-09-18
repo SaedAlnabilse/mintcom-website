@@ -653,7 +653,7 @@ export default function BrandTeamPage() {
                                         </div>
 
                                         {/* Desktop Table Header */}
-                                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-stone-50/60 dark:bg-zinc-800/40 border-b border-stone-200 dark:border-zinc-5 table-header-row">
+                                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-stone-50/60 dark:bg-zinc-800/40 border-b border-stone-200 dark:border-zinc-800 table-header-row">
                                             <div className="col-span-4">{t('common.name')}</div>
                                             <div className="col-span-2 text-center">{t('common.status.label')}</div>
                                             <div className="col-span-2 text-center">{t('common.role')}</div>

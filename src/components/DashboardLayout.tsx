@@ -737,7 +737,7 @@ export function DashboardLayout() {
   return (
     <div
       dir={isRTL ? 'rtl' : 'ltr'}
-      className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden transition-colors duration-500"
+      className="h-screen bg-cream-100 dark:bg-zinc-950 text-stone-900 dark:text-zinc-100 font-sans flex overflow-hidden selection:bg-mintcom-green selection:text-black transition-colors duration-500"
     >
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
@@ -761,7 +761,7 @@ export function DashboardLayout() {
           transition: { duration: 0.4, type: "spring", damping: 25, stiffness: 200 }
         }}
         className={`
-          relative z-[100] flex flex-col h-screen py-4 bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-lg group/sidebar
+          relative z-[100] flex flex-col h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar
           ${mobileMenuOpen ? 'fixed left-0 top-0 w-[280px]' : 'hidden lg:flex'}
         `}
       >
@@ -777,7 +777,7 @@ export function DashboardLayout() {
                 className="flex items-center cursor-pointer group"
                 onClick={() => navigate('/')}
               >
-                <ArrowLeft size={16} className="text-gray-400 mr-2 group-hover:-translate-x-1 transition-transform" />
+                <ArrowLeft size={16} className="text-stone-400 dark:text-zinc-500 mr-2 group-hover:-translate-x-1 transition-transform" />
                 <img
                   src={MintcomLogoGreen}
                   alt={t('brand.name')}
@@ -796,7 +796,7 @@ export function DashboardLayout() {
                   decoding="async"
                   className="h-10 w-auto object-contain hidden dark:block transition-transform"
                 />
-                <div className="absolute left-full ml-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-gray-900/90 text-white text-xs px-2 py-1 rounded">
+                <div className="absolute left-full ml-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-stone-900 dark:bg-zinc-800 text-stone-100 dark:text-zinc-100 text-xs px-2 py-1 rounded">
                   {t('nav.home', 'Home')}
                 </div>
               </motion.div>
@@ -815,9 +815,9 @@ export function DashboardLayout() {
                   <img src={MintcomLeafIcon} width={32} height={32} className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} loading="eager" decoding="async" />
                   <PanelLeft
                     size={24}
-                    className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
+                    className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-stone-500 dark:text-zinc-400 group-hover/sidebar:text-stone-900 dark:group-hover/sidebar:text-zinc-100"
                   />
-                  <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                  <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-stone-900 dark:bg-zinc-800 backdrop-blur-md text-stone-100 dark:text-zinc-100 text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-stone-800 dark:border-zinc-700 shadow-md translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                     {t('dashboard.menu.openSidebar')}
                   </div>
                 </button>
@@ -828,7 +828,7 @@ export function DashboardLayout() {
           {sidebarOpen && (
             <button
               onClick={() => setSidebarOpen(false)}
-              className="p-2 rounded-xl text-gray-400 hover:text-mintcom-green hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+              className="p-2 rounded-xl text-stone-400 hover:text-mintcom-green hover:bg-stone-100 dark:hover:bg-zinc-800 transition-all"
             >
               <PanelLeftClose size={20} />
             </button>
@@ -839,7 +839,7 @@ export function DashboardLayout() {
         {sidebarOpen ? (
           <div className="px-2 pb-2 pt-0">
             <div
-              className={`p-3 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-xl relative overflow-hidden group transition-colors duration-200 ${canSwitchLocation ? 'cursor-pointer hover:border-mintcom-green/40' : ''}`}
+              className={`p-3 bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-xl relative overflow-hidden group transition-colors duration-200 ${canSwitchLocation ? 'cursor-pointer hover:border-mintcom-green/40' : ''}`}
               onClick={canSwitchLocation ? () => navigate('/select-establishment') : undefined}
             >
               <div className="relative z-10">
@@ -852,12 +852,12 @@ export function DashboardLayout() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className={`${eyebrowClass} leading-none mb-1`}>{t('dashboard.menu.activeLocation')}</p>
-                    <h2 className="text-[15px] font-bold text-gray-900 dark:text-white tracking-tight leading-tight font-sans truncate">
+                    <h2 className="text-[15px] font-bold text-stone-900 dark:text-zinc-100 tracking-tight leading-tight font-sans truncate">
                       {currentEstablishment?.name || t('common.loading')}
                     </h2>
                   </div>
                 </div>
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100 dark:border-white/10">
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-stone-200 dark:border-zinc-800">
                   <div className="flex items-center gap-1.5">
                     <RealtimeStatusIndicator variant="inline" />
                   </div>
@@ -889,10 +889,10 @@ export function DashboardLayout() {
 
             <button
               onClick={() => navigate('/select-establishment')}
-              className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all group relative"
+              className="w-12 h-12 rounded-xl flex items-center justify-center text-stone-500 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-900 dark:hover:text-zinc-100 transition-all group relative"
             >
               <MapPin size={24} />
-              <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+              <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-stone-900 dark:bg-zinc-800 backdrop-blur-md text-stone-100 dark:text-zinc-100 text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-stone-800 dark:border-zinc-700 shadow-md translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                 {t('dashboard.menu.switchLocation')}
               </div>
             </button>
@@ -910,7 +910,7 @@ export function DashboardLayout() {
             }}
           >
           {sidebarOpen && (
-            <p className="px-3 py-2 text-xs font-semibold text-gray-500 tracking-normal">{t('dashboard.menu.mainMenu')}</p>
+            <p className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-normal">{t('dashboard.menu.mainMenu')}</p>
           )}
 
           {filteredMenu.map((item, index) => {
@@ -944,7 +944,7 @@ export function DashboardLayout() {
                     {sidebarOpen && (
                       <>
                         <span className="flex-1 text-left text-sm font-semibold tracking-normal">{item.label}</span>
-                        <ChevronRight size={16} className={`text-gray-400 transition-transform duration-200 ${isExpanded ? "rotate-90" : (isRTL ? "rotate-180" : "")}`} />
+                        <ChevronRight size={16} className={`text-stone-400 dark:text-zinc-500 transition-transform duration-200 ${isExpanded ? "rotate-90" : (isRTL ? "rotate-180" : "")}`} />
                       </>
                     )}
                   </button>
@@ -957,7 +957,7 @@ export function DashboardLayout() {
                         exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden"
                       >
-                        <div className="ml-5 pl-4 border-l-2 border-gray-100 dark:border-white/5 space-y-1 my-1">
+                        <div className="ml-5 pl-4 border-l-2 border-stone-200 dark:border-zinc-800 space-y-1 my-1">
                           {item.items.map((subItem) => (
                             <NavLink
                               key={subItem.path}
@@ -1019,7 +1019,7 @@ export function DashboardLayout() {
           {navOverflows && (
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-10 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-[#1E293B] dark:via-[#1E293B]/80"
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-10 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-zinc-900 dark:via-zinc-900/80"
             />
           )}
         </div>
@@ -1039,10 +1039,10 @@ export function DashboardLayout() {
             >
               {collapsedNavOverlay.type === 'group' ? (
                 <div
-                  className="min-w-[220px] max-w-[min(280px,calc(100vw-1.5rem))] overflow-y-auto overscroll-contain bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10"
+                  className="min-w-[220px] max-w-[min(280px,calc(100vw-1.5rem))] overflow-y-auto overscroll-contain bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-700 rounded-2xl shadow-md scrollbar-thin scrollbar-thumb-stone-200 dark:scrollbar-thumb-zinc-600"
                   style={{ maxHeight: collapsedNavOverlay.maxHeight }}
                 >
-                  <div className="sticky top-0 z-10 px-4 py-2.5 border-b border-gray-100 dark:border-white/5 bg-gray-50/95 dark:bg-[#0D0D0D]/95 backdrop-blur-sm">
+                  <div className="sticky top-0 z-10 px-4 py-2.5 border-b border-stone-200 dark:border-zinc-700 bg-stone-50/95 dark:bg-zinc-800/95 backdrop-blur-sm">
                     <p className="text-xs font-semibold text-mintcom-green tracking-normal">
                       {collapsedNavOverlay.label}
                     </p>
@@ -1078,7 +1078,7 @@ export function DashboardLayout() {
                   </div>
                 </div>
               ) : (
-                <div className="pointer-events-none px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg whitespace-nowrap border border-white/10 shadow-xl">
+                <div className="pointer-events-none px-3 py-1.5 bg-stone-900 dark:bg-zinc-800 backdrop-blur-md text-stone-100 dark:text-zinc-100 text-xs font-sans font-medium tracking-normal rounded-lg whitespace-nowrap border border-stone-800 dark:border-zinc-700 shadow-md">
                   {collapsedNavOverlay.label}
                 </div>
               )}
@@ -1087,7 +1087,7 @@ export function DashboardLayout() {
           )}
 
         {/* Footer — match OwnerLayout: expanded list, collapsed icon column */}
-        <div className="p-3 border-t border-gray-100 dark:border-white/5 relative shrink-0 mt-auto">
+        <div className="p-3 border-t border-stone-200 dark:border-zinc-800 relative shrink-0 mt-auto">
           {sidebarOpen ? (
             <div className="space-y-1">
               <div className={`flex items-center gap-3 p-3 mb-2 ${userCardClass}`}>
@@ -1104,7 +1104,7 @@ export function DashboardLayout() {
 
               {hasAccess('notifications') && (
                 <div className="flex items-center justify-between gap-3 px-3 py-1">
-                  <span className="text-sm font-bold text-gray-500 dark:text-gray-400">
+                  <span className="text-sm font-bold text-stone-500 dark:text-zinc-400">
                     {t('notifications.menu.title')}
                   </span>
                   <AlertsBell
@@ -1118,9 +1118,9 @@ export function DashboardLayout() {
               <button
                 type="button"
                 onClick={() => setMobileAppModalOpen(true)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-stone-500 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-900 dark:hover:text-zinc-100 transition-all text-left"
               >
-                <Smartphone size={16} className="text-gray-400" />
+                <Smartphone size={16} className="text-stone-400 dark:text-zinc-500" />
                 <span>{t('dashboard.menu.getMobileApp')}</span>
               </button>
 
@@ -1133,7 +1133,7 @@ export function DashboardLayout() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all text-left"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-stone-500 dark:text-zinc-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all text-left"
               >
                 <LogOut size={20} />
                 <span>{t('dashboard.menu.logout')}</span>
@@ -1151,10 +1151,10 @@ export function DashboardLayout() {
               <button
                 type="button"
                 onClick={() => setMobileAppModalOpen(true)}
-                className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all relative group"
+                className="w-12 h-12 flex items-center justify-center rounded-xl text-stone-500 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-900 dark:hover:text-zinc-100 transition-all relative group"
               >
                 <Smartphone size={24} />
-                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-stone-900 dark:bg-zinc-800 backdrop-blur-md text-stone-100 dark:text-zinc-100 text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-stone-800 dark:border-zinc-700 shadow-md translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                   {t('dashboard.menu.getMobileApp')}
                 </div>
               </button>
@@ -1169,10 +1169,10 @@ export function DashboardLayout() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all relative group"
+                className="w-12 h-12 flex items-center justify-center rounded-xl text-stone-500 dark:text-zinc-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all relative group"
               >
                 <LogOut size={24} />
-                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-stone-900 dark:bg-zinc-800 backdrop-blur-md text-stone-100 dark:text-zinc-100 text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-stone-800 dark:border-zinc-700 shadow-md translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                   {t('dashboard.menu.logout')}
                 </div>
               </button>
@@ -1188,18 +1188,18 @@ export function DashboardLayout() {
       >
         <DeletionRestorationBanner />
         {/* Top Bar (Mobile) */}
-        <div className="lg:hidden flex items-center justify-between gap-2 px-4 py-3 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/5" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
+        <div className="lg:hidden flex items-center justify-between gap-2 px-4 py-3 bg-white dark:bg-zinc-900/60 border-b border-stone-200 dark:border-zinc-800" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
           <button
             onClick={() => setMobileMenuOpen(true)}
             aria-label={t('common.aria.openMenu', { defaultValue: 'Open menu' })}
-            className="min-h-[44px] min-w-[44px] p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center justify-center shrink-0"
+            className="min-h-[44px] min-w-[44px] p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors flex items-center justify-center shrink-0"
           >
-            <Menu size={24} className="text-gray-600 dark:text-gray-400" />
+            <Menu size={24} className="text-stone-600 dark:text-zinc-400" />
           </button>
 
           <div className="flex items-center gap-2 min-w-0 flex-1 justify-center">
             <img src={MintcomLeafIcon} className="w-8 h-8 object-contain shrink-0" alt={t('brand.name').charAt(0)} />
-            <span className="font-bold text-gray-900 dark:text-white truncate">{t('dashboard.title')}</span>
+            <span className="font-bold text-stone-900 dark:text-zinc-100 truncate">{t('dashboard.title')}</span>
           </div>
 
           <div className="flex items-center gap-1 shrink-0">
@@ -1228,10 +1228,10 @@ export function DashboardLayout() {
                     <div className="mx-auto mb-5 h-12 w-12 rounded-2xl bg-mintcom-green/10 border border-mintcom-green/20 flex items-center justify-center">
                       <Shield size={24} className="text-mintcom-green" />
                     </div>
-                    <h2 className="text-lg font-black text-gray-900 dark:text-white">
+                    <h2 className="text-lg font-black text-stone-900 dark:text-zinc-100">
                       {t('dashboard.session.inUseTitle', { defaultValue: 'Dashboard in use' })}
                     </h2>
-                    <p className="mt-2 text-sm font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+                    <p className="mt-2 text-sm font-bold text-stone-500 dark:text-zinc-400 leading-relaxed">
                       {conflictMessage}
                     </p>
                   </div>
@@ -1259,13 +1259,13 @@ export function DashboardLayout() {
             transition={{ type: "spring", damping: 28, stiffness: 260 }}
             role="dialog"
             aria-modal="true"
-            className="fixed start-0 top-0 h-[100dvh] w-[85vw] max-w-[300px] min-w-[260px] bg-white dark:bg-[#1E293B] border-e border-gray-200 dark:border-white/5 shadow-2xl z-[100] flex flex-col lg:hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+            className="fixed start-0 top-0 h-[100dvh] w-[85vw] max-w-[300px] min-w-[260px] bg-white dark:bg-zinc-900/60 border-e border-stone-200 dark:border-zinc-800 shadow-md z-[100] flex flex-col lg:hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
           >
             {/* Close Button */}
-            <div className="flex items-center justify-between h-16 shrink-0 px-4 border-b border-gray-100 dark:border-white/5">
+            <div className="flex items-center justify-between h-16 shrink-0 px-4 border-b border-stone-200 dark:border-zinc-800">
               <div className="flex items-center gap-3 min-w-0">
                 <img src={MintcomLeafIcon} className="w-8 h-8 object-contain shrink-0" alt={t('brand.name').charAt(0)} />
-                <span className="font-bold text-gray-900 dark:text-white truncate">{t('brand.name')}</span>
+                <span className="font-bold text-stone-900 dark:text-zinc-100 truncate">{t('brand.name')}</span>
               </div>
               <ModalCloseButton
                 onClose={() => setMobileMenuOpen(false)}
@@ -1280,7 +1280,7 @@ export function DashboardLayout() {
                   // Simplified mobile menu for groups: just list items
                   return (
                     <div key={index} className="mb-2">
-                      <p className="px-3 py-2 text-xs font-semibold text-gray-500 tracking-normal">{item.label}</p>
+                      <p className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-normal">{item.label}</p>
                       <div className="pl-2 space-y-1">
                         {item.items.map((subItem) => (
                           <NavLink
@@ -1290,8 +1290,8 @@ export function DashboardLayout() {
                             onClick={() => setMobileMenuOpen(false)}
                             className={({ isActive }) =>
                               `flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
-                                ? 'bg-mintcom-green text-black font-bold shadow-md shadow-mintcom-green/20'
-                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'
+                                ? activeSubRowClass
+                                : inactiveMobileRowClass
                               }`
                             }
                           >
@@ -1326,7 +1326,7 @@ export function DashboardLayout() {
             </nav>
 
             {/* Footer */}
-            <div className="p-4 border-t border-gray-100 dark:border-white/5 shrink-0">
+            <div className="p-4 border-t border-stone-200 dark:border-zinc-800 shrink-0">
               {showOwnerPortalLink && (
                 <button
                   type="button"
@@ -1356,7 +1356,7 @@ export function DashboardLayout() {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500 transition-all"
+                  className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-stone-400 dark:text-zinc-500 hover:text-red-500 transition-all"
                 >
                   <LogOut size={18} />
                 </button>
