@@ -137,10 +137,18 @@ export function ModalHeader({
   );
 }
 
-/** Scrollable popup body with standard padding. */
+/**
+ * Scrollable popup body.
+ *
+ * 20px vertical, flat across breakpoints, matching the header band so the
+ * dialog keeps one rhythm top to bottom. `pb-safe` stays: a higher-specificity
+ * rule in index.css (`.popup-surface .overflow-y-auto.pb-safe`) resolves it to
+ * max(safe-area-inset, 1rem), which keeps scrolled content clear of the home
+ * indicator on the mobile bottom sheet.
+ */
 export function ModalBody({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`overflow-y-auto px-6 sm:px-8 py-6 sm:py-8 custom-scrollbar flex-1 pb-safe ${className}`.trim()}>
+    <div className={`overflow-y-auto px-6 sm:px-8 py-5 custom-scrollbar flex-1 pb-safe ${className}`.trim()}>
       {children}
     </div>
   );
