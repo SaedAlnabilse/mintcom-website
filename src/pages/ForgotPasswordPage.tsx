@@ -47,17 +47,17 @@ export function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center p-4 transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-cream-100 dark:bg-zinc-950 flex items-center justify-center px-4 py-12 transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <div className="w-full max-w-md">
         {/* Back to Login */}
         {!isSuccess && (
             <button
               onClick={() => navigate('/login')}
               aria-label={t('auth.forgotPassword.backToLogin')}
-              className="flex min-h-[44px] items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors mb-8 group"
+              className="flex min-h-[44px] items-center gap-2 text-sm font-semibold text-stone-500 hover:text-stone-900 dark:hover:text-zinc-100 transition-colors mb-8 group"
             >
-              <ArrowLeft size={20} className={`group-hover:-translate-x-1 transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:translate-x-1' : ''}`} />
-              <span className="label-strong font-sans">{t('auth.forgotPassword.backToLogin').toUpperCase()}</span>
+              <ArrowLeft size={15} className={`transition-transform group-hover:-translate-x-0.5 ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:translate-x-1' : ''}`} />
+              {t('auth.forgotPassword.backToLogin')}
             </button>
         )}
 
@@ -65,42 +65,42 @@ export function ForgotPasswordPage() {
           {!isSuccess ? (
             <motion.div
               key="form"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-6 sm:p-8 lg:p-12 border border-gray-200 dark:border-white/10"
+              className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60 sm:p-8"
             >
-              <div className="text-center mb-8 sm:mb-10">
-                <div className="w-16 h-16 bg-mintcom-green/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <Mail className="text-mintcom-green" size={32} />
+              <div className="mb-6 text-center">
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-mintcom-green/10 text-mintcom-green">
+                  <Mail size={22} />
                 </div>
-                <h1 className="font-barlow text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">{t('auth.forgotPassword.title')}</h1>
-                <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mt-2">{t('auth.forgotPassword.subtitle')}</p>
+                <h1 className="font-magilio text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100">{t('auth.forgotPassword.title')}</h1>
+                <p className="mt-2 text-[15px] text-stone-500 dark:text-zinc-400">{t('auth.forgotPassword.subtitle')}</p>
               </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight ml-1">{formatInputLabel(t('auth.forgotPassword.emailLabel'), t('common.locale'))}</label>
-                  <div className="relative group">
-                    <Mail className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-[13px] font-semibold text-stone-700 dark:text-zinc-200">{formatInputLabel(t('auth.forgotPassword.emailLabel'), t('common.locale'))}</label>
+                  <div className="relative">
+                    <Mail className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400" size={15} />
                     <input maxLength={255}
                       type="email"
                       {...register('email')}
-                      className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 ps-12 pe-4 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                      className={`w-full rounded-xl border bg-white py-3 ps-10 pe-4 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 transition-all dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500 ${errors.email ? 'border-red-500' : 'border-stone-200 dark:border-zinc-700'}`}
                       placeholder={formatInputPlaceholder(t('auth.login.emailPlaceholder'), t('common.locale'))}
                     />
                   </div>
                   {errors.email && (
-                    <p className="text-accent text-xs font-bold text-gray-500 mt-1 ml-1">{errors.email.message}</p>
+                    <p className="text-xs font-semibold text-red-500 mt-1">{errors.email.message}</p>
                   )}
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full min-h-[52px] py-4 bg-mintcom-green text-black label-strong font-sans rounded-xl hover:bg-mintcom-green/90 transition-all shadow-md shadow-mintcom-green/20 disabled:opacity-50 disabled:cursor-mintcom-wait flex items-center justify-center gap-3 active:scale-[0.98]"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 disabled:opacity-50 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                 >
-                  {isSubmitting ? <Loader2 className="animate-spin" size={24} /> : null}
+                  {isSubmitting ? <Loader2 className="animate-spin" size={15} /> : null}
                   {t('auth.forgotPassword.sendLink')}
                 </button>
               </form>
@@ -110,24 +110,24 @@ export function ForgotPasswordPage() {
               key="success"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-6 sm:p-8 lg:p-12 border border-gray-200 dark:border-white/10 text-center"
+              className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60 sm:p-8 text-center"
             >
-              <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                <CheckCircle2 className="text-mintcom-green" size={40} />
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-mintcom-green/10">
+                <CheckCircle2 className="text-mintcom-green" size={28} />
               </div>
-              <h2 className="font-barlow text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.forgotPassword.emailSent')}</h2>
-              <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mt-4">
+              <h2 className="font-magilio text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100">{t('auth.forgotPassword.emailSent')}</h2>
+              <p className="mt-2 text-[15px] text-stone-500 dark:text-zinc-400">
                 {t('auth.forgotPassword.linkSentTo')}
                 <br />
-                <span className="text-gray-900 dark:text-white font-bold">{sentEmail}</span>
+                <span className="font-semibold text-stone-900 dark:text-zinc-100">{sentEmail}</span>
               </p>
 
-              <div className="mt-10 pt-8 border-t border-gray-100 dark:border-white/5">
-                <p className="text-xs font-bold text-gray-500">
+              <div className="mt-6 pt-5 border-t border-stone-200 dark:border-zinc-800">
+                <p className="text-sm text-stone-500">
                   {t('auth.forgotPassword.didntReceive')}{' '}
                   <button
                     onClick={() => setIsSuccess(false)}
-                    className="text-sm font-bold text-mintcom-green hover:underline"
+                    className="text-sm font-semibold text-mintcom-greenInk hover:underline dark:text-mintcom-green"
                   >
                     {t('auth.forgotPassword.tryAnotherEmail')}
                   </button>
@@ -136,9 +136,9 @@ export function ForgotPasswordPage() {
 
               <Link
                 to="/login"
-                className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-mintcom-green transition-colors"
+                className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"
               >
-                <ArrowLeft size={16} />
+                <ArrowLeft size={15} />
                 {t('auth.forgotPassword.backToLogin')}
               </Link>
             </motion.div>

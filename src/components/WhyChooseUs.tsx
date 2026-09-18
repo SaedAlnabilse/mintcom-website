@@ -74,11 +74,11 @@ function WhyCompletePreview({ isRtl }: { isRtl?: boolean }) {
       ];
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-white font-sans dark:bg-mintcom-dark">
+    <div className="flex h-full w-full flex-col overflow-hidden bg-white font-sans dark:bg-zinc-950">
       <div className="flex shrink-0 items-center gap-2.5 border-b border-gray-100 px-3 py-2.5 dark:border-white/10 sm:px-3.5 sm:py-3">
         <Logo variant="icon" size="sm" />
         <div className="min-w-0">
-          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-mintcom-green sm:text-[10px]">
+          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-mintcom-greenInk dark:text-mintcom-green sm:text-[10px]">
             {isRtl ? 'باقة واحدة' : 'One subscription'}
           </p>
           <p className="truncate text-[13px] font-bold leading-tight text-gray-900 dark:text-white sm:text-[14px]">
@@ -90,7 +90,7 @@ function WhyCompletePreview({ isRtl }: { isRtl?: boolean }) {
         {mods.map((m) => (
           <div
             key={m.name}
-            className="flex min-h-0 flex-col items-center justify-center rounded-xl border border-gray-200/80 bg-white px-1 text-center shadow-sm dark:border-white/10 dark:bg-[#1a1a1a] sm:rounded-2xl"
+            className="flex min-h-0 flex-col items-center justify-center rounded-xl border border-gray-200/80 bg-white px-1 text-center shadow-sm dark:border-white/10 dark:bg-zinc-900 sm:rounded-2xl"
           >
             <span className="mb-1 flex h-8 w-8 items-center justify-center rounded-lg bg-mintcom-green/12 text-mintcom-green sm:mb-1.5 sm:h-9 sm:w-9 sm:rounded-xl">
               <m.Icon size={16} strokeWidth={2} className="sm:hidden" />
@@ -142,7 +142,7 @@ function WhyCreateBranchPreview({ isRtl }: { isRtl?: boolean }) {
       ];
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-white font-sans dark:bg-mintcom-dark">
+    <div className="flex h-full w-full flex-col overflow-hidden bg-white font-sans dark:bg-zinc-950">
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-gray-100 px-3 py-2 dark:border-white/10 sm:px-3.5 sm:py-2.5">
         <div className="flex min-w-0 items-center gap-2">
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-mintcom-green/15 text-mintcom-green">
@@ -172,7 +172,7 @@ function WhyCreateBranchPreview({ isRtl }: { isRtl?: boolean }) {
                   className={`flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] sm:h-6 sm:w-6 ${
                     filled
                       ? 'border-mintcom-green bg-mintcom-green text-white'
-                      : 'border-gray-200 bg-white text-gray-400 dark:border-white/15 dark:bg-mintcom-surface'
+                      : 'border-gray-200 bg-white text-gray-400 dark:border-white/15 dark:bg-zinc-900'
                   }`}
                 >
                   {step.state === 'done' ? (
@@ -262,7 +262,7 @@ function WhyCreateBranchPreview({ isRtl }: { isRtl?: boolean }) {
       </div>
 
       <div className="flex shrink-0 items-center gap-2 border-t border-gray-100 px-3 py-2 dark:border-white/10 sm:px-3.5">
-        <div className="flex h-8 flex-1 items-center justify-center rounded-xl border border-mintcom-green bg-white text-[11px] font-bold text-mintcom-green dark:bg-transparent">
+        <div className="flex h-8 flex-1 items-center justify-center rounded-xl border border-mintcom-green bg-white text-[11px] font-bold text-mintcom-greenInk dark:text-mintcom-green dark:bg-transparent">
           {isRtl ? 'رجوع' : 'Back'}
         </div>
         <div className="relative flex h-8 flex-[1.2] items-center justify-center rounded-xl bg-mintcom-green text-[11px] font-black text-white shadow-sm shadow-mintcom-green/30">
@@ -336,7 +336,7 @@ const FeatureModal = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 16 }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 flex max-h-[min(92vh,900px)] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_24px_80px_-16px_rgba(0,0,0,0.35)] dark:border-white/10 dark:bg-mintcom-dark"
+        className="relative z-10 flex max-h-[min(92vh,900px)] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-stone-200/70 bg-white shadow-[0_24px_80px_-16px_rgba(0,0,0,0.35)] dark:border-zinc-800 dark:bg-zinc-900"
         dir={isRtl ? 'rtl' : 'ltr'}
         role="dialog"
         aria-modal="true"
@@ -344,7 +344,7 @@ const FeatureModal = ({
       >
         <ModalCloseButton onClose={onClose} autoPositionAbsolute className="z-30" />
 
-        <div className="absolute start-4 top-4 z-30 flex items-center gap-1 px-1 py-1 text-xs font-bold text-mintcom-green">
+        <div className="absolute start-4 top-4 z-30 flex items-center gap-1 px-1 py-1 text-xs font-bold text-mintcom-greenInk dark:text-mintcom-green">
           <span className="tabular-nums">{activeIndex + 1}</span>
           <span className="opacity-50">/</span>
           <span className="tabular-nums opacity-70">{features.length}</span>
@@ -372,10 +372,10 @@ const FeatureModal = ({
                   <div
                     className={`overflow-hidden rounded-2xl border border-gray-200/90 shadow-lg shadow-black/10 dark:border-white/10 dark:shadow-black/40 ${
                       feature.id === 'realUsers'
-                        ? 'bg-[#f6f3ec] dark:bg-mintcom-dark'
+                        ? 'bg-[#f6f3ec] dark:bg-zinc-950'
                         : feature.id === 'security'
-                          ? 'bg-gray-100 dark:bg-mintcom-dark'
-                          : 'bg-white dark:bg-mintcom-dark'
+                          ? 'bg-gray-100 dark:bg-zinc-950'
+                          : 'bg-white dark:bg-zinc-950'
                     }`}
                   >
                     <div className={WHY_PREVIEW_FRAME_CLASS}>
@@ -580,35 +580,33 @@ export const WhyChooseUs = () => {
   return (
     <section
       id="why-mintcom"
-      className="relative overflow-hidden bg-gray-50 py-16 dark:bg-[#0f0f0f] lg:py-20"
+      className="bg-cream-100 dark:bg-zinc-950"
       dir={isRtl ? 'rtl' : 'ltr'}
     >
 
-      <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-12 text-center lg:mb-16"
+          transition={{ duration: 0.45 }}
+          className="mb-5 text-start"
         >
-          <div className="mb-8 inline-flex max-w-full items-center gap-2.5">
-            <span className="text-[13px] font-bold uppercase leading-snug tracking-[0.12em] text-mintcom-green">
-              {t('landing.features.badge')}
-            </span>
-          </div>
+          <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+            {t('landing.features.badge')}
+          </p>
 
-          <h2 className="mb-6 font-magilio text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-6xl">
-            <span className="text-gray-900 dark:text-white">{t('landing.features.title')}</span>{' '}
+          <h2 className="font-magilio text-4xl font-bold tracking-tight sm:text-5xl">
+            {t('landing.features.title')}{' '}
             <span className="text-mintcom-green">{t('landing.features.titleHighlight')}</span>
           </h2>
-          <p className="mx-auto mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
+          <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-stone-500 dark:text-zinc-400">
             {t('landing.features.subtitle')}
           </p>
         </motion.div>
 
-        <div className="flex flex-col gap-16 lg:gap-24">
-          <div className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-4">
+        <div className="flex flex-col gap-10">
+          <div className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((feature, index) => (
               <LandingFeatureCard
               key={feature.id ?? index}
@@ -631,68 +629,63 @@ export const WhyChooseUs = () => {
             transition={{ duration: 0.7 }}
             className="mx-auto w-full"
           >
-            <div className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-900 dark:border-white/10">
-              {isVideoVisible && demoIsNative ? (
-                <video
-                  src={demoSrc}
-                  poster={DEMO_VIDEO_POSTER_URL}
-                  className="h-full w-full scale-[1.01] object-cover transition-transform duration-[1.6s] ease-out group-hover:scale-105"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  aria-label={t('landing.features.videoTitle')}
-                />
-              ) : isVideoVisible && !demoIsNative ? (
-                <iframe
-                  src={demoSrc}
-                  className="pointer-events-none h-full w-full scale-[1.01] object-cover"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  allowFullScreen
-                  loading="lazy"
-                  title={t('landing.features.videoTitle')}
-                />
-              ) : (
-                <img
-                  src={DEMO_VIDEO_POSTER_URL}
-                  alt=""
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                />
-              )}
+            <div className="group w-full overflow-hidden rounded-2xl border border-stone-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/60">
+              <div className="relative aspect-video w-full">
+                {isVideoVisible && demoIsNative ? (
+                  <video
+                    src={demoSrc}
+                    poster={DEMO_VIDEO_POSTER_URL}
+                    className="h-full w-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    aria-label={t('landing.features.videoTitle')}
+                  />
+                ) : isVideoVisible && !demoIsNative ? (
+                  <iframe
+                    src={demoSrc}
+                    className="pointer-events-none h-full w-full object-cover"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    loading="lazy"
+                    title={t('landing.features.videoTitle')}
+                  />
+                ) : (
+                  <img
+                    src={DEMO_VIDEO_POSTER_URL}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                )}
+              </div>
 
-              {/* Cinematic bottom fade — keeps UI readable without covering the product */}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent" />
-
-              {/* Caption + Try POS — no play overlay, no live-demo badge, no fullscreen */}
-              <div className="absolute inset-x-0 bottom-0 z-10 p-5 sm:p-8 md:p-10 lg:p-12">
-                <div className="flex max-w-3xl flex-col items-start gap-4 sm:gap-5">
-                  <div>
-                    <h3 className="mb-2 font-sans text-3xl font-bold tracking-tight text-white xs:text-4xl md:text-5xl lg:text-6xl">
-                      {t('landing.features.seeInAction')}
-                    </h3>
-                    <p className="max-w-2xl text-base font-medium text-white/70 sm:text-lg md:text-xl lg:text-2xl">
-                      {t('landing.features.seamlessSync')}
-                    </p>
-                  </div>
-
-                  <motion.button
-                    type="button"
-                    whileTap={{ scale: 0.97 }}
-                    whileHover={{ scale: 1.02 }}
-                    onClick={() => window.open('/try-pos', '_blank', 'noopener,noreferrer')}
-                    className="group/cta inline-flex items-center gap-3 rounded-lg bg-mintcom-green px-6 py-3.5 text-base font-bold text-black transition-colors hover:bg-mintcom-green/90 sm:px-8 sm:py-4 sm:text-lg md:text-xl"
-                  >
-                    <Play size={18} fill="currentColor" className="shrink-0 sm:h-5 sm:w-5" />
-                    <span>{t('landing.hero.tryDesktop')}</span>
-                    <ArrowRight
-                      size={20}
-                      className={`shrink-0 transition-transform sm:h-6 sm:w-6 ${isRtl ? 'rotate-180 group-hover/cta:-translate-x-0.5' : 'group-hover/cta:translate-x-0.5'}`}
-                    />
-                  </motion.button>
+              {/* Caption footer — in-flow below the video, stacks on mobile */}
+              <div className="flex flex-col gap-3 border-t border-stone-200 bg-white px-5 py-4 dark:border-zinc-800 dark:bg-zinc-900/60 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0 text-start">
+                  <p className="font-barlow text-[17px] font-bold tracking-tight text-stone-900 dark:text-zinc-100">
+                    {t('landing.features.seeInAction')}
+                  </p>
+                  <p className="mt-0.5 text-sm leading-relaxed text-stone-500 dark:text-zinc-400">
+                    {t('landing.features.seamlessSync')}
+                  </p>
                 </div>
+
+                <motion.button
+                  type="button"
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => window.open('/try-pos', '_blank', 'noopener,noreferrer')}
+                  className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110 sm:w-auto"
+                >
+                  <Play size={15} fill="currentColor" className="shrink-0" />
+                  <span>{t('landing.hero.tryDesktop')}</span>
+                  <ArrowRight
+                    size={14}
+                    className={`shrink-0 ${isRtl ? 'rotate-180' : ''}`}
+                  />
+                </motion.button>
               </div>
             </div>
           </motion.div>

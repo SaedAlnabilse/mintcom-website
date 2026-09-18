@@ -185,10 +185,10 @@ const BusinessPill = ({
   <button
     type="button"
     onClick={onClick}
-    className={`px-5 py-3 rounded-2xl border-2 text-sm font-sans font-medium transition-all active:scale-95 ${
+    className={`px-5 py-3 rounded-xl border-2 text-sm font-sans font-medium transition-all active:scale-95 ${
       active
         ? 'border-mintcom-green bg-mintcom-green/5 text-mintcom-green font-bold'
-        : 'border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-transparent text-gray-600 dark:text-gray-400 hover:border-gray-200 dark:hover:border-white/10'
+        : 'border-stone-100 dark:border-white/5 bg-stone-100 dark:bg-transparent text-stone-600 dark:text-stone-400 hover:border-stone-200 dark:hover:border-zinc-700'
     }`}
   >
     {children}
@@ -239,7 +239,7 @@ const persistStoredLaunchData = (value: Record<string, unknown>) => {
 };
 
 const CARD_INPUT_CLASS =
-  'min-w-0 w-full flex-1 bg-transparent font-sans text-sm font-bold leading-none text-gray-900 dark:text-white placeholder:font-sans placeholder:font-medium placeholder:text-gray-400 focus:outline-none';
+  'min-w-0 w-full flex-1 bg-transparent font-sans text-sm font-bold leading-none text-stone-900 dark:text-zinc-100 placeholder:font-sans placeholder:font-medium placeholder:text-stone-400 focus:outline-none';
 
 function EmbeddedCardField({
   label,
@@ -252,14 +252,14 @@ function EmbeddedCardField({
 }) {
   return (
     <label className="block w-full min-w-0">
-      <span className="mb-1.5 flex min-h-[1.125rem] items-center gap-1 text-sm font-sans leading-relaxed text-gray-600 dark:text-gray-300">
+      <span className="mb-1.5 flex min-h-[1.125rem] items-center gap-1 text-sm font-sans leading-relaxed text-stone-600 dark:text-zinc-300">
         {label}
       </span>
       <span
-        className={`flex min-h-12 w-full items-center gap-2 rounded-2xl border bg-white px-4 py-3 transition focus-within:border-mintcom-green focus-within:ring-2 focus-within:ring-mintcom-green/20 dark:bg-black/20 ${
+        className={`flex min-h-12 w-full items-center gap-2 rounded-2xl border bg-white px-4 py-3 transition focus-within:border-mintcom-green focus-within:ring-2 focus-within:ring-mintcom-green/20 dark:bg-zinc-900/60 ${
           error
             ? 'border-mintcom-red ring-2 ring-mintcom-red/20'
-            : 'border-gray-200 dark:border-white/10'
+            : 'border-stone-200 dark:border-zinc-800'
         }`}
       >
         {children}
@@ -278,7 +278,7 @@ function CardBrandMark({ brand }: { brand: 'mastercard' | 'visa' | 'amex' }) {
   // typographic treatments inside identical shells, which read as misalignment
   // (TC-045). They now share one label style; only the brand mark differs.
   const shell =
-    'inline-flex h-8 min-w-[4.5rem] items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 font-sans text-[11px] font-bold leading-none tracking-wide text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300';
+    'inline-flex h-8 min-w-[4.5rem] items-center justify-center gap-1.5 rounded-lg border border-stone-200 bg-white px-2.5 font-sans text-[11px] font-bold leading-none tracking-wide text-stone-600 dark:border-zinc-800 dark:bg-zinc-800 dark:text-stone-300';
   const labelClass = 'font-sans text-[11px] font-bold leading-none tracking-wide';
 
   if (brand === 'mastercard') {
@@ -425,12 +425,11 @@ export function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
-  const [serverPhase, setServerPhase] = useState<OnboardingPhaseSlug>('profile');
+  const [serverPhase, setServerPhase] = useState<OnboardingPhaseSlug>('location');
   const [apiPhase, setApiPhase] = useState<string>('PROFILE');
   const sessionBootRef = useRef(false);
 
   const [formData, setFormData] = useState<any>(() => readStoredLaunchData());
-  const [step1SubStep, setStep1SubStep] = useState<'location' | 'businessProfile'>('location');
   const [contactPhone, setContactPhone] = useState<string>(formData.contactPhone || '');
   const [staffSize, setStaffSize] = useState<string>(formData.staffSize || '');
   const [branchesPlanned, setBranchesPlanned] = useState<string>(formData.branchesPlanned || '');
@@ -577,9 +576,10 @@ export function OnboardingPage() {
       return;
     }
     if (nextStep === 1) {
-      setStep1SubStep('businessProfile');
+      goToPhase('business');
+      return;
     }
-    const phase = stepNumberToPhase[Math.min(5, Math.max(1, nextStep))] || 'profile';
+    const phase = stepNumberToPhase[Math.min(5, Math.max(1, nextStep))] || 'location';
     goToPhase(phase);
   };
 
@@ -627,8 +627,8 @@ export function OnboardingPage() {
       } catch (err) {
         console.error('[Onboarding] Failed to load session', err);
         const requested = resolveRequestedPhase();
-        const fallback = clampPhase(requested, 'profile', false);
-        setServerPhase('profile');
+        const fallback = clampPhase(requested, 'location', false);
+        setServerPhase('location');
         setStep(phaseToStepNumber[fallback]);
         navigate(`/onboarding/${fallback}`, { replace: true });
       } finally {
@@ -659,6 +659,15 @@ export function OnboardingPage() {
     resolveRequestedPhase,
     navigate,
   ]);
+
+  // Guard: redirect to location form if accessing /onboarding/business without
+  // required location data (e.g. direct bookmark, incognito tab).
+  useEffect(() => {
+    if (!sessionReady) return;
+    if (phaseParam === 'business' && !formData.name) {
+      navigate('/onboarding/location', { replace: true });
+    }
+  }, [sessionReady, phaseParam, formData.name, navigate]);
 
   useBlockHistoryBack(launchLocked && sessionReady, () => {
     toast(
@@ -950,7 +959,7 @@ export function OnboardingPage() {
       duplicatePaymentMethods: duplicateFromId ? duplicatePaymentMethods : false,
     };
     updateFormData((prev: any) => ({ ...prev, ...finalData }));
-    setStep1SubStep('businessProfile');
+    navigate('/onboarding/business', { replace: true });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -1381,16 +1390,16 @@ export function OnboardingPage() {
 
   if (!sessionReady) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center">
+      <div className="min-h-screen bg-cream-100 dark:bg-zinc-950 flex items-center justify-center">
         <Loader2 className="animate-spin text-mintcom-green" size={36} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-cream-100 dark:bg-zinc-950 flex flex-col transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Navbar - Shown on All Steps */}
-      <div className="sticky top-0 z-50 p-6 flex justify-between items-center border-b border-gray-200 dark:border-white/5 bg-white dark:bg-[#050505] shadow-sm">
+      <div className="sticky top-0 z-50 p-6 flex justify-between items-center border-b border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-sm">
         {/* Logo returns to the marketing site — setup can be resumed anytime via Continue Onboarding */}
         <Link
           to="/"
@@ -1412,17 +1421,17 @@ export function OnboardingPage() {
 
         {step <= totalSteps && (
           <div className="flex items-center gap-4">
-            {isRTL && <span className="text-xs font-bold text-gray-400">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
+            {isRTL && <span className="text-xs font-bold text-stone-400">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
             <div className="flex gap-1.5">
               {[1, 2, 3, 4].map((s) => (
                 <div
                   key={s}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${step >= s ? 'w-8 bg-mintcom-green' : 'w-4 bg-gray-200 dark:bg-white/10'
+                  className={`h-1.5 rounded-full transition-all duration-500 ${step >= s ? 'w-8 bg-mintcom-green' : 'w-4 bg-stone-200 dark:bg-zinc-800'
                     }`}
                 />
               ))}
             </div>
-            {!isRTL && <span className="text-xs font-bold text-gray-400">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
+            {!isRTL && <span className="text-xs font-bold text-stone-400">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
           </div>
         )}
       </div>
@@ -1430,17 +1439,16 @@ export function OnboardingPage() {
       <div className="flex-1 flex items-center justify-center p-6">
         <AnimatePresence mode="wait">
 
-          {/* STEP 1: Location Details & Know Your Business */}
-          {step === 1 && (
+          {/* STEP 1A: Location Details */}
+          {step === 1 && phaseParam === 'location' && (
             <motion.div
-              key={step1SubStep === 'businessProfile' ? 'step1-business' : 'step1-location'}
+              key="step1-location"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               className="max-w-2xl w-full"
             >
-              <div className="bg-white dark:bg-white/5 rounded-3xl sm:rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
-                {step1SubStep === 'location' ? (
+              <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 p-6 sm:p-8 lg:p-12 shadow-sm dark:shadow-none">
                   <>
                     <div className="mb-10">
                       {/* Steps 2–4 each have a Back control; step 1 had none, so a
@@ -1449,13 +1457,13 @@ export function OnboardingPage() {
                           (TC-042). There is no previous step, so this exits the
                           wizard: to the owner portal when adding another location,
                           otherwise back to the site. */}
-                      <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-white/5">
+                      <div className="flex justify-between items-center mb-6 pb-4 border-b border-stone-100 dark:border-white/5">
                         <button
                           type="button"
                           onClick={() =>
                             isAdditionalLocation ? navigate('/owner') : navigate('/')
                           }
-                          className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                          className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors"
                         >
                           {!isRTL && <ArrowLeft size={16} />}
                           {t('onboarding.back')}
@@ -1465,7 +1473,7 @@ export function OnboardingPage() {
                           <button
                             type="button"
                             onClick={() => navigate('/owner')}
-                            className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-mintcom-green dark:text-gray-300 dark:hover:text-mintcom-green transition-colors"
+                            className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-600 hover:text-mintcom-green dark:text-stone-300 dark:hover:text-mintcom-green transition-colors"
                           >
                             <LayoutDashboard size={16} />
                             {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
@@ -1473,51 +1481,51 @@ export function OnboardingPage() {
                         )}
                       </div>
                       <div className="flex justify-between items-start mb-2">
-                        <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('onboarding.step1.title')}</h2>
+                        <h2 className="font-sans text-2xl sm:text-3xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">{t('onboarding.step1.title')}</h2>
                       </div>
-                      <p className="text-sm font-sans text-gray-600 dark:text-gray-300">{t('onboarding.step1.subtitle')}</p>
+                      <p className="text-sm font-sans text-stone-600 dark:text-zinc-300">{t('onboarding.step1.subtitle')}</p>
                     </div>
 
                     <form onSubmit={form1.handleSubmit(onLocationDetailsSubmit)} autoComplete="off" className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                       <div className="space-y-6">
                         <div className="space-y-2">
-                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                          <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.step1.locationName')} <span className="text-mintcom-red mx-1">*</span>
                           </label>
                           <div className="relative group">
-                            <Store className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
+                            <Store className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
                             <input
                               maxLength={TEXT_INPUT_LIMITS.BUSINESS_NAME}
                               type="text"
                               {...form1.register('name')}
-                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                              className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                               placeholder={formatInputPlaceholder(t('onboarding.step1.locationNamePlaceholder'), t('common.locale'))}
                             />
                           </div>
-                          {form1.formState.errors.name && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.name.message as string}</p>}
+                          {form1.formState.errors.name && <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 mx-1">{form1.formState.errors.name.message as string}</p>}
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                          <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.step1.businessType')} <span className="text-mintcom-red mx-1">*</span>
                           </label>
                           <div className="relative">
-                            <Building2 className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
+                            <Building2 className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400`} size={20} />
                             <select
                               {...form1.register('type')}
-                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.type ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
+                              className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.type ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
                             >
                               {businessTypeGroups.map((group) => (
                                 <optgroup
                                   key={group.category}
                                   label={group.category}
-                                  className="bg-white dark:bg-[#121212] text-gray-900 dark:text-white font-semibold"
+                                  className="bg-white dark:bg-zinc-900/60 text-stone-900 dark:text-zinc-100 font-semibold"
                                 >
                                   {group.options.map((opt) => (
                                     <option
                                       key={opt.id}
                                       value={opt.id}
-                                      className="bg-white dark:bg-[#121212] text-gray-900 dark:text-white font-normal"
+                                      className="bg-white dark:bg-zinc-900/60 text-stone-900 dark:text-zinc-100 font-normal"
                                     >
                                       {opt.label}
                                     </option>
@@ -1525,10 +1533,10 @@ export function OnboardingPage() {
                                 </optgroup>
                               ))}
                             </select>
-                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none`} size={16} />
                           </div>
                           {form1.formState.errors.type && (
-                            <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">
+                            <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 mx-1">
                               {form1.formState.errors.type.message as string}
                             </p>
                           )}
@@ -1536,14 +1544,14 @@ export function OnboardingPage() {
 
                         {/* Country first — currency is linked to the selected country/region */}
                         <div className="space-y-2">
-                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                          <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.step1.country', { defaultValue: 'Country' })} <span className="text-mintcom-red mx-1">*</span>
                           </label>
                           <div className="relative">
-                            <Globe className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
+                            <Globe className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400`} size={20} />
                             <select
                               {...form1.register('country')}
-                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.country ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
+                              className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.country ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
                             >
                               {countryOptions.map((countryOption) => (
                                 <option key={countryOption.code} value={countryOption.code}>
@@ -1551,21 +1559,21 @@ export function OnboardingPage() {
                                 </option>
                               ))}
                             </select>
-                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none`} size={16} />
                           </div>
-                          {form1.formState.errors.country && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.country.message as string}</p>}
+                          {form1.formState.errors.country && <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 mx-1">{form1.formState.errors.country.message as string}</p>}
                         </div>
 
                         {/* Store timezone — per-location wall clock for all dates/reports */}
                         <div className="space-y-2">
-                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                          <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.step1.timezone', { defaultValue: 'Store timezone' })} <span className="text-mintcom-red mx-1">*</span>
                           </label>
                           <div className="relative">
-                            <CalendarClock className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
+                            <CalendarClock className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400`} size={20} />
                             <select
                               {...form1.register('timezone')}
-                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.timezone ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
+                              className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.timezone ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
                             >
                               {timezoneOptions.map((tz) => (
                                 <option key={tz} value={tz}>
@@ -1573,9 +1581,9 @@ export function OnboardingPage() {
                                 </option>
                               ))}
                             </select>
-                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none`} size={16} />
                           </div>
-                          <p className="text-xs font-sans text-gray-500 dark:text-gray-400 mt-1.5 mx-1 flex items-center gap-1.5">
+                          <p className="text-xs font-sans text-stone-500 dark:text-zinc-400 mt-1.5 mx-1 flex items-center gap-1.5">
                             <Info size={14} className="flex-shrink-0" />
                             <span>
                               {t('onboarding.step1.timezoneHint', {
@@ -1584,20 +1592,20 @@ export function OnboardingPage() {
                               })}
                             </span>
                           </p>
-                          {form1.formState.errors.timezone && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.timezone.message as string}</p>}
+                          {form1.formState.errors.timezone && <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 mx-1">{form1.formState.errors.timezone.message as string}</p>}
                         </div>
 
                         {/* Base Currency Row: auto-filled from country, always free to change on first location */}
                         <div className="space-y-2">
-                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                          <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.step1.currency')} <span className="text-mintcom-red mx-1">*</span>
                           </label>
                           <div className="relative">
-                            <DollarSign className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 ${isCurrencyLocked ? 'text-gray-500' : 'text-gray-400'}`} size={20} />
+                            <DollarSign className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 ${isCurrencyLocked ? 'text-stone-500' : 'text-stone-400'}`} size={20} />
                             <select
                               {...form1.register('currency')}
                               disabled={isCurrencyLocked}
-                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none ${isCurrencyLocked ? 'opacity-60 cursor-not-allowed bg-gray-100 dark:bg-white/5' : ''}`}
+                              className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.currency ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none ${isCurrencyLocked ? 'opacity-60 cursor-not-allowed bg-stone-100 dark:bg-zinc-800' : ''}`}
                             >
                               {currencyOptions.map((currencyOption) => (
                                 <option key={currencyOption.code} value={currencyOption.code}>
@@ -1605,15 +1613,15 @@ export function OnboardingPage() {
                                 </option>
                               ))}
                             </select>
-                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none`} size={16} />
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none`} size={16} />
                             {isCurrencyLocked && (
                               <div className={`absolute ${isRTL ? 'left-10' : 'right-10'} top-1/2 -translate-y-1/2`}>
-                                <Lock size={16} className="text-gray-400" />
+                                <Lock size={16} className="text-stone-400" />
                               </div>
                             )}
                           </div>
                           {!isCurrencyLocked && (
-                            <p className="text-xs font-sans text-gray-500 dark:text-gray-400 mt-1.5 mx-1 flex items-center gap-1.5">
+                            <p className="text-xs font-sans text-stone-500 dark:text-zinc-400 mt-1.5 mx-1 flex items-center gap-1.5">
                               <Info size={14} className="flex-shrink-0" />
                               <span>
                                 {t('onboarding.step1.currencyLinkedToCountry', {
@@ -1628,35 +1636,35 @@ export function OnboardingPage() {
                               <span>{t('onboarding.step1.currencyLockedNote')}</span>
                             </div>
                           )}
-                          {form1.formState.errors.currency && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.currency.message as string}</p>}
+                          {form1.formState.errors.currency && <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 mx-1">{form1.formState.errors.currency.message as string}</p>}
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                          <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.step1.address')} <span className="text-mintcom-red mx-1">*</span>
                           </label>
                           <div className="relative">
-                            <MapPin className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={20} />
+                            <MapPin className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400`} size={20} />
                             <input maxLength={255}
                               type="text"
                               {...form1.register('address')}
-                              className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                              className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.address ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                               placeholder={formatInputPlaceholder(t('onboarding.step1.addressPlaceholder'), t('common.locale'))}
                             />
                           </div>
-                          {form1.formState.errors.address && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 mx-1">{form1.formState.errors.address.message as string}</p>}
+                          {form1.formState.errors.address && <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 mx-1">{form1.formState.errors.address.message as string}</p>}
                         </div>
 
                         {/* Import Settings Section - Only show if user has existing establishments */}
                         {establishments.length > 0 && (
-                          <div className="pt-4 border-t border-gray-100 dark:border-white/5">
+                          <div className="pt-4 border-t border-stone-100 dark:border-white/5">
                             <div className="flex items-center gap-2 mb-4">
                               <Copy className="text-mintcom-green" size={20} />
-                              <h3 className="font-sans text-base font-bold text-gray-900 dark:text-white">{t('onboarding.step1.quickSetup')}</h3>
+                              <h3 className="font-sans text-base font-bold text-stone-900 dark:text-zinc-100">{t('onboarding.step1.quickSetup')}</h3>
                             </div>
 
-                            <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5 border border-gray-100 dark:border-white/5">
-                              <label className="text-xs font-sans text-gray-400 mb-2 flex items-center">
+                            <div className="bg-white dark:bg-zinc-900/60 rounded-2xl p-5 border border-stone-100 dark:border-white/5">
+                              <label className="text-xs font-sans text-stone-400 mb-2 flex items-center">
                                 {t('onboarding.step1.copySettings')}
                                 <QuickInfo text={t('onboarding.step1.copySettingsTip')} />
                               </label>
@@ -1664,7 +1672,7 @@ export function OnboardingPage() {
                                 <select
                                   value={duplicateFromId}
                                   onChange={(e) => handleDuplicateSourceChange(e.target.value)}
-                                  className="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 text-gray-900 dark:text-white font-sans focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 appearance-none"
+                                  className="w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-xl py-3 px-4 text-stone-900 dark:text-zinc-100 font-sans focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 appearance-none"
                                 >
                                   <option value="">{t('onboarding.step1.startFresh')}</option>
                                   {establishments.map((est) => (
@@ -1673,7 +1681,7 @@ export function OnboardingPage() {
                                     </option>
                                   ))}
                                 </select>
-                                <ChevronDown className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                                <ChevronDown className="absolute end-4 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" size={16} />
                               </div>
 
                               {/* Checkboxes - Only show if an establishment is selected */}
@@ -1685,11 +1693,11 @@ export function OnboardingPage() {
                                     exit={{ opacity: 0, height: 0 }}
                                     className="space-y-3 overflow-hidden"
                                   >
-                                    <p className="text-xs font-sans text-gray-400 mb-2">{t('onboarding.step1.selectData')}</p>
+                                    <p className="text-xs font-sans text-stone-400 mb-2">{t('onboarding.step1.selectData')}</p>
 
                                     {/* Inventory Checkbox */}
-                                    <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateInventory ? 'border-mintcom-green bg-mintcom-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
-                                      <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateInventory ? 'bg-mintcom-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                    <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateInventory ? 'border-mintcom-green bg-mintcom-green/5' : 'border-stone-200 dark:border-zinc-800 hover:border-stone-300'}`}>
+                                      <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateInventory ? 'bg-mintcom-green text-black' : 'bg-stone-200 dark:border-zinc-800'}`}>
                                         {duplicateInventory && <Check size={14} strokeWidth={4} />}
                                       </div>
                                       <input
@@ -1699,17 +1707,17 @@ export function OnboardingPage() {
                                         onChange={(e) => setDuplicateInventory(e.target.checked)}
                                       />
                                       <div className="flex-1 flex items-center gap-2">
-                                        <Box size={16} className={duplicateInventory ? 'text-mintcom-green' : 'text-gray-400'} />
+                                        <Box size={16} className={duplicateInventory ? 'text-mintcom-green' : 'text-stone-400'} />
                                         <div>
-                                          <p className="text-sm font-sans text-gray-900 dark:text-white">{t('onboarding.step1.menu')}</p>
-                                          <p className="text-xs font-sans text-gray-500">{t('onboarding.step1.menuDesc')}</p>
+                                          <p className="text-sm font-sans text-stone-900 dark:text-zinc-100">{t('onboarding.step1.menu')}</p>
+                                          <p className="text-xs font-sans text-stone-500">{t('onboarding.step1.menuDesc')}</p>
                                         </div>
                                       </div>
                                     </label>
 
                                     {/* Discounts Checkbox */}
-                                    <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateDiscounts ? 'border-mintcom-green bg-mintcom-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
-                                      <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateDiscounts ? 'bg-mintcom-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                    <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateDiscounts ? 'border-mintcom-green bg-mintcom-green/5' : 'border-stone-200 dark:border-zinc-800 hover:border-stone-300'}`}>
+                                      <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateDiscounts ? 'bg-mintcom-green text-black' : 'bg-stone-200 dark:border-zinc-800'}`}>
                                         {duplicateDiscounts && <Check size={14} strokeWidth={4} />}
                                       </div>
                                       <input
@@ -1719,17 +1727,17 @@ export function OnboardingPage() {
                                         onChange={(e) => setDuplicateDiscounts(e.target.checked)}
                                       />
                                       <div className="flex-1 flex items-center gap-2">
-                                        <Tags size={16} className={duplicateDiscounts ? 'text-mintcom-green' : 'text-gray-400'} />
+                                        <Tags size={16} className={duplicateDiscounts ? 'text-mintcom-green' : 'text-stone-400'} />
                                         <div>
-                                          <p className="text-sm font-sans text-gray-900 dark:text-white">{t('onboarding.step1.discounts')}</p>
-                                          <p className="text-xs font-sans text-gray-500">{t('onboarding.step1.discountsDesc')}</p>
+                                          <p className="text-sm font-sans text-stone-900 dark:text-zinc-100">{t('onboarding.step1.discounts')}</p>
+                                          <p className="text-xs font-sans text-stone-500">{t('onboarding.step1.discountsDesc')}</p>
                                         </div>
                                       </div>
                                     </label>
 
                                     {/* Payment Methods Checkbox */}
-                                    <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicatePaymentMethods ? 'border-mintcom-green bg-mintcom-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
-                                      <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicatePaymentMethods ? 'bg-mintcom-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                    <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicatePaymentMethods ? 'border-mintcom-green bg-mintcom-green/5' : 'border-stone-200 dark:border-zinc-800 hover:border-stone-300'}`}>
+                                      <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicatePaymentMethods ? 'bg-mintcom-green text-black' : 'bg-stone-200 dark:border-zinc-800'}`}>
                                         {duplicatePaymentMethods && <Check size={14} strokeWidth={4} />}
                                       </div>
                                       <input
@@ -1739,10 +1747,10 @@ export function OnboardingPage() {
                                         onChange={(e) => setDuplicatePaymentMethods(e.target.checked)}
                                       />
                                       <div className="flex-1 flex items-center gap-2">
-                                        <CreditCard size={16} className={duplicatePaymentMethods ? 'text-mintcom-green' : 'text-gray-400'} />
+                                        <CreditCard size={16} className={duplicatePaymentMethods ? 'text-mintcom-green' : 'text-stone-400'} />
                                         <div>
-                                          <p className="text-sm font-sans text-gray-900 dark:text-white">{t('onboarding.step1.paymentMethods')}</p>
-                                          <p className="text-xs font-sans text-gray-500">{t('onboarding.step1.paymentMethodsDesc')}</p>
+                                          <p className="text-sm font-sans text-stone-900 dark:text-zinc-100">{t('onboarding.step1.paymentMethods')}</p>
+                                          <p className="text-xs font-sans text-stone-500">{t('onboarding.step1.paymentMethodsDesc')}</p>
                                         </div>
                                       </div>
                                     </label>
@@ -1758,26 +1766,39 @@ export function OnboardingPage() {
                       <div className="pt-4">
                         <button
                           type="submit"
-                          className="w-full py-5 bg-mintcom-green text-black text-base font-sans font-bold rounded-2xl hover:bg-mintcom-green/90 transition-all shadow-xl shadow-mintcom-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                          className="w-full rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 flex items-center justify-center gap-2 active:scale-[0.98] dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                         >
-                          {isRTL && <ArrowRight size={24} />}
+                          {isRTL && <ArrowRight size={15} className="shrink-0" />}
                           {t('onboarding.nextStep')}
-                          {!isRTL && <ArrowRight size={24} />}
+                          {!isRTL && <ArrowRight size={15} className="shrink-0" />}
                         </button>
                       </div>
                     </form>
                   </>
-                ) : (
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 1B: Tell Us About Your Business */}
+          {step === 1 && phaseParam === 'business' && (
+            <motion.div
+              key="step1-business"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="max-w-2xl w-full"
+            >
+              <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 p-6 sm:p-8 lg:p-12 shadow-sm dark:shadow-none">
                   <>
                     <div className="mb-10">
-                      <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-white/5">
+                      <div className="flex justify-between items-center mb-6 pb-4 border-b border-stone-100 dark:border-white/5">
                         <button
                           type="button"
                           onClick={() => {
-                            setStep1SubStep('location');
+                            navigate('/onboarding/location', { replace: true });
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                           }}
-                          className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                          className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors"
                         >
                           {!isRTL && <ArrowLeft size={16} />}
                           {t('onboarding.back')}
@@ -1787,7 +1808,7 @@ export function OnboardingPage() {
                           <button
                             type="button"
                             onClick={() => navigate('/owner')}
-                            className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-mintcom-green dark:text-gray-300 dark:hover:text-mintcom-green transition-colors"
+                            className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-600 hover:text-mintcom-green dark:text-stone-300 dark:hover:text-mintcom-green transition-colors"
                           >
                             <LayoutDashboard size={16} />
                             {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
@@ -1796,11 +1817,11 @@ export function OnboardingPage() {
                       </div>
 
                       <div className="flex justify-between items-start mb-2">
-                        <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                        <h2 className="font-sans text-2xl sm:text-3xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                           {t('onboarding.businessProfile.title')}
                         </h2>
                       </div>
-                      <p className="text-sm font-sans text-gray-600 dark:text-gray-300">
+                      <p className="text-sm font-sans text-stone-600 dark:text-zinc-300">
                         {t('onboarding.businessProfile.subtitle')}
                       </p>
                     </div>
@@ -1809,20 +1830,20 @@ export function OnboardingPage() {
                       <div className="space-y-6">
                         {/* Contact Phone */}
                         <div className="space-y-2">
-                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                          <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.businessProfile.phoneLabel')}
                           </label>
                           <div className="relative group">
-                            <Phone className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
+                            <Phone className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
                             <input
                               type="tel"
                               value={contactPhone}
                               onChange={(e) => setContactPhone(e.target.value)}
-                              className={`w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                              className={`w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                               placeholder={formatInputPlaceholder(t('onboarding.businessProfile.phonePlaceholder'), t('common.locale'))}
                             />
                           </div>
-                          <p className="text-xs font-sans text-gray-500 dark:text-gray-400 mt-1.5 mx-1 flex items-center gap-1.5">
+                          <p className="text-xs font-sans text-stone-500 dark:text-zinc-400 mt-1.5 mx-1 flex items-center gap-1.5">
                             <Info size={14} className="flex-shrink-0" />
                             <span>{t('onboarding.businessProfile.phoneHint')}</span>
                           </p>
@@ -1830,7 +1851,7 @@ export function OnboardingPage() {
 
                         {/* Staff Size */}
                         <div className="space-y-3">
-                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                          <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.businessProfile.staffLabel')}
                           </label>
                           <div className="flex flex-wrap gap-3">
@@ -1848,7 +1869,7 @@ export function OnboardingPage() {
 
                         {/* Branches Planned */}
                         <div className="space-y-3">
-                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                          <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.businessProfile.branchesLabel')}
                           </label>
                           <div className="flex flex-wrap gap-3">
@@ -1866,7 +1887,7 @@ export function OnboardingPage() {
 
                         {/* Current POS */}
                         <div className="space-y-3">
-                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                          <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.businessProfile.posLabel')}
                           </label>
                           <div className="flex flex-wrap gap-3">
@@ -1884,7 +1905,7 @@ export function OnboardingPage() {
 
                         {/* How did you hear about us */}
                         <div className="space-y-3">
-                          <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                          <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.businessProfile.sourceLabel')}
                           </label>
                           <div className="flex flex-wrap gap-3">
@@ -1900,16 +1921,16 @@ export function OnboardingPage() {
                           </div>
                           {heardAbout === 'Friend / referral' && (
                             <div className="space-y-2 pt-2">
-                              <label className="text-sm font-sans font-medium text-gray-600 dark:text-gray-300 mx-1 flex items-center">
+                              <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                                 {t('onboarding.businessProfile.referralCodeLabel')}
                               </label>
                               <div className="relative group">
-                                <Tags className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
+                                <Tags className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
                                 <input
                                   type="text"
                                   value={referralCode}
                                   onChange={(e) => setReferralCode(e.target.value)}
-                                  className={`w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                                  className={`w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                                   placeholder={formatInputPlaceholder(t('onboarding.businessProfile.referralCodePlaceholder'), t('common.locale'))}
                                 />
                               </div>
@@ -1918,8 +1939,8 @@ export function OnboardingPage() {
                         </div>
 
                         {/* Marketing Consent */}
-                        <div className="bg-gray-50 dark:bg-black/20 p-5 rounded-2xl flex items-center justify-between border border-gray-100 dark:border-white/5">
-                          <span className="text-sm font-sans font-medium text-gray-900 dark:text-white">
+                        <div className="bg-white dark:bg-zinc-900/60 p-5 rounded-2xl flex items-center justify-between border border-stone-100 dark:border-white/5">
+                          <span className="text-sm font-sans font-medium text-stone-900 dark:text-zinc-100">
                             {t('onboarding.businessProfile.marketingConsent')}
                           </span>
                           <Toggle checked={marketingConsent} onChange={setMarketingConsent} size="md" />
@@ -1931,7 +1952,7 @@ export function OnboardingPage() {
                           type="button"
                           onClick={handleSkipBusinessProfile}
                           disabled={isLoading}
-                          className="flex-1 py-5 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-sans font-bold rounded-2xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-base active:scale-[0.98] disabled:opacity-50"
+                          className="flex-1 rounded-xl border border-stone-200 bg-white py-3 text-sm font-semibold text-stone-700 transition-colors hover:border-stone-300 hover:bg-stone-50 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 dark:border-zinc-800 dark:bg-transparent dark:text-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
                         >
                           {t('onboarding.businessProfile.skip')}
                         </button>
@@ -1939,22 +1960,21 @@ export function OnboardingPage() {
                           type="button"
                           onClick={handleContinueBusinessProfile}
                           disabled={isLoading}
-                          className="flex-[2] py-5 bg-mintcom-green text-black text-base font-sans font-bold rounded-2xl hover:bg-mintcom-green/90 transition-all shadow-xl shadow-mintcom-green/20 flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50"
+                          className="flex-[2] rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 flex items-center justify-center gap-2 active:scale-[0.98] dark:bg-mintcom-green dark:text-black dark:hover:brightness-110 disabled:opacity-50"
                         >
                           {isLoading ? (
-                            <Loader2 className="animate-spin" size={24} />
+                            <Loader2 className="animate-spin" size={15} />
                           ) : (
                             <>
-                              {isRTL && <ArrowRight size={24} />}
+                              {isRTL && <ArrowRight size={15} className="shrink-0" />}
                               <span>{t('onboarding.businessProfile.continue')}</span>
-                              {!isRTL && <ArrowRight size={24} />}
+                              {!isRTL && <ArrowRight size={15} className="shrink-0" />}
                             </>
                           )}
                         </button>
                       </div>
                     </div>
                   </>
-                )}
               </div>
             </motion.div>
           )}
@@ -1968,13 +1988,13 @@ export function OnboardingPage() {
               exit={{ opacity: 0, x: -20 }}
               className="max-w-md w-full"
             >
-              <div className="bg-white dark:bg-white/5 rounded-3xl sm:rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
+              <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 p-6 sm:p-8 lg:p-12 shadow-sm dark:shadow-none">
                 <div className="mb-10">
-                  <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-white/5">
+                  <div className="flex justify-between items-center mb-6 pb-4 border-b border-stone-100 dark:border-white/5">
                     <button
                       type="button"
                       onClick={() => goToStep(1)}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors"
                     >
                       {!isRTL && <ArrowLeft size={16} />}
                       {t('onboarding.back')}
@@ -1984,15 +2004,15 @@ export function OnboardingPage() {
                       <button
                         type="button"
                         onClick={() => navigate('/owner')}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-mintcom-green dark:text-gray-300 dark:hover:text-mintcom-green transition-colors"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-600 hover:text-mintcom-green dark:text-stone-300 dark:hover:text-mintcom-green transition-colors"
                       >
                         <LayoutDashboard size={16} />
                         {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
                       </button>
                     )}
                   </div>
-                  <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step3.title')}</h2>
-                  <p className="text-sm font-sans text-gray-600 dark:text-gray-300">{t('onboarding.step3.subtitle')}</p>
+                  <h2 className="font-sans text-2xl sm:text-3xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight mb-2">{t('onboarding.step3.title')}</h2>
+                  <p className="text-sm font-sans text-stone-600 dark:text-zinc-300">{t('onboarding.step3.subtitle')}</p>
                   <div className="mt-4 p-3 bg-mintcom-green/10 text-mintcom-green text-sm rounded-xl font-sans border border-mintcom-green/20">
                     <p>✨ <strong>{t('onboarding.step3.uniqueAccess')}</strong> {t('onboarding.step3.uniqueAccessDesc')}</p>
                   </div>
@@ -2000,57 +2020,57 @@ export function OnboardingPage() {
 
                 <form onSubmit={form2.handleSubmit(onStep2Submit)} autoComplete="off" className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="space-y-2">
-                    <label className="text-xs font-sans text-gray-400 ml-1 flex items-center">
+                    <label className="text-xs font-sans text-stone-400 ml-1 flex items-center">
                       {t('onboarding.step3.locationId')} <span className="text-mintcom-red mx-1">*</span>
                       <QuickInfo text={t('onboarding.step3.locationIdTip')} />
                     </label>
                     <div className="relative group">
-                      <Smartphone className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                      <Smartphone className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                       <input maxLength={255}
                         type="text"
                         autoComplete="off"
                         autoCorrect="off"
                         spellCheck={false}
                         {...form2.register('establishmentLoginId')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentLoginId ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                        className={`w-full bg-white dark:bg-zinc-900/60 border ${form2.formState.errors.establishmentLoginId ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step3.locationIdPlaceholder'), t('common.locale'))}
                       />
                     </div>
-                    {form2.formState.errors.establishmentLoginId && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 ml-1">{form2.formState.errors.establishmentLoginId.message as string}</p>}
+                    {form2.formState.errors.establishmentLoginId && <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 ml-1">{form2.formState.errors.establishmentLoginId.message as string}</p>}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-sans text-gray-400 ml-1 flex items-center">
+                    <label className="text-xs font-sans text-stone-400 ml-1 flex items-center">
                       {t('onboarding.step3.password')} <span className="text-mintcom-red mx-1">*</span>
                       <QuickInfo text={t('onboarding.step3.passwordTip')} />
                     </label>
                     <div className="relative group">
-                      <KeyRound className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                      <KeyRound className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                       <input maxLength={255}
                         type={showEstablishmentPassword ? "text" : "password"}
                         autoComplete="new-password"
                         {...form2.register('establishmentPassword')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form2.formState.errors.establishmentPassword ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                        className={`w-full bg-white dark:bg-zinc-900/60 border ${form2.formState.errors.establishmentPassword ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step3.passwordPlaceholder'), t('common.locale'))}
                       />
                       <button
                         type="button"
                         onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
-                        className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                        className="absolute end-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 transition-colors"
                       >
                         {showEstablishmentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
-                    {form2.formState.errors.establishmentPassword && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 ml-1">{form2.formState.errors.establishmentPassword.message as string}</p>}
+                    {form2.formState.errors.establishmentPassword && <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 ml-1">{form2.formState.errors.establishmentPassword.message as string}</p>}
                   </div>
 
                   <div className="pt-4">
                     <button
                       type="submit"
-                      className="w-full py-5 bg-mintcom-green text-black text-base font-sans font-bold rounded-2xl hover:bg-mintcom-green/90 transition-all shadow-xl shadow-mintcom-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 flex items-center justify-center gap-2 active:scale-[0.98] dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                     >
-                      {isRTL && <ArrowRight size={24} />}
+                      {isRTL && <ArrowRight size={15} className="shrink-0" />}
                       {t('onboarding.nextStep')}
-                      {!isRTL && <ArrowRight size={24} />}
+                      {!isRTL && <ArrowRight size={15} className="shrink-0" />}
                     </button>
                   </div>
                 </form>
@@ -2067,13 +2087,13 @@ export function OnboardingPage() {
               exit={{ opacity: 0, x: -20 }}
               className="max-w-md w-full"
             >
-              <div className="bg-white dark:bg-white/5 rounded-3xl sm:rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
+              <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 p-6 sm:p-8 lg:p-12 shadow-sm dark:shadow-none">
                 <div className="mb-10">
-                  <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-white/5">
+                  <div className="flex justify-between items-center mb-6 pb-4 border-b border-stone-100 dark:border-white/5">
                     <button
                       type="button"
                       onClick={() => goToStep(2)}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors"
                     >
                       {!isRTL && <ArrowLeft size={16} />}
                       {t('onboarding.back')}
@@ -2083,19 +2103,19 @@ export function OnboardingPage() {
                       <button
                         type="button"
                         onClick={() => navigate('/owner')}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-mintcom-green dark:text-gray-300 dark:hover:text-mintcom-green transition-colors"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-600 hover:text-mintcom-green dark:text-stone-300 dark:hover:text-mintcom-green transition-colors"
                       >
                         <LayoutDashboard size={16} />
                         {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
                       </button>
                     )}
                   </div>
-                  <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">
+                  <h2 className="font-sans text-2xl sm:text-3xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight mb-2">
                     {isAdditionalLocation
                       ? t('onboarding.step4.lockedTitle', { defaultValue: 'Owner Login Ready' })
                       : t('onboarding.step4.title')}
                   </h2>
-                  <p className="text-sm font-sans text-gray-600 dark:text-gray-300">
+                  <p className="text-sm font-sans text-stone-600 dark:text-zinc-300">
                     {isAdditionalLocation
                       ? t('onboarding.step4.lockedSubtitle', { defaultValue: 'Your universal owner account is already linked to this account.' })
                       : t('onboarding.step4.subtitle')}
@@ -2128,39 +2148,39 @@ export function OnboardingPage() {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-sans text-gray-400 ml-1">
+                        <label className="text-xs font-sans text-stone-400 ml-1">
                           {t('onboarding.step4.firstName')}
                         </label>
                         <div className="relative">
-                          <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                          <User className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400" size={20} />
                           <input
                             value={ownerLoginDisplay.firstName}
                             readOnly
-                            className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
+                            className="w-full bg-stone-100 dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-stone-600 dark:text-zinc-300"
                           />
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-sans text-gray-400 ml-1">
+                        <label className="text-xs font-sans text-stone-400 ml-1">
                           {t('onboarding.step4.lastName')}
                         </label>
                         <div className="relative">
-                          <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                          <User className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400" size={20} />
                           <input
                             value={ownerLoginDisplay.lastName}
                             readOnly
-                            className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
+                            className="w-full bg-stone-100 dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-stone-600 dark:text-zinc-300"
                           />
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-sans text-gray-400 ml-1">
+                      <label className="text-xs font-sans text-stone-400 ml-1">
                         {t('onboarding.step4.username')}
                       </label>
                       <div className="relative">
-                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400" size={20} />
                         <input
                           value={
                             isOwnerLoginLoading
@@ -2168,26 +2188,26 @@ export function OnboardingPage() {
                               : ownerLoginDisplay.username
                           }
                           readOnly
-                          className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
+                          className="w-full bg-stone-100 dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-stone-600 dark:text-zinc-300"
                         />
-                        <Lock className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <Lock className="absolute end-4 top-1/2 -translate-y-1/2 text-stone-400" size={20} />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-sans text-gray-400 ml-1">
+                      <label className="text-xs font-sans text-stone-400 ml-1">
                         {t('onboarding.step4.ownerEmail', { defaultValue: 'Owner Email' })}
                       </label>
                       <div className="relative">
-                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400" size={20} />
                         <input
                           value={ownerLoginDisplay.email}
                           readOnly
-                          className="w-full bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-gray-600 dark:text-gray-300"
+                          className="w-full bg-stone-100 dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-stone-600 dark:text-zinc-300"
                         />
-                        <Lock className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <Lock className="absolute end-4 top-1/2 -translate-y-1/2 text-stone-400" size={20} />
                       </div>
-                      <p className="text-xs font-sans text-gray-500 dark:text-gray-400 ml-1">
+                      <p className="text-xs font-sans text-stone-500 dark:text-zinc-400 ml-1">
                         {t('onboarding.step4.lockedHelper', {
                           defaultValue:
                             'Edit the universal owner login from Employees or Account Settings, not from location setup.',
@@ -2200,12 +2220,12 @@ export function OnboardingPage() {
                         type="button"
                         onClick={() => onStep3Submit({ lockedOwner: true })}
                         disabled={isOwnerLoginLoading || isLoading}
-                        className="w-full py-5 bg-mintcom-green text-black text-base font-sans font-bold rounded-2xl hover:bg-mintcom-green/90 transition-all shadow-xl shadow-mintcom-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
+                        className="w-full rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 disabled:opacity-50 flex items-center justify-center gap-2 active:scale-[0.98] dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                       >
-                        {isLoading ? <Loader2 className="animate-spin" size={24} /> : null}
-                        {isRTL && <ArrowRight size={24} />}
+                        {isLoading ? <Loader2 className="animate-spin" size={15} /> : null}
+                        {isRTL && <ArrowRight size={15} className="shrink-0" />}
                         {t('onboarding.nextStep')}
-                        {!isRTL && <ArrowRight size={24} />}
+                        {!isRTL && <ArrowRight size={15} className="shrink-0" />}
                       </button>
                     </div>
                   </div>
@@ -2213,96 +2233,96 @@ export function OnboardingPage() {
                 <form onSubmit={form3.handleSubmit(onStep3Submit)} autoComplete="off" className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-sans text-gray-400 ml-1">
+                      <label className="text-xs font-sans text-stone-400 ml-1">
                         {t('onboarding.step4.firstName')} <span className="text-mintcom-red">*</span>
                       </label>
                       <div className="relative group">
-                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                         <input maxLength={255}
                           type="text"
                           autoComplete="new-password"
                           autoCorrect="off"
                           spellCheck={false}
                           {...form3.register('firstName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.firstName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                          className={`w-full bg-white dark:bg-zinc-900/60 border ${form3.formState.errors.firstName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                           placeholder={formatInputPlaceholder(t('onboarding.step4.firstNamePlaceholder'), t('common.locale'))}
                         />
                       </div>
-                      {form3.formState.errors.firstName && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 ml-1">{form3.formState.errors.firstName.message as string}</p>}
+                      {form3.formState.errors.firstName && <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 ml-1">{form3.formState.errors.firstName.message as string}</p>}
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-sans text-gray-400 ml-1">
+                      <label className="text-xs font-sans text-stone-400 ml-1">
                         {t('onboarding.step4.lastName')} <span className="text-mintcom-red">*</span>
                       </label>
                       <div className="relative group">
-                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                        <User className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                         <input maxLength={255}
                           type="text"
                           autoComplete="new-password"
                           autoCorrect="off"
                           spellCheck={false}
                           {...form3.register('lastName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.lastName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                          className={`w-full bg-white dark:bg-zinc-900/60 border ${form3.formState.errors.lastName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                           placeholder={formatInputPlaceholder(t('onboarding.step4.lastNamePlaceholder'), t('common.locale'))}
                         />
                       </div>
-                      {form3.formState.errors.lastName && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 ml-1">{form3.formState.errors.lastName.message as string}</p>}
+                      {form3.formState.errors.lastName && <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 ml-1">{form3.formState.errors.lastName.message as string}</p>}
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-sans text-gray-400 ml-1 flex items-center">
+                    <label className="text-xs font-sans text-stone-400 ml-1 flex items-center">
                       {t('onboarding.step4.username')} <span className="text-mintcom-red mx-1">*</span>
                       <QuickInfo text={t('onboarding.step4.usernameTip')} />
                     </label>
                     <div className="relative group">
-                      <User className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                      <User className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                       <input maxLength={255}
                         type="text"
                         autoComplete="new-password"
                         autoCorrect="off"
                         spellCheck={false}
                         {...form3.register('username')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.username ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                        className={`w-full bg-white dark:bg-zinc-900/60 border ${form3.formState.errors.username ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step4.usernamePlaceholder'), t('common.locale'))}
                       />
                     </div>
-                    {form3.formState.errors.username && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 ml-1">{form3.formState.errors.username.message as string}</p>}
+                    {form3.formState.errors.username && <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 ml-1">{form3.formState.errors.username.message as string}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-sans text-gray-400 ml-1 flex items-center">
+                    <label className="text-xs font-sans text-stone-400 ml-1 flex items-center">
                       {t('onboarding.step4.password')} <span className="text-mintcom-red mx-1">*</span>
                       <QuickInfo text={t('onboarding.step4.passwordTip')} />
                     </label>
                     <div className="relative group">
-                      <Lock className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                      <Lock className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                       <input maxLength={255}
                         type={showAdminPassword ? "text" : "password"}
                         autoComplete="new-password"
                         {...form3.register('password')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.password ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
+                        className={`w-full bg-white dark:bg-zinc-900/60 border ${form3.formState.errors.password ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step4.passwordPlaceholder'), t('common.locale'))}
                       />
                       <button
                         type="button"
                         onClick={() => setShowAdminPassword(!showAdminPassword)}
-                        className="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                        className="absolute end-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 transition-colors"
                       >
                         {showAdminPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
-                    {form3.formState.errors.password && <p className="text-mintcom-red text-xs font-sans text-gray-500 mt-1 ml-1">{form3.formState.errors.password.message as string}</p>}
+                    {form3.formState.errors.password && <p className="text-mintcom-red text-xs font-sans text-stone-500 mt-1 ml-1">{form3.formState.errors.password.message as string}</p>}
                   </div>
 
                   <div className="pt-4">
                     <button
                       type="submit"
-                      className="w-full py-5 bg-mintcom-green text-black text-base font-sans font-bold rounded-2xl hover:bg-mintcom-green/90 transition-all shadow-xl shadow-mintcom-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 disabled:opacity-50 flex items-center justify-center gap-2 active:scale-[0.98] dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                     >
-                      {isRTL && <ArrowRight size={24} />}
+                      {isRTL && <ArrowRight size={15} className="shrink-0" />}
                       {t('onboarding.nextStep')}
-                      {!isRTL && <ArrowRight size={24} />}
+                      {!isRTL && <ArrowRight size={15} className="shrink-0" />}
                     </button>
                   </div>
                 </form>
@@ -2324,7 +2344,7 @@ export function OnboardingPage() {
                 <button
                   type="button"
                   onClick={() => goToStep(3)}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors"
                 >
                   {!isRTL && <ArrowLeft size={16} />}
                   {t('onboarding.back')}
@@ -2334,7 +2354,7 @@ export function OnboardingPage() {
                   <button
                     type="button"
                     onClick={() => navigate('/owner')}
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-mintcom-green dark:text-gray-300 dark:hover:text-mintcom-green transition-colors"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-600 hover:text-mintcom-green dark:text-stone-300 dark:hover:text-mintcom-green transition-colors"
                   >
                     <LayoutDashboard size={16} />
                     {t('common.dashboard', { defaultValue: 'Go to Dashboard' })}
@@ -2347,23 +2367,16 @@ export function OnboardingPage() {
                 autoComplete="off"
                 dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
               >
-                <div className="grid grid-cols-1 lg:grid-cols-2 overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-2xl shadow-gray-200/50 dark:border-white/10 dark:bg-white/5 dark:shadow-none lg:divide-x lg:divide-gray-100 dark:lg:divide-white/10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60 dark:shadow-none lg:divide-x lg:divide-stone-200 dark:lg:divide-zinc-800">
                   {/* ── LEFT: plan / trial summary ── */}
                   <div className="flex flex-col gap-6 p-8 lg:p-10">
                     <div>
                       <div className="mb-4 flex items-center gap-3">
-                        <div
-                          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${
-                            isTrialFlow ? 'bg-yellow-400/15' : 'bg-mintcom-green/10'
-                          }`}
-                        >
-                          <ShieldCheck
-                            className={isTrialFlow ? 'text-yellow-500' : 'text-mintcom-green'}
-                            size={24}
-                          />
-                        </div>
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300">
+                          <ShieldCheck size={19} strokeWidth={1.75} />
+                        </span>
                         <div className="min-w-0">
-                          <h2 className="font-sans text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
+                          <h2 className="font-magilio text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100">
                             {isTrialFlow
                               ? t('onboarding.step2.trialTitle')
                               : t('onboarding.step2.activateTitle')}
@@ -2382,7 +2395,7 @@ export function OnboardingPage() {
                           )}
                         </div>
                       </div>
-                      <p className="text-sm font-sans leading-relaxed text-gray-600 dark:text-gray-300">
+                      <p className="mt-2 text-[15px] leading-relaxed text-stone-500 dark:text-zinc-400">
                         {isTrialFlow
                           ? t('onboarding.step2.trialDesc')
                           : t('onboarding.step2.activateDesc', { amount: selectedPriceWithPeriod })}
@@ -2392,20 +2405,20 @@ export function OnboardingPage() {
                     {/* Billing cycle toggle */}
                     <div>
                       {isTrialFlow && (
-                        <p className="mb-2 text-sm font-sans leading-relaxed text-gray-600 dark:text-gray-300">
+                        <p className="mb-2 text-sm font-sans leading-relaxed text-stone-600 dark:text-zinc-300">
                           {t('onboarding.step2.trialChooseCycleHint', {
                             defaultValue: "Pick what you'll be billed after your free trial",
                           })}
                         </p>
                       )}
-                      <div className="grid grid-cols-2 gap-1 rounded-[12px] border border-gray-200 bg-gray-100 p-1 dark:border-white/10 dark:bg-black/30">
+                      <div className="inline-grid w-full grid-cols-2 gap-1 rounded-xl border border-stone-200 bg-white p-1 dark:border-zinc-800 dark:bg-transparent">
                         <button
                           type="button"
                           onClick={() => setBillingCycle(BILLING_CYCLES.MONTHLY)}
-                          className={`rounded-[12px] py-2.5 text-sm font-sans font-bold transition-all duration-300 ${
+                          className={`rounded-lg py-2 text-[13px] font-semibold transition-colors ${
                             billingCycle === BILLING_CYCLES.MONTHLY
-                              ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20'
-                              : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                              ? 'bg-stone-900 text-white dark:bg-mintcom-green dark:text-black'
+                              : 'text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100'
                           }`}
                         >
                           {t('onboarding.step2.monthly')}
@@ -2413,16 +2426,16 @@ export function OnboardingPage() {
                         <button
                           type="button"
                           onClick={() => setBillingCycle(BILLING_CYCLES.YEARLY)}
-                          className={`flex items-center justify-center gap-2 rounded-[12px] py-2.5 text-sm font-sans font-bold transition-all duration-300 ${
+                          className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-[13px] font-semibold transition-colors ${
                             billingCycle === BILLING_CYCLES.YEARLY
-                              ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20'
-                              : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                              ? 'bg-stone-900 text-white dark:bg-mintcom-green dark:text-black'
+                              : 'text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100'
                           }`}
                         >
                           <span>{t('onboarding.step2.yearly')}</span>
                           {yearlyDiscountPercent > 0 && (
                             <span
-                              className={`rounded-[12px] px-1.5 py-0.5 text-[9px] font-sans font-bold leading-none ${
+                              className={`rounded-md px-1.5 py-0.5 text-[9px] font-sans font-bold leading-none ${
                                 billingCycle === BILLING_CYCLES.YEARLY
                                   ? 'bg-black text-mintcom-green'
                                   : 'bg-mintcom-green/15 text-mintcom-green'
@@ -2439,17 +2452,17 @@ export function OnboardingPage() {
                     </div>
 
                     {/* Total due */}
-                    <div className="rounded-2xl border border-dashed border-mintcom-green/30 bg-mintcom-green/5 p-5 dark:border-mintcom-green/20 dark:bg-mintcom-green/5">
-                      <span className="mb-3 block text-sm font-sans font-medium leading-relaxed text-gray-600 dark:text-gray-300">
+                    <div className="rounded-xl border border-stone-200 bg-white p-5 dark:border-zinc-800 dark:bg-transparent">
+                      <span className="mb-3 block text-sm font-sans font-medium leading-relaxed text-stone-600 dark:text-zinc-300">
                         {t('onboarding.step2.totalDue')}
                       </span>
 
                       {isTrialFlow ? (
                         <div className="flex items-baseline gap-2">
-                          <span className="font-sans text-4xl sm:text-5xl font-black leading-none text-gray-900 dark:text-white tracking-tight">
+                          <span className="font-sans text-4xl sm:text-5xl font-black leading-none text-stone-900 dark:text-zinc-100 tracking-tight">
                             {formatWholeNumber(0)}
                           </span>
-                          <span className="text-xs sm:text-sm font-sans font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                          <span className="text-xs sm:text-sm font-sans font-bold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
                             {selectedUnitLabel}
                           </span>
                         </div>
@@ -2457,7 +2470,7 @@ export function OnboardingPage() {
                         <div className="flex flex-col items-start">
                           {hasLocationDiscount && (
                             <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                              <span className="font-sans text-xs sm:text-sm font-bold text-gray-400 dark:text-gray-500 line-through decoration-2">
+                              <span className="font-sans text-xs sm:text-sm font-bold text-stone-400 dark:text-stone-500 line-through decoration-2">
                                 {formatWholeNumber(primaryDisplayPrice)} {selectedUnitLabel}
                               </span>
                               <span className="inline-flex items-center rounded-full bg-mintcom-green/15 px-2 py-0.5 text-[10px] font-extrabold text-emerald-800 dark:text-mintcom-green">
@@ -2466,10 +2479,10 @@ export function OnboardingPage() {
                             </div>
                           )}
                           <div className="flex items-baseline gap-2">
-                            <span className="font-sans text-4xl sm:text-5xl font-black leading-none text-gray-900 dark:text-white tracking-tight">
+                            <span className="font-sans text-4xl sm:text-5xl font-black leading-none text-stone-900 dark:text-zinc-100 tracking-tight">
                               {formatWholeNumber(vatBreakdown.total)}
                             </span>
-                            <span className="text-xs sm:text-sm font-sans font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                            <span className="text-xs sm:text-sm font-sans font-bold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
                               {selectedUnitLabel}
                             </span>
                           </div>
@@ -2478,28 +2491,28 @@ export function OnboardingPage() {
 
                       {/* Price breakdown — subtotal, VAT, total */}
                       {isTrialFlow && (
-                        <p className="mb-2 mt-4 text-[11px] font-sans font-bold uppercase tracking-[0.1em] text-gray-400 dark:text-gray-500">
+                        <p className="mb-2 mt-4 text-[11px] font-sans font-bold uppercase tracking-[0.1em] text-stone-400 dark:text-stone-500">
                           {t('onboarding.step2.breakdownAfterTrial', {
                             defaultValue: 'After your free trial, each period:',
                           })}
                         </p>
                       )}
                       <div
-                        className={`space-y-2 rounded-xl border border-mintcom-green/15 bg-white/70 p-3.5 dark:border-white/10 dark:bg-black/20 ${
+                        className={`space-y-2 rounded-xl border border-mintcom-green/15 bg-white/70 p-3.5 dark:border-zinc-800 dark:bg-zinc-900/60 ${
                           isTrialFlow ? '' : 'mt-4'
                         }`}
                       >
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-sans text-gray-600 dark:text-gray-300">
+                          <span className="font-sans text-stone-600 dark:text-zinc-300">
                             {t('onboarding.step2.subtotal', { defaultValue: 'Subtotal' })}
                           </span>
-                          <span className="font-sans font-bold tabular-nums text-gray-900 dark:text-white">
+                          <span className="font-sans font-bold tabular-nums text-stone-900 dark:text-zinc-100">
                             {formatWholeCurrency(vatBreakdown.subtotal)}
                           </span>
                         </div>
 
                         <div className="flex items-center justify-between text-sm">
-                          <span className="flex items-center gap-1.5 font-sans text-gray-600 dark:text-gray-300">
+                          <span className="flex items-center gap-1.5 font-sans text-stone-600 dark:text-zinc-300">
                             {vatRule
                               ? `${vatRule.label} (${vatRule.rate}%)`
                               : t('onboarding.step2.taxNotApplicable', { defaultValue: 'Tax' })}
@@ -2510,15 +2523,15 @@ export function OnboardingPage() {
                               })}
                             />
                           </span>
-                          <span className="font-sans font-bold tabular-nums text-gray-900 dark:text-white">
+                          <span className="font-sans font-bold tabular-nums text-stone-900 dark:text-zinc-100">
                             {vatRule ? formatWholeCurrency(vatBreakdown.vatAmount) : '—'}
                           </span>
                         </div>
 
-                        <div className="my-1 border-t border-dashed border-gray-200 dark:border-white/10" />
+                        <div className="my-1 border-t border-dashed border-stone-200 dark:border-zinc-800" />
 
                         <div className="flex items-center justify-between">
-                          <span className="font-sans text-sm font-bold text-gray-900 dark:text-white">
+                          <span className="font-sans text-sm font-bold text-stone-900 dark:text-zinc-100">
                             {isTrialFlow
                               ? t('onboarding.step2.totalAfterTrial', { defaultValue: 'Total after trial' })
                               : t('onboarding.step2.total', { defaultValue: 'Total' })}
@@ -2527,7 +2540,7 @@ export function OnboardingPage() {
                             <span className="font-sans text-lg font-black tabular-nums text-mintcom-green">
                               {formatWholeCurrency(vatBreakdown.total)}
                             </span>
-                            <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                            <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
                               {selectedPeriodLabel}
                             </span>
                           </span>
@@ -2557,22 +2570,22 @@ export function OnboardingPage() {
                             {t('landing.pricing.save')} {formatWholeCurrency(yearlySavings)}{' '}
                             {t('landing.pricing.perYear')}
                           </span>
-                          <span className="text-xs text-gray-400 line-through">
+                          <span className="text-xs text-stone-400 line-through">
                             {formatWholeCurrency(currentMonthlyPrice * 12)} {t('landing.pricing.perYear')}
                           </span>
                         </div>
                       )}
 
                       {hasLocationDiscount && (
-                        <div className="mt-4 flex items-center gap-3 rounded-xl border border-mintcom-green/20 bg-mintcom-green/10 p-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-mintcom-green/20 text-mintcom-green">
-                            <Tags size={16} />
-                          </div>
+                        <div className="mt-4 flex items-center gap-3 rounded-xl border border-stone-200 bg-white p-3 dark:border-zinc-800 dark:bg-transparent">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300">
+                            <Tags size={16} strokeWidth={1.75} />
+                          </span>
                           <div className="leading-tight">
-                            <p className="text-sm font-sans font-bold text-gray-900 dark:text-white">
+                            <p className="text-sm font-sans font-bold text-stone-900 dark:text-zinc-100">
                               {t('onboarding.step2.addedLocation', { defaultValue: 'Added Location' })}
                             </p>
-                            <p className="text-xs font-sans font-medium text-gray-500 dark:text-gray-400 mt-0.5">
+                            <p className="text-xs font-sans font-medium text-stone-500 dark:text-zinc-400 mt-0.5">
                               {t('onboarding.step2.existingAccountBenefit', {
                                 defaultValue: 'Existing Account Benefit',
                               })}
@@ -2584,18 +2597,18 @@ export function OnboardingPage() {
 
                     {/* Trial disclosure */}
                     {isTrialFlow && (
-                      <div className="flex items-start gap-3 rounded-2xl border border-mintcom-green/20 bg-mintcom-green/5 p-4">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-mintcom-green/15">
-                          <CalendarClock size={18} className="text-mintcom-green" />
-                        </div>
+                      <div className="flex items-start gap-3 rounded-xl border border-stone-200 bg-white p-4 dark:border-zinc-800 dark:bg-transparent">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300">
+                          <CalendarClock size={16} strokeWidth={1.75} />
+                        </span>
                         <div className="leading-snug">
-                          <p className="text-sm font-sans font-bold text-gray-900 dark:text-white">
+                          <p className="text-sm font-sans font-bold text-stone-900 dark:text-zinc-100">
                             {t('onboarding.step2.trialDisclosureTitle', {
                               defaultValue: `Free until ${trialEndDateLabel}`,
                               date: trialEndDateLabel,
                             })}
                           </p>
-                          <p className="mt-1 text-xs font-sans text-gray-600 dark:text-gray-300">
+                          <p className="mt-1 text-xs font-sans text-stone-600 dark:text-zinc-300">
                             {t('onboarding.step2.trialDisclosureBody', {
                               defaultValue: `After your 14-day free trial ends on ${trialEndDateLabel}, you'll start paying ${selectedPriceWithPeriod} for this location. Cancel anytime before then and you won't be charged.`,
                               date: trialEndDateLabel,
@@ -2609,7 +2622,7 @@ export function OnboardingPage() {
                   </div>
 
                   {/* ── RIGHT: payment details ── */}
-                  <div className="flex flex-col gap-5 border-t border-gray-100 p-8 dark:border-white/10 lg:border-t-0 lg:p-10">
+                  <div className="flex flex-col gap-5 border-t border-stone-100 p-8 dark:border-zinc-800 lg:border-t-0 lg:p-10">
                     <div>
                       <div className="mb-3 flex items-center gap-2 text-[11px] font-sans font-bold uppercase tracking-[0.12em] text-mintcom-green">
                         <Lock size={13} className="shrink-0" />
@@ -2619,7 +2632,7 @@ export function OnboardingPage() {
                           })}
                         </span>
                       </div>
-                      <h3 className="font-sans text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
+                      <h3 className="font-sans text-xl font-bold text-stone-900 dark:text-zinc-100 sm:text-2xl">
                         {t('onboarding.step2.paymentDetails', {
                           defaultValue: 'Payment Details',
                         })}
@@ -2631,28 +2644,25 @@ export function OnboardingPage() {
                       <div className="space-y-3">
                         <div
                           onClick={() => setUseSavedCard(true)}
-                          className={`cursor-pointer rounded-2xl border-2 p-4 transition-all ${
+                          className={`cursor-pointer rounded-2xl border p-4 transition-colors ${
                             useSavedCard
                               ? 'border-mintcom-green bg-mintcom-green/5'
-                              : 'border-gray-200 hover:border-gray-300 dark:border-white/10'
+                              : 'border-stone-200 bg-white hover:border-stone-300 dark:border-zinc-800 dark:bg-transparent dark:hover:border-zinc-700'
                           }`}
                         >
                           <div className="flex items-center gap-4">
-                            <div
-                              className={`flex h-12 w-12 items-center justify-center rounded-xl ${
-                                useSavedCard ? 'bg-mintcom-green' : 'bg-gray-100 dark:bg-white/5'
+                            <span
+                              className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                                useSavedCard ? 'bg-mintcom-green/15 text-mintcom-green' : 'bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300'
                               }`}
                             >
-                              <CreditCard
-                                size={24}
-                                className={useSavedCard ? 'text-black' : 'text-gray-400'}
-                              />
-                            </div>
+                              <CreditCard size={19} strokeWidth={1.75} />
+                            </span>
                             <div className="flex-1">
-                              <p className="text-sm font-sans font-bold text-gray-900 dark:text-white">
+                              <p className="text-sm font-sans font-bold text-stone-900 dark:text-zinc-100">
                                 {t('onboarding.step2.useSaved')}
                               </p>
-                              <p className="text-xs font-sans text-gray-500">
+                              <p className="text-xs font-sans text-stone-500">
                                 **** **** **** {savedCardLast4}
                               </p>
                             </div>
@@ -2660,7 +2670,7 @@ export function OnboardingPage() {
                               className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
                                 useSavedCard
                                   ? 'border-mintcom-green bg-mintcom-green'
-                                  : 'border-gray-300'
+                                  : 'border-stone-300'
                               }`}
                             >
                               {useSavedCard && <div className="h-2 w-2 rounded-full bg-white" />}
@@ -2670,28 +2680,29 @@ export function OnboardingPage() {
 
                         <div
                           onClick={() => setUseSavedCard(false)}
-                          className={`cursor-pointer rounded-2xl border-2 p-4 transition-all ${
+                          className={`cursor-pointer rounded-2xl border p-4 transition-colors ${
                             !useSavedCard
                               ? 'border-mintcom-green bg-mintcom-green/5'
-                              : 'border-gray-200 hover:border-gray-300 dark:border-white/10'
+                              : 'border-stone-200 bg-white hover:border-stone-300 dark:border-zinc-800 dark:bg-transparent dark:hover:border-zinc-700'
                           }`}
                         >
                           <div className="flex items-center gap-4">
-                            <div
-                              className={`flex h-12 w-12 items-center justify-center rounded-xl ${
-                                !useSavedCard ? 'bg-mintcom-green' : 'bg-gray-100 dark:bg-white/5'
+                            <span
+                              className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                                !useSavedCard ? 'bg-mintcom-green/15 text-mintcom-green' : 'bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300'
                               }`}
                             >
                               <Plus
-                                size={24}
-                                className={!useSavedCard ? 'text-black' : 'text-gray-400'}
+                                size={19}
+                                strokeWidth={1.75}
+                                className={!useSavedCard ? 'text-mintcom-green' : 'text-stone-400'}
                               />
-                            </div>
+                            </span>
                             <div className="flex-1">
-                              <p className="text-sm font-sans font-bold text-gray-900 dark:text-white">
+                              <p className="text-sm font-sans font-bold text-stone-900 dark:text-zinc-100">
                                 {t('onboarding.step2.addNew')}
                               </p>
-                              <p className="text-xs font-sans text-gray-500">
+                              <p className="text-xs font-sans text-stone-500">
                                 {t('onboarding.step2.differentMethod')}
                               </p>
                             </div>
@@ -2699,7 +2710,7 @@ export function OnboardingPage() {
                               className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
                                 !useSavedCard
                                   ? 'border-mintcom-green bg-mintcom-green'
-                                  : 'border-gray-300'
+                                  : 'border-stone-300'
                               }`}
                             >
                               {!useSavedCard && <div className="h-2 w-2 rounded-full bg-white" />}
@@ -2735,7 +2746,7 @@ export function OnboardingPage() {
                             placeholder="0000 0000 0000 0000"
                             className={CARD_INPUT_CLASS}
                           />
-                          <CreditCard size={18} className="shrink-0 text-gray-400" aria-hidden />
+                          <CreditCard size={18} className="shrink-0 text-stone-400" aria-hidden />
                         </EmbeddedCardField>
 
                         <div className="grid grid-cols-1 gap-x-3 gap-y-1 sm:grid-cols-2 sm:items-start">
@@ -2838,21 +2849,21 @@ export function OnboardingPage() {
                           hasSavedCard && useSavedCard ? () => onStep4Submit({}) : undefined
                         }
                         disabled={isLoading || !billingConsent}
-                        className="flex w-full items-center justify-center gap-3 rounded-2xl bg-mintcom-green py-4 text-base font-sans font-bold text-black shadow-xl shadow-mintcom-green/20 transition-all hover:bg-mintcom-green/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-mintcom-green py-3 text-sm font-semibold text-black transition-colors hover:bg-mintcom-green/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        {isLoading ? <Loader2 className="animate-spin" size={24} /> : null}
+                        {isLoading ? <Loader2 className="animate-spin" size={15} /> : null}
                         {isTrialFlow
                           ? t('onboarding.step2.startTrialButton')
                           : t('onboarding.completeLaunch')}
                         {!isLoading && (
                           isRTL
-                            ? <ArrowLeft size={18} className="shrink-0" />
-                            : <ArrowRight size={18} className="shrink-0" />
+                            ? <ArrowLeft size={15} className="shrink-0" />
+                            : <ArrowRight size={15} className="shrink-0" />
                         )}
                       </button>
 
                       {/* Mandatory recurring-billing disclosure, directly above consent */}
-                      <p className="text-center text-[11px] font-sans leading-relaxed text-gray-500 dark:text-gray-400">
+                      <p className="text-center text-[11px] font-sans leading-relaxed text-stone-500 dark:text-zinc-400">
                         {isTrialFlow
                           ? t('onboarding.step2.trialDisclosureCheckout', {
                               defaultValue:
@@ -2877,7 +2888,7 @@ export function OnboardingPage() {
                           href="/legal/terms"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="font-semibold text-gray-600 underline-offset-2 hover:text-mintcom-green hover:underline dark:text-gray-300"
+                          className="font-semibold text-stone-600 underline-offset-2 hover:text-mintcom-green hover:underline dark:text-stone-300"
                         >
                           {t('onboarding.step5.terms', { defaultValue: 'Terms of Service' })}
                         </a>
@@ -2887,7 +2898,7 @@ export function OnboardingPage() {
                           href="/legal/privacy"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="font-semibold text-gray-600 underline-offset-2 hover:text-mintcom-green hover:underline dark:text-gray-300"
+                          className="font-semibold text-stone-600 underline-offset-2 hover:text-mintcom-green hover:underline dark:text-stone-300"
                         >
                           {t('onboarding.step5.privacy', { defaultValue: 'Privacy Policy' })}
                         </a>
@@ -2899,7 +2910,7 @@ export function OnboardingPage() {
                         className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-3.5 transition-colors ${
                           consentError && !billingConsent
                             ? 'border-mintcom-red/60 bg-mintcom-red/5'
-                            : 'border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-white/5'
+                            : 'border-stone-200 bg-stone-100 dark:border-zinc-800 dark:bg-zinc-800'
                         }`}
                       >
                         <input
@@ -2911,7 +2922,7 @@ export function OnboardingPage() {
                           }}
                           className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-mintcom-green"
                         />
-                        <span className="text-[11px] font-sans leading-relaxed text-gray-600 dark:text-gray-300">
+                        <span className="text-[11px] font-sans leading-relaxed text-stone-600 dark:text-zinc-300">
                           {isTrialFlow
                             ? t('onboarding.step2.consentCheckboxTrial', {
                                 defaultValue:
@@ -2948,22 +2959,25 @@ export function OnboardingPage() {
               className="w-full max-w-6xl px-4"
             >
               {/* Top Hero Bar */}
-              <div className="relative mb-6">
-                <div className="absolute -inset-1 bg-gradient-to-r from-mintcom-green/30 via-mintcom-green/10 to-transparent rounded-[2rem] blur-xl opacity-60" />
-                <div className="relative bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-3xl p-6 lg:p-8 overflow-hidden shadow-sm">
+              <div className="mb-6">
+                <div className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl p-6 lg:p-8 overflow-hidden shadow-sm">
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                     <div className="flex items-center gap-5">
                       <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                        className="relative w-16 h-16 lg:w-20 lg:h-20 shrink-0 overflow-hidden bg-gradient-to-br from-mintcom-green to-emerald-400 rounded-3xl flex items-center justify-center shadow-xl shadow-mintcom-green/30 ring-1 ring-white/30"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.45, delay: 0.2 }}
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-mintcom-green/15 text-mintcom-green"
                       >
-                        <span className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/30 via-white/5 to-transparent" aria-hidden />
+                        <img
+                          src={MintcomLeafIcon}
+                          alt=""
+                          className="h-5 w-5 object-contain dark:hidden"
+                        />
                         <img
                           src={MintcomLeafIconWhite}
                           alt=""
-                          className="relative h-9 w-9 object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)] lg:h-11 lg:w-11"
+                          className="hidden h-5 w-5 object-contain dark:block"
                         />
                       </motion.div>
                       <div>
@@ -2971,7 +2985,7 @@ export function OnboardingPage() {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.3 }}
-                          className="text-2xl lg:text-3xl font-sans font-black tracking-tight text-gray-900 dark:text-white"
+                          className="font-magilio text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100"
                         >
                           {t('onboarding.step5.welcomeTitle')}
                         </motion.h2>
@@ -2979,7 +2993,7 @@ export function OnboardingPage() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.4 }}
-                          className="flex flex-wrap items-center gap-2 mt-1.5 text-sm text-gray-500 dark:text-gray-400"
+                          className="flex flex-wrap items-center gap-2 mt-1.5 text-sm text-stone-500 dark:text-zinc-400"
                         >
                           <span className="inline-flex items-center rounded-lg bg-mintcom-green/15 px-2.5 py-0.5 font-sans font-bold text-emerald-800 dark:text-mintcom-green">
                             {formData.name}
@@ -2996,13 +3010,6 @@ export function OnboardingPage() {
                       transition={{ delay: 0.5 }}
                       className="relative shrink-0 w-full lg:w-auto"
                     >
-                      {/* Animated pulse ring */}
-                      <motion.div
-                        animate={{ scale: [1, 1.12, 1], opacity: [0.35, 0, 0.35] }}
-                        transition={{ duration: 2.2, repeat: Infinity }}
-                        className="absolute inset-0 bg-mintcom-green rounded-2xl pointer-events-none"
-                      />
-
                       <motion.button
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.98 }}
@@ -3013,7 +3020,7 @@ export function OnboardingPage() {
                           }
                           window.open(`/owner/establishments?highlight=${formData.establishmentId}&setup=1`, '_blank');
                         }}
-                        className="relative w-full lg:w-auto flex items-center justify-center gap-3 bg-mintcom-green text-black px-7 py-3.5 rounded-2xl font-sans font-bold text-base shadow-xl shadow-mintcom-green/30 hover:bg-emerald-400 transition-colors"
+                        className="relative w-full lg:w-auto flex items-center justify-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                       >
                         <Building2 size={22} />
                         <span>{t('onboarding.step5.openOwnerPortal')}</span>
@@ -3035,15 +3042,15 @@ export function OnboardingPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
-                    className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5 shadow-sm"
+                    className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm"
                   >
                     <div className="flex items-start gap-4">
                       <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-orange-500/10 shadow-sm transition-colors dark:bg-orange-500/20">
                         <Tablet size={28} className="text-orange-600 dark:text-orange-400" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-sans text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.posApp')}</h3>
-                        <p className="mt-0.5 text-sm leading-snug text-gray-500 dark:text-gray-400">{t('onboarding.step5.posAppDesc')}</p>
+                        <h3 className="font-sans text-lg font-bold text-stone-900 dark:text-zinc-100">{t('onboarding.step5.posApp')}</h3>
+                        <p className="mt-0.5 text-sm leading-snug text-stone-500 dark:text-zinc-400">{t('onboarding.step5.posAppDesc')}</p>
                         <div className="mt-3 flex flex-wrap items-center gap-2.5">
                           {hasAndroidDownload ? (
                             <a
@@ -3097,15 +3104,15 @@ export function OnboardingPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
-                    className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5 shadow-sm"
+                    className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm"
                   >
                     <div className="flex items-start gap-4">
                       <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 shadow-sm transition-colors dark:bg-blue-500/20">
                         <Smartphone size={28} className="text-blue-600 dark:text-blue-400" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-sans text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.ownerApp')}</h3>
-                        <p className="mt-0.5 text-sm leading-snug text-gray-500 dark:text-gray-400">{t('onboarding.step5.ownerAppDesc')}</p>
+                        <h3 className="font-sans text-lg font-bold text-stone-900 dark:text-zinc-100">{t('onboarding.step5.ownerApp')}</h3>
+                        <p className="mt-0.5 text-sm leading-snug text-stone-500 dark:text-zinc-400">{t('onboarding.step5.ownerAppDesc')}</p>
                         <div className="mt-3 flex flex-wrap items-center gap-2.5">
                           {hasOwnerAndroidDownload ? (
                             <a
@@ -3158,32 +3165,32 @@ export function OnboardingPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 }}
-                    className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5 shadow-sm text-gray-900 dark:text-white"
+                    className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm text-stone-900 dark:text-zinc-100"
                   >
                     {/* Header */}
-                    <div className="flex items-center gap-3 pb-3 border-b border-gray-100 dark:border-white/5 mb-3">
+                    <div className="flex items-center gap-3 pb-3 border-b border-stone-100 dark:border-white/5 mb-3">
                       <div className="w-10 h-10 bg-mintcom-green/15 rounded-xl flex items-center justify-center">
                         <Building2 size={20} className="text-mintcom-green" />
                       </div>
                       <div>
-                        <h3 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.locationReady')}</h3>
-                        <p className="text-xs text-gray-500">{t('onboarding.step5.setupComplete')}</p>
+                        <h3 className="font-sans font-bold text-stone-900 dark:text-zinc-100 text-sm">{t('onboarding.step5.locationReady')}</h3>
+                        <p className="text-xs text-stone-500">{t('onboarding.step5.setupComplete')}</p>
                       </div>
                     </div>
 
                     {/* Location ID Row */}
-                    <div className="flex items-center justify-between gap-3 py-2.5 border-b border-gray-100 dark:border-white/5">
+                    <div className="flex items-center justify-between gap-3 py-2.5 border-b border-stone-100 dark:border-white/5">
                       <div className="flex items-center gap-3 min-w-0">
-                        <Hash size={16} className="text-gray-400 dark:text-gray-500 shrink-0" />
+                        <Hash size={16} className="text-stone-400 dark:text-stone-500 shrink-0" />
                         <div className="min-w-0">
-                          <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">{t('onboarding.step5.locationId')}</p>
-                          <p className="font-mono text-gray-900 dark:text-white font-sans font-bold text-sm truncate">{formData.establishmentLoginId}</p>
+                          <p className="text-xs text-stone-400 dark:text-stone-500 mb-0.5">{t('onboarding.step5.locationId')}</p>
+                          <p className="font-mono text-stone-900 dark:text-zinc-100 font-sans font-bold text-sm truncate">{formData.establishmentLoginId}</p>
                         </div>
                       </div>
                       <button
                         type="button"
                         onClick={() => handleCopyField(formData.establishmentLoginId, 'id')}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-bold text-gray-700 transition hover:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-stone-200 bg-stone-100 px-2.5 py-1 text-xs font-bold text-stone-700 transition hover:bg-stone-100 dark:border-zinc-800 dark:bg-zinc-800 dark:text-stone-300 dark:hover:bg-white/10"
                         title={t('common.copy')}
                       >
                         {copiedField === 'id' ? (
@@ -3203,10 +3210,10 @@ export function OnboardingPage() {
                     {/* Password Row */}
                     <div className="flex items-center justify-between gap-3 py-2.5">
                       <div className="flex items-center gap-3 min-w-0">
-                        <Lock size={16} className="text-gray-400 dark:text-gray-500 shrink-0" />
+                        <Lock size={16} className="text-stone-400 dark:text-stone-500 shrink-0" />
                         <div className="min-w-0">
-                          <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">{t('onboarding.step5.password')}</p>
-                          <p className="text-gray-900 dark:text-white font-sans font-bold text-sm truncate font-mono tracking-wider">
+                          <p className="text-xs text-stone-400 dark:text-stone-500 mb-0.5">{t('onboarding.step5.password')}</p>
+                          <p className="text-stone-900 dark:text-zinc-100 font-sans font-bold text-sm truncate font-mono tracking-wider">
                             {showStep5Password ? (formData.establishmentPassword || '••••••••') : '••••••••'}
                           </p>
                         </div>
@@ -3216,7 +3223,7 @@ export function OnboardingPage() {
                           <button
                             type="button"
                             onClick={() => setShowStep5Password(!showStep5Password)}
-                            className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-gray-600 transition hover:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-xl border border-stone-200 bg-stone-100 text-stone-600 transition hover:bg-stone-100 dark:border-zinc-800 dark:bg-zinc-800 dark:text-stone-300 dark:hover:bg-white/10"
                             title={showStep5Password ? 'Hide password' : 'Show password'}
                           >
                             {showStep5Password ? <EyeOff size={13} /> : <Eye size={13} />}
@@ -3226,7 +3233,7 @@ export function OnboardingPage() {
                           <button
                             type="button"
                             onClick={() => handleCopyField(formData.establishmentPassword, 'password')}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-bold text-gray-700 transition hover:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-stone-200 bg-stone-100 px-2.5 py-1 text-xs font-bold text-stone-700 transition hover:bg-stone-100 dark:border-zinc-800 dark:bg-zinc-800 dark:text-stone-300 dark:hover:bg-white/10"
                             title={t('common.copy')}
                           >
                             {copiedField === 'password' ? (
@@ -3254,15 +3261,15 @@ export function OnboardingPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
-                    className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5 shadow-sm h-full flex flex-col"
+                    className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm h-full flex flex-col"
                   >
                     <div className="flex items-center gap-3 mb-5">
-                      <div className="w-10 h-10 bg-mintcom-green/15 rounded-xl flex items-center justify-center">
-                        <BookOpen size={20} className="text-mintcom-green" />
-                      </div>
+                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300">
+                        <BookOpen size={19} strokeWidth={1.75} />
+                      </span>
                       <div>
-                        <h3 className="font-sans text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.resourcesAndHelp')}</h3>
-                        <p className="text-xs text-gray-500">{t('onboarding.tour.resourcesDesc')}</p>
+                        <h3 className="font-barlow text-[17px] font-bold tracking-tight text-stone-900 dark:text-zinc-100">{t('onboarding.step5.resourcesAndHelp')}</h3>
+                        <p className="text-xs text-stone-500">{t('onboarding.tour.resourcesDesc')}</p>
                       </div>
                     </div>
 
@@ -3271,14 +3278,14 @@ export function OnboardingPage() {
                       <a
                         href={userManualDoc.path}
                         download={userManualDoc.filename}
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all flex flex-col justify-between"
+                        className="group rounded-2xl border border-stone-200 bg-white p-4 transition-colors hover:border-stone-300 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700 flex flex-col justify-between"
                       >
-                        <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                          <BookOpen size={20} className="text-blue-500" />
-                        </div>
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300 mb-3">
+                          <BookOpen size={19} strokeWidth={1.75} />
+                        </span>
                         <div>
-                          <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.userManual')}</h4>
-                          <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.completeGuide')}</p>
+                          <h4 className="font-sans font-bold text-stone-900 dark:text-zinc-100 text-sm">{t('onboarding.step5.userManual')}</h4>
+                          <p className="text-xs text-stone-500 mt-1">{t('onboarding.step5.completeGuide')}</p>
                         </div>
                       </a>
 
@@ -3288,14 +3295,14 @@ export function OnboardingPage() {
                         download={setupManualDoc.filename}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all flex flex-col justify-between"
+                        className="group rounded-2xl border border-stone-200 bg-white p-4 transition-colors hover:border-stone-300 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700 flex flex-col justify-between"
                       >
-                        <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                          <Settings size={20} className="text-amber-500" />
-                        </div>
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300 mb-3">
+                          <Settings size={19} strokeWidth={1.75} />
+                        </span>
                         <div>
-                          <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.setupManual')}</h4>
-                          <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.hardwareSetup')}</p>
+                          <h4 className="font-sans font-bold text-stone-900 dark:text-zinc-100 text-sm">{t('onboarding.step5.setupManual')}</h4>
+                          <p className="text-xs text-stone-500 mt-1">{t('onboarding.step5.hardwareSetup')}</p>
                         </div>
                       </a>
 
@@ -3305,14 +3312,14 @@ export function OnboardingPage() {
                           href={ONBOARDING_VIDEO_URL}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all flex flex-col justify-between"
+                          className="group rounded-2xl border border-stone-200 bg-white p-4 transition-colors hover:border-stone-300 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700 flex flex-col justify-between"
                         >
-                          <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                            <PlayCircle size={20} className="text-red-500" />
-                          </div>
+                          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300 mb-3">
+                            <PlayCircle size={19} strokeWidth={1.75} />
+                          </span>
                           <div>
-                            <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.videoGuide')}</h4>
-                            <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.quickStart')}</p>
+                            <h4 className="font-sans font-bold text-stone-900 dark:text-zinc-100 text-sm">{t('onboarding.step5.videoGuide')}</h4>
+                            <p className="text-xs text-stone-500 mt-1">{t('onboarding.step5.quickStart')}</p>
                           </div>
                         </a>
                       ) : (
@@ -3320,14 +3327,14 @@ export function OnboardingPage() {
                           type="button"
                           disabled
                           aria-label={t('owner.account.videoGuideComingSoon')}
-                          className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl opacity-60 cursor-not-allowed text-left flex flex-col justify-between"
+                          className="group rounded-2xl border border-stone-200 bg-white p-4 transition-colors dark:border-zinc-800 dark:bg-zinc-900/60 opacity-60 cursor-not-allowed text-left flex flex-col justify-between"
                         >
-                          <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-3">
-                            <PlayCircle size={20} className="text-red-500" />
-                          </div>
+                          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300 mb-3">
+                            <PlayCircle size={19} strokeWidth={1.75} />
+                          </span>
                           <div>
-                            <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.videoGuide')}</h4>
-                            <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.quickStart')}</p>
+                            <h4 className="font-sans font-bold text-stone-900 dark:text-zinc-100 text-sm">{t('onboarding.step5.videoGuide')}</h4>
+                            <p className="text-xs text-stone-500 mt-1">{t('onboarding.step5.quickStart')}</p>
                           </div>
                         </button>
                       )}
@@ -3337,14 +3344,14 @@ export function OnboardingPage() {
                         href="/qa"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all flex flex-col justify-between"
+                        className="group rounded-2xl border border-stone-200 bg-white p-4 transition-colors hover:border-stone-300 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700 flex flex-col justify-between"
                       >
-                        <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                          <HelpCircle size={20} className="text-blue-500" />
-                        </div>
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300 mb-3">
+                          <HelpCircle size={19} strokeWidth={1.75} />
+                        </span>
                         <div>
-                          <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.qaCenter')}</h4>
-                          <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.faqs')}</p>
+                          <h4 className="font-sans font-bold text-stone-900 dark:text-zinc-100 text-sm">{t('onboarding.step5.qaCenter')}</h4>
+                          <p className="text-xs text-stone-500 mt-1">{t('onboarding.step5.faqs')}</p>
                         </div>
                       </a>
 
@@ -3353,14 +3360,14 @@ export function OnboardingPage() {
                         href="/legal/privacy"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all flex flex-col justify-between"
+                        className="group rounded-2xl border border-stone-200 bg-white p-4 transition-colors hover:border-stone-300 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700 flex flex-col justify-between"
                       >
-                        <div className="w-10 h-10 bg-mintcom-green/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                          <Shield size={20} className="text-mintcom-green" />
-                        </div>
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300 mb-3">
+                          <Shield size={19} strokeWidth={1.75} />
+                        </span>
                         <div>
-                          <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.privacy')}</h4>
-                          <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.dataProtection')}</p>
+                          <h4 className="font-sans font-bold text-stone-900 dark:text-zinc-100 text-sm">{t('onboarding.step5.privacy')}</h4>
+                          <p className="text-xs text-stone-500 mt-1">{t('onboarding.step5.dataProtection')}</p>
                         </div>
                       </a>
 
@@ -3369,14 +3376,14 @@ export function OnboardingPage() {
                         href="/legal/terms"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all flex flex-col justify-between"
+                        className="group rounded-2xl border border-stone-200 bg-white p-4 transition-colors hover:border-stone-300 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700 flex flex-col justify-between"
                       >
-                        <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                          <Scale size={20} className="text-blue-500" />
-                        </div>
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300 mb-3">
+                          <Scale size={19} strokeWidth={1.75} />
+                        </span>
                         <div>
-                          <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.terms')}</h4>
-                          <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.agreement')}</p>
+                          <h4 className="font-sans font-bold text-stone-900 dark:text-zinc-100 text-sm">{t('onboarding.step5.terms')}</h4>
+                          <p className="text-xs text-stone-500 mt-1">{t('onboarding.step5.agreement')}</p>
                         </div>
                       </a>
 
@@ -3385,14 +3392,14 @@ export function OnboardingPage() {
                         href="/about"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all col-span-2 sm:col-span-1 flex flex-col justify-between"
+                        className="group rounded-2xl border border-stone-200 bg-white p-4 transition-colors hover:border-stone-300 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700 col-span-2 sm:col-span-1 flex flex-col justify-between"
                       >
-                        <div className="w-10 h-10 bg-mintcom-green/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                          <Info size={20} className="text-mintcom-green" />
-                        </div>
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300 mb-3">
+                          <Info size={19} strokeWidth={1.75} />
+                        </span>
                         <div>
-                          <h4 className="font-sans font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.aboutUs')}</h4>
-                          <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.ourStory')}</p>
+                          <h4 className="font-sans font-bold text-stone-900 dark:text-zinc-100 text-sm">{t('onboarding.step5.aboutUs')}</h4>
+                          <p className="text-xs text-stone-500 mt-1">{t('onboarding.step5.ourStory')}</p>
                         </div>
                       </a>
                     </div>
@@ -3407,7 +3414,7 @@ export function OnboardingPage() {
                 transition={{ delay: 1 }}
                 className="mt-6 text-center"
               >
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-stone-500">
                   {t('onboarding.step5.needHelp')} <a href="mailto:info@mintcompos.com" className="text-mintcom-green font-sans font-bold hover:underline">info@mintcompos.com</a>
                 </p>
               </motion.div>

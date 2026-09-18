@@ -1,8 +1,7 @@
-import { SplitText } from "./landing/SplitText";
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Tablet, Printer, X, CheckCircle2 } from 'lucide-react';
+import { Tablet, Printer, CheckCircle2 } from 'lucide-react';
 import { ModalCloseButton } from './ui';
 
 
@@ -133,81 +132,62 @@ export const Hardware = () => {
 
   return (
     <>
-      <section id="hardware" className="py-16 lg:py-20 bg-gray-50 dark:bg-[#0a0a0a] overflow-hidden relative">
-        {/* Background Decor */}
-
-        <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+      <section id="hardware" className="bg-cream-100 dark:bg-zinc-950">
+        <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            transition={{ duration: 0.45 }}
+            className="mb-5 text-start"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-6xl font-bold font-magilio mb-6 leading-tight tracking-tight">
-              <SplitText text={t('landing.hardware.title') + ' ' + t('landing.hardware.titleHighlight')} />
+            <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+              {t('landing.hardware.badge')}
+            </p>
+            <h2 className="font-magilio text-4xl font-bold tracking-tight sm:text-5xl">
+              {t('landing.hardware.title')}{' '}
+              <span className="text-mintcom-green">{t('landing.hardware.titleHighlight')}</span>
             </h2>
-            <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl mx-auto">
+            <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-stone-500 dark:text-zinc-400">
               {t('landing.hardware.subtitle')}
             </p>
           </motion.div>
 
           {/* Hardware Cards */}
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {hardwareItems.map((item, index) => (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white dark:bg-white/5 rounded-xl p-8 border border-gray-200 dark:border-white/10 hover:border-mintcom-green/30 transition-colors shadow-sm dark:shadow-none"
+                transition={{ duration: 0.45, delay: index * 0.05 }}
+                className="group flex items-start gap-4 rounded-2xl border border-stone-200 bg-white p-5 transition-colors hover:border-stone-300 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700"
               >
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-mintcom-green/10 dark:bg-mintcom-green/20 flex items-center justify-center">
-                    <item.icon size={28} className="text-mintcom-green" />
-                  </div>
-                  <div>
-                    <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white">{item.name}</h3>
-                    <p className="font-barlow text-gray-500 dark:text-gray-400 text-sm">{item.description}</p>
-                  </div>
-                </div>
-
-                {/* Quick Product List */}
-                <div className="space-y-3 mb-6">
-                  {item.products.slice(0, 2).map((product, idx) => (
-                    <div key={idx} className="flex items-center p-3 bg-gray-50 dark:bg-black/20 rounded-xl">
-                      <div className="flex items-center gap-3">
-                        <CheckCircle2 size={16} className="text-mintcom-green" />
-                        <span className="font-barlow text-sm font-medium text-gray-700 dark:text-gray-300">{product.name}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                   onClick={() => {
-                    setSelectedHardware(item);
-                    setShowModal(true);
-                  }}
-                  className="w-full py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white font-bold rounded-xl hover:bg-mintcom-green hover:text-black transition-all"
-                >
-                  {t('landing.hardware.viewAllOptions')}
-                </button>
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300">
+                  <item.icon size={19} strokeWidth={1.75} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-barlow text-[17px] font-bold tracking-tight text-stone-900 dark:text-zinc-100">{item.name}</span>
+                  <span className="mt-1 block text-sm leading-relaxed text-stone-500 line-clamp-2 dark:text-zinc-400">{item.description}</span>
+                  <button
+                    onClick={() => {
+                      setSelectedHardware(item);
+                      setShowModal(true);
+                    }}
+                    className="mt-3 inline-flex items-center gap-1 text-[13px] font-semibold text-stone-500 transition-colors group-hover:text-stone-900 dark:text-zinc-400 dark:group-hover:text-zinc-100"
+                  >
+                    {t('landing.hardware.viewAllOptions')}
+                  </button>
+                </span>
               </motion.div>
             ))}
           </div>
 
-          {/* Tip */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center"
-          >
-            <p className="text-gray-500 dark:text-gray-400">
-              💡 <span className="font-medium">{t('landing.hardware.alreadyHave')}</span> {t('landing.hardware.alreadyHaveDesc')}
-            </p>
-          </motion.div>
+          {/* Quiet footer line */}
+          <p className="mt-10 border-t border-stone-200 pt-5 text-center text-[13px] text-stone-400 dark:border-zinc-800 dark:text-zinc-500">
+            {t('landing.hardware.alreadyHave')} {t('landing.hardware.alreadyHaveDesc')}
+          </p>
         </div>
       </section>
 
@@ -226,7 +206,7 @@ export const Hardware = () => {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-[#1a1a1a] rounded-xl border border-gray-100 dark:border-white/5 max-w-2xl w-full max-h-[85vh] overflow-hidden shadow-2xl"
+              className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-white/5 max-w-2xl w-full max-h-[85vh] overflow-hidden shadow-2xl"
             >
               {/* Header */}
               <div className="bg-gray-50 dark:bg-black/20 border-b border-gray-100 dark:border-white/5 p-6 flex items-center justify-between">

@@ -3,7 +3,7 @@ import { SectionCarouselFooter } from "./landing/SectionCarouselFooter";
 import { LandingFeatureCard } from './landing/LandingFeatureCard';
 import { useModalKeyboardGuard } from '../hooks/useModalKeyboardGuard';
 import { ModalCloseButton } from './ui';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { MINTCOM_PRICING } from '../config/pricing';
@@ -146,7 +146,7 @@ const WorkflowFeatureModal = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 16 }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 flex max-h-[min(92vh,900px)] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_24px_80px_-16px_rgba(0,0,0,0.35)] dark:border-white/10 dark:bg-[#121212]"
+        className="relative z-10 flex max-h-[min(92vh,900px)] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-stone-200/70 bg-white shadow-[0_24px_80px_-16px_rgba(0,0,0,0.35)] dark:border-zinc-800 dark:bg-zinc-900"
         dir={isRtl ? 'rtl' : 'ltr'}
         role="dialog"
         aria-modal="true"
@@ -154,7 +154,7 @@ const WorkflowFeatureModal = ({
       >
         <ModalCloseButton onClose={onClose} autoPositionAbsolute className="z-30" />
 
-        <div className="absolute start-4 top-4 z-30 flex items-center gap-1 px-1 py-1 text-xs font-bold text-mintcom-green">
+        <div className="absolute start-4 top-4 z-30 flex items-center gap-1 px-1 py-1 text-xs font-bold text-mintcom-greenInk dark:text-mintcom-green">
           <span className="tabular-nums">{activeIndex + 1}</span>
           <span className="opacity-50">/</span>
           <span className="tabular-nums opacity-70">{features.length}</span>
@@ -196,7 +196,7 @@ const WorkflowFeatureModal = ({
 
                   {/* Identical 3:2 frame on every card (incl. #12 mobile) for height consistency */}
                   <div className="order-1 w-full min-w-0 lg:order-2">
-                    <div className="overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-sm dark:border-white/10 dark:bg-mintcom-dark">
+                    <div className="overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-sm dark:border-white/10 dark:bg-zinc-950">
                       <div className={FEATURE_PREVIEW_FRAME_CLASS}>
                         <FeatureInteractiveDemo
                           featureId={feature.id}
@@ -324,8 +324,24 @@ export const Features = () => {
   const handleOpen = useCallback((index: number) => {
     setDirection(1);
     setActiveCard(index);
+    // Shareable deep link: /#features-<id> reopens this exact modal on load.
+    const id = workflowFeatures[index]?.id;
+    if (id) {
+      try {
+        window.history.replaceState(null, '', `#features-${id}`);
+      } catch {
+        // non-browser / restricted context — hash sync is best-effort
+      }
+    }
+  }, [workflowFeatures]);
+  const handleClose = useCallback(() => {
+    setActiveCard(null);
+    try {
+      window.history.replaceState(null, '', '#features');
+    } catch {
+      // non-browser / restricted context — hash sync is best-effort
+    }
   }, []);
-  const handleClose = useCallback(() => setActiveCard(null), []);
   const handlePrev = useCallback(() => {
     setDirection(-1);
     setActiveCard((i) => (i === null ? null : (i - 1 + workflowFeatures.length) % workflowFeatures.length));
@@ -351,47 +367,67 @@ export const Features = () => {
     hideChatWidget: true,
   });
 
+  // Deep links: /#features-<id> opens the landing with that feature modal open.
+  // replaceState (open/close) never fires hashchange, so this only reacts to
+  // real URL entries — pasted links, bookmarks, back/forward.
+  useEffect(() => {
+    const applyHash = (scroll: boolean) => {
+      const raw = window.location.hash.replace(/^#/, '');
+      const match = raw.match(/^features-(.+)$/);
+      if (!match) {
+        setActiveCard(null);
+        return;
+      }
+      const idx = workflowFeatures.findIndex((f) => f.id === match[1]);
+      if (idx < 0) return;
+      setDirection(1);
+      setActiveCard(idx);
+      if (scroll) {
+        window.setTimeout(() => {
+          document.getElementById('features')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 120);
+      }
+    };
+    applyHash(true);
+    const onHashChange = () => applyHash(true);
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <section
       id="features"
-      className="py-16 lg:py-24 bg-white dark:bg-[#0f0f0f] overflow-hidden relative"
+      className="bg-cream-100 dark:bg-zinc-950"
       dir={isRtl ? 'rtl' : 'ltr'}
     >
 
-      <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12 lg:mb-16 mx-auto"
+          transition={{ duration: 0.45 }}
+          className="mb-5 text-start"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mb-8 inline-flex max-w-full items-center gap-2.5 mx-auto"
-          >
-            <span className="text-[13px] font-bold uppercase leading-snug tracking-[0.12em] text-mintcom-green">
-              {t('landing.workflow.badge')}
-            </span>
-          </motion.div>
+          <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+            {t('landing.workflow.badge')}
+          </p>
 
-          <h2 className="text-[clamp(1rem,4.2vw,3.75rem)] whitespace-nowrap font-bold font-magilio mb-6 leading-tight tracking-tight">
-            <span className="text-gray-900 dark:text-white">{t('landing.workflow.title')} </span>
-            <span className="bg-mintcom-green text-gray-900 dark:text-gray-900 px-2 rounded-sm">
+          <h2 className="font-magilio text-4xl font-bold tracking-tight sm:text-5xl">
+            <span>{t('landing.workflow.title')} </span>
+            <span className="text-mintcom-green">
               {t('landing.workflow.titleHighlight', { price: monthlyPrice, currency })}
             </span>
           </h2>
           {t('landing.workflow.subtitle') && (
-            <p className="max-w-3xl mx-auto text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
+            <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-stone-500 dark:text-zinc-400">
               {t('landing.workflow.subtitle')}
             </p>
           )}
         </motion.div>
 
-        <div className="grid auto-rows-fr grid-cols-1 items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
+        <div className="grid auto-rows-fr grid-cols-1 items-stretch gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {workflowFeatures.map((feature, index) => (
             <LandingFeatureCard
               key={feature.id ?? index}

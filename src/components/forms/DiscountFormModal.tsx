@@ -124,7 +124,7 @@ export function DiscountFormModal({
         onClose={onClose}
       />
 
-      <ModalBody className="p-4 sm:p-6 pt-2">
+      <ModalBody className="p-4 sm:p-6">
         <form id="discount-form" onSubmit={handleSubmit} className="space-y-6">
               {/* Error Banner */}
               {Object.keys(errors).length > 0 && (

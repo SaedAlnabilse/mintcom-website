@@ -2,7 +2,7 @@ import { SplitText } from "./landing/SplitText";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { X, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { ModalCloseButton } from './ui';
 import { useAuth } from '../context/AuthContext';
 import { DEMO_VIDEO_POSTER_URL, HERO_VIDEO_URL, isNativeVideoUrl } from '../config/downloads';
@@ -30,42 +30,35 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
   };
 
   return (
-    <section className="relative overflow-hidden bg-white pb-12 pt-24 dark:bg-[#0f0f0f] sm:pb-16 sm:pt-28 lg:pb-20 lg:pt-32" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+    <section className="bg-cream-100 dark:bg-zinc-950" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="mx-auto w-full max-w-7xl px-5 pb-12 pt-28 sm:px-6 md:pt-32 lg:px-8">
         <div className="flex flex-col items-start gap-8 lg:flex-row lg:items-center lg:gap-12 xl:gap-16">
 
-          {/* Text Content */}
+          {/* Text Content — first-design arrangement, support-system styling */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.45 }}
             className="w-full min-w-0 shrink-0 text-start lg:w-[45%] xl:w-[42%]"
           >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="mb-5 sm:mb-8"
-            >
-              <span className="text-[13px] font-bold uppercase leading-snug tracking-[0.12em] text-mintcom-green">
-                {t('landing.hero.badge')}
-              </span>
-            </motion.div>
+            <p className="mb-3 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+              {t('landing.hero.badge')}
+            </p>
 
-            <h1 className="mb-5 font-magilio text-3xl font-bold leading-tight tracking-tight sm:mb-6 sm:text-4xl lg:text-5xl xl:text-6xl">
-              <span className="block leading-[1.15] rtl:leading-[1.25]"><SplitText text={t('landing.hero.title1')} /></span>
-              <span className="block leading-[1.15] rtl:leading-[1.25]"><SplitText text={t('landing.hero.title2')} /></span>
-              <span className="block leading-[1.15] rtl:leading-[1.25]"><SplitText text={t('landing.hero.title3')} /></span>
+            <h1 className="mb-5 font-magilio text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              <span className="block"><SplitText text={t('landing.hero.title1')} /></span>
+              <span className="block"><SplitText text={t('landing.hero.title2')} /></span>
+              <span className="block text-mintcom-green"><SplitText text={t('landing.hero.title3')} /></span>
             </h1>
 
-            <p className="mb-6 max-w-md text-base leading-relaxed text-gray-600 dark:text-gray-400 sm:mb-8 sm:text-lg md:text-xl lg:max-w-none" dangerouslySetInnerHTML={{ __html: t('landing.hero.description').replace('360° POS solution', '<strong class="text-gray-900 dark:text-white">360° POS solution</strong>') }} />
+            <p className="mb-6 max-w-md text-[15px] leading-relaxed text-stone-500 dark:text-zinc-400 lg:max-w-none" dangerouslySetInnerHTML={{ __html: t('landing.hero.description').replace('360° POS solution', '<strong class="text-stone-900 dark:text-zinc-100">360° POS solution</strong>') }} />
 
-            <div className="flex w-full flex-col items-start justify-start gap-4">
-              <div className="flex w-full flex-col items-stretch gap-2.5 sm:w-auto sm:flex-row sm:items-center sm:gap-6">
+            <div className="flex w-full flex-col items-start justify-start gap-3">
+              <div className="flex w-full flex-col items-stretch gap-2.5 sm:w-auto sm:flex-row sm:items-center">
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={handleCtaClick}
-                  className="group inline-flex items-center justify-center gap-2 rounded-lg bg-mintcom-green px-6 py-3 text-center text-[15px] font-bold leading-snug text-black transition-colors hover:bg-mintcom-green/90 sm:whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110 sm:whitespace-nowrap"
                 >
                   <span>
                     {isAuthenticated
@@ -74,22 +67,23 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                         : t('nav.dashboard', 'Go to Dashboard')
                       : t('landing.hero.cta')}
                   </span>
-                  <ArrowRight size={16} className={`shrink-0 transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:-translate-x-0.5' : 'group-hover:translate-x-0.5'}`} />
+                  <ArrowRight size={15} className={`shrink-0 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
                 </motion.button>
 
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={() => window.open('/try-pos', '_blank')}
-                  className="group inline-flex items-center justify-center gap-1 py-3 text-[15px] font-bold text-gray-900 underline decoration-mintcom-green decoration-2 underline-offset-4 transition-colors hover:text-mintcom-green dark:text-white sm:whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-5 py-2.5 text-sm font-semibold text-stone-700 transition-colors hover:border-stone-300 hover:bg-stone-50 dark:border-zinc-800 dark:bg-transparent dark:text-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 sm:whitespace-nowrap"
                 >
                   <span>{t('landing.hero.tryDesktop')}</span>
-                  <ArrowUpRight size={15} className="shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight size={15} className="shrink-0" />
                 </motion.button>
               </div>
-              <p className="text-[13px] leading-relaxed text-gray-500 dark:text-gray-400">
+              <p className="text-[13px] tabular-nums text-stone-400 dark:text-zinc-500">
                 {t('pages.pricing.trialNote', { defaultValue: 'Start with a 14-day free trial. Cancel anytime.' })}
               </p>
             </div>
+
 
               {/* Temporarily hidden — re-enable when a dedicated hero video CTA is needed
               {HERO_VIDEO_URL && (
@@ -107,15 +101,15 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
 
           </motion.div>
 
-          {/* Visual — product photo */}
+          {/* Visual — first-design placement, quiet bordered card */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="relative mt-2 flex w-full min-w-0 flex-1 justify-center sm:mt-8 lg:mt-16 lg:justify-end"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="relative mt-2 flex w-full min-w-0 flex-1 justify-center sm:mt-8 lg:mt-0 lg:justify-end"
           >
-            <div className="relative w-full max-w-[340px] sm:max-w-[420px] md:max-w-[500px] lg:max-w-[620px] xl:max-w-[760px]">
-              <picture className="relative z-10 block h-auto w-full">
+            <div className="relative w-full max-w-[340px] sm:max-w-[420px] md:max-w-[500px] lg:max-w-[620px] xl:max-w-[700px]">
+              <picture className="block h-auto w-full">
                 <source srcSet={heroImageWebp} type="image/webp" />
                 <img
                   src={heroImage}

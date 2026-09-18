@@ -65,57 +65,57 @@ export const PricingDownload = () => {
     };
 
     return (
-        <section id="pricing" className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] relative overflow-hidden">
-            {/* Background Decor */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-7xl pointer-events-none">
-            </div>
-
-            <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 relative z-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+        <section id="pricing" className="bg-cream-100 dark:bg-zinc-950">
+            <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-6 lg:px-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 12 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="text-center mb-10 lg:mb-12"
+                    transition={{ duration: 0.45 }}
+                    className="mb-5 text-start"
                 >
-                    <h2 className="text-3xl sm:text-4xl lg:text-6xl font-bold font-magilio text-gray-900 dark:text-white mb-6 leading-tight tracking-tight">
-                        <SplitPricingText text={t('landing.pricing.title')} highlightColor="text-mintcom-green" baseColor="text-gray-900 dark:text-white" />
+                    <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+                        {t('landing.pricing.fullAccess')}
+                    </p>
+                    <h2 className="font-magilio text-4xl font-bold tracking-tight sm:text-5xl">
+                        {t('landing.pricing.title')}
                     </h2>
-                    <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl mx-auto">
-                        <SplitPricingText text={t('landing.pricing.subtitle')} highlightColor="text-mintcom-green" baseColor="text-gray-600 dark:text-gray-400" />
+                    <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-stone-500 dark:text-zinc-400">
+                        {t('landing.pricing.subtitle')}
                     </p>
                 </motion.div>
 
                 <div className="flex flex-col items-center justify-center w-full mx-auto">
                     {/* Pricing Card */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
+                        initial={{ opacity: 0, y: 12 }}
+                        whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        transition={{ duration: 0.45 }}
                         className="w-full"
                     >
-                        <div className="relative overflow-hidden rounded-[1.75rem] border border-gray-200 bg-white p-5 shadow-sm group sm:rounded-[2.5rem] sm:p-8 lg:p-10 dark:border-white/5 dark:bg-[#1a1a1a] dark:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.35)]">
+                        <div className="relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-5 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900/60">
                             <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:gap-12">
                                 
                                 {/* Left Side: Pricing & CTA */}
-                                <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left justify-center w-full">
+                                <div className="flex flex-1 flex-col justify-center w-full">
                                     <div className="w-full">
-                                        <span className="mb-2.5 block text-xs font-black uppercase tracking-[0.2em] text-mintcom-green">
+                                        <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
                                             {t('landing.pricing.fullAccess')}
-                                        </span>
-                                        <h3 className="mb-6 font-barlow text-3xl font-bold text-gray-900 transition-colors duration-300 dark:text-white sm:text-4xl">
+                                        </p>
+                                        <h3 className="mb-4 font-magilio text-xl font-bold tracking-tight text-stone-900 dark:text-zinc-100">
                                             {isYearly ? t('landing.pricing.yearlyPlan') : t('landing.pricing.monthlyPlan')}
                                         </h3>
 
-                                        {/* Billing Toggle — Claude-style segmented pill */}
-                                        <div className="mb-6 flex flex-wrap items-center sm:mb-7">
-                                            <div className="inline-flex items-center p-1 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200/80 dark:border-white/10">
+                                        {/* Billing Toggle — quiet segmented control */}
+                                        <div className="mb-5 flex flex-wrap items-center">
+                                            <div className="inline-flex items-center rounded-xl border border-stone-200 bg-white p-1 dark:border-zinc-800 dark:bg-transparent">
                                                 <button
                                                     type="button"
                                                     onClick={() => setIsYearly(false)}
-                                                    className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition-all duration-200 ${!isYearly
-                                                        ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20'
-                                                        : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                                                    className={`rounded-lg px-4 py-2 text-[13px] font-semibold transition-colors ${!isYearly
+                                                        ? 'bg-stone-900 text-white dark:bg-mintcom-green dark:text-black'
+                                                        : 'text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100'
                                                     }`}
                                                 >
                                                     {t('landing.pricing.monthly')}
@@ -123,14 +123,14 @@ export const PricingDownload = () => {
                                                 <button
                                                     type="button"
                                                     onClick={() => setIsYearly(true)}
-                                                    className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition-all duration-200 ${isYearly
-                                                        ? 'bg-mintcom-green text-black shadow-md shadow-mintcom-green/20'
-                                                        : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                                                    className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-[13px] font-semibold transition-colors ${isYearly
+                                                        ? 'bg-stone-900 text-white dark:bg-mintcom-green dark:text-black'
+                                                        : 'text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100'
                                                     }`}
                                                 >
                                                     <span>{t('landing.pricing.yearly')}</span>
                                                     {discountPercent > 0 && (
-                                                        <span className={`text-xs font-black tracking-tight ${isYearly ? 'text-black/80' : 'text-mintcom-green'}`}>
+                                                        <span className={`text-xs font-semibold tabular-nums ${isYearly ? 'opacity-80' : 'text-stone-400'}`}>
                                                             · {t('landing.pricing.savePercent', { percent: discountPercent, defaultValue: `Save ${discountPercent}%` })}
                                                         </span>
                                                     )}
@@ -138,16 +138,16 @@ export const PricingDownload = () => {
                                             </div>
                                         </div>
 
-                                        <div className="relative mb-6 sm:mb-7">
-                                            <div className="mb-1.5 flex items-baseline justify-center gap-3 lg:justify-start">
-                                                <span className="text-5xl font-bold tracking-tighter text-gray-900 transition-all duration-300 dark:text-white sm:text-6xl lg:text-7xl">
+                                        <div className="relative mb-5">
+                                            <div className="mb-1.5 flex items-baseline gap-3">
+                                                <span className="font-magilio text-4xl font-bold tracking-tight text-stone-900 dark:text-zinc-100 sm:text-5xl">
                                                     ${isYearly ? effectiveMonthlyPrice : monthlyPrice}
                                                 </span>
                                                 <div className="flex flex-col text-left rtl:text-right">
-                                                    <span className="text-sm sm:text-base font-bold text-gray-700 dark:text-gray-200">
+                                                    <span className="text-sm font-semibold text-stone-700 dark:text-zinc-200">
                                                         USD / {t('common.month', { defaultValue: 'month' })}
                                                     </span>
-                                                    <span className="text-xs sm:text-sm font-medium text-gray-400 dark:text-gray-400">
+                                                    <span className="text-[13px] text-stone-400 dark:text-zinc-500">
                                                         {isYearly
                                                             ? `$${yearlyPrice} USD ${t('landing.pricing.billedAnnually', { defaultValue: 'Billed annually.' })}`
                                                             : t('landing.pricing.noCommitment', { defaultValue: 'Billed monthly.' })}
@@ -160,46 +160,44 @@ export const PricingDownload = () => {
                                         <div className="w-full">
                                             <button
                                                 onClick={handleCtaAction}
-                                                className="group/btn flex w-full items-center justify-center gap-2.5 rounded-lg bg-mintcom-green py-3.5 text-base font-semibold tracking-tight text-gray-900 transition-colors hover:bg-mintcom-green/90 active:scale-[0.98] sm:py-4 sm:text-[17px]"
+                                                className="flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                                             >
-                                                <span className="font-semibold">{t('landing.pricing.getStarted', 'Get Started')}</span>
-                                                <ArrowRight size={18} strokeWidth={2} className={`opacity-80 transition-transform duration-300 group-hover/btn:translate-x-1.5 ${t('common.locale') === 'ar' && 'rotate-180 group-hover/btn:-translate-x-1.5'}`} />
+                                                <span>{t('landing.pricing.getStarted', 'Get Started')}</span>
+                                                <ArrowRight size={15} className={`shrink-0 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
                                             </button>
-                                            <p className="mt-3 text-center text-xs font-medium text-gray-400 dark:text-gray-500 lg:text-left rtl:lg:text-right">
+                                            <p className="mt-3 text-[13px] text-stone-400 dark:text-zinc-500">
                                                 {t('pages.pricing.trialNote', { defaultValue: 'Start with a 14-day free trial. Cancel anytime.' })}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Vertical Divider */}
-                                <div className="hidden w-px self-stretch bg-gray-100 dark:bg-white/10 lg:block" />
-                                <div className="block h-px w-full bg-gray-100 dark:bg-white/10 lg:hidden" />
+                                {/* Divider */}
+                                <div className="hidden w-px self-stretch bg-stone-200 dark:bg-zinc-800 lg:block" />
+                                <div className="block h-px w-full bg-stone-200 dark:bg-zinc-800 lg:hidden" />
 
                                 {/* Right Side: Features */}
                                 <div className="w-full flex-1">
-                                    <div className="mb-6">
-                                        <h4 className="mb-1.5 font-barlow text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
+                                    <div className="mb-4">
+                                        <h4 className="mb-1 font-barlow text-[17px] font-bold tracking-tight text-stone-900 dark:text-zinc-100">
                                             {t('landing.pricing.includedTitle', 'Everything you need')}
                                         </h4>
-                                        <p className="font-medium text-gray-500 dark:text-gray-400">
+                                        <p className="text-sm leading-relaxed text-stone-500 dark:text-zinc-400">
                                             {t('landing.pricing.includedDesc', 'All features included in a single plan.')}
                                         </p>
                                     </div>
-                                    
-                                    <ul className="grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2">
+
+                                    <ul className="grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
                                         {features.map((feature, i) => (
-                                            <li key={i} className="group/item flex items-start gap-3.5 text-base font-semibold text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-300 dark:hover:text-white sm:text-[17px]">
-                                                <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-mintcom-green/10 transition-colors group-hover/item:bg-mintcom-green/20">
-                                                    <Check size={15} className="stroke-[4px] text-mintcom-green" />
-                                                </div>
+                                            <li key={i} className="flex items-start gap-2.5 text-sm font-medium text-stone-700 dark:text-zinc-200">
+                                                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-mintcom-green" />
                                                 <span className="leading-snug">{feature}</span>
                                             </li>
                                         ))}
                                     </ul>
 
-                                    <div className="mt-7 rounded-2xl border border-gray-100 bg-gray-50 p-4 dark:border-white/5 dark:bg-white/5">
-                                        <p className="text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                                    <div className="mt-5 rounded-xl border border-stone-200 bg-white p-4 dark:border-zinc-800 dark:bg-transparent">
+                                        <p className="text-[13px] leading-relaxed text-stone-500 dark:text-zinc-400">
                                             {t('landing.pricing.setupFee', 'No setup fees or hidden charges. Cancel anytime.')}
                                         </p>
                                     </div>
@@ -226,7 +224,7 @@ export const PricingDownload = () => {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="bg-white dark:bg-[#1a1a1a] w-full max-w-sm rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5 p-12 text-center"
+                            className="bg-white dark:bg-zinc-900 w-full max-w-sm rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5 p-12 text-center"
                         >
                             <ModalCloseButton onClose={() => setShowAlreadySignedIn(false)} autoPositionAbsolute />
                             <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center mx-auto mb-8">

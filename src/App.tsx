@@ -33,6 +33,7 @@ import { ACCOUNT_RECOVERY_PATH } from './utils/deletionRecovery';
 // ============================================================================
 // Landing page is the entry point - consider preloading for better UX
 const LandingPage = lazy(() => import('./pages/LandingPage').then(m => ({ default: m.LandingPage })));
+const DemoPage = lazy(() => import('./pages/DemoPage').then(m => ({ default: m.DemoPage })));
 const PosDemoPage = lazy(() => import('./pages/PosDemoPage').then(m => ({ default: m.PosDemoPage })));
 
 const LoginPage = lazy(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })));
@@ -377,6 +378,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/demo",
+        element: (
+          <PageSuspense>
+            <DemoPage />
+          </PageSuspense>
+        ),
+      },
+      {
         path: "/try-pos",
         element: (
           <PageSuspense>
@@ -702,6 +711,11 @@ const router = createBrowserRouter([
           {
             path: "/account-recovery",
             element: <Navigate to={ACCOUNT_RECOVERY_PATH} replace />,
+          },
+          {
+            // Legacy: /onboarding/profile → /onboarding/location (permanent redirect)
+            path: "/onboarding/profile",
+            element: <Navigate to="/onboarding/location" replace />,
           },
           {
             path: "/onboarding",

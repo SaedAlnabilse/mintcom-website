@@ -1,6 +1,7 @@
 /** Canonical onboarding phase slugs used in the URL. */
 export const ONBOARDING_PHASES = [
-  'profile',
+  'location',
+  'business',
   'location-login',
   'owner-login',
   'billing',
@@ -18,7 +19,8 @@ export type ApiOnboardingPhase =
   | 'COMPLETED';
 
 export const phaseToStepNumber: Record<OnboardingPhaseSlug, number> = {
-  profile: 1,
+  location: 1,
+  business: 1,
   'location-login': 2,
   'owner-login': 3,
   billing: 4,
@@ -26,7 +28,7 @@ export const phaseToStepNumber: Record<OnboardingPhaseSlug, number> = {
 };
 
 export const stepNumberToPhase: Record<number, OnboardingPhaseSlug> = {
-  1: 'profile',
+  1: 'location',
   2: 'location-login',
   3: 'owner-login',
   4: 'billing',
@@ -34,7 +36,7 @@ export const stepNumberToPhase: Record<number, OnboardingPhaseSlug> = {
 };
 
 const API_TO_SLUG: Record<ApiOnboardingPhase, OnboardingPhaseSlug> = {
-  PROFILE: 'profile',
+  PROFILE: 'location',
   LOCATION_LOGIN: 'location-login',
   OWNER_LOGIN: 'owner-login',
   BILLING: 'billing',
@@ -42,10 +44,32 @@ const API_TO_SLUG: Record<ApiOnboardingPhase, OnboardingPhaseSlug> = {
   COMPLETED: 'launch',
 };
 
+/**
+ * Clamping index for each phase. Both `location` and `business` share level 0
+ * because they map to the same backend checkpoint (PROFILE). This prevents
+ * clampPhase from treating the business survey as an illegal forward-skip.
+ */
+const PHASE_CLAMP_INDEX: Record<OnboardingPhaseSlug, number> = {
+  location: 0,
+  business: 0,
+  'location-login': 1,
+  'owner-login': 2,
+  billing: 3,
+  launch: 4,
+};
+
+/**
+ * Legacy URL slugs that should be redirected to their new equivalents.
+ * Used by the router to keep old bookmarks / browser history working.
+ */
+export const LEGACY_SLUG_MAP: Record<string, OnboardingPhaseSlug> = {
+  profile: 'location',
+};
+
 export function mapApiPhase(phase: string | undefined | null): OnboardingPhaseSlug {
-  if (!phase) return 'profile';
+  if (!phase) return 'location';
   const key = phase.toUpperCase() as ApiOnboardingPhase;
-  return API_TO_SLUG[key] || 'profile';
+  return API_TO_SLUG[key] || 'location';
 }
 
 export function isLaunchLocked(
@@ -61,6 +85,9 @@ export function isLaunchLocked(
  * Clamp a requested phase against the server-allowed phase.
  * - Cannot skip ahead of server progress.
  * - After launch/complete, always force launch (no back to payment).
+ *
+ * Uses PHASE_CLAMP_INDEX so that phases sharing the same backend checkpoint
+ * (e.g. 'location' and 'business' both under PROFILE) are treated equally.
  */
 export function clampPhase(
   requested: string | undefined,
@@ -71,10 +98,11 @@ export function clampPhase(
     return 'launch';
   }
 
-  const reqIdx = ONBOARDING_PHASES.indexOf(requested as OnboardingPhaseSlug);
-  const maxIdx = ONBOARDING_PHASES.indexOf(serverPhase);
+  const reqPhase = requested as OnboardingPhaseSlug;
+  const reqIdx = PHASE_CLAMP_INDEX[reqPhase];
+  const maxIdx = PHASE_CLAMP_INDEX[serverPhase];
 
-  if (reqIdx === -1) {
+  if (reqIdx === undefined) {
     return serverPhase;
   }
 
@@ -84,7 +112,7 @@ export function clampPhase(
   }
 
   // Before complete: allow revisiting earlier phases.
-  return ONBOARDING_PHASES[reqIdx];
+  return reqPhase;
 }
 
 export function isOnboardingPhaseSlug(value: string | undefined): value is OnboardingPhaseSlug {

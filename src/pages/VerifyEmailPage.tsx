@@ -38,61 +38,57 @@ export function VerifyEmailPage() {
   }, [token, t]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center p-4 transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-cream-100 dark:bg-zinc-950 flex items-center justify-center px-4 py-12 transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full text-center shadow-2xl shadow-gray-200/50 dark:shadow-none"
+        className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60 sm:p-8 max-w-md w-full text-center"
       >
         {status === 'verifying' && (
-          <div className="space-y-6">
-            <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center mx-auto animate-pulse">
-              <Loader2 className="w-10 h-10 text-mintcom-green animate-spin" />
+          <div className="space-y-4">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-mintcom-green/10">
+              <Loader2 className="w-8 h-8 text-mintcom-green animate-spin" />
             </div>
-            <h2 className="font-barlow text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.verifyEmail.verifyingTitle')}</h2>
-            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.verifyEmail.verifyingSubtitle')}</p>
+            <h2 className="font-magilio text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100">{t('auth.verifyEmail.verifyingTitle')}</h2>
+            <p className="text-[15px] text-stone-500 dark:text-zinc-400">{t('auth.verifyEmail.verifyingSubtitle')}</p>
           </div>
         )}
 
         {status === 'success' && (
-          <div className="space-y-6">
-            <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center mx-auto">
-              <CheckCircle className="w-10 h-10 text-mintcom-green" />
+          <div className="space-y-4">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-mintcom-green/10">
+              <CheckCircle className="w-8 h-8 text-mintcom-green" />
             </div>
-            <h2 className="font-barlow text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.verifyEmail.successTitle')}</h2>
-            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{message}</p>
+            <h2 className="font-magilio text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100">{t('auth.verifyEmail.successTitle')}</h2>
+            <p className="text-[15px] text-stone-500 dark:text-zinc-400">{message}</p>
             <Link
               to="/login"
-              className="group relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-mintcom-green px-6 font-bold text-black shadow-[0_8px_24px_-8px_rgba(124,195,159,0.6)] transition-all hover:bg-mintcom-green/90 active:scale-[0.97]"
+              className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 active:scale-[0.97] dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
             >
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-              />
-              <span className="relative">{t('auth.verifyEmail.continueLogin')}</span>
+              <span>{t('auth.verifyEmail.continueLogin')}</span>
             </Link>
           </div>
         )}
 
         {status === 'error' && (
-          <div className="space-y-6">
-            <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
-              <XCircle className="w-10 h-10 text-accent" />
+          <div className="space-y-4">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+              <XCircle className="w-8 h-8 text-red-500" />
             </div>
-            <h2 className="font-barlow text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.verifyEmail.linkExpiredTitle')}</h2>
-            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
+            <h2 className="font-magilio text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100">{t('auth.verifyEmail.linkExpiredTitle')}</h2>
+            <p className="text-[15px] text-stone-500 dark:text-zinc-400">
               {t('auth.verifyEmail.linkInvalidOrExpired')}
             </p>
             <div className="flex flex-col gap-3">
               <Link
                 to="/login"
-                className="inline-flex h-14 w-full items-center justify-center rounded-2xl bg-gray-900 px-6 font-bold text-white shadow-lg transition-all hover:scale-[1.02] active:scale-[0.97] dark:bg-white dark:text-black"
+                className="inline-flex w-full items-center justify-center rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 active:scale-[0.97] dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
               >
                 {t('auth.verifyEmail.goToLogin')}
               </Link>
               <Link
                 to="/"
-                className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+                className="text-sm font-semibold text-stone-500 hover:text-stone-900 dark:hover:text-zinc-100 transition-colors"
               >
                 {t('auth.verifyEmail.backToHome')}
               </Link>

@@ -232,7 +232,7 @@ export function SingleSelect({
                                 className={`w-full px-5 py-3.5 text-start flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${!value ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-gray-900 dark:text-gray-200'
                                     }`}
                             >
-                                <span className={`text-sm ${!value ? 'font-normal' : 'font-normal'}`}>
+                                <span className={`text-sm font-semibold ${!value ? 'text-mintcom-green' : 'text-gray-900 dark:text-gray-200'}`}>
                                     {effectiveAllLabel}
                                 </span>
                                 {!value && <Check size={16} className="text-mintcom-green" />}
@@ -261,12 +261,12 @@ export function SingleSelect({
                                                     {opt.icon}
                                                 </div>
                                             )}
-                                            <div className="flex flex-col">
-                                                <span className={`text-sm ${isSelected ? 'font-normal' : 'font-normal'}`}>{opt.label}</span>
-                                                {opt.subtitle && (
-                                                    <span className={`text-xs mt-0.5 ${isSelected ? 'text-mintcom-green/80' : 'text-gray-500 dark:text-gray-400'}`}>{opt.subtitle}</span>
-                                                )}
-                                            </div>
+                                             <div className="flex flex-col">
+                                                 <span className={`text-sm font-semibold ${isSelected ? 'text-mintcom-green' : 'text-gray-900 dark:text-gray-200'}`}>{opt.label}</span>
+                                                 {opt.subtitle && (
+                                                     <span className={`text-xs mt-0.5 ${isSelected ? 'text-mintcom-green/80' : 'text-gray-500 dark:text-gray-400'}`}>{opt.subtitle}</span>
+                                                 )}
+                                             </div>
                                         </div>
                                         {isSelected && <Check size={16} className="text-mintcom-green shrink-0 mt-1" />}
                                     </button>
@@ -301,7 +301,7 @@ export function SingleSelect({
                              {selectedOption.icon}
                          </div>
                     )}
-                    <span className={`font-normal text-sm truncate ${value ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+                    <span className={`truncate ${value ? 'font-bold text-gray-900 dark:text-white' : 'font-normal text-gray-400'}`}>
                         {selectedOption?.label || effectivePlaceholder}
                     </span>
                     {value && allowClear && (

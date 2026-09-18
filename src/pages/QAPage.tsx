@@ -63,6 +63,19 @@ export const QAPage = () => {
         defaultValue: isArabic ? 'أسئلة' : 'questions',
     });
 
+    // FAQPage structured data for rich results. Uses the canonical English
+    // Q&A (Google requires the visible page text to match the markup, and the
+    // default locale is English) so localized answers can't drift from schema.
+    const faqJsonLd = useMemo(() => JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: FAQ_DATA.map((item) => ({
+            '@type': 'Question',
+            name: item.question,
+            acceptedAnswer: { '@type': 'Answer', text: item.answer },
+        })),
+    }), []);
+
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-[#0F172A] text-gray-900 dark:text-white font-sans" dir={isRTL ? 'rtl' : 'ltr'}>
             <Helmet>
@@ -70,6 +83,7 @@ export const QAPage = () => {
                 <meta name="description" content={t('metadata.qa.description')} />
                 <meta property="og:title" content={t('metadata.qa.title')} />
                 <meta property="og:description" content={t('metadata.qa.description')} />
+                <script type="application/ld+json">{faqJsonLd}</script>
             </Helmet>
             <Navbar hideCommercialLinks />
 

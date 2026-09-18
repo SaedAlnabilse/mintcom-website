@@ -1824,7 +1824,7 @@ export function RecipesPage() {
               title={t('manufacturing.produceBatch')}
               onClose={() => setShowManufactureModal(false)}
             />
-            <ModalBody className="pt-6 sm:pt-8">
+            <ModalBody>
               <p className="text-sm font-medium text-stone-500 mb-6">{t('manufacturing.produceSubtitle', { name: manufactureRecipe.name })}</p>
 
               <div className="space-y-4 mb-6">

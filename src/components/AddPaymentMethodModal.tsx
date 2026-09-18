@@ -147,7 +147,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess, linkEstablis
 
     return (
         <Modal isOpen={isOpen} onClose={handleClose} size="sm">
-            <ModalBody className="pt-8 sm:pt-10">
+            <ModalBody>
                 <div ref={scrollRef} className="space-y-4">
                     <div className="mb-7 flex items-start justify-between gap-4">
                         <div>

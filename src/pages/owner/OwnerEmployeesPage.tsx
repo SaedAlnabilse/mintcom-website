@@ -1107,7 +1107,7 @@ export function OwnerEmployeesPage() {
               {employeeToDelete && (
                 <>
                   <ModalCloseButton onClose={closeDeleteModal} autoPositionAbsolute />
-                  <ModalBody className="pt-10">
+                  <ModalBody>
                       <div className="p-10 pb-6 flex flex-col items-center text-center">
                           <div className="w-20 h-20 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
                               <AlertTriangle size={40} />

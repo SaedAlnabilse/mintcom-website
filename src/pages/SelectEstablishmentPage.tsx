@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Store, Plus, LogOut, ChevronRight, Loader2, Crown, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -92,8 +92,12 @@ export function SelectEstablishmentPage() {
 
       {/* Header — logo alone on the brand side, user actions clustered right */}
       <div className="p-4 sm:p-8 flex justify-between items-center gap-3 relative z-10">
-        {/* Logo */}
-        <div className="flex items-center gap-3">
+        {/* Logo — back to the website */}
+        <Link
+          to="/"
+          aria-label="Mintcom Home"
+          className="flex items-center gap-3 rounded-xl transition-opacity hover:opacity-80"
+        >
           <img
             src={MintcomLogoGreen}
             alt="Mintcom"
@@ -104,7 +108,7 @@ export function SelectEstablishmentPage() {
             alt="Mintcom"
             className="h-10 w-auto object-contain hidden dark:block"
           />
-        </div>
+        </Link>
         <div className="flex items-center gap-3">
           {/* Owner Portal — owner-only. Employees / secondary admins are
               not the account owner, so they never see this shortcut. */}

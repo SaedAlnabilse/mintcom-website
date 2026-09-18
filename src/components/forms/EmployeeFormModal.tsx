@@ -1701,7 +1701,7 @@ export function EmployeeFormModal({
         onClose={onClose}
       />
 
-      <ModalBody className="px-4 sm:px-8 pt-0">
+      <ModalBody className="px-4 sm:px-8">
         <div ref={scrollRef}>
           <form
             id="employee-form"

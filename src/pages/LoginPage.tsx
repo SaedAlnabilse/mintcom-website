@@ -224,7 +224,7 @@ export function LoginPage() {
   return (
     <div
       dir={isRtl ? 'rtl' : 'ltr'}
-      className="relative flex min-h-screen items-center justify-center bg-white px-6 pb-12 pt-24 transition-colors duration-300 dark:bg-[#050505] md:py-12"
+      className="min-h-screen bg-cream-100 dark:bg-zinc-950 flex items-center justify-center px-6 pb-12 pt-24 transition-colors duration-300"
     >
       <Helmet>
         <title>{t('metadata.login.title')}</title>
@@ -233,26 +233,12 @@ export function LoginPage() {
         <meta property="og:description" content={t('metadata.login.description')} />
       </Helmet>
 
-      {/* Background ambient */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-mintcom-green/8 blur-[140px]" />
         <div className="absolute -bottom-20 right-[10%] h-[300px] w-[300px] rounded-full bg-emerald-400/5 blur-[100px]" />
-        {/* Faint grid */}
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-[0.04] dark:hidden"
-          style={{
-            backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
-            backgroundSize: '48px 48px',
-            color: '#7dc6a2',
-            maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
-          }}
-        />
       </div>
 
-      {/* Minimal top bar */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-4 md:px-10">
+      <nav className="absolute inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-4 md:px-10">
         <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="pointer-events-auto">
           <img src={MintcomLogoGreen} alt="Mintcom" className="h-8 w-auto object-contain dark:hidden" />
           <img src={MintcomLogoWhite} alt="Mintcom" className="hidden h-8 w-auto object-contain dark:block" />
@@ -261,39 +247,35 @@ export function LoginPage() {
           <LanguageSwitcher />
           <ThemeToggle />
         </div>
-      </div>
+      </nav>
 
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 w-full max-w-md xl:max-w-lg 2xl:max-w-xl"
+        transition={{ duration: 0.45 }}
+        className="relative z-10 w-full max-w-md xl:max-w-lg"
       >
-        {/* Back link */}
         <a
           href="/"
-          className="group mb-8 inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+          className="group mb-8 inline-flex items-center gap-2 text-sm font-semibold text-stone-500 transition-colors hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100"
         >
           <ArrowLeft size={15} className={`transition-transform group-hover:-translate-x-0.5 ${isRtl ? 'rotate-180' : ''}`} />
           {t('auth.signup.backButton')}
         </a>
 
-        {/* Heading */}
-        <div className="mb-8">
-          <h1 className="font-magilio text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl 2xl:text-5xl">
+        {/* Heading — support header style */}
+        <div className="mb-5 text-center">
+          <h1 className="font-magilio text-3xl font-bold tracking-tight sm:text-4xl text-stone-900 dark:text-zinc-100">
             {t('auth.login.title')}
           </h1>
-          <p className="mt-2 text-sm font-medium text-gray-500 dark:text-gray-400 2xl:text-base">
+          <p className="mt-2 text-[15px] leading-relaxed text-stone-500 dark:text-zinc-400">
             {t('auth.login.subtitle')}
           </p>
         </div>
 
-        {/* Glass card */}
-        <div className="relative overflow-hidden rounded-3xl border border-gray-200/70 bg-white/90 p-6 sm:p-8 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none 2xl:p-10">
-          <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-mintcom-green/10 blur-3xl" />
-
+        {/* Card — quiet bordered white */}
+        <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60 sm:p-8">
           <div className="relative">
-            {/* Social sign-in — Google and/or Apple, shown when configured */}
             {(GOOGLE_CLIENT_ID || APPLE_AUTH_ENABLED) && (
               <>
                 <div className="space-y-3">
@@ -319,14 +301,14 @@ export function LoginPage() {
               </>
             )}
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* Email */}
-              <div className="space-y-2">
-                <label htmlFor="login-email" className="block text-[12px] font-bold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
+              <div className="space-y-1.5">
+                <label htmlFor="login-email" className="text-[13px] font-semibold text-stone-700 dark:text-zinc-200">
                   {formatInputLabel(t('auth.login.emailLabel'), t('common.locale'))}
                 </label>
                 <div className="relative">
-                  <Mail size={15} className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Mail size={15} className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400" />
                   <input
                     maxLength={255}
                     {...register('email')}
@@ -338,25 +320,25 @@ export function LoginPage() {
                   />
                 </div>
                 {errors.email?.message && (
-                  <p role="alert" className="text-xs font-bold text-red-500">{errors.email.message}</p>
+                  <p role="alert" className="text-xs font-semibold text-red-500">{errors.email.message}</p>
                 )}
               </div>
 
               {/* Password */}
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="login-password" className="block text-[12px] font-bold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
+                  <label htmlFor="login-password" className="text-[13px] font-semibold text-stone-700 dark:text-zinc-200">
                     {formatInputLabel(t('auth.login.passwordLabel'), t('common.locale'))}
                   </label>
                   <Link
                     to="/forgot-password"
-                    className="text-[12px] font-bold text-mintcom-greenInk hover:underline dark:text-mintcom-green"
+                    className="text-[13px] font-semibold text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100"
                   >
                     {t('auth.login.forgotPassword')}
                   </Link>
                 </div>
                 <div className="relative">
-                  <Lock size={15} className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Lock size={15} className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400" />
                   <input
                     maxLength={255}
                     {...register('password')}
@@ -370,13 +352,13 @@ export function LoginPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
-                    className="absolute end-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/10 dark:hover:text-white"
+                    className="absolute end-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-stone-400 hover:bg-stone-100 hover:text-stone-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
                   >
                     {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
                 </div>
                 {errors.password?.message && (
-                  <p role="alert" className="text-xs font-bold text-red-500">{errors.password.message}</p>
+                  <p role="alert" className="text-xs font-semibold text-red-500">{errors.password.message}</p>
                 )}
               </div>
 
@@ -385,31 +367,29 @@ export function LoginPage() {
                 <input
                   type="checkbox"
                   id="keepLoggedIn"
-                  className="h-4 w-4 cursor-pointer rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green dark:border-white/20"
+                  className="h-4 w-4 cursor-pointer rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green dark:border-zinc-700"
                 />
-                <label htmlFor="keepLoggedIn" className="cursor-pointer text-sm font-medium text-gray-600 dark:text-gray-300">
+                <label htmlFor="keepLoggedIn" className="cursor-pointer text-sm font-medium text-stone-600 dark:text-zinc-300">
                   {t('auth.login.keepLoggedIn')}
                 </label>
               </div>
 
               {/* Submit */}
               <motion.button
-                whileHover={{ y: -1 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isSubmitting}
-                className="group relative inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-mintcom-green font-bold text-black shadow-md shadow-mintcom-green/20 transition-all hover:bg-mintcom-green/90 disabled:opacity-60"
-                style={{ borderRadius: 12, backgroundColor: '#7dc6a2' }}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 disabled:opacity-50 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
               >
-                <span className="relative font-bold text-black">{isSubmitting ? t('auth.login.loggingIn') : t('auth.login.loginButton')}</span>
-                <ArrowRight size={16} className={`text-black transition-transform ${isRtl ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} />
+                <span>{isSubmitting ? t('auth.login.loggingIn') : t('auth.login.loginButton')}</span>
+                <ArrowRight size={15} className={`shrink-0 ${isRtl ? 'rotate-180' : ''}`} />
               </motion.button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="mt-5 text-center">
+              <p className="text-[13px] text-stone-500 dark:text-zinc-400">
                 {t('auth.login.noAccount')}{' '}
-                <Link to="/signup" className="font-bold text-mintcom-greenInk hover:underline dark:text-mintcom-green">
+                <Link to="/signup" className="font-semibold text-mintcom-greenInk hover:underline dark:text-mintcom-green">
                   {t('auth.login.signUp')}
                 </Link>
               </p>

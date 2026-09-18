@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Send, Mail, CheckCircle2, Loader2 } from 'lucide-react';
+import { Send, Mail, CheckCircle2, Loader2, LifeBuoy, ArrowUpRight } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 
@@ -43,44 +43,30 @@ export const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-16 lg:py-20 bg-white dark:bg-[#0f0f0f] relative overflow-hidden transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-      <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 relative z-10">
+    <section id="contact" className="bg-cream-100 dark:bg-zinc-950" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.45 }}
+          className="mb-5 text-start"
+        >
+          <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+            {t('landing.contact.badge')}
+          </p>
+          <h2 className="font-magilio text-4xl font-bold tracking-tight sm:text-5xl">
+            <span>{t('landing.contact.title')}</span>{' '}
+            <span className="text-mintcom-green">{t('landing.contact.titleHighlight')}</span>
+          </h2>
+          <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-stone-500 dark:text-zinc-400">
+            {t('landing.contact.subtitle')}
+          </p>
+        </motion.div>
         <div className="w-full mx-auto">
-          <div className="flex flex-col lg:flex-row items-stretch bg-gray-50 dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-none">
-
-            {/* Contact Info Sidebar — neutral dark to match landing (#0f0f0f / #121212) */}
-            <div className="relative flex flex-col justify-between overflow-hidden border-b border-gray-200 bg-gray-100 p-8 sm:p-12 lg:w-2/5 lg:border-b-0 lg:border-e lg:border-gray-200 dark:border-white/10 dark:bg-[#0a0a0a] dark:lg:border-white/10 lg:p-16">
-              <div className="relative z-10">
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-magilio mb-6 leading-tight tracking-tight">
-                  <span className="text-mintcom-green">{t('landing.contact.title')}</span>
-                  {' '}
-                  <span className="text-gray-900 dark:text-white">{t('landing.contact.titleHighlight')}</span>
-                </h2>
-                <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
-                  {t('landing.contact.subtitle')}
-                </p>
-                <div className="space-y-8">
-                  {[
-                    { icon: Mail, label: t('common.email'), value: 'info@mintcompos.com', color: 'text-mintcom-green' },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-4 group">
-                      <div className="flex h-12 w-12 shrink-0 aspect-square items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm transition-transform duration-500 dark:border-white/10 dark:bg-white/[0.06] dark:shadow-none">
-                        <item.icon size={20} className={item.color} />
-                      </div>
-                      <div>
-                        <p className="mb-1 text-xs font-bold tracking-widest text-gray-500 dark:text-gray-400">{item.label}</p>
-                        <p className="text-lg font-bold text-gray-900 dark:text-white" dir="ltr">
-                          {item.value}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Form */}
-            <div className="lg:w-3/5 p-8 sm:p-12 lg:p-16 bg-white dark:bg-[#121212]">
+          <div className="flex flex-col items-stretch gap-3 lg:flex-row">
+            {/* Contact Form — first-design width, support-system styling */}
+            <div className="min-w-0 flex-1 rounded-2xl border border-stone-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/60 sm:p-8 lg:w-3/5">
               <AnimatePresence mode="wait">
                 {isSuccess ? (
                   <motion.div
@@ -97,7 +83,7 @@ export const Contact = () => {
                     </div>
                     <button
                       onClick={() => setIsSuccess(false)}
-                      className="text-mintcom-green font-bold tracking-widest text-xs hover:underline"
+                      className="text-mintcom-greenInk dark:text-mintcom-green font-bold tracking-widest text-xs hover:underline"
                     >
                       {t('landing.contact.sendAnother')}
                     </button>
@@ -107,57 +93,57 @@ export const Contact = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     onSubmit={handleSubmit}
-                    className="space-y-6"
+                    className="space-y-4"
                   >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.fullName')}</label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[13px] font-semibold text-stone-700 dark:text-zinc-200">{t('landing.contact.fullName')}</label>
                         <input maxLength={255}
                           required
                           type="text"
                           name="fullName"
                           value={formData.fullName}
                           onChange={handleInputChange}
-                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
+                          className="w-full rounded-xl border border-stone-200 bg-white py-3 px-4 text-sm text-stone-900 placeholder:text-stone-400 focus:border-mintcom-green focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500"
                           placeholder={t('landing.contact.placeholder.name')}
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.businessName')}</label>
+                      <div className="space-y-1.5">
+                        <label className="text-[13px] font-semibold text-stone-700 dark:text-zinc-200">{t('landing.contact.businessName')}</label>
                         <input maxLength={255}
                           required
                           type="text"
                           name="businessName"
                           value={formData.businessName}
                           onChange={handleInputChange}
-                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
+                          className="w-full rounded-xl border border-stone-200 bg-white py-3 px-4 text-sm text-stone-900 placeholder:text-stone-400 focus:border-mintcom-green focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500"
                           placeholder={t('landing.contact.placeholder.business')}
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.emailAddress')}</label>
+                    <div className="space-y-1.5">
+                      <label className="text-[13px] font-semibold text-stone-700 dark:text-zinc-200">{t('landing.contact.emailAddress')}</label>
                       <input maxLength={255}
                         required
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
+                        className="w-full rounded-xl border border-stone-200 bg-white py-3 px-4 text-sm text-stone-900 placeholder:text-stone-400 focus:border-mintcom-green focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500"
                         placeholder={t('landing.contact.placeholder.email')}
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-gray-900 dark:text-white tracking-tight ml-1">{t('landing.contact.yourMessage')}</label>
+                    <div className="space-y-1.5">
+                      <label className="text-[13px] font-semibold text-stone-700 dark:text-zinc-200">{t('landing.contact.yourMessage')}</label>
                       <textarea maxLength={2000}
                         required
                         name="message"
                         value={formData.message}
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all resize-none"
+                        className="w-full resize-none rounded-xl border border-stone-200 bg-white py-3 px-4 text-sm text-stone-900 placeholder:text-stone-400 focus:border-mintcom-green focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500"
                         placeholder={t('landing.contact.placeholder.message')}
                       />
                     </div>
@@ -179,7 +165,7 @@ export const Contact = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="font-semibold text-mintcom-green transition-colors hover:underline"
+                          className="font-semibold text-mintcom-greenInk transition-colors hover:underline dark:text-mintcom-green"
                         >
                           {t('landing.contact.privacyPolicy')}
                         </Link>{' '}
@@ -189,7 +175,7 @@ export const Contact = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="font-semibold text-mintcom-green transition-colors hover:underline"
+                          className="font-semibold text-mintcom-greenInk transition-colors hover:underline dark:text-mintcom-green"
                         >
                           {t('landing.contact.termsOfService')}
                         </Link>
@@ -200,19 +186,40 @@ export const Contact = () => {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="flex w-full items-center justify-center gap-2.5 rounded-lg bg-mintcom-green py-4 text-base font-semibold tracking-tight text-gray-900 transition-colors hover:bg-mintcom-green/90 active:scale-[0.98] disabled:opacity-50 sm:py-[1.125rem] sm:text-[17px]"
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 disabled:opacity-50 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                     >
                       {isSubmitting ? (
-                        <Loader2 className="animate-spin opacity-80" size={20} strokeWidth={2} />
+                        <Loader2 className="animate-spin" size={15} strokeWidth={2} />
                       ) : (
-                        <Send size={18} strokeWidth={2} className="opacity-80" />
+                        <Send size={15} strokeWidth={2} />
                       )}
-                      <span className="font-semibold">{t('landing.contact.sendMessage')}</span>
+                      <span>{t('landing.contact.sendMessage')}</span>
                     </button>
                   </motion.form>
                 )}
               </AnimatePresence>
             </div>
+
+            {/* Contact info — first-design side column, support-system styling */}
+            <aside className="flex min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/60 sm:p-8 lg:w-2/5">
+              <div>
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300">
+                  <Mail size={19} strokeWidth={1.75} />
+                </span>
+                <p className="mt-4 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">{t('common.email')}</p>
+                <p className="mt-1 font-barlow text-[17px] font-bold tracking-tight text-stone-900 dark:text-zinc-100" dir="ltr">
+                  info@mintcompos.com
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-stone-500 dark:text-zinc-400">
+                  {t('landing.contact.responseTime')}
+                </p>
+              </div>
+              <Link to="/support" className="mt-5 inline-flex items-center gap-1 text-[13px] font-semibold text-stone-500 transition-colors hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+                <LifeBuoy size={14} className="shrink-0" />
+                {t('footer.helpCenter')}
+                <ArrowUpRight size={14} className="text-stone-300" />
+              </Link>
+            </aside>
           </div>
         </div>
       </div>

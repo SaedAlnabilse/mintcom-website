@@ -147,7 +147,7 @@ export function CategoryFormModal({
         onClose={onClose}
       />
 
-      <ModalBody className="pt-8 sm:pt-10">
+      <ModalBody>
         <form id="category-form" onSubmit={handleSubmit} className="space-y-8">
               {/* Error Banner */}
               {(Object.keys(errors).length > 0 || externalError) && (

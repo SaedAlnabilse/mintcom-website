@@ -91,7 +91,7 @@ const PortalRail = ({
 
   return (
     <aside
-      className={`relative flex h-full shrink-0 flex-col border-e border-gray-200 bg-white dark:border-white/10 dark:bg-mintcom-surface ${w} ${
+      className={`relative flex h-full shrink-0 flex-col border-e border-gray-200 bg-white dark:border-white/10 dark:bg-zinc-900 ${w} ${
         lg ? 'py-2.5' : 'py-1'
       }`}
     >
@@ -260,7 +260,7 @@ function RealStatTile({
 }) {
   return (
     <div
-      className={`relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-white/10 dark:bg-mintcom-surface ${
+      className={`relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-white/10 dark:bg-zinc-900 ${
         lg ? 'p-3' : 'rounded-xl p-1.5'
       }`}
     >
@@ -319,7 +319,7 @@ const OwnerScopePreview = ({ t, size = 'sm' }: { t: any; size?: PreviewSize }) =
     <div
       role="img"
       aria-label={t('landing.cloudControl.scope.preview.owner', 'Owner overview')}
-      className="flex h-full w-full cursor-text select-text overflow-hidden bg-gray-50 font-sans dark:bg-mintcom-dark"
+      className="flex h-full w-full cursor-text select-text overflow-hidden bg-gray-50 font-sans dark:bg-zinc-950"
     >
       <OwnerRail active="overview" lg={lg} />
       <div className={`flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden ${lg ? 'gap-2.5 p-3' : 'gap-1 p-1.5'}`}>
@@ -335,7 +335,7 @@ const OwnerScopePreview = ({ t, size = 'sm' }: { t: any; size?: PreviewSize }) =
             )}
           </div>
           <span
-            className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-gray-200 bg-white font-bold text-gray-700 dark:border-white/10 dark:bg-mintcom-surface dark:text-gray-200 ${
+            className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-gray-200 bg-white font-bold text-gray-700 dark:border-white/10 dark:bg-zinc-900 dark:text-gray-200 ${
               lg ? 'px-2.5 py-1.5 text-[11px]' : 'px-1.5 py-0.5 text-[7px]'
             }`}
           >
@@ -375,12 +375,12 @@ const BrandScopePreview = ({ t, size = 'sm' }: { t: any; size?: PreviewSize }) =
     <div
       role="img"
       aria-label={t('landing.cloudControl.scope.preview.brand', 'Brand dashboard')}
-      className="flex h-full w-full cursor-text select-text overflow-hidden bg-gray-50 font-sans dark:bg-mintcom-dark"
+      className="flex h-full w-full cursor-text select-text overflow-hidden bg-gray-50 font-sans dark:bg-zinc-950"
     >
       <BrandRail active="overview" lg={lg} />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         <div
-          className={`flex shrink-0 items-center justify-between gap-2 border-b border-gray-200 bg-white dark:border-white/10 dark:bg-mintcom-surface ${
+          className={`flex shrink-0 items-center justify-between gap-2 border-b border-gray-200 bg-white dark:border-white/10 dark:bg-zinc-900 ${
             lg ? 'px-3.5 py-2.5' : 'px-1.5 py-1'
           }`}
         >
@@ -417,7 +417,7 @@ const BrandScopePreview = ({ t, size = 'sm' }: { t: any; size?: PreviewSize }) =
             ))}
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-white/10 dark:bg-mintcom-surface">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-white/10 dark:bg-zinc-900">
             <div className={`flex shrink-0 items-center justify-between border-b border-gray-100 dark:border-white/5 ${lg ? 'px-3 py-2.5' : 'px-1.5 py-1'}`}>
               <div>
                 <p className={`font-bold text-gray-900 dark:text-white ${lg ? 'text-[13px]' : 'text-[8px]'}`}>
@@ -430,7 +430,7 @@ const BrandScopePreview = ({ t, size = 'sm' }: { t: any; size?: PreviewSize }) =
                 )}
               </div>
               {lg && (
-                <span className="text-[11px] font-bold text-mintcom-green">
+                <span className="text-[11px] font-bold text-mintcom-greenInk dark:text-mintcom-green">
                   {t('brand.dashboard.viewAll', 'View all')}
                 </span>
               )}
@@ -538,13 +538,13 @@ const LocationScopePreview = ({ t, size = 'sm' }: { t: any; size?: PreviewSize }
     <div
       role="img"
       aria-label={t('landing.cloudControl.scope.preview.location', 'Establishment dashboard')}
-      className="flex h-full w-full cursor-text select-text overflow-hidden bg-gray-50 font-sans dark:bg-mintcom-dark"
+      className="flex h-full w-full cursor-text select-text overflow-hidden bg-gray-50 font-sans dark:bg-zinc-950"
     >
       <LocationRail active="dashboard" lg={lg} />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         {/* Real dashboard page header */}
         <div
-          className={`flex shrink-0 items-center justify-between gap-2 border-b border-gray-200 bg-white dark:border-white/10 dark:bg-mintcom-surface ${
+          className={`flex shrink-0 items-center justify-between gap-2 border-b border-gray-200 bg-white dark:border-white/10 dark:bg-zinc-900 ${
             lg ? 'px-3 py-2.5' : 'px-1.5 py-1'
           }`}
         >
@@ -571,7 +571,7 @@ const LocationScopePreview = ({ t, size = 'sm' }: { t: any; size?: PreviewSize }
 
         <div className={`flex min-h-0 flex-1 flex-col overflow-hidden ${lg ? 'gap-2 p-2.5' : 'gap-1 p-1.5'}`}>
           {lg && (
-            <span className="w-fit shrink-0 rounded-lg border border-mintcom-green/20 bg-mintcom-green/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-mintcom-green">
+            <span className="w-fit shrink-0 rounded-lg border border-mintcom-green/20 bg-mintcom-green/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-mintcom-greenInk dark:text-mintcom-green">
               {t('dashboard.stats.overview', 'Overview')}
             </span>
           )}
@@ -633,35 +633,27 @@ const DashboardCard = ({
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: (index % 3) * 0.08, duration: 0.5 }}
-      whileHover={{ y: -6 }}
-      className="group relative flex h-full min-h-[248px] cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-colors duration-200 hover:border-mintcom-green/40 focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:border-mintcom-green/30 active:outline-none active:ring-0 dark:border-transparent dark:bg-[#121212] dark:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.45)] dark:hover:border-mintcom-green/20"
+      transition={{ delay: (index % 3) * 0.08, duration: 0.4 }}
+      className="group flex h-full cursor-pointer flex-col rounded-2xl border border-stone-200 bg-white p-5 transition-colors hover:border-stone-300 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700"
     >
-      <div className="relative z-10 mb-4 flex min-h-[56px] items-center gap-4">
-        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 shadow-inner transition-all duration-500 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-mintcom-green dark:bg-mintcom-green/15">
-          <Icon
-            size={22}
-            className="text-mintcom-green transition-colors duration-500 group-hover:text-white"
-          />
+      <div className="mb-4 flex items-center gap-4">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300">
+          <Icon size={19} strokeWidth={1.75} />
         </div>
-        <h3 className="line-clamp-2 flex min-h-[2.5rem] items-center font-sans text-base font-bold leading-tight tracking-tight text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
+        <h3 className="line-clamp-2 font-barlow text-[17px] font-bold leading-tight tracking-tight text-stone-900 dark:text-zinc-100">
           {dashboard.title}
         </h3>
       </div>
 
-      <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-between">
-        <p className="line-clamp-3 min-h-[3.75rem] font-sans text-sm font-medium leading-relaxed text-gray-600 dark:text-gray-400">
+      <div className="flex min-h-0 flex-1 flex-col justify-between">
+        <p className="line-clamp-3 text-sm leading-relaxed text-stone-500 dark:text-zinc-400">
           {dashboard.description}
         </p>
 
-        <div className="mt-3">
-          <div className="mb-3 h-px w-full bg-gray-200 dark:bg-white/10" />
-          <span className="inline-flex items-center gap-1.5 font-sans text-xs font-bold tracking-wide text-mintcom-green transition-colors group-hover:text-mintcom-green/80">
+        <div className="mt-4 border-t border-stone-200 pt-3 dark:border-zinc-800">
+          <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-stone-500 transition-colors group-hover:text-stone-900 dark:text-zinc-400 dark:group-hover:text-zinc-100">
             {t('landing.features.readMore', 'Learn more')}
-            <ArrowUpRight
-              size={11}
-              className="text-mintcom-green opacity-0 transition-opacity group-hover:opacity-100"
-            />
+            <ArrowUpRight size={14} className="text-stone-300 transition-all group-hover:text-mintcom-green" />
           </span>
         </div>
       </div>
@@ -713,7 +705,7 @@ const ScopeDashboardModal = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 16 }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 flex max-h-[min(92vh,900px)] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_24px_80px_-16px_rgba(0,0,0,0.35)] dark:border-white/10 dark:bg-mintcom-dark"
+        className="relative z-10 flex max-h-[min(92vh,900px)] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-stone-200/70 bg-white shadow-[0_24px_80px_-16px_rgba(0,0,0,0.35)] dark:border-zinc-800 dark:bg-zinc-900"
         dir={isRtl ? 'rtl' : 'ltr'}
         role="dialog"
         aria-modal="true"
@@ -721,7 +713,7 @@ const ScopeDashboardModal = ({
       >
         <ModalCloseButton onClose={onClose} autoPositionAbsolute className="z-30" />
 
-        <div className="absolute start-4 top-4 z-30 flex items-center gap-1 px-1 py-1 text-xs font-bold text-mintcom-green">
+        <div className="absolute start-4 top-4 z-30 flex items-center gap-1 px-1 py-1 text-xs font-bold text-mintcom-greenInk dark:text-mintcom-green">
           <span className="tabular-nums">{activeIndex + 1}</span>
           <span className="opacity-50">/</span>
           <span className="tabular-nums opacity-70">{dashboards.length}</span>
@@ -762,7 +754,7 @@ const ScopeDashboardModal = ({
 
                 {/* Product preview — same frame as Why feature shots */}
                 <div className="order-1 w-full min-w-0 lg:order-2">
-                  <div className="overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-sm dark:border-white/10 dark:bg-mintcom-dark">
+                  <div className="overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-sm dark:border-white/10 dark:bg-zinc-950">
                     <div className="h-[min(52vh,380px)] w-full overflow-hidden sm:h-[420px] md:h-[440px]">
                       <ScopePreview scope={item.scope} t={t} size="lg" />
                     </div>
@@ -877,7 +869,7 @@ const DeviceMockup = ({ t }: { t: any }) => {
   const chartHeights = [38, 52, 44, 68, 55, 78, 62, 90, 70, 85, 74, 92];
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center min-h-[320px] sm:min-h-[420px] lg:min-h-[520px] select-none">
+    <div className="relative w-full h-full flex items-center justify-center min-h-[260px] sm:min-h-[420px] lg:min-h-[520px] select-none">
       <div className="absolute inset-0 -z-10 flex items-center justify-center">
       </div>
 
@@ -887,7 +879,7 @@ const DeviceMockup = ({ t }: { t: any }) => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="relative w-[92%] max-w-[680px]"
+        className="relative w-[88%] sm:w-[92%] max-w-[680px]"
       >
         {/* Lid / screen bezel — real MacBook Pro style (notch, no browser chrome) */}
         <div
@@ -1001,10 +993,10 @@ const DeviceMockup = ({ t }: { t: any }) => {
 
               {/* KPI grid — 6 cards like real overview */}
               <div className="grid grid-cols-3 gap-1 sm:gap-1.5 shrink-0">
-                {kpis.map((kpi) => (
+                {kpis.map((kpi, i) => (
                   <div
                     key={kpi.label}
-                    className={`rounded-lg border ${MAC_CARD_BORDER} p-1.5 sm:p-2 relative overflow-hidden transition-colors duration-300`}
+                    className={`rounded-lg border ${MAC_CARD_BORDER} p-1.5 sm:p-2 relative overflow-hidden transition-colors duration-300 ${i >= 3 ? 'hidden sm:block' : ''}`}
                     style={{ backgroundColor: MAC_CARD_BG }}
                   >
                     <div className="flex items-center justify-between mb-1">
@@ -1092,15 +1084,19 @@ const DeviceMockup = ({ t }: { t: any }) => {
       </motion.div>
 
       {/* ── iPhone — Admin Portal location dashboard ── */}
+      <div
+        className={`absolute bottom-[2%] sm:bottom-[0%] ${
+          isRtl ? 'left-[2%] sm:left-[4%]' : 'right-[2%] sm:right-[4%]'
+        } w-[32%] max-w-[150px] sm:w-[34%] sm:max-w-[196px] z-20`}
+      >
       <motion.div
-        initial={{ opacity: 0, x: isRtl ? -50 : 50, rotate: isRtl ? 10 : -10 }}
-        whileInView={{ opacity: 1, x: 0, rotate: isRtl ? 10 : -10 }}
+        initial={{ opacity: 0, x: isRtl ? -50 : 50 }}
+        whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.9, delay: 0.2 }}
-        className={`absolute bottom-[-2%] sm:bottom-[0%] ${
-          isRtl ? 'left-[0%] sm:left-[4%]' : 'right-[0%] sm:right-[4%]'
-        } w-[34%] max-w-[168px] sm:max-w-[196px] z-20`}
+        className="w-full"
       >
+      <div className={`w-full ${isRtl ? 'sm:rotate-[10deg]' : 'sm:-rotate-[10deg]'}`}>
         {/* Titanium chassis */}
         <div
           className="relative w-full aspect-[9/19.5] rounded-[36px] p-[2px]"
@@ -1389,7 +1385,9 @@ const DeviceMockup = ({ t }: { t: any }) => {
             </div>
           </div>
         </div>
-      </motion.div>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };
@@ -1507,40 +1505,32 @@ export const CloudControl = () => {
   return (
     <section
       id="cloud-control"
-      className="py-16 lg:py-24 bg-gray-50 dark:bg-[#0f0f0f] relative overflow-hidden"
+      className="bg-cream-100 dark:bg-zinc-950"
       dir={isRtl ? 'rtl' : 'ltr'}
     >
-      {/* Background Decor */}
 
-      <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
-        {/* Top Section: Header + Devices */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-16 lg:mb-20">
-          {/* Left: Heading */}
+      <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-6 lg:px-8">
+        {/* Top Section: first-design side-by-side, support-system styling */}
+        <div className="mb-5 grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
+          {/* Heading */}
           <motion.div
-            initial={{ opacity: 0, x: isRtl ? 50 : -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.45 }}
+            className="text-start"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="mb-8 inline-flex max-w-full items-center gap-2.5"
-            >
-              <span className="text-[13px] font-bold uppercase leading-snug tracking-[0.12em] text-mintcom-green">
-                {t('landing.cloudControl.badge')}
-              </span>
-            </motion.div>
+            <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+              {t('landing.cloudControl.badge')}
+            </p>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-6xl font-bold font-magilio mb-6 leading-tight tracking-tight">
-              <SplitText text={t('landing.cloudControl.title', 'In-Sync Cloud Control')} />
-              <span className="block text-gray-900 dark:text-white mt-2">
+            <h2 className="font-magilio text-4xl font-bold tracking-tight sm:text-5xl">
+              <SplitText text={t('landing.cloudControl.title', 'In-Sync Cloud Control')} />{' '}
+              <span className="text-mintcom-green">
                 {t('landing.cloudControl.titleHighlight')}
               </span>
             </h2>
-            <p className="max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
+            <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-stone-500 dark:text-zinc-400">
               {t('landing.cloudControl.subtitle')}
             </p>
 
@@ -1562,20 +1552,20 @@ export const CloudControl = () => {
             />
           </motion.div>
 
-          {/* Right: Laptop + Tablet visual */}
+          {/* Device visual in quiet bordered card */}
           <motion.div
-            initial={{ opacity: 0, x: isRtl ? -50 : 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.15 }}
+            transition={{ duration: 0.45 }}
             className="relative"
           >
             <DeviceMockup t={t} />
           </motion.div>
         </div>
 
-        {/* Three scope cards — text first; click opens creative modal */}
-        <div className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-3 md:gap-6">
+        {/* Three scope cards — support grid */}
+        <div className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {dashboards.map((d, i) => (
             <DashboardCard
               key={d.scope}

@@ -19,7 +19,7 @@ export const LandingPage = () => {
   const isRtl = t('common.locale') === 'ar';
 
   return (
-    <div className="min-h-screen bg-white dark:bg-mintcom-dark font-sans text-gray-900 dark:text-mintcom-light selection:bg-mintcom-green selection:text-black" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-cream-100 dark:bg-zinc-950 font-sans text-stone-900 dark:text-zinc-100 selection:bg-mintcom-green selection:text-black" dir={isRtl ? 'rtl' : 'ltr'}>
       <Helmet>
         <title>{t('metadata.home.title')}</title>
         <meta name="description" content={t('metadata.home.description')} />

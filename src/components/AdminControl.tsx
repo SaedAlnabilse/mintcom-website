@@ -2,7 +2,7 @@ import { AppDownloadBadgeGroup } from './landing/AppDownloadBadgeGroup';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Laptop, Bell, Menu, Search, AlertTriangle, Package, RotateCcw, Plus, LayoutGrid, Home, MapPin, Briefcase, KeyRound, AlertOctagon, TrendingUp, Coffee, Store, Users, ChevronRight, ChevronDown, Calendar, Clock, CreditCard, Activity, ShoppingBag, CornerUpLeft, ExternalLink, MoreHorizontal, Zap, Link2, SlidersHorizontal } from 'lucide-react';
+import { Bell, Menu, Search, AlertTriangle, Package, RotateCcw, Plus, LayoutGrid, Home, MapPin, Briefcase, KeyRound, AlertOctagon, TrendingUp, Coffee, Store, Users, ChevronRight, ChevronDown, Calendar, Clock, CreditCard, Activity, ShoppingBag, CornerUpLeft, ExternalLink, MoreHorizontal, Zap, Link2, SlidersHorizontal } from 'lucide-react';
 import { OWNER_ANDROID_DOWNLOAD_URL, OWNER_IOS_DOWNLOAD_URL } from '../config/downloads';
 import { useTheme } from '../context/ThemeContext';
 
@@ -1292,15 +1292,71 @@ export const AdminControl = () => {
   return (
     <section
       id="admin"
-      className="py-16 lg:py-20 bg-white dark:bg-[#0f0f0f] overflow-x-clip relative"
+      className="bg-cream-100 dark:bg-zinc-950"
       dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
     >
 
-      <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
-        <div className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16">
-          {/* Phones showcase — animation is timer-based, not scroll-linked */}
+      <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+          {/* Copy — right side (mirrors Cloud Control: text left / visual right) */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45 }}
+            className="order-1 text-start lg:order-2"
+          >
+            <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+              {t('landing.admin.badge')}
+            </p>
+            <h2 className="font-magilio text-4xl font-bold tracking-tight sm:text-5xl">
+              <span>
+                {t('landing.admin.title1')} {t('landing.admin.title2')}
+              </span>{' '}
+              <span className="text-mintcom-green">
+                {t('landing.admin.title3')}
+              </span>
+            </h2>
+            <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-stone-500 dark:text-zinc-400">
+              {t('landing.admin.description')}
+            </p>
+            <ol className="mt-5 divide-y divide-stone-200 dark:divide-zinc-800">
+              {[
+                { label: t('landing.admin.shiftAlerts'), icon: Bell },
+                { label: t('landing.admin.stockAlerts'), icon: Package },
+                { label: t('landing.admin.liveReports'), icon: AlertTriangle },
+              ].map((item, i) => (
+                <li key={i} className="flex items-center gap-3 py-2.5 text-sm">
+                  <span className="font-magilio text-sm font-bold tabular-nums text-stone-300 dark:text-zinc-600">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <item.icon size={15} className="shrink-0 text-stone-400" />
+                  <span className="min-w-0 flex-1 truncate font-medium text-stone-700 dark:text-zinc-200">{item.label}</span>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-5">
+              <AppDownloadBadgeGroup
+                label={t("landing.admin.installBackofficeApp")}
+                hasIosDownload={hasOwnerIosDownload}
+                hasAndroidDownload={hasOwnerAndroidDownload}
+                iosAriaLabel={t("landing.admin.downloadOnAppStore")}
+                androidAriaLabel={t("landing.admin.getItOnGooglePlay")}
+                iosComingSoonLabel={t(
+                  "landing.cloudControl.scope.preview.ownerIosDownloadComingSoon",
+                  "Owner iOS app download coming soon",
+                )}
+                androidComingSoonLabel={t(
+                  "landing.cloudControl.scope.preview.ownerAndroidDownloadComingSoon",
+                  "Owner Android app download coming soon",
+                )}
+              />
+            </div>
+          </motion.div>
+
+          {/* Phones showcase — left side, animation is timer-based, not scroll-linked */}
           <div
-            className="w-full lg:w-1/2 relative flex flex-col items-center select-none"
+            className="relative order-2 flex min-w-0 flex-col items-center select-none lg:order-1"
             onMouseEnter={() => {
               userPausedRef.current = true;
             }}
@@ -1321,19 +1377,7 @@ export const AdminControl = () => {
             />
 
             {/* Phone stage — fixed height */}
-            <div className="relative w-full flex justify-center items-start h-[440px] sm:h-[560px] lg:h-[620px]">
-              {/* Soft orbital ring */}
-              <motion.div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] lg:w-[500px] lg:h-[500px] border border-mintcom-green/20 rounded-full -z-10"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
-              />
-              <motion.div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] lg:w-[360px] lg:h-[360px] border border-mintcom-green/10 rounded-full -z-10"
-                animate={{ rotate: -360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-              />
-
+            <div className="relative flex w-full items-start justify-center">
               {/* Single phone */}
               <div
                 className={`relative z-20 ${phoneShellClass}`}
@@ -1351,7 +1395,7 @@ export const AdminControl = () => {
                       ease: 'easeInOut',
                     }}
                   >
-                    <IPhoneFrame className="w-full h-full">
+                    <IPhoneFrame className="h-full w-full">
                       {renderOwnerScreen(currentScreen.id)}
                     </IPhoneFrame>
                   </motion.div>
@@ -1361,85 +1405,6 @@ export const AdminControl = () => {
 
 
           </div>
-
-          {/* Right Side: Content */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="w-full lg:w-1/2"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="mb-8 inline-flex max-w-full items-center gap-2.5"
-            >
-              <span className="text-[13px] font-bold uppercase leading-snug tracking-[0.12em] text-mintcom-green">
-                {t('landing.admin.badge')}
-              </span>
-            </motion.div>
-
-            <h2 className="text-3xl sm:text-4xl lg:text-6xl font-bold font-magilio mb-6 leading-tight tracking-tight">
-              <span className="block leading-[1.1] rtl:leading-[1.2]">
-                <SplitText text={t('landing.admin.title1')} />
-              </span>
-              <span className="block leading-[1.1] rtl:leading-[1.2]">
-                <SplitText text={t('landing.admin.title2')} />
-              </span>
-              <span className="block leading-[1.1] rtl:leading-[1.2]">
-                {(() => {
-                  const words = t('landing.admin.title3').split(' ');
-                  return words.map((word, i) => (
-                    <span
-                      key={i}
-                      className={i === 0 ? 'text-gray-900 dark:text-white' : 'text-mintcom-green'}
-                    >
-                      {word}
-                      {i < words.length - 1 ? ' ' : ''}
-                    </span>
-                  ));
-                })()}
-              </span>
-            </h2>
-
-            <p className="mb-10 max-w-2xl text-base font-light leading-relaxed text-gray-600 dark:text-gray-400 xs:text-lg sm:text-xl">
-              {t('landing.admin.description')}
-            </p>
-
-            <ul className="space-y-4 font-medium">
-              {[
-                { label: t('landing.admin.shiftAlerts'), icon: Bell },
-                { label: t('landing.admin.stockAlerts'), icon: Package },
-                { label: t('landing.admin.liveReports'), icon: AlertTriangle },
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-4 text-gray-700 dark:text-gray-300 group">
-                  <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 border border-mintcom-green/20 flex items-center justify-center transition-all duration-300 group-hover:bg-mintcom-green/20 group-hover:scale-110 flex-shrink-0">
-                    <item.icon size={18} className="text-mintcom-green" />
-                  </div>
-                  <span className="text-lg tracking-tight">{item.label}</span>
-                </li>
-              ))}
-            </ul>
-
-            <AppDownloadBadgeGroup
-              label={t("landing.admin.installBackofficeApp")}
-              hasIosDownload={hasOwnerIosDownload}
-              hasAndroidDownload={hasOwnerAndroidDownload}
-              iosAriaLabel={t("landing.admin.downloadOnAppStore")}
-              androidAriaLabel={t("landing.admin.getItOnGooglePlay")}
-              iosComingSoonLabel={t(
-                "landing.cloudControl.scope.preview.ownerIosDownloadComingSoon",
-                "Owner iOS app download coming soon",
-              )}
-              androidComingSoonLabel={t(
-                "landing.cloudControl.scope.preview.ownerAndroidDownloadComingSoon",
-                "Owner Android app download coming soon",
-              )}
-            />
-          </motion.div>
         </div>
       </div>
     </section>

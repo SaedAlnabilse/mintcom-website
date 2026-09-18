@@ -76,22 +76,22 @@ export function ResetPasswordPage() {
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center p-4 transition-colors duration-300">
+      <div className="min-h-screen bg-cream-100 dark:bg-zinc-950 flex items-center justify-center px-4 py-12 transition-colors duration-300">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 max-w-md w-full text-center shadow-lg shadow-gray-200/50 dark:shadow-none"
+          className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60 sm:p-8 max-w-md w-full text-center"
         >
-          <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-8">
-            <XCircle className="w-10 h-10 text-accent" />
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-red-100 dark:bg-red-900/30">
+            <XCircle className="w-8 h-8 text-red-500" />
           </div>
-          <h2 className="font-barlow text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('auth.resetPassword.invalidLinkTitle')}</h2>
-          <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+          <h2 className="font-magilio text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100 mb-3">{t('auth.resetPassword.invalidLinkTitle')}</h2>
+          <p className="text-[15px] text-stone-500 dark:text-zinc-400 mb-6 leading-relaxed">
             {t('auth.resetPassword.invalidLinkSubtitle')}
           </p>
           <Link
             to="/forgot-password"
-            className="inline-flex items-center justify-center w-full bg-mintcom-green text-black label-strong font-sans py-4 px-6 rounded-xl hover:bg-mintcom-green/90 transition-all active:scale-95 shadow-md shadow-mintcom-green/20"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
           >
             {t('auth.resetPassword.getNewLink')}
           </Link>
@@ -102,22 +102,22 @@ export function ResetPasswordPage() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center p-4 transition-colors duration-300">
+      <div className="min-h-screen bg-cream-100 dark:bg-zinc-950 flex items-center justify-center px-4 py-12 transition-colors duration-300">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 max-w-md w-full text-center shadow-lg shadow-gray-200/50 dark:shadow-none"
+          className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60 sm:p-8 max-w-md w-full text-center"
         >
-          <div className="w-20 h-20 bg-mintcom-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
-            <CheckCircle className="w-10 h-10 text-mintcom-green" />
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-mintcom-green/10">
+            <CheckCircle className="w-8 h-8 text-mintcom-green" />
           </div>
-          <h2 className="font-barlow text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('auth.resetPassword.successTitle')}</h2>
-          <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+          <h2 className="font-magilio text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100 mb-3">{t('auth.resetPassword.successTitle')}</h2>
+          <p className="text-[15px] text-stone-500 dark:text-zinc-400 mb-6 leading-relaxed">
             {t('auth.resetPassword.passwordUpdatedShort')}
           </p>
           <Link
             to="/login"
-            className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black label-strong font-sans py-4 px-6 rounded-xl hover:scale-105 transition-all active:scale-95 shadow-md shadow-gray-900/20"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
           >
             {t('auth.resetPassword.goToLogin')}
           </Link>
@@ -127,86 +127,89 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center p-4 transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-cream-100 dark:bg-zinc-950 flex items-center justify-center px-4 py-12 transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-12 max-w-md w-full shadow-lg shadow-gray-200/50 dark:shadow-none"
+        className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60 sm:p-8 max-w-md w-full"
       >
-        <div className="text-center mb-8 sm:mb-10">
-          <h1 className="font-barlow text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
-            {t('auth.resetPassword.resetTitle')} <span className="text-mintcom-green">{t('auth.resetPassword.passwordHighlight')}</span>
+        <div className="mb-6 text-center">
+          <h1 className="font-magilio text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100 mb-2">
+            {t('auth.resetPassword.resetTitle')}{' '}
+            <span className="text-mintcom-green">{t('auth.resetPassword.passwordHighlight')}</span>
           </h1>
-          <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.resetPassword.enterNewPassword')}</p>
+          <p className="text-[15px] text-stone-500 dark:text-zinc-400">
+            {t('auth.resetPassword.enterNewPassword')}
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight ml-1">{formatInputLabel(t('auth.resetPassword.passwordLabel'), t('common.locale'))}</label>
-            <div className="relative group">
-              <Lock className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-[13px] font-semibold text-stone-700 dark:text-zinc-200">{formatInputLabel(t('auth.resetPassword.passwordLabel'), t('common.locale'))}</label>
+            <div className="relative">
+              <Lock className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400" size={15} />
               <input maxLength={255}
                 type={showPassword ? 'text' : 'password'}
                 {...register('password')}
-                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-4 ps-12 pe-12 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
+                className="w-full rounded-xl border border-stone-200 bg-white py-3 ps-10 pe-12 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 transition-all dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500"
                 placeholder={formatInputPlaceholder("••••••••", t('common.locale'))}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
-                className="absolute end-3 top-1/2 -translate-y-1/2 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+                className="absolute end-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-stone-400 hover:bg-stone-100 hover:text-stone-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 transition-colors"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
-            {errors.password && <p className="text-accent text-xs font-bold text-gray-500 mt-1 ml-1">{errors.password.message}</p>}
+            {errors.password && <p className="text-xs font-semibold text-red-500 mt-1">{errors.password.message}</p>}
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-normal text-gray-900 dark:text-white tracking-tight ml-1">{formatInputLabel(t('auth.resetPassword.confirmPasswordLabel'), t('common.locale'))}</label>
-            <div className="relative group">
-              <Lock className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+          <div className="space-y-1.5">
+            <label className="text-[13px] font-semibold text-stone-700 dark:text-zinc-200">{formatInputLabel(t('auth.resetPassword.confirmPasswordLabel'), t('common.locale'))}</label>
+            <div className="relative">
+              <Lock className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400" size={15} />
               <input maxLength={255}
                 type={showConfirmPassword ? 'text' : 'password'}
                 {...register('confirmPassword')}
-                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-4 ps-12 pe-12 text-base sm:text-sm font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all"
+                className="w-full rounded-xl border border-stone-200 bg-white py-3 ps-10 pe-12 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 transition-all dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500"
                 placeholder={formatInputPlaceholder("••••••••", t('common.locale'))}
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 aria-label={showConfirmPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
-                className="absolute end-3 top-1/2 -translate-y-1/2 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+                className="absolute end-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-stone-400 hover:bg-stone-100 hover:text-stone-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 transition-colors"
               >
-                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
-            {errors.confirmPassword && <p className="text-accent text-xs font-bold text-gray-500 mt-1 ml-1">{errors.confirmPassword.message}</p>}
+            {errors.confirmPassword && <p className="text-xs font-semibold text-red-500 mt-1">{errors.confirmPassword.message}</p>}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-gray-50 dark:bg-white/[0.02] rounded-[12px] border border-gray-200 dark:border-white/[0.05]">
+          <div className="grid grid-cols-2 gap-2 p-4 bg-stone-50 dark:bg-zinc-900 rounded-xl border border-stone-200 dark:border-zinc-800">
             {criteria.map((item, index) => (
               <div key={index} className="flex items-center gap-2">
                 {item.met ? (
                   <CheckCircle2 size={14} className="text-mintcom-green flex-shrink-0" />
                 ) : (
-                  <div className="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-white/10 flex-shrink-0" />
+                  <div className="w-3.5 h-3.5 rounded-full border-2 border-stone-300 dark:border-zinc-700 flex-shrink-0" />
                 )}
-                <span className={`text-[10px] font-bold ${item.met ? 'text-mintcom-green' : 'text-gray-400'}`}>
+                <span className={`text-xs font-semibold ${item.met ? 'text-mintcom-green' : 'text-stone-400'}`}>
                   {item.label}
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="pt-4">
+          <div className="pt-2">
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-mintcom-green text-black label-strong font-sans py-4 px-6 rounded-xl hover:bg-mintcom-green/90 transition-all shadow-md shadow-mintcom-green/20 disabled:opacity-50 disabled:cursor-mintcom-wait flex items-center justify-center gap-3 active:scale-95"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 disabled:opacity-50 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
             >
-              {isLoading ? <Loader2 className="animate-spin" size={20} /> : null}
+              {isLoading ? <Loader2 className="animate-spin" size={15} /> : null}
               {t('auth.resetPassword.reset').toUpperCase()}
             </button>
           </div>

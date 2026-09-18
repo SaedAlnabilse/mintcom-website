@@ -468,7 +468,7 @@ export function CustomRoleFormModal({
         onClose={onClose}
       />
 
-      <ModalBody className="px-4 sm:px-8 pt-0">
+      <ModalBody className="px-4 sm:px-8">
         <form id="role-form" onSubmit={handleSubmit} className="space-y-8">
           {errors.general && (
             <ErrorBanner>

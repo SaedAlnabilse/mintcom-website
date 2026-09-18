@@ -1101,9 +1101,9 @@ export function ProductFormModal({
         closeDisabled={isGeneratingImage}
       />
 
-      <ModalBody className="pt-8 sm:pt-10">
+      <ModalBody>
         <div ref={scrollRef}>
-          <form id="product-form" onSubmit={handleSubmit} className="space-y-6 pb-6 sm:pb-8">
+          <form id="product-form" onSubmit={handleSubmit} className="space-y-6">
                 {/* Error Banner */}
                 {Object.keys(errors).length > 0 && (
                   <ErrorBanner ref={errorBannerRef} className="animate-pulse">

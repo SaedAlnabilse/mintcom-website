@@ -247,7 +247,7 @@ export function CustomerModal({
         }
       />
 
-      <ModalBody className="px-5 sm:px-6 py-5">
+      <ModalBody className="px-5 sm:px-6">
         {/* Quick Metrics Cards */}
         {isEditing && customer && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-5">

@@ -34,37 +34,35 @@ export const LandingFeatureCard: React.FC<LandingFeatureCardProps> = ({
           onOpen(index);
         }
       }}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
-      transition={{ delay: (index % 4) * 0.08, duration: 0.5 }}
-      whileHover={{ y: -6 }}
-      className="group relative flex h-full min-h-[250px] cursor-pointer flex-col overflow-hidden rounded-2xl border border-transparent bg-white p-6 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)] transition-all duration-500 hover:border-mintcom-green/25 hover:shadow-[0_16px_40px_-14px_rgba(124,195,159,0.28)] focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:border-mintcom-green/30 active:outline-none active:ring-0 dark:border-transparent dark:bg-[#121212] dark:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.45)] dark:hover:border-mintcom-green/20"
+      transition={{ duration: 0.4 }}
+      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-stone-200/70 bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors duration-200 hover:border-stone-300 focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:border-mintcom-green/30 active:outline-none active:ring-0 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700"
     >
-      <div className="relative z-10 mb-4 flex min-h-[56px] items-center gap-4">
-        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 shadow-inner transition-all duration-500 group-hover:rotate-3 group-hover:scale-110 group-hover:bg-mintcom-green dark:bg-mintcom-green/15">
+      <div className="relative z-10 mb-4 flex items-center gap-4">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300">
           <Icon
-            size={22}
-            className="text-mintcom-green transition-colors duration-500 group-hover:text-white"
+            size={19}
+            strokeWidth={1.75}
           />
         </div>
-        <h3 className="line-clamp-2 flex min-h-[2.5rem] items-center font-sans text-base font-bold leading-tight tracking-tight text-gray-900 transition-colors group-hover:text-mintcom-green dark:text-white">
+        <h3 className="line-clamp-2 font-barlow text-[17px] font-bold leading-tight tracking-tight text-stone-900 dark:text-zinc-100">
           {title}
         </h3>
       </div>
 
       <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-between">
-        <p className="line-clamp-3 min-h-[3.75rem] font-sans text-sm font-medium leading-relaxed text-gray-600 dark:text-gray-400">
+        <p className="line-clamp-3 font-sans text-sm leading-relaxed text-stone-500 dark:text-zinc-400">
           {description}
         </p>
 
-        <div className="mt-3">
-          <div className="mb-3 h-px w-full bg-gray-200 dark:bg-white/10" />
-          <span className="inline-flex items-center gap-1.5 font-sans text-xs font-bold tracking-wide text-mintcom-green transition-colors group-hover:text-mintcom-green/80">
+        <div className="mt-4 border-t border-stone-200 pt-3 dark:border-zinc-800">
+          <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-stone-500 transition-colors group-hover:text-stone-900 dark:text-zinc-400 dark:group-hover:text-zinc-100">
             {readMoreText}
             <ArrowUpRight
-              size={11}
-              className="text-mintcom-green opacity-0 transition-opacity group-hover:opacity-100"
+              size={14}
+              className="text-stone-300 transition-all group-hover:text-mintcom-green"
             />
           </span>
         </div>

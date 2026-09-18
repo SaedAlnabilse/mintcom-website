@@ -691,7 +691,7 @@ const PAGE_CONTEXTS: ChatbotPageContextDefinition[] = [
         query: text('How does the onboarding process work?', 'كيف تعمل عملية الإعداد؟'),
       },
       {
-        id: 'onboarding-profile',
+        id: 'onboarding-location',
         label: text('Business setup', 'إعداد النشاط'),
         icon: 'store',
         type: 'ask',
