@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, Copy, Key, Shield, ShieldCheck, MonitorSmartphone, BookOpen, ArrowLeft } from 'lucide-react';
 import api, { extractErrorMessage } from '../../config/api';
 import { FiscalComplianceCard } from '../../components/FiscalComplianceCard';
-import { Toggle } from '../../components/ui';
+import { Toggle, primaryButtonInlineClass } from '../../components/ui';
 import { AccountingSettingsTab } from '../../components/settings/AccountingSettingsTab';
 import { SettingsOverviewHub } from '../../components/settings/SettingsOverviewHub';
 import toast from 'react-hot-toast';
@@ -996,7 +996,7 @@ export function SettingsPage() {
                   type="button"
                   onClick={handleSubmit(onSubmit, showFormValidationError)}
                   disabled={isSaving || !hasUnsavedChanges}
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50 shrink-0"
+                  className={`${primaryButtonInlineClass} shrink-0 disabled:opacity-50`}
                 >
                   {isSaving ? (
                     <div className="w-[18px] h-[18px] border-2 border-stone-200 border-t-black rounded-full animate-spin" />

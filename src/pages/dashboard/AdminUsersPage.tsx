@@ -17,7 +17,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
-import { SearchInput, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, PageHeader, Badge } from '../../components/ui';
+import { SearchInput, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, PageHeader, Badge, primaryButtonInlineClass } from '../../components/ui';
 import { useTranslation } from 'react-i18next';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 
@@ -208,7 +208,7 @@ export function AdminUsersPage() {
                                 resetForm();
                                 setShowModal(true);
                             }}
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                            className={primaryButtonInlineClass}
                         >
                             <Plus size={18} strokeWidth={2.5} />
                             <span>{t('adminUsers.newAdmin')}</span>

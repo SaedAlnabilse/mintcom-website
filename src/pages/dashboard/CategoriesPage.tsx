@@ -25,7 +25,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CategoryFormModal, ICON_MAP } from '../../components/forms/CategoryFormModal';
 import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
-import { EmptyState, SearchInput, SelectInput, Pagination, Modal, ModalHeader, ModalBody, PageHeader, Badge } from '../../components/ui';
+import { EmptyState, SearchInput, SelectInput, Pagination, Modal, ModalHeader, ModalBody, PageHeader, Badge, primaryButtonInlineClass } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { ThumbnailImage } from '../../components/OptimizedImage';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
@@ -599,7 +599,7 @@ export function CategoriesPage() {
                   </button>
                   <button
                       onClick={openCreateModal}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                      className={primaryButtonInlineClass}
                   >
                       <Plus size={18} strokeWidth={2.5} />
                       <span className="hidden xs:inline">{t('categories.newCategory')}</span>
@@ -881,7 +881,7 @@ export function CategoriesPage() {
                       {isCategoryActive(viewingCategory) && (
                         <button
                           onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                          className="px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex items-center gap-2"
+                          className={primaryButtonInlineClass}
                         >
                           <Plus size={18} strokeWidth={2.5} />
                           {t('common.add')}

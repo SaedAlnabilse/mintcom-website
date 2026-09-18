@@ -21,7 +21,7 @@ import { PortalDropdown } from '../../components/PortalDropdown';
 import { exportTable } from '../../utils/export';
 import type { ExportFormat } from '../../utils/export';
 import { ExportMenu } from '../../components/ExportMenu';
-import { ListFilterBar, Pagination, PageHeader, Badge } from '../../components/ui';
+import { ListFilterBar, Pagination, PageHeader, Badge, primaryButtonInlineClass } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useCurrency } from '../../context/CurrencyContext';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -403,7 +403,7 @@ export function CustomersPage() {
                   <ExportMenu onExport={handleExport} className="hidden sm:flex" />
                   <button
                       onClick={() => setCustomerModalConfig({ isOpen: true, customer: null, initialTab: 'profile' })}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors cursor-pointer"
+                      className={`${primaryButtonInlineClass} cursor-pointer`}
                   >
                       <Plus size={18} strokeWidth={2.5} />
                       <span className="hidden xs:inline">{t('customers.addCustomer')}</span>

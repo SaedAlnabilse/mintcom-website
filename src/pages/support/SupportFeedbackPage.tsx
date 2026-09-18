@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { primaryButtonInlineClass } from '../../components/ui';
 import { Link, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -54,9 +55,9 @@ const categoryOptions = ['all', 'general', 'bug', 'feature', 'usability', 'perfo
 const statusTone: Record<string, string> = {
   NEW: 'bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300',
   REVIEWING: 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300',
-  PLANNED: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300',
+  PLANNED: 'bg-stone-100 text-stone-700 dark:bg-zinc-800 dark:text-zinc-200',
   DONE: 'bg-mintcom-green/10 text-green-700 dark:text-mintcom-green',
-  ARCHIVED: 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300',
+  ARCHIVED: 'bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300',
 };
 
 function formatDate(value: string) {
@@ -151,25 +152,25 @@ export const SupportFeedbackPage = () => {
   return (
     <>
       <Navbar hideCommercialLinks />
-      <main className="min-h-screen bg-gray-50 pt-28 pb-16 dark:bg-[#0a0a0a]">
+      <main className="min-h-screen bg-stone-50 pt-28 pb-16 dark:bg-zinc-950">
         <div className="w-full px-4 sm:px-6 lg:px-10">
           <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <Link to="/support/admin" className="mb-4 inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-mintcom-green dark:text-gray-400">
+              <Link to="/support/admin" className="mb-4 inline-flex items-center gap-2 text-sm font-bold text-stone-500 hover:text-mintcom-green dark:text-zinc-400">
                 <ArrowLeft size={16} />
                 Back to tickets
               </Link>
-              <h1 className="font-magilio text-3xl font-black tracking-tight text-gray-900 dark:text-white">
+              <h1 className="font-magilio text-3xl font-black tracking-tight text-stone-900 dark:text-zinc-100">
                 Feedback Insights
               </h1>
-              <p className="mt-2 max-w-2xl text-sm font-medium text-gray-500 dark:text-gray-400">
+              <p className="mt-2 max-w-2xl text-sm font-medium text-stone-500 dark:text-zinc-400">
                 Review product feedback by rating, POS area, and status so useful requests become planned improvements.
               </p>
             </div>
             <button
               onClick={fetchFeedback}
               disabled={loading}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-stone-900 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-stone-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
             >
               <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
               Refresh
@@ -183,24 +184,24 @@ export const SupportFeedbackPage = () => {
               { label: 'Low ratings', value: stats.lowRatingCount, icon: BarChart3, tone: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
               { label: topCategory ? `Top: ${topCategory.category}` : 'Top area', value: topCategory?.count || 0, icon: CheckCircle2, tone: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
             ].map((item) => (
-              <div key={item.label} className="rounded-2xl border border-gray-100 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
+              <div key={item.label} className="rounded-2xl border border-stone-100 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-800/40">
                 <div className="flex items-center gap-3">
                   <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${item.bg}`}>
                     <item.icon size={20} className={item.tone} />
                   </div>
                   <div>
-                    <p className="text-2xl font-black leading-none text-gray-900 dark:text-white">{item.value}</p>
-                    <p className="mt-1 text-sm font-bold text-gray-500 dark:text-gray-400">{item.label}</p>
+                    <p className="text-2xl font-black leading-none text-stone-900 dark:text-zinc-100">{item.value}</p>
+                    <p className="mt-1 text-sm font-bold text-stone-500 dark:text-zinc-400">{item.label}</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mb-4 rounded-2xl border border-gray-100 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
+          <div className="mb-4 rounded-2xl border border-stone-100 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-800/40">
             <div className="flex flex-col gap-3 md:flex-row">
               <div className="relative flex-1">
-                <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400" size={18} />
                 <input
                   maxLength={255}
                   value={searchQuery}
@@ -209,13 +210,13 @@ export const SupportFeedbackPage = () => {
                     if (e.key === 'Enter') fetchFeedback();
                   }}
                   placeholder={formatInputPlaceholder('Search comments, area, route, name, or email...', 'en')}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 ps-12 pe-11 text-base sm:text-sm font-bold text-gray-700 outline-none transition-colors focus:border-mintcom-green/50 focus:ring-2 focus:ring-mintcom-green/20 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+                  className="w-full rounded-xl border border-stone-200 bg-stone-50 py-3 ps-12 pe-11 text-base sm:text-sm font-bold text-stone-700 outline-none transition-colors focus:border-mintcom-green/50 focus:ring-2 focus:ring-mintcom-green/20 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-2.5 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/10"
+                    className="absolute right-2.5 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg text-stone-400 hover:bg-stone-100 hover:text-stone-600 dark:hover:bg-zinc-800"
                   >
                     <X size={13} />
                   </button>
@@ -223,21 +224,21 @@ export const SupportFeedbackPage = () => {
               </div>
               <button
                 onClick={() => setShowFilters((value) => !value)}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-100 px-4 py-3 text-sm font-bold text-gray-700 transition-colors hover:bg-gray-200 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-stone-100 px-4 py-3 text-sm font-bold text-stone-700 transition-colors hover:bg-stone-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
               >
                 <Filter size={18} />
                 Filters
               </button>
               <button
                 onClick={fetchFeedback}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-mintcom-green px-5 py-3 text-sm font-black text-black transition-opacity hover:opacity-90"
+                className={primaryButtonInlineClass}
               >
                 Apply
               </button>
             </div>
 
             {showFilters && (
-              <div className="mt-4 grid gap-4 border-t border-gray-100 pt-4 dark:border-white/10 md:grid-cols-3">
+              <div className="mt-4 grid gap-4 border-t border-stone-100 pt-4 dark:border-zinc-800 md:grid-cols-3">
                 <FilterGroup label="Status" value={statusFilter} options={['all', ...statusOptions]} onChange={setStatusFilter} />
                 <FilterGroup label="Category" value={categoryFilter} options={categoryOptions} onChange={setCategoryFilter} />
                 <FilterGroup label="Rating" value={ratingFilter} options={['all', '1', '2', '3', '4', '5']} onChange={setRatingFilter} />
@@ -248,12 +249,12 @@ export const SupportFeedbackPage = () => {
           {loading ? (
             <SurfaceLoader message="Loading feedback..." paddingClassName="py-16" />
           ) : feedback.length === 0 ? (
-            <div className="rounded-2xl border border-gray-100 bg-white p-16 text-center dark:border-white/10 dark:bg-white/[0.03]">
-              <Inbox className="mx-auto mb-4 h-14 w-14 text-gray-300 dark:text-gray-600" />
-              <h3 className="font-barlow mb-2 text-lg font-black text-gray-900 dark:text-white">
+            <div className="rounded-2xl border border-stone-100 bg-white p-16 text-center dark:border-zinc-800 dark:bg-zinc-800/40">
+              <Inbox className="mx-auto mb-4 h-14 w-14 text-stone-300 dark:text-zinc-600" />
+              <h3 className="font-barlow mb-2 text-lg font-black text-stone-900 dark:text-zinc-100">
                 {hasFeedbackSearch ? t('common.noResults') : hasFeedbackFilters ? t('common.noFilteredResults') : 'No Feedback Found'}
               </h3>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <p className="text-sm font-medium text-stone-500 dark:text-zinc-400">
                 {hasFeedbackSearch
                   ? t('common.noMatchingResults', { entity: 'feedback', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
                   : hasFeedbackFilters
@@ -264,7 +265,7 @@ export const SupportFeedbackPage = () => {
           ) : (
             <div className="space-y-3">
               {feedback.map((item) => (
-                <article key={item.id} className="rounded-2xl border border-gray-100 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
+                <article key={item.id} className="rounded-2xl border border-stone-100 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-800/40">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -275,18 +276,18 @@ export const SupportFeedbackPage = () => {
                         <span className={`rounded-lg px-2 py-1 text-xs font-black ${statusTone[item.status] || statusTone.NEW}`}>
                           {item.status.replace('_', ' ').toLowerCase()}
                         </span>
-                        <span className="rounded-lg bg-gray-100 px-2 py-1 text-xs font-black capitalize text-gray-600 dark:bg-white/10 dark:text-gray-300">
+                        <span className="rounded-lg bg-stone-100 px-2 py-1 text-xs font-black capitalize text-stone-600 dark:bg-zinc-800 dark:text-zinc-300">
                           {item.category}
                         </span>
                         {item.area && (
-                          <span className="rounded-lg bg-gray-100 px-2 py-1 text-xs font-black capitalize text-gray-600 dark:bg-white/10 dark:text-gray-300">
+                          <span className="rounded-lg bg-stone-100 px-2 py-1 text-xs font-black capitalize text-stone-600 dark:bg-zinc-800 dark:text-zinc-300">
                             {item.area}
                           </span>
                         )}
-                        <span className="text-xs font-bold text-gray-400">{formatDate(item.createdAt)}</span>
+                        <span className="text-xs font-bold text-stone-400">{formatDate(item.createdAt)}</span>
                       </div>
-                      <p className="whitespace-pre-wrap text-sm font-medium leading-6 text-gray-700 dark:text-gray-200">{item.comment}</p>
-                      <div className="mt-3 flex flex-wrap gap-3 text-xs font-medium text-gray-500 dark:text-gray-400">
+                      <p className="whitespace-pre-wrap text-sm font-medium leading-6 text-stone-700 dark:text-zinc-200">{item.comment}</p>
+                      <div className="mt-3 flex flex-wrap gap-3 text-xs font-medium text-stone-500 dark:text-zinc-400">
                         <span>{item.userName || 'Anonymous'}</span>
                         {item.userEmail && <span>{item.userEmail}</span>}
                         {item.route && <span>{item.route}</span>}
@@ -298,7 +299,7 @@ export const SupportFeedbackPage = () => {
                         <button
                           key={status}
                           onClick={() => updateFeedback(item, status)}
-                          className="rounded-lg bg-gray-100 px-3 py-2 text-xs font-black text-gray-600 transition-colors hover:bg-mintcom-green/20 dark:bg-white/10 dark:text-gray-300"
+                          className="rounded-lg bg-stone-100 px-3 py-2 text-xs font-black text-stone-600 transition-colors hover:bg-mintcom-green/20 dark:bg-zinc-800 dark:text-zinc-300"
                         >
                           {status.replace('_', ' ').toLowerCase()}
                         </button>
@@ -329,7 +330,7 @@ function FilterGroup({
 }) {
   return (
     <div>
-      <p className="mb-2 text-xs font-black uppercase tracking-wider text-gray-400">{label}</p>
+      <p className="mb-2 text-xs font-black uppercase tracking-wider text-stone-400">{label}</p>
       <div className="flex flex-wrap gap-2">
         {options.map((option) => (
           <button
@@ -337,8 +338,8 @@ function FilterGroup({
             onClick={() => onChange(option)}
             className={`rounded-lg px-3 py-1.5 text-xs font-bold capitalize transition-colors ${
               value === option
-                ? 'bg-gray-900 text-white dark:bg-white dark:text-black'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15'
+                ? 'bg-stone-900 text-white dark:bg-white dark:text-black'
+                : 'bg-stone-100 text-stone-600 hover:bg-stone-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800'
             }`}
           >
             {option.replace('_', ' ').toLowerCase()}

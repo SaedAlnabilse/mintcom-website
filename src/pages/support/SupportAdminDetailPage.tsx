@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { primaryButtonClass } from '../../components/ui';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -70,11 +71,11 @@ const statusConfig: Record<string, { label: string; color: string; bg: string; i
     open: { label: 'Open', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', icon: Inbox },
     in_progress: { label: 'In Progress', color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', icon: Clock },
     resolved: { label: 'Resolved', color: 'text-mintcom-green', bg: 'bg-mintcom-green/10 dark:bg-mintcom-green/', icon: CheckCircle2 },
-    closed: { label: 'Closed', color: 'text-gray-500', bg: 'bg-gray-50 dark:bg-gray-800', icon: XCircle },
+    closed: { label: 'Closed', color: 'text-stone-500', bg: 'bg-stone-50 dark:bg-zinc-800', icon: XCircle },
 };
 
 const priorityConfig: Record<string, { label: string; dot: string }> = {
-    low: { label: 'Low', dot: 'bg-gray-400' },
+    low: { label: 'Low', dot: 'bg-stone-400' },
     medium: { label: 'Medium', dot: 'bg-blue-500' },
     high: { label: 'High', dot: 'bg-orange-500' },
     urgent: { label: 'Urgent', dot: 'bg-red-500' },
@@ -138,7 +139,7 @@ function getSlaState(ticket: Ticket) {
         return { label: `${Math.ceil(remaining)}h left`, color: 'text-orange-600 dark:text-orange-400' };
     }
 
-    return { label: `${Math.ceil(remaining)}h left`, color: 'text-gray-500 dark:text-gray-400' };
+    return { label: `${Math.ceil(remaining)}h left`, color: 'text-stone-500 dark:text-zinc-400' };
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -393,7 +394,7 @@ export const SupportAdminDetailPage = () => {
                 <Navbar hideCommercialLinks />
                 <SectionLoader
                     message={t('support.admin.loading', { defaultValue: 'Loading ticket...' })}
-                    className="bg-gray-50 dark:bg-[#0a0a0a] pt-24"
+                    className="bg-stone-50 dark:bg-zinc-950 pt-24"
                     minHeightClassName="min-h-screen"
                 />
             </>
@@ -404,9 +405,9 @@ export const SupportAdminDetailPage = () => {
         return (
             <>
                 <Navbar hideCommercialLinks />
-                <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0a0a0a] pt-24">
+                <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-zinc-950 pt-24">
                     <div className="text-center">
-                        <h1 className="font-magilio text-2xl font-bold text-gray-900 dark:text-white mb-2">Ticket Not Found</h1>
+                        <h1 className="font-magilio text-2xl font-bold text-stone-900 dark:text-zinc-100 mb-2">Ticket Not Found</h1>
                         <Link to="/support/admin" className="text-mintcom-green font-bold hover:underline">
                             ← Back to Admin Portal
                         </Link>
@@ -427,26 +428,26 @@ export const SupportAdminDetailPage = () => {
     return (
         <>
             <Navbar hideCommercialLinks />
-            <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] pt-28 pb-16">
+            <div className="min-h-screen bg-stone-50 dark:bg-zinc-950 pt-28 pb-16">
                 <div className="w-full px-4 sm:px-6 lg:px-10">
 
                     {/* ── Back + Header ──────────────────────────────────────────── */}
                     <Link
                         to="/support/admin"
-                        className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-mintcom-green transition-colors mb-6"
+                        className="inline-flex items-center gap-2 text-sm font-bold text-stone-500 dark:text-zinc-400 hover:text-mintcom-green transition-colors mb-6"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         Back to Admin Portal
                     </Link>
 
                     {/* ── Ticket Info Card ────────────────────────────────────────── */}
-                    <div className="bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 rounded-xl p-5 mb-6">
+                    <div className="bg-white dark:bg-zinc-800/40 border border-stone-100 dark:border-zinc-800 rounded-xl p-5 mb-6">
                         <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4">
                             <div>
                                 <div className="flex items-center gap-2 mb-2">
                                     <button
                                         onClick={handleCopy}
-                                        className="text-xs font-mono font-bold text-gray-400 hover:text-mintcom-green flex items-center gap-1 transition-colors"
+                                        className="text-xs font-mono font-bold text-stone-400 hover:text-mintcom-green flex items-center gap-1 transition-colors"
                                     >
                                         {ticket.ticketNumber}
                                         {copied ? <Check className="w-3 h-3 text-mintcom-green" /> : <Copy className="w-3 h-3" />}
@@ -460,8 +461,8 @@ export const SupportAdminDetailPage = () => {
                                         {currentPriority.label}
                                     </span>
                                 </div>
-                                <h1 className="font-barlow text-lg font-bold text-gray-900 dark:text-white mb-1">{ticket.subject}</h1>
-                                <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 flex-wrap">
+                                <h1 className="font-barlow text-lg font-bold text-stone-900 dark:text-zinc-100 mb-1">{ticket.subject}</h1>
+                                <div className="flex items-center gap-3 text-xs text-stone-500 dark:text-zinc-400 flex-wrap">
                                     <span className="flex items-center gap-1"><Tag className="w-3 h-3" />{ticket.category}</span>
                                     <span>•</span>
                                     <span>{formatDate(ticket.createdAt)}</span>
@@ -472,7 +473,7 @@ export const SupportAdminDetailPage = () => {
                             <div className="relative">
                                 <button
                                     onClick={() => setShowStatusMenu(!showStatusMenu)}
-                                    className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-white/10 rounded-xl hover:bg-gray-200 dark:hover:bg-white/15 transition-all"
+                                    className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold text-stone-700 dark:text-zinc-300 bg-stone-100 dark:bg-zinc-800 rounded-xl hover:bg-stone-200 dark:hover:bg-zinc-800 transition-all"
                                 >
                                     Change Status
                                     <ChevronDown className="w-3 h-3" />
@@ -483,7 +484,7 @@ export const SupportAdminDetailPage = () => {
                                             initial={{ opacity: 0, y: -5 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -5 }}
-                                            className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl z-10 py-1 w-44"
+                                            className="absolute right-0 top-full mt-1 bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl shadow-xl z-10 py-1 w-44"
                                         >
                                             {(['open', 'in_progress', 'resolved', 'closed'] as const).map((s) => {
                                                 const cfg = statusConfig[s];
@@ -493,8 +494,8 @@ export const SupportAdminDetailPage = () => {
                                                         onClick={() => handleChangeStatus(s)}
                                                         disabled={ticket.status === s}
                                                         className={`w-full text-left px-3 py-2 text-xs font-bold flex items-center gap-2 transition-colors ${ticket.status === s
-                                                            ? 'bg-gray-50 dark:bg-white/5 text-gray-400 cursor-not-allowed'
-                                                            : 'hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300'
+                                                            ? 'bg-stone-50 dark:bg-zinc-800 text-stone-400 cursor-not-allowed'
+                                                            : 'hover:bg-stone-50 dark:hover:bg-zinc-800 text-stone-700 dark:text-zinc-300'
                                                             }`}
                                                     >
                                                         <cfg.icon className={`w-3 h-3 ${cfg.color}`} />
@@ -509,14 +510,14 @@ export const SupportAdminDetailPage = () => {
                         </div>
 
                         {/* Requester Info */}
-                        <div className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-white/5 rounded-xl text-xs">
+                        <div className="flex items-center gap-4 p-3 bg-stone-50 dark:bg-zinc-800 rounded-xl text-xs">
                             <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                                 <User className="w-4 h-4 text-blue-600" />
                             </div>
                             <div>
-                                <p className="font-bold text-gray-900 dark:text-white">{ticket.requesterName || 'Customer'}</p>
+                                <p className="font-bold text-stone-900 dark:text-zinc-100">{ticket.requesterName || 'Customer'}</p>
                                 {ticket.requesterEmail && (
-                                    <p className="text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                    <p className="text-stone-500 dark:text-zinc-400 flex items-center gap-1">
                                         <Mail className="w-3 h-3" />{ticket.requesterEmail}
                                     </p>
                                 )}
@@ -527,10 +528,10 @@ export const SupportAdminDetailPage = () => {
                     {/* ── Messages ───────────────────────────────────────────────── */}
                     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
                     <div className="min-w-0">
-                    <div className="bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 rounded-xl overflow-hidden">
-                        <div className="p-4 border-b border-gray-100 dark:border-white/5 flex items-center gap-2">
-                            <MessageSquare className="w-4 h-4 text-gray-400" />
-                            <h2 className="font-barlow text-sm font-bold text-gray-900 dark:text-white">
+                    <div className="bg-white dark:bg-zinc-800/40 border border-stone-100 dark:border-zinc-800 rounded-xl overflow-hidden">
+                        <div className="p-4 border-b border-stone-100 dark:border-zinc-800 flex items-center gap-2">
+                            <MessageSquare className="w-4 h-4 text-stone-400" />
+                            <h2 className="font-barlow text-sm font-bold text-stone-900 dark:text-zinc-100">
                                 Conversation ({ticket.messages.length} messages)
                             </h2>
                         </div>
@@ -558,19 +559,19 @@ export const SupportAdminDetailPage = () => {
                                         <div className={`flex-1 max-w-[80%] ${isSupport ? 'text-right' : ''}`}>
                                             <div className={`inline-block text-left rounded-xl p-3 ${isSupport
                                                 ? 'bg-mintcom-green/10 dark:bg-mintcom-green/5 border border-mintcom-green/20'
-                                                : 'bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5'
+                                                : 'bg-stone-50 dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800'
                                                 }`}>
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    <span className={`text-xs font-bold ${isSupport ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>
+                                                    <span className={`text-xs font-bold ${isSupport ? 'text-mintcom-green' : 'text-stone-900 dark:text-zinc-100'}`}>
                                                         {msg.senderName}
                                                     </span>
-                                                    <span className="text-[10px] text-gray-400">{formatDate(msg.createdAt)}</span>
+                                                    <span className="text-[10px] text-stone-400">{formatDate(msg.createdAt)}</span>
                                                 </div>
-                                                <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{msg.content}</p>
+                                                <p className="text-sm text-stone-700 dark:text-zinc-300 whitespace-pre-wrap">{msg.content}</p>
                                                 {/* Attachments */}
                                                 {msg.attachments && Array.isArray(msg.attachments) && msg.attachments.length > 0 && (
-                                                    <div className="mt-2 pt-2 border-t border-gray-200 dark:border-white/10">
-                                                        <p className="text-[10px] font-bold text-gray-400 mb-1">Attachments</p>
+                                                    <div className="mt-2 pt-2 border-t border-stone-200 dark:border-zinc-800">
+                                                        <p className="text-[10px] font-bold text-stone-400 mb-1">Attachments</p>
                                                         <div className="flex flex-wrap gap-1.5">
                                                             {msg.attachments.map((att, i) => {
                                                                 const isImage = att.type?.startsWith('image/');
@@ -583,11 +584,11 @@ export const SupportAdminDetailPage = () => {
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
                                                                         download={!isImage ? att.name : undefined}
-                                                                        className="inline-flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-medium hover:border-mintcom-green/30 transition-colors"
+                                                                        className="inline-flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-lg text-xs font-medium hover:border-mintcom-green/30 transition-colors"
                                                                     >
                                                                         {isImage ? <ImageIcon size={12} /> : <Download size={12} />}
                                                                         <span className="truncate max-w-[120px]">{att.name}</span>
-                                                                        {sizeStr && <span className="text-gray-400">({sizeStr})</span>}
+                                                                        {sizeStr && <span className="text-stone-400">({sizeStr})</span>}
                                                                     </a>
                                                                 );
                                                             })}
@@ -604,7 +605,7 @@ export const SupportAdminDetailPage = () => {
 
                         {/* Reply box */}
                         {ticket.status !== 'closed' ? (
-                            <div className="border-t border-gray-100 dark:border-white/5 p-4">
+                            <div className="border-t border-stone-100 dark:border-zinc-800 p-4">
                                 <div className="flex items-center gap-2 mb-3 text-xs text-mintcom-green font-bold">
                                     <Shield className="w-3 h-3" />
                                     Replying as Mintcom Support
@@ -614,9 +615,9 @@ export const SupportAdminDetailPage = () => {
                                         {replyFiles.map((file, idx) => (
                                             <div
                                                 key={idx}
-                                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/10 text-xs font-medium text-gray-700 dark:text-gray-300"
+                                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-zinc-800 text-xs font-medium text-stone-700 dark:text-zinc-300"
                                             >
-                                                <Paperclip size={13} className="text-gray-400" />
+                                                <Paperclip size={13} className="text-stone-400" />
                                                 <span className="max-w-[150px] truncate">{file.name}</span>
                                                 <button
                                                     type="button"
@@ -635,7 +636,7 @@ export const SupportAdminDetailPage = () => {
                                         onChange={(e) => setReplyText(e.target.value)}
                                         placeholder={formatInputPlaceholder("Type your support reply...", t('common.locale'))}
                                         rows={3}
-                                        className="flex-1 resize-none bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30"
+                                        className="flex-1 resize-none bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl p-3 text-sm text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30"
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                                                 handleSendReply();
@@ -654,7 +655,7 @@ export const SupportAdminDetailPage = () => {
                                         <button
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
-                                            className="px-3 py-2 border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
+                                            className="px-3 py-2 border border-stone-200 dark:border-zinc-800 hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-600 dark:text-zinc-300 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
                                             title="Attach files (max 5, 10MB each)"
                                         >
                                             <Paperclip size={14} />
@@ -663,18 +664,18 @@ export const SupportAdminDetailPage = () => {
                                         <button
                                             onClick={handleSendReply}
                                             disabled={(!replyText.trim() && replyFiles.length === 0) || sending}
-                                            className="px-4 py-2.5 bg-mintcom-green text-black font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                            className={`${primaryButtonClass} disabled:cursor-not-allowed`}
                                         >
                                             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                                             Send
                                         </button>
                                     </div>
                                 </div>
-                                <p className="mt-2 text-[10px] text-gray-400">Ctrl+Enter to send. Customer will be notified by email.</p>
+                                <p className="mt-2 text-[10px] text-stone-400">Ctrl+Enter to send. Customer will be notified by email.</p>
                             </div>
                         ) : (
-                            <div className="border-t border-gray-100 dark:border-white/5 p-4 text-center">
-                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                            <div className="border-t border-stone-100 dark:border-zinc-800 p-4 text-center">
+                                <p className="text-sm text-stone-500 dark:text-zinc-400">
                                     This ticket is closed.{' '}
                                     <button
                                         onClick={() => handleChangeStatus('open')}
@@ -689,20 +690,20 @@ export const SupportAdminDetailPage = () => {
                     </div>
 
                     <aside className="space-y-4">
-                        <div className="rounded-xl border border-gray-100 bg-white p-4 dark:border-white/5 dark:bg-white/[0.03]">
-                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
-                                <TimerReset className="h-4 w-4 text-gray-400" />
+                        <div className="rounded-xl border border-stone-100 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-800/40">
+                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-stone-900 dark:text-zinc-100">
+                                <TimerReset className="h-4 w-4 text-stone-400" />
                                 Support SLA
                             </div>
                             <p className={`text-lg font-black ${slaState.color}`}>{slaState.label}</p>
-                            <p className="mt-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+                            <p className="mt-1 text-xs font-medium text-stone-500 dark:text-zinc-400">
                                 Based on {currentPriority.label.toLowerCase()} priority and the latest customer activity.
                             </p>
                         </div>
 
-                        <div className="rounded-xl border border-gray-100 bg-white p-4 dark:border-white/5 dark:bg-white/[0.03]">
-                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
-                                <User className="h-4 w-4 text-gray-400" />
+                        <div className="rounded-xl border border-stone-100 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-800/40">
+                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-stone-900 dark:text-zinc-100">
+                                <User className="h-4 w-4 text-stone-400" />
                                 Customer context
                             </div>
                             <div className="space-y-3 text-xs">
@@ -714,29 +715,29 @@ export const SupportAdminDetailPage = () => {
                             </div>
                         </div>
 
-                        <div className="rounded-xl border border-gray-100 bg-white p-4 dark:border-white/5 dark:bg-white/[0.03]">
-                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
-                                <ClipboardCheck className="h-4 w-4 text-gray-400" />
+                        <div className="rounded-xl border border-stone-100 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-800/40">
+                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-stone-900 dark:text-zinc-100">
+                                <ClipboardCheck className="h-4 w-4 text-stone-400" />
                                 Triage checklist
                             </div>
-                            <div className="space-y-2 text-xs font-medium text-gray-600 dark:text-gray-300">
+                            <div className="space-y-2 text-xs font-medium text-stone-600 dark:text-zinc-300">
                                 {[
                                     'Confirm issue category and priority',
                                     'Check attachments and reproduction details',
                                     'Reply with next action or resolution',
                                     'Mark resolved only after customer can continue',
                                 ].map((item) => (
-                                    <label key={item} className="flex items-start gap-2 rounded-lg bg-gray-50 p-2 dark:bg-white/5">
-                                        <input type="checkbox" className="mt-0.5 h-3.5 w-3.5 rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green" />
+                                    <label key={item} className="flex items-start gap-2 rounded-lg bg-stone-50 p-2 dark:bg-zinc-800">
+                                        <input type="checkbox" className="mt-0.5 h-3.5 w-3.5 rounded border-stone-300 text-mintcom-green focus:ring-mintcom-green" />
                                         <span>{item}</span>
                                     </label>
                                 ))}
                             </div>
                         </div>
 
-                        <div className="rounded-xl border border-gray-100 bg-white p-4 dark:border-white/5 dark:bg-white/[0.03]">
-                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
-                                <MessageSquare className="h-4 w-4 text-gray-400" />
+                        <div className="rounded-xl border border-stone-100 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-800/40">
+                            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-stone-900 dark:text-zinc-100">
+                                <MessageSquare className="h-4 w-4 text-stone-400" />
                                 Quick replies
                             </div>
                             <div className="space-y-2">
@@ -745,7 +746,7 @@ export const SupportAdminDetailPage = () => {
                                         key={reply.label}
                                         type="button"
                                         onClick={() => insertQuickReply(reply.text)}
-                                        className="w-full rounded-lg bg-gray-50 px-3 py-2 text-left text-xs font-bold text-gray-600 transition-colors hover:bg-mintcom-green/10 hover:text-gray-900 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-mintcom-green/10"
+                                        className="w-full rounded-lg bg-stone-50 px-3 py-2 text-left text-xs font-bold text-stone-600 transition-colors hover:bg-mintcom-green/10 hover:text-stone-900 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-mintcom-green/10"
                                     >
                                         {reply.label}
                                     </button>
@@ -753,18 +754,18 @@ export const SupportAdminDetailPage = () => {
                             </div>
                         </div>
 
-                        <div className="rounded-xl border border-gray-100 bg-white p-4 dark:border-white/5 dark:bg-white/[0.03]">
-                            <div className="mb-1 text-sm font-bold text-gray-900 dark:text-white">Internal Notes</div>
-                            <p className="mb-3 text-[11px] font-medium text-gray-400">Team-only. Never sent to the customer.</p>
+                        <div className="rounded-xl border border-stone-100 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-800/40">
+                            <div className="mb-1 text-sm font-bold text-stone-900 dark:text-zinc-100">Internal Notes</div>
+                            <p className="mb-3 text-[11px] font-medium text-stone-400">Team-only. Never sent to the customer.</p>
                             {staffNotes.length > 0 && (
                                 <div className="mb-3 max-h-48 space-y-2 overflow-y-auto">
                                     {staffNotes.map((note) => (
-                                        <div key={note.id} className="rounded-lg bg-gray-50 p-2.5 dark:bg-white/5">
+                                        <div key={note.id} className="rounded-lg bg-stone-50 p-2.5 dark:bg-zinc-800">
                                             <div className="flex items-center justify-between gap-2">
-                                                <span className="text-[11px] font-bold text-gray-700 dark:text-gray-200">{note.authorName}</span>
-                                                <span className="text-[10px] font-medium text-gray-400">{note.createdAt ? new Date(note.createdAt).toLocaleString() : ''}</span>
+                                                <span className="text-[11px] font-bold text-stone-700 dark:text-zinc-200">{note.authorName}</span>
+                                                <span className="text-[10px] font-medium text-stone-400">{note.createdAt ? new Date(note.createdAt).toLocaleString() : ''}</span>
                                             </div>
-                                            <p className="mt-1 whitespace-pre-wrap text-xs font-medium text-gray-600 dark:text-gray-300">{note.content}</p>
+                                            <p className="mt-1 whitespace-pre-wrap text-xs font-medium text-stone-600 dark:text-zinc-300">{note.content}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -775,13 +776,13 @@ export const SupportAdminDetailPage = () => {
                                 rows={4}
                                 maxLength={5000}
                                 placeholder="Private note for the support team. Not sent to the customer."
-                                className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs font-medium text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+                                className="w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-3 text-xs font-medium text-stone-700 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
                             />
                             <button
                                 type="button"
                                 onClick={handleSaveInternalNote}
                                 disabled={!internalNote.trim() || isSavingNote}
-                                className="mt-2 w-full rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white dark:text-gray-900"
+                                className="mt-2 w-full rounded-lg bg-stone-900 px-3 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white dark:text-zinc-900"
                             >
                                 {isSavingNote ? 'Saving…' : 'Save team note'}
                             </button>
@@ -798,8 +799,8 @@ export const SupportAdminDetailPage = () => {
 function InfoRow({ label, value }: { label: string; value: string }) {
     return (
         <div>
-            <p className="font-black uppercase tracking-wider text-gray-400">{label}</p>
-            <p className="mt-0.5 break-words font-bold text-gray-700 dark:text-gray-200">{value}</p>
+            <p className="font-black uppercase tracking-wider text-stone-400">{label}</p>
+            <p className="mt-0.5 break-words font-bold text-stone-700 dark:text-zinc-200">{value}</p>
         </div>
     );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { primaryButtonInlineClass } from '../../components/ui';
 import { Link, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -273,7 +274,7 @@ export const TicketsPage = () => {
           </div>
           <Link
             to="/support/tickets/new"
-            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+            className={`${primaryButtonInlineClass} shrink-0`}
           >
             <Plus size={16} strokeWidth={2.5} />
             {t('support.tickets.new')}
@@ -487,7 +488,7 @@ export const TicketsPage = () => {
               ) : (
                 <Link
                   to="/support/tickets/new"
-                  className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                  className={primaryButtonInlineClass}
                 >
                   <Plus size={16} strokeWidth={2.5} />
                   {t('support.tickets.createFirst')}

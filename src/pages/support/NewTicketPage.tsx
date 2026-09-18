@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { primaryButtonInlineClass } from '../../components/ui';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -401,7 +402,7 @@ export const NewTicketPage = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 disabled:opacity-50 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                className={`${primaryButtonInlineClass} disabled:opacity-50`}
               >
                 {isSubmitting ? (
                   <>

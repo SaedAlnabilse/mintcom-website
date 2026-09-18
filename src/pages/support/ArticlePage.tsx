@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { primaryButtonInlineClass, primaryButtonClass } from '../../components/ui';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -292,7 +293,7 @@ export const ArticlePage = () => {
                 </button>
               ))}
               <button onClick={handleSubmitTicket}
-                className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110">
+                className={primaryButtonInlineClass}>
                 <MessageSquare size={14} /> {t('support.quickLinks.submitTicket')}
               </button>
             </div>
@@ -342,7 +343,7 @@ export const ArticlePage = () => {
               <p className="text-[15px] font-bold">{t('support.cta.stillNeedHelp')}</p>
               <p className="mt-1 text-[13px] leading-relaxed text-stone-500 dark:text-zinc-400">{t('support.cta.stillNeedHelpDesc')}</p>
               <button onClick={handleSubmitTicket}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110">
+                className={`${primaryButtonClass} mt-4`}>
                 <MessageSquare size={14} />
                 {t('support.quickLinks.submitTicket')}
               </button>

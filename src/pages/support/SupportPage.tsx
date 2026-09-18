@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { primaryButtonInlineClass, primaryButtonClass } from '../../components/ui';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -219,7 +220,7 @@ export const SupportPage = () => {
         {/* Ticket actions */}
         <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
           <button onClick={handleSubmitTicket}
-            className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110">
+            className={primaryButtonInlineClass}>
             <Ticket size={15} />
             {t('support.quickLinks.submitTicket')}
           </button>
@@ -325,7 +326,7 @@ export const SupportPage = () => {
               PDF · {t('support.manual.fileSize')} · {t('support.manual.updated')}
             </p>
             <a href={userManualDoc.path} download={userManualDoc.filename}
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110">
+              className={`${primaryButtonClass} mt-5`}>
               <Download size={15} />
               {t('support.manual.downloadButton')}
             </a>

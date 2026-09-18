@@ -17,7 +17,7 @@ import { readSpreadsheet, dryRun, toCsv, type DryRunResult } from '../../utils/s
 import { SAMPLE_ROWS, MINTOM_TEMPLATE_HEADERS, type SourceId } from '../../utils/posImportMaps';
 import { runMigrationImport, type MigrationImportResult } from '../../services/migrationImporter';
 import { withExcelBom } from '../../utils/csvBom';
-import { ErrorBanner } from '../../components/ui';
+import { ErrorBanner, primaryButtonInlineClass } from '../../components/ui';
 
 type Phase = 'idle' | 'parsing' | 'preview' | 'importing' | 'done';
 
@@ -423,7 +423,7 @@ export function MigrationPage() {
               <div className="mt-3 flex flex-wrap gap-2">
                 <button
                   onClick={() => navigate('/dashboard/products')}
-                  className="rounded-xl bg-mintcom-green px-5 py-2.5 text-sm font-bold text-black hover:brightness-95"
+                  className={primaryButtonInlineClass}
                 >
                   Open Products
                 </button>
@@ -449,7 +449,7 @@ export function MigrationPage() {
               <button
                 onClick={startImport}
                 disabled={editRows.length === 0}
-                className="inline-flex items-center gap-2 rounded-xl bg-mintcom-green px-6 py-3 text-sm font-semibold text-black hover:brightness-95 disabled:opacity-40"
+                className={`${primaryButtonInlineClass} disabled:opacity-40`}
               >
                 <Rocket size={16} /> Import {editRows.length} products
               </button>

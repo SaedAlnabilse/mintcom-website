@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { primaryButtonInlineClass } from '../../components/ui';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -63,11 +64,11 @@ const statusConfig = {
   open: { label: 'Open', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: Inbox },
   in_progress: { label: 'In progress', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/15', icon: Clock },
   resolved: { label: 'Resolved', color: 'text-mintcom-green', bg: 'bg-mintcom-green/10', icon: CheckCircle2 },
-  closed: { label: 'Closed', color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-white/10', icon: XCircle },
+  closed: { label: 'Closed', color: 'text-stone-500 dark:text-zinc-400', bg: 'bg-stone-100 dark:bg-zinc-800', icon: XCircle },
 };
 
 const priorityConfig = {
-  low: { label: 'Low', dot: 'bg-gray-400', color: 'text-gray-500', weight: 1, slaHours: 48 },
+  low: { label: 'Low', dot: 'bg-stone-400', color: 'text-stone-500', weight: 1, slaHours: 48 },
   medium: { label: 'Medium', dot: 'bg-blue-500', color: 'text-blue-600 dark:text-blue-400', weight: 2, slaHours: 24 },
   high: { label: 'High', dot: 'bg-orange-500', color: 'text-orange-600 dark:text-orange-400', weight: 3, slaHours: 8 },
   urgent: { label: 'Urgent', dot: 'bg-red-500', color: 'text-red-600 dark:text-red-400', weight: 4, slaHours: 2 },
@@ -113,14 +114,14 @@ function isStale(ticket: AdminTicket) {
 }
 
 function getSlaLabel(ticket: AdminTicket) {
-  if (!needsSupportReply(ticket)) return { label: 'Waiting on customer', tone: 'text-gray-500' };
+  if (!needsSupportReply(ticket)) return { label: 'Waiting on customer', tone: 'text-stone-500' };
 
   const priority = getPriority(ticket);
   const remaining = priority.slaHours - hoursSince(getLastCustomerActivity(ticket));
 
   if (remaining <= 0) return { label: 'SLA overdue', tone: 'text-red-600 dark:text-red-400' };
   if (remaining <= 2) return { label: `${Math.ceil(remaining)}h left`, tone: 'text-orange-600 dark:text-orange-400' };
-  return { label: `${Math.ceil(remaining)}h left`, tone: 'text-gray-500 dark:text-gray-400' };
+  return { label: `${Math.ceil(remaining)}h left`, tone: 'text-stone-500 dark:text-zinc-400' };
 }
 
 export const SupportAdminPage = () => {
@@ -227,7 +228,7 @@ export const SupportAdminPage = () => {
   return (
     <>
       <Navbar hideCommercialLinks />
-      <main className="min-h-screen bg-gray-50 pt-28 pb-16 dark:bg-[#0a0a0a]">
+      <main className="min-h-screen bg-stone-50 pt-28 pb-16 dark:bg-zinc-950">
         <div className="w-full px-4 sm:px-6 lg:px-10">
           <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
@@ -235,10 +236,10 @@ export const SupportAdminPage = () => {
                 <Shield size={14} />
                 Support admin: {account?.email}
               </div>
-              <h1 className="font-magilio text-3xl font-black tracking-tight text-gray-900 dark:text-white">
+              <h1 className="font-magilio text-3xl font-black tracking-tight text-stone-900 dark:text-zinc-100">
                 Support Desk
               </h1>
-              <p className="mt-2 max-w-2xl text-sm font-medium text-gray-500 dark:text-gray-400">
+              <p className="mt-2 max-w-2xl text-sm font-medium text-stone-500 dark:text-zinc-400">
                 Triage customer tickets, keep urgent requests visible, and reply as Mintcom Support.
               </p>
             </div>
@@ -246,14 +247,14 @@ export const SupportAdminPage = () => {
               <button
                 onClick={fetchTickets}
                 disabled={loading}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-stone-900 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-stone-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
               >
                 <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
                 Refresh
               </button>
               <button
                 onClick={() => navigate('/support/admin/feedback')}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-mintcom-green px-4 py-3 text-sm font-black text-black transition-opacity hover:opacity-90"
+                className={primaryButtonInlineClass}
               >
                 <Star size={16} />
                 Feedback
@@ -268,14 +269,14 @@ export const SupportAdminPage = () => {
               { label: 'SLA overdue', value: deskStats.stale, icon: TimerReset, tone: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
               { label: 'Resolved', value: stats.resolved, icon: CheckCircle2, tone: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
             ].map((item) => (
-              <div key={item.label} className="rounded-2xl border border-gray-100 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
+              <div key={item.label} className="rounded-2xl border border-stone-100 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-800/40">
                 <div className="flex items-center gap-3">
                   <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${item.bg}`}>
                     <item.icon size={20} className={item.tone} />
                   </div>
                   <div>
-                    <p className="text-2xl font-black leading-none text-gray-900 dark:text-white">{item.value}</p>
-                    <p className="mt-1 text-sm font-bold text-gray-500 dark:text-gray-400">{item.label}</p>
+                    <p className="text-2xl font-black leading-none text-stone-900 dark:text-zinc-100">{item.value}</p>
+                    <p className="mt-1 text-sm font-bold text-stone-500 dark:text-zinc-400">{item.label}</p>
                   </div>
                 </div>
               </div>
@@ -284,31 +285,31 @@ export const SupportAdminPage = () => {
 
           <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
             <aside className="space-y-3">
-              <div className="rounded-2xl border border-gray-100 bg-white p-3 dark:border-white/10 dark:bg-white/[0.03]">
+              <div className="rounded-2xl border border-stone-100 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-800/40">
                 {queueItems.map((item) => (
                   <button
                     key={item.key}
                     onClick={() => setQueue(item.key)}
                     className={`flex w-full items-center justify-between rounded-xl px-3 py-3 text-left transition-colors ${
                       queue === item.key
-                        ? 'bg-gray-900 text-white dark:bg-white dark:text-black'
-                        : 'text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5'
+                        ? 'bg-stone-900 text-white dark:bg-white dark:text-black'
+                        : 'text-stone-600 hover:bg-stone-50 dark:text-zinc-300 dark:hover:bg-zinc-800'
                     }`}
                   >
                     <span className="flex items-center gap-2 text-sm font-bold">
                       <item.icon size={16} />
                       {item.label}
                     </span>
-                    <span className={`rounded-lg px-2 py-0.5 text-xs font-black ${queue === item.key ? 'bg-white/15 dark:bg-black/10' : 'bg-gray-100 dark:bg-white/10'}`}>
+                    <span className={`rounded-lg px-2 py-0.5 text-xs font-black ${queue === item.key ? 'bg-zinc-800 dark:bg-black/10' : 'bg-stone-100 dark:bg-zinc-800'}`}>
                       {item.count}
                     </span>
                   </button>
                 ))}
               </div>
 
-              <div className="rounded-2xl border border-gray-100 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
-                <h2 className="font-barlow mb-3 text-sm font-black text-gray-900 dark:text-white">Triage Rules</h2>
-                <div className="space-y-3 text-xs font-medium text-gray-500 dark:text-gray-400">
+              <div className="rounded-2xl border border-stone-100 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-800/40">
+                <h2 className="font-barlow mb-3 text-sm font-black text-stone-900 dark:text-zinc-100">Triage Rules</h2>
+                <div className="space-y-3 text-xs font-medium text-stone-500 dark:text-zinc-400">
                   <p>Urgent tickets target a 2 hour first response.</p>
                   <p>High priority tickets target 8 hours.</p>
                   <p>Resolved tickets can still be reopened from the conversation page.</p>
@@ -317,10 +318,10 @@ export const SupportAdminPage = () => {
             </aside>
 
             <section>
-              <div className="mb-4 rounded-2xl border border-gray-100 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
+              <div className="mb-4 rounded-2xl border border-stone-100 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-800/40">
                 <div className="flex flex-col gap-3 md:flex-row">
                   <div className="relative flex-1">
-                    <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-stone-400" size={18} />
                     <input
                       maxLength={255}
                       type="text"
@@ -330,13 +331,13 @@ export const SupportAdminPage = () => {
                         if (e.key === 'Enter') fetchTickets();
                       }}
                       placeholder={formatInputPlaceholder('Search ticket number, subject, email, or customer...', t('common.locale'))}
-                      className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 ps-12 pe-11 text-base sm:text-sm font-bold text-gray-700 outline-none transition-colors focus:border-mintcom-green/50 focus:ring-2 focus:ring-mintcom-green/20 dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+                      className="w-full rounded-xl border border-stone-200 bg-stone-50 py-3 ps-12 pe-11 text-base sm:text-sm font-bold text-stone-700 outline-none transition-colors focus:border-mintcom-green/50 focus:ring-2 focus:ring-mintcom-green/20 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
                     />
                     {searchQuery && (
                       <button
                         type="button"
                         onClick={() => setSearchQuery('')}
-                        className="absolute right-2.5 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/10"
+                        className="absolute right-2.5 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg text-stone-400 hover:bg-stone-100 hover:text-stone-600 dark:hover:bg-zinc-800"
                       >
                         <X size={13} />
                       </button>
@@ -344,14 +345,14 @@ export const SupportAdminPage = () => {
                   </div>
                   <button
                     onClick={() => setShowFilters((value) => !value)}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-100 px-4 py-3 text-sm font-bold text-gray-700 transition-colors hover:bg-gray-200 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-stone-100 px-4 py-3 text-sm font-bold text-stone-700 transition-colors hover:bg-stone-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
                   >
                     <Filter size={18} />
                     Filters
                   </button>
                   <button
                     onClick={fetchTickets}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-mintcom-green px-5 py-3 text-sm font-black text-black transition-opacity hover:opacity-90"
+                    className={primaryButtonInlineClass}
                   >
                     Apply
                   </button>
@@ -365,7 +366,7 @@ export const SupportAdminPage = () => {
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="mt-4 grid gap-4 border-t border-gray-100 pt-4 dark:border-white/10 md:grid-cols-2">
+                      <div className="mt-4 grid gap-4 border-t border-stone-100 pt-4 dark:border-zinc-800 md:grid-cols-2">
                         <FilterGroup
                           label="Status"
                           value={statusFilter}
@@ -387,12 +388,12 @@ export const SupportAdminPage = () => {
               {loading ? (
                 <SurfaceLoader message="Loading support queue..." paddingClassName="py-16" />
               ) : filteredTickets.length === 0 ? (
-                <div className="rounded-2xl border border-gray-100 bg-white p-16 text-center dark:border-white/10 dark:bg-white/[0.03]">
-                  <Inbox className="mx-auto mb-4 h-14 w-14 text-gray-300 dark:text-gray-600" />
-                  <h3 className="font-barlow mb-2 text-lg font-black text-gray-900 dark:text-white">
+                <div className="rounded-2xl border border-stone-100 bg-white p-16 text-center dark:border-zinc-800 dark:bg-zinc-800/40">
+                  <Inbox className="mx-auto mb-4 h-14 w-14 text-stone-300 dark:text-zinc-600" />
+                  <h3 className="font-barlow mb-2 text-lg font-black text-stone-900 dark:text-zinc-100">
                     {hasAdminSearch ? t('common.noResults') : hasAdminFilters ? t('common.noFilteredResults') : 'No Tickets Found'}
                   </h3>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  <p className="text-sm font-medium text-stone-500 dark:text-zinc-400">
                     {hasAdminSearch
                       ? t('common.noMatchingResults', { entity: 'tickets', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
                       : hasAdminFilters
@@ -402,7 +403,7 @@ export const SupportAdminPage = () => {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between px-1 text-sm font-bold text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center justify-between px-1 text-sm font-bold text-stone-500 dark:text-zinc-400">
                     <span>{filteredTickets.length} ticket{filteredTickets.length === 1 ? '' : 's'}</span>
                     <span>Sorted by reply need, priority, and last update</span>
                   </div>
@@ -438,7 +439,7 @@ function FilterGroup({
 }) {
   return (
     <div>
-      <p className="mb-2 text-xs font-black uppercase tracking-wider text-gray-400">{label}</p>
+      <p className="mb-2 text-xs font-black uppercase tracking-wider text-stone-400">{label}</p>
       <div className="flex flex-wrap gap-2">
         {options.map((option) => (
           <button
@@ -446,8 +447,8 @@ function FilterGroup({
             onClick={() => onChange(option)}
             className={`rounded-lg px-3 py-1.5 text-xs font-bold capitalize transition-colors ${
               value === option
-                ? 'bg-gray-900 text-white dark:bg-white dark:text-black'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15'
+                ? 'bg-stone-900 text-white dark:bg-white dark:text-black'
+                : 'bg-stone-100 text-stone-600 hover:bg-stone-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800'
             }`}
           >
             {option.replace('_', ' ')}
@@ -472,16 +473,16 @@ function TicketRow({ ticket, index, onOpen }: { ticket: AdminTicket; index: numb
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(index * 0.025, 0.25) }}
-      className={`block w-full rounded-2xl border bg-white p-5 text-left transition-all hover:border-mintcom-green/40 hover:shadow-lg hover:shadow-mintcom-green/5 dark:bg-white/[0.03] ${
+      className={`block w-full rounded-2xl border bg-white p-5 text-left transition-all hover:border-mintcom-green/40 hover:shadow-lg hover:shadow-mintcom-green/5 dark:bg-zinc-800/40 ${
         waitingForSupport
           ? 'border-amber-300 dark:border-amber-500/40'
-          : 'border-gray-100 dark:border-white/10'
+          : 'border-stone-100 dark:border-zinc-800'
       }`}
     >
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
           <div className="mb-2 flex flex-wrap items-center gap-2">
-            <span className="font-mono text-xs font-black text-gray-400">{ticket.ticketNumber}</span>
+            <span className="font-mono text-xs font-black text-stone-400">{ticket.ticketNumber}</span>
             {waitingForSupport && (
               <span className="inline-flex items-center gap-1 rounded-lg bg-amber-100 px-2 py-1 text-[11px] font-black text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
                 <AlertTriangle size={12} />
@@ -502,8 +503,8 @@ function TicketRow({ ticket, index, onOpen }: { ticket: AdminTicket; index: numb
             </span>
           </div>
 
-          <h3 className="font-barlow truncate text-base font-black text-gray-900 dark:text-white">{ticket.subject}</h3>
-          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-gray-500 dark:text-gray-400">
+          <h3 className="font-barlow truncate text-base font-black text-stone-900 dark:text-zinc-100">{ticket.subject}</h3>
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-stone-500 dark:text-zinc-400">
             <span className="inline-flex items-center gap-1">
               <UserRound size={13} />
               {ticket.requesterName || 'Customer'}
@@ -517,7 +518,7 @@ function TicketRow({ ticket, index, onOpen }: { ticket: AdminTicket; index: numb
           </div>
 
           {ticket.lastMessage && (
-            <p className="mt-3 line-clamp-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+            <p className="mt-3 line-clamp-2 text-sm font-medium text-stone-600 dark:text-zinc-300">
               <span className="font-black">
                 {ticket.lastMessage.senderType === 'support' ? 'Support: ' : 'Customer: '}
               </span>
@@ -527,11 +528,11 @@ function TicketRow({ ticket, index, onOpen }: { ticket: AdminTicket; index: numb
         </div>
 
         <div className="flex items-center justify-between gap-3 lg:flex-col lg:items-end">
-          <span className="inline-flex items-center gap-1.5 rounded-xl bg-gray-100 px-3 py-2 text-xs font-black text-gray-600 dark:bg-white/10 dark:text-gray-300">
+          <span className="inline-flex items-center gap-1.5 rounded-xl bg-stone-100 px-3 py-2 text-xs font-black text-stone-600 dark:bg-zinc-800 dark:text-zinc-300">
             <MessageSquare size={14} />
             {ticket.messageCount}
           </span>
-          <ChevronRight className="h-5 w-5 text-gray-300 transition-colors group-hover:text-mintcom-green" />
+          <ChevronRight className="h-5 w-5 text-stone-300 transition-colors group-hover:text-mintcom-green" />
         </div>
       </div>
     </motion.button>

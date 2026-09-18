@@ -26,7 +26,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { ProductFormModal } from '../../components/forms/ProductFormModal';
 import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
-import { SelectInput, Pagination, PageHeader, Badge, EmptyState, ListFilterBar, stockLevel } from '../../components/ui';
+import { SelectInput, Pagination, PageHeader, Badge, EmptyState, ListFilterBar, stockLevel, primaryButtonInlineClass } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { OptimizedImage, ThumbnailImage } from '../../components/OptimizedImage';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -1172,7 +1172,7 @@ export function ProductsPage() {
                     </button>
                     <button
                         onClick={handleCreateNew}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                        className={primaryButtonInlineClass}
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         <span className="hidden xs:inline">{t('products.addProduct')}</span>
@@ -1412,7 +1412,7 @@ export function ProductsPage() {
                         !hasAnyProducts ? (
                             <button
                                 onClick={handleCreateNew}
-                                className="flex items-center gap-2 px-4 py-2.5 bg-mintcom-green text-black font-semibold text-sm rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                                className={primaryButtonInlineClass}
                             >
                                 <Plus size={16} />
                                 {t('products.messages.addFirst')}

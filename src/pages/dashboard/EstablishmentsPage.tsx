@@ -13,7 +13,7 @@ import {
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
-import { EmptyState, SearchInput, Pagination, PageHeader, Badge } from '../../components/ui';
+import { EmptyState, SearchInput, Pagination, PageHeader, Badge, primaryButtonInlineClass, primaryButtonClass } from '../../components/ui';
 import { useTranslation } from 'react-i18next';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatBusinessTypeLabel } from '../../utils/businessTypeLabel';
@@ -120,7 +120,7 @@ export function EstablishmentsPage() {
               <>
                   <button
                       onClick={() => navigate('/onboarding')}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                      className={primaryButtonInlineClass}
                   >
                       <Plus size={18} strokeWidth={2.5} />
                       <span>{t('establishments.addLocation')}</span>
@@ -218,7 +218,7 @@ export function EstablishmentsPage() {
                 {/* Action Button */}
                 <div className="relative z-10">
                   {currentEstablishment?.id === est.id ? (
-                    <div className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20">
+                    <div className={primaryButtonClass}>
                       <CheckCircle size={18} strokeWidth={3} />
                       <span className="font-black text-xs tracking-[0.2em]">{t('establishments.currentLocation')}</span>
                     </div>

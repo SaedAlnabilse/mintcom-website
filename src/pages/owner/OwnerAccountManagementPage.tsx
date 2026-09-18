@@ -41,7 +41,7 @@ import { BusyOverlay } from '../../components/BusyOverlay';
 import toast from 'react-hot-toast';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { SectionLoader } from '../../components/LoadingState';
-import { Pagination, Modal, ModalHeader, ModalBody, Badge, avatarClass, primaryButtonClass } from '../../components/ui';
+import { Pagination, Modal, ModalHeader, ModalBody, Badge, avatarClass, primaryButtonClass, primaryButtonInlineClass } from '../../components/ui';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { StepUpVerifier } from '../../components/StepUpVerifier';
 import { reauthHeaders } from '../../services/stepUp';
@@ -574,13 +574,13 @@ export function OwnerAccountManagementPage() {
                                         </button>
                                         <button
                                             onClick={handleSaveProfile}
-                                            className="flex items-center gap-2 px-3.5 py-2 bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black rounded-xl text-sm font-semibold transition-colors disabled:opacity-70"
+                                            className={`${primaryButtonInlineClass} disabled:opacity-70`}
                                             disabled={isSaving}
                                         >
                                             {isSaving ? (
                                                 <>
-                                                    {/* design-token-exempt: spinner track must match the CTA's own text-black on mintcom-green */}
-                                                    <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                                                    {/* design-token-exempt: spinner track follows the primary CTA's own text color — white on stone-900, black on mint in dark */}
+                                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white dark:border-black/20 dark:border-t-black rounded-full animate-spin" />
                                                     {t('owner.account.saving')}
                                                 </>
                                             ) : (
@@ -1534,7 +1534,7 @@ export function OwnerAccountManagementPage() {
                                     {accountDetails?.deletionRequestedAt ? (
                                         <button
                                             onClick={handleRestoreAccount}
-                                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black rounded-xl text-sm font-semibold transition-colors"
+                                            className={primaryButtonClass}
                                         >
                                             {t('owner.account.restoreMyAccount')}
                                         </button>

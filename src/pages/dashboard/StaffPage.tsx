@@ -25,7 +25,7 @@ import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { exportTable } from '../../utils/export';
 import type { ExportFormat } from '../../utils/export';
 import { ExportMenu } from '../../components/ExportMenu';
-import { SearchInput, SelectInput, Pagination, PageHeader, Badge } from '../../components/ui';
+import { SearchInput, SelectInput, Pagination, PageHeader, Badge, primaryButtonInlineClass } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { PortalDropdown } from '../../components/PortalDropdown';
@@ -494,7 +494,7 @@ export function StaffPage() {
                   <ExportMenu onExport={handleExport} className="hidden sm:flex" />
                   <button
                       onClick={handleOpenAddEmployeeModal}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                      className={primaryButtonInlineClass}
                   >
                       <Plus size={18} strokeWidth={2.5} />
                       <span className="hidden xs:inline">{t('staff.addMember')}</span>

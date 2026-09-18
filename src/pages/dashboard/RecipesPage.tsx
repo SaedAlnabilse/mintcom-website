@@ -24,7 +24,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { CustomSelect } from '../../components/CustomSelect';
 import { QuickInfo } from '../../components/QuickInfo';
-import { EmptyState, ListFilterBar, Pagination, SelectInput, PageHeader, Badge } from '../../components/ui';
+import { EmptyState, ListFilterBar, Pagination, SelectInput, PageHeader, Badge, primaryButtonInlineClass } from '../../components/ui';
 import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton } from '../../components/ui';
 import { biIcon } from '../../components/ui/BiIcon';
 import { StatValue } from '../../components/ui/StatValue';
@@ -859,7 +859,7 @@ export function RecipesPage() {
                               setShowSubRecipeModal(true);
                           }
                       }}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                      className={primaryButtonInlineClass}
                   >
                       <Plus size={18} strokeWidth={2.5} />
                       <span>{activeTab === 'materials' ? t('inventory.addIngredient', {defaultValue: 'Add Ingredient'}) : activeTab === 'final' ? t('manufacturing.linkProduct') : t('manufacturing.newPrep')}</span>

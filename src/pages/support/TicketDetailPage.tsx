@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { primaryButtonInlineClass } from '../../components/ui';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -323,11 +324,11 @@ export const TicketDetailPage = () => {
     open: { label: t('support.tickets.status.open'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: AlertCircle, dotColor: 'bg-blue-500' },
     in_progress: { label: t('support.tickets.status.inProgress'), color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/15', icon: Loader2, dotColor: 'bg-amber-500' },
     resolved: { label: t('support.tickets.status.resolved'), color: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50 dark:bg-emerald-500/10', icon: CheckCircle2, dotColor: 'bg-mintcom-green' },
-    closed: { label: t('support.tickets.status.closed'), color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-500/15', icon: XCircle, dotColor: 'bg-gray-400' },
+    closed: { label: t('support.tickets.status.closed'), color: 'text-stone-500 dark:text-zinc-400', bg: 'bg-stone-100 dark:bg-zinc-500/15', icon: XCircle, dotColor: 'bg-stone-400' },
   };
 
   const priorityConfig: Record<string, { label: string; color: string; bg: string }> = {
-    low: { label: t('support.tickets.priority.low'), color: 'text-gray-600 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-500/15' },
+    low: { label: t('support.tickets.priority.low'), color: 'text-stone-600 dark:text-zinc-400', bg: 'bg-stone-100 dark:bg-zinc-500/15' },
     medium: { label: t('support.tickets.priority.medium'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15' },
     high: { label: t('support.tickets.priority.high'), color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-500/15' },
     urgent: { label: t('support.tickets.priority.urgent'), color: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-500/15' },
@@ -377,14 +378,14 @@ export const TicketDetailPage = () => {
         <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
           <div className="mx-auto w-full max-w-4xl px-6">
-            <div className="max-w-4xl mx-auto rounded-3xl border border-red-100 bg-white dark:border-red-500/20 dark:bg-white/[0.03] p-16 text-center">
+            <div className="max-w-4xl mx-auto rounded-2xl border border-red-100 bg-white dark:border-red-500/20 dark:bg-zinc-800/40 p-16 text-center">
               <div className="w-20 h-20 bg-red-50 dark:bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <AlertCircle size={36} className="text-red-500" />
               </div>
               <h3 className="font-barlow text-xl font-bold mb-2">
                 {t('support.tickets.loadErrorTitle', { defaultValue: "Couldn't load this ticket" })}
               </h3>
-              <p className="text-gray-500 dark:text-gray-400 mb-8">
+              <p className="text-stone-500 dark:text-zinc-400 mb-8">
                 {t('support.tickets.loadErrorDesc', {
                   defaultValue:
                     'We were unable to reach the support service. Please check your connection and try again.',
@@ -392,7 +393,7 @@ export const TicketDetailPage = () => {
               </p>
               <button
                 onClick={() => fetchTicket()}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
+                className={primaryButtonInlineClass}
               >
                 <Loader2 size={18} />
                 {t('common.retry', { defaultValue: 'Try again' })}
@@ -412,17 +413,17 @@ export const TicketDetailPage = () => {
         <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
           <div className="mx-auto w-full max-w-4xl px-6">
-            <div className="max-w-4xl mx-auto rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-16 text-center">
-              <div className="w-20 h-20 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Inbox size={36} className="text-gray-400" />
+            <div className="max-w-4xl mx-auto rounded-2xl border border-stone-100 bg-white dark:border-zinc-800 dark:bg-zinc-800/40 p-16 text-center">
+              <div className="w-20 h-20 bg-stone-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Inbox size={36} className="text-stone-400" />
               </div>
               <h3 className="font-barlow text-xl font-bold mb-2">{t('support.tickets.notFound')}</h3>
-              <p className="text-gray-500 dark:text-gray-400 mb-8">
+              <p className="text-stone-500 dark:text-zinc-400 mb-8">
                 Ticket <span className="font-mono font-bold">{ticketId}</span> was not found.
               </p>
               <Link
                 to="/support/tickets"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
+                className={primaryButtonInlineClass}
               >
                 <ArrowLeft size={18} />
                 Back to Tickets
@@ -459,7 +460,7 @@ export const TicketDetailPage = () => {
               </Link>
               <button
                 onClick={handleCopyId}
-                className="flex items-center gap-1.5 text-sm font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors font-mono"
+                className="flex items-center gap-1.5 text-sm font-bold text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300 transition-colors font-mono"
               >
                 {ticket.id}
                 {copiedId ? <Check size={14} className="text-mintcom-green" /> : <Copy size={14} />}
@@ -482,7 +483,7 @@ export const TicketDetailPage = () => {
                     {priority.label} {t('support.tickets.priorityLabel')}
                   </span>
                   {/* Category */}
-                  <span className="flex items-center gap-1 text-sm font-medium text-gray-500 capitalize">
+                  <span className="flex items-center gap-1 text-sm font-medium text-stone-500 capitalize">
                     <Tag size={14} />
                     {ticket.category}
                   </span>
@@ -511,7 +512,7 @@ export const TicketDetailPage = () => {
               <div>
                 <p className="mb-1 text-xs font-semibold text-stone-400">Messages</p>
                 <p className="flex items-center gap-1.5 text-sm font-semibold">
-                  <MessageSquare size={14} className="text-gray-400" />
+                  <MessageSquare size={14} className="text-stone-400" />
                   {ticket.messages.length}
                 </p>
               </div>
@@ -557,7 +558,7 @@ export const TicketDetailPage = () => {
                           ? message.senderName.replace(/\\s*\\(Mintcom Support\\)\\s*$/i, '')
                           : message.senderName}
                       </span>
-                      <span className="text-xs text-gray-400">{formatTimestamp(message.timestamp)}</span>
+                      <span className="text-xs text-stone-400">{formatTimestamp(message.timestamp)}</span>
                     </div>
 
                     <div
@@ -569,8 +570,8 @@ export const TicketDetailPage = () => {
                       <p className="whitespace-pre-wrap break-words text-[15px] leading-relaxed">{message.content}</p>
 
                       {message.attachments && message.attachments.length > 0 && (
-                        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-white/10">
-                          <p className="text-xs font-bold text-gray-400 mb-2">{t('support.tickets.attachments')}</p>
+                        <div className="mt-3 pt-3 border-t border-stone-200 dark:border-zinc-800">
+                          <p className="text-xs font-bold text-stone-400 mb-2">{t('support.tickets.attachments')}</p>
                           <div className="flex flex-wrap gap-2">
                             {message.attachments.map((att, i) => {
                               const isImage = att.type === 'image' || att.type?.startsWith('image/');
@@ -582,11 +583,11 @@ export const TicketDetailPage = () => {
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   download={!isImage ? att.name : undefined}
-                                  className="inline-flex items-center gap-2 px-3 py-2 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-medium hover:border-mintcom-green/30 transition-colors"
+                                  className="inline-flex items-center gap-2 px-3 py-2 bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-lg text-sm font-medium hover:border-mintcom-green/30 transition-colors"
                                 >
                                   {isImage ? <ImageIcon size={14} /> : <Download size={14} />}
                                   <span className="truncate max-w-[150px]">{att.name}</span>
-                                  {att.size && <span className="text-gray-400">({att.size})</span>}
+                                  {att.size && <span className="text-stone-400">({att.size})</span>}
                                 </a>
                               );
                             })}
@@ -601,15 +602,15 @@ export const TicketDetailPage = () => {
             </div>
 
             {/* ──── Reply form ──── */}
-            <div className="p-6 border-t border-gray-100 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02]">
+            <div className="p-6 border-t border-stone-100 dark:border-zinc-800 bg-stone-50/50 dark:bg-zinc-800/40">
               {isClosed ? (
                 <div className="text-center py-4">
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                  <p className="text-sm text-stone-500 dark:text-zinc-400 mb-3">
                     This ticket is <span className="font-bold">{status.label.toLowerCase()}</span>. Want to reopen it?
                   </p>
                   <button
                     onClick={() => handleChangeStatus('open')}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] text-sm"
+                    className={primaryButtonInlineClass}
                   >
                     Reopen Ticket
                   </button>
@@ -623,14 +624,14 @@ export const TicketDetailPage = () => {
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder={formatInputPlaceholder(t('support.tickets.replyPlaceholder'), t('common.locale'))}
                       rows={4}
-                      className="w-full p-4 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all resize-none"
+                      className="w-full p-4 bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all resize-none"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                           handleSendMessage(e);
                         }
                       }}
                     />
-                    <p className="text-xs text-gray-400 mt-1.5">{t('support.tickets.sendShortcutHint')}</p>
+                    <p className="text-xs text-stone-400 mt-1.5">{t('support.tickets.sendShortcutHint')}</p>
                   </div>
 
                   {/* Attachment chips */}
@@ -639,9 +640,9 @@ export const TicketDetailPage = () => {
                       {replyFiles.map((file, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/10 text-xs font-medium text-gray-700 dark:text-gray-300"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-zinc-800 text-xs font-medium text-stone-700 dark:text-zinc-300"
                         >
-                          <Paperclip size={13} className="text-gray-400" />
+                          <Paperclip size={13} className="text-stone-400" />
                           <span className="max-w-[150px] truncate">{file.name}</span>
                           <button
                             type="button"
@@ -668,7 +669,7 @@ export const TicketDetailPage = () => {
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 text-xs font-medium text-gray-700 dark:text-gray-300 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-stone-200 dark:border-zinc-800 hover:bg-stone-100 dark:hover:bg-zinc-800 text-xs font-medium text-stone-700 dark:text-zinc-300 transition-colors"
                         title="Attach files (max 5, 10MB each)"
                       >
                         <Paperclip size={15} />
@@ -679,7 +680,7 @@ export const TicketDetailPage = () => {
                     <button
                       type="submit"
                       disabled={(!newMessage.trim() && replyFiles.length === 0) || isSending}
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] disabled:opacity-50 shadow-lg shadow-mintcom-green/20"
+                      className={`${primaryButtonInlineClass} disabled:opacity-50`}
                     >
                       {isSending ? (
                         <Loader2 size={18} className="animate-spin" />

@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { DiscountFormModal } from '../../components/forms/DiscountFormModal';
-import { EmptyState, SearchInput, SelectInput, Pagination, PageHeader, Badge } from '../../components/ui';
+import { EmptyState, SearchInput, SelectInput, Pagination, PageHeader, Badge, primaryButtonInlineClass } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
@@ -369,7 +369,7 @@ export function DiscountsPage() {
               <>
                   <button
                       onClick={openCreateModal}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                      className={primaryButtonInlineClass}
                   >
                       <Plus size={18} strokeWidth={2.5} />
                       <span>{t('discounts.newDiscount')}</span>
@@ -469,7 +469,7 @@ export function DiscountsPage() {
                 setEditingDiscount(null);
                 setShowModal(true);
               }}
-              className="flex items-center gap-2 px-4 py-2.5 bg-mintcom-green text-black rounded-lg font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+              className={primaryButtonInlineClass}
             >
               <Plus size={18} strokeWidth={2.5} />
               {t('discounts.newDiscount')}

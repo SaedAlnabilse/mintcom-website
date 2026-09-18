@@ -27,7 +27,7 @@ import api, { extractErrorMessage } from '../../config/api';
 import { fetchAllPages } from '../../utils/fetchAllPages';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
-import { Pagination, ListFilterBar, SelectInput, PageHeader, Badge, stockLevel } from '../../components/ui';
+import { Pagination, ListFilterBar, SelectInput, PageHeader, Badge, stockLevel, primaryButtonInlineClass } from '../../components/ui';
 import { ThumbnailImage } from '../../components/OptimizedImage';
 import { useCurrency } from '../../context/CurrencyContext';
 import { biIcon } from '../../components/ui/BiIcon';
@@ -1609,7 +1609,7 @@ export function StockManagementPage() {
                 type="button"
                 onClick={handleSaveAll}
                 disabled={isSavingAll}
-                className="px-5 py-2 rounded-xl text-xs font-bold bg-mintcom-green hover:bg-mintcom-green/90 text-black transition-all flex items-center gap-2 shadow-lg shadow-mintcom-green/20 disabled:opacity-50"
+                className={`${primaryButtonInlineClass} disabled:opacity-50`}
               >
                 {isSavingAll ? (
                   <>

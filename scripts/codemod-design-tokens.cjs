@@ -25,6 +25,8 @@ const EXACT = {
   'dark:bg-[#050505]': 'dark:bg-zinc-950',
   'dark:bg-[#0A0A0A]': 'dark:bg-zinc-900',
   'dark:bg-[#111111]': 'dark:bg-zinc-900',
+  'dark:bg-[#0a0a0a]': 'dark:bg-zinc-950',
+  'dark:bg-[#0A0A0A]/95': 'dark:bg-zinc-950/95',
   'dark:border-[#0A0A0A]': 'dark:border-zinc-900',
 
   // Oversized geometry

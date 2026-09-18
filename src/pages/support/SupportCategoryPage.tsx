@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { primaryButtonInlineClass } from '../../components/ui';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -216,7 +217,7 @@ export const SupportCategoryPage = () => {
           <h3 className="font-barlow text-lg font-bold tracking-tight">{t('support.cta.stillNeedHelp')}</h3>
           <p className="mt-1 text-sm text-stone-500 dark:text-zinc-400">{t('support.cta.stillNeedHelpDesc')}</p>
           <button onClick={handleSubmitTicket}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110">
+            className={`${primaryButtonInlineClass} mt-4`}>
             <Ticket size={15} />
             {t('support.quickLinks.submitTicket')}
           </button>

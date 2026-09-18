@@ -21,7 +21,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { CustomRoleFormModal } from '../../components/CustomRoleFormModal';
 import { RoleDeleteResolutionModal } from '../../components/RoleDeleteResolutionModal';
-import { Pagination, SearchInput, PageHeader, Badge } from '../../components/ui';
+import { Pagination, SearchInput, PageHeader, Badge, primaryButtonInlineClass } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { getLocalizedRoleName } from '../../utils/roleNames';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -370,7 +370,7 @@ export function CustomRolesPage() {
               <>
                   <button
                       onClick={handleCreateNew}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                      className={primaryButtonInlineClass}
                   >
                       <Plus size={18} strokeWidth={2.5} />
                       <span>{t('dashboard.roles.addRole')}</span>
