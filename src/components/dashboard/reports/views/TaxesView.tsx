@@ -230,8 +230,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                   })}
             </p>
           </div>
-          <div className="absolute end-0 top-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
-        </div>
+                  </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 lg:items-start gap-6">
@@ -270,9 +269,9 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                       : tax.isServiceCharge
                         ? tax.isExemptRow
                           ? 'bg-stone-500/10 text-stone-500 dark:bg-zinc-500/20 dark:text-zinc-400'
-                          : 'bg-teal-500/10 text-teal-600 dark:bg-teal-500/20 dark:text-teal-400'
+                          : 'bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300'
                         : tax.taxType === 'changed'
-                          ? 'bg-indigo-500/10 text-indigo-500 dark:bg-indigo-500/20 dark:text-indigo-400'
+                          ? 'bg-mintcom-green/10 text-emerald-700 dark:text-mintcom-green'
                           : tax.taxType === 'previous'
                             ? 'bg-stone-500/10 text-stone-500 dark:bg-zinc-500/20 dark:text-zinc-400'
                             : 'bg-orange-500/10 text-orange-500 dark:bg-orange-500/20 dark:text-orange-400';

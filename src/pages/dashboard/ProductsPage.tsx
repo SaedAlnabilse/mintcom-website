@@ -26,7 +26,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { ProductFormModal } from '../../components/forms/ProductFormModal';
 import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
-import { SelectInput, Pagination, PageHeader, Badge, EmptyState, ListFilterBar } from '../../components/ui';
+import { SelectInput, Pagination, PageHeader, Badge, EmptyState, ListFilterBar, stockLevel } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { OptimizedImage, ThumbnailImage } from '../../components/OptimizedImage';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -1213,22 +1213,22 @@ export function ProductsPage() {
                 <button
                     onClick={() => setStockFilter(stockFilter === 'yellow' ? 'all' : 'yellow')}
                     className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-zinc-900/60 p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'yellow'
-                        ? 'border-[#ffc107]/50 ring-1 ring-[#ffc107]/30 bg-[#ffc107]/5'
-                        : 'border-stone-200 dark:border-zinc-800 hover:border-[#ffc107]/30'
+                        ? stockLevel.low.cardSelected
+                        : `border-stone-200 dark:border-zinc-800 ${stockLevel.low.cardHover}`
                         }`}
                 >
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="p-2 sm:p-2.5 rounded-xl bg-[#ffc107]/10 text-[#ffc107] transition-transform duration-300">
+                            <div className={`p-2 sm:p-2.5 rounded-xl transition-transform duration-300 ${stockLevel.low.iconBox}`}>
                                 <BiIcon icon="bi-exclamation-triangle" size={19} />
                             </div>
                             <p className="dashboard-stat-title truncate">{t('products.stats.low')}</p>
                         </div>
-                        <div className="w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center text-stone-400 group-hover:text-[#ffc107] transition-colors">
+                        <div className={`w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center text-stone-400 transition-colors ${stockLevel.low.groupHoverText}`}>
                             <ExternalLink size={14} />
                         </div>
                     </div>
-                    <StatValue value={stats.yellowThreshold} isInteger={true} className="text-2xl text-[#ffc107]" />
+                    <StatValue value={stats.yellowThreshold} isInteger={true} className={`text-2xl ${stockLevel.low.text}`} />
                     <p className="text-[13px] font-bold text-stone-500 dark:text-zinc-400 mt-3 leading-relaxed">
                         {t('products.stats.lowDesc')}
                     </p>
@@ -1238,22 +1238,22 @@ export function ProductsPage() {
                 <button
                     onClick={() => setStockFilter(stockFilter === 'red' ? 'all' : 'red')}
                     className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-zinc-900/60 p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'red'
-                        ? 'border-[#D55263]/50 ring-1 ring-[#D55263]/30 bg-[#D55263]/5'
-                        : 'border-stone-200 dark:border-zinc-800 hover:border-[#D55263]/30'
+                        ? stockLevel.out.cardSelected
+                        : `border-stone-200 dark:border-zinc-800 ${stockLevel.out.cardHover}`
                         }`}
                 >
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="p-2 sm:p-2.5 rounded-xl bg-[#D55263]/10 text-[#D55263] transition-transform duration-300">
+                            <div className={`p-2 sm:p-2.5 rounded-xl transition-transform duration-300 ${stockLevel.out.iconBox}`}>
                                 <BiIcon icon="bi-exclamation-octagon" size={19} />
                             </div>
                             <p className="dashboard-stat-title truncate">{t('products.stats.critical')}</p>
                         </div>
-                        <div className="w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center text-stone-400 group-hover:text-[#D55263] transition-colors">
+                        <div className={`w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center text-stone-400 transition-colors ${stockLevel.out.groupHoverText}`}>
                             <ExternalLink size={14} />
                         </div>
                     </div>
-                    <StatValue value={stats.redThreshold} isInteger={true} className="text-2xl text-[#D55263]" />
+                    <StatValue value={stats.redThreshold} isInteger={true} className={`text-2xl ${stockLevel.out.text}`} />
                     <p className="text-[13px] font-bold text-stone-500 dark:text-zinc-400 mt-3 leading-relaxed">
                         {t('products.stats.criticalDesc')}
                     </p>

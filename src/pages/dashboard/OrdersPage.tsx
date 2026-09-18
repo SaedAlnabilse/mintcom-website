@@ -1529,7 +1529,7 @@ export function OrdersPage() {
               className="w-full h-full"
               buttonClassName={`!h-full !min-h-[48px] !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedEmployeeId
                 ? '!bg-mintcom-green/5 !border-mintcom-green !text-mintcom-green'
-                : '!bg-white dark:!bg-[#1E293B] !border-stone-200 dark:!border-zinc-800 hover:!bg-stone-50 dark:hover:!bg-zinc-800'
+                : '!bg-white dark:!bg-zinc-900/60 !border-stone-200 dark:!border-zinc-800 hover:!bg-stone-50 dark:hover:!bg-zinc-800'
                 }`}
             />
           </div>
@@ -1550,7 +1550,7 @@ export function OrdersPage() {
               className="w-full h-full"
               buttonClassName={`!h-full !min-h-[48px] !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedShiftId
                 ? '!bg-mintcom-green/5 !border-mintcom-green !text-mintcom-green'
-                : '!bg-white dark:!bg-[#1E293B] !border-stone-200 dark:!border-zinc-800 hover:!bg-stone-50 dark:hover:!bg-zinc-800'
+                : '!bg-white dark:!bg-zinc-900/60 !border-stone-200 dark:!border-zinc-800 hover:!bg-stone-50 dark:hover:!bg-zinc-800'
                 }`}
             />
           </div>

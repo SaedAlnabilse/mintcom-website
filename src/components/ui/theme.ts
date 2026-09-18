@@ -90,6 +90,65 @@ export const toggleActiveClass =
 export const toggleInactiveClass =
   'text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100';
 
+/* ── Stock levels ─────────────────────────────────────────────
+ * The inventory ok / low / out traffic-light system. These are PRODUCT
+ * semantics, not decoration: the same three colors identify stock state on
+ * the POS app and on printed shelf labels, so they are pinned to exact hex
+ * values rather than mapped onto the Tailwind amber/red ramps, which would
+ * shift the shade. Change a level's color here and every surface follows.
+ *
+ * Written as complete literal class strings on purpose: Tailwind scans source
+ * text, so a class assembled by interpolation (`text-[${COLOR}]`) is never
+ * generated and silently renders as nothing. The hex values are:
+ *   ok  #1b6140 (dark: mintcom-green)
+ *   low #ffc107 (dark: #f8b30a)
+ *   out #D55263 (dark text: #b83749)
+ *
+ * design-token-exempt: pinned inventory traffic-light colors, see above
+ */
+export const stockLevel = {
+  ok: {
+    // design-token-exempt: pinned inventory color
+    text: 'text-[#1b6140] dark:text-mintcom-green',
+    // design-token-exempt: pinned inventory color
+    badge: 'bg-mintcom-green/15 text-[#1b6140] dark:text-mintcom-green border border-mintcom-green/30',
+  },
+  low: {
+    // design-token-exempt: pinned inventory color
+    text: 'text-[#ffc107]',
+    // design-token-exempt: pinned inventory color
+    icon: 'text-amber-500 dark:text-[#f8b30a]',
+    // design-token-exempt: pinned inventory color
+    iconBox: 'bg-[#ffc107]/10 text-[#ffc107]',
+    // design-token-exempt: pinned inventory color
+    badge: 'bg-amber-500/15 text-amber-700 dark:text-[#f8b30a] border border-amber-500/30',
+    // design-token-exempt: pinned inventory color
+    cardSelected: 'border-[#ffc107]/50 ring-1 ring-[#ffc107]/30 bg-[#ffc107]/5',
+    // design-token-exempt: pinned inventory color
+    cardHover: 'hover:border-[#ffc107]/30',
+    // design-token-exempt: pinned inventory color
+    groupHoverText: 'group-hover:text-[#ffc107]',
+  },
+  out: {
+    // design-token-exempt: pinned inventory color
+    text: 'text-[#D55263]',
+    // design-token-exempt: pinned inventory color
+    icon: 'text-[#D55263]',
+    // design-token-exempt: pinned inventory color
+    iconBox: 'bg-[#D55263]/10 text-[#D55263]',
+    // design-token-exempt: pinned inventory color
+    badge: 'bg-[#D55263]/15 text-[#b83749] dark:text-[#D55263] border border-[#D55263]/30',
+    // design-token-exempt: pinned inventory color
+    chip: 'bg-[#D55263]/10 text-[#b83749] dark:text-[#D55263] border-[#D55263]/30',
+    // design-token-exempt: pinned inventory color
+    cardSelected: 'border-[#D55263]/50 ring-1 ring-[#D55263]/30 bg-[#D55263]/5',
+    // design-token-exempt: pinned inventory color
+    cardHover: 'hover:border-[#D55263]/30',
+    // design-token-exempt: pinned inventory color
+    groupHoverText: 'group-hover:text-[#D55263]',
+  },
+} as const;
+
 /* ── Recharts ─────────────────────────────────────────────────
  * Recharts takes raw colors via props/inline style, so it cannot read the
  * Tailwind tokens above. These are the same stone/zinc ramp as hex, so charts

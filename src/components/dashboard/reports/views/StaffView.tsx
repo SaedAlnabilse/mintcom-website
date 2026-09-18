@@ -345,7 +345,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                           className="hover:bg-stone-50/50 dark:hover:bg-zinc-800/40 transition-colors"
                         >
                           <td className="px-4 py-4 text-start">
-                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs mx-auto sm:mx-0 ${isTopRank ? 'bg-[#7dc6a2]/20 text-[#7dc6a2]' : 'bg-stone-100 dark:bg-zinc-800 text-stone-400'}`}>
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs mx-auto sm:mx-0 ${isTopRank ? 'bg-mintcom-green/20 text-emerald-700 dark:text-mintcom-green' : 'bg-stone-100 dark:bg-zinc-800 text-stone-400'}`}>
                               <StatValue 
                                 value={globalIndex + 1} 
                                 isInteger={true} 

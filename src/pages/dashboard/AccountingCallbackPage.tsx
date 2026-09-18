@@ -88,7 +88,8 @@ export const AccountingCallbackPage: React.FC = () => {
       <div className="max-w-md w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl p-8 shadow-xl text-center space-y-6">
         {isProcessing ? (
           <div className="space-y-4 py-8">
-            <div className="w-16 h-16 rounded-2xl bg-[#13B5EA]/10 text-[#13B5EA] flex items-center justify-center mx-auto">
+            {/* design-token-exempt: Xero brand blue on the Xero logo tile */}
+                    <div className="w-16 h-16 rounded-2xl bg-[#13B5EA]/10 text-[#13B5EA] flex items-center justify-center mx-auto">
               <Loader2 size={32} className="animate-spin" />
             </div>
             <h2 className="text-xl font-bold text-stone-900 dark:text-zinc-100">

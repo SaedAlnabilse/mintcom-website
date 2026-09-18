@@ -497,7 +497,7 @@ export function DiscountsPage() {
                     <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                     <div className="flex justify-between items-start mb-6 relative z-10">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-mintcom-green/10 text-emerald-700 dark:text-mintcom-green' : 'bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300'}`}>
                         {discount.type === 'percentage' ? <Percent size={20} /> : <DollarSign size={20} />}
                       </div>
 
@@ -615,7 +615,7 @@ export function DiscountsPage() {
                       >
                           <td className="px-6 py-4 text-start">
                             <div className="flex items-center gap-4">
-                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shrink-0 ${discount.type === 'percentage' ? 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shrink-0 ${discount.type === 'percentage' ? 'bg-mintcom-green/10 text-emerald-700 dark:text-mintcom-green' : 'bg-stone-100 text-stone-600 dark:bg-zinc-800 dark:text-zinc-300'}`}>
                                 {discount.type === 'percentage' ? <Percent size={18} /> : <DollarSign size={18} />}
                               </div>
                               <div>

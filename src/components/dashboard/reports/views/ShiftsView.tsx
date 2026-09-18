@@ -1,4 +1,5 @@
 import { Clock } from 'lucide-react';
+import { iconBoxNeutralClass } from '../../../../components/ui';
 import { BiIcon } from '../../../ui/BiIcon';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { Shift } from '../../../../types';
@@ -183,7 +184,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: S
         </div>
         <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 flex flex-col transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
+            <div className={iconBoxNeutralClass}>
               <BiIcon icon="bi-speedometer2" size={20} />
             </div>
             <p className="dashboard-stat-title">{t('orders.reports.shifts.salesPerHour', { defaultValue: 'Sales per Hour' })}</p>

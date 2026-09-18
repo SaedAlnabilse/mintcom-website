@@ -27,7 +27,7 @@ import api, { extractErrorMessage } from '../../config/api';
 import { fetchAllPages } from '../../utils/fetchAllPages';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
-import { Pagination, ListFilterBar, SelectInput, PageHeader, Badge } from '../../components/ui';
+import { Pagination, ListFilterBar, SelectInput, PageHeader, Badge, stockLevel } from '../../components/ui';
 import { ThumbnailImage } from '../../components/OptimizedImage';
 import { useCurrency } from '../../context/CurrencyContext';
 import { biIcon } from '../../components/ui/BiIcon';
@@ -1173,20 +1173,20 @@ export function StockManagementPage() {
                           {/* Status Badge */}
                           <td className="px-6 py-4 text-center">
                             {level === 'in_stock' && (
-                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-mintcom-green/15 text-[#1b6140] dark:text-mintcom-green border border-mintcom-green/30">
+                              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold ${stockLevel.ok.badge}`}>
                                 <CheckCircle2 className="w-3.5 h-3.5 text-mintcom-green" />
                                 {t('stockManagement.inStock', { defaultValue: 'In Stock' })}
                               </span>
                             )}
                             {level === 'low' && (
-                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 text-amber-700 dark:text-[#f8b30a] border border-amber-500/30">
-                                <AlertTriangle className="w-3.5 h-3.5 text-amber-500 dark:text-[#f8b30a]" />
+                              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold ${stockLevel.low.badge}`}>
+                                <AlertTriangle className={`w-3.5 h-3.5 ${stockLevel.low.icon}`} />
                                 {t('stockManagement.lowStock', { defaultValue: 'Low Stock' })}
                               </span>
                             )}
                             {level === 'out' && (
-                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#D55263]/15 text-[#b83749] dark:text-[#D55263] border border-[#D55263]/30">
-                                <XCircle className="w-3.5 h-3.5 text-[#D55263]" />
+                              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold ${stockLevel.out.badge}`}>
+                                <XCircle className={`w-3.5 h-3.5 ${stockLevel.out.icon}`} />
                                 {t('stockManagement.outOfStock', { defaultValue: 'Out of Stock' })}
                               </span>
                             )}
@@ -1196,13 +1196,13 @@ export function StockManagementPage() {
                           <td className="px-6 py-4 text-center">
                             <div className="inline-flex items-center gap-1.5 text-xs font-bold">
                               <span
-                                className="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-700 dark:text-[#f8b30a] border border-amber-500/30"
+                                className={`px-2.5 py-1 rounded-lg ${stockLevel.low.badge}`}
                                 title="Low Stock Threshold"
                               >
                                 ≤ {item.lowStockThresholdYellow ?? 5}
                               </span>
                               <span
-                                className="px-2.5 py-1 rounded-lg bg-[#D55263]/15 text-[#b83749] dark:text-[#D55263] border border-[#D55263]/30"
+                                className={`px-2.5 py-1 rounded-lg ${stockLevel.out.badge}`}
                                 title="Critical Out-of-Stock Threshold"
                               >
                                 ≤ {item.lowStockThresholdRed ?? 0}
@@ -1282,7 +1282,7 @@ export function StockManagementPage() {
                                 disabled={!isModified || savingItemId === item.id}
                                 className={`px-3 py-1.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-all ${
                                   isModified
-                                    ? 'bg-mintcom-green hover:bg-[#6cb591] text-black shadow-sm'
+                                    ? 'bg-mintcom-green hover:bg-mintcom-green/90 text-black shadow-sm'
                                     : 'bg-stone-100 dark:bg-zinc-800 text-stone-400 opacity-60 cursor-not-allowed'
                                 }`}
                               >
@@ -1363,7 +1363,7 @@ export function StockManagementPage() {
                               </span>
                             )}
                             {group.isRequired && (
-                              <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-500/15 text-amber-700 dark:text-[#f8b30a] border border-amber-500/30">
+                              <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${stockLevel.low.badge}`}>
                                 {t('attributes.list.mandatory', { defaultValue: 'Required' })}
                               </span>
                             )}
@@ -1498,13 +1498,13 @@ export function StockManagementPage() {
                                   {/* Status Badge */}
                                   <td className="px-6 py-3.5 text-center">
                                     {opt.isAvailable ? (
-                                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-mintcom-green/15 text-[#1b6140] dark:text-mintcom-green border border-mintcom-green/30">
+                                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold ${stockLevel.ok.badge}`}>
                                         <CheckCircle2 className="w-3.5 h-3.5 text-mintcom-green" />
                                         <span>{t('stockManagement.available', { defaultValue: 'Available' })}</span>
                                       </span>
                                     ) : (
-                                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-[#D55263]/15 text-[#b83749] dark:text-[#D55263] border border-[#D55263]/30">
-                                        <XCircle className="w-3.5 h-3.5 text-[#D55263]" />
+                                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold ${stockLevel.out.badge}`}>
+                                        <XCircle className={`w-3.5 h-3.5 ${stockLevel.out.icon}`} />
                                         <span>{t('stockManagement.unavailable', { defaultValue: 'Unavailable' })}</span>
                                       </span>
                                     )}
@@ -1515,7 +1515,7 @@ export function StockManagementPage() {
                                     {opt.trackStock ? (
                                       <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border ${
                                         (opt.availableStock ?? 0) <= 0
-                                          ? 'bg-[#D55263]/10 text-[#b83749] dark:text-[#D55263] border-[#D55263]/30'
+                                          ? stockLevel.out.chip
                                           : (opt.availableStock ?? 0) <= 5
                                             ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30'
                                             : 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'
@@ -1609,7 +1609,7 @@ export function StockManagementPage() {
                 type="button"
                 onClick={handleSaveAll}
                 disabled={isSavingAll}
-                className="px-5 py-2 rounded-xl text-xs font-bold bg-mintcom-green hover:bg-[#6cb591] text-black transition-all flex items-center gap-2 shadow-lg shadow-mintcom-green/20 disabled:opacity-50"
+                className="px-5 py-2 rounded-xl text-xs font-bold bg-mintcom-green hover:bg-mintcom-green/90 text-black transition-all flex items-center gap-2 shadow-lg shadow-mintcom-green/20 disabled:opacity-50"
               >
                 {isSavingAll ? (
                   <>

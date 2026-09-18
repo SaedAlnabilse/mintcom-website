@@ -109,6 +109,8 @@ function collectFiles(dir) {
 const targetFiles = [
   ...collectFiles(path.join(ROOT, 'src', 'pages', 'owner')),
   ...collectFiles(path.join(ROOT, 'src', 'pages', 'brand')),
+  ...collectFiles(path.join(ROOT, 'src', 'pages', 'dashboard')),
+  ...collectFiles(path.join(ROOT, 'src', 'components', 'dashboard')),
   path.join(ROOT, 'src', 'components', 'OwnerLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'BrandLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'DashboardLayout.tsx'),
