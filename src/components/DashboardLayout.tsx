@@ -1207,7 +1207,7 @@ export function DashboardLayout() {
         <main
           data-setup-guide-focus-fallback
           tabIndex={-1}
-          className="flex-1 relative bg-gray-50 dark:bg-mintcom-dark overflow-hidden flex flex-col"
+          className="flex-1 relative bg-cream-100 dark:bg-zinc-950 overflow-hidden flex flex-col"
         >
           <div ref={mainContentRef} className="flex-1 overflow-y-auto relative z-10 custom-scrollbar p-4 lg:px-10 lg:pt-8 lg:pb-6 pb-24 w-full">
             {isDashboardContentLocked ? (

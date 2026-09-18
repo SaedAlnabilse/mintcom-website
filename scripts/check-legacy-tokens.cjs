@@ -18,12 +18,22 @@ const RULES = [
   {
     name: 'gray-palette',
     hint: 'use stone-* (light) / zinc-* (dark)',
-    re: /\bgray-(100|200|300|400|500|600|700|800|900)\b/,
+    // Shade 50 included deliberately: `bg-gray-50` was the dashboard's page
+    // canvas and slipped past this rule for the whole sweep.
+    re: /\bgray-(50|100|200|300|400|500|600|700|800|900)\b/,
   },
   {
     name: 'slate-palette',
     hint: 'use stone-* (light) / zinc-* (dark)',
     re: /\bslate-(50|100|200|300|400|500|600|700|800|900|950)\b/,
+  },
+  {
+    // The pre-redesign dark canvas. Still valid in the POS demo and marketing
+    // surfaces (and in index.css for <body>), which are not guarded here — but
+    // inside an app screen it means the page never got the new background.
+    name: 'legacy-dark-canvas',
+    hint: 'use dark:bg-zinc-950 (page) or dark:bg-zinc-900/60 (card)',
+    re: /\b(?:[a-z-]+:)*bg-mintcom-dark\b/,
   },
   {
     name: 'rainbow-accent',
@@ -117,8 +127,7 @@ const targetFiles = [
   path.join(ROOT, 'src', 'components', 'OwnerLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'BrandLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'DashboardLayout.tsx'),
-  path.join(ROOT, 'src', 'components', 'notifications', 'BackofficeAlertsView.tsx'),
-  path.join(ROOT, 'src', 'components', 'notifications', 'AlertRow.tsx'),
+  ...collectFiles(path.join(ROOT, 'src', 'components', 'notifications')),
   ...collectFiles(path.join(ROOT, 'src', 'components', 'ui')),
 ];
 

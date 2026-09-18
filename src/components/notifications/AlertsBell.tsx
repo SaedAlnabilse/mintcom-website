@@ -85,7 +85,7 @@ export function AlertsBell({
         className={`relative inline-flex h-10 w-10 items-center justify-center rounded-xl transition focus:outline-none focus:ring-2 focus:ring-mintcom-green ${
           isActive
             ? 'bg-mintcom-green/10 text-mintcom-green'
-            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/[0.06] dark:hover:text-white'
+            : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
         }`}
         aria-label={bellLabel}
         aria-current={isActive ? 'page' : undefined}
@@ -93,7 +93,7 @@ export function AlertsBell({
         <Bell size={20} aria-hidden="true" />
         {unreadCount > 0 && (
           <span
-            className="absolute -end-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-black leading-none text-white ring-2 ring-white dark:ring-[#0D0D0D]"
+            className="absolute -end-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-black leading-none text-white ring-2 ring-white dark:ring-zinc-900"
             aria-hidden="true"
           >
             {badge}
