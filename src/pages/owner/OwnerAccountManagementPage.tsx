@@ -41,7 +41,7 @@ import { BusyOverlay } from '../../components/BusyOverlay';
 import toast from 'react-hot-toast';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { SectionLoader } from '../../components/LoadingState';
-import { Pagination, Modal, ModalHeader, ModalBody, Badge, avatarClass } from '../../components/ui';
+import { Pagination, Modal, ModalHeader, ModalBody, Badge, avatarClass, primaryButtonClass } from '../../components/ui';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { StepUpVerifier } from '../../components/StepUpVerifier';
 import { reauthHeaders } from '../../services/stepUp';
@@ -1628,7 +1628,7 @@ export function OwnerAccountManagementPage() {
                                 <button
                                     onClick={() => setDeleteStep(2)}
                                     disabled={!deleteReasonKey}
-                                    className="w-full rounded-xl bg-stone-900 dark:bg-white py-3 text-sm font-semibold text-white dark:text-black disabled:opacity-50 transition-colors"
+                                    className={primaryButtonClass}
                                 >
                                     {t('common.continue')}
                                 </button>

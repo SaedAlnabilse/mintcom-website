@@ -16,7 +16,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { CustomRoleFormModal } from '../../components/CustomRoleFormModal';
 import { RoleDeleteResolutionModal } from '../../components/RoleDeleteResolutionModal';
-import { Pagination, PageHeader, ListFilterBar } from '../../components/ui';
+import { Pagination, PageHeader, ListFilterBar, primaryButtonInlineClass } from '../../components/ui';
 import { getLocalizedRoleName } from '../../utils/roleNames';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { retryTransientRequest } from '../../utils/retryTransientRequest';
@@ -301,7 +301,7 @@ export function OwnerRolesPage() {
           <>
           <button
             onClick={openCreateModal}
-            className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+            className={primaryButtonInlineClass}
           >
             <Plus size={15} strokeWidth={2} />
             <span>{t('owner.roles.createNew')}</span>

@@ -14,7 +14,7 @@ import {
     Eye,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { EmptyState, Pagination, PageHeader, ListFilterBar, SelectInput, StatCard, StatCardGrid } from '../../components/ui';
+import { EmptyState, Pagination, PageHeader, ListFilterBar, SelectInput, StatCard, StatCardGrid, primaryButtonInlineClass, primaryButtonClass } from '../../components/ui';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { formatBusinessTypeLabel } from '../../utils/businessTypeLabel';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -169,7 +169,7 @@ export function OwnerEstablishmentsPage() {
 
                     <button
                         onClick={handleAddEstablishment}
-                        className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                        className={primaryButtonInlineClass}
                     >
                         <Plus size={15} strokeWidth={2} />
                         <span>{t('owner.overview.addLocation')}</span>
@@ -378,7 +378,7 @@ export function OwnerEstablishmentsPage() {
                                                  e.stopPropagation();
                                                  handleEstablishmentClick(est);
                                              }}
-                                             className="w-full rounded-xl bg-stone-900 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 flex items-center justify-center gap-2 group/btn dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                                             className={`${primaryButtonClass} group/btn`}
                                          >
                                              <span>{t('owner.locations.open')}</span>
                                              <ExternalLink size={14} className="shrink-0" />
@@ -547,7 +547,7 @@ export function OwnerEstablishmentsPage() {
                                                  e.stopPropagation();
                                                  handleEstablishmentClick(est);
                                              }}
-                                             className="rounded-xl bg-stone-900 px-4 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                                             className={primaryButtonInlineClass}
                                          >
                                              {t('owner.locations.enter')}
                                          </button>

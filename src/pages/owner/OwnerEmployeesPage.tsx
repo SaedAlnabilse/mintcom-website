@@ -19,7 +19,7 @@ import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
-import { EmptyState, SelectInput, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ModalCloseButton, PageHeader, ListFilterBar, StatCard, StatCardGrid } from '../../components/ui';
+import { EmptyState, SelectInput, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ModalCloseButton, PageHeader, ListFilterBar, StatCard, StatCardGrid, primaryButtonInlineClass } from '../../components/ui';
 import { PortalDropdown } from '../../components/PortalDropdown';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -488,7 +488,7 @@ export function OwnerEmployeesPage() {
                     <button
                         id="tour-add-employee-btn"
                         onClick={handleOpenAddEmployeeModal}
-                        className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                        className={primaryButtonInlineClass}
                     >
                         <UserPlus size={15} strokeWidth={2} />
                         <span>{t('staff.newEmployee')}</span>

@@ -19,7 +19,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { useAuth } from '../../context/AuthContext';
-import { EmptyState, Pagination, Modal, ModalBody, ModalFooter, ModalCancelButton, ModalCloseButton, PageHeader, Badge, ListFilterBar, SelectInput, StatCard, StatCardGrid } from '../../components/ui';
+import { EmptyState, Pagination, Modal, ModalBody, ModalFooter, ModalCancelButton, ModalCloseButton, PageHeader, Badge, ListFilterBar, SelectInput, StatCard, StatCardGrid, primaryButtonInlineClass } from '../../components/ui';
 import { AppStrings } from '../../constants/AppStrings';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -345,7 +345,7 @@ export default function BrandTeamPage() {
                     <>
                     <button
                         onClick={handleAddEmployee}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                        className={primaryButtonInlineClass}
                     >
                         <UserPlus size={18} strokeWidth={2.5} />
                         <span>{t('staff.newEmployee')}</span>
@@ -451,7 +451,7 @@ export default function BrandTeamPage() {
                                     hasActiveFilters ? (
                                         <button
                                             onClick={clearFilters}
-                                            className="mt-4 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                                            className={`${primaryButtonInlineClass} mt-4`}
                                         >
                                             {t('attributes.filters.reset')}
                                         </button>

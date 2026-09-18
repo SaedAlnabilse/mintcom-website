@@ -30,7 +30,7 @@ import { SecurityVerificationModal } from '../../components/SecurityVerification
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { useAuth } from '../../context/AuthContext';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
-import { EmptyState, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ModalCloseButton, PageHeader, ListFilterBar, SelectInput, StatCard, StatCardGrid } from '../../components/ui';
+import { EmptyState, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ModalCloseButton, PageHeader, ListFilterBar, SelectInput, StatCard, StatCardGrid, primaryButtonInlineClass, primaryButtonClass } from '../../components/ui';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 import { getPersonInitials, getPersonDisplayName } from '../../utils/personName';
@@ -489,7 +489,7 @@ export function OwnerBrandsPage() {
                                 setShowCreateModal(true);
                             }
                         }}
-                        className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                        className={`${primaryButtonInlineClass} w-full justify-center sm:w-auto`}
                     >
                         <Plus size={15} strokeWidth={2} className="shrink-0" />
                         <span className="truncate">{t('owner.brands.createBrand')}</span>
@@ -556,7 +556,7 @@ export function OwnerBrandsPage() {
                                         setShowCreateModal(true);
                                     }
                                 }}
-                                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110 mx-auto"
+                                className={`${primaryButtonInlineClass} mx-auto mt-6`}
                             >
                                 <Link2 size={18} />
                                 {t('owner.brands.createFirstBrand')}
@@ -700,7 +700,7 @@ export function OwnerBrandsPage() {
                                                     const slug = brand.establishmentLoginId || brand.id;
                                                     window.open(`/brand/${slug}`, '_blank');
                                                 }}
-                                                className="flex-1 rounded-xl bg-stone-900 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 flex items-center justify-center gap-2 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                                                className={`${primaryButtonClass} flex-1`}
                                             >
                                                 <span>{t('owner.brands.openDashboard')}</span>
                                                 <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />

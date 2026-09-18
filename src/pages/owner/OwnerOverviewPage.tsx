@@ -30,7 +30,7 @@ import type { DatePeriod } from '../../utils/datePeriods';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatCurrencyCode } from '../../utils/currency';
 import { StatValue } from '../../components/ui/StatValue';
-import { PageHeader, FilterBar, StatCard, StatCardGrid, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass } from '../../components/ui';
+import { PageHeader, FilterBar, StatCard, StatCardGrid, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass, primaryButtonClass } from '../../components/ui';
 import { QuickInfo } from '../../components/QuickInfo';
 import { biIcon } from '../../components/ui/BiIcon';
 
@@ -401,7 +401,7 @@ export function OwnerOverviewPage() {
                         <div className="space-y-2">
                             <button
                                 onClick={() => navigate('/onboarding?new=1')}
-                                className="w-full rounded-xl bg-stone-900 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                                className={primaryButtonClass}
                             >
                                 {t('owner.overview.addLocation')}
                             </button>

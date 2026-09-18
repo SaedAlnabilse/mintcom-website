@@ -16,7 +16,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
-import { EmptyState, Pagination, PageHeader, Badge, FilterBar, StatCard, StatCardGrid, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass, ListFilterBar, SelectInput } from '../../components/ui';
+import { EmptyState, Pagination, PageHeader, Badge, FilterBar, StatCard, StatCardGrid, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass, ListFilterBar, SelectInput, primaryButtonInlineClass } from '../../components/ui';
 import { SingleSelect } from '../../components/SingleSelect';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CustomTimePicker } from '../../components/CustomTimePicker';
@@ -429,7 +429,7 @@ export function BrandLocationsPage() {
             <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
                 <button
                     onClick={() => setIsLinkModalOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex-shrink-0 w-full sm:w-auto justify-center"
+                    className={`${primaryButtonInlineClass} w-full shrink-0 justify-center sm:w-auto`}
                 >
                     <Plus size={16} strokeWidth={3} />
                     <span>{t('owner.overview.addLocation')}</span>
@@ -526,7 +526,7 @@ export function BrandLocationsPage() {
                         ) : (
                             <button
                                 onClick={() => setIsLinkModalOpen(true)}
-                                className="px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex items-center gap-2"
+                                className={primaryButtonInlineClass}
                             >
                                 <Plus size={16} />
                                 {t('owner.overview.addLocation')}

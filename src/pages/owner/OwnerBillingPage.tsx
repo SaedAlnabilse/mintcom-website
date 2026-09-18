@@ -12,7 +12,7 @@ import { SecurityVerificationModal } from '../../components/SecurityVerification
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalSubmitButton, PageHeader, StatCard, StatCardGrid } from '../../components/ui';
+import { Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalSubmitButton, PageHeader, StatCard, StatCardGrid, primaryButtonInlineClass } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import {
     isActivePendingCancellation,
@@ -580,7 +580,7 @@ export function OwnerBillingPage() {
                     <div className="w-px h-10 bg-stone-200 dark:bg-zinc-800 hidden sm:block" />
                     <button
                         onClick={() => openAddCardModal()}
-                        className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                        className={primaryButtonInlineClass}
                     >
                         <Plus size={15} strokeWidth={2} />
                         <span>{t('owner.billing.addPaymentMethod')}</span>
